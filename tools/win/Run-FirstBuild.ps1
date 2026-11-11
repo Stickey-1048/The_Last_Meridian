@@ -44,6 +44,10 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 
+# For this run only: no .NET first-run banner, and no usage data sent to Microsoft.
+$env:DOTNET_NOLOGO = '1'
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $build = Join-Path $repo 'build'
 New-Item -ItemType Directory -Force -Path $build | Out-Null
