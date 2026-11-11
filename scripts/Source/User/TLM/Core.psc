@@ -1,6 +1,6 @@
 Scriptname TLM:Core extends Quest
 {TLM_Core: start-game-enabled utility quest. No story logic.
-UNTESTED SCAFFOLDING. Not compiled.}
+COMPILES; NOT YET RUN IN THE GAME (docs/design/VERIFY_LOG.md).}
 
 GlobalVariable Property TLM_G_DataVersion Auto Const Mandatory
 Quest Property TLM_MQ01 Auto Const Mandatory

@@ -1,34 +1,33 @@
 # Test runbook — getting from the repository to a first in-game result
 
-**Status:** written before any of it has been run on a real install. Steps 1–3 are scripted and the scripts were tested against a stand-in folder tree. Everything from step 4 on is untested.
+**Status:** steps 1 to 3 ran on the owner's PC on 2026-11-11 and passed: the scan, the plugin build against the real `Fallout4.esm`, and the compile of all seven scripts (details in [VERIFY_LOG.md](VERIFY_LOG.md)). Everything from step 4 on is untested.
 
 Run the commands in PowerShell from the repository folder on the PC that has Fallout 4 and the Creation Kit.
 
-Needed on the PC besides the game: **git**, the **.NET 8 SDK** (for the plugin builder), and the **Creation Kit** (see below). The commands use Windows PowerShell with `-ExecutionPolicy Bypass` so the scripts are allowed to run for that one call. The scripts were only ever run under PowerShell 7 on Linux; Windows PowerShell 5.1 is untested.
+Needed on the PC besides the game: **git**, the **.NET 8 SDK** (for the plugin builder), and the **Creation Kit**. All three are installed on the owner's PC. The commands use Windows PowerShell with `-ExecutionPolicy Bypass` so the scripts are allowed to run for that one call.
 
-## 0. The setup, as reported by the owner on 2026-11-11
+## 0. The setup on the owner's PC
 
-The game build and the absence of the Creation Kit come from a file search the owner ran on the PC. The rest is not yet confirmed by the scan in step 1.
+From the scan and build run of 2026-11-11, unless marked as the owner's report.
 
 | What | Where |
 |---|---|
-| Game in use | GOG Fallout 4 GOTY: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout 4 GOTY` |
-| Game build | `Fallout4.exe` 1.10.163.0 (owner's search) |
-| Creation Kit | not installed: no `CreationKit.exe`, `PapyrusCompiler.exe` or `Base.zip` under the game folder, `C:\Modlists\TMR` or `F:\SteamLibrary` (owner's search) |
-| PowerShell | Windows PowerShell 5.1 |
-| Mod Organizer 2 instance | `C:\Modlists\TMR` (its `ModOrganizer.ini` points at the GOG install) |
+| Game under test | GOG Fallout 4 GOTY, build 1.10.163.0: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout 4 GOTY` |
+| Creation Kit | 1.11.246.0, with the Papyrus compiler and script sources: `F:\SteamLibrary\steamapps\common\Fallout 4` |
+| Steam copy of the game | downloading into the same Steam folder at the time of the run |
 | Fallout London | separate install: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout London\Fallout London` |
-| Steam copy | not installed (`F:\SteamLibrary` has no Fallout 4; the Steam registry entry is stale) |
+| Mod Organizer 2 | instance at `C:\Modlists\TMR`, pointing at the GOG game; selected profile "The Midnight Ride Extended" |
+| Vortex | the owner reports using it; what it manages is not yet known |
+| How the owner starts the game | through GOG Galaxy; the owner believes that starts Fallout London (owner's report) |
+| PowerShell | Windows PowerShell 5.1 |
 
 What follows from that:
 
-- **Everything goes through Mod Organizer.** The test build is installed as a mod folder under `C:\Modlists\TMR\mods`, never into the game folder. Tools that must see it (the game, the Creation Kit) are started from Mod Organizer.
-- **Test in a copy of the profile.** Copy the current Mod Organizer profile, select the copy, and enable the test mod only there. The existing mod list stays as it is.
+- **Building needs no game launch.** The plugin is built from the GOG game's `Fallout4.esm`, and the scripts are compiled with the Creation Kit's compiler. Both already work.
 - **Fallout London is not used and not touched.** The install script refuses it.
-- **The Creation Kit has to be installed first.** It supplies the Papyrus compiler and the game's script sources. It is free on Steam ("Fallout 4: Creation Kit") for owners of the PC game, and Steam is the only official source. Install it, with the Steam copy of Fallout 4, into the Steam library; it lands in `...\steamapps\common\Fallout 4`. Do not put it in the GOG folder: Bethesda says the GOG game is not compatible with the Steam Creation Kit, and community workarounds have mixed reports.
-- **Two builds will be in play.** The game under test is 1.10.163.0. A fresh Steam install of the game and Creation Kit will be a newer build. For now the Creation Kit is used only for its compiler and script sources, and the plugin comes from `tools/PluginBuilder` (header version 0.95, FormIDs from 0x800). Whether scripts compiled by the newer compiler run on 1.10.163 is expected but **unverified**; the first in-game check answers it. If the Creation Kit editor is later used on the plugin, match it to the game first (the community "Fallout 4 Downgrader" can roll the Steam game and Creation Kit back to the 1.10.163 era).
-- **Do not start the Steam copy of the game** unless needed. It shares `Documents\My Games\Fallout4` with the GOG copy; back that folder up first if you do.
-- Use a **disposable save**. Quest and alias changes orphan script data in old saves.
+- **How to start base Fallout 4 with the test mod is undecided.** Three copies of the game will exist (GOG base, Fallout London, Steam), and they may share settings, saves and the active plugin list. The next scan reports which mod manager deploys into which folder and which settings folders exist; the choice (a clean Mod Organizer profile, a Vortex install of the packaged zip, or a direct copy) follows from that. Until then, **do not start the Steam copy** and do not install the test build anywhere.
+- **Two builds are in play.** The game under test is 1.10.163.0 and the compiler comes from Creation Kit 1.11.246.0. The plugin is written with header version 0.95 and FormIDs from 0x800, which every build reads. Whether scripts compiled by the newer compiler run on 1.10.163 is expected but **unverified**; the first in-game check answers it. If the Creation Kit editor is later used on the plugin, match it to the game first.
+- Use a **disposable save**, or none: from the main menu the console command `coc qasmoke` should load the game's test cell with a default character (the cell name is on the Creation Kit wiki; the command is unverified here). Quest and alias changes orphan script data in old saves.
 
 ## Shortcut: steps 1 to 3 in one command
 
@@ -36,7 +35,7 @@ What follows from that:
 powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1
 ```
 
-It checks the tools, reads Steam's install state for Fallout 4 and the Creation Kit, runs the scan, builds the plugin against the real `Fallout4.esm`, compiles the scripts, and writes everything to `build\first-build-log.txt`. It keeps going where it can, so it is safe to run while Steam is still downloading: it will say how far along the download is and skip the compile. Send the log file back.
+It checks the tools, reads Steam's install state for Fallout 4 and the Creation Kit, runs the scan, builds the plugin against the real `Fallout4.esm`, compiles the scripts, and writes everything, including the scan's findings, to `build\first-build-log.txt`. It also copies that log to the clipboard, so it can be pasted straight into a chat (`-NoClipboard` turns that off). The Windows user folder name is replaced with `%USERPROFILE%` in the log and in `BUILD_ENV.md`. It keeps going where it can, so it is safe to run while Steam is still downloading.
 
 It installs nothing into the game or Mod Organizer. The one thing it changes outside the repository is unpacking the Creation Kit's own `Base.zip` beside itself, if the script sources are still zipped (`-NoExtractBase` skips that, and the compile with it). Defaults assume Mod Organizer at `C:\Modlists\TMR` and a Steam library at `F:\SteamLibrary`; `-ModOrganizerRoot`, `-SteamLibrary` and `-CreationKitRoot` override them.
 
@@ -56,7 +55,7 @@ Writes `docs/design/BUILD_ENV.md`: game and Creation Kit versions, install paths
 dotnet run --project tools/PluginBuilder -- --out build --fallout4-esm "C:\Program Files (x86)\GOG Galaxy\Games\Fallout 4 GOTY\Data\Fallout4.esm"
 ```
 
-With `Fallout4.esm` supplied, vanilla records (`PlayerRef`, `Caps001`) are resolved by EditorID. **This code path has never run.** Read `build\TheLastMeridian.report.txt`; the "Not wired yet" list should shrink by two.
+With `Fallout4.esm` supplied, vanilla records (`PlayerRef`, `Caps001`) are resolved by EditorID. On the first real run `Caps001` resolved and `PlayerRef` did not; the lookup has since been made independent of letter case and is awaiting a re-run. Read `build\TheLastMeridian.report.txt`; the "Not wired yet" list should shrink by two.
 
 ## 3. Compile the scripts
 

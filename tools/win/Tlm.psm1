@@ -3,10 +3,11 @@
 # Everything in this module only READS the machine. Nothing here changes the
 # game folder, the registry, saves or load order.
 #
-# Status: the discovery logic was exercised on Linux PowerShell 7 against fake
-# folder trees (a Steam layout, and a GOG + Mod Organizer 2 layout). It has NOT
-# been run on a real Windows install yet. Registry lookups are untested, and so
-# is Windows PowerShell 5.1 (the scripts avoid 7-only syntax, but only 7 was run).
+# Status: first ran on a real Windows PC (Windows PowerShell 5.1) on 2026-11-11
+# through Run-FirstBuild.ps1; the installs, the Mod Organizer instance and the
+# Creation Kit were found. Functions added after that run (Vortex, GOG product
+# names, settings folders, user-folder redaction) have only been exercised on
+# Linux PowerShell 7 against stand-in folder trees.
 
 Set-StrictMode -Version Latest
 
@@ -18,6 +19,22 @@ $script:DlcMasters = @(
     'DLCRobot.esm', 'DLCworkshop01.esm', 'DLCCoast.esm', 'DLCworkshop02.esm',
     'DLCworkshop03.esm', 'DLCNukaWorld.esm', 'DLCUltraHighResolution.esm'
 )
+
+function Hide-UserFolder {
+    <#
+      Replaces the Windows user folder (C:\Users\<name>) with %USERPROFILE%, in
+      either slash style. The folder name identifies the account, and scan
+      output may be pasted into a chat or committed to a public repository.
+    #>
+    param([string]$Text)
+    $home_ = $env:USERPROFILE
+    if (-not $home_ -or -not $Text) { return $Text }
+    $ignoreCase = [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+    foreach ($form in @($home_, ($home_ -replace '\\', '/'), ($home_ -replace '\\', '\\'))) {
+        $Text = [regex]::Replace($Text, [regex]::Escape($form), '%USERPROFILE%', $ignoreCase)
+    }
+    return $Text
+}
 
 function Invoke-Native {
     <#
@@ -232,6 +249,8 @@ function Get-Fallout4InstallInfo {
         OtherPlugins       = @($plugins | Where-Object { ($vanilla -notcontains $_) -and ($_ -notlike 'cc*') })
         TlmInstalled       = Test-Path -LiteralPath (Join-Path $data 'TheLastMeridian.esp')
         ModManagerHint     = Get-ModManagerHint $Root
+        GogProducts        = @(Get-GogProductNames $Root)
+        VortexDeployment   = Get-VortexDeployment $data
     }
 }
 
@@ -242,6 +261,61 @@ function Get-GameGeneration {
     if ($major -eq 1 -and $minor -eq 10 -and $build -le 163) { return 'pre-next-gen (1.10.163 or earlier)' }
     if ($major -eq 1 -and $minor -eq 10) { return 'next-gen update (1.10.9xx)' }
     return 'later than 1.10 (check the Creation Kit build matches)'
+}
+
+function Get-GogProductNames {
+    <# GOG writes goggame-<id>.info into each game folder it installs. Returns the product names in it. #>
+    param([string]$Root)
+    $names = @()
+    foreach ($f in @(Get-ChildItem -LiteralPath $Root -Filter 'goggame-*.info' -File -ErrorAction SilentlyContinue)) {
+        $raw = Get-Content -LiteralPath $f.FullName -Raw
+        if ($raw -match '"name"\s*:\s*"((?:[^"\\]|\\.)*)"') { $names += $Matches[1] }
+    }
+    return @($names | Sort-Object -Unique)
+}
+
+function Get-VortexDeployment {
+    <#
+      Vortex leaves vortex.deployment.json in a folder it deploys mods into.
+      Returns counts and the staging folder only, never file or mod names.
+      Read as text, not parsed as JSON: Windows PowerShell 5.1 refuses JSON
+      over about 2 MB, and a large mod list is bigger than that.
+    #>
+    param([string]$DataFolder)
+    $f = Join-Path $DataFolder 'vortex.deployment.json'
+    if (-not (Test-Path -LiteralPath $f)) { return $null }
+    $raw = Get-Content -LiteralPath $f -Raw
+    $staging = $null; $method = $null
+    if ($raw -match '"stagingPath"\s*:\s*"((?:[^"\\]|\\.)*)"') { $staging = $Matches[1] -replace '\\\\', '\' }
+    if ($raw -match '"deploymentMethod"\s*:\s*"((?:[^"\\]|\\.)*)"') { $method = $Matches[1] }
+    $sources = @([regex]::Matches($raw, '"source"\s*:\s*"((?:[^"\\]|\\.)*)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+    [pscustomobject]@{
+        Files   = [regex]::Matches($raw, '"relPath"\s*:').Count
+        Mods    = $sources.Count
+        Method  = $method
+        Staging = $staging
+    }
+}
+
+function Get-VortexInfo {
+    <# Vortex's own data folder (%APPDATA%\Vortex): which games it manages. Names and counts only. #>
+    param([string]$AppDataRoot)
+    if (-not $AppDataRoot) { $AppDataRoot = [Environment]::GetFolderPath('ApplicationData') }
+    if (-not $AppDataRoot) { return $null }
+    $root = Join-Path $AppDataRoot 'Vortex'
+    if (-not (Test-Path -LiteralPath $root)) { return $null }
+    $games = @()
+    foreach ($d in @(Get-ChildItem -LiteralPath $root -Directory -ErrorAction SilentlyContinue)) {
+        $mods = Join-Path $d.FullName 'mods'
+        $profiles = Join-Path $d.FullName 'profiles'
+        if ((Test-Path -LiteralPath $mods) -or (Test-Path -LiteralPath $profiles)) {
+            $staged = 0; $profileCount = 0
+            if (Test-Path -LiteralPath $mods) { $staged = @(Get-ChildItem -LiteralPath $mods -Directory -ErrorAction SilentlyContinue).Count }
+            if (Test-Path -LiteralPath $profiles) { $profileCount = @(Get-ChildItem -LiteralPath $profiles -Directory -ErrorAction SilentlyContinue).Count }
+            $games += [pscustomobject]@{ Name = $d.Name; StagedMods = $staged; Profiles = $profileCount }
+        }
+    }
+    [pscustomobject]@{ Root = $root; Games = $games }
 }
 
 function Get-ModManagerHint {
@@ -283,9 +357,25 @@ function Get-Fallout4UserState {
     $newest = $null
     if ($saveFiles.Count -gt 0) { $newest = ($saveFiles | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime.ToString('yyyy-MM-dd') }
 
+    # Every Fallout-named settings folder, in case a total conversion keeps its own.
+    $myGamesFolders = @()
+    $myGamesRoot = Join-Path $DocumentsRoot 'My Games'
+    if (Test-Path -LiteralPath $myGamesRoot) {
+        foreach ($d in @(Get-ChildItem -LiteralPath $myGamesRoot -Directory -Filter 'Fallout*' -ErrorAction SilentlyContinue)) {
+            $s = Join-Path $d.FullName 'Saves'
+            $n = 0
+            if (Test-Path -LiteralPath $s) { $n = @(Get-ChildItem -LiteralPath $s -Filter '*.fos' -File -ErrorAction SilentlyContinue).Count }
+            $myGamesFolders += [pscustomobject]@{
+                Name     = $d.Name
+                Saves    = $n
+                IniFiles = @(Get-ChildItem -LiteralPath $d.FullName -Filter '*.ini' -File -ErrorAction SilentlyContinue | ForEach-Object Name)
+            }
+        }
+    }
+
     $appDirs = @()
     if ($LocalAppDataRoot -and (Test-Path -LiteralPath $LocalAppDataRoot)) {
-        $appDirs = @(Get-ChildItem -LiteralPath $LocalAppDataRoot -Directory -Filter 'Fallout4*' -ErrorAction SilentlyContinue | ForEach-Object FullName)
+        $appDirs = @(Get-ChildItem -LiteralPath $LocalAppDataRoot -Directory -Filter 'Fallout*' -ErrorAction SilentlyContinue | ForEach-Object FullName)
     }
     $pluginLists = @()
     foreach ($d in $appDirs) {
@@ -298,6 +388,7 @@ function Get-Fallout4UserState {
                 Listed     = $lines.Count
                 TlmListed  = [bool](@($lines | Where-Object { $_ -match 'TheLastMeridian\.esp' }).Count)
                 TlmActive  = [bool](@($lines | Where-Object { $_ -match '^\*TheLastMeridian\.esp' }).Count)
+                MentionsLondon = [bool](@($lines | Where-Object { $_ -match 'LondonWorldSpace' }).Count)
             }
         }
     }
@@ -313,6 +404,8 @@ function Get-Fallout4UserState {
         NewestSave           = $newest
         PapyrusLogExists     = Test-Path -LiteralPath (Join-Path (Join-Path (Join-Path $my 'Logs') 'Script') 'Papyrus.0.log')
         PluginLists          = $pluginLists
+        MyGamesFolders       = $myGamesFolders
+        AppDataFolders       = @($appDirs | ForEach-Object { Split-Path -Leaf $_ })
     }
 }
 
@@ -442,6 +535,7 @@ function Get-ModOrganizerInfo {
         BaseSourceDirs   = $baseSourceMods
         TlmModFolder     = Join-Path $mods 'TheLastMeridian-Dev'
         TlmModInstalled  = Test-Path -LiteralPath (Join-Path $mods 'TheLastMeridian-Dev')
+        ExePresent       = Test-Path -LiteralPath (Join-Path $rootPath 'ModOrganizer.exe')
     }
 }
 
@@ -470,4 +564,4 @@ function Find-BaseScriptSource {
 Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Get-Fallout4UserState,
     Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration,
     Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue, Invoke-Native, Get-SteamAppState,
-    Find-CreationKitFolders
+    Find-CreationKitFolders, Get-VortexInfo, Get-VortexDeployment, Get-GogProductNames, Hide-UserFolder

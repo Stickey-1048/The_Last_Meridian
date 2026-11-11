@@ -26,6 +26,7 @@ param(
     [string]$SteamRoot,
     [string]$DocumentsRoot,
     [string]$LocalAppDataRoot,
+    [string]$AppDataRoot,
     [string]$OutFile
 )
 
@@ -53,6 +54,7 @@ $infos = @($installs | ForEach-Object {
         $i
     })
 $user = Get-Fallout4UserState -DocumentsRoot $DocumentsRoot -LocalAppDataRoot $LocalAppDataRoot
+$vortex = Get-VortexInfo -AppDataRoot $AppDataRoot
 $ckFolders = @(Find-CreationKitFolders -SteamRoot $SteamRoot -Extra (@($CreationKitRoot) + @($installs | ForEach-Object Root) + $ExtraRoot))
 
 $md = New-Object System.Text.StringBuilder
@@ -61,6 +63,8 @@ function Line([string]$s = '') { [void]$md.AppendLine($s) }
 Line '# Build environment'
 Line
 Line "Recorded $(Get-Date -Format 'yyyy-MM-dd HH:mm') by ``tools/win/Get-BuildEnv.ps1`` (read-only scan). Re-run it after any game or Creation Kit update."
+Line
+Line 'Paths inside the Windows user folder are written as `%USERPROFILE%`, so this file can be committed without naming the account.'
 Line
 Line "- OS: $([System.Runtime.InteropServices.RuntimeInformation]::OSDescription)"
 Line "- PowerShell: $($PSVersionTable.PSVersion)"
@@ -90,7 +94,14 @@ if ($infos.Count -eq 0) {
         Line "| Creation Club plugins | $($i.CreationClubCount) |"
         Line "| Fallout London | $(YesNo $i.FalloutLondon) |"
         Line "| Other plugins in Data | $($i.OtherPlugins.Count) |"
+        Line "| GOG product | $(if ($i.GogProducts.Count) { $i.GogProducts -join '; ' } else { '-' }) |"
         Line "| Mod manager | $($i.ModManagerHint) |"
+        if ($i.VortexDeployment) {
+            $vd = $i.VortexDeployment
+            Line "| Vortex deployment in Data | $($vd.Files) file(s) from $($vd.Mods) mod(s); method $(OrDash $vd.Method); staging folder ``$(OrDash $vd.Staging)`` |"
+        } else {
+            Line '| Vortex deployment in Data | none |'
+        }
         Line "| TheLastMeridian.esp in Data | $(YesNo $i.TlmInstalled) |"
         Line
     }
@@ -124,7 +135,7 @@ if ($mo) {
     Line
     Line '| Item | Value |'
     Line '|---|---|'
-    Line "| Instance | ``$($mo.Root)`` (version $(OrDash $mo.Version)) |"
+    Line "| Instance | ``$($mo.Root)`` (version $(OrDash $mo.Version)); ModOrganizer.exe present: $(YesNo $mo.ExePresent) |"
     Line "| Manages | $(OrDash $mo.GameName) at ``$(OrDash $mo.GamePath)`` |"
     Line "| Mods folder | ``$($mo.ModsDirectory)`` ($($mo.ModCount) mod folders) |"
     Line "| Selected profile | $(OrDash $mo.SelectedProfile) |"
@@ -140,6 +151,21 @@ if ($mo) {
     Line
 }
 
+Line '## Vortex'
+Line
+if (-not $vortex) {
+    Line 'No Vortex data folder found for this Windows account.'
+} elseif (@($vortex.Games).Count -eq 0) {
+    Line "Vortex data folder found at ``$($vortex.Root)``, with no managed games in it."
+} else {
+    Line "Vortex data folder: ``$($vortex.Root)``"
+    Line
+    Line '| Game folder name | Staged mods | Profiles |'
+    Line '|---|---|---|'
+    foreach ($g in $vortex.Games) { Line "| $($g.Name) | $($g.StagedMods) | $($g.Profiles) |" }
+}
+Line
+
 Line '## Shared settings, saves and load order'
 Line
 Line 'These live outside the game folder. To our knowledge every Fallout 4 install on the machine (Steam and GOG alike) reads the same ones, so a plugin enabled for one install is enabled for the other. A Mod Organizer profile with its own settings overrides them while the game is started through Mod Organizer.'
@@ -152,9 +178,13 @@ Line "| Loose files enabled | bInvalidateOlderFiles=$(OrDash $user.InvalidateOld
 Line "| Papyrus logging | bEnableLogging=$(OrDash $user.PapyrusLogging); log file present: $(YesNo $user.PapyrusLogExists) |"
 Line "| Saves | $($user.SaveCount) file(s); newest $(OrDash $user.NewestSave) |"
 foreach ($p in $user.PluginLists) {
-    Line "| Load order | ``$($p.Path)``: $($p.Active) active of $($p.Listed); TheLastMeridian.esp listed: $(YesNo $p.TlmListed), active: $(YesNo $p.TlmActive) |"
+    Line "| Load order | ``$($p.Path)``: $($p.Active) active of $($p.Listed); lists Fallout London's plugins: $(YesNo $p.MentionsLondon); TheLastMeridian.esp listed: $(YesNo $p.TlmListed), active: $(YesNo $p.TlmActive) |"
 }
 if (@($user.PluginLists).Count -eq 0) { Line '| Load order | no plugins.txt found |' }
+foreach ($f in $user.MyGamesFolders) {
+    Line "| Settings folder ``My Games\$($f.Name)`` | $($f.Saves) save(s); settings files: $(if ($f.IniFiles.Count) { $f.IniFiles -join ', ' } else { 'none' }) |"
+}
+Line "| Fallout folders in the local app data | $(if ($user.AppDataFolders.Count) { $user.AppDataFolders -join ', ' } else { 'none' }) |"
 Line
 
 Line '## What this means for the build'
@@ -217,9 +247,11 @@ if ($logging -ne '1') { $notes.Add("Papyrus logging is off in $iniOwner. Turn it
 foreach ($n in $notes) { Line "- $n" }
 Line
 
+# The Windows user folder name identifies the account; keep it out of the file
+# and out of anything printed, since both may end up in a public repository.
 $dir = Split-Path -Parent $OutFile
 if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
-Set-Content -LiteralPath $OutFile -Value $md.ToString() -Encoding utf8
+Set-Content -LiteralPath $OutFile -Value (Hide-UserFolder $md.ToString()) -Encoding utf8
 Write-Host "Wrote $OutFile"
 Write-Host "Installs found: $($infos.Count)"
-foreach ($n in $notes) { Write-Host " - $n" }
+foreach ($n in $notes) { Write-Host (Hide-UserFolder " - $n") }

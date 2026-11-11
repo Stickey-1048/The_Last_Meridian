@@ -32,7 +32,8 @@ public sealed record FormProp(string Name, string EditorId) : Prop(Name);
 // An alias on the owning quest, by alias name.
 public sealed record AliasProp(string Name, string Alias) : Prop(Name);
 // A record in Fallout4.esm, by EditorID. Skipped (and reported) in skeleton mode.
-public sealed record VanillaProp(string Name, string EditorId) : Prop(Name);
+// Kind names the record type to look in (see Builder.TypedLookups); null tries them all.
+public sealed record VanillaProp(string Name, string EditorId, string? Kind = null) : Prop(Name);
 
 public sealed record AliasSpec(
     string Name,
@@ -337,7 +338,7 @@ public static class Spec
             new AliasProp("Alias_Haskell", "Haskell"),
             new FormProp("LedgerItem", "TLM_BOOK_RailMaintLedger"),
             new FormProp("JournalItem", "TLM_BOOK_MarshalLog"),
-            new VanillaProp("Caps", "Caps001")));
+            new VanillaProp("Caps", "Caps001", "MiscItem")));
 
     public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01 };
 }

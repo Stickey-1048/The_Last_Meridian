@@ -1,7 +1,25 @@
 # Verification log
 
-**Date:** 2026-11-11. **Source checked:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API.
-**Not checked:** anything in the Creation Kit or the game. No Fallout 4 install was reachable.
+**Date:** 2026-11-11. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; and, from the same day, the first build run on the owner's PC.
+**Not checked:** anything inside the Creation Kit editor or the running game.
+
+## Results from the game PC
+
+First run of `tools/win/Run-FirstBuild.ps1` on the owner's PC, 2026-11-11, commit `f9ec406`, Windows PowerShell 5.1. Reported by screenshot of its output.
+
+| What | Result |
+|---|---|
+| Game under test | GOG Fallout 4 GOTY, `Fallout4.exe` 1.10.163.0 |
+| Creation Kit | 1.11.246.0, in the Steam library's `Fallout 4` folder (installed without the Steam copy of the game, which was still downloading) |
+| Fallout London | found as a separate install; the scripts refuse to copy into it |
+| Mod Organizer | an instance at `C:\Modlists\TMR` manages the GOG game; selected profile "The Midnight Ride Extended" with its own settings |
+| **Scripts compile** | **Yes: 7 succeeded, 0 failed**, Papyrus Compiler 2.8.0.4, against the Creation Kit's own script sources in `Data\Scripts\Source\Base`. This is a compile only; nothing has run in the game |
+| Plugin build against the real `Fallout4.esm` | Passed: 10,053 bytes, header version 0.95, lowest FormID 0x800, file read back matches the spec |
+| `Caps001` looked up by EditorID | Resolved to `00000F:Fallout4.esm` |
+| `PlayerRef` looked up by EditorID | **Not found.** Cause reproduced off the PC: the untyped lookup is case-sensitive, and the master evidently spells it differently. Fixed (typed, case-insensitive lookup, with a fallback to id 0x14 that is only accepted if it places the actor `Player`). The fix is tested on stand-in masters and awaits a re-run on the PC |
+| Scan bug | It reported that no Creation Kit was found, because it only counted folders containing `Fallout4.exe`. Fixed |
+
+Still not done anywhere: opening the plugin in the Creation Kit, loading it in the game, any quest test.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
@@ -63,11 +81,11 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 
 ## Checklist for the game PC
 
-1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`).
-2. Base script sources: where they are and how they unpack.
-3. All seven scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`).
+1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`). **Done 2026-11-11** (the file is on the PC, not yet in the repository).
+2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
+3. All seven scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 7 of 7.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
-5. Vanilla EditorIDs: `PlayerRef`, `Caps001`, the .44 revolver and its ammo.
+5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` fix awaiting a re-run; the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In; Essential and Protected flags; alias on the player receiving `OnPlayerLoadGame`.
 7. `Kill` on a Protected actor; `Disable` on an aliased actor.
 8. Message box with a hidden button: which index comes back.

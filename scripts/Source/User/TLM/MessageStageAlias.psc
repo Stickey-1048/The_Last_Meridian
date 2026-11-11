@@ -2,7 +2,7 @@ Scriptname TLM:MessageStageAlias extends ReferenceAlias
 {Generic: when the player activates this alias's reference, show a message
 and set a stage on the owning quest according to the button pressed.
 Used for the SQ01 clues (E1, E2), the notice board and the stove.
-UNTESTED SCAFFOLDING. Not compiled.
+COMPILES; NOT YET RUN IN THE GAME (docs/design/VERIFY_LOG.md).
 
 Button availability belongs in the Message form's button conditions, not here.}
 

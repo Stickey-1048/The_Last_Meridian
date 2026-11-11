@@ -21,8 +21,9 @@
   Organizer instance, profiles, load order, saves. Nothing is installed into
   the game. That is a separate, deliberate step (Install-Dev.ps1).
 
-  Status: tested on Linux PowerShell 7 against a stand-in folder tree, a
-  stand-in compiler and a stand-in master file. Not yet run on Windows.
+  Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-11 and
+  every step passed. Additions since then (clipboard copy, wider scan) have
+  only run on Linux PowerShell 7 against stand-ins.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1
@@ -37,7 +38,10 @@ param(
     [string]$SteamRoot,
     [string[]]$SteamLibrary = @('F:\SteamLibrary'),
     [string]$DocumentsRoot,
-    [string]$LocalAppDataRoot
+    [string]$LocalAppDataRoot,
+    [string]$AppDataRoot,
+    # Do not copy the log to the clipboard at the end.
+    [switch]$NoClipboard
 )
 
 Set-StrictMode -Version Latest
@@ -106,8 +110,8 @@ try {
         if (-not $st) { Result $app.Label 'NOT FOUND' 'Steam has no record of it in any library'; continue }
         if ($st.Installed) { Result $app.Label 'PASSED' "installed in $($st.Folder)" }
         else {
-            $how = if ($null -ne $st.Percent) { "$($st.Percent)% downloaded" } else { "state $($st.StateFlags)" }
-            Result $app.Label 'NOT READY' "$how; wait for Steam to finish, then run this again"
+            $how = if ($null -ne $st.Percent) { "Steam's record says $($st.Percent)%, which lags behind its progress bar" } else { "state $($st.StateFlags)" }
+            Result $app.Label 'NOT READY' "still downloading; $how"
         }
         if ($app.Id -eq '1946160' -and -not $ckFolder -and $st.Installed) { $ckFolder = $st.Folder }
     }
@@ -137,6 +141,7 @@ try {
     if ($SteamRoot) { $scanArgs['SteamRoot'] = $SteamRoot }
     if ($DocumentsRoot) { $scanArgs['DocumentsRoot'] = $DocumentsRoot }
     if ($LocalAppDataRoot) { $scanArgs['LocalAppDataRoot'] = $LocalAppDataRoot }
+    if ($AppDataRoot) { $scanArgs['AppDataRoot'] = $AppDataRoot }
     $scan = Invoke-Sibling 'Get-BuildEnv.ps1' $scanArgs
     $scan.Output | ForEach-Object { Say "  $_" }
     if ($scan.ExitCode -eq 0) { Result 'Environment scan' 'PASSED' 'docs\design\BUILD_ENV.md written' } else { Result 'Environment scan' 'FAILED' "exit code $($scan.ExitCode)" }
@@ -187,9 +192,30 @@ try {
     Say '== Summary =='
     foreach ($r in $results) { Say ("  {0,-18} {1}{2}" -f $r.Step, $r.Status, $(if ($r.Detail) { "  ($($r.Detail))" } else { '' })) }
     Say ''
-    Say 'Nothing was installed into the game or Mod Organizer.'
-    Set-Content -LiteralPath $logPath -Value ($log -join [Environment]::NewLine) -Encoding utf8
+    Say 'Nothing was installed into the game or a mod manager.'
+
+    # The scan's full findings go into the same log, so one paste carries everything.
+    $envFile = Join-Path (Join-Path (Join-Path $repo 'docs') 'design') 'BUILD_ENV.md'
+    if (Test-Path -LiteralPath $envFile) {
+        $log.Add('')
+        $log.Add('== docs\design\BUILD_ENV.md ==')
+        foreach ($line in Get-Content -LiteralPath $envFile) { $log.Add($line) }
+    }
+
+    # Keep the Windows user folder name out of the log.
+    $text = Hide-UserFolder ($log -join [Environment]::NewLine)
+    Set-Content -LiteralPath $logPath -Value $text -Encoding utf8
     Write-Host ''
     Write-Host "Log written to: $logPath"
-    Write-Host 'Send that file (or its contents) back.'
+
+    $copied = $false
+    if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
+        try { Set-Clipboard -Value $text; $copied = $true } catch { }
+    }
+    if ($copied) {
+        Write-Host ''
+        Write-Host 'The whole log is on your clipboard. Click in the chat and press Ctrl+V to send it.'
+    } else {
+        Write-Host 'Send that file (or its contents) back.'
+    }
 }

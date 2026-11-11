@@ -30,8 +30,23 @@ echo "== 4/4 plugin build against a stand-in master =="
 # lookup code. It says nothing about the real Fallout4.esm.
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
-dotnet run --project tools/StandInMaster -- "$tmp/Fallout4.esm" | grep -v warning
-dotnet run --project tools/PluginBuilder -- --out "$tmp/out" --fallout4-esm "$tmp/Fallout4.esm" | grep -v warning
-grep -q "alias  0 Player  (reference) \[\]  fill: forced" "$tmp/out/TheLastMeridian.report.txt" || { echo "FAILED: Player alias was not filled from the master"; exit 1; }
-grep -q "Caps = " "$tmp/out/TheLastMeridian.report.txt" || { echo "FAILED: Caps property was not filled from the master"; exit 1; }
-echo "  vanilla lookups by EditorID work against the stand-in master"
+standin() {  # variant
+  dotnet run --project tools/StandInMaster -- "$tmp/$1/Fallout4.esm" "$1" | grep -v warning
+  dotnet run --project tools/PluginBuilder -- --out "$tmp/$1/out" --fallout4-esm "$tmp/$1/Fallout4.esm" | grep -v warning | grep -E "lookup:|self-check"
+}
+report() { echo "$tmp/$1/out/TheLastMeridian.report.txt"; }
+
+standin default
+grep -q "alias  0 Player  (reference) \[\]  fill: forced" "$(report default)" || { echo "FAILED: Player alias was not filled from the master"; exit 1; }
+grep -q "Caps = " "$(report default)" || { echo "FAILED: Caps property was not filled from the master"; exit 1; }
+grep -q "PlayerRef -> .*which the master spells 'PlayerREF'" "$(report default)" || { echo "FAILED: the player reference was not found regardless of letter case"; exit 1; }
+grep -q "places actor 'Player'" "$(report default)" || { echo "FAILED: the player reference was not checked against its base actor"; exit 1; }
+
+standin unnamed-player
+grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$(report unnamed-player)" || { echo "FAILED: fallback to the conventional player id did not fill the alias"; exit 1; }
+grep -q "Caps = 00000F:Fallout4.esm" "$(report unnamed-player)" || { echo "FAILED: Caps001 was not resolved at a low id"; exit 1; }
+
+standin wrong-player
+grep -q "alias  0 Player  (reference) \[Optional\]" "$(report wrong-player)" || { echo "FAILED: a reference that does not place 'Player' was accepted"; exit 1; }
+grep -q "does not place the actor 'Player'; not used" "$(report wrong-player)" || { echo "FAILED: the rejected player reference was not reported"; exit 1; }
+echo "  vanilla lookups work against three stand-in masters (spelling, fallback, rejection)"

@@ -128,7 +128,7 @@ public static class Report
     public static string ToJson(PluginInfo info) =>
         JsonSerializer.Serialize(info, new JsonSerializerOptions { WriteIndented = true });
 
-    public static string ToText(PluginInfo info, IEnumerable<string> pending)
+    public static string ToText(PluginInfo info, IEnumerable<string> pending, IEnumerable<string>? vanillaNotes = null)
     {
         var sb = new StringBuilder();
         sb.AppendLine($"{info.File}  (masters: {string.Join(", ", info.Masters)}; header version {info.HeaderVersion:0.00}; lowest FormID 0x{info.LowestFormId:X})");
@@ -160,6 +160,14 @@ public static class Report
                 foreach (var s in a.Scripts) AppendScript(sb, "           script ", s);
             }
         }
+        var notes = (vanillaNotes ?? Enumerable.Empty<string>()).ToList();
+        if (notes.Count > 0)
+        {
+            sb.AppendLine();
+            sb.AppendLine($"Lookups in Fallout4.esm ({notes.Count}):");
+            foreach (var n in notes) sb.AppendLine("  - " + n);
+        }
+
         var list = pending.ToList();
         sb.AppendLine();
         sb.AppendLine($"Not wired yet ({list.Count}):");

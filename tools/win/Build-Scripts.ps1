@@ -11,8 +11,8 @@
   The only thing this script can change in the game folder is extracting
   Base.zip (the game's own script sources) in place, and only with -ExtractBase.
 
-  Status: the wiring was tested with a stand-in compiler. It has not yet been
-  run against the real PapyrusCompiler.exe.
+  Status: ran against the real PapyrusCompiler.exe (2.8.0.4) on 2026-11-11 and
+  compiled all seven scripts.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Build-Scripts.ps1 -CreationKitRoot 'F:\SteamLibrary\steamapps\common\Fallout 4' -ExtractBase

@@ -1,6 +1,6 @@
 Scriptname TLM:MQ01PlayerAlias extends ReferenceAlias
 {On Alias_Player of TLM_MQ01 (filled with the player).
-UNTESTED SCAFFOLDING. Not compiled.
+COMPILES; NOT YET RUN IN THE GAME (docs/design/VERIFY_LOG.md).
 
 OnPlayerLoadGame is sent only to the player actor; an alias pointing at the
 player receives it because aliases receive their reference's events.}

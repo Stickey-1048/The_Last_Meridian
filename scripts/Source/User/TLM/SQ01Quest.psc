@@ -1,8 +1,9 @@
 Scriptname TLM:SQ01Quest extends Quest
 {TLM_SQ01 "Signed Clean". Owns all quest logic.
 
-UNTESTED SCAFFOLDING: written without Fallout 4 or the Creation Kit.
-Not compiled. See docs/design/VERIFY_LOG.md.
+COMPILES; NOT YET RUN IN THE GAME. Written without Fallout 4 or the Creation
+Kit, then compiled with the game's own compiler on 2026-11-11
+(docs/design/VERIFY_LOG.md). Behaviour in the game is unverified.
 
 Stages are the API (same pattern as TLM:MQ01Quest):
    5  running, hidden (set by MQ01 stage 10)

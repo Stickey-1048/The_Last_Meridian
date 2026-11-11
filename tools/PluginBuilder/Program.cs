@@ -40,7 +40,7 @@ Builder.Write(mod, plugin);
 
 // Describe what was actually written, not what we meant to write.
 var info = Report.Read(plugin);
-File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.report.txt"), Report.ToText(info, builder.Pending));
+File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.report.txt"), Report.ToText(info, builder.Pending, builder.VanillaNotes));
 File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.json"), Report.ToJson(info));
 
 var problems = SelfCheck.Run(info);
@@ -48,6 +48,7 @@ Console.WriteLine($"{plugin}: {new FileInfo(plugin).Length} bytes, mode={(esm ==
 Console.WriteLine($"  {info.Records.Count} simple records, {info.Messages.Count} messages, {info.Quests.Count} quests, " +
                   $"{info.Quests.Sum(q => q.Stages.Count)} stages, {info.Quests.Sum(q => q.Aliases.Count)} aliases");
 Console.WriteLine($"  not wired yet: {builder.Pending.Count} (see TheLastMeridian.report.txt)");
+foreach (var note in builder.VanillaNotes) Console.WriteLine($"  lookup: {note}");
 if (problems.Count > 0)
 {
     Console.Error.WriteLine($"SELF-CHECK FAILED ({problems.Count}):");

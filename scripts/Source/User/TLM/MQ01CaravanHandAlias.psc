@@ -1,6 +1,6 @@
 Scriptname TLM:MQ01CaravanHandAlias extends ReferenceAlias
 {On Alias_CaravanMaster / Alias_CaravanDrover of TLM_MQ01.
-UNTESTED SCAFFOLDING. Not compiled.}
+COMPILES; NOT YET RUN IN THE GAME (docs/design/VERIFY_LOG.md).}
 
 Event OnDeath(Actor akKiller)
 	; Scripted deaths pass a Cutter (or None) as the killer, so only a real

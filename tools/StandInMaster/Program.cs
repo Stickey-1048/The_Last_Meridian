@@ -1,23 +1,69 @@
-// Builds a tiny stand-in "Fallout4.esm" holding only the two vanilla records
-// the plugin builder looks up by EditorID. For testing the lookup code path;
-// it is not game data.
+// Builds a tiny stand-in "Fallout4.esm" holding only the vanilla records the
+// plugin builder looks up. For testing the lookup code path; it is not game data.
+//
+//   StandInMaster <output path> [variant]
+//
+// Variants:
+//   default          The player reference is spelled "PlayerREF". On the real
+//                    master a lookup for "PlayerRef" failed until the lookup
+//                    stopped depending on letter case; this keeps that covered.
+//   unnamed-player   The player reference has no EditorID at all and sits at
+//                    the conventional id 0x14. Exercises the builder's fallback.
+//   wrong-player     Record 0x14 places some other actor. The builder must
+//                    refuse to use it.
 using Mutagen.Bethesda;
 using Mutagen.Bethesda.Fallout4;
 using Mutagen.Bethesda.Plugins;
 using Noggog;
 
+var path = args[0];
+var variant = args.Length > 1 ? args[1] : "default";
 var mod = new Fallout4Mod(ModKey.FromNameAndExtension("Fallout4.esm"), Fallout4Release.Fallout4);
-var caps = mod.MiscItems.AddNew("Caps001");
-caps.Name = "Bottlecap";
-var npc = mod.Npcs.AddNew("Player");
+FormKey Key(uint id) => new(mod.ModKey, id);
+
+var lowIds = variant != "default";
+var caps = new MiscItem(lowIds ? Key(0xF) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Caps001", Name = "Bottlecap" };
+mod.MiscItems.Add(caps);
+var player = new Npc(lowIds ? Key(0x7) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Player" };
+mod.Npcs.Add(player);
+var someoneElse = mod.Npcs.AddNew("SomeoneElse");
+
 var cell = new Cell(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "StandInCell" };
-var placed = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "PlayerRef" };
-placed.Base.SetTo(npc);
+
+// A second placed actor, so a lookup cannot succeed just by being the only one.
+var other = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "SomeoneElseRef" };
+other.Base.SetTo(someoneElse);
+cell.Persistent.Add(other);
+
+PlacedNpc placed;
+switch (variant)
+{
+    case "default":
+        placed = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "PlayerREF" };
+        placed.Base.SetTo(player);
+        break;
+    case "unnamed-player":
+        placed = new PlacedNpc(Key(0x14), Fallout4Release.Fallout4);
+        placed.Base.SetTo(player);
+        break;
+    case "wrong-player":
+        placed = new PlacedNpc(Key(0x14), Fallout4Release.Fallout4);
+        placed.Base.SetTo(someoneElse);
+        break;
+    default:
+        Console.Error.WriteLine($"unknown variant: {variant}");
+        return 2;
+}
 cell.Persistent.Add(placed);
+
 var block = new CellBlock { BlockNumber = 0, GroupType = GroupTypeEnum.InteriorCellBlock };
 var sub = new CellSubBlock { BlockNumber = 0, GroupType = GroupTypeEnum.InteriorCellSubBlock };
 sub.Cells.Add(cell);
 block.SubBlocks.Add(sub);
 mod.Cells.Records.Add(block);
-mod.BeginWrite.ToPath(args[0]).WithNoLoadOrder().Write();
-Console.WriteLine($"wrote {args[0]}: Caps001={caps.FormKey} PlayerRef={placed.FormKey}");
+
+Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
+// Real masters use ids below 0x800; a stand-in may too.
+mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();
+Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={placed.FormKey} EditorID='{placed.EditorID}'");
+return 0;

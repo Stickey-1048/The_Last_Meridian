@@ -32,6 +32,12 @@ public sealed class Builder
     /// <summary>Things this build could not wire, with the reason.</summary>
     public List<string> Pending { get; } = new();
 
+    /// <summary>
+    /// What each lookup in Fallout4.esm actually returned: the id asked for,
+    /// the record found, and the EditorID as the master spells it.
+    /// </summary>
+    public List<string> VanillaNotes { get; } = new();
+
     public Fallout4Mod Mod => _mod;
 
     public Builder(Fallout4Mod mod, ILinkCache? vanilla)
@@ -298,7 +304,7 @@ public sealed class Builder
                     });
                     break;
                 case VanillaProp vp:
-                    if (TryVanilla(vp.EditorId, out var key))
+                    if (TryVanilla(vp.EditorId, vp.Kind, out var key))
                     {
                         entry.Properties.Add(new ScriptObjectProperty
                         {
@@ -321,21 +327,100 @@ public sealed class Builder
     }
 
     // ----------------------------------------------------- vanilla lookups
-    // UNTESTED: these paths only run when Fallout4.esm is supplied, which has
-    // not happened yet (see docs/design/BUILD_ENV.md once it exists).
+    // These run only when Fallout4.esm is supplied. First run against the real
+    // master: 2026-11-11 (Caps001 resolved; PlayerRef did not, which is why
+    // the lookups below no longer depend on letter case).
+    //
+    // Mutagen's untyped lookup by EditorID is case-sensitive; its typed lookup
+    // is not. The master does not always spell an EditorID the way the wiki or
+    // older games do, so every lookup here ends in a typed, case-insensitive
+    // one and reports the spelling the master actually uses.
 
-    bool TryVanilla(string editorId, out FormKey key)
+    delegate bool TypedLookup(ILinkCache cache, string editorId, out FormKey key, out string? actual);
+
+    static bool Typed<T>(ILinkCache cache, string editorId, out FormKey key, out string? actual)
+        where T : class, IFallout4MajorRecordGetter
+    {
+        actual = null;
+        if (!cache.TryResolveIdentifier<T>(editorId, out key)) return false;
+        if (cache.TryResolve<T>(key, out var rec)) actual = rec.EditorID;
+        return true;
+    }
+
+    // Cheap, small record types first; placed references last (there are
+    // hundreds of thousands of them, so indexing them is slow).
+    static readonly (string Kind, TypedLookup Lookup)[] TypedLookups =
+    {
+        ("MiscItem", Typed<IMiscItemGetter>),
+        ("Global", Typed<IGlobalGetter>),
+        ("Keyword", Typed<IKeywordGetter>),
+        ("Faction", Typed<IFactionGetter>),
+        ("ActorValue", Typed<IActorValueInformationGetter>),
+        ("Race", Typed<IRaceGetter>),
+        ("VoiceType", Typed<IVoiceTypeGetter>),
+        ("Message", Typed<IMessageGetter>),
+        ("FormList", Typed<IFormListGetter>),
+        ("Weapon", Typed<IWeaponGetter>),
+        ("Ammunition", Typed<IAmmunitionGetter>),
+        ("Armor", Typed<IArmorGetter>),
+        ("Book", Typed<IBookGetter>),
+        ("LeveledItem", Typed<ILeveledItemGetter>),
+        ("Container", Typed<IContainerGetter>),
+        ("Activator", Typed<IActivatorGetter>),
+        ("Static", Typed<IStaticGetter>),
+        ("Furniture", Typed<IFurnitureGetter>),
+        ("Npc", Typed<INpcGetter>),
+        ("Package", Typed<IPackageGetter>),
+        ("Quest", Typed<IQuestGetter>),
+        ("Location", Typed<ILocationGetter>),
+        ("Cell", Typed<ICellGetter>),
+        ("Worldspace", Typed<IWorldspaceGetter>),
+        ("PlacedNpc", Typed<IPlacedNpcGetter>),
+        ("PlacedObject", Typed<IPlacedObjectGetter>),
+    };
+
+    /// <param name="kind">Record kind to look in, or null to try every kind.</param>
+    bool TryVanilla(string editorId, string? kind, out FormKey key)
     {
         key = FormKey.Null;
         if (_vanilla == null) return false;
-        if (!_vanilla.TryResolveIdentifier(editorId, out var found)) return false;
-        key = found;
-        return true;
+        foreach (var (name, lookup) in TypedLookups)
+        {
+            if (kind != null && !string.Equals(kind, name, StringComparison.OrdinalIgnoreCase)) continue;
+            if (!lookup(_vanilla, editorId, out var found, out var actual)) continue;
+            key = found;
+            var spelled = actual == null || actual == editorId ? "" : $", which the master spells '{actual}'";
+            VanillaNotes.Add($"{editorId} -> {found} ({name}{spelled})");
+            return true;
+        }
+        if (kind != null && !TypedLookups.Any(t => string.Equals(t.Kind, kind, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException($"Spec asks for vanilla record kind '{kind}', which the builder does not know");
+        VanillaNotes.Add($"{editorId} -> NOT FOUND in Fallout4.esm{(kind == null ? "" : $" as {kind}")}");
+        return false;
     }
 
     bool TryFillPlayer(QuestReferenceAlias alias)
     {
-        if (!TryVanilla("PlayerRef", out var key)) return false;
+        if (_vanilla == null) return false;
+        if (!TryVanilla("PlayerRef", "PlacedNpc", out var key))
+        {
+            // Last resort. The player reference has carried the id 0x14 in
+            // every game on this engine. Here it is only a candidate: the
+            // check below, against the master itself, decides.
+            key = new FormKey(Fallout4Esm, 0x14);
+            VanillaNotes.Add($"PlayerRef: no EditorID matched; trying the conventional id {key}");
+        }
+
+        // A wrong reference in the player alias would be a quiet, nasty bug.
+        // Only accept it if it really places the actor called "Player".
+        if (!_vanilla.TryResolve<IPlacedNpcGetter>(key, out var placed)
+            || !_vanilla.TryResolve<INpcGetter>(placed.Base.FormKey, out var baseNpc)
+            || !string.Equals(baseNpc.EditorID, "Player", StringComparison.OrdinalIgnoreCase))
+        {
+            VanillaNotes.Add($"PlayerRef: {key} does not place the actor 'Player'; not used");
+            return false;
+        }
+        VanillaNotes.Add($"PlayerRef: {key} places actor '{baseNpc.EditorID}' ({baseNpc.FormKey}); accepted");
         alias.ForcedReference = new FormLinkNullable<IPlacedGetter>(key);
         return true;
     }

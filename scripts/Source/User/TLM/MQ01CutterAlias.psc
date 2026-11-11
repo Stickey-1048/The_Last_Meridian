@@ -1,6 +1,6 @@
 Scriptname TLM:MQ01CutterAlias extends ReferenceAlias
 {On Alias_CutterLead / Alias_CutterA / B / C of TLM_MQ01.
-UNTESTED SCAFFOLDING. Not compiled.}
+COMPILES; NOT YET RUN IN THE GAME (docs/design/VERIFY_LOG.md).}
 
 Event OnDeath(Actor akKiller)
 	TLM:MQ01Quest q = GetOwningQuest() as TLM:MQ01Quest

@@ -1,9 +1,9 @@
 Scriptname TLM:MQ01Quest extends Quest
 {TLM_MQ01 "Six Rounds to Mercy". Owns all quest logic.
 
-UNTESTED SCAFFOLDING: written without Fallout 4 or the Creation Kit.
-Not compiled. Native signatures were checked against the Creation Kit wiki
-(docs/design/VERIFY_LOG.md); behaviour in the game is unverified.
+COMPILES; NOT YET RUN IN THE GAME. Written without Fallout 4 or the Creation
+Kit, then compiled with the game's own compiler on 2026-11-11
+(docs/design/VERIFY_LOG.md). Behaviour in the game is unverified.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.
