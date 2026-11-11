@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+# .NET build output
+bin/
+obj/
+# Generated plugin output (build it; tag releases instead of committing every build)
+/build/
+# Compiled Papyrus
+*.pex
