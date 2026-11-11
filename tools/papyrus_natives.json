@@ -1,0 +1,626 @@
+{
+ "_note": "Signatures of the Fallout 4 Papyrus natives this project calls, as documented on the Creation Kit wiki (fetched 2026-11-11). Used by tools/check_consistency.py. Documentation-level check only: nothing here has been compiled.",
+ "natives": {
+  "AddItem": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 3,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "Form akItemToAdd",
+     "int aiCount = 1",
+     "bool abSilent = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/AddItem_-_ObjectReference"
+   }
+  ],
+  "CancelTimer": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "ScriptObject",
+    "params": [
+     "int aiTimerID = 0"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/CancelTimer_-_ScriptObject"
+   }
+  ],
+  "Disable": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "bool abFadeOut = False"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/Disable_-_ObjectReference"
+   }
+  ],
+  "Enable": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "bool abFadeIn = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/Enable_-_ObjectReference"
+   }
+  ],
+  "ForceRefTo": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ReferenceAlias",
+    "params": [
+     "ObjectReference akNewRef"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/ForceRefTo_-_ReferenceAlias"
+   }
+  ],
+  "GetActorReference": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "Actor",
+    "source": "falloutck.uesp.net/wiki/GetActorReference_-_ReferenceAlias"
+   }
+  ],
+  "GetDistance": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "ObjectReference akOther"
+    ],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/GetDistance_-_ObjectReference"
+   }
+  ],
+  "GetItemCount": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "Form akItem"
+    ],
+    "returns": "int",
+    "source": "falloutck.uesp.net/wiki/GetItemCount_-_ObjectReference"
+   }
+  ],
+  "GetOwningQuest": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Alias",
+    "params": [],
+    "returns": "Quest",
+    "source": "falloutck.uesp.net/wiki/GetOwningQuest_-_Alias"
+   }
+  ],
+  "GetPlayer": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Game",
+    "params": [],
+    "returns": "Actor",
+    "source": "falloutck.uesp.net/wiki/GetPlayer_-_Game"
+   }
+  ],
+  "GetReference": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "ObjectReference",
+    "source": "falloutck.uesp.net/wiki/GetReference_-_ReferenceAlias"
+   }
+  ],
+  "GetStageDone": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiStage"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/GetStageDone_-_Quest"
+   }
+  ],
+  "GetValueInt": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "GlobalVariable",
+    "params": [],
+    "returns": "int",
+    "source": "falloutck.uesp.net/wiki/GetValueInt_-_GlobalVariable"
+   }
+  ],
+  "IsDead": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsDead_-_Actor"
+   }
+  ],
+  "IsInCombat": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsInCombat_-_Actor"
+   }
+  ],
+  "IsRunning": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsRunning_-_Quest"
+   }
+  ],
+  "Kill": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [
+     "Actor akKiller = None"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/Kill_-_Actor"
+   }
+  ],
+  "Mod": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "GlobalVariable",
+    "params": [
+     "float afHowMuch"
+    ],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/Mod_-_GlobalVariable"
+   }
+  ],
+  "MoveTo": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 5,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "ObjectReference akTarget",
+     "float afXOffset = 0.0",
+     "float afYOffset = 0.0",
+     "float afZOffset = 0.0",
+     "bool abMatchRotation = true"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/MoveTo_-_ObjectReference"
+   }
+  ],
+  "OnActivate": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "ObjectReference akActionRef"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnActivate_-_ObjectReference"
+   }
+  ],
+  "OnCombatStateChanged": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "Actor",
+    "params": [
+     "Actor akTarget",
+     "int aeCombatState"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnCombatStateChanged_-_Actor"
+   }
+  ],
+  "OnDeath": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Actor",
+    "params": [
+     "Actor akKiller"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnDeath_-_Actor"
+   }
+  ],
+  "OnDistanceGreaterThan": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 3,
+    "min_args": 3,
+    "owner": "ScriptObject",
+    "params": [
+     "ObjectReference akObj1",
+     "ObjectReference akObj2",
+     "float afDistance"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnDistanceGreaterThan_-_ScriptObject"
+   }
+  ],
+  "OnPlayerLoadGame": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnPlayerLoadGame_-_Actor"
+   }
+  ],
+  "OnQuestInit": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnQuestInit_-_Quest"
+   }
+  ],
+  "OnStageSet": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "Quest",
+    "params": [
+     "int auiStageID",
+     "int auiItemID"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnStageSet_-_Quest"
+   }
+  ],
+  "OnTimer": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ScriptObject",
+    "params": [
+     "int aiTimerID"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnTimer_-_ScriptObject"
+   }
+  ],
+  "RegisterForDistanceGreaterThanEvent": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 3,
+    "min_args": 3,
+    "owner": "ScriptObject",
+    "params": [
+     "ScriptObject akObj1",
+     "ScriptObject akObj2",
+     "float afDistance"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/RegisterForDistanceGreaterThanEvent_-_ScriptObject"
+   }
+  ],
+  "RemoveAllItems": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "ObjectReference akTransferTo = None",
+     "bool abKeepOwnership = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/RemoveAllItems_-_ObjectReference"
+   }
+  ],
+  "RemoveItem": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 4,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "Form akItemToRemove",
+     "int aiCount = 1",
+     "bool abSilent = false",
+     "ObjectReference akOtherContainer = None"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/RemoveItem_-_ObjectReference"
+   }
+  ],
+  "SetObjectiveCompleted": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiObjective",
+     "bool abCompleted = true"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/SetObjectiveCompleted_-_Quest"
+   }
+  ],
+  "SetObjectiveDisplayed": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 3,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiObjective",
+     "bool abDisplayed = true",
+     "bool abForce = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/SetObjectiveDisplayed_-_Quest"
+   }
+  ],
+  "SetPlayerEnemy": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "Faction",
+    "params": [
+     "bool abIsEnemy = true"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/SetPlayerEnemy_-_Faction"
+   }
+  ],
+  "SetProtected": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [
+     "bool abProtected = true"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/SetProtected_-_Actor"
+   }
+  ],
+  "SetStage": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiStage"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/SetStage_-_Quest"
+   }
+  ],
+  "SetValueInt": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "GlobalVariable",
+    "params": [
+     "int aiNewValue"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/SetValueInt_-_GlobalVariable"
+   }
+  ],
+  "Show": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 9,
+    "min_args": 0,
+    "owner": "Message",
+    "params": [
+     "float afArg1 = 0.0",
+     "float afArg2 = 0.0",
+     "float afArg3 = 0.0",
+     "float afArg4 = 0.0",
+     "float afArg5 = 0.0",
+     "float afArg6 = 0.0",
+     "float afArg7 = 0.0",
+     "float afArg8 = 0.0",
+     "float afArg9 = 0.0"
+    ],
+    "returns": "int",
+    "source": "falloutck.uesp.net/wiki/Show_-_Message"
+   }
+  ],
+  "StartCombat": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 1,
+    "owner": "Actor",
+    "params": [
+     "Actor akTarget",
+     "bool abPreferredTarget = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/StartCombat_-_Actor"
+   }
+  ],
+  "StartTimer": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 1,
+    "owner": "ScriptObject",
+    "params": [
+     "float afInterval",
+     "int aiTimerID = 0"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/StartTimer_-_ScriptObject"
+   }
+  ],
+  "Trace": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 1,
+    "owner": "Debug",
+    "params": [
+     "string asTextToPrint",
+     "int aiSeverity = 0"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/Trace_-_Debug"
+   }
+  ],
+  "TryToDisable": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/TryToDisable_-_ReferenceAlias"
+   }
+  ],
+  "TryToEvaluatePackage": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/TryToEvaluatePackage_-_ReferenceAlias"
+   }
+  ],
+  "TryToStopCombat": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/TryToStopCombat_-_ReferenceAlias"
+   }
+  ],
+  "UnregisterForDistanceEvents": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "ScriptObject",
+    "params": [
+     "ScriptObject akObj1",
+     "ScriptObject akObj2"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/UnregisterForDistanceEvents_-_ScriptObject"
+   }
+  ]
+ }
+}

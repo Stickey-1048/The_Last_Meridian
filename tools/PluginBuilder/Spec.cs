@@ -1,0 +1,343 @@
+namespace Tlm.PluginBuilder;
+
+// Declarative description of the plugin's data records.
+//
+// This file is the single source for stage numbers, log text, objectives,
+// aliases and script bindings. It mirrors docs/design (v0.2 amendments) and
+// tools/logic_model. Player-facing text here is PROVISIONAL until the owner
+// approves it; names follow docs/naming-registry.md and the provisional
+// minor names in the MQ01 design (section 5.2).
+
+public enum Fill
+{
+    // Filled later on the game machine (needs a placed reference or a vanilla
+    // record). Until then the alias is flagged Optional so the quest can start.
+    Pending,
+    // Create Reference to Object, "in" another alias of the same quest.
+    CreateIn,
+    // Never filled by data; a script forces a reference in.
+    ScriptFilled,
+    // The player reference, resolved from Fallout4.esm by EditorID.
+    Player,
+}
+
+public sealed record ScriptBind(string Script, params Prop[] Props);
+
+public abstract record Prop(string Name);
+public sealed record IntProp(string Name, int Value) : Prop(Name);
+public sealed record IntListProp(string Name, params int[] Values) : Prop(Name);
+public sealed record BoolProp(string Name, bool Value) : Prop(Name);
+// A record in this plugin, by EditorID.
+public sealed record FormProp(string Name, string EditorId) : Prop(Name);
+// An alias on the owning quest, by alias name.
+public sealed record AliasProp(string Name, string Alias) : Prop(Name);
+// A record in Fallout4.esm, by EditorID. Skipped (and reported) in skeleton mode.
+public sealed record VanillaProp(string Name, string EditorId) : Prop(Name);
+
+public sealed record AliasSpec(
+    string Name,
+    Fill Fill = Fill.Pending,
+    bool QuestObject = false,
+    bool Essential = false,
+    bool Protected = false,
+    bool AllowDead = false,
+    bool AllowDisabled = false,
+    string? CreateItem = null,      // EditorID of the item, for Fill.CreateIn
+    string? CreateInAlias = null,   // alias name, for Fill.CreateIn
+    bool IsLocation = false,
+    string? Note = null,
+    params ScriptBind[] Scripts);
+
+public sealed record StageSpec(int Index, string? Log = null, bool CompleteQuest = false, string? Note = null);
+
+public sealed record ObjectiveSpec(int Index, string Text, string? TargetAlias = null);
+
+public sealed record QuestSpec(
+    string EditorId,
+    string Name,
+    string Type,                    // MainQuest | SideQuests | None
+    byte Priority,
+    bool StartGameEnabled,
+    StageSpec[] Stages,
+    ObjectiveSpec[] Objectives,
+    AliasSpec[] Aliases,
+    ScriptBind? Script);
+
+public sealed record ButtonSpec(string Text, params Cond[] Conditions);
+
+// Condition on a message button. All conditions on a button are ANDed.
+public abstract record Cond;
+public sealed record StageDone(string Quest, int Stage, bool Done = true) : Cond;
+public sealed record GlobalAtLeast(string Global, float Value) : Cond;
+public sealed record GlobalEquals(string Global, float Value) : Cond;
+
+public sealed record MessageSpec(string EditorId, string? Title, string Text, bool Box, params ButtonSpec[] Buttons);
+
+public sealed record BookSpec(string EditorId, string Name, string Text);
+
+public sealed record MiscSpec(string EditorId, string Name);
+
+public static class Spec
+{
+    public const string PluginName = "TheLastMeridian.esp";
+
+    // ------------------------------------------------------------ globals
+    // All short, default 0. TLM_Truth etc. are the hidden metrics named by
+    // docs/doctrine-of-the-open-ledger.md.
+    public static readonly string[] Globals =
+    {
+        "TLM_G_DataVersion",
+        "TLM_G_CaravanOutcome",
+        "TLM_G_CaravanMethod",
+        "TLM_G_CaravanAliveAtMercy",
+        "TLM_G_Rep_MercyCrossing",
+        "TLM_G_MQ01_Done",
+        "TLM_G_MQ01_DebriefVariant",
+        "TLM_G_MQ01_DebriefAnswer",
+        "TLM_Truth",
+        "TLM_Competence",
+        "TLM_Accountability",
+        "TLM_MutualTrust",
+        "TLM_G_SQ01_EvidenceCount",
+        "TLM_G_SQ01_EvidenceLevel",
+        "TLM_G_SQ01_Outcome",
+        "TLM_G_SQ01_YardAlerted",
+        "TLM_G_SQ01_VaneHasLedger",
+        "TLM_G_SQ01_HaskellScapegoated",
+    };
+
+    public static readonly string[] Factions =
+    {
+        "TLM_Fac_Cutters",
+        "TLM_Fac_Caravan",
+        "TLM_Fac_MercyCrossing",
+    };
+
+    public static readonly MiscSpec[] MiscItems =
+    {
+        new("TLM_MISC_Dispatch", "Sealed Rail Dispatch"),
+        new("TLM_MISC_TornTransitPass", "Torn Transit Pass"),
+    };
+
+    public static readonly BookSpec[] Books =
+    {
+        new("TLM_BOOK_RailMaintLedger", "Maintenance Ledger, Line 14",
+            "LINE 14 - LOCO/CAR MAINTENANCE - IRON JUNCTION YARD\n\n" +
+            "Entry  Item                 Action     Result  Signed\n" +
+            " 41    Brake shoes, car 3   Renewed    Good    R. Ostrander\n" +
+            " 42    Draw-bar, car 3      Inspected  Sound   R. Ostrander\n" +
+            " 43    Brake shoes, car 5   Renewed    Good    R. Ostrander\n" +
+            " 44    Journal box, car 5   Inspected  Sound   R. Ostrander\n"),
+        new("TLM_BOOK_MarshalLog", "Rail Marshal's Journal",
+            "Greenwater. Ostrander took ill on the 9th. By the 14th he was gone. I carried " +
+            "the line's word to the yard the same week. Last I saw, no one had been sent in his place.\n\n" +
+            "Odd, then, that every car I rode on this trip came up on the list as \"signed clean\".\n\n" +
+            "Pritchard will want to see this in person."),
+    };
+
+    // ----------------------------------------------------------- messages
+    public static readonly MessageSpec[] Messages =
+    {
+        new("TLM_MSG_Tut_Wake", null, "Search the wreck. Take what you can carry.", Box: false),
+        new("TLM_MSG_Tut_SixRounds", null, "Six rounds in the cylinder. Count them.", Box: false),
+        new("TLM_MSG_E1", "Brake shoes", "The shoes are ground to the rivets.", Box: true,
+            new ButtonSpec("Step back")),
+        new("TLM_MSG_E2", "Draw-bar", "The draw-bar is cracked through. The break is dark with old rust.", Box: true,
+            new ButtonSpec("Step back")),
+        new("TLM_MSG_PublishChoice", "Notice board", "Post the ledger pages where the town can read them?", Box: true,
+            // Button order is the contract with TLM:MessageStageAlias.ButtonStages.
+            new ButtonSpec("Post the pages, no name"),
+            new ButtonSpec("Name the Yard Office", new GlobalAtLeast("TLM_G_SQ01_EvidenceLevel", 2)),
+            // TODO on the game machine: hide this button with GetDead on Haskell's reference.
+            new ButtonSpec("Name Corwin Haskell"),
+            new ButtonSpec("Leave it")),
+        new("TLM_MSG_BurnLedger", "Stove", "Burn the ledger?", Box: true,
+            new ButtonSpec("Burn it"),
+            new ButtonSpec("Keep it")),
+    };
+
+    // --------------------------------------------------------------- core
+    public static readonly QuestSpec Core = new(
+        "TLM_Core", "The Last Meridian (core)", "None", 50, StartGameEnabled: true,
+        Stages: Array.Empty<StageSpec>(),
+        Objectives: Array.Empty<ObjectiveSpec>(),
+        Aliases: Array.Empty<AliasSpec>(),
+        Script: new ScriptBind("TLM:Core",
+            new FormProp("TLM_G_DataVersion", "TLM_G_DataVersion"),
+            new FormProp("TLM_MQ01", "TLM_MQ01")));
+
+    // --------------------------------------------------------------- MQ01
+    static ScriptBind SetStageOnPickup(int stage) =>
+        new("DefaultAliasOnContainerChangedTo", new IntProp("StageToSet", stage));
+
+    static ScriptBind SetStageOnTrigger(int stage) =>
+        new("DefaultAliasOnTriggerEnter", new IntProp("StageToSet", stage));
+
+    static readonly ScriptBind CutterScript = new("TLM:MQ01CutterAlias");
+    static readonly ScriptBind HandScript = new("TLM:MQ01CaravanHandAlias");
+
+    public static readonly QuestSpec MQ01 = new(
+        "TLM_MQ01", "Six Rounds to Mercy", "MainQuest", 60, StartGameEnabled: false,
+        Stages: new StageSpec[]
+        {
+            new(10, "The train is a ruin and you're alive. Whoever carried the line's mail didn't make it."),
+            new(15, "Six rounds in the cylinder. Count them."),
+            new(20, "The marshal's dispatch is sealed to the Sheriff of Mercy Crossing."),
+            new(30, Note: "Ambush live"),
+            new(31, "You turned the Cutters off the wagon."),
+            new(32, "You kept walking."),
+            new(33, "You took a share."),
+            new(34, Note: "Caravan missed: the player never met the ambush"),
+            new(35, "You turned your gun on the wagon's own."),
+            new(37, Note: "Cutters turn on the player (speech failed or deal refused)"),
+            new(40, "Mercy Crossing."),
+            new(50, "Delivered to Sheriff Pritchard."),
+            new(51, Note: "Debrief: admit (evaded)"),
+            new(52, Note: "Debrief: deny (evaded)"),
+            new(53, Note: "Debrief: confess (witness)"),
+            new(54, Note: "Debrief: blame the Cutters (witness)"),
+            new(55, Note: "Debrief: 'She's lying.' (witness)"),
+            new(60, "Pritchard has more for you."),
+            new(100, CompleteQuest: true, Note: "Completed"),
+            new(900, Note: "Recovery"),
+        },
+        Objectives: new ObjectiveSpec[]
+        {
+            new(10, "Find the marshal's dispatch case", "Marshal"),
+            new(20, "Take the dispatch to Sheriff Owen Pritchard in Mercy Crossing", "SheriffPritchard"),
+        },
+        Aliases: new AliasSpec[]
+        {
+            new("Player", Fill.Player, Scripts: new ScriptBind("TLM:MQ01PlayerAlias", new FormProp("SideQuest", "TLM_SQ01"))),
+            new("Marshal", AllowDead: true, Note: "Dead Rail Marshal Tobias Gantt (TLM_NPC_MARSHAL_DEAD)"),
+            new("Dispatch", Fill.CreateIn, QuestObject: true, CreateItem: "TLM_MISC_Dispatch", CreateInAlias: "Marshal",
+                Scripts: SetStageOnPickup(20)),
+            new("Revolver", Note: "Placed revolver. Not a quest object: the player may sell or drop it.",
+                Scripts: SetStageOnPickup(15)),
+            new("SheriffPritchard", Essential: true, Note: "Unique actor TLM_NPC_SHERIFF_MERCY"),
+            new("CaravanMaster", Protected: true, AllowDisabled: true, Note: "Nell Fenwick", Scripts: HandScript),
+            new("CaravanDrover", Protected: true, AllowDisabled: true, Note: "Abel Rudd", Scripts: HandScript),
+            new("CaravanMasterInTown", Fill.ScriptFilled, Essential: true, Note: "Forced at stage 40"),
+            new("CaravanDroverInTown", Fill.ScriptFilled, Essential: true, Note: "Forced at stage 40"),
+            new("CutterLead", Protected: true, AllowDead: true, AllowDisabled: true, Note: "Reese Dunmore", Scripts: CutterScript),
+            new("CutterA", Protected: true, AllowDead: true, AllowDisabled: true, Scripts: CutterScript),
+            new("CutterB", Protected: true, AllowDead: true, AllowDisabled: true, Scripts: CutterScript),
+            new("CutterC", Protected: true, AllowDead: true, AllowDisabled: true, Scripts: CutterScript),
+            new("Wagon", Note: "TLM_CONT_WagonCargo, owned by TLM_Fac_Caravan"),
+            new("AmbushTrigger", Note: "TLM_TRIG_AmbushSight", Scripts: SetStageOnTrigger(30)),
+            new("AmbushCenter", Note: "TLM_MARK_AmbushCenter"),
+            new("AmbushEnableMarker", AllowDisabled: true, Note: "Enable parent of the ambush actors; starts disabled"),
+            new("WreckStart", Note: "TLM_MARK_WreckStart"),
+            new("TownGate", Note: "TLM_TRIG_TownGate", Scripts: SetStageOnTrigger(40)),
+            new("CaravanYard", Note: "TLM_MARK_CaravanYard"),
+            new("MercyCrossingLoc", IsLocation: true, Note: "TLM_Loc_MercyCrossing"),
+        },
+        Script: new ScriptBind("TLM:MQ01Quest",
+            new FormProp("TLM_G_CaravanOutcome", "TLM_G_CaravanOutcome"),
+            new FormProp("TLM_G_CaravanMethod", "TLM_G_CaravanMethod"),
+            new FormProp("TLM_G_CaravanAliveAtMercy", "TLM_G_CaravanAliveAtMercy"),
+            new FormProp("TLM_G_Rep_MercyCrossing", "TLM_G_Rep_MercyCrossing"),
+            new FormProp("TLM_G_MQ01_Done", "TLM_G_MQ01_Done"),
+            new FormProp("TLM_G_MQ01_DebriefVariant", "TLM_G_MQ01_DebriefVariant"),
+            new FormProp("TLM_G_MQ01_DebriefAnswer", "TLM_G_MQ01_DebriefAnswer"),
+            new FormProp("TLM_Truth", "TLM_Truth"),
+            new FormProp("TLM_Accountability", "TLM_Accountability"),
+            new FormProp("TLM_MutualTrust", "TLM_MutualTrust"),
+            new AliasProp("Alias_CaravanMaster", "CaravanMaster"),
+            new AliasProp("Alias_CaravanDrover", "CaravanDrover"),
+            new AliasProp("Alias_CaravanMasterInTown", "CaravanMasterInTown"),
+            new AliasProp("Alias_CaravanDroverInTown", "CaravanDroverInTown"),
+            new AliasProp("Alias_CutterLead", "CutterLead"),
+            new AliasProp("Alias_CutterA", "CutterA"),
+            new AliasProp("Alias_CutterB", "CutterB"),
+            new AliasProp("Alias_CutterC", "CutterC"),
+            new AliasProp("Alias_Wagon", "Wagon"),
+            new AliasProp("Alias_AmbushCenter", "AmbushCenter"),
+            new AliasProp("Alias_AmbushEnableMarker", "AmbushEnableMarker"),
+            new AliasProp("Alias_WreckStart", "WreckStart"),
+            new AliasProp("Alias_CaravanYard", "CaravanYard"),
+            new FormProp("DispatchItem", "TLM_MISC_Dispatch"),
+            new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
+            new FormProp("TLM_Fac_Cutters", "TLM_Fac_Cutters"),
+            new FormProp("TLM_SQ01", "TLM_SQ01"),
+            new FormProp("TutWake", "TLM_MSG_Tut_Wake"),
+            new FormProp("TutSixRounds", "TLM_MSG_Tut_SixRounds"),
+            // Dev start (decision T1, option a): the tester is already at the wreck.
+            new BoolProp("MovePlayerOnStart", false)));
+
+    // --------------------------------------------------------------- SQ01
+    static ScriptBind Examine(string message, int stage) =>
+        new("TLM:MessageStageAlias", new FormProp("MessageToShow", message), new IntProp("StageAlways", stage));
+
+    public static readonly QuestSpec SQ01 = new(
+        "TLM_SQ01", "Signed Clean", "SideQuests", 40, StartGameEnabled: false,
+        Stages: new StageSpec[]
+        {
+            new(5, Note: "Running, hidden. Set by MQ01 stage 10."),
+            new(10, "The train's maintenance ledger says the brakes and couplers were inspected and sound."),
+            new(11, Note: "E1 brake shoes examined"),
+            new(12, Note: "E2 draw-bar examined"),
+            new(13, Note: "E3 marshal's journal taken"),
+            new(14, Note: "E4 Ada Pike's parts book seen"),
+            new(20, "The ledger and the wreck don't agree."),
+            new(25, "Whoever kept this ledger wrote down work that was never done."),
+            new(41, Note: "Reported to Pritchard"),
+            new(42, Note: "Posted, no name"),
+            new(43, Note: "Posted, Yard Office named"),
+            new(44, Note: "Posted, Haskell named"),
+            new(45, Note: "Sold to Vane"),
+            new(46, Note: "Destroyed"),
+            new(50, Note: "Resolved"),
+            new(100, CompleteQuest: true, Note: "Completed"),
+            new(900, Note: "Recovery"),
+        },
+        Objectives: new ObjectiveSpec[]
+        {
+            new(10, "Compare the ledger to the wreck"),
+            new(20, "Decide what to do with the evidence"),
+        },
+        Aliases: new AliasSpec[]
+        {
+            new("CabLockbox", Note: "TLM_CONT_CabLockbox in the locomotive cab"),
+            new("Ledger", Fill.CreateIn, QuestObject: true, CreateItem: "TLM_BOOK_RailMaintLedger", CreateInAlias: "CabLockbox",
+                Scripts: SetStageOnPickup(10)),
+            new("Marshal", AllowDead: true, Note: "Same reference as TLM_MQ01's Marshal alias"),
+            new("Journal", Fill.CreateIn, QuestObject: true, CreateItem: "TLM_BOOK_MarshalLog", CreateInAlias: "Marshal",
+                Scripts: SetStageOnPickup(13)),
+            new("BrakeShoes", Note: "Examinable activator", Scripts: Examine("TLM_MSG_E1", 11)),
+            new("DrawBar", Note: "Examinable activator", Scripts: Examine("TLM_MSG_E2", 12)),
+            new("Pike", Note: "Unique actor TLM_NPC_GUNSMITH_MERCY"),
+            new("Pritchard", Note: "Unique actor TLM_NPC_SHERIFF_MERCY"),
+            new("Vane", Note: "Unique actor TLM_NPC_MERCHANT_MERCY"),
+            new("Haskell", Note: "Unique actor TLM_NPC_FREIGHT_MERCY"),
+            new("NoticeBoard", Note: "TLM_ACTI_NoticeBoard",
+                Scripts: new ScriptBind("TLM:MessageStageAlias",
+                    new FormProp("MessageToShow", "TLM_MSG_PublishChoice"),
+                    new IntListProp("ButtonStages", 42, 43, 44, 0),
+                    new IntProp("RequireStageDone", 20),
+                    new IntProp("BlockIfStageDone", 50))),
+            new("Stove", Note: "Any stove or the wreck fire",
+                Scripts: new ScriptBind("TLM:MessageStageAlias",
+                    new FormProp("MessageToShow", "TLM_MSG_BurnLedger"),
+                    new IntListProp("ButtonStages", 46, 0),
+                    new IntProp("RequireStageDone", 10),
+                    new IntProp("BlockIfStageDone", 50))),
+        },
+        Script: new ScriptBind("TLM:SQ01Quest",
+            new FormProp("TLM_G_SQ01_EvidenceCount", "TLM_G_SQ01_EvidenceCount"),
+            new FormProp("TLM_G_SQ01_EvidenceLevel", "TLM_G_SQ01_EvidenceLevel"),
+            new FormProp("TLM_G_SQ01_Outcome", "TLM_G_SQ01_Outcome"),
+            new FormProp("TLM_G_SQ01_YardAlerted", "TLM_G_SQ01_YardAlerted"),
+            new FormProp("TLM_G_SQ01_VaneHasLedger", "TLM_G_SQ01_VaneHasLedger"),
+            new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
+            new FormProp("TLM_Truth", "TLM_Truth"),
+            new FormProp("TLM_Competence", "TLM_Competence"),
+            new FormProp("TLM_Accountability", "TLM_Accountability"),
+            new FormProp("TLM_MutualTrust", "TLM_MutualTrust"),
+            new AliasProp("Alias_Haskell", "Haskell"),
+            new FormProp("LedgerItem", "TLM_BOOK_RailMaintLedger"),
+            new FormProp("JournalItem", "TLM_BOOK_MarshalLog"),
+            new VanillaProp("Caps", "Caps001")));
+
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01 };
+}

@@ -720,18 +720,21 @@ def ev_take_journal(s: State, r: Rules) -> Optional[State]:
 
 def ev_pike_parts_book(s: State, r: Rules) -> Optional[State]:
     """E4: Ada Pike shows her own tally (needs the ledger in hand)."""
-    if s.loc != TOWN or not s.pike_alive or s.e4 or not s.has_ledger or s.sq_outcome != SQ_NONE:
+    if s.loc != TOWN or not s.pike_alive or s.e4 or not s.sq_done(10) or s.sq_outcome != SQ_NONE:
         return None
     return _sq_recompute(replace(s, e4=True))
 
 
 def _sq_can_decide(s: State) -> bool:
-    return s.sq_done(20) and s.sq_outcome == SQ_NONE and s.has_ledger
+    # Keyed on stages, not on holding the item (same reasoning as A9).
+    return s.sq_done(20) and s.sq_outcome == SQ_NONE
 
 
 def _sq_apply(s: State, outcome: int) -> State:
     """TLM_SQ01_QuestScript.ApplyOutcome(). One outcome, ever."""
     assert s.sq_outcome == SQ_NONE
+    if s.ledger_lost:
+        s = replace(s, ledger_lost=False, has_ledger=True)   # the stage is the proof
     s = replace(s, sq_outcome=outcome, sq_o10=COMPLETE, sq_o20=COMPLETE)
     if outcome == SQ_REPORTED:
         s = replace(s, yard_alerted=1, truth=s.truth + 1, competence=s.competence + 1)
@@ -795,7 +798,7 @@ def ev_sq_sell(s: State, r: Rules) -> Optional[State]:
 
 def ev_sq_destroy(s: State, r: Rules) -> Optional[State]:
     """Burn the ledger. Possible from the moment the player holds it."""
-    if not s.has_ledger or not s.sq_done(10) or s.sq_outcome != SQ_NONE:
+    if not s.sq_done(10) or s.sq_outcome != SQ_NONE:
         return None
     return _sq_apply(s, SQ_DESTROYED)
 

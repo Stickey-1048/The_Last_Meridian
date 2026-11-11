@@ -1,0 +1,245 @@
+TheLastMeridian.esp  (masters: Fallout4.esm)
+
+Global (18)
+  000800  TLM_G_DataVersion
+  000801  TLM_G_CaravanOutcome
+  000802  TLM_G_CaravanMethod
+  000803  TLM_G_CaravanAliveAtMercy
+  000804  TLM_G_Rep_MercyCrossing
+  000805  TLM_G_MQ01_Done
+  000806  TLM_G_MQ01_DebriefVariant
+  000807  TLM_G_MQ01_DebriefAnswer
+  000808  TLM_Truth
+  000809  TLM_Competence
+  00080A  TLM_Accountability
+  00080B  TLM_MutualTrust
+  00080C  TLM_G_SQ01_EvidenceCount
+  00080D  TLM_G_SQ01_EvidenceLevel
+  00080E  TLM_G_SQ01_Outcome
+  00080F  TLM_G_SQ01_YardAlerted
+  000810  TLM_G_SQ01_VaneHasLedger
+  000811  TLM_G_SQ01_HaskellScapegoated
+Faction (3)
+  000812  TLM_Fac_Cutters
+  000813  TLM_Fac_Caravan
+  000814  TLM_Fac_MercyCrossing
+MiscItem (2)
+  000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
+  000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
+Book (2)
+  000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
+  000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
+Message (6)
+  00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
+  00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
+  00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."
+          button 0: "Step back"
+  00081F  TLM_MSG_E2  [box]  "The draw-bar is cracked through. The break is dark with old rust."
+          button 0: "Step back"
+  000820  TLM_MSG_PublishChoice  [box]  "Post the ledger pages where the town can read them?"
+          button 0: "Post the pages, no name"
+          button 1: "Name the Yard Office"  if GetGlobalValue TLM_G_SQ01_EvidenceLevel GreaterThanOrEqualTo 2
+          button 2: "Name Corwin Haskell"
+          button 3: "Leave it"
+  000821  TLM_MSG_BurnLedger  [box]  "Burn the ledger?"
+          button 0: "Burn it"
+          button 1: "Keep it"
+
+Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
+  script TLM:Core
+           TLM_G_DataVersion = TLM_G_DataVersion
+           TLM_MQ01 = TLM_MQ01
+
+Quest TLM_MQ01  00081A  "Six Rounds to Mercy"  type=MainQuest priority=60 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MQ01Quest
+           TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
+           TLM_G_CaravanMethod = TLM_G_CaravanMethod
+           TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
+           TLM_G_Rep_MercyCrossing = TLM_G_Rep_MercyCrossing
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           TLM_G_MQ01_DebriefVariant = TLM_G_MQ01_DebriefVariant
+           TLM_G_MQ01_DebriefAnswer = TLM_G_MQ01_DebriefAnswer
+           TLM_Truth = TLM_Truth
+           TLM_Accountability = TLM_Accountability
+           TLM_MutualTrust = TLM_MutualTrust
+           Alias_CaravanMaster = alias 5 on TLM_MQ01
+           Alias_CaravanDrover = alias 6 on TLM_MQ01
+           Alias_CaravanMasterInTown = alias 7 on TLM_MQ01
+           Alias_CaravanDroverInTown = alias 8 on TLM_MQ01
+           Alias_CutterLead = alias 9 on TLM_MQ01
+           Alias_CutterA = alias 10 on TLM_MQ01
+           Alias_CutterB = alias 11 on TLM_MQ01
+           Alias_CutterC = alias 12 on TLM_MQ01
+           Alias_Wagon = alias 13 on TLM_MQ01
+           Alias_AmbushCenter = alias 15 on TLM_MQ01
+           Alias_AmbushEnableMarker = alias 16 on TLM_MQ01
+           Alias_WreckStart = alias 17 on TLM_MQ01
+           Alias_CaravanYard = alias 19 on TLM_MQ01
+           DispatchItem = TLM_MISC_Dispatch
+           TornTransitPass = TLM_MISC_TornTransitPass
+           TLM_Fac_Cutters = TLM_Fac_Cutters
+           TLM_SQ01 = TLM_SQ01
+           TutWake = TLM_MSG_Tut_Wake
+           TutSixRounds = TLM_MSG_Tut_SixRounds
+           MovePlayerOnStart = False
+  stage   10  "The train is a ruin and you're alive. Whoever carried the line's mail didn't make it."
+  stage   15  "Six rounds in the cylinder. Count them."
+  stage   20  "The marshal's dispatch is sealed to the Sheriff of Mercy Crossing."
+  stage   30  (Ambush live)
+  stage   31  "You turned the Cutters off the wagon."
+  stage   32  "You kept walking."
+  stage   33  "You took a share."
+  stage   34  (Caravan missed: the player never met the ambush)
+  stage   35  "You turned your gun on the wagon's own."
+  stage   37  (Cutters turn on the player (speech failed or deal refused))
+  stage   40  "Mercy Crossing."
+  stage   50  "Delivered to Sheriff Pritchard."
+  stage   51  (Debrief: admit (evaded))
+  stage   52  (Debrief: deny (evaded))
+  stage   53  (Debrief: confess (witness))
+  stage   54  (Debrief: blame the Cutters (witness))
+  stage   55  (Debrief: 'She's lying.' (witness))
+  stage   60  "Pritchard has more for you."
+  stage  100 [complete]  (Completed)
+  stage  900  (Recovery)
+  objective 10: "Find the marshal's dispatch case"  -> alias 1
+  objective 20: "Take the dispatch to Sheriff Owen Pritchard in Mercy Crossing"  -> alias 4
+  alias  0 Player  (reference) [Optional]
+           script TLM:MQ01PlayerAlias
+                    SideQuest = TLM_SQ01
+  alias  1 Marshal  (reference) [Optional, AllowDead]
+  alias  2 Dispatch  (reference) [Optional, QuestObject]  fill: create TLM_MISC_Dispatch In alias 1
+           script DefaultAliasOnContainerChangedTo
+                    StageToSet = 20
+  alias  3 Revolver  (reference) [Optional]
+           script DefaultAliasOnContainerChangedTo
+                    StageToSet = 15
+  alias  4 SheriffPritchard  (reference) [Optional, Essential]
+  alias  5 CaravanMaster  (reference) [Optional, AllowDisabled, Protected]
+           script TLM:MQ01CaravanHandAlias
+  alias  6 CaravanDrover  (reference) [Optional, AllowDisabled, Protected]
+           script TLM:MQ01CaravanHandAlias
+  alias  7 CaravanMasterInTown  (reference) [Optional, Essential]
+  alias  8 CaravanDroverInTown  (reference) [Optional, Essential]
+  alias  9 CutterLead  (reference) [Optional, AllowDead, AllowDisabled, Protected]
+           script TLM:MQ01CutterAlias
+  alias 10 CutterA  (reference) [Optional, AllowDead, AllowDisabled, Protected]
+           script TLM:MQ01CutterAlias
+  alias 11 CutterB  (reference) [Optional, AllowDead, AllowDisabled, Protected]
+           script TLM:MQ01CutterAlias
+  alias 12 CutterC  (reference) [Optional, AllowDead, AllowDisabled, Protected]
+           script TLM:MQ01CutterAlias
+  alias 13 Wagon  (reference) [Optional]
+  alias 14 AmbushTrigger  (reference) [Optional]
+           script DefaultAliasOnTriggerEnter
+                    StageToSet = 30
+  alias 15 AmbushCenter  (reference) [Optional]
+  alias 16 AmbushEnableMarker  (reference) [Optional, AllowDisabled]
+  alias 17 WreckStart  (reference) [Optional]
+  alias 18 TownGate  (reference) [Optional]
+           script DefaultAliasOnTriggerEnter
+                    StageToSet = 40
+  alias 19 CaravanYard  (reference) [Optional]
+  alias 20 MercyCrossingLoc  (location) [Optional]
+
+Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:SQ01Quest
+           TLM_G_SQ01_EvidenceCount = TLM_G_SQ01_EvidenceCount
+           TLM_G_SQ01_EvidenceLevel = TLM_G_SQ01_EvidenceLevel
+           TLM_G_SQ01_Outcome = TLM_G_SQ01_Outcome
+           TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
+           TLM_G_SQ01_VaneHasLedger = TLM_G_SQ01_VaneHasLedger
+           TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
+           TLM_Truth = TLM_Truth
+           TLM_Competence = TLM_Competence
+           TLM_Accountability = TLM_Accountability
+           TLM_MutualTrust = TLM_MutualTrust
+           Alias_Haskell = alias 9 on TLM_SQ01
+           LedgerItem = TLM_BOOK_RailMaintLedger
+           JournalItem = TLM_BOOK_MarshalLog
+  stage    5  (Running, hidden. Set by MQ01 stage 10.)
+  stage   10  "The train's maintenance ledger says the brakes and couplers were inspected and sound."
+  stage   11  (E1 brake shoes examined)
+  stage   12  (E2 draw-bar examined)
+  stage   13  (E3 marshal's journal taken)
+  stage   14  (E4 Ada Pike's parts book seen)
+  stage   20  "The ledger and the wreck don't agree."
+  stage   25  "Whoever kept this ledger wrote down work that was never done."
+  stage   41  (Reported to Pritchard)
+  stage   42  (Posted, no name)
+  stage   43  (Posted, Yard Office named)
+  stage   44  (Posted, Haskell named)
+  stage   45  (Sold to Vane)
+  stage   46  (Destroyed)
+  stage   50  (Resolved)
+  stage  100 [complete]  (Completed)
+  stage  900  (Recovery)
+  objective 10: "Compare the ledger to the wreck"
+  objective 20: "Decide what to do with the evidence"
+  alias  0 CabLockbox  (reference) [Optional]
+  alias  1 Ledger  (reference) [Optional, QuestObject]  fill: create TLM_BOOK_RailMaintLedger In alias 0
+           script DefaultAliasOnContainerChangedTo
+                    StageToSet = 10
+  alias  2 Marshal  (reference) [Optional, AllowDead]
+  alias  3 Journal  (reference) [Optional, QuestObject]  fill: create TLM_BOOK_MarshalLog In alias 2
+           script DefaultAliasOnContainerChangedTo
+                    StageToSet = 13
+  alias  4 BrakeShoes  (reference) [Optional]
+           script TLM:MessageStageAlias
+                    MessageToShow = TLM_MSG_E1
+                    StageAlways = 11
+  alias  5 DrawBar  (reference) [Optional]
+           script TLM:MessageStageAlias
+                    MessageToShow = TLM_MSG_E2
+                    StageAlways = 12
+  alias  6 Pike  (reference) [Optional]
+  alias  7 Pritchard  (reference) [Optional]
+  alias  8 Vane  (reference) [Optional]
+  alias  9 Haskell  (reference) [Optional]
+  alias 10 NoticeBoard  (reference) [Optional]
+           script TLM:MessageStageAlias
+                    MessageToShow = TLM_MSG_PublishChoice
+                    ButtonStages = [42, 43, 44, 0]
+                    RequireStageDone = 20
+                    BlockIfStageDone = 50
+  alias 11 Stove  (reference) [Optional]
+           script TLM:MessageStageAlias
+                    MessageToShow = TLM_MSG_BurnLedger
+                    ButtonStages = [46, 0]
+                    RequireStageDone = 10
+                    BlockIfStageDone = 50
+
+Not wired yet (33):
+  - TLM_MISC_Dispatch: no world model yet (it exists only in inventories until one is assigned)
+  - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
+  - TLM_BOOK_RailMaintLedger: no world model yet
+  - TLM_BOOK_MarshalLog: no world model yet
+  - TLM_MQ01 alias Player: needs PlayerRef from Fallout4.esm
+  - TLM_MQ01 alias Marshal: no reference yet (Dead Rail Marshal Tobias Gantt (TLM_NPC_MARSHAL_DEAD))
+  - TLM_MQ01 alias Revolver: no reference yet (Placed revolver. Not a quest object: the player may sell or drop it.)
+  - TLM_MQ01 alias SheriffPritchard: no reference yet (Unique actor TLM_NPC_SHERIFF_MERCY)
+  - TLM_MQ01 alias CaravanMaster: no reference yet (Nell Fenwick)
+  - TLM_MQ01 alias CaravanDrover: no reference yet (Abel Rudd)
+  - TLM_MQ01 alias CutterLead: no reference yet (Reese Dunmore)
+  - TLM_MQ01 alias CutterA: no reference yet (placed in the test cell)
+  - TLM_MQ01 alias CutterB: no reference yet (placed in the test cell)
+  - TLM_MQ01 alias CutterC: no reference yet (placed in the test cell)
+  - TLM_MQ01 alias Wagon: no reference yet (TLM_CONT_WagonCargo, owned by TLM_Fac_Caravan)
+  - TLM_MQ01 alias AmbushTrigger: no reference yet (TLM_TRIG_AmbushSight)
+  - TLM_MQ01 alias AmbushCenter: no reference yet (TLM_MARK_AmbushCenter)
+  - TLM_MQ01 alias AmbushEnableMarker: no reference yet (Enable parent of the ambush actors; starts disabled)
+  - TLM_MQ01 alias WreckStart: no reference yet (TLM_MARK_WreckStart)
+  - TLM_MQ01 alias TownGate: no reference yet (TLM_TRIG_TownGate)
+  - TLM_MQ01 alias CaravanYard: no reference yet (TLM_MARK_CaravanYard)
+  - TLM_MQ01 alias MercyCrossingLoc: location not created yet (TLM_Loc_MercyCrossing)
+  - TLM_SQ01 script TLM:SQ01Quest.Caps: needs 'Caps001' from Fallout4.esm
+  - TLM_SQ01 alias CabLockbox: no reference yet (TLM_CONT_CabLockbox in the locomotive cab)
+  - TLM_SQ01 alias Marshal: no reference yet (Same reference as TLM_MQ01's Marshal alias)
+  - TLM_SQ01 alias BrakeShoes: no reference yet (Examinable activator)
+  - TLM_SQ01 alias DrawBar: no reference yet (Examinable activator)
+  - TLM_SQ01 alias Pike: no reference yet (Unique actor TLM_NPC_GUNSMITH_MERCY)
+  - TLM_SQ01 alias Pritchard: no reference yet (Unique actor TLM_NPC_SHERIFF_MERCY)
+  - TLM_SQ01 alias Vane: no reference yet (Unique actor TLM_NPC_MERCHANT_MERCY)
+  - TLM_SQ01 alias Haskell: no reference yet (Unique actor TLM_NPC_FREIGHT_MERCY)
+  - TLM_SQ01 alias NoticeBoard: no reference yet (TLM_ACTI_NoticeBoard)
+  - TLM_SQ01 alias Stove: no reference yet (Any stove or the wreck fire)

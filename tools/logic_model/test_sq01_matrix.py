@@ -152,12 +152,13 @@ class SQ01Matrix(unittest.TestCase):
             apply(s, "sq_sell")
 
     def test_S21_ledger_lost_and_recovered(self):
-        s = run(LEVEL1 + ["ledger_vanishes"])
-        with self.assertRaises(NotAvailable):
-            apply(s, "sq_report")
-        s = apply(s, "recovery")
+        lost = run(LEVEL1 + ["ledger_vanishes"])
+        self.assertFalse(lost.has_ledger)
+        s = apply(lost, "recovery")
         self.assertTrue(s.has_ledger)
         self.assertEqual(apply(s, "sq_report").sq_outcome, m.SQ_REPORTED)
+        # The decision is keyed on stage 20, so it also works unrepaired.
+        self.assertEqual(apply(lost, "sq_report").sq_outcome, m.SQ_REPORTED)
 
     def test_S22_report_before_the_dispatch_is_delivered(self):
         """Amendment: the report topic must not depend on holding the dispatch."""
