@@ -2,7 +2,7 @@
 Version: 1.0-draft | Status: Foundation pending owner approval | Date: 2026-11-11
 
 ## Creative identity [LOCKED]
-A Fallout 4 total-conversion fan-mod concept set in **2317** in the southern Appalachians: eastern Tennessee, western North Carolina and northern Georgia. It is an Appalachian **gunslinger Western**, not a desert Western. Lawlessness, frontier justice, mountain clans, trade, rail marshals, isolated towns and hard travel provide the Western atmosphere. The central conflict is who should govern recovered infrastructure and whether anyone should surrender agency to MERIDIAN's predictions.
+A Fallout 4 total-conversion fan-mod concept set in **2317** in the southern Appalachians: eastern Tennessee, western North Carolina and northern Georgia. It is an Appalachian **gunslinger Western**, not a desert Western. Lawlessness, frontier justice, mountain clans, trade, rail marshals, isolated towns and hard travel provide the Western atmosphere. The central conflict is who should govern recovered infrastructure and whether anyone should surrender agency to MERIDIAN's predictions. **NEW CENTRAL PROPOSAL:** the player is a surface-born descendant of an expelled Deep family, discovers the ancestral link and decides The Deep's future. See docs/child-of-the-deep.md; family details are provisional until accepted.
 
 ## Geography [LOCKED: region; PROVISIONAL: exact map placement]
 - Tellico River / Tellico Plains-inspired **Broken Valleys**: Mercy Crossing opening hub.
@@ -39,10 +39,13 @@ Other organizations (Brass Consortium, Keepers of the Ash, Ridgeborn Covenant, W
 **Hollowborn** is an umbrella designation for recognizably human populations displaying subtly altered inherited features. **Glassborn is one subtype**, not a synonym. Groups include Hartfolk, Mirekin, Ursans, Nocturnes, Vulpers, Glassborn, Eldren; the Stonebound represent a distinct intertwined culture and possible lineage, and the Forged are later engineered descendants. No literal magical elves/dwarves/orcs. Roots may link to fictional classified Oak Ridge research beginning with Manhattan Project-era observations, later postwar experiments, and/or preexisting populations and a puzzling signal. Do not canonically settle the origin in advance.
 
 ## Antagonistic mystery [LOCKED]
-MERIDIAN is an invented pre-war continuity / infrastructure intelligence compromised or guided by a **Distant Signal** of uncertain origin. This is NOT an explanation of the Great War or all Fallout events. Five Riders: player (the Fifth Rider, customizable identity), **Mara Vale** (deserter), **Cassian Voss** (silver-gunned assassin), **Edda Flint** (independent), **Lucien Grey** (signal aligned). The player voluntarily erased memories to hide information. Mara is a major story protagonist/companion introduced at the end of Act I.
+MERIDIAN is an invented pre-war continuity / infrastructure intelligence compromised or guided by a **Distant Signal** of uncertain origin. This is NOT an explanation of the Great War or all Fallout events. Five Riders: player (the Fifth Rider, customizable identity), **Mara Vale** (deserter), **Cassian Voss** (silver-gunned assassin), **Edda Flint** (independent), **Lucien Grey** (signal aligned). The player voluntarily erased memories of a recent Meridian mission to hide information, NOT their entire childhood or family past. Mara is a major story protagonist/companion introduced at the end of Act I.
 
 ## Side-content principle [LOCKED]
 Ancillary faction quests and local settlement arcs can offer allies, trade, equipment, reputation and regional epilogues, but must never arbitrarily gate Acts II–III. Main-faction allegiances primarily commit in Act III. The climactic location is shared, with different aims, allies, approaches and endings.
 
 ## Conflict resolution protocol
 This file overrides older chat drafts. Proposals changing a LOCKED item require a documented design decision and user approval. PROVISIONAL entries can be refined but must be logged. Fallout lore compatibility is a separate audit, not a claim of official canon.
+
+## Deep-centered story revision [PROPOSED; requires owner lock]
+The Deep is more than an optional strengthening ally: it is the protagonist's ancestral city and key political stakes. Descendants of an exile/purge approximately two generations prior now live on the surface. Player can keep the Deep autonomous, ally or integrate with a principal faction, or establish Deep-led regional ascendancy. Keep exactly four principal endgame power systems; Deep ascendancy is a distinct outcome/coalition configuration rather than an automatically required fifth campaign. Full proposal in [docs/child-of-the-deep.md](docs/child-of-the-deep.md).
