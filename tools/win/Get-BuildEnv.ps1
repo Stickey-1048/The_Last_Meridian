@@ -61,8 +61,8 @@ Line "Recorded $(Get-Date -Format 'yyyy-MM-dd HH:mm') by ``tools/win/Get-BuildEn
 Line
 Line "- OS: $([System.Runtime.InteropServices.RuntimeInformation]::OSDescription)"
 Line "- PowerShell: $($PSVersionTable.PSVersion)"
-$dotnet = $null; try { $dotnet = (& dotnet --version 2>$null) } catch { }
-$git = $null; try { $git = (& git --version 2>$null) } catch { }
+$r = Invoke-Native -Exe 'dotnet' -Arguments @('--version'); $dotnet = if ($r.Found -and $r.ExitCode -eq 0) { $r.Output | Select-Object -First 1 } else { $null }
+$r = Invoke-Native -Exe 'git' -Arguments @('--version'); $git = if ($r.Found -and $r.ExitCode -eq 0) { $r.Output | Select-Object -First 1 } else { $null }
 Line "- .NET SDK: $(OrDash $dotnet)"
 Line "- git: $(OrDash $git)"
 Line
@@ -139,7 +139,14 @@ if ($mo) {
     $target = @($infos | Where-Object { $_.Root.TrimEnd('\', '/') -ieq "$($mo.GamePath)".TrimEnd('\', '/') })
     if ($target.Count -eq 1) {
         $notes.Add("Build against the install Mod Organizer manages: ``$($target[0].Root)`` ($($target[0].Store), game $(OrDash $target[0].GameVersion)). Install the test build as a Mod Organizer mod (``Install-Dev.ps1 -ModOrganizerRoot``), never into the game folder.")
-        if (-not $target[0].CreationKitVersion) { $notes.Add('That install has no CreationKit.exe. The Creation Kit supplies the Papyrus compiler and the base script sources, so scripts cannot be compiled until it is installed.') }
+        if (-not $target[0].CreationKitVersion) {
+            $ckElsewhere = @($infos | Where-Object { $_.CreationKitVersion -and -not $_.FalloutLondon })
+            if ($ckElsewhere.Count -gt 0) {
+                $notes.Add("That install has no CreationKit.exe. The Creation Kit in ``$($ckElsewhere[0].Root)`` supplies the Papyrus compiler and the base script sources (``Build-Scripts.ps1 -CreationKitRoot``).")
+            } else {
+                $notes.Add('That install has no CreationKit.exe, and none was found elsewhere. The Creation Kit supplies the Papyrus compiler and the base script sources, so scripts cannot be compiled until it is installed.')
+            }
+        }
     } else {
         $notes.Add("Mod Organizer points at ``$($mo.GamePath)``, but no Fallout4.exe was found there.")
     }

@@ -99,8 +99,10 @@ Write-Host "Compiler : $compiler"
 Write-Host "Base src : $base"
 Write-Host "Project  : $ppjPath ($($scripts.Count) scripts)"
 $log = Join-Path (Join-Path $repo 'build') 'papyrus-compile.log'
-& $compiler $ppjPath 2>&1 | Tee-Object -FilePath $log
-$code = $LASTEXITCODE
+$run = Invoke-Native -Exe $compiler -Arguments @($ppjPath)
+$run.Output | Set-Content -LiteralPath $log -Encoding utf8
+$run.Output | ForEach-Object { Write-Host $_ }
+$code = $run.ExitCode
 
 $pex = @(Get-ChildItem -LiteralPath $outDir -Recurse -Filter '*.pex' -File -ErrorAction SilentlyContinue)
 Write-Host ''

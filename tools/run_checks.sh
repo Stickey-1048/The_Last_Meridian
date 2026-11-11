@@ -3,16 +3,17 @@
 #   1. logic model tests (stage table, outcomes, exhaustive state search)
 #   2. plugin build + read-back self-check
 #   3. cross-check of Papyrus sources, plugin and model
+#   4. plugin build with vanilla lookups, against a generated stand-in master
 # A pass here means the design is internally consistent. It does not mean the
 # mod works: nothing is compiled by the Papyrus compiler or loaded by the game.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
 
-echo "== 1/3 logic model =="
+echo "== 1/4 logic model =="
 (cd tools/logic_model && python3 -m unittest 2>&1 | tail -4)
 
-echo "== 2/3 plugin build =="
+echo "== 2/4 plugin build =="
 dotnet run --project tools/PluginBuilder -- --out build | grep -v warning
 if ! diff -q build/TheLastMeridian.report.txt tools/PluginBuilder/last-build.report.txt >/dev/null; then
   echo "NOTE: the plugin report changed. Review it, then:"
@@ -20,5 +21,17 @@ if ! diff -q build/TheLastMeridian.report.txt tools/PluginBuilder/last-build.rep
   exit 1
 fi
 
-echo "== 3/3 consistency =="
+echo "== 3/4 consistency =="
 python3 tools/check_consistency.py
+
+echo "== 4/4 plugin build against a stand-in master =="
+# A tiny generated file standing in for Fallout4.esm, holding only the two
+# vanilla records the builder looks up (Caps001, PlayerRef). This exercises the
+# lookup code. It says nothing about the real Fallout4.esm.
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+dotnet run --project tools/StandInMaster -- "$tmp/Fallout4.esm" | grep -v warning
+dotnet run --project tools/PluginBuilder -- --out "$tmp/out" --fallout4-esm "$tmp/Fallout4.esm" | grep -v warning
+grep -q "alias  0 Player  (reference) \[\]  fill: forced" "$tmp/out/TheLastMeridian.report.txt" || { echo "FAILED: Player alias was not filled from the master"; exit 1; }
+grep -q "Caps = " "$tmp/out/TheLastMeridian.report.txt" || { echo "FAILED: Caps property was not filled from the master"; exit 1; }
+echo "  vanilla lookups by EditorID work against the stand-in master"

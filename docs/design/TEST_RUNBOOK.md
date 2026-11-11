@@ -30,6 +30,18 @@ What follows from that:
 - **Do not start the Steam copy of the game** unless needed. It shares `Documents\My Games\Fallout4` with the GOG copy; back that folder up first if you do.
 - Use a **disposable save**. Quest and alias changes orphan script data in old saves.
 
+## Shortcut: steps 1 to 3 in one command
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1
+```
+
+It checks the tools, reads Steam's install state for Fallout 4 and the Creation Kit, runs the scan, builds the plugin against the real `Fallout4.esm`, compiles the scripts, and writes everything to `build\first-build-log.txt`. It keeps going where it can, so it is safe to run while Steam is still downloading: it will say how far along the download is and skip the compile. Send the log file back.
+
+It installs nothing into the game or Mod Organizer. The one thing it changes outside the repository is unpacking the Creation Kit's own `Base.zip` beside itself, if the script sources are still zipped (`-NoExtractBase` skips that, and the compile with it). Defaults assume Mod Organizer at `C:\Modlists\TMR` and a Steam library at `F:\SteamLibrary`; `-ModOrganizerRoot`, `-SteamLibrary` and `-CreationKitRoot` override them.
+
+Steps 1 to 3 below are what it runs, for doing them one at a time.
+
 ## 1. Record the environment (read-only)
 
 ```powershell

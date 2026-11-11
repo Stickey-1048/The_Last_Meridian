@@ -5,10 +5,12 @@ Everything here supports building and checking the mod. None of it is the mod, a
 | Path | What it is | Runs on | Tested how |
 |---|---|---|---|
 | `logic_model/` | Python model of the MQ01 and SQ01 rules, the test matrix, and an exhaustive state search | anywhere (Python 3.10+) | 83 tests pass; 8 engine-only cases are skipped |
-| `PluginBuilder/` | Generates `TheLastMeridian.esp` data records from `Spec.cs` (.NET 8, Mutagen) | anywhere | writes the file, reads it back, compares with the spec. Not loaded in the Creation Kit or game. The `--fallout4-esm` path has never run |
+| `PluginBuilder/` | Generates `TheLastMeridian.esp` data records from `Spec.cs` (.NET 8, Mutagen) | anywhere | writes the file, reads it back, compares with the spec. Not loaded in the Creation Kit or game. The `--fallout4-esm` path has run only against a generated stand-in master, never the real one |
 | `check_consistency.py` | Lints the Papyrus against documented native signatures; cross-checks scripts, plugin and model | anywhere | 11 kinds of injected fault were each caught |
 | `papyrus_natives.json` | Signatures of the natives the scripts call, from the Creation Kit wiki | data | |
 | `run_checks.sh` | Runs the three checks above | Linux, macOS, Git Bash | |
+| `StandInMaster/` | Generates a tiny stand-in `Fallout4.esm` (two records) so the builder's vanilla lookups can be exercised without the game | anywhere | used by `run_checks.sh` |
+| `win/Run-FirstBuild.ps1` | One command for the first session on the game PC: scan, plugin build, script compile, one log file | Windows | three cases against stand-ins: still downloading, all installed, compiler error |
 | `win/Get-BuildEnv.ps1` | Read-only scan of the PC's Fallout 4 installs and a Mod Organizer 2 instance; writes `docs/design/BUILD_ENV.md` | Windows | against stand-in folder trees (Steam layout; GOG + Mod Organizer layout) on Linux PowerShell 7; registry lookups untested |
 | `win/Build-Scripts.ps1` | Compiles the scripts with the game's Papyrus compiler into `build\Scripts` | Windows | with a stand-in compiler |
 | `win/Install-Dev.ps1`, `win/Uninstall-Dev.ps1` | Install the build as a Mod Organizer mod (or into a game folder) and remove it again, with backups and a manifest | Windows | against stand-in folder trees; the game and Fallout London folders were confirmed untouched in Mod Organizer mode |

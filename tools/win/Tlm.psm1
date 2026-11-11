@@ -19,6 +19,57 @@ $script:DlcMasters = @(
     'DLCworkshop03.esm', 'DLCNukaWorld.esm', 'DLCUltraHighResolution.esm'
 )
 
+function Invoke-Native {
+    <#
+      Runs a program and returns its exit code and all output lines.
+      Windows PowerShell 5.1 turns anything a program writes to its error
+      stream into a terminating error when $ErrorActionPreference is 'Stop',
+      so the preference is relaxed for the duration of the call.
+    #>
+    param([Parameter(Mandatory)][string]$Exe, [string[]]$Arguments = @())
+    $ErrorActionPreference = 'Continue'
+    try {
+        $out = & $Exe @Arguments 2>&1 | ForEach-Object { "$_" }
+        return [pscustomobject]@{ ExitCode = $LASTEXITCODE; Output = @($out); Found = $true }
+    } catch [System.Management.Automation.CommandNotFoundException] {
+        return [pscustomobject]@{ ExitCode = -1; Output = @("$Exe was not found"); Found = $false }
+    }
+}
+
+function Get-SteamAppState {
+    <#
+      Reads Steam's own record of an app (appmanifest_<id>.acf) from every
+      library. StateFlags 4 means fully installed. Read-only.
+    #>
+    param([Parameter(Mandatory)][string]$AppId, [string]$SteamRoot, [string[]]$ExtraLibrary = @())
+    $libs = @(Get-SteamLibraryRoots -SteamRoot $SteamRoot) + @($ExtraLibrary | Where-Object { $_ -and (Test-Path -LiteralPath $_) })
+    foreach ($lib in ($libs | Select-Object -Unique)) {
+        $manifest = Join-Path (Join-Path $lib 'steamapps') "appmanifest_$AppId.acf"
+        if (-not (Test-Path -LiteralPath $manifest)) { continue }
+        $v = @{}
+        foreach ($line in Get-Content -LiteralPath $manifest) {
+            if ($line -match '^\s*"(\w+)"\s+"(.*)"\s*$') { if (-not $v.ContainsKey($Matches[1])) { $v[$Matches[1]] = $Matches[2] } }
+        }
+        $total = 0L; $done = 0L
+        if ($v.ContainsKey('BytesToDownload')) { [void][long]::TryParse($v['BytesToDownload'], [ref]$total) }
+        if ($v.ContainsKey('BytesDownloaded')) { [void][long]::TryParse($v['BytesDownloaded'], [ref]$done) }
+        $flags = if ($v.ContainsKey('StateFlags')) { $v['StateFlags'] } else { '' }
+        $dir = if ($v.ContainsKey('installdir')) { $v['installdir'] } else { '' }
+        $percent = $null
+        if ($total -gt 0) { $percent = [int][math]::Floor(100.0 * $done / $total) }
+        return [pscustomobject]@{
+            AppId      = $AppId
+            Name       = if ($v.ContainsKey('name')) { $v['name'] } else { '' }
+            Library    = $lib
+            Folder     = Join-Path (Join-Path (Join-Path $lib 'steamapps') 'common') $dir
+            StateFlags = $flags
+            Installed  = ($flags -eq '4')
+            Percent    = $percent
+        }
+    }
+    return $null
+}
+
 function Get-RegistryValueSafe {
     param([string]$Path, [string]$Name)
     if (-not $script:OnWindows) { return $null }
@@ -396,4 +447,4 @@ function Find-BaseScriptSource {
 
 Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Get-Fallout4UserState,
     Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration,
-    Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue
+    Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue, Invoke-Native, Get-SteamAppState
