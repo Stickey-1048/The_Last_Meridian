@@ -2,7 +2,7 @@
 Status: PROVISIONAL quest beats beneath locked act structure. All geography is southern Appalachia.
 
 ## Act I — The Broken Roads
-**01 Six Rounds to Mercy** — Begin at a wrecked train in the Tellico valley. Scavenge revolver and dispatch; help, evade or exploit a threatened caravan; reach Mercy Crossing and Sheriff Elias Rook. Tutorial for combat, dialogue and scavenging.
+**01 Six Rounds to Mercy** — Begin at a wrecked train in the Tellico valley. Scavenge revolver and dispatch; help, evade or exploit a threatened caravan; reach Mercy Crossing and Sheriff Owen Pritchard. Tutorial for combat, dialogue and scavenging.
 **02 Three Roads to Ruin** — Investigate Greenwater's missing food, Red Hollow's sealed mine, and Iron Junction's sabotaged railway in any order. Teach routes by road, rail and river.
 **03 The Four Flags** — Regional leaders contest security, property and resources. A messenger bearing mountain intelligence is assassinated with a distinctive silver cartridge.
 **04 The Black Ledger** — Merchant Silas Vane's books reveal financing intended to preserve local isolation; Vane may be exposed, pressured or recruited.
