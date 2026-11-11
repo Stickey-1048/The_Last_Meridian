@@ -87,6 +87,14 @@ powershell -ExecutionPolicy Bypass -File tools\win\Install-Dev.ps1 -ModOrganizer
 
 This creates `C:\Modlists\TMR\mods\TheLastMeridian-Dev`. Then, in Mod Organizer, refresh, tick the mod in the left pane and `TheLastMeridian.esp` in the right pane, in the test profile only. The script never edits profiles, the mod list or the plugin list. `powershell -ExecutionPolicy Bypass -File tools\win\Uninstall-Dev.ps1` removes exactly what was copied, and the mod folder with it.
 
+### If the game is started through Vortex, or you would rather install it yourself
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\win\Package-Dev.ps1
+```
+
+This writes `build\TheLastMeridian-Dev.zip`, laid out like a Data folder. Install the zip with the mod manager that actually starts the game (Vortex: Install From File; Mod Organizer: install from archive), in a test profile, and enable `TheLastMeridian.esp`. Which manager starts the game under test is an open question on this PC: the scan found a Mod Organizer instance at `C:\Modlists\TMR`, and the owner reports using Vortex.
+
 ## 6. First in-game checks (before any test cell exists)
 
 With only the generated records, every alias is empty and flagged Optional, so this stage tests the **stage logic and globals**, not the world. In the console:

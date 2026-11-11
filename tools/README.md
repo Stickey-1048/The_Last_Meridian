@@ -13,6 +13,7 @@ Everything here supports building and checking the mod. None of it is the mod, a
 | `win/Run-FirstBuild.ps1` | One command for the first session on the game PC: scan, plugin build, script compile, one log file | Windows | three cases against stand-ins: still downloading, all installed, compiler error |
 | `win/Get-BuildEnv.ps1` | Read-only scan of the PC's Fallout 4 installs and a Mod Organizer 2 instance; writes `docs/design/BUILD_ENV.md` | Windows | against stand-in folder trees (Steam layout; GOG + Mod Organizer layout) on Linux PowerShell 7; registry lookups untested |
 | `win/Build-Scripts.ps1` | Compiles the scripts with the game's Papyrus compiler into `build\Scripts` | Windows | with a stand-in compiler |
+| `win/Package-Dev.ps1` | Packs the plugin and scripts into `build\TheLastMeridian-Dev.zip`, laid out like a Data folder, for installing with any mod manager (Vortex, Mod Organizer) | Windows | zip contents checked on Linux PowerShell 7; not yet installed with a real mod manager |
 | `win/Install-Dev.ps1`, `win/Uninstall-Dev.ps1` | Install the build as a Mod Organizer mod (or into a game folder) and remove it again, with backups and a manifest | Windows | against stand-in folder trees; the game and Fallout London folders were confirmed untouched in Mod Organizer mode |
 
 The Windows scripts were only ever run under PowerShell 7 (`pwsh`). They avoid 7-only syntax so Windows PowerShell 5.1 should work, but that is untested.
