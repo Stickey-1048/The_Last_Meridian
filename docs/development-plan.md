@@ -22,7 +22,7 @@ TLM_MQ01:
 - 0 Unstarted
 - 10 Awaken at wreck / dispatch acquired
 - 20 Locate Mercy Crossing
-- 30 Speak with Elias Rook
+- 30 Speak with Sheriff Owen Pritchard
 - 40 Caravan encounter resolved
 - 100 Completed
 - 900 Recovery stage (missing alias/objective fallback)

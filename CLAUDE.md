@@ -2,15 +2,21 @@
 
 ## Read in this order
 1. CANON.md
-2. docs/naming-registry.md\n3. docs/open-decisions.md
+2. docs/naming-registry.md
+3. docs/open-decisions.md
 4. docs/fallout-lore-audit.md
 5. docs/three-act-story.md
 6. docs/development-plan.md
 7. docs/factions-and-characters.md
-8. docs/history-hollowborn.md\n9. docs/the-deep.md\n10. docs/child-of-the-deep.md\n11. docs/external-fallout-encounters.md\n12. docs/doctrine-of-the-open-ledger.md
+8. docs/history-hollowborn.md
+9. docs/the-deep.md
+10. docs/child-of-the-deep.md
+11. docs/external-fallout-encounters.md
+12. docs/doctrine-of-the-open-ledger.md
 
 ## Mandatory operating rules
-- Follow docs/naming-registry.md for all current NPC names; obsolete variants are not canonical.\n- Treat CANON.md LOCKED facts as binding. Do not silently substitute earlier story versions or invent a fifth main faction.
+- Follow docs/naming-registry.md for all current NPC names; obsolete variants are not canonical.
+- Treat CANON.md LOCKED facts as binding. Do not silently substitute earlier story versions or invent a fifth main faction.
 - Setting: southern Appalachian TN/NC/GA, NOT Arizona or the Wild West.
 - Four principal endgame factions; four ancillary factions; Hollowborn is umbrella term; Glassborn is a subgroup.
 - All new Fallout-lore claims must be sourced/flagged; do not call original inventions Bethesda canon.
