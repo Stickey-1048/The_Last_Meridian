@@ -47,3 +47,6 @@ Official Bethesda pages establish:
 **Design caution: horses:** Canon status of widespread surviving horse populations remains unsettled. Avoid making horse mounts critical to the main quest until an official-text audit; brahmin pack animals are secure default.
 **Design caution: mutations:** Hollowborn are an original human-derived lineage. Fallout includes mutation and experiments, but exact hereditary mechanisms and relation to FEV require original research evidence; do not assert official endorsement.
 **Remaining high-priority checks:** Fallout 76 newest updates; in-game terminals on ghoul, FEV, robotic and bunker research; precise southern Appalachian place naming, topography and rail infrastructure; Fallout 4 time 2287 and later events; mod packaging permissions.
+
+## Fallout crossover encounters and geography
+Optional Bethesda-background details, Brotherhood patrol relics, West Tek FEV comparisons, Blue Ridge-linked trade, Capital Wasteland rumor, real TVA power/water assets and speculative Asheville/Charlotte conditions are detailed in [external-fallout-encounters.md](external-fallout-encounters.md). These are original fan-fiction encounters; do not call them Bethesda-established historical outcomes. Real-world reactor siting does not establish a canonical nuclear strike or meltdown. More in-game primary text checks remain outstanding.
