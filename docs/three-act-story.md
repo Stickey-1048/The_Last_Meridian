@@ -30,3 +30,6 @@ Status: PROVISIONAL quest beats beneath locked act structure. All geography is s
 - One shared climactic worldspace, reusing content with divergent quest stages.
 - Faction endings differ in government, civil rights, technology, conflict and economic arrangements.
 - Every quest needs a stage table, aliases, prerequisites, fallback conditions, dialogue and game-test checklist before coding.
+
+## Central narrative lens (2026-11-11)
+The player's Deep family was erased after challenging false equality and unaccountable leadership. Place accumulating Open Ledger evidence in Act I, the East Galleries technical/historical investigation in Act II, and legitimacy/transparency consequences in Act III. The player should be able to oppose an abusive ruler without being guaranteed their own judgment is flawless. See docs/doctrine-of-the-open-ledger.md.
