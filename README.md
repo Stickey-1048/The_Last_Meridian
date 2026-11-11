@@ -6,7 +6,7 @@ An original, fan-created **Fallout 4 total-conversion RPG concept** set in the s
 
 ## Start here
 - [Canon registry](CANON.md): current approved creative direction and provisional details.
-- [Three-act quest spine](docs/three-act-story.md): 17 main chapters.
+- [NPC naming registry](docs/naming-registry.md): approved names and old-name crosswalk.\n- [The Deep](docs/the-deep.md): provisional industrial vertical habitat and political choices.\n- [Three-act quest spine](docs/three-act-story.md): 17 main chapters.
 - [Faction and character register](docs/factions-and-characters.md): exactly four principal and four ancillary factions.
 - [Fallout lore audit](docs/fallout-lore-audit.md): research agenda and compatibility risks, not yet a verified final audit.
 - [World history and Hollowborn](docs/history-hollowborn.md): in-universe chronology and disputed origin theories.
