@@ -7,7 +7,7 @@
 5. docs/three-act-story.md
 6. docs/development-plan.md
 7. docs/factions-and-characters.md
-8. docs/history-hollowborn.md\n9. docs/the-deep.md
+8. docs/history-hollowborn.md\n9. docs/the-deep.md\n10. docs/child-of-the-deep.md\n11. docs/external-fallout-encounters.md
 
 ## Mandatory operating rules
 - Follow docs/naming-registry.md for all current NPC names; obsolete variants are not canonical.\n- Treat CANON.md LOCKED facts as binding. Do not silently substitute earlier story versions or invent a fifth main faction.
@@ -23,3 +23,6 @@
 
 ## First task proposal
 Produce a technical design document for TLM_MQ01 'Six Rounds to Mercy': prerequisite plugin setup; quest stage table; all aliases; scene/dialogue tree; caravan decision state; objectives; Papyrus scripts only where necessary; Creation Kit click-path checklist; test matrix. Start with documentation, then incrementally implement and test in Creation Kit on a machine with Fallout 4 installed.
+
+## New narrative note
+The current creative proposal re-centers the story on the player's concealed family descent from exiles of The Deep. Preserve the player's real childhood; recent Rider memory tampering is targeted. Do not draft detailed protagonist dialogue or implementation of ending branches until docs/child-of-the-deep.md choices are settled.
