@@ -52,3 +52,6 @@ G. **Fractured**: Internal schism and partial evacuation, not automatic total ge
 - No preordained inherited powers. Family records may grant political standing or access evidence, but legitimacy must come through player choices.
 - Major decisions should be actions with gameplay consequences, not single dialogue toggles.
 - Introduce third parties via artifacts, visitors, sparse Brotherhood traces and travel, not a fifth major political system.
+
+## The Open Ledger — motive for exile
+East Galleries reformers demanded publication of real ration, generation and medical numbers and responsibility for decisions. Power-holding officials denounced these reforms as selfishness and concealed a mismanaged electrical/water crisis and politically directed reprisals. This philosophical spine is approved; the detailed tragedy and names are still provisional. See [doctrine-of-the-open-ledger.md](doctrine-of-the-open-ledger.md).
