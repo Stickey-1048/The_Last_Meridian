@@ -20,6 +20,8 @@ param(
     [string[]]$ExtraRoot = @(),
     # A Mod Organizer 2 instance folder (the one holding ModOrganizer.ini).
     [string]$ModOrganizerRoot,
+    # Folder the Creation Kit is installed in, if it is not found through Steam.
+    [string]$CreationKitRoot,
     # Overrides for testing off Windows.
     [string]$SteamRoot,
     [string]$DocumentsRoot,
@@ -51,6 +53,7 @@ $infos = @($installs | ForEach-Object {
         $i
     })
 $user = Get-Fallout4UserState -DocumentsRoot $DocumentsRoot -LocalAppDataRoot $LocalAppDataRoot
+$ckFolders = @(Find-CreationKitFolders -SteamRoot $SteamRoot -Extra (@($CreationKitRoot) + @($installs | ForEach-Object Root) + $ExtraRoot))
 
 $md = New-Object System.Text.StringBuilder
 function Line([string]$s = '') { [void]$md.AppendLine($s) }
@@ -89,6 +92,29 @@ if ($infos.Count -eq 0) {
         Line "| Other plugins in Data | $($i.OtherPlugins.Count) |"
         Line "| Mod manager | $($i.ModManagerHint) |"
         Line "| TheLastMeridian.esp in Data | $(YesNo $i.TlmInstalled) |"
+        Line
+    }
+}
+
+Line '## Creation Kit'
+Line
+if ($ckFolders.Count -eq 0) {
+    Line 'Not found.'
+    Line
+} else {
+    foreach ($ck in $ckFolders) {
+        $ckBase = Join-Path (Join-Path (Join-Path (Join-Path $ck 'Data') 'Scripts') 'Source') 'Base'
+        $ckPsc = 0
+        if (Test-Path -LiteralPath $ckBase) { $ckPsc = @(Get-ChildItem -LiteralPath $ckBase -Filter '*.psc' -File -ErrorAction SilentlyContinue).Count }
+        Line "### ``$ck``"
+        Line
+        Line '| Item | Value |'
+        Line '|---|---|'
+        Line "| CreationKit.exe | $(OrDash (Get-ExeVersion (Join-Path $ck 'CreationKit.exe'))) |"
+        Line "| Papyrus compiler | $(YesNo (Test-Path -LiteralPath (Join-Path (Join-Path $ck 'Papyrus Compiler') 'PapyrusCompiler.exe'))) |"
+        Line "| Base script sources | $ckPsc .psc extracted; Base.zip present: $(YesNo (Test-Path -LiteralPath (Join-Path $ckBase 'Base.zip'))) |"
+        Line "| Game beside it | Fallout4.exe $(OrDash (Get-ExeVersion (Join-Path $ck 'Fallout4.exe'))) |"
+        Line "| Fallout London | $(YesNo (Test-Path -LiteralPath (Join-Path (Join-Path $ck 'Data') 'LondonWorldSpace.esm'))) |"
         Line
     }
 }
@@ -140,9 +166,9 @@ if ($mo) {
     if ($target.Count -eq 1) {
         $notes.Add("Build against the install Mod Organizer manages: ``$($target[0].Root)`` ($($target[0].Store), game $(OrDash $target[0].GameVersion)). Install the test build as a Mod Organizer mod (``Install-Dev.ps1 -ModOrganizerRoot``), never into the game folder.")
         if (-not $target[0].CreationKitVersion) {
-            $ckElsewhere = @($infos | Where-Object { $_.CreationKitVersion -and -not $_.FalloutLondon })
+            $ckElsewhere = @($ckFolders | Where-Object { -not (Test-Path -LiteralPath (Join-Path (Join-Path $_ 'Data') 'LondonWorldSpace.esm')) })
             if ($ckElsewhere.Count -gt 0) {
-                $notes.Add("That install has no CreationKit.exe. The Creation Kit in ``$($ckElsewhere[0].Root)`` supplies the Papyrus compiler and the base script sources (``Build-Scripts.ps1 -CreationKitRoot``).")
+                $notes.Add("That install has no CreationKit.exe. The Creation Kit in ``$($ckElsewhere[0])`` ($(OrDash (Get-ExeVersion (Join-Path $ckElsewhere[0] 'CreationKit.exe')))) supplies the Papyrus compiler and the base script sources (``Build-Scripts.ps1 -CreationKitRoot``).")
             } else {
                 $notes.Add('That install has no CreationKit.exe, and none was found elsewhere. The Creation Kit supplies the Papyrus compiler and the base script sources, so scripts cannot be compiled until it is installed.')
             }

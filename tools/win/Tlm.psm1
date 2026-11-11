@@ -70,6 +70,28 @@ function Get-SteamAppState {
     return $null
 }
 
+function Find-CreationKitFolders {
+    <#
+      Folders that contain CreationKit.exe. Steam installs the Creation Kit
+      into its "Fallout 4" folder whether or not the game is there, so this
+      looks at Steam libraries directly as well as at known installs.
+    #>
+    param([string]$SteamRoot, [string[]]$Extra = @())
+    $found = New-Object System.Collections.Generic.List[string]
+    $candidates = @()
+    foreach ($lib in Get-SteamLibraryRoots -SteamRoot $SteamRoot) {
+        $candidates += (Join-Path (Join-Path (Join-Path $lib 'steamapps') 'common') 'Fallout 4')
+    }
+    $candidates += @($Extra | Where-Object { $_ })
+    foreach ($c in $candidates) {
+        if ((Test-Path -LiteralPath $c) -and (Test-Path -LiteralPath (Join-Path $c 'CreationKit.exe'))) {
+            $p = (Resolve-Path -LiteralPath $c).Path.TrimEnd('\', '/')
+            if (-not ($found -contains $p)) { $found.Add($p) }
+        }
+    }
+    return $found.ToArray()
+}
+
 function Get-RegistryValueSafe {
     param([string]$Path, [string]$Name)
     if (-not $script:OnWindows) { return $null }
@@ -447,4 +469,5 @@ function Find-BaseScriptSource {
 
 Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Get-Fallout4UserState,
     Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration,
-    Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue, Invoke-Native, Get-SteamAppState
+    Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue, Invoke-Native, Get-SteamAppState,
+    Find-CreationKitFolders

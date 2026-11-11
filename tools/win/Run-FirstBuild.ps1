@@ -129,7 +129,7 @@ try {
     $moOk = $ModOrganizerRoot -and (Test-Path -LiteralPath (Join-Path $ModOrganizerRoot 'ModOrganizer.ini'))
     $scanArgs = @{}
     if ($moOk) { $scanArgs['ModOrganizerRoot'] = $ModOrganizerRoot } else { Say "No ModOrganizer.ini in '$ModOrganizerRoot'; scanning without it." }
-    if ($ckFolder) { $scanArgs['ExtraRoot'] = @($ckFolder) }
+    if ($ckFolder) { $scanArgs['CreationKitRoot'] = $ckFolder }
     if ($SteamRoot) { $scanArgs['SteamRoot'] = $SteamRoot }
     if ($DocumentsRoot) { $scanArgs['DocumentsRoot'] = $DocumentsRoot }
     if ($LocalAppDataRoot) { $scanArgs['LocalAppDataRoot'] = $LocalAppDataRoot }
@@ -148,6 +148,8 @@ try {
     elseif (-not $esm -or -not (Test-Path -LiteralPath $esm)) { Result 'Plugin build' 'SKIPPED' "Fallout4.esm not found ($esm)" }
     else {
         Say "Master file: $esm ($([math]::Round((Get-Item -LiteralPath $esm).Length / 1MB)) MB)"
+        Say '  Working. The first run downloads the builder''s libraries and then reads the whole master file;'
+        Say '  this can take several minutes and prints nothing until it is done.'
         $pb = Invoke-Native -Exe 'dotnet' -Arguments @('run', '--project', (Join-Path (Join-Path $repo 'tools') 'PluginBuilder'), '--', '--out', $build, '--fallout4-esm', $esm)
         $pb.Output | Where-Object { $_ -notmatch 'warning (NU|CS)' } | ForEach-Object { Say "  $_" }
         if ($pb.ExitCode -eq 0) {
