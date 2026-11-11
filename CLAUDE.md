@@ -35,3 +35,10 @@ The current creative proposal re-centers the story on the player's concealed fam
 
 ## Coding priorities — post-Open Ledger revision
 Do NOT build late-story factions first. Propose an implementation-ready design for TLM_MQ01 Six Rounds to Mercy and one evidence-based secondary objective with a falsified maintenance or ration ledger. Include Creation Kit record types, quest aliases, objective/stage transitions, dialogue conditions, Papyrus responsibilities, NPC packages, persistence, failure/reload cases and tests. Keep ideological decisions expressed through consequences, not mandatory player monologues. Build no untested claim of a functioning mod.
+
+## Tooling (added 2026-11-11)
+- Run `tools/run_checks.sh` before committing any change to quest rules, scripts or the plugin spec. It needs Python 3 and the .NET 8 SDK, not the game.
+- Change rules in this order: `tools/logic_model/` (model and tests), `scripts/Source/User/TLM/*.psc`, `tools/PluginBuilder/Spec.cs`. The checks fail if they drift apart.
+- A pass means the design is internally consistent. It is not a compile and not a game test; say so when reporting.
+- On a PC with Fallout 4, follow `docs/design/TEST_RUNBOOK.md`. Record what was actually run in `docs/design/BUILD_ENV.md` and `docs/design/VERIFY_LOG.md`.
+- Never copy files into a Fallout London install. `tools/win/Install-Dev.ps1` refuses by default; do not override it without the owner saying so.

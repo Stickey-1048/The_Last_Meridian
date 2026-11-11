@@ -3,6 +3,8 @@
 **Status:** DESIGN DRAFT v0.1, 2026-11-11. Not implemented. Not tested. Awaiting owner review.
 **Parent doc:** [TLM_MQ01 — Six Rounds to Mercy](TLM_MQ01_six-rounds-to-mercy.md). Read its verification-status box first; the same caveats apply. Items marked **[VERIFY]** are unchecked against the Creation Kit.
 
+> **Amended 2026-11-11.** [DESIGN_AMENDMENTS_v0.2.md](DESIGN_AMENDMENTS_v0.2.md) changes parts of this document (stage numbers, outcome rules, script layout) and is what the model, scripts and plugin builder implement. The amendments are proposed, pending owner review. `[VERIFY]` items are resolved or carried forward in [VERIFY_LOG.md](VERIFY_LOG.md).
+
 ---
 
 ## 1. What this is

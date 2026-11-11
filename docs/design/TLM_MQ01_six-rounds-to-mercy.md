@@ -4,6 +4,8 @@
 **Companion doc:** [TLM_SQ01 — Signed Clean](TLM_SQ01_signed-clean.md) (the evidence-based secondary objective).
 **Scope:** Chapter 01 of [three-act-story.md](../three-act-story.md) plus the minimum Mercy Crossing hub needed to finish it.
 
+> **Amended 2026-11-11.** [DESIGN_AMENDMENTS_v0.2.md](DESIGN_AMENDMENTS_v0.2.md) changes parts of this document (stage numbers, outcome rules, script layout) and is what the model, scripts and plugin builder implement. The amendments are proposed, pending owner review. `[VERIFY]` items are resolved or carried forward in [VERIFY_LOG.md](VERIFY_LOG.md).
+
 > ### Verification status — read first
 > - Written without Fallout 4 or the Creation Kit available. **Nothing here has been built, compiled or run.**
 > - Creation Kit (CK) tab names, flag labels, console commands and Papyrus function names come from the author's general knowledge of the Fallout 4 CK, not from this repo's tooling. Items marked **[VERIFY]** must be checked against the installed CK (and the CK wiki) before relying on them.

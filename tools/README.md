@@ -1,0 +1,26 @@
+# Tools
+
+Everything here supports building and checking the mod. None of it is the mod, and none of it has been run against a real Fallout 4 install yet.
+
+| Path | What it is | Runs on | Tested how |
+|---|---|---|---|
+| `logic_model/` | Python model of the MQ01 and SQ01 rules, the test matrix, and an exhaustive state search | anywhere (Python 3.10+) | 83 tests pass; 8 engine-only cases are skipped |
+| `PluginBuilder/` | Generates `TheLastMeridian.esp` data records from `Spec.cs` (.NET 8, Mutagen) | anywhere | writes the file, reads it back, compares with the spec. Not loaded in the Creation Kit or game. The `--fallout4-esm` path has never run |
+| `check_consistency.py` | Lints the Papyrus against documented native signatures; cross-checks scripts, plugin and model | anywhere | 11 kinds of injected fault were each caught |
+| `papyrus_natives.json` | Signatures of the natives the scripts call, from the Creation Kit wiki | data | |
+| `run_checks.sh` | Runs the three checks above | Linux, macOS, Git Bash | |
+| `win/Get-BuildEnv.ps1` | Read-only scan of the PC's Fallout 4 installs; writes `docs/design/BUILD_ENV.md` | Windows | against a stand-in folder tree on Linux PowerShell; registry lookups untested |
+| `win/Build-Scripts.ps1` | Compiles the scripts with the game's Papyrus compiler into `build\Scripts` | Windows | with a stand-in compiler |
+| `win/Install-Dev.ps1`, `win/Uninstall-Dev.ps1` | Copy the build into a game folder and remove it again, with backups and a manifest | Windows | against a stand-in folder tree |
+
+## Everyday use
+
+```bash
+tools/run_checks.sh                 # all checks that need no game
+```
+
+Change a rule in this order: `logic_model/tlm_model.py` and its tests, then `scripts/Source/User/TLM/*.psc`, then `PluginBuilder/Spec.cs`. `run_checks.sh` fails if the three drift apart.
+
+`PluginBuilder/formkeys.txt` maps each EditorID to its FormID. Keep it in git: it is what stops a rebuild from renumbering records.
+
+On the game PC, follow [docs/design/TEST_RUNBOOK.md](../docs/design/TEST_RUNBOOK.md).
