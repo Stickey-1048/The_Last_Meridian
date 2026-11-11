@@ -13,3 +13,8 @@
 11. **Player identity:** Fifth Rider background must be compatible with customizable character creation and player-agency choices.
 12. **Mara Vale:** Define what she knew during player self-erasure and what she did in her morally fraught past.
 13. **Art and asset rights:** Original imagery and models only; don't redistribute proprietary Fallout or other franchise assets without authorization.
+
+14. **Central revision: Deep-born lineage (user proposal):** player is surface-born descendant of East Galleries exiles, not a wholly amnesiac originless outsider. Lock exact family genealogy, aliases and timing after review; see docs/child-of-the-deep.md.
+15. **Deep Ascendancy:** Decide if it is a Free Compact-compatible sovereign industrial coalition, a technocratic alternative to Kess, or an independent override of a main faction route. Preserve four main endgame political powers unless explicitly revised.
+16. **Deep architecture:** previous 60–80 floors proposal rejected as too sprawling; design mixed-use clustered neighborhoods with district and central infrastructure; lock game-buildable count only after design.
+17. **Act II stakes:** Decide whether city's catastrophic failure causes forced evacuation or a smaller manageable emergency, since The Deep now must remain a viable autonomous home in many outcomes.
