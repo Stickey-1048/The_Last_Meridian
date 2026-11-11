@@ -20,7 +20,7 @@ Act III **The Last Meridian**: choose primary allegiance, make conditional allia
 Core spine: 17 main chapters; target 30–45 hours, plus substantial optional content. All targets are aspirational.
 
 ## Exactly four principal endgame factions [LOCKED]
-1. **Free Meridian Compact**: free trade, voluntary association, loose democratic councils, local self-determination; tension between fair rules and merchant monopolies; may cooperate conditionally with several rivals. Leader **Clara Voss**.
+1. **Free Meridian Compact**: free trade, voluntary association, loose democratic councils, local self-determination; tension between fair rules and merchant monopolies; may cooperate conditionally with several rivals. Leader **Clara Whitcomb**.
 2. **People's Commonwealth**: initially survival-driven communal ownership and egalitarian ideals, corrupted across generations into a privileged party hierarchy; possibility of reform, though still an ideologically distinct path. Leader **First Secretary Anton Vey**.
 3. **Iron Dominion**: militarized offshoot of the Wardens; territorial domination, coercive unity, seeks to destroy Commonwealth and Ascendant ruling structures, may subordinate a compliant Compact; internal Old Wardens reformists. Leader **Marshal Gideon Rusk**, hardliner **Colonel Amos Brigg**.
 4. **Ascendant Directorate**: technocratic governance through predictive systems, scientific dominance, infrastructure control; debate between transparency and Convergence. Leader **Dr. Adrian Kess**, field operative **Lucien Grey**, reformer **Dr. Celia Marr**.
@@ -28,10 +28,10 @@ Core spine: 17 main chapters; target 30–45 hours, plus substantial optional co
 These political positions are fictional and should have credible advocates, internal inconsistencies, dissenters, tradeoffs, and actual human costs. Avoid simplistic claims that every adherent of an ideology is malicious.
 
 ## Exactly four ancillary power blocs [LOCKED]
-1. **Oak Ridge Scientific Assembly** — leader **Evelyn Harrow**; Open Science **Naomi Bell**, Human Advancement **Silas Wren**.
+1. **Oak Ridge Scientific Assembly** — leader **Evelyn Harrow**; Open Science **Naomi Bell**, Human Advancement **Julian Wren**.
 2. **Concord of the Hollows** — heterogeneous mountain alliance; diplomacy, sovereignty, watershed rights; council speaker **Seren Ashfall** [PROVISIONAL].
-3. **Ashen Brotherhood** — non-feral ghoul society at Cinder Station; leader **Gideon Ash**, militant internal faction under **Miriam Voss**.
-4. **Stonebound Houses** — mining and engineering culture; Karn Veyr ancestral city; claimant **Dorran Vale**.
+3. **Ashen Brotherhood** — non-feral ghoul society at Cinder Station; leader **Malcolm Ash**, militant internal faction under **Miriam Voss**.
+4. **Stonebound Houses** — mining and engineering culture; Karn Veyr ancestral city; claimant **Dorran Coyle**.
 
 Other organizations (Brass Consortium, Keepers of the Ash, Ridgeborn Covenant, Wardens/Old Wardens, Black Rail Syndicate) exist as internal caucuses or localized groups, NOT additional principal endgame powers.
 
