@@ -9,9 +9,11 @@ Everything here supports building and checking the mod. None of it is the mod, a
 | `check_consistency.py` | Lints the Papyrus against documented native signatures; cross-checks scripts, plugin and model | anywhere | 11 kinds of injected fault were each caught |
 | `papyrus_natives.json` | Signatures of the natives the scripts call, from the Creation Kit wiki | data | |
 | `run_checks.sh` | Runs the three checks above | Linux, macOS, Git Bash | |
-| `win/Get-BuildEnv.ps1` | Read-only scan of the PC's Fallout 4 installs; writes `docs/design/BUILD_ENV.md` | Windows | against a stand-in folder tree on Linux PowerShell; registry lookups untested |
+| `win/Get-BuildEnv.ps1` | Read-only scan of the PC's Fallout 4 installs and a Mod Organizer 2 instance; writes `docs/design/BUILD_ENV.md` | Windows | against stand-in folder trees (Steam layout; GOG + Mod Organizer layout) on Linux PowerShell 7; registry lookups untested |
 | `win/Build-Scripts.ps1` | Compiles the scripts with the game's Papyrus compiler into `build\Scripts` | Windows | with a stand-in compiler |
-| `win/Install-Dev.ps1`, `win/Uninstall-Dev.ps1` | Copy the build into a game folder and remove it again, with backups and a manifest | Windows | against a stand-in folder tree |
+| `win/Install-Dev.ps1`, `win/Uninstall-Dev.ps1` | Install the build as a Mod Organizer mod (or into a game folder) and remove it again, with backups and a manifest | Windows | against stand-in folder trees; the game and Fallout London folders were confirmed untouched in Mod Organizer mode |
+
+The Windows scripts were only ever run under PowerShell 7 (`pwsh`). They avoid 7-only syntax so Windows PowerShell 5.1 should work, but that is untested.
 
 ## Everyday use
 

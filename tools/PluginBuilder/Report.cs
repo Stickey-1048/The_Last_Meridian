@@ -24,7 +24,8 @@ public static class Report
     public sealed record ButtonInfo(string Text, List<string> Conditions);
     public sealed record MessageInfo(string EditorId, string FormKey, string? Title, string? Text, bool Box, List<ButtonInfo> Buttons);
     public sealed record SimpleInfo(string Type, string EditorId, string FormKey, string? Name);
-    public sealed record PluginInfo(string File, List<string> Masters, List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests);
+    public sealed record PluginInfo(string File, List<string> Masters, float HeaderVersion, uint LowestFormId,
+        List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests);
 
     public static PluginInfo Read(string path)
     {
@@ -101,6 +102,8 @@ public static class Report
         return new PluginInfo(
             Path.GetFileName(path),
             mod.ModHeader.MasterReferences.Select(m => m.Master.FileName.String).ToList(),
+            mod.ModHeader.Stats.Version,
+            ids.Keys.Where(k => k.ModKey == mod.ModKey).Select(k => k.ID).DefaultIfEmpty(0u).Min(),
             simple, messages, quests);
     }
 
@@ -128,7 +131,7 @@ public static class Report
     public static string ToText(PluginInfo info, IEnumerable<string> pending)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"{info.File}  (masters: {string.Join(", ", info.Masters)})");
+        sb.AppendLine($"{info.File}  (masters: {string.Join(", ", info.Masters)}; header version {info.HeaderVersion:0.00}; lowest FormID 0x{info.LowestFormId:X})");
         sb.AppendLine();
         foreach (var grp in info.Records.GroupBy(r => r.Type))
         {

@@ -4,17 +4,30 @@
 
 Run the commands in PowerShell from the repository folder on the PC that has Fallout 4 and the Creation Kit.
 
-## 0. Before anything else
+## 0. The setup, as reported by the owner on 2026-11-11
 
-- Use the **Steam** copy. The Creation Kit installs into its folder.
-- Leave the GOG copy alone, especially if Fallout London is on it. The install script refuses to copy into a Fallout London install.
-- Settings, saves and the active plugin list appear to be **shared** by every Fallout 4 install on the PC. Step 1 reports what is there. Decide how to isolate testing (a mod manager profile is the usual way) before enabling the plugin in step 5.
+Not yet confirmed by the scan in step 1.
+
+| What | Where |
+|---|---|
+| Game in use | GOG Fallout 4 GOTY: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout 4 GOTY` |
+| Mod Organizer 2 instance | `C:\Modlists\TMR` (its `ModOrganizer.ini` points at the GOG install) |
+| Fallout London | separate install: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout London\Fallout London` |
+| Steam copy | not installed (`F:\SteamLibrary` has no Fallout 4; the Steam registry entry is stale) |
+
+What follows from that:
+
+- **Everything goes through Mod Organizer.** The test build is installed as a mod folder under `C:\Modlists\TMR\mods`, never into the game folder. Tools that must see it (the game, the Creation Kit) are started from Mod Organizer.
+- **Test in a copy of the profile.** Copy the current Mod Organizer profile, select the copy, and enable the test mod only there. The existing mod list stays as it is.
+- **Fallout London is not used and not touched.** The install script refuses it.
+- **The Creation Kit is the open question.** It supplies the Papyrus compiler and the game's script sources, and it is distributed through Steam. Step 1 reports whether `CreationKit.exe` is in the GOG folder. If it is not, nothing can be compiled until it is, and how to get it next to a GOG install has to be worked out on the PC.
+- **Game build.** A curated mod list often pins an older game build. The plugin is written with header version 0.95 and FormIDs from 0x800, which every build reads, but the Creation Kit build has to suit the game build. Step 1 records both.
 - Use a **disposable save**. Quest and alias changes orphan script data in old saves.
 
 ## 1. Record the environment (read-only)
 
 ```powershell
-pwsh tools/win/Get-BuildEnv.ps1
+pwsh tools/win/Get-BuildEnv.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
 ```
 
 Writes `docs/design/BUILD_ENV.md`: game and Creation Kit versions, install paths, compiler and script sources, DLC, Fallout London, loose-file and logging settings. Commit it.
@@ -22,7 +35,7 @@ Writes `docs/design/BUILD_ENV.md`: game and Creation Kit versions, install paths
 ## 2. Build the plugin against the real master
 
 ```powershell
-dotnet run --project tools/PluginBuilder -- --out build --fallout4-esm "<game>\Data\Fallout4.esm"
+dotnet run --project tools/PluginBuilder -- --out build --fallout4-esm "C:\Program Files (x86)\GOG Galaxy\Games\Fallout 4 GOTY\Data\Fallout4.esm"
 ```
 
 With `Fallout4.esm` supplied, vanilla records (`PlayerRef`, `Caps001`) are resolved by EditorID. **This code path has never run.** Read `build\TheLastMeridian.report.txt`; the "Not wired yet" list should shrink by two.
@@ -30,14 +43,16 @@ With `Fallout4.esm` supplied, vanilla records (`PlayerRef`, `Caps001`) are resol
 ## 3. Compile the scripts
 
 ```powershell
-pwsh tools/win/Build-Scripts.ps1              # add -ExtractBase if the base sources are still zipped
+pwsh tools/win/Build-Scripts.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
 ```
+
+The script looks for the game's script sources in the game's `Data\Scripts\Source\Base` and in any Mod Organizer mod that carries them. Add `-ExtractBase` if they are still zipped in the game folder, or `-BaseSource <folder>` and `-CompilerPath <exe>` if they are somewhere else.
 
 Output goes to `build\Scripts\TLM\*.pex`, not into the game. The first real compile will probably find errors the documentation-level lint could not. Fix them in `scripts/Source/User/TLM/`, re-run `tools/run_checks.sh` (or `python tools/check_consistency.py`), and compile again.
 
 ## 4. Open the plugin in the Creation Kit
 
-Copy `build\TheLastMeridian.esp` into `Data\` (step 5 does this), start the Creation Kit, load it as the active file, and check:
+Install the build as a Mod Organizer mod (step 5), enable it in the test profile, start the Creation Kit **from Mod Organizer**, load `TheLastMeridian.esp` as the active file, and check:
 
 - it loads with no errors beyond the usual vanilla warnings;
 - quests `TLM_Core`, `TLM_MQ01`, `TLM_SQ01` show the stages, objectives and aliases in `tools/PluginBuilder/last-build.report.txt`;
@@ -48,11 +63,11 @@ If the Creation Kit rejects or rewrites anything, that is a finding: record it i
 ## 5. Install for testing
 
 ```powershell
-pwsh tools/win/Install-Dev.ps1 -WhatIf        # shows what would be copied
-pwsh tools/win/Install-Dev.ps1
+pwsh tools/win/Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR' -WhatIf     # shows what would be copied
+pwsh tools/win/Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
 ```
 
-Then enable `TheLastMeridian.esp` yourself. The script never edits the plugin list. `pwsh tools/win/Uninstall-Dev.ps1` removes exactly what was copied.
+This creates `C:\Modlists\TMR\mods\TheLastMeridian-Dev`. Then, in Mod Organizer, refresh, tick the mod in the left pane and `TheLastMeridian.esp` in the right pane, in the test profile only. The script never edits profiles, the mod list or the plugin list. `pwsh tools/win/Uninstall-Dev.ps1` removes exactly what was copied, and the mod folder with it.
 
 ## 6. First in-game checks (before any test cell exists)
 

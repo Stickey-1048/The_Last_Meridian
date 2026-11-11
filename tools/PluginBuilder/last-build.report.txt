@@ -1,4 +1,4 @@
-TheLastMeridian.esp  (masters: Fallout4.esm)
+TheLastMeridian.esp  (masters: Fallout4.esm; header version 0.95; lowest FormID 0x800)
 
 Global (18)
   000800  TLM_G_DataVersion

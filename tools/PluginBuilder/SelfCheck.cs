@@ -14,6 +14,10 @@ public static class SelfCheck
 
         Expect(info.Masters.SequenceEqual(new[] { "Fallout4.esm" }), $"masters are [{string.Join(", ", info.Masters)}], expected exactly Fallout4.esm");
 
+        // Records below 0x800 are only valid for the 2024 "next-gen" game and later.
+        Expect(info.LowestFormId >= 0x800, $"lowest FormID is 0x{info.LowestFormId:X}; must be 0x800 or above to load on every game build");
+        Expect(info.HeaderVersion is > 0.94f and < 0.96f or > 0.99f and < 1.01f, $"unexpected header version {info.HeaderVersion}");
+
         var ids = info.Records.Select(r => r.EditorId)
             .Concat(info.Messages.Select(m => m.EditorId))
             .Concat(info.Quests.Select(q => q.EditorId)).ToList();

@@ -342,9 +342,18 @@ public sealed class Builder
 
     // ------------------------------------------------------------ factory
 
-    public static (Fallout4Mod mod, Builder builder) Create(string formKeyFile, string? fallout4Esm)
+    /// <summary>
+    /// Plugin header version. 0.95 is what every Fallout 4 build before the
+    /// 2024 "next-gen" update wrote and what all builds read; 1.0 is what the
+    /// next-gen Creation Kit writes. Record FormIDs start at 0x800 either way,
+    /// so the file stays valid for both.
+    /// </summary>
+    public const float DefaultHeaderVersion = 0.95f;
+
+    public static (Fallout4Mod mod, Builder builder) Create(string formKeyFile, string? fallout4Esm, float headerVersion = DefaultHeaderVersion)
     {
         var mod = new Fallout4Mod(ModKey.FromNameAndExtension(Spec.PluginName), Fallout4Release.Fallout4);
+        mod.ModHeader.Stats.Version = headerVersion;
         ILinkCache? vanilla = null;
         if (fallout4Esm != null)
         {

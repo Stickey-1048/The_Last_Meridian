@@ -12,8 +12,13 @@
   Every file it writes is recorded in build\install-manifest.json so
   Uninstall-Dev.ps1 can remove exactly those files.
 
-  It does NOT enable the plugin (plugins.txt is left alone) and refuses to
-  touch a Fallout London install unless -AllowFalloutLondon is given.
+  With -ModOrganizerRoot the files go into a Mod Organizer mod folder instead
+  (<mods>\TheLastMeridian-Dev\...), and the game folder is not touched at all.
+  This is the right mode whenever the game is run through Mod Organizer.
+
+  It does NOT enable the plugin or the mod (plugins.txt, modlist.txt and the
+  profiles are left alone) and refuses to touch a Fallout London install
+  unless -AllowFalloutLondon is given.
   Use -WhatIf to see what would be copied without copying anything.
 
   Status: tested against a stand-in folder tree, not yet on a real install.
@@ -21,6 +26,9 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [string]$GameRoot,
+    # A Mod Organizer 2 instance folder. Installs as a mod there instead of into the game.
+    [string]$ModOrganizerRoot,
+    [string]$ModName = 'TheLastMeridian-Dev',
     [switch]$AllowFalloutLondon,
     [string]$SteamRoot
 )
@@ -30,15 +38,27 @@ $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
-$root = Select-DevInstall -GameRoot $GameRoot -SteamRoot $SteamRoot
-$data = Join-Path $root 'Data'
-if ((Test-Path -LiteralPath (Join-Path $data 'LondonWorldSpace.esm')) -and -not $AllowFalloutLondon) {
-    throw "$root is a Fallout London install. Refusing to copy into it. Pass -AllowFalloutLondon only if you mean it."
+$gameRootResolved = Select-DevInstall -GameRoot $GameRoot -SteamRoot $SteamRoot -ModOrganizerRoot $ModOrganizerRoot
+$gameData = Join-Path $gameRootResolved 'Data'
+if ((Test-Path -LiteralPath (Join-Path $gameData 'LondonWorldSpace.esm')) -and -not $AllowFalloutLondon) {
+    throw "$gameRootResolved is a Fallout London install. Refusing to install for it. Pass -AllowFalloutLondon only if you mean it."
+}
+$modFolder = $null
+if ($ModOrganizerRoot) {
+    $mo = Get-ModOrganizerInfo -Root $ModOrganizerRoot
+    if ($ModName -notmatch '^[\w .\-]+$') { throw "Unusable mod name: $ModName" }
+    $modFolder = Join-Path $mo.ModsDirectory $ModName
+    # In a Mod Organizer mod, the folder itself stands in for the game's Data folder.
+    $root = $modFolder
+    $data = $modFolder
+} else {
+    $root = $gameRootResolved
+    $data = $gameData
 }
 
 $build = Join-Path $repo 'build'
 $plugin = Join-Path $build 'TheLastMeridian.esp'
-if (-not (Test-Path -LiteralPath $plugin)) { throw "Missing $plugin. Run: dotnet run --project tools/PluginBuilder -- --fallout4-esm `"$(Join-Path $data 'Fallout4.esm')`"" }
+if (-not (Test-Path -LiteralPath $plugin)) { throw "Missing $plugin. Run: dotnet run --project tools/PluginBuilder -- --fallout4-esm `"$(Join-Path $gameData 'Fallout4.esm')`"" }
 $pexDir = Join-Path (Join-Path $build 'Scripts') 'TLM'
 $pex = @()
 if (Test-Path -LiteralPath $pexDir) { $pex = @(Get-ChildItem -LiteralPath $pexDir -Filter '*.pex' -File) }
@@ -80,7 +100,7 @@ if ($written.Count -gt 0) {
         $old = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
         if ($old.Root -eq $root) { $all = @(@($old.Files) + $all | Sort-Object -Unique) }
     }
-    [pscustomobject]@{ Root = $root; Installed = (Get-Date -Format 'o'); Files = $all } |
+    [pscustomobject]@{ Root = $root; ModFolder = $modFolder; Installed = (Get-Date -Format 'o'); Files = $all } |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $manifestPath -Encoding utf8
 }
 
@@ -89,8 +109,14 @@ Write-Host "Files copied   : $($written.Count) of $($plan.Count)   (backed up be
 if ($written.Count -gt 0) {
     Write-Host ''
     Write-Host 'The plugin is NOT enabled. To test:'
-    Write-Host '  1. Enable TheLastMeridian.esp in your mod manager or the in-game Mods menu.'
-    Write-Host '     (That setting is shared by every Fallout 4 install on this PC.)'
+    if ($modFolder) {
+        Write-Host '  1. In Mod Organizer, make a copy of your profile for testing and select it.'
+        Write-Host "     Refresh (F5), tick '$ModName' in the left pane and TheLastMeridian.esp in the right pane."
+        Write-Host '     Start the game from Mod Organizer, the same way you normally do.'
+    } else {
+        Write-Host '  1. Enable TheLastMeridian.esp in your mod manager or the in-game Mods menu.'
+        Write-Host '     (That setting is shared by every Fallout 4 install on this PC.)'
+    }
     Write-Host '  2. Load a disposable save, open the console and run:  cqf TLM_Core DevStart'
     Write-Host '  3. Follow docs/design/TEST_RUNBOOK.md.'
     Write-Host 'To remove everything this script copied:  pwsh tools/win/Uninstall-Dev.ps1'

@@ -21,6 +21,12 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [string]$GameRoot,
+    # A Mod Organizer 2 instance; its game path is used and its mods are searched for base sources.
+    [string]$ModOrganizerRoot,
+    # Folder holding the game's own .psc sources, if not in the usual place.
+    [string]$BaseSource,
+    # Full path to PapyrusCompiler.exe, if not under "<game>\Papyrus Compiler".
+    [string]$CompilerPath,
     [switch]$ExtractBase,
     [switch]$Release,
     [string]$SteamRoot
@@ -31,23 +37,26 @@ $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
-$root = Select-DevInstall -GameRoot $GameRoot -SteamRoot $SteamRoot
-$compiler = Join-Path (Join-Path $root 'Papyrus Compiler') 'PapyrusCompiler.exe'
-if (-not (Test-Path -LiteralPath $compiler)) { throw "Papyrus compiler not found: $compiler (install the Creation Kit)" }
+$root = Select-DevInstall -GameRoot $GameRoot -SteamRoot $SteamRoot -ModOrganizerRoot $ModOrganizerRoot
+$compiler = if ($CompilerPath) { $CompilerPath } else { Join-Path (Join-Path $root 'Papyrus Compiler') 'PapyrusCompiler.exe' }
+if (-not (Test-Path -LiteralPath $compiler)) {
+    throw "Papyrus compiler not found: $compiler. It is installed with the Creation Kit. Pass -CompilerPath if it is somewhere else."
+}
 
 $gameSource = Join-Path (Join-Path (Join-Path $root 'Data') 'Scripts') 'Source'
-$base = Join-Path $gameSource 'Base'
-$zip = Join-Path $base 'Base.zip'
-$havePsc = (Test-Path -LiteralPath $base) -and @(Get-ChildItem -LiteralPath $base -Filter '*.psc' -File).Count -gt 0
-if (-not $havePsc) {
+$gameBase = Join-Path $gameSource 'Base'
+$zip = Join-Path $gameBase 'Base.zip'
+$base = Find-BaseScriptSource -Explicit $BaseSource -GameRoot $root -ModOrganizerRoot $ModOrganizerRoot
+if (-not $base) {
     if ($ExtractBase -and (Test-Path -LiteralPath $zip)) {
-        if ($PSCmdlet.ShouldProcess($base, 'Extract Base.zip (the game''s script sources) in place')) {
-            Expand-Archive -LiteralPath $zip -DestinationPath $base -Force
+        if ($PSCmdlet.ShouldProcess($gameBase, 'Extract Base.zip (the game''s script sources) in place')) {
+            Expand-Archive -LiteralPath $zip -DestinationPath $gameBase -Force
         }
+        $base = $gameBase
     } elseif (Test-Path -LiteralPath $zip) {
-        throw "Base script sources are still zipped at $zip. Re-run with -ExtractBase to extract them in place."
+        throw "Base script sources are still zipped at $zip. Re-run with -ExtractBase to extract them in place, or pass -BaseSource."
     } else {
-        throw "Base script sources not found under $base. They ship with the Creation Kit."
+        throw "Base script sources not found (looked in $gameBase$(if ($ModOrganizerRoot) { ' and the Mod Organizer mods' })). They ship with the Creation Kit. Pass -BaseSource if they are somewhere else."
     }
 }
 
@@ -79,6 +88,7 @@ $ppjPath = Join-Path (Join-Path $repo 'build') 'TLM.ppj'
 Set-Content -LiteralPath $ppjPath -Value $ppj.ToString() -Encoding utf8
 
 Write-Host "Compiler : $compiler"
+Write-Host "Base src : $base"
 Write-Host "Project  : $ppjPath ($($scripts.Count) scripts)"
 $log = Join-Path (Join-Path $repo 'build') 'papyrus-compile.log'
 & $compiler $ppjPath 2>&1 | Tee-Object -FilePath $log

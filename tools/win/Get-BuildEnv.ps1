@@ -18,6 +18,8 @@
 param(
     # Extra folders containing Fallout4.exe to include.
     [string[]]$ExtraRoot = @(),
+    # A Mod Organizer 2 instance folder (the one holding ModOrganizer.ini).
+    [string]$ModOrganizerRoot,
     # Overrides for testing off Windows.
     [string]$SteamRoot,
     [string]$DocumentsRoot,
@@ -35,6 +37,12 @@ if (-not $OutFile) { $OutFile = Join-Path (Join-Path (Join-Path $repo 'docs') 'd
 function YesNo([bool]$b) { if ($b) { 'yes' } else { 'no' } }
 function OrDash($v) { if ($null -eq $v -or "$v" -eq '') { '-' } else { "$v" } }
 
+$mo = $null
+if ($ModOrganizerRoot) {
+    $mo = Get-ModOrganizerInfo -Root $ModOrganizerRoot
+    if (-not $mo) { throw "No ModOrganizer.ini in $ModOrganizerRoot" }
+    if ($mo.GamePath -and ($ExtraRoot -notcontains $mo.GamePath)) { $ExtraRoot += $mo.GamePath }
+}
 $installs = @(Find-Fallout4Installs -SteamRoot $SteamRoot -ExtraRoot $ExtraRoot)
 $infos = @($installs | ForEach-Object {
         $i = Get-Fallout4InstallInfo -Root $_.Root
@@ -85,9 +93,30 @@ if ($infos.Count -eq 0) {
     }
 }
 
+if ($mo) {
+    Line '## Mod Organizer 2'
+    Line
+    Line '| Item | Value |'
+    Line '|---|---|'
+    Line "| Instance | ``$($mo.Root)`` (version $(OrDash $mo.Version)) |"
+    Line "| Manages | $(OrDash $mo.GameName) at ``$(OrDash $mo.GamePath)`` |"
+    Line "| Mods folder | ``$($mo.ModsDirectory)`` ($($mo.ModCount) mod folders) |"
+    Line "| Selected profile | $(OrDash $mo.SelectedProfile) |"
+    Line "| Registered tools | $(if ($mo.Tools.Count) { $mo.Tools -join ', ' } else { 'none of interest' }) |"
+    Line "| Base script sources in a mod | $(if ($mo.BaseSourceDirs.Count) { ($mo.BaseSourceDirs | ForEach-Object { '``' + $_ + '``' }) -join ', ' } else { 'none found' }) |"
+    Line "| TheLastMeridian-Dev mod folder | $(YesNo $mo.TlmModInstalled) |"
+    Line
+    Line '| Profile | Selected | Mods on | Plugins on | Own settings | Own saves | Loose files | Papyrus log | TLM mod on | TLM plugin on |'
+    Line '|---|---|---|---|---|---|---|---|---|---|'
+    foreach ($p in $mo.Profiles) {
+        Line "| $($p.Name) | $(YesNo $p.Selected) | $($p.ModsEnabled) | $($p.PluginsActive) | $(OrDash $p.LocalSettings) | $(OrDash $p.LocalSaves) | $(OrDash $p.InvalidateOlderFiles) | $(OrDash $p.PapyrusLogging) | $(YesNo $p.TlmModEnabled) | $(YesNo $p.TlmPluginActive) |"
+    }
+    Line
+}
+
 Line '## Shared settings, saves and load order'
 Line
-Line 'These live outside the game folder. To our knowledge every Fallout 4 install on the machine (Steam and GOG alike) reads the same ones, so a plugin enabled for one install is enabled for the other.'
+Line 'These live outside the game folder. To our knowledge every Fallout 4 install on the machine (Steam and GOG alike) reads the same ones, so a plugin enabled for one install is enabled for the other. A Mod Organizer profile with its own settings overrides them while the game is started through Mod Organizer.'
 Line
 Line '| Item | Value |'
 Line '|---|---|'
@@ -106,7 +135,18 @@ Line '## What this means for the build'
 Line
 $notes = New-Object System.Collections.Generic.List[string]
 $dev = @($infos | Where-Object { $_.CreationKitVersion -and -not $_.FalloutLondon })
-if ($infos.Count -eq 0) {
+if ($mo) {
+    $target = @($infos | Where-Object { $_.Root.TrimEnd('\', '/') -ieq "$($mo.GamePath)".TrimEnd('\', '/') })
+    if ($target.Count -eq 1) {
+        $notes.Add("Build against the install Mod Organizer manages: ``$($target[0].Root)`` ($($target[0].Store), game $(OrDash $target[0].GameVersion)). Install the test build as a Mod Organizer mod (``Install-Dev.ps1 -ModOrganizerRoot``), never into the game folder.")
+        if (-not $target[0].CreationKitVersion) { $notes.Add('That install has no CreationKit.exe. The Creation Kit supplies the Papyrus compiler and the base script sources, so scripts cannot be compiled until it is installed.') }
+    } else {
+        $notes.Add("Mod Organizer points at ``$($mo.GamePath)``, but no Fallout4.exe was found there.")
+    }
+    $notes.Add('Use a separate Mod Organizer profile for testing (copy the current one) so the existing mod list is untouched.')
+    $sel = @($mo.Profiles | Where-Object Selected)
+    if ($sel.Count -eq 1 -and "$($sel[0].LocalSettings)" -ine 'true') { $notes.Add("Profile '$($sel[0].Name)' does not use its own settings, so the shared Fallout4Custom.ini below applies to it.") }
+} elseif ($infos.Count -eq 0) {
     $notes.Add('No install found, so nothing can be built or tested yet.')
 } elseif ($dev.Count -eq 1) {
     $notes.Add("Build against: ``$($dev[0].Root)`` ($($dev[0].Store), game $($dev[0].GameVersion), Creation Kit $($dev[0].CreationKitVersion)).")
@@ -122,11 +162,25 @@ foreach ($i in $infos) {
         if ($i.BaseSourceZip) { $notes.Add("``$($i.Root)``: base script sources are still zipped. Scripts cannot compile until ``Data\Scripts\Source\Base\Base.zip`` is extracted in place (``Build-Scripts.ps1 -ExtractBase`` does it).") }
         else { $notes.Add("``$($i.Root)``: base script sources not found under ``Data\Scripts\Source\Base``. Scripts cannot compile without them.") }
     }
-    if ($i.F4SEVersion) { $notes.Add("``$($i.Root)``: F4SE is installed. The slice must not depend on it; test launches should use Fallout4.exe directly.") }
+    if ($i.F4SEVersion) { $notes.Add("``$($i.Root)``: F4SE is installed. Starting the game through it is fine, but the project's own scripts must not call F4SE functions.") }
 }
-if ($infos.Count -gt 1) { $notes.Add('More than one install shares the settings and load order above. Enabling the test plugin affects all of them. A mod manager profile or a separate test profile is the clean way to isolate it.') }
-if ($user.InvalidateOlderFiles -ne '1') { $notes.Add('Loose files are not enabled in Fallout4Custom.ini, so compiled scripts placed in Data\Scripts will not load. Needs `[Archive] bInvalidateOlderFiles=1` and `sResourceDataDirsFinal=` (empty).') }
-if ($user.PapyrusLogging -ne '1') { $notes.Add('Papyrus logging is off. Turn it on for testing (`[Papyrus] bEnableLogging=1`, `bEnableTrace=1`, `bLoadDebugInformation=1`).') }
+# Which settings file actually applies: a Mod Organizer profile with its own
+# settings, or the shared one in Documents.
+$iniOwner = 'the shared Fallout4Custom.ini'
+$loose = $user.InvalidateOlderFiles
+$logging = $user.PapyrusLogging
+if ($mo) {
+    $sel = @($mo.Profiles | Where-Object Selected)
+    if ($sel.Count -eq 1 -and "$($sel[0].LocalSettings)" -ieq 'true') {
+        $iniOwner = "Mod Organizer profile '$($sel[0].Name)' (fallout4custom.ini in the profile folder)"
+        $loose = $sel[0].InvalidateOlderFiles
+        $logging = $sel[0].PapyrusLogging
+    }
+} elseif ($infos.Count -gt 1) {
+    $notes.Add('More than one install shares the settings and load order above. Enabling the test plugin affects all of them. A mod manager profile is the clean way to isolate it.')
+}
+if ($loose -ne '1') { $notes.Add("Loose files are not enabled in $iniOwner, so compiled scripts will not load. Needs ``[Archive] bInvalidateOlderFiles=1`` and ``sResourceDataDirsFinal=`` (empty).") }
+if ($logging -ne '1') { $notes.Add("Papyrus logging is off in $iniOwner. Turn it on for testing (``[Papyrus] bEnableLogging=1``, ``bEnableTrace=1``, ``bLoadDebugInformation=1``).") }
 foreach ($n in $notes) { Line "- $n" }
 Line
 

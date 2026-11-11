@@ -3,11 +3,15 @@
 # Everything in this module only READS the machine. Nothing here changes the
 # game folder, the registry, saves or load order.
 #
-# Status: the discovery logic was exercised on Linux PowerShell against a fake
-# folder tree. It has NOT been run on a real Windows install yet; registry
-# lookups in particular are untested.
+# Status: the discovery logic was exercised on Linux PowerShell 7 against fake
+# folder trees (a Steam layout, and a GOG + Mod Organizer 2 layout). It has NOT
+# been run on a real Windows install yet. Registry lookups are untested, and so
+# is Windows PowerShell 5.1 (the scripts avoid 7-only syntax, but only 7 was run).
 
 Set-StrictMode -Version Latest
+
+# Windows PowerShell 5.1 has no $IsWindows variable; it only runs on Windows.
+$script:OnWindows = if ($PSVersionTable.PSEdition -eq 'Desktop') { $true } else { [bool](Get-Variable -Name IsWindows -ValueOnly -ErrorAction SilentlyContinue) }
 
 $script:Fallout4SteamAppId = '377160'
 $script:DlcMasters = @(
@@ -17,7 +21,7 @@ $script:DlcMasters = @(
 
 function Get-RegistryValueSafe {
     param([string]$Path, [string]$Name)
-    if (-not $IsWindows) { return $null }
+    if (-not $script:OnWindows) { return $null }
     try {
         $item = Get-ItemProperty -Path $Path -ErrorAction Stop
         if ($item.PSObject.Properties.Name -contains $Name) { return $item.$Name }
@@ -77,7 +81,7 @@ function Find-Fallout4Installs {
         Add-Install (Join-Path (Join-Path $apps 'common') $dir) 'Steam' "Steam library $lib"
     }
 
-    if ($IsWindows) {
+    if ($script:OnWindows) {
         foreach ($base in 'HKLM:\SOFTWARE\WOW6432Node\GOG.com\Games', 'HKLM:\SOFTWARE\GOG.com\Games') {
             if (Test-Path $base) {
                 foreach ($k in Get-ChildItem $base -ErrorAction SilentlyContinue) {
@@ -245,7 +249,13 @@ function Select-DevInstall {
       install that has the Creation Kit and is not a Fallout London install.
       Throws with an explanation when the choice is not obvious.
     #>
-    param([string]$GameRoot, [string]$SteamRoot)
+    param([string]$GameRoot, [string]$SteamRoot, [string]$ModOrganizerRoot)
+    if (-not $GameRoot -and $ModOrganizerRoot) {
+        $mo = Get-ModOrganizerInfo -Root $ModOrganizerRoot
+        if (-not $mo) { throw "No ModOrganizer.ini in $ModOrganizerRoot" }
+        if (-not $mo.GamePath) { throw "ModOrganizer.ini in $ModOrganizerRoot has no gamePath" }
+        $GameRoot = $mo.GamePath
+    }
     if ($GameRoot) {
         if (-not (Test-Path -LiteralPath (Join-Path $GameRoot 'Fallout4.exe'))) { throw "No Fallout4.exe in $GameRoot" }
         return (Resolve-Path -LiteralPath $GameRoot).Path
@@ -261,5 +271,129 @@ function Select-DevInstall {
     throw "Cannot choose an install automatically. Pass -GameRoot. Found:`n$list"
 }
 
+function ConvertFrom-MoValue {
+    <# Mod Organizer writes paths as @ByteArray(C:\\Games\\Fallout 4) or with forward slashes. #>
+    param([string]$Value)
+    if ($null -eq $Value) { return $null }
+    $v = $Value.Trim()
+    if ($v -match '^@ByteArray\((.*)\)$') { $v = $Matches[1] }
+    $v = $v -replace '\\\\', '\'
+    return $v.Trim('"')
+}
+
+function Resolve-IfExists {
+    param([string]$Path)
+    if ($Path -and (Test-Path -LiteralPath $Path)) { return (Resolve-Path -LiteralPath $Path).Path.TrimEnd('\', '/') }
+    return $Path
+}
+
+function Get-ModOrganizerInfo {
+    <#
+      Describes a Mod Organizer 2 instance (the folder holding ModOrganizer.ini).
+      Read-only. Returns $null if the folder is not an instance.
+    #>
+    param([Parameter(Mandatory)][string]$Root)
+    $ini = Join-Path $Root 'ModOrganizer.ini'
+    if (-not (Test-Path -LiteralPath $ini)) { return $null }
+    $rootPath = (Resolve-Path -LiteralPath $Root).Path
+
+    $base = ConvertFrom-MoValue (Get-IniValue $ini 'Settings' 'base_directory')
+    if (-not $base) { $base = $rootPath }
+    function Resolve-MoDir([string]$key, [string]$default) {
+        $v = ConvertFrom-MoValue (Get-IniValue $ini 'Settings' $key)
+        if (-not $v) { return (Join-Path $base $default) }
+        return $v.Replace('%BASE_DIR%', $base)
+    }
+    $mods = Resolve-MoDir 'mod_directory' 'mods'
+    $profilesDir = Resolve-MoDir 'profiles_directory' 'profiles'
+    $selected = ConvertFrom-MoValue (Get-IniValue $ini 'General' 'selected_profile')
+
+    $profiles = @()
+    if (Test-Path -LiteralPath $profilesDir) {
+        foreach ($d in Get-ChildItem -LiteralPath $profilesDir -Directory -ErrorAction SilentlyContinue) {
+            $modlist = Join-Path $d.FullName 'modlist.txt'
+            $plugins = Join-Path $d.FullName 'plugins.txt'
+            $settings = Join-Path $d.FullName 'settings.ini'
+            $custom = Join-Path $d.FullName 'fallout4custom.ini'
+            $modLines = @(); if (Test-Path -LiteralPath $modlist) { $modLines = @(Get-Content -LiteralPath $modlist) }
+            $plugLines = @(); if (Test-Path -LiteralPath $plugins) { $plugLines = @(Get-Content -LiteralPath $plugins) }
+            $profiles += [pscustomobject]@{
+                Name                 = $d.Name
+                Selected             = ($d.Name -eq $selected)
+                ModsEnabled          = @($modLines | Where-Object { $_.StartsWith('+') }).Count
+                PluginsActive        = @($plugLines | Where-Object { $_.StartsWith('*') }).Count
+                LocalSettings        = (Get-IniValue $settings 'General' 'LocalSettings')
+                LocalSaves           = (Get-IniValue $settings 'General' 'LocalSaves')
+                CustomIniExists      = Test-Path -LiteralPath $custom
+                InvalidateOlderFiles = Get-IniValue $custom 'Archive' 'bInvalidateOlderFiles'
+                PapyrusLogging       = Get-IniValue $custom 'Papyrus' 'bEnableLogging'
+                TlmModEnabled        = [bool](@($modLines | Where-Object { $_ -match '^\+TheLastMeridian' }).Count)
+                TlmPluginActive      = [bool](@($plugLines | Where-Object { $_ -match '^\*TheLastMeridian\.esp' }).Count)
+            }
+        }
+    }
+
+    # Tools registered in Mod Organizer (they must be started through it to see the mods).
+    $tools = @()
+    $inExe = $false
+    foreach ($line in Get-Content -LiteralPath $ini) {
+        $t = $line.Trim()
+        if ($t -match '^\[(.+)\]$') { $inExe = ($Matches[1] -ieq 'customExecutables'); continue }
+        if ($inExe -and $t -match '^\d+\\binary=(.*)$') {
+            $bin = ConvertFrom-MoValue $Matches[1]
+            if ($bin -match '(CreationKit|f4se_loader|Fallout4Launcher|Fallout4|FO4Edit|xEdit)[^\\/]*\.exe$') { $tools += (Split-Path -Leaf $bin) }
+        }
+    }
+
+    $modCount = 0
+    if (Test-Path -LiteralPath $mods) { $modCount = @(Get-ChildItem -LiteralPath $mods -Directory -ErrorAction SilentlyContinue).Count }
+    $baseSourceMods = @()
+    if (Test-Path -LiteralPath $mods) {
+        foreach ($d in Get-ChildItem -LiteralPath $mods -Directory -ErrorAction SilentlyContinue) {
+            $q = Join-Path (Join-Path (Join-Path (Join-Path $d.FullName 'Scripts') 'Source') 'Base') 'Quest.psc'
+            if (Test-Path -LiteralPath $q) { $baseSourceMods += (Split-Path -Parent $q) }
+        }
+    }
+
+    [pscustomobject]@{
+        Root             = $rootPath
+        Version          = ConvertFrom-MoValue (Get-IniValue $ini 'General' 'version')
+        GameName         = ConvertFrom-MoValue (Get-IniValue $ini 'General' 'gameName')
+        GamePath         = Resolve-IfExists (ConvertFrom-MoValue (Get-IniValue $ini 'General' 'gamePath'))
+        SelectedProfile  = $selected
+        ModsDirectory    = $mods
+        ProfilesDirectory = $profilesDir
+        ModCount         = $modCount
+        Profiles         = $profiles
+        Tools            = @($tools | Sort-Object -Unique)
+        BaseSourceDirs   = $baseSourceMods
+        TlmModFolder     = Join-Path $mods 'TheLastMeridian-Dev'
+        TlmModInstalled  = Test-Path -LiteralPath (Join-Path $mods 'TheLastMeridian-Dev')
+    }
+}
+
+function Find-BaseScriptSource {
+    <#
+      Where the game's own Papyrus sources are: an explicit folder, the game's
+      Data\Scripts\Source\Base, or a Mod Organizer mod that carries them.
+      Returns $null if none has any .psc in it.
+    #>
+    param([string]$Explicit, [string]$GameRoot, [string]$ModOrganizerRoot)
+    $candidates = @()
+    if ($Explicit) { $candidates += $Explicit }
+    if ($GameRoot) { $candidates += (Join-Path (Join-Path (Join-Path (Join-Path $GameRoot 'Data') 'Scripts') 'Source') 'Base') }
+    if ($ModOrganizerRoot) {
+        $mo = Get-ModOrganizerInfo -Root $ModOrganizerRoot
+        if ($mo) { $candidates += $mo.BaseSourceDirs }
+    }
+    foreach ($c in $candidates) {
+        if ($c -and (Test-Path -LiteralPath $c) -and @(Get-ChildItem -LiteralPath $c -Filter '*.psc' -File -ErrorAction SilentlyContinue).Count -gt 0) {
+            return (Resolve-Path -LiteralPath $c).Path
+        }
+    }
+    return $null
+}
+
 Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Get-Fallout4UserState,
-    Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration
+    Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration,
+    Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue

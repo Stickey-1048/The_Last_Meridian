@@ -31,6 +31,18 @@ foreach ($d in $dirs) {
         if ($PSCmdlet.ShouldProcess($d, 'Remove empty folder')) { Remove-Item -LiteralPath $d -Force }
     }
 }
+# A Mod Organizer mod folder that now holds nothing of ours is removed whole,
+# including the meta.ini Mod Organizer may have added.
+$modFolder = $null
+if ($m.PSObject.Properties.Name -contains 'ModFolder') { $modFolder = $m.ModFolder }
+if ($modFolder -and (Test-Path -LiteralPath $modFolder) -and -not $WhatIfPreference) {
+    Get-ChildItem -LiteralPath $modFolder -Recurse -Directory | Sort-Object { $_.FullName.Length } -Descending | ForEach-Object {
+        if (@(Get-ChildItem -LiteralPath $_.FullName -Force).Count -eq 0) { Remove-Item -LiteralPath $_.FullName -Force }
+    }
+    $left = @(Get-ChildItem -LiteralPath $modFolder -Force | Where-Object { $_.Name -ne 'meta.ini' })
+    if ($left.Count -eq 0) { Remove-Item -LiteralPath $modFolder -Recurse -Force }
+    else { Write-Host "Left $modFolder in place: it contains files this project did not copy." }
+}
 if (-not $WhatIfPreference) { Remove-Item -LiteralPath $manifestPath -Force }
 Write-Host "Removed $removed file(s) from $($m.Root)."
 Write-Host 'If TheLastMeridian.esp was enabled, disable it in your mod manager. Saves made with it loaded may warn about missing content.'
