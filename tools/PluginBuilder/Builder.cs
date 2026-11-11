@@ -343,10 +343,10 @@ public sealed class Builder
     // ------------------------------------------------------------ factory
 
     /// <summary>
-    /// Plugin header version. 0.95 is what every Fallout 4 build before the
-    /// 2024 "next-gen" update wrote and what all builds read; 1.0 is what the
-    /// next-gen Creation Kit writes. Record FormIDs start at 0x800 either way,
-    /// so the file stays valid for both.
+    /// Plugin header version. 0.95 is the original Fallout 4 value, which every
+    /// game build reads. Later Creation Kit builds write 1.0; forum reports
+    /// disagree on which game builds accept that, so 0.95 is the safe default.
+    /// Record FormIDs start at 0x800, which is valid under either version.
     /// </summary>
     public const float DefaultHeaderVersion = 0.95f;
 

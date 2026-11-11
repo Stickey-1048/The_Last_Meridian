@@ -15,14 +15,17 @@
   run against the real PapyrusCompiler.exe.
 
 .EXAMPLE
-  pwsh tools/win/Build-Scripts.ps1
-  pwsh tools/win/Build-Scripts.ps1 -GameRoot 'C:\Program Files (x86)\Steam\steamapps\common\Fallout 4' -ExtractBase
+  powershell -ExecutionPolicy Bypass -File tools\win\Build-Scripts.ps1 -CreationKitRoot 'F:\SteamLibrary\steamapps\common\Fallout 4' -ExtractBase
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [string]$GameRoot,
     # A Mod Organizer 2 instance; its game path is used and its mods are searched for base sources.
     [string]$ModOrganizerRoot,
+    # Folder where the Creation Kit is installed, when that is not the game folder
+    # (for example the Steam "Fallout 4" folder while the game in use is the GOG copy).
+    # The compiler and the base script sources are taken from here.
+    [string]$CreationKitRoot,
     # Folder holding the game's own .psc sources, if not in the usual place.
     [string]$BaseSource,
     # Full path to PapyrusCompiler.exe, if not under "<game>\Papyrus Compiler".
@@ -37,10 +40,15 @@ $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
-$root = Select-DevInstall -GameRoot $GameRoot -SteamRoot $SteamRoot -ModOrganizerRoot $ModOrganizerRoot
+if ($CreationKitRoot) {
+    if (-not (Test-Path -LiteralPath $CreationKitRoot)) { throw "Creation Kit folder not found: $CreationKitRoot" }
+    $root = (Resolve-Path -LiteralPath $CreationKitRoot).Path
+} else {
+    $root = Select-DevInstall -GameRoot $GameRoot -SteamRoot $SteamRoot -ModOrganizerRoot $ModOrganizerRoot
+}
 $compiler = if ($CompilerPath) { $CompilerPath } else { Join-Path (Join-Path $root 'Papyrus Compiler') 'PapyrusCompiler.exe' }
 if (-not (Test-Path -LiteralPath $compiler)) {
-    throw "Papyrus compiler not found: $compiler. It is installed with the Creation Kit. Pass -CompilerPath if it is somewhere else."
+    throw "Papyrus compiler not found: $compiler. It is installed with the Creation Kit. Pass -CreationKitRoot (the folder the Creation Kit is in) or -CompilerPath."
 }
 
 $gameSource = Join-Path (Join-Path (Join-Path $root 'Data') 'Scripts') 'Source'

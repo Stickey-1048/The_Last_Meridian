@@ -4,13 +4,18 @@
 
 Run the commands in PowerShell from the repository folder on the PC that has Fallout 4 and the Creation Kit.
 
+Needed on the PC besides the game: **git**, the **.NET 8 SDK** (for the plugin builder), and the **Creation Kit** (see below). The commands use Windows PowerShell with `-ExecutionPolicy Bypass` so the scripts are allowed to run for that one call. The scripts were only ever run under PowerShell 7 on Linux; Windows PowerShell 5.1 is untested.
+
 ## 0. The setup, as reported by the owner on 2026-11-11
 
-Not yet confirmed by the scan in step 1.
+The game build and the absence of the Creation Kit come from a file search the owner ran on the PC. The rest is not yet confirmed by the scan in step 1.
 
 | What | Where |
 |---|---|
 | Game in use | GOG Fallout 4 GOTY: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout 4 GOTY` |
+| Game build | `Fallout4.exe` 1.10.163.0 (owner's search) |
+| Creation Kit | not installed: no `CreationKit.exe`, `PapyrusCompiler.exe` or `Base.zip` under the game folder, `C:\Modlists\TMR` or `F:\SteamLibrary` (owner's search) |
+| PowerShell | Windows PowerShell 5.1 |
 | Mod Organizer 2 instance | `C:\Modlists\TMR` (its `ModOrganizer.ini` points at the GOG install) |
 | Fallout London | separate install: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout London\Fallout London` |
 | Steam copy | not installed (`F:\SteamLibrary` has no Fallout 4; the Steam registry entry is stale) |
@@ -20,14 +25,15 @@ What follows from that:
 - **Everything goes through Mod Organizer.** The test build is installed as a mod folder under `C:\Modlists\TMR\mods`, never into the game folder. Tools that must see it (the game, the Creation Kit) are started from Mod Organizer.
 - **Test in a copy of the profile.** Copy the current Mod Organizer profile, select the copy, and enable the test mod only there. The existing mod list stays as it is.
 - **Fallout London is not used and not touched.** The install script refuses it.
-- **The Creation Kit is the open question.** It supplies the Papyrus compiler and the game's script sources, and it is distributed through Steam. Step 1 reports whether `CreationKit.exe` is in the GOG folder. If it is not, nothing can be compiled until it is, and how to get it next to a GOG install has to be worked out on the PC.
-- **Game build.** A curated mod list often pins an older game build. The plugin is written with header version 0.95 and FormIDs from 0x800, which every build reads, but the Creation Kit build has to suit the game build. Step 1 records both.
+- **The Creation Kit has to be installed first.** It supplies the Papyrus compiler and the game's script sources. It is free on Steam ("Fallout 4: Creation Kit") for owners of the PC game, and Steam is the only official source. Install it, with the Steam copy of Fallout 4, into the Steam library; it lands in `...\steamapps\common\Fallout 4`. Do not put it in the GOG folder: Bethesda says the GOG game is not compatible with the Steam Creation Kit, and community workarounds have mixed reports.
+- **Two builds will be in play.** The game under test is 1.10.163.0. A fresh Steam install of the game and Creation Kit will be a newer build. For now the Creation Kit is used only for its compiler and script sources, and the plugin comes from `tools/PluginBuilder` (header version 0.95, FormIDs from 0x800). Whether scripts compiled by the newer compiler run on 1.10.163 is expected but **unverified**; the first in-game check answers it. If the Creation Kit editor is later used on the plugin, match it to the game first (the community "Fallout 4 Downgrader" can roll the Steam game and Creation Kit back to the 1.10.163 era).
+- **Do not start the Steam copy of the game** unless needed. It shares `Documents\My Games\Fallout4` with the GOG copy; back that folder up first if you do.
 - Use a **disposable save**. Quest and alias changes orphan script data in old saves.
 
 ## 1. Record the environment (read-only)
 
 ```powershell
-pwsh tools/win/Get-BuildEnv.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
+powershell -ExecutionPolicy Bypass -File tools\win\Get-BuildEnv.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
 ```
 
 Writes `docs/design/BUILD_ENV.md`: game and Creation Kit versions, install paths, compiler and script sources, DLC, Fallout London, loose-file and logging settings. Commit it.
@@ -43,10 +49,10 @@ With `Fallout4.esm` supplied, vanilla records (`PlayerRef`, `Caps001`) are resol
 ## 3. Compile the scripts
 
 ```powershell
-pwsh tools/win/Build-Scripts.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
+powershell -ExecutionPolicy Bypass -File tools\win\Build-Scripts.ps1 -CreationKitRoot '<Steam library>\steamapps\common\Fallout 4' -ExtractBase
 ```
 
-The script looks for the game's script sources in the game's `Data\Scripts\Source\Base` and in any Mod Organizer mod that carries them. Add `-ExtractBase` if they are still zipped in the game folder, or `-BaseSource <folder>` and `-CompilerPath <exe>` if they are somewhere else.
+`-CreationKitRoot` is the folder the Creation Kit was installed into; the compiler and the game's script sources are taken from there. `-ExtractBase` unpacks `Data\Scripts\Source\Base\Base.zip` in that folder if the sources are still zipped. `-BaseSource <folder>` and `-CompilerPath <exe>` override either location.
 
 Output goes to `build\Scripts\TLM\*.pex`, not into the game. The first real compile will probably find errors the documentation-level lint could not. Fix them in `scripts/Source/User/TLM/`, re-run `tools/run_checks.sh` (or `python tools/check_consistency.py`), and compile again.
 
@@ -63,11 +69,11 @@ If the Creation Kit rejects or rewrites anything, that is a finding: record it i
 ## 5. Install for testing
 
 ```powershell
-pwsh tools/win/Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR' -WhatIf     # shows what would be copied
-pwsh tools/win/Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
+powershell -ExecutionPolicy Bypass -File tools\win\Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR' -WhatIf     # shows what would be copied
+powershell -ExecutionPolicy Bypass -File tools\win\Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
 ```
 
-This creates `C:\Modlists\TMR\mods\TheLastMeridian-Dev`. Then, in Mod Organizer, refresh, tick the mod in the left pane and `TheLastMeridian.esp` in the right pane, in the test profile only. The script never edits profiles, the mod list or the plugin list. `pwsh tools/win/Uninstall-Dev.ps1` removes exactly what was copied, and the mod folder with it.
+This creates `C:\Modlists\TMR\mods\TheLastMeridian-Dev`. Then, in Mod Organizer, refresh, tick the mod in the left pane and `TheLastMeridian.esp` in the right pane, in the test profile only. The script never edits profiles, the mod list or the plugin list. `powershell -ExecutionPolicy Bypass -File tools\win\Uninstall-Dev.ps1` removes exactly what was copied, and the mod folder with it.
 
 ## 6. First in-game checks (before any test cell exists)
 
