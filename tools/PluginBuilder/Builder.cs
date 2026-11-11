@@ -448,13 +448,37 @@ public sealed class Builder
 
         // EditorID -> FormID assignments are kept in a text file under version
         // control, so rebuilding never renumbers existing records.
-        using var allocator = new TextFileFormKeyAllocator(mod, formKeyFile);
-        mod.SetAllocator(allocator);
-        var builder = new Builder(mod, vanilla);
-        builder.Build();
-        allocator.Commit();
+        //
+        // The allocator rewrites its file on every run, in the line endings of
+        // the machine it runs on. To keep a build from marking the tracked file
+        // as changed (which would later block a `git pull`), it works on a
+        // copy, and the tracked file is only rewritten, always with LF line
+        // endings, when its content really differs.
+        var work = Path.Combine(Path.GetTempPath(), $"tlm-formkeys-{Guid.NewGuid():N}.txt");
+        if (File.Exists(formKeyFile)) File.Copy(formKeyFile, work, overwrite: true);
+        Builder builder;
+        try
+        {
+            using (var allocator = new TextFileFormKeyAllocator(mod, work))
+            {
+                mod.SetAllocator(allocator);
+                builder = new Builder(mod, vanilla);
+                builder.Build();
+                allocator.Commit();
+            }
+            var wanted = NormalizeLines(File.ReadAllText(work));
+            var current = File.Exists(formKeyFile) ? File.ReadAllText(formKeyFile) : null;
+            if (current != wanted) File.WriteAllText(formKeyFile, wanted);
+        }
+        finally
+        {
+            if (File.Exists(work)) File.Delete(work);
+        }
         return (mod, builder);
     }
+
+    static string NormalizeLines(string text) =>
+        text.Replace("\r\n", "\n").Replace("\r", "\n").TrimEnd('\n') + "\n";
 
     public static void Write(Fallout4Mod mod, string path)
     {

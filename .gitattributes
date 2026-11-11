@@ -1,0 +1,8 @@
+# Plugins are binary; never let git touch their bytes.
+*.esp binary
+*.esm binary
+*.esl binary
+*.pex binary
+
+# The plugin builder keeps this file in LF on every machine (see Builder.Create).
+tools/PluginBuilder/formkeys.txt text eol=lf
