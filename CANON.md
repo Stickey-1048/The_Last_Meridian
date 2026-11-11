@@ -30,7 +30,7 @@ These political positions are fictional and should have credible advocates, inte
 ## Exactly four ancillary power blocs [LOCKED]
 1. **Oak Ridge Scientific Assembly** — leader **Evelyn Harrow**; Open Science **Naomi Bell**, Human Advancement **Julian Wren**.
 2. **Concord of the Hollows** — heterogeneous mountain alliance; diplomacy, sovereignty, watershed rights; council speaker **Seren Ashfall** [PROVISIONAL].
-3. **Ashen Brotherhood** — non-feral ghoul society at Cinder Station; leader **Malcolm Ash**, militant internal faction under **Miriam Voss**.
+3. **Ashen Brotherhood** — non-feral ghoul society at Cinder Station; leader **Malcolm Ash**, militant internal faction under **Miriam Kade**.
 4. **Stonebound Houses** — mining and engineering culture; Karn Veyr ancestral city; claimant **Dorran Coyle**.
 
 Other organizations (Brass Consortium, Keepers of the Ash, Ridgeborn Covenant, Wardens/Old Wardens, Black Rail Syndicate) exist as internal caucuses or localized groups, NOT additional principal endgame powers.
