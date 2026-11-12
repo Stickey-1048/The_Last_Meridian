@@ -144,6 +144,18 @@ function Add-DataNotes($part, [string]$root, [string]$label) {
         $swf = Join-Path (Join-Path $data 'Interface') $name
         if (Test-Path -LiteralPath $swf) { $f = Get-Item -LiteralPath $swf; $part.Add("    Loose Data\Interface\$name : $($f.Length) bytes, $(Get-Stamp $f)") }
     }
+    # Loose compiled scripts directly in Data\Scripts that carry the names of the
+    # game's own base scripts. With loose files switched on they replace the
+    # game's copies for every profile, whatever Mod Organizer does.
+    $scripts = Join-Path $data 'Scripts'
+    if (Test-Path -LiteralPath $scripts) {
+        $top = @(Get-ChildItem -LiteralPath $scripts -File -Filter '*.pex' -ErrorAction SilentlyContinue)
+        $base = 'ScriptObject', 'Form', 'Quest', 'Alias', 'ReferenceAlias', 'LocationAlias', 'RefCollectionAlias', 'ObjectReference', 'Actor',
+            'Game', 'Utility', 'Debug', 'Message', 'GlobalVariable', 'Faction', 'Scene', 'Package', 'Topic', 'TopicInfo', 'ActiveMagicEffect'
+        $shadow = @($top | Where-Object { $base -contains $_.BaseName } | Sort-Object Name)
+        $part.Add("    Loose compiled scripts directly in Data\Scripts: $($top.Count); of the game's own base scripts among them: $($shadow.Count)")
+        foreach ($f in $shadow) { $part.Add(("        {0,-24} {1,7} bytes  {2}" -f $f.Name, $f.Length, (Get-Stamp $f))) }
+    }
 }
 
 # What later parts need from earlier ones; set here so a failed part leaves them defined.
@@ -222,6 +234,13 @@ try {
         $failLines = @($selfLines | Where-Object { $_ -match '\]\s*FAIL\s' })
         $aborted = [bool](@($selfLines | Where-Object { $_ -match 'ABORTED' }).Count)
     }
+    # Each stage event that reaches a quest script writes one line (TLM:MQ01Quest, TLM:SQ01Quest).
+    $mqEvents = 0
+    $sqEvents = 0
+    if ($papFromRun) {
+        $mqEvents = @($papLines | Where-Object { $_ -match 'TLM_MQ01: stage \d+ item' }).Count
+        $sqEvents = @($papLines | Where-Object { $_ -match 'TLM_SQ01: stage \d+ item' }).Count
+    }
     if (-not (Test-Path -LiteralPath $papyrusLog)) {
         $verdict.Add('Game script log     : none. The game did not write one, so the test profile''s settings were not in effect')
         $verdict.Add('                      for that session (or the game was never started with them).')
@@ -245,11 +264,16 @@ try {
     } elseif ($papFromRun) {
         $verdict.Add('Script problems     : none reported by the game for this project''s scripts')
     }
-    if ($aborted) {
-        $verdict.Add('Self-test           : NOT RUN: the quests had already been started in that session. Use a fresh session.')
-    } elseif ($resultLine) {
+    if ($papFromRun) {
+        if ($mqEvents + $sqEvents -gt 0) { $verdict.Add("Stage events        : $mqEvents reached the main quest's script, $sqEvents the side quest's") }
+        else { $verdict.Add('Stage events        : NONE reached the quest scripts (no "TLM_MQ01: stage ..." line in the log). Stages that were set stayed silent.') }
+    }
+    if ($resultLine) {
         $verdict.Add("Self-test           : RAN. $(($resultLine -replace '^.*==== RESULT:\s*', '') -replace '\s*====\s*$', '')  (PASS lines counted: $passCount, FAIL lines: $($failLines.Count))")
+        if ($aborted) { $verdict.Add('                      A later attempt in the same session was refused, as intended: the quests run once per session.') }
         foreach ($l in $failLines) { $verdict.Add("    $l") }
+    } elseif ($aborted) {
+        $verdict.Add('Self-test           : NOT RUN: the quests had already been started in that session. Use a fresh session.')
     } elseif ($selfFromRun) {
         $verdict.Add("Self-test           : STARTED BUT DID NOT FINISH: the log has no RESULT line ($passCount PASS, $($failLines.Count) FAIL so far)")
     } elseif (Test-Path -LiteralPath $userLog) {

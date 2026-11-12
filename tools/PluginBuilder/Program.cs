@@ -49,6 +49,20 @@ Console.WriteLine($"  {info.Records.Count} simple records, {info.Messages.Count}
                   $"{info.Quests.Sum(q => q.Stages.Count)} stages, {info.Quests.Sum(q => q.Aliases.Count)} aliases");
 Console.WriteLine($"  not wired yet: {builder.Pending.Count} (see TheLastMeridian.report.txt)");
 foreach (var note in builder.VanillaNotes) Console.WriteLine($"  lookup: {note}");
+
+// How this plugin's quests are laid out, beside the game's own quests when
+// the game's master file was supplied.
+{
+    using var written = Mutagen.Bethesda.Fallout4.Fallout4Mod.CreateFromBinaryOverlay(plugin, Mutagen.Bethesda.Fallout4.Fallout4Release.Fallout4);
+    var ours = StructureAudit.Count(written.Quests);
+    StructureAudit.Counts? theirs = null;
+    if (esm != null)
+    {
+        using var master = Mutagen.Bethesda.Fallout4.Fallout4Mod.CreateFromBinaryOverlay(esm, Mutagen.Bethesda.Fallout4.Fallout4Release.Fallout4);
+        theirs = StructureAudit.Count(master.Quests);
+    }
+    foreach (var line in StructureAudit.Compare(ours, theirs)) Console.WriteLine($"  layout: {line}");
+}
 if (problems.Count > 0)
 {
     Console.Error.WriteLine($"SELF-CHECK FAILED ({problems.Count}):");

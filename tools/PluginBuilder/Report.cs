@@ -17,10 +17,13 @@ public static class Report
     public sealed record PropInfo(string Name, string Kind, string? Target, int? Alias, object? Value);
     public sealed record ScriptInfo(string Name, List<PropInfo> Props);
     public sealed record AliasInfo(int Id, string Name, string Kind, List<string> Flags, string? Fill, List<ScriptInfo> Scripts);
-    public sealed record StageInfo(int Index, string? Log, string? Note, bool CompleteQuest);
-    public sealed record ObjectiveInfo(int Index, string Text, List<int> TargetAliases);
+    /// <param name="Items">How many items (log entries) the stage has. The game announces a stage per item.</param>
+    /// <param name="ItemsWithFlags">How many of those carry their flags subrecord (QSDT).</param>
+    public sealed record StageInfo(int Index, string? Log, string? Note, bool CompleteQuest, int Items, int ItemsWithFlags);
+    public sealed record ObjectiveInfo(int Index, string Text, List<int> TargetAliases, bool HasFlags);
+    /// <param name="HasConditionMarker">The NEXT marker between the quest's two condition lists is present.</param>
     public sealed record QuestInfo(string EditorId, string FormKey, string? Name, string Type, int Priority, List<string> Flags,
-        List<StageInfo> Stages, List<ObjectiveInfo> Objectives, List<AliasInfo> Aliases, List<ScriptInfo> Scripts);
+        List<StageInfo> Stages, List<ObjectiveInfo> Objectives, List<AliasInfo> Aliases, List<ScriptInfo> Scripts, bool HasConditionMarker);
     public sealed record ButtonInfo(string Text, List<string> Conditions);
     public sealed record MessageInfo(string EditorId, string FormKey, string? Title, string? Text, bool Box, List<ButtonInfo> Buttons);
     public sealed record SimpleInfo(string Type, string EditorId, string FormKey, string? Name);
@@ -93,10 +96,13 @@ public static class Report
                     s.Index,
                     s.LogEntries.Select(e => e.Entry?.String).FirstOrDefault(e => !string.IsNullOrEmpty(e)),
                     s.LogEntries.Select(e => e.Note).FirstOrDefault(n => !string.IsNullOrEmpty(n)),
-                    s.LogEntries.Any(e => e.Flags.HasValue && e.Flags.Value.HasFlag(QuestLogEntry.Flag.CompleteQuest)))).ToList(),
-                q.Objectives.Select(o => new ObjectiveInfo(o.Index, o.DisplayText?.String ?? "", o.Targets.Select(t => t.AliasID).ToList())).ToList(),
+                    s.LogEntries.Any(e => e.Flags.HasValue && e.Flags.Value.HasFlag(QuestLogEntry.Flag.CompleteQuest)),
+                    s.LogEntries.Count,
+                    s.LogEntries.Count(e => e.Flags.HasValue))).ToList(),
+                q.Objectives.Select(o => new ObjectiveInfo(o.Index, o.DisplayText?.String ?? "", o.Targets.Select(t => t.AliasID).ToList(), o.Flags.HasValue)).ToList(),
                 aliases,
-                q.VirtualMachineAdapter?.Scripts.Select(Script).ToList() ?? new()));
+                q.VirtualMachineAdapter?.Scripts.Select(Script).ToList() ?? new(),
+                q.UnusedConditions != null));
         }
 
         return new PluginInfo(
@@ -150,8 +156,10 @@ public static class Report
             sb.AppendLine();
             sb.AppendLine($"Quest {q.EditorId}  {q.FormKey[..6]}  \"{q.Name}\"  type={q.Type} priority={q.Priority} flags=[{string.Join(", ", q.Flags)}]");
             foreach (var s in q.Scripts) AppendScript(sb, "  script ", s);
+            sb.AppendLine($"  structure: {q.Stages.Count(s => s.Items == 1 && s.ItemsWithFlags == 1)} of {q.Stages.Count} stages have one item with its flags subrecord; " +
+                          $"{q.Objectives.Count(o => o.HasFlags)} of {q.Objectives.Count} objectives have flags; condition marker {(q.HasConditionMarker ? "present" : "MISSING")}");
             foreach (var s in q.Stages)
-                sb.AppendLine($"  stage {s.Index,4}{(s.CompleteQuest ? " [complete]" : "")}  {(s.Log != null ? "\"" + s.Log + "\"" : "(" + (s.Note ?? "no log") + ")")}");
+                sb.AppendLine($"  stage {s.Index,4}{(s.CompleteQuest ? " [complete]" : "")}{(s.Items == 1 && s.ItemsWithFlags == 1 ? "" : $" [{s.Items} item(s), {s.ItemsWithFlags} with flags]")}  {(s.Log != null ? "\"" + s.Log + "\"" : "(" + (s.Note ?? "no log") + ")")}");
             foreach (var o in q.Objectives)
                 sb.AppendLine($"  objective {o.Index}: \"{o.Text}\"{(o.TargetAliases.Count == 0 ? "" : "  -> alias " + string.Join(",", o.TargetAliases))}");
             foreach (var a in q.Aliases)

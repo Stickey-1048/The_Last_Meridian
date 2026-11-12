@@ -11,7 +11,10 @@ Run it once per game session, from the console:   cqf TLM_Core RunSelfTest
 Results go to Documents\My Games\Fallout4\Logs\Script\User\TLM.0.log (Papyrus
 logging has to be on), to the Papyrus log, and to a message box.
 
-COMPILES (2026-11-11); NOT YET RUN IN THE GAME.}
+COMPILES. Ran in the game on 2026-11-12 from the console and reported 26
+passed, 34 failed: exactly the checks that depend on a stage handler failed,
+because no OnStageSet event reached the quest scripts
+(docs/design/VERIFY_LOG.md).}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

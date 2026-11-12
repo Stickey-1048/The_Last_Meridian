@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Runs every check that works without Fallout 4:
 #   1. logic model tests (stage table, outcomes, exhaustive state search)
-#   2. plugin build + read-back self-check
+#   2. plugin build + read-back self-check, and a check of the written bytes
+#      that does not use the library that wrote them
 #   3. cross-check of Papyrus sources, plugin and model
 #   4. plugin build with vanilla lookups, against a generated stand-in master
 # A pass here means the design is internally consistent. It does not mean the
@@ -20,6 +21,7 @@ if ! diff -q build/TheLastMeridian.report.txt tools/PluginBuilder/last-build.rep
   echo "  cp build/TheLastMeridian.report.txt tools/PluginBuilder/last-build.report.txt"
   exit 1
 fi
+python3 tools/check_plugin_layout.py --self-test build/TheLastMeridian.esp
 
 echo "== 3/4 consistency =="
 python3 tools/check_consistency.py
@@ -37,6 +39,7 @@ standin() {  # variant
 report() { echo "$tmp/$1/out/TheLastMeridian.report.txt"; }
 
 standin default
+python3 tools/check_plugin_layout.py "$tmp/default/out/TheLastMeridian.esp" >/dev/null || { echo "FAILED: the plugin built against a master has the wrong quest layout"; exit 1; }
 grep -q "alias  0 Player  (reference) \[\]  fill: forced" "$(report default)" || { echo "FAILED: Player alias was not filled from the master"; exit 1; }
 grep -q "Caps = " "$(report default)" || { echo "FAILED: Caps property was not filled from the master"; exit 1; }
 grep -q "PlayerRef -> .*which the master spells 'PlayerREF'" "$(report default)" || { echo "FAILED: the player reference was not found regardless of letter case"; exit 1; }

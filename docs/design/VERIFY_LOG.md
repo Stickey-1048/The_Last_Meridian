@@ -1,7 +1,7 @@
 # Verification log
 
 **Dates:** 2026-11-11 and 2026-11-12. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
-**Not checked:** anything inside the Creation Kit editor. In the running game, only that the test room loads; the plugin has not been seen to load.
+**Not checked:** anything inside the Creation Kit editor. In the running game: the plugin loads and its scripts run (2026-11-12), but no quest stage handler has run yet, and nothing is placed in the world.
 
 ## Results from the game PC
 
@@ -90,7 +90,52 @@ Reading of that last line: script logging is off in the shared settings and on i
 
 Fixed after the fourth run (tested against stand-ins only): an existing test profile is refreshed without any source profile; a new one is copied from the selected profile or, if that cannot serve, the first other profile; the record of copied files is written before the profile step; the summary no longer claims nothing was installed when the install stopped part-way; the stand-in Mod Organizer now remembers the profile it was started with, as the real one does; and every part of the results report is collected on its own, so a failure in one part cannot keep the rest from the clipboard.
 
-Still not done anywhere: opening the plugin in the Creation Kit, loading the plugin in the game, any quest test.
+### First run in the right game, 2026-11-12
+
+Fifth run, 06:57 to 08:17 by the PC's clock, commit `87d04d5`, with `-Install -Play`. Reported as the pasted results and a screenshot of the self-test's message box.
+
+| What | Result |
+|---|---|
+| Install | Passed: the existing test profile was refreshed |
+| Starting the game by command | **Works.** `ModOrganizer.exe -p "TLM-Dev" run "<game folder>\Fallout4.exe"` started the base game. Read from the running process: started from `...\Fallout 4 GOTY\Fallout4.exe`, by Mod Organizer, with `usvfs_x64.dll` loaded and no F4SE |
+| The plugin loads (game 1.10.163, GOG) | **Yes.** `TLM_Core` started and its script wrote `TLM_Core: started, data version 1` to the game's script log |
+| The scripts bind and run | **Yes.** No error or warning in the game's log names this project's scripts. Scripts compiled by the 1.11 Creation Kit's compiler run on game 1.10.163 |
+| `cqf TLM_Core RunSelfTest` | Works, including finding the function on the second of two scripts attached to the quest |
+| `coc qasmoke` from the main menu | Works in the base game |
+| `SetStage`, `GetStageDone`, `IsRunning`, `IsObjectiveDisplayed`, `GetItemCount`, `GetValueInt` | Behave as the wiki says. `SetStage` on a quest that is not running starts it |
+| Self-test | **26 passed, 34 failed.** Exactly the checks that depend on a stage handler failed; every other check passed |
+| Cause | No `OnStageSet` event reached the quest scripts. The stages were set, silently. In the plugin as built, no stage had an item (a "log entry") as the game reads the file: the subrecord that starts an item (QSDT) was only written when its flags were not zero, which was true of one stage per quest |
+| Why the checks did not catch it | The library that writes the plugin also reads it back, and it reads a stage's text without that subrecord as an item. The read-back self-check therefore passed. Nothing in the repository looked at the bytes |
+
+What supports that reading, besides the result itself (none of it is a test; the next run is):
+
+- xEdit's record definitions for Fallout 4 (`wbDefinitionsFO4.pas`, record QUST): a log entry is a group that begins with QSDT; the NEXT marker between the quest's two condition lists is marked required.
+- UESP's description of the same record in Skyrim: "Each QSDT field marks the start of a log entry."
+- The wiki's own signature, `OnStageSet(int auiStageID, int auiItemID)`: the event names an item.
+- A modders' forum report found by search: OnStageSet does not fire for a stage that has no log entry.
+
+Also settled by this run: why the first attempt showed Fallout London.
+
+| Fact | Source |
+|---|---|
+| In this Mod Organizer the entry "Fallout 4" is hidden from the Run list. Of the entries shown, only "F4SE" and "Fallout Launcher" start a game, and the F4SE loader does not exist in the managed folder | `ModOrganizer.ini`, read by the results script |
+| The Windows registry names the Fallout London folder as the Fallout 4 install | the results script |
+| A preloader that exists only in the Fallout London folder wrote its log at 20:42 on 2026-11-11, during that attempt, and the game's script logs of that evening exist although script logging is on in the test profile only | file times in the shared settings folder |
+
+So the launcher, the only usable entry, was started inside Mod Organizer with the test profile's settings, and the game that came up was the Fallout London copy. That the launcher picks its game from the registry is still an inference from these facts, not something read in its code.
+
+**Correction to the second run's table:** the base game folder is not clean. The scans counted plugin files only. Its Data folder holds loose files in more than 24 folders: F4SE plugins, MCM settings, 362 files under Scripts, meshes, materials, sounds, interface files. They are left from mods installed straight into the game, without their plugins. The game loads loose files in every Mod Organizer profile that has loose files switched on, the test profile included, because Mod Organizer can add files to Data but cannot hide files that are really there. Nothing in this run points at them, but a test in that folder is not a test of the plain game. The scan now reports them.
+
+Fixed after the fifth run (checks pass; not yet re-tested in the game):
+
+- The builder writes exactly one item, with its flags subrecord, for every stage; the NEXT marker for every quest; flags for every objective; and the display time for messages that are not boxes. The plugin is 10,989 bytes in skeleton mode (10,692 with the real master before the change).
+- The builder's self-check now fails if a stage has no item or an item lacks its flags.
+- `tools/check_plugin_layout.py` reads the plugin's raw records without the library and checks the same things. Run on the plugin as it was tested in the game it reports 77 problems. `tools/run_checks.sh` runs it, with four kinds of deliberate damage that must each be caught.
+- With the real master supplied, the builder prints how the game's own quests are laid out (how many stages have no item, how many items lack flags) beside this plugin's, so the claim "the Creation Kit always writes this" is checked against the game's data on the PC.
+- `TLM:MQ01Quest` and `TLM:SQ01Quest` write one line to the script log for every stage event they receive, and the results script counts them.
+- The results script reports a finished self-test even when a second attempt in the same session was refused.
+
+Still not done anywhere: a stage handler running in the game, opening the plugin in the Creation Kit, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
@@ -108,6 +153,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | Do timers survive a save and load? | Needs the game | Not stated. The scripts do not rely on it: the evade timer and distance watch are re-armed on every load. |
 | `GlobalVariable.SetValue` | Documented | `SetValue(float)`, plus `SetValueInt(int)`, `GetValueInt()`, and `Mod(float)` which is thread-safe. The scripts use `Mod` for all increments. |
 | Quest stage fragments are unavoidable | Corrected | `Event OnStageSet(int auiStageID, int auiItemID)` exists on Quest and runs alongside any fragment. The scripts use it for everything, so there are no fragments (A12). |
+| `OnStageSet` for a stage with no item | Seen in the game | The wiki does not say. In the game on 2026-11-12, stages without an item were set and no event arrived (A22). Whether it arrives once every stage has an item is the next thing to see. |
 | Setting a stage twice | Corrected | "SetStage has no effect after it is called the first time for any stage on a running quest" unless Allow Repeated Stages is on. v0.1's repeatable stage 15 (SQ01) and stage 900 could not work as written (A12, A15). |
 | Alias scripts before the quest starts | Corrected | Aliases receive their reference's events as part of a running quest. SQ01 must already be running for clue scripts to fire (A8). |
 | `OnContainerChanged` | Documented | `Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldContainer)`. Once an object is in a container it "ceases to exist in most cases". |
@@ -146,7 +192,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 
 | Item | State | What the wiki says |
 |---|---|---|
-| `cqf` (CallQuestFunction) | Documented | `CQF <quest> <function> [params]`. Missing parameters are filled with zero or None, not with the script's defaults. |
+| `cqf` (CallQuestFunction) | Seen in the game | `CQF <quest> <function> [params]`. Missing parameters are filled with zero or None, not with the script's defaults. Worked on 2026-11-12 for a function on the second of two scripts on the quest. |
 | `sqv` (ShowQuestVars) | Documented | `SQV <QuestID> [filter]` shows variables, aliases and quest state. |
 | `coc` | Seen in the game | `coc qasmoke` typed at the main menu loaded the test room (2026-11-12). |
 | `startquest`, `setstage`, `getstage`, `sqs`, `sqt`, `prid`, `kill`, `tgm`, `player.additem` | Needs the game | No page on the wiki. |
@@ -156,7 +202,8 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`). **Done 2026-11-11.** The file stays on the PC (git-ignored); the facts the build depends on are in the tables above.
 2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
 3. All scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 8 of 8**, again after the change to `TLM:Core`.
-3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **First attempt failed 2026-11-12:** see above.
+3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **Done 2026-11-12** on the second attempt.
+3b. Stage events reach the quest scripts and the self-test passes. **Failed 2026-11-12 (26 of 60):** the stages had no items. Fixed in the builder; awaiting a re-run.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In; Essential and Protected flags; alias on the player receiving `OnPlayerLoadGame`.

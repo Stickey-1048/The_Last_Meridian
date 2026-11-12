@@ -1,9 +1,10 @@
 Scriptname TLM:MQ01Quest extends Quest
 {TLM_MQ01 "Six Rounds to Mercy". Owns all quest logic.
 
-COMPILES; NOT YET RUN IN THE GAME. Written without Fallout 4 or the Creation
-Kit, then compiled with the game's own compiler on 2026-11-11
-(docs/design/VERIFY_LOG.md). Behaviour in the game is unverified.
+COMPILES. In the game on 2026-11-12 it attached to the quest without errors,
+but NONE OF ITS STAGE HANDLERS HAS RUN YET: the plugin's stages had no items,
+so the game never sent OnStageSet (docs/design/VERIFY_LOG.md). Written without
+Fallout 4 or the Creation Kit. Behaviour in the game is unverified.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.
@@ -106,6 +107,9 @@ int handsKilledByPlayer = 0
 ; ------------------------------------------------------------ stage dispatch
 
 Event OnStageSet(int auiStageID, int auiItemID)
+	; One line per stage event in the game's script log. Without it, "the
+	; event never arrived" and "the handler ran and did nothing" look the same.
+	Debug.Trace("TLM_MQ01: stage " + auiStageID + " item " + auiItemID)
 	If auiStageID == 10
 		ApplyStart()
 	ElseIf auiStageID == 15

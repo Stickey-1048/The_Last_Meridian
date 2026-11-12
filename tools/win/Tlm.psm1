@@ -236,6 +236,21 @@ function Get-Fallout4InstallInfo {
     $vanilla = @('Fallout4.esm') + $script:DlcMasters
     $gameVersion = Get-ExeVersion (Join-Path $Root 'Fallout4.exe')
 
+    # Folders of loose files in Data. A game as installed has only Video (and,
+    # with the Creation Kit, its script sources); anything else was put there
+    # by a mod or a mod manager. The game loads loose files whenever loose
+    # files are switched on, in every Mod Organizer profile: Mod Organizer can
+    # add files to Data but cannot hide files that are really there.
+    $looseFolders = @()
+    $loosePex = 0
+    if (Test-Path -LiteralPath $data) {
+        $looseFolders = @(Get-ChildItem -LiteralPath $data -Directory -ErrorAction SilentlyContinue | Sort-Object Name | ForEach-Object Name)
+        $scriptsDir = Join-Path $data 'Scripts'
+        if (Test-Path -LiteralPath $scriptsDir) { $loosePex = @(Get-ChildItem -LiteralPath $scriptsDir -File -Filter '*.pex' -ErrorAction SilentlyContinue).Count }
+    }
+    $expectedLoose = @('Video', 'Strings', 'Tools')
+    $unexpectedLoose = @($looseFolders | Where-Object { $expectedLoose -notcontains $_ -and -not ($_ -ieq 'Scripts' -and $loosePex -eq 0) })
+
     [pscustomobject]@{
         Root               = $Root
         GameVersion        = $gameVersion
@@ -250,6 +265,9 @@ function Get-Fallout4InstallInfo {
         FalloutLondon      = Test-Path -LiteralPath (Join-Path $data 'LondonWorldSpace.esm')
         CreationClubCount  = @($plugins | Where-Object { $_ -like 'cc*' }).Count
         OtherPlugins       = @($plugins | Where-Object { ($vanilla -notcontains $_) -and ($_ -notlike 'cc*') })
+        LooseFolders       = $looseFolders
+        UnexpectedLoose    = $unexpectedLoose
+        LooseScriptCount   = $loosePex
         TlmInstalled       = Test-Path -LiteralPath (Join-Path $data 'TheLastMeridian.esp')
         ModManagerHint     = Get-ModManagerHint $Root
         GogProducts        = @(Get-GogProductNames $Root)

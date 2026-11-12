@@ -1,6 +1,6 @@
 # Test runbook — getting from the repository to a first in-game result
 
-**Status:** steps 1 to 4 ran on the owner's PC on 2026-11-11 and passed: the scan, the plugin build against the real `Fallout4.esm`, the compile of all eight scripts, and the install as a Mod Organizer mod with its own test profile. The first attempt at step 5, on 2026-11-12, did **not** reach the plugin: the Fallout London menu appeared and the console could not find this project's quest (details in [VERIFY_LOG.md](VERIFY_LOG.md)). Step 5 now starts the game a different way, which has only been tested against stand-ins. Nothing has been confirmed in the game yet.
+**Status:** steps 1 to 5 have run on the owner's PC. On 2026-11-12 the base game was started by command through Mod Organizer, the plugin loaded, its scripts ran, and the self-test reported 26 passed and 34 failed: the generated plugin's stages had no items, so the game never told the quest scripts that a stage was set (details in [VERIFY_LOG.md](VERIFY_LOG.md)). That is fixed in the builder and checked at the level of the file's bytes, but **not yet re-tested in the game**. No stage handler has run in the game so far.
 
 Run the commands in PowerShell from the repository folder on the PC that has Fallout 4 and the Creation Kit.
 
@@ -25,6 +25,7 @@ From the scan and build run of 2026-11-11, unless marked as the owner's report.
 What follows from that:
 
 - **Building needs no game launch.** The plugin is built from the GOG game's `Fallout4.esm`, and the scripts are compiled with the Creation Kit's compiler. Both already work.
+- **The base game folder is not a clean install.** Its Data folder holds loose files left by mods that were once installed straight into it (F4SE plugins, MCM settings, several hundred scripts, meshes, sounds, interface files), without their plugins. The game loads them in every Mod Organizer profile that has loose files switched on, and the test profile must have them on for this project's own scripts. Nothing so far points at them, but if a result ever looks like someone else's script at work, look there first. A clean copy of the game for testing, or packing this project's scripts into an archive so that loose files can stay off, are the two ways out.
 - **Fallout London is not used and not touched.** The install script refuses it.
 - **The test runs through a separate Mod Organizer profile.** Three copies of the game exist (GOG base, Fallout London, Steam) and they share one settings folder and one active-plugin list, which is Fallout London's. A Mod Organizer profile with its own settings, saves and plugin list keeps the test away from all of that, and Mod Organizer is already pointed at the clean GOG base game. **Do not start the Steam copy or the GOG base game directly**, and do not deploy anything from Vortex while testing.
 - **Which copy starts has to be checked, not assumed.** Mod Organizer puts this project's files only into the Data folder of the game it manages; a different copy of the game started from the same window does not see them. The Windows registry on this PC names the Fallout London folder as "the" Fallout 4 install, the game's launcher is reported to start whichever copy the registry names, and an entry in Mod Organizer's Run list keeps whatever path it was created with. So step 5 starts `Fallout4.exe` by its full path and reads from the running process which file it is.
@@ -118,7 +119,7 @@ If Mod Organizer opens but starts nothing, the script says how to start the game
 
 The self-test (`scripts/Source/User/TLM/SelfTest.psc`, attached to `TLM_Core`, development only) starts `TLM_MQ01`, walks it through dispatch, ambush, saved, delivery and hand-off, then walks `TLM_SQ01` through a clue found before the ledger, the ledger, the journal and a public posting. It makes 60 checks of stages, objectives and globals. Every expected number is the logic model's prediction: `tools/logic_model/test_selftest_expectations.py` fails if the two differ. It can run once per game session, because the quests run once.
 
-Seen in the game so far (2026-11-12, in whichever copy of the game it was): `coc qasmoke` typed at the main menu loads the test room. Still unverified: that the plugin loads, that the scripts bind, and that scripts compiled with the Creation Kit 1.11 compiler run on game build 1.10.163. Whatever fails first is the finding.
+Seen in the game so far (2026-11-12): `coc qasmoke` typed at the main menu loads the test room; the plugin loads; the scripts bind without errors; scripts compiled with the Creation Kit 1.11 compiler run on game build 1.10.163; `cqf` runs the self-test; setting a stage starts a stopped quest. Not yet seen: a stage handler running. The self-test's first run reported 26 passed and 34 failed for that reason; whatever fails first on the next run is the next finding.
 
 Switch Mod Organizer back to your own profile afterwards.
 

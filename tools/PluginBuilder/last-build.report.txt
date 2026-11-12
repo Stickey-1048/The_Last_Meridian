@@ -70,6 +70,7 @@ Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=
            TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
            TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
            TornTransitPass = TLM_MISC_TornTransitPass
+  structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
 
 Quest TLM_MQ01  00081A  "Six Rounds to Mercy"  type=MainQuest priority=60 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:MQ01Quest
@@ -103,6 +104,7 @@ Quest TLM_MQ01  00081A  "Six Rounds to Mercy"  type=MainQuest priority=60 flags=
            TutWake = TLM_MSG_Tut_Wake
            TutSixRounds = TLM_MSG_Tut_SixRounds
            MovePlayerOnStart = False
+  structure: 20 of 20 stages have one item with its flags subrecord; 2 of 2 objectives have flags; condition marker present
   stage   10  "The train is a ruin and you're alive. Whoever carried the line's mail didn't make it."
   stage   15  "Six rounds in the cylinder. Count them."
   stage   20  "The marshal's dispatch is sealed to the Sheriff of Mercy Crossing."
@@ -178,6 +180,7 @@ Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOn
            Alias_Haskell = alias 9 on TLM_SQ01
            LedgerItem = TLM_BOOK_RailMaintLedger
            JournalItem = TLM_BOOK_MarshalLog
+  structure: 17 of 17 stages have one item with its flags subrecord; 2 of 2 objectives have flags; condition marker present
   stage    5  (Running, hidden. Set by MQ01 stage 10.)
   stage   10  "The train's maintenance ledger says the brakes and couplers were inspected and sound."
   stage   11  (E1 brake shoes examined)

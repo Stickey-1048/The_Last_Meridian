@@ -63,6 +63,14 @@ public static class SelfCheck
                 Expect(gs.CompleteQuest == s.CompleteQuest, $"{q.EditorId} stage {s.Index}: Complete Quest differs");
             }
             Expect(got.Stages.Count(s => s.CompleteQuest) == (q.Stages.Length == 0 ? 0 : 1), $"{q.EditorId}: expected exactly one Complete Quest stage");
+            // The game announces a stage (OnStageSet) once per item. A stage with
+            // no item, or an item without its flags subrecord, is set silently:
+            // seen in the game on 2026-11-12.
+            foreach (var gs in got.Stages)
+                Expect(gs.Items == 1 && gs.ItemsWithFlags == 1, $"{q.EditorId} stage {gs.Index}: has {gs.Items} item(s), {gs.ItemsWithFlags} with the flags subrecord; needs exactly one item with it, or the scripts are never told the stage was set");
+            foreach (var go in got.Objectives)
+                Expect(go.HasFlags, $"{q.EditorId} objective {go.Index}: flags subrecord not written");
+            Expect(got.HasConditionMarker, $"{q.EditorId}: the marker between the quest's condition lists (NEXT) is not written");
             Expect(got.Objectives.Select(o => (o.Index, o.Text)).SequenceEqual(q.Objectives.Select(o => (o.Index, o.Text))), $"{q.EditorId}: objectives differ");
             Expect(got.Aliases.Select(a => a.Name).SequenceEqual(q.Aliases.Select(a => a.Name)), $"{q.EditorId}: alias list differs");
             Expect(got.Aliases.Select(a => a.Id).SequenceEqual(Enumerable.Range(0, q.Aliases.Length)), $"{q.EditorId}: alias IDs are not 0..n-1");

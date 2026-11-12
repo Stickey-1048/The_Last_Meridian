@@ -91,6 +91,7 @@ $compileOk = $false
 $installed = $false
 $installTried = $false
 $head = $null
+$layoutLines = @()
 
 function Say([string]$s = '') { $log.Add($s); Write-Host $s }
 
@@ -201,6 +202,8 @@ try {
         Say '  this can take several minutes and prints nothing until it is done.'
         $pb = Invoke-Native -Exe 'dotnet' -Arguments @('run', '--project', (Join-Path (Join-Path $repo 'tools') 'PluginBuilder'), '--', '--out', $build, '--fallout4-esm', $esm)
         $pb.Output | Where-Object { $_ -notmatch 'warning (NU|CS)' } | ForEach-Object { Say "  $_" }
+        # How this plugin's quests are laid out beside the game's own: kept for the test results.
+        $layoutLines = @($pb.Output | Where-Object { $_ -match '^\s*layout:' } | ForEach-Object { "$_".Trim() })
         if ($pb.ExitCode -eq 0) {
             $pluginOk = $true
             Result 'Plugin build' 'PASSED' 'build\TheLastMeridian.esp'
@@ -296,6 +299,7 @@ try {
             $preface.Add('== Build that was installed ==')
             if ($head -and $head.Found -and $head.ExitCode -eq 0) { $preface.Add("Commit: $($head.Output | Select-Object -First 1)") }
             foreach ($r in $results) { $preface.Add(("  {0,-18} {1}{2}" -f $r.Step, $r.Status, $(if ($r.Detail) { "  ($($r.Detail))" } else { '' }))) }
+            foreach ($l in $layoutLines) { $preface.Add("  $l") }
             $preface.Add('')
             $playArgs = @{ ModOrganizerRoot = $ModOrganizerRoot; Preface = $preface.ToArray() }
             if ($DocumentsRoot) { $playArgs['DocumentsRoot'] = $DocumentsRoot }

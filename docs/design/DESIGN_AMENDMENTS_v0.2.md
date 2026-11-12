@@ -69,6 +69,7 @@ Reputation at stage 50 is unchanged in spirit: +1 delivered, +1 Saved, −1 Expl
 |---|---|---|
 | **A20** | The plugin's data records are generated from code ([tools/PluginBuilder](../../tools/PluginBuilder/), .NET 8 + the Mutagen library) instead of being clicked together in the Creation Kit. | An AI session can run commands on the game PC but cannot operate the Creation Kit window. Generated records are reproducible, reviewable in git, and keep stable FormIDs. The Creation Kit is still needed for the test cell, navmesh, actors' faces and dialogue, and is still the judge of whether the plugin is valid. |
 | **A21** | Scripts live in the `TLM:` namespace (`scripts/Source/User/TLM/`), e.g. `TLM:MQ01Quest`, rather than `TLM_MQ01_QuestScript`. | Keeps the project's scripts in one folder in the game's `Scripts` directory. |
+| **A22** | Every stage carries exactly one item (the Creation Kit's "log entry"), even a stage with no text for the player. In the file that means every stage's INDX is followed by a QSDT subrecord. | "Stages are the API" (A12) depends on `OnStageSet`, and the game sends that event per stage item. Seen in the game on 2026-11-12: with no items, stages were set and the scripts were never told. The builder's self-check and `tools/check_plugin_layout.py` enforce it. |
 
 ## Stage numbers (v0.2)
 

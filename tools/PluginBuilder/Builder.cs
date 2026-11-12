@@ -98,6 +98,10 @@ public sealed class Builder
             if (m.Title != null) msg.Name = m.Title;
             msg.Description = m.Text;
             if (m.Box) msg.Flags = Message.Flag.MessageBox;
+            // A message that is not a box is a line on the HUD, and the Creation
+            // Kit stores how long it stays (2 seconds unless changed). Boxes
+            // carry no display time.
+            else msg.DisplayTime = 2;
             foreach (var b in m.Buttons)
             {
                 var button = new MessageButton { Text = b.Text };
@@ -168,17 +172,28 @@ public sealed class Builder
             Type = Enum.Parse<Quest.TypeEnum>(spec.Type),
         };
 
+        // The Creation Kit writes a marker subrecord (NEXT) between the quest's
+        // two condition lists even when both are empty. The library writes it
+        // only when this list exists.
+        quest.UnusedConditions = new ExtendedList<Condition>();
+
         foreach (var s in spec.Stages)
         {
             var stage = new QuestStage { Index = checked((ushort)s.Index) };
-            if (s.Log != null || s.CompleteQuest || s.Note != null)
+            // Every stage gets exactly one item (the Creation Kit calls it a log
+            // entry), and every item gets its flags subrecord (QSDT) even when
+            // the flags are zero: that subrecord is what starts an item in the
+            // file. Seen in the game on 2026-11-12: with no QSDT the stages
+            // could be set, but no OnStageSet event reached the quest's script.
+            // The event carries a stage id and an item id, so a stage without
+            // an item has nothing to announce.
+            var entry = new QuestLogEntry
             {
-                var entry = new QuestLogEntry();
-                if (s.Log != null) entry.Entry = s.Log;
-                if (s.Note != null) entry.Note = s.Note;
-                if (s.CompleteQuest) entry.Flags = QuestLogEntry.Flag.CompleteQuest;
-                stage.LogEntries.Add(entry);
-            }
+                Flags = s.CompleteQuest ? QuestLogEntry.Flag.CompleteQuest : default(QuestLogEntry.Flag),
+            };
+            if (s.Log != null) entry.Entry = s.Log;
+            if (s.Note != null) entry.Note = s.Note;
+            stage.LogEntries.Add(entry);
             quest.Stages.Add(stage);
         }
 
@@ -191,7 +206,8 @@ public sealed class Builder
 
         foreach (var o in spec.Objectives)
         {
-            var objective = new QuestObjective { Index = checked((ushort)o.Index), DisplayText = o.Text };
+            // Flags are written even when zero, as the Creation Kit does.
+            var objective = new QuestObjective { Index = checked((ushort)o.Index), Flags = default(QuestObjective.Flag), DisplayText = o.Text };
             if (o.TargetAlias != null)
                 objective.Targets.Add(new QuestObjectiveTarget { AliasID = AliasId(o.TargetAlias) });
             quest.Objectives.Add(objective);

@@ -94,6 +94,8 @@ if ($infos.Count -eq 0) {
         Line "| Creation Club plugins | $($i.CreationClubCount) |"
         Line "| Fallout London | $(YesNo $i.FalloutLondon) |"
         Line "| Other plugins in Data | $($i.OtherPlugins.Count) |"
+        Line "| Loose-file folders in Data | $(if ($i.LooseFolders.Count) { "$($i.LooseFolders.Count): $(($i.LooseFolders | Select-Object -First 30) -join ', ')$(if ($i.LooseFolders.Count -gt 30) { ', ...' })" } else { 'none' }) |"
+        Line "| Loose compiled scripts in Data\Scripts | $($i.LooseScriptCount) |"
         Line "| GOG product | $(if ($i.GogProducts.Count) { $i.GogProducts -join '; ' } else { '-' }) |"
         Line "| Mod manager | $($i.ModManagerHint) |"
         if ($i.VortexDeployment) {
@@ -226,6 +228,9 @@ foreach ($i in $infos) {
         else { $notes.Add("``$($i.Root)``: base script sources not found under ``Data\Scripts\Source\Base``. Scripts cannot compile without them.") }
     }
     if ($i.F4SEVersion) { $notes.Add("``$($i.Root)``: F4SE is installed. Starting the game through it is fine, but the project's own scripts must not call F4SE functions.") }
+    if ($i.UnexpectedLoose.Count -and -not $i.FalloutLondon -and -not $i.CreationKitVersion) {
+        $notes.Add("``$($i.Root)``: the Data folder holds loose files in $($i.UnexpectedLoose.Count) folder(s) a fresh install does not have ($(($i.UnexpectedLoose | Select-Object -First 8) -join ', ')$(if ($i.UnexpectedLoose.Count -gt 8) { ', ...' })), $($i.LooseScriptCount) of them compiled scripts directly in Data\Scripts. These are left over from mods installed straight into the game. With loose files switched on the game loads them in every Mod Organizer profile, the test profile included, so a test there is not a test of the plain game.")
+    }
 }
 # Which settings file actually applies: a Mod Organizer profile with its own
 # settings, or the shared one in Documents.

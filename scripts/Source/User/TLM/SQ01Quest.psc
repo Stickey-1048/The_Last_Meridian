@@ -1,9 +1,10 @@
 Scriptname TLM:SQ01Quest extends Quest
 {TLM_SQ01 "Signed Clean". Owns all quest logic.
 
-COMPILES; NOT YET RUN IN THE GAME. Written without Fallout 4 or the Creation
-Kit, then compiled with the game's own compiler on 2026-11-11
-(docs/design/VERIFY_LOG.md). Behaviour in the game is unverified.
+COMPILES. In the game on 2026-11-12 it attached to the quest without errors,
+but NONE OF ITS STAGE HANDLERS HAS RUN YET: the plugin's stages had no items,
+so the game never sent OnStageSet (docs/design/VERIFY_LOG.md). Written without
+Fallout 4 or the Creation Kit. Behaviour in the game is unverified.
 
 Stages are the API (same pattern as TLM:MQ01Quest):
    5  running, hidden (set by MQ01 stage 10)
@@ -55,6 +56,8 @@ int SQ_SOLD = 5 Const
 int SQ_DESTROYED = 6 Const
 
 Event OnStageSet(int auiStageID, int auiItemID)
+	; One line per stage event in the game's script log (see TLM:MQ01Quest).
+	Debug.Trace("TLM_SQ01: stage " + auiStageID + " item " + auiItemID)
 	If auiStageID == 10
 		SetObjectiveDisplayed(10)
 		RecomputeEvidence()

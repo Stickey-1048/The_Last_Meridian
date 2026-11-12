@@ -2,7 +2,7 @@
 
 An original, fan-created **Fallout 4 total-conversion RPG concept** set in the southern Appalachian Mountains in 2317: eastern Tennessee, western North Carolina and northern Georgia. A gunslinger frontier encounters underground societies, buried research, mutant human lineages and a predictive intelligence.
 
-**Status:** Preproduction. There are design documents, a logic model, Papyrus scripts that compile, and a generated plugin skeleton. Nothing has been run in the game, and no playable mod exists.
+**Status:** Preproduction. There are design documents, a logic model, Papyrus scripts that compile, and a generated plugin skeleton. On 2026-11-12 the game loaded the plugin and ran its scripts for the first time; a scripted self-test then failed most of its checks on a fault in the generated plugin, which has been fixed but not yet re-tested. No quest logic has run in the game, and no playable mod exists.
 
 ## Start here
 - [Open Ledger doctrine](docs/doctrine-of-the-open-ledger.md): approved philosophical spine, exile cause and quest evidence.
@@ -18,7 +18,7 @@ An original, fan-created **Fallout 4 total-conversion RPG concept** set in the s
 - [Development plan](docs/development-plan.md): Fallout 4 Creation Kit/Papyrus vertical slice.
 - [MQ01 design: Six Rounds to Mercy](docs/design/TLM_MQ01_six-rounds-to-mercy.md) and [SQ01 design: Signed Clean](docs/design/TLM_SQ01_signed-clean.md): implementation-ready design drafts (untested; no Creation Kit build yet).
 - [Design amendments v0.2](docs/design/DESIGN_AMENDMENTS_v0.2.md), [verification log](docs/design/VERIFY_LOG.md) and [test runbook](docs/design/TEST_RUNBOOK.md): what changed after the designs were modelled and checked against the Creation Kit wiki, and how to take it to the game PC.
-- [Tools](tools/README.md): logic model, plugin builder, consistency checks and Windows scripts. The Papyrus scripts are in `scripts/Source/User/TLM/`; they compile with the game's own compiler but have not been run in the game.
+- [Tools](tools/README.md): logic model, plugin builder, consistency checks and Windows scripts. The Papyrus scripts are in `scripts/Source/User/TLM/`; they compile with the game's own compiler, and the game loads them, but no quest stage handler has run in the game yet.
 - [Claude Code instructions](CLAUDE.md): repo guidance for AI-assisted engineering.
 - [Open decisions](docs/open-decisions.md): unresolved continuity issues.
 
