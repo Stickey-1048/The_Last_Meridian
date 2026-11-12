@@ -11,6 +11,10 @@
 //                    the conventional id 0x14. Exercises the builder's fallback.
 //   wrong-player     Record 0x14 places some other actor. The builder must
 //                    refuse to use it.
+//   quest-evidence   No player reference record at all (what the library saw on
+//                    the real master), but a dozen quests force 0x14 into an
+//                    alias named "Player". The builder should accept 0x14.
+//   weak-evidence    The same with only two such quests. The builder must refuse.
 using Mutagen.Bethesda;
 using Mutagen.Bethesda.Fallout4;
 using Mutagen.Bethesda.Plugins;
@@ -35,9 +39,21 @@ var other = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { Edit
 other.Base.SetTo(someoneElse);
 cell.Persistent.Add(other);
 
-PlacedNpc placed;
+PlacedNpc? placed = null;
 switch (variant)
 {
+    case "quest-evidence":
+    case "weak-evidence":
+        for (var i = 0; i < (variant == "quest-evidence" ? 12 : 2); i++)
+        {
+            var quest = mod.Quests.AddNew($"StandInQuest{i:00}");
+            quest.Aliases = new ExtendedList<AQuestAlias>
+            {
+                new QuestReferenceAlias { ID = 0, Name = i % 3 == 0 ? "PlayerRef" : "Player", ForcedReference = new FormLinkNullable<IPlacedGetter>(Key(0x14)) },
+                new QuestReferenceAlias { ID = 1, Name = "SomeoneElse", ForcedReference = new FormLinkNullable<IPlacedGetter>(other.FormKey) },
+            };
+        }
+        break;
     case "default":
         placed = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "PlayerREF" };
         placed.Base.SetTo(player);
@@ -54,7 +70,7 @@ switch (variant)
         Console.Error.WriteLine($"unknown variant: {variant}");
         return 2;
 }
-cell.Persistent.Add(placed);
+if (placed != null) cell.Persistent.Add(placed);
 
 var block = new CellBlock { BlockNumber = 0, GroupType = GroupTypeEnum.InteriorCellBlock };
 var sub = new CellSubBlock { BlockNumber = 0, GroupType = GroupTypeEnum.InteriorCellSubBlock };
@@ -65,5 +81,5 @@ mod.Cells.Records.Add(block);
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
 // Real masters use ids below 0x800; a stand-in may too.
 mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();
-Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={placed.FormKey} EditorID='{placed.EditorID}'");
+Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={(placed == null ? "none" : $"{placed.FormKey} EditorID='{placed.EditorID}'")}");
 return 0;

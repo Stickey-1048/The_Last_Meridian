@@ -48,5 +48,11 @@ grep -q "Caps = 00000F:Fallout4.esm" "$(report unnamed-player)" || { echo "FAILE
 
 standin wrong-player
 grep -q "alias  0 Player  (reference) \[Optional\]" "$(report wrong-player)" || { echo "FAILED: a reference that does not place 'Player' was accepted"; exit 1; }
-grep -q "does not place the actor 'Player'; not used" "$(report wrong-player)" || { echo "FAILED: the rejected player reference was not reported"; exit 1; }
-echo "  vanilla lookups work against three stand-in masters (spelling, fallback, rejection)"
+grep -q "does not place the actor 'Player'" "$(report wrong-player)" || { echo "FAILED: the rejected player reference was not reported"; exit 1; }
+
+standin quest-evidence
+grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$(report quest-evidence)" || { echo "FAILED: the game's own quests forcing 0x14 into 'Player' aliases were not accepted as evidence"; exit 1; }
+
+standin weak-evidence
+grep -q "alias  0 Player  (reference) \[Optional\]" "$(report weak-evidence)" || { echo "FAILED: two quests were accepted as enough evidence for the player reference"; exit 1; }
+echo "  vanilla lookups work against five stand-in masters (spelling, fallback, rejection, quest evidence, weak evidence)"

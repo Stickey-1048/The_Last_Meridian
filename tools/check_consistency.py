@@ -188,6 +188,9 @@ class Script:
                     self.stage_refs.add(int(m.group(2)))
                 else:
                     self.foreign_stage_refs.setdefault(m.group(1), set()).add(int(m.group(2)))
+            # TLM:SelfTest sets stages through its helper: Reach(<quest property>, <stage>)
+            for m in re.finditer(r"\bReach\((\w+),\s*(\d+)\)", line):
+                self.foreign_stage_refs.setdefault(m.group(1), set()).add(int(m.group(2)))
         for kind, n in blocks:
             problem(f"{self.path.name}:{n}: {kind} is never closed")
 

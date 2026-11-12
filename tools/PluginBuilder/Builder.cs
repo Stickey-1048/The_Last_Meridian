@@ -27,6 +27,7 @@ public sealed class Builder
 
     readonly Fallout4Mod _mod;
     readonly ILinkCache? _vanilla;
+    readonly IFallout4ModGetter? _vanillaMod;
     readonly Dictionary<string, IFallout4MajorRecordGetter> _byId = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Things this build could not wire, with the reason.</summary>
@@ -40,10 +41,11 @@ public sealed class Builder
 
     public Fallout4Mod Mod => _mod;
 
-    public Builder(Fallout4Mod mod, ILinkCache? vanilla)
+    public Builder(Fallout4Mod mod, ILinkCache? vanilla, IFallout4ModGetter? vanillaMod = null)
     {
         _mod = mod;
         _vanilla = vanilla;
+        _vanillaMod = vanillaMod;
     }
 
     public void Build()
@@ -196,7 +198,7 @@ public sealed class Builder
         }
 
         var adapter = new QuestAdapter();
-        if (spec.Script != null) adapter.Scripts.Add(ToScript(spec.Script, quest, spec, AliasId));
+        foreach (var script in spec.AllScripts()) adapter.Scripts.Add(ToScript(script, quest, spec, AliasId));
 
         if (spec.Aliases.Length > 0) quest.Aliases = new ExtendedList<AQuestAlias>();
         foreach (var a in spec.Aliases)
@@ -399,30 +401,71 @@ public sealed class Builder
         return false;
     }
 
+    /// <summary>
+    /// Fills the player alias with the player's reference.
+    ///
+    /// A wrong reference here would be a quiet, nasty bug, so a candidate is
+    /// only used when the master itself vouches for it, in one of two ways:
+    ///   (a) the record is visible and places the actor called "Player"; or
+    ///   (b) the game's own quests force that same reference into aliases
+    ///       named like "Player". On the real master (1.10.163) the library
+    ///       could not see the record at all, so (a) alone was not enough.
+    /// </summary>
     bool TryFillPlayer(QuestReferenceAlias alias)
     {
         if (_vanilla == null) return false;
         if (!TryVanilla("PlayerRef", "PlacedNpc", out var key))
         {
-            // Last resort. The player reference has carried the id 0x14 in
-            // every game on this engine. Here it is only a candidate: the
-            // check below, against the master itself, decides.
+            // The player reference has carried the id 0x14 in every game on
+            // this engine. Here it is only a candidate; the checks decide.
             key = new FormKey(Fallout4Esm, 0x14);
             VanillaNotes.Add($"PlayerRef: no EditorID matched; trying the conventional id {key}");
         }
 
-        // A wrong reference in the player alias would be a quiet, nasty bug.
-        // Only accept it if it really places the actor called "Player".
-        if (!_vanilla.TryResolve<IPlacedNpcGetter>(key, out var placed)
-            || !_vanilla.TryResolve<INpcGetter>(placed.Base.FormKey, out var baseNpc)
-            || !string.Equals(baseNpc.EditorID, "Player", StringComparison.OrdinalIgnoreCase))
+        // (a) the record itself
+        if (_vanilla.TryResolve<IPlacedNpcGetter>(key, out var placed))
         {
-            VanillaNotes.Add($"PlayerRef: {key} does not place the actor 'Player'; not used");
+            if (_vanilla.TryResolve<INpcGetter>(placed.Base.FormKey, out var baseNpc)
+                && string.Equals(baseNpc.EditorID, "Player", StringComparison.OrdinalIgnoreCase))
+            {
+                VanillaNotes.Add($"PlayerRef: {key} places actor '{baseNpc.EditorID}' ({baseNpc.FormKey}); accepted");
+                alias.ForcedReference = new FormLinkNullable<IPlacedGetter>(key);
+                return true;
+            }
+            VanillaNotes.Add($"PlayerRef: {key} is a placed actor but does not place the actor 'Player' (its base is {placed.Base.FormKey}); not used");
             return false;
         }
-        VanillaNotes.Add($"PlayerRef: {key} places actor '{baseNpc.EditorID}' ({baseNpc.FormKey}); accepted");
-        alias.ForcedReference = new FormLinkNullable<IPlacedGetter>(key);
-        return true;
+        VanillaNotes.Add($"PlayerRef: {key} is not visible as a placed actor in the master");
+
+        // (b) what the game's own quests do with it
+        if (_vanillaMod != null)
+        {
+            var forced = 0;
+            var namedPlayer = 0;
+            string? example = null;
+            foreach (var quest in _vanillaMod.Quests)
+            {
+                foreach (var a in quest.Aliases ?? Array.Empty<IAQuestAliasGetter>())
+                {
+                    if (a is not IQuestReferenceAliasGetter r || r.ForcedReference.FormKey != key) continue;
+                    forced++;
+                    if ((r.Name ?? "").Contains("player", StringComparison.OrdinalIgnoreCase))
+                    {
+                        namedPlayer++;
+                        example ??= $"{quest.EditorID} alias '{r.Name}'";
+                    }
+                }
+            }
+            const int enough = 10;
+            if (namedPlayer >= enough)
+            {
+                VanillaNotes.Add($"PlayerRef: {forced} vanilla quest aliases force {key}, {namedPlayer} of them named like 'Player' (e.g. {example}); accepted");
+                alias.ForcedReference = new FormLinkNullable<IPlacedGetter>(key);
+                return true;
+            }
+            VanillaNotes.Add($"PlayerRef: only {namedPlayer} vanilla quest aliases named like 'Player' force {key} ({forced} aliases in all; {enough} needed); not used");
+        }
+        return false;
     }
 
     // ------------------------------------------------------------ factory
@@ -440,9 +483,10 @@ public sealed class Builder
         var mod = new Fallout4Mod(ModKey.FromNameAndExtension(Spec.PluginName), Fallout4Release.Fallout4);
         mod.ModHeader.Stats.Version = headerVersion;
         ILinkCache? vanilla = null;
+        IFallout4ModGetter? master = null;
         if (fallout4Esm != null)
         {
-            var master = Fallout4Mod.CreateFromBinaryOverlay(fallout4Esm, Fallout4Release.Fallout4);
+            master = Fallout4Mod.CreateFromBinaryOverlay(fallout4Esm, Fallout4Release.Fallout4);
             vanilla = master.ToImmutableLinkCache();
         }
 
@@ -462,7 +506,7 @@ public sealed class Builder
             using (var allocator = new TextFileFormKeyAllocator(mod, work))
             {
                 mod.SetAllocator(allocator);
-                builder = new Builder(mod, vanilla);
+                builder = new Builder(mod, vanilla, master);
                 builder.Build();
                 allocator.Commit();
             }

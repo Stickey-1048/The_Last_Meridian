@@ -90,11 +90,12 @@ public static class SelfCheck
                         $"{q.EditorId} alias {a.Name}: create-in fill differs ({ga.Fill})");
             }
 
-            if (q.Script != null)
+            Expect(got.Scripts.Select(s => s.Name).SequenceEqual(q.AllScripts().Select(s => s.Script)), $"{q.EditorId}: attached scripts differ");
+            foreach (var bind in q.AllScripts())
             {
-                var gs = got.Scripts.FirstOrDefault(s => s.Name == q.Script.Script);
-                if (gs == null) { problems.Add($"{q.EditorId}: script {q.Script.Script} not attached"); continue; }
-                foreach (var p in q.Script.Props)
+                var gs = got.Scripts.FirstOrDefault(s => s.Name == bind.Script);
+                if (gs == null) { problems.Add($"{q.EditorId}: script {bind.Script} not attached"); continue; }
+                foreach (var p in bind.Props)
                 {
                     if (p is VanillaProp) continue;   // absent in skeleton mode by design
                     var gp = gs.Props.FirstOrDefault(x => x.Name == p.Name);

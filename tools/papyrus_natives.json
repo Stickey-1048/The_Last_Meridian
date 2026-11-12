@@ -175,6 +175,18 @@
     "source": "falloutck.uesp.net/wiki/GetValueInt_-_GlobalVariable"
    }
   ],
+  "IsCompleted": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsCompleted_-_Quest"
+   }
+  ],
   "IsDead": [
    {
     "global": false,
@@ -197,6 +209,34 @@
     "params": [],
     "returns": "bool",
     "source": "falloutck.uesp.net/wiki/IsInCombat_-_Actor"
+   }
+  ],
+  "IsObjectiveCompleted": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiObjective"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsObjectiveCompleted_-_Quest"
+   }
+  ],
+  "IsObjectiveDisplayed": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiObjective"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsObjectiveDisplayed_-_Quest"
    }
   ],
   "IsRunning": [
@@ -223,6 +263,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/Kill_-_Actor"
+   }
+  ],
+  "MessageBox": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Debug",
+    "params": [
+     "string asMessageBoxText"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/MessageBox_-_Debug"
    }
   ],
   "Mod": [
@@ -255,6 +309,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/MoveTo_-_ObjectReference"
+   }
+  ],
+  "Notification": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Debug",
+    "params": [
+     "string asNotificationText"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/Notification_-_Debug"
    }
   ],
   "OnActivate": [
@@ -367,6 +435,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/OnTimer_-_ScriptObject"
+   }
+  ],
+  "OpenUserLog": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Debug",
+    "params": [
+     "string asLogName"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/OpenUserLog_-_Debug"
    }
   ],
   "RegisterForDistanceGreaterThanEvent": [
@@ -571,6 +653,22 @@
     "source": "falloutck.uesp.net/wiki/Trace_-_Debug"
    }
   ],
+  "TraceUser": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 3,
+    "min_args": 2,
+    "owner": "Debug",
+    "params": [
+     "string asUserLog",
+     "string asTextToPrint",
+     "int aiSeverity = 0"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/TraceUser_-_Debug"
+   }
+  ],
   "TryToDisable": [
    {
     "global": false,
@@ -620,6 +718,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/UnregisterForDistanceEvents_-_ScriptObject"
+   }
+  ],
+  "WaitMenuMode": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Utility",
+    "params": [
+     "float afSeconds"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/WaitMenuMode_-_Utility"
    }
   ]
  }

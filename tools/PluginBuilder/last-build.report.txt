@@ -49,6 +49,27 @@ Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=
   script TLM:Core
            TLM_G_DataVersion = TLM_G_DataVersion
            TLM_MQ01 = TLM_MQ01
+  script TLM:SelfTest
+           TLM_MQ01 = TLM_MQ01
+           TLM_SQ01 = TLM_SQ01
+           TLM_G_DataVersion = TLM_G_DataVersion
+           TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
+           TLM_G_CaravanMethod = TLM_G_CaravanMethod
+           TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
+           TLM_G_Rep_MercyCrossing = TLM_G_Rep_MercyCrossing
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           TLM_G_MQ01_DebriefVariant = TLM_G_MQ01_DebriefVariant
+           TLM_G_MQ01_DebriefAnswer = TLM_G_MQ01_DebriefAnswer
+           TLM_Truth = TLM_Truth
+           TLM_Competence = TLM_Competence
+           TLM_Accountability = TLM_Accountability
+           TLM_MutualTrust = TLM_MutualTrust
+           TLM_G_SQ01_EvidenceCount = TLM_G_SQ01_EvidenceCount
+           TLM_G_SQ01_EvidenceLevel = TLM_G_SQ01_EvidenceLevel
+           TLM_G_SQ01_Outcome = TLM_G_SQ01_Outcome
+           TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
+           TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
+           TornTransitPass = TLM_MISC_TornTransitPass
 
 Quest TLM_MQ01  00081A  "Six Rounds to Mercy"  type=MainQuest priority=60 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:MQ01Quest
