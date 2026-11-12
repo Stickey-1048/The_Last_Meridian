@@ -1,7 +1,7 @@
 # Verification log
 
 **Dates:** 2026-11-11 and 2026-11-12. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
-**Not checked:** anything inside the Creation Kit editor. In the running game: the plugin loads, its scripts run, and one scripted scenario of stages and globals passes all 60 of its checks (2026-11-12). Nothing is placed in the world, so nothing that needs an actor, an object, a timer, dialogue or a player has been tested.
+**Not checked:** anything inside the Creation Kit editor. In the running game (all on 2026-11-12): the plugin loads, its scripts run, one scripted scenario of stages and globals passes all 60 of its checks, also with nobody at the keyboard, and actors made at run time and put into the main quest's aliases are acted on by the quest's scripts (15 checks, in a scenario that then stopped before its end). Nothing is placed in the world, so nothing that needs a built place, dialogue or a player has been tested, and of the rules that need an actor only the three in that scenario.
 
 ## Results from the game PC
 
@@ -164,7 +164,7 @@ Also read from the fifth run's log after the fact: that session too began by loa
 
 The managed game's Data folder has one loose compiled script directly under `Scripts`, and it is not one of the game's own base scripts; the several hundred other files under `Scripts` are in subfolders. So the leftovers there do not replace the game's base scripts.
 
-Prepared for the next run, and unverified until it has happened:
+Prepared for the next run, and unverified until it has happened (it has: see "The first unattended run" below):
 
 - `tools/win/Run-Scenarios.ps1` runs scenarios one game session each, unattended. It depends on three things not yet seen in the game: `sStartingConsoleCommand=coc qasmoke` in the profile's settings entering the test room at start-up (forum reports say the setting works, some that it is ignored under a mod manager); `TLM:Core` then starting the scenario by itself from its timer; and `Debug.QuitGame()` closing the game. The last is listed on the wiki as a debug-only function; the other debug-only functions the scripts use (`Trace`, `TraceUser`, `OpenUserLog`) do work in this game when the scripts are compiled as they are now.
 - Self-test scenario 2, `TLM:FixtureProbe`, spawns the game's generic settler (`WorkshopNPC`, looked up when the plugin is built; if the name is not in `Fallout4.esm` the probe says so and stops), forces the actors into three of the quest's aliases and kills them. It answers checklist items 6 and 7 as far as they can be answered without a placed world, and decides whether the test matrix can be run with actors made at run time (owner decision D8).
@@ -181,9 +181,60 @@ Fixed (reproduced and tested in scratch clones; not yet run on the PC):
 - `tools/win/Update-And-Run.ps1` updates the folder and then runs the build, and stops if it cannot update. A file git reports as changed whose content is identical is refreshed in git's index (nothing is staged, nothing discarded); a file whose content really differs is listed and left alone.
 - `Run-FirstBuild.ps1` stops at once if the folder is behind GitHub, instead of running older scripts.
 
-The one-time remedy on the PC is `git add tools/PluginBuilder/formkeys.txt`, which makes git look at the content again, followed by `git pull`.
+The one-time remedy on the PC is `git add tools/PluginBuilder/formkeys.txt`, which makes git look at the content again, followed by `git pull`. It worked: the next run was at the current commit.
 
-Still not done anywhere: any test with an actor or an object, opening the plugin in the Creation Kit, any test of the quest as a player would meet it.
+### The first unattended run, 2026-11-12
+
+Eighth run, 10:18 to 10:22 by the PC's clock, commit `1b832da`. The command given was the one-time remedy above followed by `tools\win\Update-And-Run.ps1 -Install -Unattended`; only the results of the scenario run were sent back, as pasted text. Nobody touched the game.
+
+| What | Result |
+|---|---|
+| Scripts compile | 9 of 9, the new `TLM:FixtureProbe` on its first compile |
+| Entering the test room by itself | **Works.** With `sStartingConsoleCommand=coc qasmoke` in the test profile's `fallout4custom.ini`, the game started through Mod Organizer went into the room without a key being pressed |
+| Starting the scenario by itself | **Works.** `TLM:Core` read the scenario number from the plugin and started the scenario from its timer |
+| The game closing itself | **Works.** `Debug.QuitGame()` ended the game; the results were complete on disk |
+| Scenario 1 (both quests by stages alone) | **60 passed, 0 failed, 32 seconds** from starting Mod Organizer to the game being gone. The same result as the run by hand |
+| Scenario 2 (actors made at run time) | **Did not finish: 15 passed, 0 failed, no result line.** The script stopped in its last part. The runner closed the game after its limit of 240 seconds by asking the window to close, which the game obeyed |
+| Afterwards | The scenario number, the start-up command and the keep-running setting were put back; the installed plugin was again identical to the build |
+| The game's script log | No error or warning naming this project in either session |
+
+What scenario 2 showed before it stopped. The settler is the game's `WorkshopNPC`, found in `Fallout4.esm` when the plugin was built, and spawned next to the player with `PlaceAtMe`.
+
+| What | Result |
+|---|---|
+| An actor made at run time, put into an alias with `ForceRefTo` | The alias holds it, and the quest script's own test for "alive" sees it |
+| An actor in an alias flagged Protected | `IsEssential()` is false. `Kill()` with no killer **does not kill it**. `Kill(player)` kills it. `SetProtected(false)` and then `Kill()` kills it |
+| The Cutter alias script | Heard the death of the actor forced into the lead's alias (`OnDeath`), and the quest set stage 31 and the outcome "saved" |
+| The caravan hand alias script | Heard the death of the actor forced into the caravan master's alias with the player as killer; the quest set stage 35, and "exploited" replaced "saved" (amendment A3) |
+| A hand's death with no player as killer | Not treated as a betrayal: stage 35 stayed unset |
+| A timer on a quest script | Fired |
+| `PlaceAtMe` of this plugin's item, which has no model | Returned a reference |
+
+So the quest's rules that hang on an alias and a death can be tested with actors made at run time. The quest's `KillByCutters` clears the protection before it kills; the second row shows that it has to whenever the Cutter lead is not there to be named as the killer.
+
+Where it stopped. After the fifteenth check the script registered for a distance event between the player and the placed item, called `MoveTo` on the item to put it 3000 units away, and waited three seconds; the line that follows the wait was never written. Which of those calls did not come back is not established. `MoveTo` is the likeliest: the wiki lists it among the functions that suspend the script until the game has done the work, and the item has no model, so nothing of it is ever loaded.
+
+What was changed because of it (not yet compiled, not yet run):
+
+- The self-test has a watchdog. Every step of a scenario is named and given a number of seconds; if the step does not come back in time, the self-test writes where it stopped, writes the result and closes the game. The runner's own limit stays as the second line of defence, and its report now shows the last step named in the log.
+- Scenario 2 keeps the 14 checks about actors and loses the distance part.
+- Scenario 3 is new: distance events between the player and one of the game's plain markers (`XMarker`, looked up when the plugin is built), registering while already apart, and the main quest's own "the player has left" watch with the marker as the centre of the ambush. It ends with two experiments that repeat what stopped scenario 2, apart and in order; if one does not come back, the watchdog reports that as a fact and the scenario still counts.
+- Scenarios 4 to 9 are new (`TLM:WorldCases`): the main quest played from start to hand-off with a caravan made at run time, one case for each way the encounter can end. Every expected number comes from the logic model; `tools/logic_model/test_worldcases_expectations.py` replays the six sequences and fails if a number, a yes/no check or a stage in the script differs.
+
+| Scenario | Case | Events in the logic model | Matrix rows it stands for |
+|---|---|---|---|
+| 4 | evaded | start, take_dispatch, goto_ambush, evade_timer, goto_town, pritchard_handover, debrief_admit, pritchard_handoff | T09, and the "evaded" debrief with "admit" |
+| 5 | saved after a fight | start, take_dispatch, goto_ambush, attack_cutter, player_kills_lead, goto_town, pritchard_handover, pritchard_handoff | T06, and the "saved" debrief |
+| 6 | missed | start, take_dispatch, goto_town, pritchard_handover, pritchard_handoff | T10b |
+| 7 | betrayal on the road | start, take_dispatch, goto_ambush, player_kills_nell, goto_town, pritchard_handover, pritchard_handoff | T12 |
+| 8 | murder after saving | start, take_dispatch, goto_ambush, player_kills_lead, player_kills_nell, goto_town, pritchard_handover, debrief_confess, pritchard_handoff | T12c, and the "witness" debrief with "confess" |
+| 9 | the deal | start, take_dispatch, goto_ambush, dunmore_deal, goto_town, pritchard_handover, debrief_blame, pritchard_handoff | T11, and the "witness" debrief with "blame" |
+
+With scenario 1 (the debrief for a caravan master lost to something other than the player) these reach all four caravan outcomes and all six debrief variants. They are six paths through the rules, not the matrix: T01 to T28 has other rows, and the side quest's S01 to S24 are untouched.
+
+What scenarios 4 to 9 stand in for, and what they leave out: the dispatch, the triggers and the conversation with the sheriff are stage numbers set by the test; the evade timer's handler is called directly, the 90 seconds are not waited for; the deal is its stage number, set as the conversation would set it; the wagon's cargo is three items in a fourth settler's pockets. The stand-ins are settlers with their own AI and guns, so the player is made invulnerable for the length of the case.
+
+Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
@@ -208,16 +259,20 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | Alias scripts before the quest starts | Corrected | Aliases receive their reference's events as part of a running quest. SQ01 must already be running for clue scripts to fire (A8). |
 | `OnContainerChanged` | Documented | `Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldContainer)`. Once an object is in a container it "ceases to exist in most cases". |
 | `OnTriggerEnter` | Documented | `Event OnTriggerEnter(ObjectReference akActionRef)`. Can arrive out of order with `OnTriggerLeave`; the trigger's collision layer decides what fires it. |
-| `OnDeath` | Documented | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. |
+| `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. |
 | `OnPlayerLoadGame` | Documented | Sent only to the player actor; fires "for the first time on the next load". An alias pointing at the player should receive it, since aliases get their reference's events. *That last step needs the game.* |
 | `OnCombatStateChanged` | Documented | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. |
 | `OnHit` | Documented | Needs `RegisterForHitEvent` first and fires once per registration. The scripts use `OnCombatStateChanged` instead. |
-| Distance polling | Corrected | `RegisterForDistanceGreaterThanEvent(ScriptObject, ScriptObject, float)` and `Event OnDistanceGreaterThan(...)` exist and the wiki recommends them over polling `GetDistance`. |
+| Distance polling | Corrected | `RegisterForDistanceGreaterThanEvent(ScriptObject, ScriptObject, float)` and `Event OnDistanceGreaterThan(...)` exist and the wiki recommends them over polling `GetDistance`. One event per registration; "if the objects are already that far apart, the event will be sent immediately". Not yet seen in the game. |
+| Calling an event like a function | Documented | "Calling events is identical to calling a function." The world cases call the main quest's `OnTimer` this way. Not yet compiled. |
 | `Message.Show` return value | Documented | "If the message displays a message box to the user, it returns the button the user hit. If it doesn't, it will return -1 immediately." |
 | Does a hidden button shift the returned index? | Needs the game | Not stated. |
 | `RemoveItem` | Documented | `RemoveItem(Form akItemToRemove, int aiCount = 1, bool abSilent = false, ObjectReference akOtherContainer = None)`. |
 | `Kill`, protection | Documented | `Kill(Actor akKiller = None)`; `SetProtected(bool abProtected = true)`; `SetEssential` then overrides alias flags. Protected: "The Player is the only one allowed to kill a Protected Actor." |
-| Does `Kill` work on a Protected actor? | Needs the game | Not stated. The scripts clear the flag first. |
+| Does `Kill` work on a Protected actor? | Seen in the game | Not stated on the wiki. In the game on 2026-11-12, for an actor in an alias flagged Protected: `Kill()` with no killer did nothing; `Kill(player)` killed; `SetProtected(false)` then `Kill()` killed. The scripts clear the flag first. |
+| `ForceRefTo` with an actor made by `PlaceAtMe` | Seen in the game | The alias holds the actor and its script receives the actor's events (2026-11-12). |
+| `MoveTo` | Documented | Listed among the latent functions: the script is suspended until the game has moved the reference. On 2026-11-12 a script that called it on a placed item with no model never continued; whether `MoveTo` was the call that did not come back is not established. |
+| `Debug` functions in the game | Seen in the game | The wiki calls them debug-only. `Trace`, `TraceUser`, `OpenUserLog` and `QuitGame` have visibly worked in game build 1.10.163 with the scripts compiled as they are. |
 | Removing an NPC without a dangling alias | Needs the game | `Disable()` is documented; the alias stays filled. |
 | Property flags | Documented | `Auto Const`, `Mandatory`, `AutoReadOnly`, and `Const` variables are all valid Fallout 4 Papyrus. |
 | Default scripts | Documented (new) | The base game ships `DefaultAliasOnContainerChangedTo`, `DefaultAliasOnTriggerEnter`, `DefaultAliasOnDeath`, `DefaultTopicInfoSetStage`, `DefaultShowMessageOnActivateAlias` and others, each taking a `StageToSet`. Pickups, triggers and dialogue can set stages with no project code. |
@@ -244,7 +299,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 |---|---|---|
 | `cqf` (CallQuestFunction) | Seen in the game | `CQF <quest> <function> [params]`. Missing parameters are filled with zero or None, not with the script's defaults. Worked on 2026-11-12 for a function on the second of two scripts on the quest. |
 | `sqv` (ShowQuestVars) | Documented | `SQV <QuestID> [filter]` shows variables, aliases and quest state. |
-| `coc` | Seen in the game | `coc qasmoke` typed at the main menu loaded the test room (2026-11-12). |
+| `coc` | Seen in the game | `coc qasmoke` typed at the main menu loaded the test room (2026-11-12). The same command given as `[General] sStartingConsoleCommand` in the profile's settings entered the room at start-up, with no key pressed. |
 | `startquest`, `setstage`, `getstage`, `sqs`, `sqt`, `prid`, `kill`, `tgm`, `player.additem` | Needs the game | No page on the wiki. |
 
 ## Checklist for the game PC
@@ -254,11 +309,12 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3. All scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 8 of 8**, again after the change to `TLM:Core`.
 3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **Done 2026-11-12** on the second attempt.
 3b. Stage events reach the quest scripts and the self-test passes. **Done 2026-11-12: 60 of 60**, after a first run failed 34 because the stages had no items.
+3c. The self-test runs with nobody at the keyboard (`tools/win/Run-Scenarios.ps1`). **Done 2026-11-12** for scenario 1; scenario 2 stopped before its end and scenarios 3 to 9 have not run.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
-6. Alias behaviour: Create Reference to Object — In; Essential and Protected flags; alias on the player receiving `OnPlayerLoadGame`.
-7. `Kill` on a Protected actor; `Disable` on an aliased actor.
+6. Alias behaviour: Create Reference to Object — In; the Essential flag (scenario 4 tries it); the Protected flag (**done 2026-11-12**, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).
+7. `Kill` on a Protected actor (**done 2026-11-12**); `Disable` on an aliased actor (scenarios 4 to 7 check it).
 8. Message box with a hidden button: which index comes back.
-9. Timers and distance registrations across a save and load.
+9. Distance events (scenario 3). Timers and distance registrations across a save and load.
 10. Dialogue: option count, speech checks, unvoiced lines, and whether an actor in a hold-up will talk (A11).
 11. The remaining console commands.

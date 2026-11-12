@@ -1,11 +1,14 @@
 Scriptname TLM:MQ01Quest extends Quest
 {TLM_MQ01 "Six Rounds to Mercy". Owns all quest logic.
 
-COMPILES. RAN IN THE GAME on 2026-11-12 for ONE scripted scenario only (the
-self-test: start, dispatch, ambush live, saved, delivery, hand-off), with
-every alias empty. The handlers for stages 10, 20, 30, 31, 32, 40, 50, 52, 60
-and 100 ran and left the state the logic model predicts. Everything that needs
-an actor, an object, a timer, a distance event, dialogue or a save has NOT run
+COMPILES. RAN IN THE GAME on 2026-11-12 for one scripted scenario (the
+self-test: start, dispatch, ambush live, saved, delivery, hand-off) with every
+alias empty: the handlers for stages 10, 20, 30, 31, 32, 40, 50, 52, 60 and
+100 ran and left the state the logic model predicts. The same day, with
+actors made at run time in three aliases (self-test scenario 2): the Cutter
+lead's death gave stage 31, a caravan hand killed by the player gave stage 35
+and betrayal replaced "saved". The evade timer, the distance watch, the town
+move, the wagon, the deal, dialogue and saving have NOT run
 (docs/design/VERIFY_LOG.md). Written without Fallout 4 or the Creation Kit.
 
 Design: stages are the API. Anything that changes the quest sets a stage

@@ -1,29 +1,43 @@
 Scriptname TLM:FixtureProbe extends Quest
 {Development only, attached to TLM_Core next to TLM:Core and TLM:SelfTest.
-Self-test scenario 2. It must be removed before any release.
+Self-test scenarios 2 and 3. It must be removed before any release.
 
 It finds out, in the game, whether the pieces a fuller test of the quest
 needs can be made at run time, so that the test matrix does not have to wait
-for a hand-built test cell: an actor spawned from a base form, forced into a
-quest alias, killed, and noticed by the alias's script; a timer on a quest
-script; a distance event.
+for a hand-built test cell.
+
+  Scenario 2 (Run): an actor spawned from a base form, forced into a quest
+  alias, killed, and noticed by the alias's script; a timer on a quest script.
+  Scenario 3 (RunDistance): distance events between the player and a marker
+  placed at run time, and the main quest's own "the player has left" watch.
 
 Most of what it writes is reported, not scored: a line that begins INFO is a
 fact about the game, not about the design. The scored checks are the ones the
 quest's design already relies on.
 
-NOT YET COMPILED. NOT YET RUN IN THE GAME.}
+Scenario 2 COMPILES and RAN IN THE GAME on 2026-11-12 as far as its last part:
+15 checks passed, then the script stopped inside the distance part and never
+came back (docs/design/VERIFY_LOG.md). That part has been taken out of
+scenario 2 and rewritten as scenario 3.
+Scenario 3 and this version of scenario 2: NOT YET COMPILED, NOT YET RUN.}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory
-{Any item of this plugin. One is placed in the world as a stand-in for a marker.}
+{Any item of this plugin. It has no model yet; scenario 3 ends with an
+experiment on what that does to a placed copy.}
 Form Property FixtureActorBase Auto Const
 {An actor base from the game to spawn: the generic settler, looked up in
 Fallout4.esm when the plugin is built. None if it was not found.}
+Form Property FixtureMarkerBase Auto Const
+{The game's plain marker (XMarker), looked up in Fallout4.esm when the plugin
+is built. None if it was not found.}
 
 int TIMER_PROBE = 7 Const
 bool timerFired = false
-bool distanceFired = false
+int distanceEvents = 0
+float lastEventDistance = 0.0
+
+; ------------------------------------------------------------- scenario 2
 
 Function Run(TLM:SelfTest akTest)
 	Actor player = Game.GetPlayer()
@@ -51,6 +65,7 @@ Function Run(TLM:SelfTest akTest)
 	; ---- 1. A caravan hand who dies by someone else's hand.
 	; The alias is flagged Protected. The quest's own KillByCutters clears that
 	; on the actor before it kills; this shows whether it needs to.
+	akTest.Step("spawning the drover")
 	Actor abel = SpawnActor(player)
 	akTest.CheckTrue("probe: an actor can be spawned at run time", abel != None)
 	If !abel
@@ -60,10 +75,12 @@ Function Run(TLM:SelfTest akTest)
 	akTest.CheckTrue("probe: ForceRefTo fills the drover alias", mq.Alias_CaravanDrover.GetActorReference() == abel)
 	akTest.CheckTrue("probe: the quest script sees the drover alive", mq.IsAliveAlias(mq.Alias_CaravanDrover))
 	akTest.Note("probe: drover in a Protected alias: IsEssential = " + abel.IsEssential())
+	akTest.Step("killing the drover with no killer")
 	abel.Kill()
 	Utility.Wait(1.5)
 	akTest.Note("probe: drover after Kill() with no killer, protection not cleared: dead = " + abel.IsDead())
 	If !abel.IsDead()
+		akTest.Step("clearing the drover's protection and killing him")
 		abel.SetProtected(false)
 		abel.Kill()
 		Utility.Wait(1.5)
@@ -75,6 +92,7 @@ Function Run(TLM:SelfTest akTest)
 
 	; ---- 2. The Cutter lead killed by the player: the alias's script should
 	; hear the death and resolve the encounter as "saved".
+	akTest.Step("spawning the Cutter lead and killing him as the player")
 	Actor lead = SpawnActor(player)
 	If lead
 		mq.Alias_CutterLead.ForceRefTo(lead)
@@ -90,6 +108,7 @@ Function Run(TLM:SelfTest akTest)
 
 	; ---- 3. The caravan master killed by the player after the rescue: the
 	; hand alias's script should hear it, and betrayal should override "saved".
+	akTest.Step("spawning the caravan master and killing her as the player")
 	Actor nell = SpawnActor(player)
 	If nell
 		mq.Alias_CaravanMaster.ForceRefTo(nell)
@@ -106,26 +125,115 @@ Function Run(TLM:SelfTest akTest)
 	; ---- 4. The timer started at the top.
 	akTest.CheckTrue("probe: a timer on a quest script fires", timerFired)
 
-	; ---- 5. A distance event, as the quest's evade watch uses.
-	ObjectReference marker = player.PlaceAtMe(TornTransitPass)
-	akTest.CheckTrue("probe: an item can be placed in the world as a marker", marker != None)
-	If marker
-		distanceFired = false
-		RegisterForDistanceGreaterThanEvent(player, marker, 400.0)
-		marker.MoveTo(player, 3000.0, 0.0, 0.0)
-		Utility.Wait(3.0)
-		akTest.Note("probe: distance to the marker after moving it away = " + player.GetDistance(marker))
-		akTest.CheckTrue("probe: a distance event fires when the two references are far apart", distanceFired)
-		UnregisterForDistanceEvents(player, marker)
-		marker.Disable()
-		marker.Delete()
-	EndIf
-
 	; ---- tidy up what was spawned
+	akTest.Step("removing what was spawned")
 	RemoveSpawned(abel)
 	RemoveSpawned(lead)
 	RemoveSpawned(nell)
 EndFunction
+
+; ------------------------------------------------------------- scenario 3
+
+Function RunDistance(TLM:SelfTest akTest)
+	Actor player = Game.GetPlayer()
+	TLM:MQ01Quest mq = TLM_MQ01 as TLM:MQ01Quest
+	If !mq
+		akTest.Fail("probe: TLM_MQ01 does not carry its quest script")
+		Return
+	EndIf
+	If !FixtureMarkerBase
+		akTest.Fail("probe: no marker base was found in Fallout4.esm when the plugin was built, so no marker can be placed")
+		Return
+	EndIf
+
+	; ---- 1. A distance event between the player and a marker.
+	akTest.Step("placing a marker at the player")
+	ObjectReference marker = player.PlaceAtMe(FixtureMarkerBase)
+	akTest.CheckTrue("probe: a marker can be placed at run time", marker != None)
+	If !marker
+		Return
+	EndIf
+	akTest.Note("probe: distance to the new marker = " + player.GetDistance(marker))
+	distanceEvents = 0
+	akTest.Step("registering for a distance event while the two are close")
+	RegisterForDistanceGreaterThanEvent(player, marker, 500.0)
+	Utility.Wait(1.0)
+	akTest.CheckTrue("probe: no distance event while the two are close", distanceEvents == 0)
+	akTest.Step("moving the marker 2000 units away")
+	marker.MoveTo(player, 2000.0, 0.0, 0.0)
+	akTest.Step("waiting for the distance event")
+	WaitForDistanceEvents(1)
+	akTest.Note("probe: distance to the marker after moving it = " + player.GetDistance(marker) + "; the event reported " + lastEventDistance)
+	akTest.CheckTrue("probe: one distance event arrives once the two are far enough apart", distanceEvents == 1)
+
+	; ---- 2. Registering when the two are already apart. The quest re-arms its
+	; watch after a load, when the player may already be far away.
+	distanceEvents = 0
+	akTest.Step("registering for a distance event while the two are already apart")
+	RegisterForDistanceGreaterThanEvent(player, marker, 500.0)
+	WaitForDistanceEvents(1)
+	akTest.CheckTrue("probe: registering while already apart sends the event", distanceEvents == 1)
+	UnregisterForDistanceEvents(player, marker)
+
+	; ---- 3. The quest's own watch: leaving a live ambush resolves it as "evaded".
+	akTest.Reach(TLM_MQ01, 10)
+	akTest.Reach(TLM_MQ01, 20)
+	akTest.Step("placing the ambush centre at the player")
+	ObjectReference center = player.PlaceAtMe(FixtureMarkerBase)
+	If center
+		mq.Alias_AmbushCenter.ForceRefTo(center)
+		akTest.CheckTrue("probe: ForceRefTo fills the ambush centre alias", mq.Alias_AmbushCenter.GetReference() == center)
+		akTest.Reach(TLM_MQ01, 30)
+		Utility.Wait(1.0)
+		akTest.CheckTrue("probe: the ambush stays live while the player is near its centre", mq.IsLive())
+		akTest.Step("moving the ambush centre beyond the evade distance")
+		center.MoveTo(player, mq.EvadeDistance + 1000.0, 0.0, 0.0)
+		akTest.Step("waiting for the quest to notice that the player has left")
+		WaitForStage(32)
+		akTest.Note("probe: distance to the ambush centre = " + player.GetDistance(center) + "; the quest's evade distance is " + mq.EvadeDistance)
+		akTest.CheckTrue("probe: leaving a live ambush sets stage 32", TLM_MQ01.GetStageDone(32))
+		akTest.CheckTrue("probe: the outcome is 'evaded'", mq.Outcome() == 2)
+	Else
+		akTest.Fail("probe: a second marker could not be placed")
+	EndIf
+
+	akTest.Step("removing the markers")
+	marker.Disable()
+	marker.Delete()
+	If center
+		center.Disable()
+		center.Delete()
+	EndIf
+
+	; ---- 4. Experiments, last because they may not come back. In the run of
+	; 2026-11-12 the script stopped after placing a copy of this plugin's item
+	; (which has no model) and never returned from what followed: registering a
+	; distance event on it and moving it 3000 units. These steps repeat that,
+	; apart and in order, to show which call it was.
+	akTest.Step("EXPERIMENT: moving a placed item that has no model by 300 units", 20.0, true)
+	ObjectReference item = player.PlaceAtMe(TornTransitPass)
+	If item
+		akTest.Note("probe: the item with no model was placed; Is3DLoaded = " + item.Is3DLoaded())
+		item.MoveTo(player, 300.0, 0.0, 0.0)
+		akTest.Note("probe: MoveTo by 300 units on the item with no model came back; distance now " + player.GetDistance(item))
+		akTest.Step("EXPERIMENT: a distance event on the item with no model, then moving it 3000 units", 20.0, true)
+		distanceEvents = 0
+		RegisterForDistanceGreaterThanEvent(player, item, 400.0)
+		item.MoveTo(player, 3000.0, 0.0, 0.0)
+		akTest.Note("probe: MoveTo by 3000 units on the item with no model came back")
+		WaitForDistanceEvents(1)
+		akTest.Note("probe: distance events for the item with no model: " + distanceEvents)
+		UnregisterForDistanceEvents(player, item)
+		akTest.Step("EXPERIMENT: removing the item with no model", 20.0, true)
+		item.Disable()
+		item.Delete()
+		akTest.Note("probe: the item with no model was removed")
+	Else
+		akTest.Note("probe: the item with no model could not be placed this time")
+	EndIf
+EndFunction
+
+; ---------------------------------------------------------------- helpers
 
 Actor Function SpawnActor(Actor akNear)
 	ObjectReference placed = akNear.PlaceAtMe(FixtureActorBase)
@@ -149,6 +257,15 @@ Function WaitForStage(int aiStage)
 	EndWhile
 EndFunction
 
+Function WaitForDistanceEvents(int aiCount)
+	{Waits until that many distance events have arrived, or five seconds.}
+	int tries = 0
+	While distanceEvents < aiCount && tries < 10
+		Utility.Wait(0.5)
+		tries += 1
+	EndWhile
+EndFunction
+
 Event OnTimer(int aiTimerID)
 	If aiTimerID == TIMER_PROBE
 		timerFired = true
@@ -156,5 +273,6 @@ Event OnTimer(int aiTimerID)
 EndEvent
 
 Event OnDistanceGreaterThan(ObjectReference akObj1, ObjectReference akObj2, float afDistance)
-	distanceFired = true
+	distanceEvents += 1
+	lastEventDistance = afDistance
 EndEvent

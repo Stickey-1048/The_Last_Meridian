@@ -11,10 +11,16 @@ Run it once per game session, from the console:   cqf TLM_Core RunSelfTest
 Results go to Documents\My Games\Fallout4\Logs\Script\User\TLM.0.log (Papyrus
 logging has to be on), to the Papyrus log, and to a message box.
 
-COMPILES. Ran in the game on 2026-11-12 from the console: 60 passed, 0 failed,
-once the plugin's stages had been given items. (The run before reported 26
-passed, 34 failed, because no OnStageSet event reached the quest scripts;
-docs/design/VERIFY_LOG.md.)}
+Scenarios: 1 here; 2 and 3 in TLM:FixtureProbe; 4 to 9 in TLM:WorldCases.
+A number after the function name picks one:   cqf TLM_Core RunSelfTest 4
+One fresh game session per scenario: the quests run once.
+
+Scenario 1 ran in the game on 2026-11-12, from the console and with nobody at
+the keyboard: 60 passed, 0 failed, once the plugin's stages had been given
+items. (The run before reported 26 passed, 34 failed, because no OnStageSet
+event reached the quest scripts; docs/design/VERIFY_LOG.md.)
+The watchdog, Step() and the scenarios above 2 were added after that run:
+THIS VERSION IS NOT YET COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
@@ -58,6 +64,16 @@ int handledBeforeReturn = 0
 ; True when TLM:Core started the run for the unattended runner: no message
 ; boxes, and the game is closed at the end.
 bool unattended = false
+; The watchdog of an unattended run. A scenario that calls something which
+; never comes back would otherwise sit there until the runner on the PC gives
+; up, with no result written. Every Step() names what the scenario is about to
+; do and gives it a number of seconds; if the next Step() or the end of the
+; scenario has not come by then, the watchdog writes where it stopped and
+; closes the game.
+int TIMER_WATCHDOG = 9 Const
+string currentStep = ""
+bool currentStepIsExperiment = false
+bool finished = false
 
 ; ------------------------------------------------------------------- entry
 
@@ -67,15 +83,64 @@ Function RunUnattended(int aiScenario)
 	the results are on disk, and closes the game: the runner on the PC is
 	waiting for the game to end.}
 	unattended = true
+	finished = false
+	currentStep = "starting the scenario"
+	currentStepIsExperiment = false
+	StartTimer(90.0, TIMER_WATCHDOG)
 	RunSelfTest(aiScenario)
+	If finished
+		; The watchdog has already written the result and is closing the game.
+		Return
+	EndIf
+	finished = true
+	CancelTimer(TIMER_WATCHDOG)
 	Debug.CloseUserLog("TLM")
 	Utility.Wait(3.0)
 	Debug.QuitGame()
 EndFunction
 
+Event OnTimer(int aiTimerID)
+	If aiTimerID == TIMER_WATCHDOG && unattended && !finished
+		; The scenario is inside a call that has not come back. Say where,
+		; write what there is, and close the game.
+		finished = true
+		If currentStepIsExperiment
+			Note("this experiment did not come back, and the scenario was ended here: " + currentStep)
+		Else
+			Fail("the scenario did not come back from: " + currentStep)
+		EndIf
+		WriteResult()
+		Debug.CloseUserLog("TLM")
+		Utility.Wait(2.0)
+		Debug.QuitGame()
+	EndIf
+EndEvent
+
+Function Step(string asWhat, float afSeconds = 45.0, bool abExperiment = false)
+	{Names what the scenario is about to do and how long it may take. Written
+	to the log, so the last STEP line of a run that stopped shows where. An
+	experiment is a step that is allowed not to come back: the watchdog then
+	reports it as a fact about the game and not as a failure. Nothing can
+	follow an experiment that did not come back, so experiments go last.}
+	currentStep = asWhat
+	currentStepIsExperiment = abExperiment
+	Log("STEP  " + asWhat)
+	If unattended && !finished
+		StartTimer(afSeconds, TIMER_WATCHDOG)
+	EndIf
+EndFunction
+
+Function WriteResult()
+	Log("INFO  stage handlers already finished when SetStage returned: " + handledBeforeReturn + " of " + reaches)
+	Log("==== RESULT: " + passed + " passed, " + failed + " failed ====")
+EndFunction
+
 Function RunSelfTest(int aiScenario = 0)
 	{Scenario 1 (also what the console gets when no number is given): the main
-	and side quest by stages alone. Scenario 2: the fixture probe.}
+	and side quest by stages alone. 2: actors made at run time and put into the
+	quest's aliases. 3: distance events. 4 to 9: the main quest played with a
+	caravan made at run time, one case for each way the encounter can end
+	(TLM:WorldCases).}
 	If busy
 		Debug.Notification("TLM self-test is already running")
 		Return
@@ -115,19 +180,42 @@ Function RunSelfTest(int aiScenario = 0)
 		CheckInt("core data version", TLM_G_DataVersion.GetValueInt(), 1)
 		TestMainQuest()
 		TestSideQuest()
-	ElseIf scenario == 2
+	ElseIf scenario == 2 || scenario == 3
 		TLM:FixtureProbe probe = (Self as Quest) as TLM:FixtureProbe
-		If probe
+		If !probe
+			Fail("the fixture probe script is not attached to this quest")
+		ElseIf scenario == 2
 			probe.Run(Self)
 		Else
-			Fail("scenario 2: the fixture probe script is not attached to this quest")
+			probe.RunDistance(Self)
+		EndIf
+	ElseIf scenario >= 4 && scenario <= 9
+		TLM:WorldCases cases = (Self as Quest) as TLM:WorldCases
+		If !cases
+			Fail("the world cases script is not attached to this quest")
+		ElseIf scenario == 4
+			cases.CaseEvaded(Self)
+		ElseIf scenario == 5
+			cases.CaseFightSaved(Self)
+		ElseIf scenario == 6
+			cases.CaseMissed(Self)
+		ElseIf scenario == 7
+			cases.CaseRoadBetrayal(Self)
+		ElseIf scenario == 8
+			cases.CaseMurderAfterSaving(Self)
+		Else
+			cases.CaseDeal(Self)
 		EndIf
 	Else
 		Fail("there is no scenario " + scenario)
 	EndIf
 
-	Log("INFO  stage handlers already finished when SetStage returned: " + handledBeforeReturn + " of " + reaches)
-	Log("==== RESULT: " + passed + " passed, " + failed + " failed ====")
+	If finished
+		; Unattended, and the watchdog has already reported.
+		busy = false
+		Return
+	EndIf
+	WriteResult()
 	string summary = "The Last Meridian self-test\n\n" + passed + " passed, " + failed + " failed."
 	If failed > 0
 		summary += "\n\nFirst failure:\n" + firstFailure
@@ -253,6 +341,11 @@ Function Reach(Quest akQuest, int aiStage)
 	{Sets a stage and waits until the quest reports it done. SetStage itself
 	returns only after the stage's handlers have finished; the short waits are
 	a margin, and they count time while the console is open.}
+	If akQuest == TLM_SQ01
+		Step("setting stage " + aiStage + " of the side quest")
+	Else
+		Step("setting stage " + aiStage + " of the main quest")
+	EndIf
 	int before = HandledCount(akQuest)
 	akQuest.SetStage(aiStage)
 	reaches += 1

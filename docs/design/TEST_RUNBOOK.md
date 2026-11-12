@@ -1,6 +1,6 @@
 # Test runbook — getting from the repository to a first in-game result
 
-**Status:** steps 1 to 5 have run on the owner's PC and pass. On 2026-11-12 the base game was started by command through Mod Organizer, the plugin loaded, its scripts ran, and the self-test reported **60 passed, 0 failed** (details in [VERIFY_LOG.md](VERIFY_LOG.md); an earlier run that day failed 34 checks on a fault in the generated plugin). That is one scripted scenario of stages and globals with every alias empty. Steps 6 and 7 have not been started: nothing has been opened in the Creation Kit, and nothing with an actor, an object or a player has been tested.
+**Status:** steps 1 to 5 have run on the owner's PC and pass. On 2026-11-12 the base game was started by command through Mod Organizer, the plugin loaded, its scripts ran, and the self-test reported **60 passed, 0 failed** (details in [VERIFY_LOG.md](VERIFY_LOG.md); an earlier run that day failed 34 checks on a fault in the generated plugin). That is one scripted scenario of stages and globals with every alias empty. The same day that scenario also passed with nobody at the keyboard, and a second scenario showed that actors made at run time work in the quest's aliases before it stopped short of its end. Steps 6 and 7 have not been started: nothing has been opened in the Creation Kit, and nothing in a built place or with a player has been tested.
 
 Run the commands in PowerShell from the repository folder on the PC that has Fallout 4 and the Creation Kit.
 
@@ -133,18 +133,29 @@ Switch Mod Organizer back to your own profile afterwards.
 powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended
 ```
 
-or, without rebuilding, `powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1` (`-Scenarios 2` runs one of them).
+or, without rebuilding, `powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1` (`-Scenarios 2` runs one of them, `-Scenarios 3,4` two).
 
-Each scenario needs a fresh session, because the quests run once. For each scenario `Run-Scenarios.ps1` writes the scenario number into the installed copy of the plugin (the value of the global `TLM_G_DevScenario`: four bytes), starts the game as above, and waits. For the length of the run the test profile's `fallout4custom.ini` carries `sStartingConsoleCommand=coc qasmoke`, so the game should enter the test room by itself, and `bAlwaysActive=1`, so it keeps running when its window is not in front. In the game `TLM:Core` sees the scenario number, runs that scenario a few seconds after the room has loaded, and closes the game. The script then reads the logs, moves on to the next scenario, and at the end puts the scenario number back to 0 and the two settings back, and copies a table of results to the clipboard.
+Each scenario needs a fresh session, because the quests run once. For each scenario `Run-Scenarios.ps1` writes the scenario number into the installed copy of the plugin (the value of the global `TLM_G_DevScenario`: four bytes), starts the game as above, and waits. For the length of the run the test profile's `fallout4custom.ini` carries `sStartingConsoleCommand=coc qasmoke`, so the game enters the test room by itself, and `bAlwaysActive=1`, so it keeps running when its window is not in front. In the game `TLM:Core` sees the scenario number, runs that scenario a few seconds after the room has loaded, and closes the game. The script then reads the logs, moves on to the next scenario, and at the end puts the scenario number back to 0 and the two settings back, and copies a table of results to the clipboard.
 
 | Scenario | What it is |
 |---|---|
 | 1 | The self-test described above: both quests by stages alone, 60 checks |
-| 2 | The fixture probe (`TLM:FixtureProbe`): spawns the game's generic settler three times, forces the actors into the drover, Cutter lead and caravan master aliases, kills them, and checks that the alias scripts hear it (the Cutter lead's death by the player's hand should set stage 31, the caravan master's stage 35); a timer; a distance event. Lines beginning INFO report what the game did without scoring it |
+| 2 | The fixture probe (`TLM:FixtureProbe`): spawns the game's generic settler three times, forces the actors into the drover, Cutter lead and caravan master aliases, kills them, and checks that the alias scripts hear it (the Cutter lead's death by the player's hand sets stage 31, the caravan master's stage 35); a timer. 14 checks |
+| 3 | Distance events (`TLM:FixtureProbe`): one of the game's plain markers is placed at the player and moved away; registering while already apart; then the main quest's own watch, with a marker as the centre of a live ambush moved beyond the evade distance, which should set stage 32. It ends with two experiments on a placed item that has no model |
+| 4 | The main quest played through with a caravan made at run time (`TLM:WorldCases`): the player meets the ambush and does nothing. The drover should die, the cargo go, the caravan master reach the town alias and be unkillable there, the debrief be the "evaded" one, and admitting it count for truth and accountability |
+| 5 | The same, saved: the Cutter lead starts a fight and dies by the player's hand. Both hands should reach town, the cargo stay, the debrief be the "saved" one with its extra reputation and trust |
+| 6 | The same, missed: the player goes to town without meeting the ambush. The town stage should resolve it (stage 34), kill the drover and keep him out of the town alias in the same breath |
+| 7 | The same, betrayal on the road: the caravan master dies by the player's hand at the ambush. The Cutters should finish the drover, nobody reach town, and the debrief be the one with no witness |
+| 8 | The same, murder after saving: the Cutter lead dies, then the caravan master, both by the player's hand. "Exploited" should replace "saved", the drover reach town as the witness, and confessing count for truth and accountability |
+| 9 | The same, the deal: stage 33 is set as the talk with the Cutter lead would set it. The drover should die, the cargo go, the caravan master be the witness, and blaming the Cutters cost truth |
 
-**The script closes the game it started** if a scenario has not finished after four minutes: first by asking the window to close, then by ending the process. It only runs if no game and no Mod Organizer was open when it began. Nothing is saved by hand in these sessions.
+Lines beginning INFO report what the game did without scoring it. Lines beginning STEP name what the scenario was about to do, so a run that stops shows where.
 
-Unverified, all of it: that the start-up console command enters the room; that the scenario then starts by itself; that `Debug.QuitGame()` closes the game; that a settler can be spawned in the test room; everything the probe reports. If the first scenario never starts by itself the script stops and says so, and the scenarios can still be run by hand: `Start-TestGame.ps1`, then in the game `coc qasmoke` and `cqf TLM_Core RunSelfTest 2`.
+Scenarios 4 to 9 make the player invulnerable while they run (the stand-ins are settlers with guns and their own minds) and take that back at the end. The expected numbers in them are the logic model's: `tools/logic_model/test_worldcases_expectations.py` fails if the script and the model disagree.
+
+**A scenario that stops is ended twice over.** The self-test gives every step a number of seconds; when a step does not come back in time, the self-test itself writes where it stopped and closes the game. Behind that, **the script closes the game it started** if a scenario has not finished after four minutes: first by asking the window to close, then by ending the process. It only runs if no game and no Mod Organizer was open when it began. Nothing is saved by hand in these sessions.
+
+Seen on the PC on 2026-11-12: the start-up console command enters the room, the scenario starts by itself, `Debug.QuitGame()` closes the game, a settler can be spawned in the test room, and scenario 1 passes in about half a minute. Not yet seen: the watchdog, scenario 2 in its present form, and scenarios 3 to 9. All nine take roughly six minutes. If the first scenario never starts by itself the script stops and says so, and the scenarios can still be run by hand: `Start-TestGame.ps1`, then in the game `coc qasmoke` and `cqf TLM_Core RunSelfTest 2`.
 
 ### Checking by hand
 

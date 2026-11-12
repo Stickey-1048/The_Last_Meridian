@@ -1,8 +1,9 @@
 Scriptname TLM:Core extends Quest
 {TLM_Core: start-game-enabled utility quest. No story logic.
 COMPILES. Ran in the game on 2026-11-12: the quest started and OnQuestInit ran
-(its line is in the script log). Whether the on-screen line appeared was not
-reported (docs/design/VERIFY_LOG.md).}
+(its line is in the script log), and with a scenario number in the plugin the
+timer started that scenario of the self-test by itself. Whether the on-screen
+line appeared was not reported (docs/design/VERIFY_LOG.md).}
 
 GlobalVariable Property TLM_G_DataVersion Auto Const Mandatory
 Quest Property TLM_MQ01 Auto Const Mandatory

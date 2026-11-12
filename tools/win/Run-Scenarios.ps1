@@ -39,10 +39,27 @@
   work on this PC; the script stops there and says how to run the scenarios
   by hand instead.
 
-  Status: tested on Linux PowerShell 7 with stand-ins for Mod Organizer and
-  the game. NOT YET RUN ON A REAL PC. Unverified in the game: that the
-  start-up console command enters the room, that the scenario then starts by
-  itself, and that the game closes itself.
+  The scenarios (scripts/Source/User/TLM/SelfTest.psc):
+    1  both quests by stage numbers alone, every alias empty
+    2  actors made at run time, put into the main quest's aliases and killed
+    3  distance events, and the main quest's "the player has left" watch
+    4  the main quest played through with a caravan made at run time: evaded
+    5  the same: a fight, the Cutter lead killed, the caravan saved
+    6  the same: the ambush never met, resolved when the player reaches town
+    7  the same: the caravan master killed by the player at the ambush
+    8  the same: the caravan saved, then the caravan master killed
+    9  the same: the Cutter lead's deal taken
+
+  A scenario that stops inside a call which never comes back is ended by a
+  watchdog in the self-test itself, which writes where it stopped; the time
+  limit here is the second line of defence.
+
+  Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-12
+  with scenarios 1 and 2. The chain works there: the game entered the room,
+  started the scenario and closed by itself (scenario 1, 32 seconds); a
+  scenario that never finished was closed by this script after the time
+  limit (scenario 2). Changes since then (more scenarios, the last step in
+  the report) have only run on Linux PowerShell 7 against stand-ins.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1
@@ -51,8 +68,8 @@
 #>
 [CmdletBinding()]
 param(
-    # Scenario numbers, separated by commas. 1: stages and globals. 2: the fixture probe.
-    [string]$Scenarios = '1,2',
+    # Scenario numbers, separated by commas; see the description for what each is.
+    [string]$Scenarios = '1,2,3,4,5,6,7,8,9',
     # Defaults come from build\install-manifest.json (written by Install-Dev.ps1).
     [string]$ModOrganizerRoot,
     [string]$ProfileName,
@@ -155,6 +172,7 @@ function Read-ScenarioLogs([datetime]$since) {
     # What the game wrote for the session that began at $since.
     $r = [ordered]@{
         HasUserLog = $false; Header = $null; ResultLine = $null; Passed = 0; FailLines = @(); InfoLines = @(); Aborted = $false
+        LastStep = $null; LastLine = $null
         HasScriptLog = $false; CoreStarted = $false; Problems = @(); MqEvents = 0; SqEvents = 0; ScriptLogLines = 0
     }
     if ((Test-Path -LiteralPath $userLog) -and ((Get-Item -LiteralPath $userLog).LastWriteTime -ge $since)) {
@@ -166,6 +184,9 @@ function Read-ScenarioLogs([datetime]$since) {
         $r.FailLines = @($lines | Where-Object { $_ -match '\]\s*FAIL\s' })
         $r.InfoLines = @($lines | Where-Object { $_ -match '\]\s*INFO\s' })
         $r.Aborted = [bool](@($lines | Where-Object { $_ -match 'ABORTED' }).Count)
+        # Where a scenario that did not finish had got to.
+        $r.LastStep = @($lines | Where-Object { $_ -match '\]\s*STEP\s' }) | Select-Object -Last 1
+        $r.LastLine = @($lines | Where-Object { "$_".Trim() -ne '' }) | Select-Object -Last 1
     }
     if ((Test-Path -LiteralPath $papyrusLog) -and ((Get-Item -LiteralPath $papyrusLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $papyrusLog)
@@ -351,6 +372,10 @@ foreach ($r in $results) {
     foreach ($l in $r.Logs.FailLines) { $out.Add("  $l") }
     foreach ($l in $r.Logs.InfoLines) { $out.Add("  $l") }
     if ($r.Logs.ResultLine) { $out.Add("  $($r.Logs.ResultLine)") }
+    if ($r.Status -ne 'PASSED' -and $r.Logs.HasUserLog) {
+        $out.Add("  last step named in the self-test's log: $(if ($r.Logs.LastStep) { $r.Logs.LastStep } else { '(none)' })")
+        if (-not $r.Logs.ResultLine -and $r.Logs.LastLine) { $out.Add("  last line of the self-test's log      : $($r.Logs.LastLine)") }
+    }
     if ($r.Logs.Problems.Count) {
         $out.Add("  errors and warnings in the game's script log that name this project ($($r.Logs.Problems.Count)$(if ($r.Logs.Problems.Count -gt 25) { ', first 25 shown' })):")
         foreach ($l in ($r.Logs.Problems | Select-Object -First 25)) { $out.Add("    $l") }

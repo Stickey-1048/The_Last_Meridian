@@ -201,6 +201,18 @@
     "source": "falloutck.uesp.net/wiki/GetValueInt_-_GlobalVariable"
    }
   ],
+  "Is3DLoaded": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/Is3DLoaded_-_ObjectReference"
+   }
+  ],
   "IsCompleted": [
    {
     "global": false,
@@ -223,6 +235,18 @@
     "params": [],
     "returns": "bool",
     "source": "falloutck.uesp.net/wiki/IsDead_-_Actor"
+   }
+  ],
+  "IsDisabled": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsDisabled_-_ObjectReference"
    }
   ],
   "IsEssential": [
@@ -565,6 +589,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/RemoveItem_-_ObjectReference"
+   }
+  ],
+  "SetGodMode": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Debug",
+    "params": [
+     "bool abGodMode"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/SetGodMode_-_Debug"
    }
   ],
   "SetObjectiveCompleted": [

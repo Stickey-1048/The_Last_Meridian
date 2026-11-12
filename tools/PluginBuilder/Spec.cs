@@ -206,15 +206,34 @@ public static class Spec
                 new FormProp("TLM_G_SQ01_YardAlerted", "TLM_G_SQ01_YardAlerted"),
                 new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
                 new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass")),
-            // Development only: self-test scenario 2. Finds out in the game
-            // whether actors can be made at run time and put into the quest's
-            // aliases, so that the test matrix can be run without a hand-built
-            // test cell. The actor base is the game's generic settler, looked
-            // up when the plugin is built; without Fallout4.esm it stays unset.
+            // Development only: self-test scenarios 2 and 3. Finds out in the
+            // game whether actors and markers can be made at run time and put
+            // into the quest's aliases, so that the test matrix can be run
+            // without a hand-built test cell. The actor base is the game's
+            // generic settler and the marker is the game's plain marker, both
+            // looked up when the plugin is built; without Fallout4.esm they
+            // stay unset.
             new ScriptBind("TLM:FixtureProbe",
                 new FormProp("TLM_MQ01", "TLM_MQ01"),
                 new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
-                new VanillaProp("FixtureActorBase", "WorkshopNPC", "Npc")),
+                new VanillaProp("FixtureActorBase", "WorkshopNPC", "Npc"),
+                new VanillaProp("FixtureMarkerBase", "XMarker", "Static")),
+            // Development only: self-test scenarios 4 to 9. Plays the main
+            // quest with a caravan made at run time from the same two forms.
+            new ScriptBind("TLM:WorldCases",
+                new FormProp("TLM_MQ01", "TLM_MQ01"),
+                new FormProp("TLM_G_CaravanMethod", "TLM_G_CaravanMethod"),
+                new FormProp("TLM_G_CaravanAliveAtMercy", "TLM_G_CaravanAliveAtMercy"),
+                new FormProp("TLM_G_Rep_MercyCrossing", "TLM_G_Rep_MercyCrossing"),
+                new FormProp("TLM_G_MQ01_Done", "TLM_G_MQ01_Done"),
+                new FormProp("TLM_G_MQ01_DebriefVariant", "TLM_G_MQ01_DebriefVariant"),
+                new FormProp("TLM_G_MQ01_DebriefAnswer", "TLM_G_MQ01_DebriefAnswer"),
+                new FormProp("TLM_Truth", "TLM_Truth"),
+                new FormProp("TLM_Accountability", "TLM_Accountability"),
+                new FormProp("TLM_MutualTrust", "TLM_MutualTrust"),
+                new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
+                new VanillaProp("FixtureActorBase", "WorkshopNPC", "Npc"),
+                new VanillaProp("FixtureMarkerBase", "XMarker", "Static")),
         });
 
     // --------------------------------------------------------------- MQ01

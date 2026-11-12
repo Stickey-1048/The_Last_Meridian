@@ -106,6 +106,7 @@ $installed = $false
 $installTried = $false
 $head = $null
 $layoutLines = @()
+$lookupLines = @()
 
 function Say([string]$s = '') { $log.Add($s); Write-Host $s }
 
@@ -238,6 +239,8 @@ try {
         $pb.Output | Where-Object { $_ -notmatch 'warning (NU|CS)' } | ForEach-Object { Say "  $_" }
         # How this plugin's quests are laid out beside the game's own: kept for the test results.
         $layoutLines = @($pb.Output | Where-Object { $_ -match '^\s*layout:' } | ForEach-Object { "$_".Trim() })
+        # What the builder found in the game's master file: the self-test's stand-ins depend on it.
+        $lookupLines = @($pb.Output | Where-Object { $_ -match '^\s*lookup:' } | ForEach-Object { "$_".Trim() } | Select-Object -Unique)
         if ($pb.ExitCode -eq 0) {
             $pluginOk = $true
             Result 'Plugin build' 'PASSED' 'build\TheLastMeridian.esp'
@@ -335,6 +338,7 @@ try {
             $preface.Add('== Build that was installed ==')
             if ($head -and $head.Found -and $head.ExitCode -eq 0) { $preface.Add("Commit: $($head.Output | Select-Object -First 1)") }
             foreach ($r in $results) { $preface.Add(("  {0,-18} {1}{2}" -f $r.Step, $r.Status, $(if ($r.Detail) { "  ($($r.Detail))" } else { '' }))) }
+            foreach ($l in $lookupLines) { $preface.Add("  $l") }
             foreach ($l in $layoutLines) { $preface.Add("  $l") }
             $preface.Add('')
             $playArgs = @{ ModOrganizerRoot = $ModOrganizerRoot; Preface = $preface.ToArray() }
