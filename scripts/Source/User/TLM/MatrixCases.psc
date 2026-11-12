@@ -75,6 +75,14 @@ Function RunCase(int aiCase, TLM:SelfTest akTest)
 		Case127(akTest)
 	ElseIf aiCase == 128
 		Case128(akTest)
+	ElseIf aiCase == 129
+		Case129(akTest)
+	ElseIf aiCase == 130
+		Case130(akTest)
+	ElseIf aiCase == 131
+		Case131(akTest)
+	ElseIf aiCase == 132
+		Case132(akTest)
 	ElseIf aiCase == 201
 		Case201(akTest)
 	ElseIf aiCase == 202
@@ -1642,6 +1650,218 @@ Function Case128(TLM:SelfTest akTest)
 	caseDriver.ExpectMain(" 10 20 30 31 40 50", 1, 0, 1, 2, 1, 0, 0, 2, 2)
 	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 0, -999)
 	caseDriver.ExpectMetrics(0, 0, 0, 1)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.CaseEnd()
+EndFunction
+
+Function Case129(TLM:SelfTest akTest)
+	{A24 timer: the lead killed, and the timer runs out before his death is announced: a rescue.
+	In the logic model: start, take_dispatch, goto_ambush, player_kills_lead, with the timer running out before the death is announced, goto_town, pritchard_handover, pritchard_handoff.}
+	TLM:CaseDriver caseDriver = (Self as Quest) as TLM:CaseDriver
+	If !caseDriver
+		akTest.Fail("C129: the case driver script is not attached to this quest")
+		Return
+	EndIf
+	If !caseDriver.CaseBegin(akTest, "C129", "A24 timer: the lead killed, and the timer runs out before his death is announced: a rescue")
+		Return
+	EndIf
+	caseDriver.Mark(1, "start")
+	caseDriver.DoStart()
+	caseDriver.ExpectMain(" 10", 0, 0, 0, 0, 0, 0, 0, 1, 0)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(2, "take_dispatch")
+	caseDriver.DoTakeDispatch()
+	caseDriver.ExpectMain(" 10 20", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(3, "goto_ambush")
+	caseDriver.DoEnterAmbush()
+	caseDriver.ExpectMain(" 10 20 30", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(4, "player_kills_lead, with the timer running out before the death is announced")
+	caseDriver.DoKillLeadThenTimer()
+	caseDriver.ExpectMain(" 10 20 30 31", 1, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(5, "goto_town")
+	caseDriver.DoReachTown()
+	caseDriver.ExpectMain(" 10 20 30 31 40", 1, 0, 1, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(6, "pritchard_handover")
+	caseDriver.DoHandover()
+	caseDriver.ExpectMain(" 10 20 30 31 40 50", 1, 0, 1, 2, 1, 0, 0, 2, 2)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 1)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(7, "pritchard_handoff")
+	caseDriver.DoHandoff()
+	caseDriver.ExpectMain(" 10 20 30 31 40 50 60 100", 1, 0, 1, 2, 1, 9, 1, 2, 2)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 1)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.CaseEnd()
+EndFunction
+
+Function Case130(TLM:SelfTest akTest)
+	{A24 leaving: the lead killed, and the player gone before his death is announced: a rescue.
+	In the logic model: start, take_dispatch, goto_ambush, player_kills_lead then goto_wreck, with the player gone before the death is announced, goto_town, pritchard_handover, pritchard_handoff.}
+	TLM:CaseDriver caseDriver = (Self as Quest) as TLM:CaseDriver
+	If !caseDriver
+		akTest.Fail("C130: the case driver script is not attached to this quest")
+		Return
+	EndIf
+	If !caseDriver.CaseBegin(akTest, "C130", "A24 leaving: the lead killed, and the player gone before his death is announced: a rescue")
+		Return
+	EndIf
+	caseDriver.Mark(1, "start")
+	caseDriver.DoStart()
+	caseDriver.ExpectMain(" 10", 0, 0, 0, 0, 0, 0, 0, 1, 0)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(2, "take_dispatch")
+	caseDriver.DoTakeDispatch()
+	caseDriver.ExpectMain(" 10 20", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(3, "goto_ambush")
+	caseDriver.DoEnterAmbush()
+	caseDriver.ExpectMain(" 10 20 30", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(4, "player_kills_lead then goto_wreck, with the player gone before the death is announced")
+	caseDriver.DoKillLeadThenLeave()
+	caseDriver.ExpectMain(" 10 20 30 31", 1, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(5, "goto_town")
+	caseDriver.DoReachTown()
+	caseDriver.ExpectMain(" 10 20 30 31 40", 1, 0, 1, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(6, "pritchard_handover")
+	caseDriver.DoHandover()
+	caseDriver.ExpectMain(" 10 20 30 31 40 50", 1, 0, 1, 2, 1, 0, 0, 2, 2)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 1)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(7, "pritchard_handoff")
+	caseDriver.DoHandoff()
+	caseDriver.ExpectMain(" 10 20 30 31 40 50 60 100", 1, 0, 1, 2, 1, 9, 1, 2, 2)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 1)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.CaseEnd()
+EndFunction
+
+Function Case131(TLM:SelfTest akTest)
+	{A24 town: the lead killed, and the town stage before his death is announced: a rescue.
+	In the logic model: start, take_dispatch, goto_ambush, player_kills_lead then goto_town, with the town stage before the death is announced, pritchard_handover, pritchard_handoff.}
+	TLM:CaseDriver caseDriver = (Self as Quest) as TLM:CaseDriver
+	If !caseDriver
+		akTest.Fail("C131: the case driver script is not attached to this quest")
+		Return
+	EndIf
+	If !caseDriver.CaseBegin(akTest, "C131", "A24 town: the lead killed, and the town stage before his death is announced: a rescue")
+		Return
+	EndIf
+	caseDriver.Mark(1, "start")
+	caseDriver.DoStart()
+	caseDriver.ExpectMain(" 10", 0, 0, 0, 0, 0, 0, 0, 1, 0)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(2, "take_dispatch")
+	caseDriver.DoTakeDispatch()
+	caseDriver.ExpectMain(" 10 20", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(3, "goto_ambush")
+	caseDriver.DoEnterAmbush()
+	caseDriver.ExpectMain(" 10 20 30", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(4, "player_kills_lead then goto_town, with the town stage before the death is announced")
+	caseDriver.DoKillLeadThenTown()
+	caseDriver.ExpectMain(" 10 20 30 31 40", 1, 0, 1, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(5, "pritchard_handover")
+	caseDriver.DoHandover()
+	caseDriver.ExpectMain(" 10 20 30 31 40 50", 1, 0, 1, 2, 1, 0, 0, 2, 2)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 1)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(6, "pritchard_handoff")
+	caseDriver.DoHandoff()
+	caseDriver.ExpectMain(" 10 20 30 31 40 50 60 100", 1, 0, 1, 2, 1, 9, 1, 2, 2)
+	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 1, 1, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 1)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.CaseEnd()
+EndFunction
+
+Function Case132(TLM:SelfTest akTest)
+	{A24 overlap: leaving a live ambush and reaching the gate in the same breath.
+	In the logic model: start, take_dispatch, goto_ambush, goto_town, with the town stage set while the evade stage is still being handled, pritchard_handover, pritchard_handoff.}
+	TLM:CaseDriver caseDriver = (Self as Quest) as TLM:CaseDriver
+	If !caseDriver
+		akTest.Fail("C132: the case driver script is not attached to this quest")
+		Return
+	EndIf
+	If !caseDriver.CaseBegin(akTest, "C132", "A24 overlap: leaving a live ambush and reaching the gate in the same breath")
+		Return
+	EndIf
+	caseDriver.Mark(1, "start")
+	caseDriver.DoStart()
+	caseDriver.ExpectMain(" 10", 0, 0, 0, 0, 0, 0, 0, 1, 0)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(2, "take_dispatch")
+	caseDriver.DoTakeDispatch()
+	caseDriver.ExpectMain(" 10 20", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(3, "goto_ambush")
+	caseDriver.DoEnterAmbush()
+	caseDriver.ExpectMain(" 10 20 30", 0, 0, 0, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(4, "goto_town, with the town stage set while the evade stage is still being handled")
+	caseDriver.DoLeaveAndReachTownAtOnce()
+	caseDriver.ExpectMain(" 10 20 30 32 40", 2, 0, 1, 0, 0, 0, 0, 2, 1)
+	caseDriver.ExpectWorld(1, 0, 1, 3, 0, 1, 0, 4, 1, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(5, "pritchard_handover")
+	caseDriver.DoHandover()
+	caseDriver.ExpectMain(" 10 20 30 32 40 50", 2, 0, 1, 1, 2, 0, 0, 2, 2)
+	caseDriver.ExpectWorld(1, 0, 1, 3, 0, 1, 0, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
+	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	caseDriver.Mark(6, "pritchard_handoff")
+	caseDriver.DoHandoff()
+	caseDriver.ExpectMain(" 10 20 30 32 40 50 60 100", 2, 0, 1, 1, 2, 9, 1, 2, 2)
+	caseDriver.ExpectWorld(1, 0, 1, 3, 0, 1, 0, 4, 0, -999)
+	caseDriver.ExpectMetrics(0, 0, 0, 0)
 	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 	caseDriver.CaseEnd()
 EndFunction

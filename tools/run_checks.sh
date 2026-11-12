@@ -76,3 +76,6 @@ echo "  vanilla lookups work against five stand-in masters (spelling, fallback, 
 echo "== 5/5 the scripts against a stand-in for the game =="
 (cd tools/papyrus_sim && python3 -m unittest 2>&1 | tail -4)
 python3 tools/papyrus_sim --brief all
+# The same with every call out of a script taking a frame, so that handlers
+# on different threads overlap (amendment A24).
+python3 tools/papyrus_sim --brief --calls-per-second 60 all | head -1

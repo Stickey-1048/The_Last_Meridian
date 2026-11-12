@@ -23,8 +23,11 @@ So a pass says the quest scripts keep to the model once those stages are set
 and those deaths happen. It says nothing about triggers, pickups, dialogue
 conditions, AI or a built place.
 
-COMPILES. RAN IN THE GAME on 2026-11-12: it drove all 49 matrix cases, 1,236
-checks, 0 failed (docs/design/VERIFY_LOG.md).}
+RAN IN THE GAME on 2026-11-12: it drove all 49 matrix cases, 1,236 checks,
+0 failed (docs/design/VERIFY_LOG.md). Since then four actions were added
+that do two things with no time between them (DoKillLeadThenTimer,
+DoKillLeadThenLeave, DoKillLeadThenTown, DoLeaveAndReachTownAtOnce):
+THIS VERSION IS NOT YET COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
@@ -215,6 +218,56 @@ Function DoLeaveAmbush()
 		Utility.Wait(0.5)
 		tries += 1
 	EndWhile
+EndFunction
+
+Function DoLeaveAndReachTownAtOnce()
+	{goto_town from a live ambush with no time between the two things it is
+	made of (amendment A24). The centre is moved away, and the town stage is
+	set the instant the evade stage reads as done, while its handler may still
+	be at work on another thread. Whether it was is reported, not scored.}
+	int handledBefore = mq.StageEventsHandled()
+	center.MoveTo(player, mq.EvadeDistance + 1000.0, 0.0, 0.0)
+	int tries = 0
+	While !TLM_MQ01.GetStageDone(32) && tries < 800
+		Utility.Wait(0.01)
+		tries += 1
+	EndWhile
+	bool atWork = mq.StageEventsHandled() == handledBefore
+	TLM_MQ01.SetStage(40)
+	test.Note(stepLabel + ": the town stage was set while the evade stage's handler was still at work: " + atWork)
+	; both handlers have to be through before anything is compared
+	tries = 0
+	While mq.StageEventsHandled() < handledBefore + 2 && tries < 20
+		Utility.Wait(0.5)
+		tries += 1
+	EndWhile
+EndFunction
+
+Function DoKillLeadThenTimer()
+	{player_kills_lead, with the evade timer running out before the death has
+	been announced (amendment A24). He is dead at once; OnDeath comes about a
+	second later.}
+	lead.Kill(player)
+	mq.EvadeTimerElapsed()
+	WaitStage(31)
+	Utility.Wait(2.0)
+EndFunction
+
+Function DoKillLeadThenLeave()
+	{player_kills_lead, with the player beyond the evade distance before the
+	death has been announced (amendment A24).}
+	lead.Kill(player)
+	center.MoveTo(player, mq.EvadeDistance + 1000.0, 0.0, 0.0)
+	WaitStage(31)
+	Utility.Wait(2.0)
+EndFunction
+
+Function DoKillLeadThenTown()
+	{player_kills_lead, with the town stage before the death has been
+	announced (amendment A24).}
+	lead.Kill(player)
+	test.Reach(TLM_MQ01, 40)
+	Utility.Wait(2.0)
 EndFunction
 
 Function DoReachTown()

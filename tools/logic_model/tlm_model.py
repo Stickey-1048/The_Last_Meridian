@@ -10,6 +10,10 @@ WHAT THIS IS
 WHAT THIS IS NOT
     It is not Fallout 4. It says nothing about AI, navmesh, packages, timing,
     dialogue presentation, or whether a Papyrus call behaves as documented.
+    In particular it has no time in it: an event is over before the next
+    begins. The game announces a death late and runs handlers side by side;
+    what the quest script does about that is amendment A24, and is tested in
+    tools/papyrus_sim/test_overlap.py, not here.
     A green run here means "the design is internally consistent", not
     "the mod works". In-game cases T01-T28 / S01-S17 still have to be run.
 

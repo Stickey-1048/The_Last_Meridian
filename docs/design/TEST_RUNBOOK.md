@@ -150,9 +150,10 @@ Each scenario needs a fresh session, because the quests run once. For each scena
 | 9 | The same, the deal: stage 33 is set as the talk with the Cutter lead would set it. The drover should die, the cargo go, the caravan master be the witness, and blaming the Cutters cost truth |
 
 | 101 to 128 | The rows of the main quest's test matrix, as cases generated from the logic model (`TLM:MatrixCases`, with `TLM:CaseDriver` doing the work). After every event the driver compares everything it can see of both quests with the model. `tools/matrix_cases.json` says which rows each case stands for |
+| 129 to 132 | Not rows of the matrix: the main quest when the game does two things with no time between them (amendment A24). The Cutter lead killed and the timer, leaving, or the town stage before his death is announced; and the town stage set while "evaded" is still being handled. Case 132 says in an INFO line whether that overlap really happened |
 | 201 to 221 | The same for the side quest's matrix |
 
-`-Scenarios` takes numbers, ranges and names, separated by commas: `all` (the default: 1 to 9 and every matrix case, about 35 to 40 minutes), `basic` (1 to 9), `matrix`, `main`, `side`, or for example `4,104-110,side`. With that many scenarios the report shows one line each, and details only for the ones that did not pass.
+`-Scenarios` takes numbers, ranges and names, separated by commas: `all` (the default: 1 to 9 and every case from 101 up, about 40 minutes), `basic` (1 to 9), `matrix`, `main`, `side`, or for example `4,104-110,side`. With that many scenarios the report shows one line each, and details only for the ones that did not pass.
 
 Lines beginning INFO report what the game did without scoring it. Lines beginning STEP name what the scenario was about to do, so a run that stops shows where.
 

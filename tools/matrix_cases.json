@@ -487,6 +487,72 @@
    "checks": 24
   },
   {
+   "scenario": 129,
+   "rows": [
+    "A24 timer"
+   ],
+   "title": "the lead killed, and the timer runs out before his death is announced: a rescue",
+   "steps": [
+    "start",
+    "take_dispatch",
+    "goto_ambush",
+    "player_kills_lead, with the timer running out before the death is announced",
+    "goto_town",
+    "pritchard_handover",
+    "pritchard_handoff"
+   ],
+   "checks": 28
+  },
+  {
+   "scenario": 130,
+   "rows": [
+    "A24 leaving"
+   ],
+   "title": "the lead killed, and the player gone before his death is announced: a rescue",
+   "steps": [
+    "start",
+    "take_dispatch",
+    "goto_ambush",
+    "player_kills_lead then goto_wreck, with the player gone before the death is announced",
+    "goto_town",
+    "pritchard_handover",
+    "pritchard_handoff"
+   ],
+   "checks": 28
+  },
+  {
+   "scenario": 131,
+   "rows": [
+    "A24 town"
+   ],
+   "title": "the lead killed, and the town stage before his death is announced: a rescue",
+   "steps": [
+    "start",
+    "take_dispatch",
+    "goto_ambush",
+    "player_kills_lead then goto_town, with the town stage before the death is announced",
+    "pritchard_handover",
+    "pritchard_handoff"
+   ],
+   "checks": 24
+  },
+  {
+   "scenario": 132,
+   "rows": [
+    "A24 overlap"
+   ],
+   "title": "leaving a live ambush and reaching the gate in the same breath",
+   "steps": [
+    "start",
+    "take_dispatch",
+    "goto_ambush",
+    "goto_town, with the town stage set while the evade stage is still being handled",
+    "pritchard_handover",
+    "pritchard_handoff"
+   ],
+   "checks": 24
+  },
+  {
    "scenario": 201,
    "rows": [
     "S01"
@@ -835,5 +901,8 @@
  },
  "attempts_left_out": {
   "T08": "the deal is no longer offered once the fight has started"
+ },
+ "rows_outside_the_matrices": {
+  "A24": "amendment A24: the game announces a death late and runs handlers side by side; the logic model has no time in it, so its matrices cannot have these rows"
  }
 }

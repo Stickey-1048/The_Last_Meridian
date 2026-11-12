@@ -315,7 +315,7 @@ What only the game can say, and the next run will: whether eight settlers at onc
 
 One thing the stand-in engine could not show, found by an independent read of the driver before it went to the PC: in the stand-in nothing takes time, so two script threads never overlap. In the game they do. When the player leaves a live ambush, the quest sets stage 32 on a thread of its own, and the stage reads as done while its handler is still at work; the handler kills the drover last. The driver waited only for the stage, so its next step, the town stage, could arrive first, find the drover alive and put him in the town alias, where he cannot be killed. Four cases would have failed for that reason and not for anything in the rules. The driver now waits for the handler to have finished. With an engine copy that charges time for every call into the game, those cases failed before the change at some timings and none fail after it.
 
-**Open, in the quest itself:** the same overlap is possible in play if the town stage follows a distance-triggered "evaded" within a fraction of a second, which needs something like fast travel from a live ambush to a spot inside the town gate's trigger. The result would be a drover alive in town who should be dead; no counter or outcome depends on it. Not yet addressed; it wants a guard in `ApplyTown` and a case that provokes it.
+**Open, in the quest itself** (closed since: see "After the matrix: time" below): the same overlap is possible in play if the town stage follows a distance-triggered "evaded" within a fraction of a second, which needs something like fast travel from a live ambush to a spot inside the town gate's trigger. The result would be a drover alive in town who should be dead; no counter or outcome depends on it.
 
 ### The test matrix passes in the game, 2026-11-12
 
@@ -352,6 +352,30 @@ What the game showed that had only been assumed:
 The stand-in engine (`tools/papyrus_sim`) had given the same 58 results beforehand, check for check. This run is now the fifth recorded in `tools/papyrus_sim/game_runs.json`.
 
 What this is not. No trigger was walked into, nothing was picked up from the world, no line was spoken, nothing was saved or loaded, no AI package ran, and there is no place. A stage number stood for each of those. The ten rows listed above remain unplayed. And one fault is known in the quest script that no case provokes yet: the overlap described under "Prepared for the next run".
+
+### After the matrix: time
+
+Not yet compiled and not yet run in the game. Written after the tenth run.
+
+The logic model has no time in it: an event is over before the next begins, and the 49 cases that passed play it that way, waiting after each step. The game does not keep to that, in two ways already seen in it. A death is announced about a second after it happens (`OnDeath` comes "when the actor has finished dying", while `IsDead` is true at once). And every handler runs on a thread of its own and gives other threads a turn at each call it makes into the game.
+
+Looking for what that does to the quest script found three faults in the version that passed the matrix (amendment A24):
+
+| What happens | What the script as tested does | What it should do |
+|---|---|---|
+| The player kills the Cutter lead, and within the next second the evade timer runs out, the player gets beyond the evade distance, or the town stage is set | Records "evaded": the drover is killed by script and the wagon looted, though the player has just saved them | A rescue |
+| The town stage is set while "evaded" is still being handled on another thread | Puts the still-living drover into the town alias, where the kill that follows cannot touch him | The drover dead and not in town |
+| Two resolutions are being handled at once | Can leave a mixture (the outcome of one, the bodies of the other), or let "evaded" overwrite a betrayal | One of them whole; a betrayal always stands |
+
+None of these needs more than ordinary play: the first needs a quiet kill of the lead near the end of the timer, or leaving at once; the second something like fast travel from the ambush to the gate.
+
+Three guards were added to `TLM:MQ01Quest`; no rule changed. How they were checked, without the game:
+
+- The stand-in engine got a second mode in which every call out of a script takes a frame, so that threads overlap where the game lets them. It is a way of provoking overlaps, not a measurement.
+- Four cases were added that do two things with no time between them (scenarios 129 to 132). With the quest script as it was at `499104e`, the first three fail in the ordinary mode and the fourth fails when calls take time, each with the fault in the table above. With the guards all four pass in both modes, and so do all 62 scenarios at 30, 60 and 144 calls a second.
+- Two more tests set two resolutions going a few frames apart, 100 and 100 ways. With the guards the result is always one of them whole, and a betrayal always stands; with the old script it is not.
+
+What the next run can show: that the changed quest script still passes everything it passed, and cases 129 to 131, which need no luck with timing. Case 132 reports whether the overlap actually happened in the game; if it did not, the case passes without having shown anything, and says so.
 
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 

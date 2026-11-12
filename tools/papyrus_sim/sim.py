@@ -238,18 +238,48 @@ def coerce(value, type_name: Optional[str]):
     return value
 
 
+_parsed: Dict[tuple, Dict[str, Script]] = {}
+
+
+def parsed(folder) -> Dict[str, Script]:
+    """The scripts of a folder, read once for as long as the files stay as they
+    are. A script's tree is only read by a session, never changed, so sessions
+    can share it."""
+    files = sorted(Path(folder).glob("*.psc"))
+    key = (str(folder),) + tuple((f.name, f.stat().st_mtime_ns, f.stat().st_size) for f in files)
+    if key not in _parsed:
+        _parsed[key] = parse_folder(folder)
+    return _parsed[key]
+
+
 # ---------------------------------------------------------------- session
 
 class Session:
     """One game session: from the main menu into the test room, until the game closes."""
 
-    def __init__(self, scripts_folder, plugin_json, vanilla_json=None, natives_json=None, older_scripts=False):
+    def __init__(self, scripts_folder, plugin_json, vanilla_json=None, natives_json=None, older_scripts=False,
+                 native_delay=0.0):
         """older_scripts: the scripts are an earlier version than the plugin
         description (used to replay a recorded game run). A property the
         plugin fills and the older script does not declare is then left out
-        instead of stopping the session."""
+        instead of stopping the session.
+
+        native_delay: seconds that every call out of a script takes (into the
+        game, or onto another object). 0, the default, is the mode the
+        recorded game runs are replayed in: nothing takes time, so two script
+        threads never overlap. In the game they do: [documented] a script
+        gives other threads a turn at every such call. With a delay of one
+        frame the stand-in lets threads overlap at exactly those points. That
+        is a pessimistic picture, not a measured one: in the game many calls
+        come back within the frame. It is for provoking overlaps, not for
+        predicting timings."""
         self.older_scripts = older_scripts
-        self.scripts: Dict[str, Script] = parse_folder(scripts_folder)
+        self.native_delay = float(native_delay)
+        # Which of two threads that are ready at the same instant goes first.
+        # The game promises no order; a test of overlapping handlers should
+        # hold either way.
+        self.newest_first = False
+        self.scripts: Dict[str, Script] = parsed(scripts_folder)
         self.plugin = json.loads(Path(plugin_json).read_text())
         self.vanilla = json.loads(Path(vanilla_json).read_text()) if vanilla_json and Path(vanilla_json).exists() else []
         self.natives_doc = json.loads(Path(natives_json).read_text())["natives"] if natives_json else {}
@@ -407,38 +437,46 @@ class Session:
         """Lets every script thread that can run do so, then moves the clock to
         the next thing due. Returns 'running', or how the session ended."""
         try:
-            progressed = True
-            while progressed:
-                progressed = False
-                for th in list(self.threads):
-                    if th.done or th.blocked or th.wake > self.now + 1e-9:
-                        continue
-                    self._step(th)
-                    progressed = True
-                self.threads = [t for t in self.threads if not t.done]
-            times = [t.wake for t in self.threads if not t.blocked]
-            times += [due for due, _inst in self.timers.values()]
-            times += [p[0] for p in self.pending]
-            if not times:
-                self.ended = "idle"
-                return self.ended
-            nxt = min(times)
-            if nxt > until:
-                self.ended = "timeout"
-                return self.ended
-            self.now = max(self.now, nxt)
-            for key, (due, inst) in sorted(self.timers.items(), key=lambda kv: kv[1][0]):
-                if due <= self.now + 1e-9:
-                    del self.timers[key]
-                    self.send_event(inst, "OnTimer", [key[1]])
-            due_now = sorted([p for p in self.pending if p[0] <= self.now + 1e-9], key=lambda p: (p[0], p[1]))
-            self.pending = [p for p in self.pending if p[0] > self.now + 1e-9]
-            for _due, _order, name, make in due_now:
-                self.spawn(make(), name)
-            return "running"
+            self.run_ready()
+            return self.advance(until)
         except QuitGame:
             self.ended = "quit"
             return self.ended
+
+    def run_ready(self):
+        """Lets every script thread that can run now do so. The clock stands still."""
+        progressed = True
+        while progressed:
+            progressed = False
+            for th in (list(reversed(self.threads)) if self.newest_first else list(self.threads)):
+                if th.done or th.blocked or th.wake > self.now + 1e-9:
+                    continue
+                self._step(th)
+                progressed = True
+            self.threads = [t for t in self.threads if not t.done]
+
+    def advance(self, until: float) -> str:
+        """Moves the clock to the next thing due and starts what is due then."""
+        times = [t.wake for t in self.threads if not t.blocked]
+        times += [due for due, _inst in self.timers.values()]
+        times += [p[0] for p in self.pending]
+        if not times:
+            self.ended = "idle"
+            return self.ended
+        nxt = min(times)
+        if nxt > until:
+            self.ended = "timeout"
+            return self.ended
+        self.now = max(self.now, nxt)
+        for key, (due, inst) in sorted(self.timers.items(), key=lambda kv: kv[1][0]):
+            if due <= self.now + 1e-9:
+                del self.timers[key]
+                self.send_event(inst, "OnTimer", [key[1]])
+        due_now = sorted([p for p in self.pending if p[0] <= self.now + 1e-9], key=lambda p: (p[0], p[1]))
+        self.pending = [p for p in self.pending if p[0] > self.now + 1e-9]
+        for _due, _order, name, make in due_now:
+            self.spawn(make(), name)
+        return "running"
 
     def _step(self, th: Thread):
         try:
@@ -731,6 +769,9 @@ class Session:
         if fn is None:
             who = global_script or type(obj).__name__
             raise SimError("%s line %d: %s.%s is not modelled by the stand-in" % (frame["inst"].script.name, line, who, name))
+        if self.native_delay and (global_script or obj is not frame["inst"].obj):
+            # a call out of the script: other threads get a turn
+            yield ("sleep", self.native_delay)
         result = fn(*args) if global_script else fn(obj, context, *args)
         if hasattr(result, "send"):          # a function that makes the script wait
             result = yield from result
@@ -1151,9 +1192,17 @@ class Session:
                     box["value"] = yield from self.call(inst, fn, list(args))
                 th = self.spawn(body(), "invoke %s.%s" % (quest_id, function))
                 limit = self.now + until
-                while not th.done and not th.blocked and self.ended != "quit":
-                    if self.run_once(limit) in ("idle", "timeout"):
-                        break
+                try:
+                    while True:
+                        self.run_ready()
+                        # The clock must not run on once the function is back:
+                        # whatever is due later belongs to what happens next.
+                        if th.done or th.blocked:
+                            break
+                        if self.advance(limit) in ("idle", "timeout"):
+                            break
+                except QuitGame:
+                    self.ended = "quit"
                 if "value" not in box:
                     raise SimError("%s.%s did not come back" % (quest_id, function))
                 return box["value"]
@@ -1161,11 +1210,11 @@ class Session:
 
 
 def run_scenario(scenario: int, scripts_folder, plugin_json, vanilla_json=None, natives_json=None,
-                 until: float = 900.0, older_scripts: bool = False) -> Session:
+                 until: float = 900.0, older_scripts: bool = False, native_delay: float = 0.0) -> Session:
     """What tools/win/Run-Scenarios.ps1 does with the game: the scenario number
     goes into the plugin's global, the game enters the test room, and the
     self-test runs by itself until it closes the game."""
-    s = Session(scripts_folder, plugin_json, vanilla_json, natives_json, older_scripts)
+    s = Session(scripts_folder, plugin_json, vanilla_json, natives_json, older_scripts, native_delay)
     s.set_global("TLM_G_DevScenario", scenario)
     s.enter_game()
     s.run(until)

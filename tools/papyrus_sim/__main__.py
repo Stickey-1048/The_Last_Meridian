@@ -5,6 +5,10 @@ game's runner would print.
   python3 tools/papyrus_sim --log 104      with the whole self-test log
   python3 tools/papyrus_sim all            every scenario; also: basic, matrix
   python3 tools/papyrus_sim --brief all    one line, plus any that did not pass
+  python3 tools/papyrus_sim --calls-per-second 60 132
+                                           every call out of a script takes a
+                                           sixtieth of a second, so that two
+                                           script threads can overlap
 
 It needs a plugin description built against a master that holds the settler
 and the marker. tools/run_checks.sh builds one, against a stand-in master,
@@ -54,12 +58,15 @@ def main():
     ap.add_argument("--scripts", default=str(ROOT / "scripts" / "Source" / "User" / "TLM"))
     ap.add_argument("--log", action="store_true", help="print the whole self-test log")
     ap.add_argument("--brief", action="store_true", help="print only a total and the scenarios that did not pass")
+    ap.add_argument("--calls-per-second", type=float, default=0.0,
+                    help="make every call out of a script take 1/N seconds; 0 (the default): nothing takes time")
     args = ap.parse_args()
     vanilla = args.vanilla or str(Path(args.plugin).with_name("TheLastMeridian.vanilla.json"))
     wanted = numbers(args.scenarios)
     bad = checks = 0
     for n in wanted:
-        s = run_scenario(n, args.scripts, args.plugin, vanilla, str(ROOT / "tools" / "papyrus_natives.json"))
+        s = run_scenario(n, args.scripts, args.plugin, vanilla, str(ROOT / "tools" / "papyrus_natives.json"),
+                         until=2000.0, native_delay=(1.0 / args.calls_per_second if args.calls_per_second else 0.0))
         lines = s.user_logs.get("TLM", [])
         passed = sum(1 for l in lines if l.startswith("PASS"))
         fails = [l for l in lines if l.startswith("FAIL")]
@@ -77,7 +84,8 @@ def main():
         for l in errors:
             print("    script log: " + l)
     if args.brief:
-        print("%d of %d scenarios passed, %d checks" % (len(wanted) - bad, len(wanted), checks))
+        how = ", with %g calls a second" % args.calls_per_second if args.calls_per_second else ""
+        print("%d of %d scenarios passed, %d checks%s" % (len(wanted) - bad, len(wanted), checks, how))
     print("(the stand-in engine, not the game)")
     return 1 if bad else 0
 

@@ -14,6 +14,10 @@ and conversation, and EvadeTimerElapsed was called directly. NOT run: the
 90-second timer itself, the move to the caravan yard over a distance,
 OnGameLoaded, dialogue, saving and loading, and anything in a built place.
 Written without Fallout 4 or the Creation Kit.
+Since those runs the guards of amendment A24 were added (ClaimEncounter,
+WaitForResolutions, LeadIsDown, ResolveUnattended and the counting at the top
+of OnStageSet): THIS VERSION IS NOT YET COMPILED. It passes in the stand-in
+engine, which is not the game.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.
@@ -115,9 +119,30 @@ int handsKilledByPlayer = 0
 ; Development aid, read through StageEventsHandled().
 int handledCount = 0
 
+; Handlers on different threads (amendment A24). The game runs each event on
+; a thread of its own, and a handler gives other threads a turn at every call
+; it makes into the game. A resolution of the encounter (stages 31 to 35) is
+; many such calls: it stops the fight, kills, loots. These three keep two
+; handlers from tripping over each other.
+; Resolution handlers that have begun and not finished.
+int resolutionsAtWork = 0
+; Resolution handlers that have begun, ever. A stage reads as done before its
+; handler has begun, so "more stages set than handlers begun" means one is
+; still to come.
+int resolutionsBegun = 0
+; A first resolution has gone ahead. Only one may.
+bool encounterClaimed = false
+
 ; ------------------------------------------------------------ stage dispatch
 
 Event OnStageSet(int auiStageID, int auiItemID)
+	bool resolution = auiStageID >= 31 && auiStageID <= 35
+	If resolution
+		; Counted before anything here calls into the game, so that no other
+		; thread finds a resolution's stage set and nobody at work on it.
+		resolutionsBegun += 1
+		resolutionsAtWork += 1
+	EndIf
 	; One line per stage event in the game's script log. Without it, "the
 	; event never arrived" and "the handler ran and did nothing" look the same.
 	Debug.Trace("TLM_MQ01: stage " + auiStageID + " item " + auiItemID)
@@ -160,8 +185,75 @@ Event OnStageSet(int auiStageID, int auiItemID)
 	ElseIf auiStageID == 900
 		Recover()
 	EndIf
+	If resolution
+		resolutionsAtWork -= 1
+	EndIf
 	handledCount += 1
 EndEvent
+
+; ------------------------------------------------- handlers on other threads
+
+bool Function ClaimEncounter()
+	{True for the one first resolution that may go ahead. Nothing between the
+	test and the claim calls into the game, so two threads cannot both pass.}
+	If encounterClaimed
+		Return false
+	EndIf
+	encounterClaimed = true
+	Return true
+EndFunction
+
+int Function ResolutionStagesSet()
+	int n = 0
+	If GetStageDone(31)
+		n += 1
+	EndIf
+	If GetStageDone(32)
+		n += 1
+	EndIf
+	If GetStageDone(33)
+		n += 1
+	EndIf
+	If GetStageDone(34)
+		n += 1
+	EndIf
+	If GetStageDone(35)
+		n += 1
+	EndIf
+	Return n
+EndFunction
+
+Function WaitForResolutions(int aiMine)
+	{Comes back when no resolution of the encounter is half done on another
+	thread: none whose handler is at work, and none whose stage is set while
+	its handler has yet to begin. aiMine is 1 when the caller is itself a
+	resolution's handler, otherwise 0. Never waits longer than five seconds.}
+	int tries = 0
+	While tries < 50 && (resolutionsAtWork > aiMine || (Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun))
+		Utility.Wait(0.1)
+		tries += 1
+	EndWhile
+EndFunction
+
+bool Function LeadIsDown()
+	{The Cutter lead is there and dead. He is Protected, so only the player can
+	have killed him; and his death is announced when he has finished dying, a
+	moment after he is dead.}
+	Actor a = Alias_CutterLead.GetActorReference()
+	Return a && a.IsDead()
+EndFunction
+
+Function ResolveUnattended()
+	{The ambush is live and the player is not going to settle it: the timer
+	has run out, or the player has left or reached town. If the Cutter lead is
+	already dead this is a rescue whose news has not arrived yet, not an
+	evasion.}
+	If LeadIsDown()
+		SetStage(31)
+	Else
+		SetStage(32)
+	EndIf
+EndFunction
 
 int Function StageEventsHandled()
 	{Development aid for the self-test: how many stage events this script has
@@ -263,7 +355,7 @@ Function EvadeTimerElapsed()
 			; Never resolve "evaded" over the top of a fight. Check again later.
 			StartTimer(EvadeSeconds, TIMER_EVADE)
 		Else
-			SetStage(32)
+			ResolveUnattended()
 		EndIf
 	EndIf
 EndFunction
@@ -271,7 +363,7 @@ EndFunction
 Event OnDistanceGreaterThan(ObjectReference akObj1, ObjectReference akObj2, float afDistance)
 	; The player has left, fight or no fight.
 	If IsLive()
-		SetStage(32)
+		ResolveUnattended()
 	EndIf
 EndEvent
 
@@ -304,7 +396,7 @@ Function CaravanHandKilledByPlayer(ReferenceAlias akWhich)
 EndFunction
 
 Function ApplySaved()
-	If Outcome() != OUT_NONE
+	If Outcome() != OUT_NONE || !ClaimEncounter()
 		Return
 	EndIf
 	TLM_G_CaravanOutcome.SetValueInt(OUT_SAVED)
@@ -312,7 +404,7 @@ Function ApplySaved()
 EndFunction
 
 Function ApplyEvaded()
-	If Outcome() != OUT_NONE
+	If Outcome() != OUT_NONE || !ClaimEncounter()
 		Return
 	EndIf
 	TLM_G_CaravanOutcome.SetValueInt(OUT_EVADED)
@@ -322,7 +414,7 @@ Function ApplyEvaded()
 EndFunction
 
 Function ApplyDeal()
-	If Outcome() != OUT_NONE
+	If Outcome() != OUT_NONE || !ClaimEncounter()
 		Return
 	EndIf
 	TLM_G_CaravanOutcome.SetValueInt(OUT_EXPLOITED)
@@ -336,7 +428,7 @@ Function ApplyDeal()
 EndFunction
 
 Function ApplyMissed()
-	If Outcome() != OUT_NONE
+	If Outcome() != OUT_NONE || !ClaimEncounter()
 		Return
 	EndIf
 	TLM_G_CaravanOutcome.SetValueInt(OUT_MISSED)
@@ -348,7 +440,10 @@ EndFunction
 Function ApplyBetrayal()
 	{The player killed a caravan hand before the debrief. This always wins,
 	even over an earlier Saved or Evaded.}
-	bool firstResolution = (Outcome() == OUT_NONE)
+	; If another resolution is half done on another thread, let it finish:
+	; this one then replaces its outcome instead of being overwritten by it.
+	WaitForResolutions(1)
+	bool firstResolution = (Outcome() == OUT_NONE) && ClaimEncounter()
 	TLM_G_CaravanOutcome.SetValueInt(OUT_EXPLOITED)
 	TLM_G_CaravanMethod.SetValueInt(METHOD_BETRAYAL)
 	If firstResolution
@@ -429,11 +524,15 @@ EndFunction
 ; ------------------------------------------------------------------ stage 40
 
 Function ApplyTown()
+	; A resolution may be half done on another thread: the player left the
+	; ambush and reached the gate in the same breath. Let it finish, because
+	; what follows asks who is alive.
+	WaitForResolutions(0)
 	; An encounter the player never resolved is resolved now.
 	If IsArmed()
 		SetStage(34)
 	ElseIf IsLive()
-		SetStage(32)
+		ResolveUnattended()
 	EndIf
 	MoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown)
 	MoveHandToTown(Alias_CaravanDrover, Alias_CaravanDroverInTown)

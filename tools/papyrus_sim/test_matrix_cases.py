@@ -47,7 +47,9 @@ class TheGeneratedFiles(unittest.TestCase):
         rows = matrix_rows()
         self.assertGreater(len(rows), 50)
         played = {label.split()[0] for _n, labels, _t, _s in gen.CASES for label in labels}
-        self.assertEqual(played - rows, set(), "a case names a row the matrices do not have")
+        # a case may also stand for something the matrices cannot hold, if the generator says what
+        self.assertEqual({r for r in played if r not in rows}, set(gen.EXTRA_ROWS))
+        played &= rows
         self.assertEqual(set(gen.NOT_RUN) - rows, set(), "NOT_RUN names a row the matrices do not have")
         self.assertEqual(played & set(gen.NOT_RUN), set(), "a row is both played and listed as not run")
         self.assertEqual(rows - played - set(gen.NOT_RUN), set(), "rows with neither a case nor a reason")

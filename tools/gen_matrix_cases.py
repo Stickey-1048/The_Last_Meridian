@@ -28,6 +28,13 @@ Three kinds of step:
                 For the one place where the script turns one request into
                 another: posting with Haskell's name when Haskell is dead
                 posts with no name.
+  race(es, how) the model applies the events es one after the other, as it
+                always does. The game is made to do them with no time between
+                them, in one of the ways named in RACES. In the model an event
+                is over before the next begins; in the game a death is
+                announced a moment after it happens, and two handlers can be
+                at work at once. The quest script has to come out where the
+                model does all the same (amendment A24).
 
 What the cases cannot show is listed in NOT_RUN below, row by row.
 """
@@ -72,6 +79,19 @@ def attempt(event):
 
 def via(event, action):
     return ("via", event, action)
+
+
+def race(events, how):
+    return ("race", list(events), how)
+
+
+# how -> (driver call, main-quest stages the driver sets by hand, words for the step)
+RACES = {
+    "timer": ("DoKillLeadThenTimer()", set(), "with the timer running out before the death is announced"),
+    "leaving": ("DoKillLeadThenLeave()", set(), "with the player gone before the death is announced"),
+    "town": ("DoKillLeadThenTown()", {40}, "with the town stage before the death is announced"),
+    "overlap": ("DoLeaveAndReachTownAtOnce()", {40}, "with the town stage set while the evade stage is still being handled"),
+}
 
 
 def steps(*items):
@@ -145,6 +165,14 @@ CASES = [
      steps(*TO_AMBUSH, "player_kills_lead", "nell_dies_other", *FINISH)),
     (128, ["T26c"], "the gate trigger never touched: the hand-over runs the town stage",
      steps(*TO_AMBUSH, "player_kills_lead", "goto_town_bypass_gate", "pritchard_handover")),
+    (129, ["A24 timer"], "the lead killed, and the timer runs out before his death is announced: a rescue",
+     steps(*TO_AMBUSH, race(["player_kills_lead"], "timer"), *FINISH)),
+    (130, ["A24 leaving"], "the lead killed, and the player gone before his death is announced: a rescue",
+     steps(*TO_AMBUSH, race(["player_kills_lead", "goto_wreck"], "leaving"), *FINISH)),
+    (131, ["A24 town"], "the lead killed, and the town stage before his death is announced: a rescue",
+     steps(*TO_AMBUSH, race(["player_kills_lead", "goto_town"], "town"), "pritchard_handover", "pritchard_handoff")),
+    (132, ["A24 overlap"], "leaving a live ambush and reaching the gate in the same breath",
+     steps(*TO_AMBUSH, race(["goto_town"], "overlap"), "pritchard_handover", "pritchard_handoff")),
 
     (201, ["S01"], "the ledger alone decides nothing",
      steps(*LEDGER, "goto_town", attempt("sq_report"), attempt("sq_post"), attempt("sq_post_yard"),
@@ -204,6 +232,12 @@ NOT_RUN = {
     "S14": "Pike dead: the guard is a dialogue condition, and there is no dialogue yet",
     "S16": "reload: needs a save and a load",
     "S20": "Vane dead hides the sale: the guard is a dialogue condition, and there is no dialogue yet",
+}
+
+# Cases that stand for no row of the matrices: what they are there for.
+EXTRA_ROWS = {
+    "A24": "amendment A24: the game announces a death late and runs handlers side by side; "
+           "the logic model has no time in it, so its matrices cannot have these rows",
 }
 
 # Attempts the matrices make that are left out because only a dialogue
@@ -326,7 +360,17 @@ def build_case(number, rows, title, case_steps, price, cargo):
     listed = []
     for index, (kind, event, act) in enumerate(case_steps, 1):
         pre = s
-        if kind == "attempt":
+        if kind == "race":
+            post = pre
+            for e in event:
+                try:
+                    post = apply(post, e)
+                except m.NotAvailable:
+                    raise Bad("%s step %d: the model says %s is not available here" % (name, index, e))
+            call, race_mq, words = RACES[act]
+            what = "%s, %s" % (" then ".join(event), words)
+            calls, set_mq, set_sq = [call], set(race_mq), set()
+        elif kind == "attempt":
             if event in available(pre):
                 raise Bad("%s step %d: the model says %s IS available here; it cannot be an attempt" % (name, index, event))
             post = pre
@@ -338,7 +382,9 @@ def build_case(number, rows, title, case_steps, price, cargo):
                 raise Bad("%s step %d: the model says %s is not available here" % (name, index, event))
             what = event if kind == "do" else "%s, asked for as %s" % (event, act)
         # What the game is asked to do. For "via" the request is another event's.
-        if kind == "via":
+        if kind == "race":
+            pass
+        elif kind == "via":
             calls, set_mq, set_sq = action_for(act, pre, pre)
         else:
             calls, set_mq, set_sq = action_for(act, pre, post)
@@ -447,6 +493,7 @@ def generate():
         "cases": infos,
         "not_run": NOT_RUN,
         "attempts_left_out": DIALOGUE_GUARDED,
+        "rows_outside_the_matrices": EXTRA_ROWS,
     }
     return psc, json.dumps(data, indent=1) + "\n"
 
