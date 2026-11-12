@@ -32,11 +32,13 @@ What follows from that:
 - **Two builds are in play.** The game under test is 1.10.163.0 and the compiler comes from Creation Kit 1.11.246.0. The plugin is written with header version 0.95 and FormIDs from 0x800, which every build reads. Whether scripts compiled by the newer compiler run on 1.10.163 is expected but **unverified**; the first in-game check answers it. If the Creation Kit editor is later used on the plugin, match it to the game first.
 - Use a **disposable save**, or none: from the main menu the console command `coc qasmoke` should load the game's test cell with a default character (the cell name is on the Creation Kit wiki; the command is unverified here). Quest and alias changes orphan script data in old saves.
 
-## Shortcut: build, compile, install and start the test in one command
+## Shortcut: update, build, compile, install and start the test in one command
 
 ```powershell
-git pull; powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1 -Install -Play
+powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Play
 ```
+
+`Update-And-Run.ps1` brings the folder up to date with GitHub and then runs `Run-FirstBuild.ps1` with the same options; if it cannot update, it stops and runs nothing. Use it instead of typing `git pull; powershell ... Run-FirstBuild.ps1 ...`: in that form the second command runs even when the pull was refused, and then it is the older scripts that run. That happened on 2026-11-12 (see [VERIFY_LOG.md](VERIFY_LOG.md)). `Run-FirstBuild.ps1` now also refuses to start in a folder that is behind GitHub. If git reports a file as changed on the PC although its content is the same as git's copy, `Update-And-Run.ps1` tells git to look again and carries on; if a file's content really differs, it lists the file, discards nothing and stops.
 
 If Mod Organizer or the game is open, the script says so and waits for them to be closed. It then checks the tools, reads Steam's install state, runs the scan, builds the plugin against the real `Fallout4.esm`, compiles the scripts and, if both of those passed, installs the build as a Mod Organizer mod and creates or refreshes the test profile (step 4). With `-Play`, and only if the install passed, it starts the game for the in-game test (step 5) and, when the game closes, puts the test results on the clipboard with the build's summary on top. Without `-Play` it stops after the install and copies the build log (`build\first-build-log.txt`, which includes the scan's findings) to the clipboard instead; without `-Install` it stops after the compile and installs nothing. `-NoClipboard` turns the clipboard off.
 
@@ -128,7 +130,7 @@ Switch Mod Organizer back to your own profile afterwards.
 ### Running scenarios with nobody at the keyboard
 
 ```powershell
-git pull; powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1 -Install -Unattended
+powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended
 ```
 
 or, without rebuilding, `powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1` (`-Scenarios 2` runs one of them).

@@ -512,8 +512,15 @@ public sealed class Builder
         // The allocator rewrites its file on every run, in the line endings of
         // the machine it runs on. To keep a build from marking the tracked file
         // as changed (which would later block a `git pull`), it works on a
-        // copy, and the tracked file is only rewritten, always with LF line
-        // endings, when its content really differs.
+        // copy, and the tracked file is only rewritten when its content really
+        // differs, line endings aside.
+        //
+        // "Line endings aside" matters. On a clone made before .gitattributes
+        // pinned this file to LF, the working copy has CRLF. Rewriting it only
+        // to change the line endings changes its size, and git then reports it
+        // as modified although its content is the same; the next pull that
+        // touches the file is refused. That happened on the owner's PC on
+        // 2026-11-12 (docs/design/VERIFY_LOG.md).
         var work = Path.Combine(Path.GetTempPath(), $"tlm-formkeys-{Guid.NewGuid():N}.txt");
         if (File.Exists(formKeyFile)) File.Copy(formKeyFile, work, overwrite: true);
         Builder builder;
@@ -528,7 +535,7 @@ public sealed class Builder
             }
             var wanted = NormalizeLines(File.ReadAllText(work));
             var current = File.Exists(formKeyFile) ? File.ReadAllText(formKeyFile) : null;
-            if (current != wanted) File.WriteAllText(formKeyFile, wanted);
+            if (current == null || NormalizeLines(current) != wanted) File.WriteAllText(formKeyFile, wanted);
         }
         finally
         {

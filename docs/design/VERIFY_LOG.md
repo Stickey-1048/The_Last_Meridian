@@ -169,6 +169,20 @@ Prepared for the next run, and unverified until it has happened:
 - `tools/win/Run-Scenarios.ps1` runs scenarios one game session each, unattended. It depends on three things not yet seen in the game: `sStartingConsoleCommand=coc qasmoke` in the profile's settings entering the test room at start-up (forum reports say the setting works, some that it is ignored under a mod manager); `TLM:Core` then starting the scenario by itself from its timer; and `Debug.QuitGame()` closing the game. The last is listed on the wiki as a debug-only function; the other debug-only functions the scripts use (`Trace`, `TraceUser`, `OpenUserLog`) do work in this game when the scripts are compiled as they are now.
 - Self-test scenario 2, `TLM:FixtureProbe`, spawns the game's generic settler (`WorkshopNPC`, looked up when the plugin is built; if the name is not in `Fallout4.esm` the probe says so and stops), forces the actors into three of the quest's aliases and kills them. It answers checklist items 6 and 7 as far as they can be answered without a placed world, and decides whether the test matrix can be run with actors made at run time (owner decision D8).
 
+### A refused pull, 2026-11-12
+
+The seventh run did not happen. Reported by screenshot: `git pull` stopped with "Your local changes to the following files would be overwritten by merge: tools/PluginBuilder/formkeys.txt", and the command that followed it on the same line then ran the older `Run-FirstBuild.ps1`, which stopped at an option it did not know. Nothing was built or run.
+
+Cause, reproduced in a scratch clone: the PC's copy of the repository was cloned before `.gitattributes` pinned `formkeys.txt` to LF line endings, so its working copy had Windows line endings. Since commit `1eeca6b` the plugin builder rewrote that file with LF "whenever it differed", and a difference in line endings counted. The rewrite changed the file's size and nothing else. Git compares sizes before contents, so it reported the file as modified although `git diff` showed no difference, and it refused the first pull that had to update the file. The change that was meant to keep builds from marking the file as changed is what marked it. It never showed on Linux, where the file has LF to begin with.
+
+Fixed (reproduced and tested in scratch clones; not yet run on the PC):
+
+- The builder compares the file without regard to line endings and leaves it alone unless its content really differs.
+- `tools/win/Update-And-Run.ps1` updates the folder and then runs the build, and stops if it cannot update. A file git reports as changed whose content is identical is refreshed in git's index (nothing is staged, nothing discarded); a file whose content really differs is listed and left alone.
+- `Run-FirstBuild.ps1` stops at once if the folder is behind GitHub, instead of running older scripts.
+
+The one-time remedy on the PC is `git add tools/PluginBuilder/formkeys.txt`, which makes git look at the content again, followed by `git pull`.
+
 Still not done anywhere: any test with an actor or an object, opening the plugin in the Creation Kit, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:

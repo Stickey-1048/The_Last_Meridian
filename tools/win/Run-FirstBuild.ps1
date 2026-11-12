@@ -77,7 +77,9 @@ param(
     # -Install. If both are given, this wins over -Play.
     [switch]$Unattended,
     # Scenario numbers for -Unattended, separated by commas. Default: all of them.
-    [string]$Scenarios
+    [string]$Scenarios,
+    # Run even though this folder is behind GitHub (see the check below).
+    [switch]$AllowStale
 )
 
 Set-StrictMode -Version Latest
@@ -106,6 +108,26 @@ $head = $null
 $layoutLines = @()
 
 function Say([string]$s = '') { $log.Add($s); Write-Host $s }
+
+# Is this folder behind GitHub? "git pull; powershell ... this script" runs this
+# script even when the pull was refused, and then it is the older scripts that
+# run: an old build would be tested while looking like a new one. Better to
+# stop. If GitHub cannot be reached the check is skipped.
+if (-not $AllowStale) {
+    $fetch = Invoke-Native -Exe 'git' -Arguments @('-C', $repo, 'fetch', '--quiet')
+    if ($fetch.Found -and $fetch.ExitCode -eq 0) {
+        $behind = Invoke-Native -Exe 'git' -Arguments @('-C', $repo, 'rev-list', '--count', 'HEAD..@{u}')
+        $count = 0
+        if ($behind.ExitCode -eq 0 -and [int]::TryParse("$($behind.Output | Select-Object -First 1)".Trim(), [ref]$count) -and $count -gt 0) {
+            Write-Host "This folder is $count commit(s) behind GitHub, so it was not brought up to date before this script started"
+            Write-Host '(a "git pull" that was refused leaves the older scripts in place). Nothing was built or run.'
+            Write-Host ''
+            Write-Host 'Run this instead, with the same options. It updates the folder first and stops if it cannot:'
+            Write-Host '    powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 <options>'
+            exit 1
+        }
+    }
+}
 
 # The install step needs Mod Organizer closed, and the test must not mistake a
 # game that is already running for the one it starts. Ask before the long build.
