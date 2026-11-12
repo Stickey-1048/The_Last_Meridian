@@ -19,6 +19,20 @@ First run of `tools/win/Run-FirstBuild.ps1` on the owner's PC, 2026-11-11, commi
 | `PlayerRef` looked up by EditorID | **Not found.** Cause reproduced off the PC: the untyped lookup is case-sensitive, and the master evidently spells it differently. Fixed (typed, case-insensitive lookup, with a fallback to id 0x14 that is only accepted if it places the actor `Player`). The fix is tested on stand-in masters and awaits a re-run on the PC |
 | Scan bug | It reported that no Creation Kit was found, because it only counted folders containing `Fallout4.exe`. Fixed |
 
+Second run, same day, commit `59b917c`, after the Steam copy of the game finished installing. Reported as the pasted log.
+
+| What | Result |
+|---|---|
+| Steam copy of the game | `Fallout4.exe` 1.11.240.0, beside Creation Kit 1.11.246.0; base game only, no story DLC |
+| GOG base game folder | clean: no mods in `Data`, no F4SE, all six DLC masters |
+| Scripts compile | Again 7 of 7 |
+| `PlayerRef` | **Still not found.** The typed, case-insensitive lookup finds no placed actor with that EditorID in the 1.10.163 master, and record `000014` is not visible to the library as a placed actor placing `Player`. The builder now also accepts `000014` when at least ten vanilla quest aliases named like "Player" force that reference; tested on stand-in masters, awaiting a third run |
+| Settings and load order | One Fallout 4 settings folder and one active-plugin list on the PC, and that list holds Fallout London's plugins. Any copy of the game started directly shares them |
+| Mod Organizer | 2.5.2 at `C:\Modlists\TMR`, two profiles, each with its own settings and saves |
+| Vortex | installed, with a staged mod library that is not deployed into any of the three game folders. Not used by this project |
+
+What follows: the first in-game test goes through a separate Mod Organizer profile, so that nothing shared with Fallout London is read or written (TEST_RUNBOOK.md, steps 4 and 5).
+
 Still not done anywhere: opening the plugin in the Creation Kit, loading it in the game, any quest test.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
@@ -81,7 +95,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 
 ## Checklist for the game PC
 
-1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`). **Done 2026-11-11** (the file is on the PC, not yet in the repository).
+1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`). **Done 2026-11-11.** The file stays on the PC (git-ignored); the facts the build depends on are in the tables above.
 2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
 3. All seven scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 7 of 7.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.

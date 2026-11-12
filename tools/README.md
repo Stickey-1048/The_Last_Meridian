@@ -11,10 +11,11 @@ Everything here supports building and checking the mod. None of it is the mod. T
 | `run_checks.sh` | Runs the three checks above | Linux, macOS, Git Bash | |
 | `StandInMaster/` | Generates tiny stand-in `Fallout4.esm` files (three variants) so the builder's vanilla lookups can be exercised without the game | anywhere | used by `run_checks.sh` |
 | `win/Run-FirstBuild.ps1` | One command for the game PC: scan, plugin build, script compile, one log file (also copied to the clipboard) | Windows | ran on the owner's PC under Windows PowerShell 5.1: every step passed. Later additions (clipboard, wider scan) are tested against stand-ins only |
-| `win/Get-BuildEnv.ps1` | Read-only scan of the PC's Fallout 4 installs and a Mod Organizer 2 instance; writes `docs/design/BUILD_ENV.md` | Windows | against stand-in folder trees (Steam layout; GOG + Mod Organizer layout) on Linux PowerShell 7; registry lookups untested |
+| `win/Get-BuildEnv.ps1` | Read-only scan of the PC's Fallout 4 installs, mod managers and settings folders; writes `docs/design/BUILD_ENV.md`, which is git-ignored and stays on that PC | Windows | against stand-in folder trees (Steam layout; GOG + Mod Organizer layout) on Linux PowerShell 7; registry lookups untested |
 | `win/Build-Scripts.ps1` | Compiles the scripts with the game's Papyrus compiler into `build\Scripts` | Windows | with a stand-in compiler |
 | `win/Package-Dev.ps1` | Packs the plugin and scripts into `build\TheLastMeridian-Dev.zip`, laid out like a Data folder, for installing with any mod manager (Vortex, Mod Organizer) | Windows | zip contents checked on Linux PowerShell 7; not yet installed with a real mod manager |
-| `win/Install-Dev.ps1`, `win/Uninstall-Dev.ps1` | Install the build as a Mod Organizer mod (or into a game folder) and remove it again, with backups and a manifest | Windows | against stand-in folder trees; the game and Fallout London folders were confirmed untouched in Mod Organizer mode |
+| `win/Install-Dev.ps1`, `win/Uninstall-Dev.ps1` | Install the build as a Mod Organizer mod and create a separate test profile (or copy into a game folder), and remove it again | Windows | against a stand-in Mod Organizer setup: the new profile is checked byte for byte, existing profiles and both game folders are confirmed unchanged. Not yet opened by a real Mod Organizer |
+| `win/Get-TestResults.ps1` | After an in-game test, gathers the self-test's log and the relevant lines of the game's script log onto the clipboard | Windows | against stand-in log files |
 
 `Run-FirstBuild.ps1`, `Get-BuildEnv.ps1` and `Build-Scripts.ps1` have run under Windows PowerShell 5.1 on the owner's PC. `Install-Dev.ps1`, `Uninstall-Dev.ps1` and `Package-Dev.ps1` have only run under PowerShell 7 on Linux.
 

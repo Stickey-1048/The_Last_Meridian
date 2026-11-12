@@ -8,3 +8,5 @@ obj/
 /build/
 # Compiled Papyrus
 *.pex
+# The scan's inventory of one person's PC (tools/win/Get-BuildEnv.ps1). Stays local.
+docs/design/BUILD_ENV.md

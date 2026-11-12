@@ -6,10 +6,16 @@
   Reads build\install-manifest.json and deletes the files listed there, then
   removes the TLM script folders if they are empty. Nothing else is touched:
   not plugins.txt, not saves, not any file this project did not copy.
+  Mod Organizer should be closed. The test profile made by
+  Install-Dev.ps1 -CreateProfile is kept unless -RemoveProfile is given.
   Use -WhatIf to see what would be removed.
 #>
 [CmdletBinding(SupportsShouldProcess)]
-param()
+param(
+    # Also delete the Mod Organizer test profile that Install-Dev.ps1 created
+    # (including any saves made while testing in it).
+    [switch]$RemoveProfile
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -42,6 +48,19 @@ if ($modFolder -and (Test-Path -LiteralPath $modFolder) -and -not $WhatIfPrefere
     $left = @(Get-ChildItem -LiteralPath $modFolder -Force | Where-Object { $_.Name -ne 'meta.ini' })
     if ($left.Count -eq 0) { Remove-Item -LiteralPath $modFolder -Recurse -Force }
     else { Write-Host "Left $modFolder in place: it contains files this project did not copy." }
+}
+$profileFolder = $null
+if ($m.PSObject.Properties.Name -contains 'ProfileFolder') { $profileFolder = $m.ProfileFolder }
+if ($profileFolder -and (Test-Path -LiteralPath $profileFolder)) {
+    if ($RemoveProfile) {
+        if ($PSCmdlet.ShouldProcess($profileFolder, 'Remove the Mod Organizer test profile')) {
+            Remove-Item -LiteralPath $profileFolder -Recurse -Force
+            Write-Host "Removed the test profile: $profileFolder"
+        }
+    } else {
+        Write-Host "The Mod Organizer test profile was left in place: $profileFolder"
+        Write-Host 'Run again with -RemoveProfile to delete it, or delete it in Mod Organizer.'
+    }
 }
 if (-not $WhatIfPreference) { Remove-Item -LiteralPath $manifestPath -Force }
 Write-Host "Removed $removed file(s) from $($m.Root)."

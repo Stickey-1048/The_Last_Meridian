@@ -14,32 +14,35 @@ From the scan and build run of 2026-11-11, unless marked as the owner's report.
 |---|---|
 | Game under test | GOG Fallout 4 GOTY, build 1.10.163.0: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout 4 GOTY` |
 | Creation Kit | 1.11.246.0, with the Papyrus compiler and script sources: `F:\SteamLibrary\steamapps\common\Fallout 4` |
-| Steam copy of the game | downloading into the same Steam folder at the time of the run |
+| Steam copy of the game | build 1.11.240.0, in the same Steam folder as the Creation Kit |
 | Fallout London | separate install: `C:\Program Files (x86)\GOG Galaxy\Games\Fallout London\Fallout London` |
 | Mod Organizer 2 | instance at `C:\Modlists\TMR`, pointing at the GOG game; selected profile "The Midnight Ride Extended" |
-| Vortex | the owner reports using it; what it manages is not yet known |
+| Vortex | installed, with a staged mod library that is not deployed into any of the three game folders; not used by this project |
 | How the owner starts the game | through GOG Galaxy; the owner believes that starts Fallout London (owner's report) |
+| Settings, saves, active plugins | one shared Fallout 4 settings folder and one active-plugin list, currently holding Fallout London's plugins |
 | PowerShell | Windows PowerShell 5.1 |
 
 What follows from that:
 
 - **Building needs no game launch.** The plugin is built from the GOG game's `Fallout4.esm`, and the scripts are compiled with the Creation Kit's compiler. Both already work.
 - **Fallout London is not used and not touched.** The install script refuses it.
-- **How to start base Fallout 4 with the test mod is undecided.** Three copies of the game will exist (GOG base, Fallout London, Steam), and they may share settings, saves and the active plugin list. The next scan reports which mod manager deploys into which folder and which settings folders exist; the choice (a clean Mod Organizer profile, a Vortex install of the packaged zip, or a direct copy) follows from that. Until then, **do not start the Steam copy** and do not install the test build anywhere.
+- **The test runs through a separate Mod Organizer profile.** Three copies of the game exist (GOG base, Fallout London, Steam) and they share one settings folder and one active-plugin list, which is Fallout London's. A Mod Organizer profile with its own settings, saves and plugin list keeps the test away from all of that, and Mod Organizer is already pointed at the clean GOG base game. **Do not start the Steam copy or the GOG base game directly**, and do not deploy anything from Vortex while testing.
 - **Two builds are in play.** The game under test is 1.10.163.0 and the compiler comes from Creation Kit 1.11.246.0. The plugin is written with header version 0.95 and FormIDs from 0x800, which every build reads. Whether scripts compiled by the newer compiler run on 1.10.163 is expected but **unverified**; the first in-game check answers it. If the Creation Kit editor is later used on the plugin, match it to the game first.
 - Use a **disposable save**, or none: from the main menu the console command `coc qasmoke` should load the game's test cell with a default character (the cell name is on the Creation Kit wiki; the command is unverified here). Quest and alias changes orphan script data in old saves.
 
-## Shortcut: steps 1 to 3 in one command
+## Shortcut: build, compile and install in one command
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1
+git pull; powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1 -Install
 ```
 
-It checks the tools, reads Steam's install state for Fallout 4 and the Creation Kit, runs the scan, builds the plugin against the real `Fallout4.esm`, compiles the scripts, and writes everything, including the scan's findings, to `build\first-build-log.txt`. It also copies that log to the clipboard, so it can be pasted straight into a chat (`-NoClipboard` turns that off). The Windows user folder name is replaced with `%USERPROFILE%` in the log and in `BUILD_ENV.md`. It keeps going where it can, so it is safe to run while Steam is still downloading.
+Close Mod Organizer first. The script checks the tools, reads Steam's install state, runs the scan, builds the plugin against the real `Fallout4.esm`, compiles the scripts and, if both of those passed, installs the build as a Mod Organizer mod and creates the test profile (step 5). It writes everything, including the scan's findings, to `build\first-build-log.txt` and copies that log to the clipboard so it can be pasted into a chat (`-NoClipboard` turns that off). Without `-Install` it stops after the compile and installs nothing.
 
-It installs nothing into the game or a mod manager. Outside the repository it changes two things: it unpacks the Creation Kit's own `Base.zip` beside itself if the script sources are still zipped (`-NoExtractBase` skips that, and the compile with it), and .NET downloads the plugin builder's libraries into its cache in the Windows user folder (`.nuget\packages`) the first time it builds. The very first use of .NET on a PC can also create a development HTTPS certificate and send usage telemetry to Microsoft; the script now switches both off, but the first run on the owner's PC predates that (`dotnet dev-certs https --clean` removes the certificate). Defaults assume Mod Organizer at `C:\Modlists\TMR` and a Steam library at `F:\SteamLibrary`; `-ModOrganizerRoot`, `-SteamLibrary` and `-CreationKitRoot` override them.
+Outside the repository it changes: the Mod Organizer mod folder and test profile (with `-Install`); the Creation Kit's own `Base.zip`, unpacked beside itself if the script sources are still zipped (`-NoExtractBase` skips that, and the compile with it); and .NET's library cache in the Windows user folder (`.nuget\packages`) the first time it builds. The very first use of .NET on a PC can also create a development HTTPS certificate and send usage telemetry to Microsoft; the script now switches both off, but the first run on the owner's PC predates that (`dotnet dev-certs https --clean` removes the certificate).
 
-Steps 1 to 3 below are what it runs, for doing them one at a time.
+Defaults assume Mod Organizer at `C:\Modlists\TMR` and a Steam library at `F:\SteamLibrary`; `-ModOrganizerRoot`, `-SteamLibrary` and `-CreationKitRoot` override them. The Windows user folder name is replaced with `%USERPROFILE%` in everything it writes.
+
+The numbered steps below are what it runs, for doing them one at a time.
 
 ## 1. Record the environment (read-only)
 
@@ -47,7 +50,7 @@ Steps 1 to 3 below are what it runs, for doing them one at a time.
 powershell -ExecutionPolicy Bypass -File tools\win\Get-BuildEnv.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
 ```
 
-Writes `docs/design/BUILD_ENV.md`: game and Creation Kit versions, install paths, compiler and script sources, DLC, Fallout London, loose-file and logging settings. Commit it.
+Writes `docs/design/BUILD_ENV.md`: game and Creation Kit versions, install paths, compiler and script sources, DLC, Fallout London, mod managers, and the settings folders. The file is an inventory of one person's PC, so it is git-ignored and stays there; the facts the build depends on are summarised in [VERIFY_LOG.md](VERIFY_LOG.md).
 
 ## 2. Build the plugin against the real master
 
@@ -67,36 +70,52 @@ powershell -ExecutionPolicy Bypass -File tools\win\Build-Scripts.ps1 -CreationKi
 
 Output goes to `build\Scripts\TLM\*.pex`, not into the game. The first real compile will probably find errors the documentation-level lint could not. Fix them in `scripts/Source/User/TLM/`, re-run `tools/run_checks.sh` (or `python tools/check_consistency.py`), and compile again.
 
-## 4. Open the plugin in the Creation Kit
-
-Install the build as a Mod Organizer mod (step 5), enable it in the test profile, start the Creation Kit **from Mod Organizer**, load `TheLastMeridian.esp` as the active file, and check:
-
-- it loads with no errors beyond the usual vanilla warnings;
-- quests `TLM_Core`, `TLM_MQ01`, `TLM_SQ01` show the stages, objectives and aliases in `tools/PluginBuilder/last-build.report.txt`;
-- each quest's Scripts tab shows the script with its properties filled (no red mandatory properties except those listed as not wired).
-
-If the Creation Kit rejects or rewrites anything, that is a finding: record it in `VERIFY_LOG.md` and fix the builder, not the `.esp` by hand.
-
-## 5. Install for testing
+## 4. Install for testing
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\win\Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR' -WhatIf     # shows what would be copied
-powershell -ExecutionPolicy Bypass -File tools\win\Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR'
+powershell -ExecutionPolicy Bypass -File tools\win\Install-Dev.ps1 -ModOrganizerRoot 'C:\Modlists\TMR' -CreateProfile
 ```
 
-This creates `C:\Modlists\TMR\mods\TheLastMeridian-Dev`. Then, in Mod Organizer, refresh, tick the mod in the left pane and `TheLastMeridian.esp` in the right pane, in the test profile only. The script never edits profiles, the mod list or the plugin list. `powershell -ExecutionPolicy Bypass -File tools\win\Uninstall-Dev.ps1` removes exactly what was copied, and the mod folder with it.
+Mod Organizer must be closed. This does two things, and touches no game folder:
 
-### If the game is started through Vortex, or you would rather install it yourself
+- copies the plugin, the compiled scripts and their sources into `C:\Modlists\TMR\mods\TheLastMeridian-Dev`;
+- creates the Mod Organizer profile `TLM-Dev` as a copy of the selected profile's files, with every other mod and plugin switched off, its own settings and saves, Papyrus logging on and loose files on. Existing profiles are only read. If `TLM-Dev` already exists, only this project's lines in it are refreshed.
+
+Why Mod Organizer: on the owner's PC, Fallout London shares the one Fallout 4 settings folder and the one active-plugin list with any copy of the game started directly. A Mod Organizer profile with its own settings, saves and plugin list is what keeps a test from touching them.
+
+`Uninstall-Dev.ps1` removes exactly the files that were copied, and the mod folder with them; add `-RemoveProfile` to delete the test profile too (with any saves made in it).
+
+A profile made this way has not yet been opened by a real Mod Organizer. If `TLM-Dev` does not appear in its profile list, or the mod is not ticked in it, that is a finding to report, and the fallback is to make the profile by hand: Profiles, select one, Copy, name it `TLM-Dev`, untick every mod except `TheLastMeridian-Dev`, tick `TheLastMeridian.esp`.
+
+### Other ways to install
+
+`Package-Dev.ps1` writes `build\TheLastMeridian-Dev.zip`, laid out like a Data folder, for installing with any mod manager. `Install-Dev.ps1 -GameRoot <folder>` copies straight into a game's Data folder. Neither isolates the test from the shared settings and plugin list; do not use them on this PC without a reason.
+
+## 5. First in-game test: the self-test
+
+With only the generated records, every alias is empty and flagged Optional, so this tests the **stage logic and globals**, not the world.
+
+1. Start Mod Organizer (`C:\Modlists\TMR\ModOrganizer.exe`).
+2. In the Profile list at the top, choose `TLM-Dev`.
+3. In the list next to the Run button, choose the entry that starts `Fallout4.exe` (the install script prints its title).
+4. Run. At the game's main menu, press the `~` key and type `coc qasmoke`. When the room has loaded, open the console again and type `cqf TLM_Core RunSelfTest`. Close the console and wait for a message box.
+5. Quit the game and run:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\win\Package-Dev.ps1
+powershell -ExecutionPolicy Bypass -File tools\win\Get-TestResults.ps1
 ```
 
-This writes `build\TheLastMeridian-Dev.zip`, laid out like a Data folder. Install the zip with the mod manager that actually starts the game (Vortex: Install From File; Mod Organizer: install from archive), in a test profile, and enable `TheLastMeridian.esp`. Which manager starts the game under test is an open question on this PC: the scan found a Mod Organizer instance at `C:\Modlists\TMR`, and the owner reports using Vortex.
+It gathers the self-test's log and the relevant lines of the game's script log into `build\test-results.txt` and the clipboard.
 
-## 6. First in-game checks (before any test cell exists)
+The self-test (`scripts/Source/User/TLM/SelfTest.psc`, attached to `TLM_Core`, development only) starts `TLM_MQ01`, walks it through dispatch, ambush, saved, delivery and hand-off, then walks `TLM_SQ01` through a clue found before the ledger, the ledger, the journal and a public posting. It makes 60 checks of stages, objectives and globals. Every expected number is the logic model's prediction: `tools/logic_model/test_selftest_expectations.py` fails if the two differ. It can run once per game session, because the quests run once.
 
-With only the generated records, every alias is empty and flagged Optional, so this stage tests the **stage logic and globals**, not the world. In the console:
+Everything in this step is unverified: that the plugin loads, that `coc qasmoke` works from the main menu, that the scripts bind, and that scripts compiled with the Creation Kit 1.11 compiler run on game build 1.10.163. Whatever fails first is the finding.
+
+Switch Mod Organizer back to your own profile afterwards.
+
+### Checking by hand
+
+The same things can be checked one at a time in the console. The `setstage` and `sqv` commands themselves are unverified.
 
 | Check | Console | Expect |
 |---|---|---|
@@ -108,9 +127,11 @@ With only the generated records, every alias is empty and flagged Optional, so t
 | Finish | `setstage TLM_MQ01 60` | stage 100; quest completed; `TLM_G_MQ01_Done` = 1 |
 | SQ01 evidence | `setstage TLM_SQ01 10`, `11`, `13` | stage 20 then 25 set by the script; `TLM_G_SQ01_EvidenceLevel` = 2 |
 
-Repeat from a fresh save for Evaded (`30`, `32`), Deal (`30`, `33`) and Missed (`40` straight after `20`), comparing each global with the values in `tools/logic_model/test_mq01_matrix.py`. The setstage commands themselves are unverified; check them first.
+Other outcomes (Evaded `30`, `32`; Deal `30`, `33`; Missed `40` straight after `20`) each need a fresh session; compare the globals with `tools/logic_model/test_mq01_matrix.py`.
 
-Papyrus errors appear in `Documents\My Games\Fallout4\Logs\Script\Papyrus.0.log` once logging is on.
+## 6. Open the plugin in the Creation Kit
+
+Not attempted yet, and not needed for step 5. The Creation Kit on this PC (1.11.246.0) sits beside the Steam copy of the game (1.11.240.0), while the game under test is the GOG copy (1.10.163.0); how to open the plugin in the editor without mixing those up has to be worked out first. When it is, check that the plugin loads with no errors beyond the usual vanilla warnings, that the three quests show the stages, objectives and aliases in `tools/PluginBuilder/last-build.report.txt`, and that each quest's Scripts tab shows its scripts with their properties filled. If the Creation Kit rejects or rewrites anything, record it in `VERIFY_LOG.md` and fix the builder, not the `.esp` by hand.
 
 ## 7. Then, and only then
 

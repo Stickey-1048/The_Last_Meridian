@@ -375,7 +375,8 @@ function Get-Fallout4UserState {
 
     $appDirs = @()
     if ($LocalAppDataRoot -and (Test-Path -LiteralPath $LocalAppDataRoot)) {
-        $appDirs = @(Get-ChildItem -LiteralPath $LocalAppDataRoot -Directory -Filter 'Fallout*' -ErrorAction SilentlyContinue | ForEach-Object FullName)
+        $appDirs = @(Get-ChildItem -LiteralPath $LocalAppDataRoot -Directory -Filter 'Fallout*' -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -match '^Fallout ?4|London' } | ForEach-Object FullName)
     }
     $pluginLists = @()
     foreach ($d in $appDirs) {
@@ -499,17 +500,24 @@ function Get-ModOrganizerInfo {
         }
     }
 
-    # Tools registered in Mod Organizer (they must be started through it to see the mods).
+    # Programs registered in Mod Organizer (they must be started through it to
+    # see the mods). Each has a title, which is what its "Run" list shows.
     $tools = @()
+    $exeByIndex = @{}
     $inExe = $false
     foreach ($line in Get-Content -LiteralPath $ini) {
         $t = $line.Trim()
         if ($t -match '^\[(.+)\]$') { $inExe = ($Matches[1] -ieq 'customExecutables'); continue }
-        if ($inExe -and $t -match '^\d+\\binary=(.*)$') {
-            $bin = ConvertFrom-MoValue $Matches[1]
-            if ($bin -match '(CreationKit|f4se_loader|Fallout4Launcher|Fallout4|FO4Edit|xEdit)[^\\/]*\.exe$') { $tools += (Split-Path -Leaf $bin) }
+        if ($inExe -and $t -match '^(\d+)\\(binary|title)=(.*)$') {
+            $idx = $Matches[1]; $what = $Matches[2]; $val = ConvertFrom-MoValue $Matches[3]
+            if (-not $exeByIndex.ContainsKey($idx)) { $exeByIndex[$idx] = @{ title = ''; binary = '' } }
+            $exeByIndex[$idx][$what] = $val
+            if ($what -eq 'binary' -and $val -match '(CreationKit|f4se_loader|Fallout4Launcher|Fallout4|FO4Edit|xEdit)[^\\/]*\.exe$') { $tools += (Split-Path -Leaf $val) }
         }
     }
+    $executables = @($exeByIndex.Keys | Sort-Object { [int]$_ } | ForEach-Object {
+            [pscustomobject]@{ Title = $exeByIndex[$_].title; Binary = $exeByIndex[$_].binary }
+        })
 
     $modCount = 0
     if (Test-Path -LiteralPath $mods) { $modCount = @(Get-ChildItem -LiteralPath $mods -Directory -ErrorAction SilentlyContinue).Count }
@@ -532,10 +540,175 @@ function Get-ModOrganizerInfo {
         ModCount         = $modCount
         Profiles         = $profiles
         Tools            = @($tools | Sort-Object -Unique)
+        Executables      = $executables
         BaseSourceDirs   = $baseSourceMods
         TlmModFolder     = Join-Path $mods 'TheLastMeridian-Dev'
         TlmModInstalled  = Test-Path -LiteralPath (Join-Path $mods 'TheLastMeridian-Dev')
         ExePresent       = Test-Path -LiteralPath (Join-Path $rootPath 'ModOrganizer.exe')
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Text files that belong to other programs (Mod Organizer lists, game settings)
+# are read and written byte for byte: ISO-8859-1 maps every byte to one
+# character and back, so whatever encoding the file really uses, the lines this
+# module does not touch come out exactly as they went in.
+
+function Read-RawLines {
+    <#
+      Returns the file's lines, one per output object: wrap the call in @() to
+      get an array. The bytes are decoded directly; .NET's line readers would
+      notice a byte-order mark and switch encoding, which breaks the
+      byte-for-byte promise above.
+    #>
+    param([Parameter(Mandatory)][string]$Path)
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $Path).Path)
+    if ($bytes.Length -eq 0) { return }
+    $text = [System.Text.Encoding]::GetEncoding(28591).GetString($bytes)
+    $text = ($text -replace "`r`n", "`n") -replace "`r", "`n"
+    if ($text.EndsWith("`n")) { $text = $text.Substring(0, $text.Length - 1) }
+    return $text.Split("`n")
+}
+
+function Write-RawLines {
+    <# Writes the lines with Windows line endings, byte for byte (see Read-RawLines). #>
+    param([Parameter(Mandatory)][string]$Path, [string[]]$Lines)
+    $text = ($Lines -join "`r`n") + "`r`n"
+    [System.IO.File]::WriteAllBytes($Path, [System.Text.Encoding]::GetEncoding(28591).GetBytes($text))
+}
+
+function Set-IniValue {
+    <# Sets Key=Value in [Section] of a settings file, adding the section or key if missing. Nothing else in the file changes. #>
+    param([Parameter(Mandatory)][string]$Path, [Parameter(Mandatory)][string]$Section, [Parameter(Mandatory)][string]$Key, [string]$Value = '')
+    $lines = New-Object System.Collections.Generic.List[string]
+    foreach ($l in @(Read-RawLines $Path)) { $lines.Add($l) }
+    $secStart = -1
+    $secEnd = $lines.Count
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        $t = $lines[$i].Trim()
+        if ($t -match '^\[(.+)\]$') {
+            if ($secStart -ge 0) { $secEnd = $i; break }
+            if ($Matches[1] -ieq $Section) { $secStart = $i }
+        }
+    }
+    if ($secStart -lt 0) {
+        if ($lines.Count -gt 0 -and $lines[$lines.Count - 1].Trim() -ne '') { $lines.Add('') }
+        $lines.Add("[$Section]")
+        $lines.Add("$Key=$Value")
+    } else {
+        $done = $false
+        for ($i = $secStart + 1; $i -lt $secEnd; $i++) {
+            if ($lines[$i] -match '^\s*([^=;]+?)\s*=' -and ($Matches[1].Trim() -ieq $Key)) { $lines[$i] = "$Key=$Value"; $done = $true; break }
+        }
+        if (-not $done) {
+            $at = $secEnd
+            while ($at -gt ($secStart + 1) -and $lines[$at - 1].Trim() -eq '') { $at-- }
+            $lines.Insert($at, "$Key=$Value")
+        }
+    }
+    Write-RawLines $Path $lines.ToArray()
+}
+
+function Test-ModOrganizerRunning {
+    return [bool](@(Get-Process -Name 'ModOrganizer' -ErrorAction SilentlyContinue).Count)
+}
+
+function New-TlmDevProfile {
+    <#
+      Creates (or refreshes) a Mod Organizer profile for testing this project.
+
+      A new profile is a copy of an existing one's files, with every mod and
+      plugin switched off except this project's, its own settings and saves,
+      Papyrus logging on, and loose files on. Existing profiles are only read.
+      A Mod Organizer profile is a folder of text files; copying one is what
+      Mod Organizer's own "Copy" button does.
+
+      If the profile already exists, only this project's mod and plugin lines
+      and the logging settings are (re)applied.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$ModOrganizerRoot,
+        [string]$ProfileName = 'TLM-Dev',
+        [string]$SourceProfile,
+        [string]$ModName = 'TheLastMeridian-Dev',
+        [string]$PluginName = 'TheLastMeridian.esp'
+    )
+    $mo = Get-ModOrganizerInfo -Root $ModOrganizerRoot
+    if (-not $mo) { throw "No ModOrganizer.ini in $ModOrganizerRoot" }
+    if ($ProfileName -notmatch '^[\w .\-]+$') { throw "Unusable profile name: $ProfileName" }
+    if (-not $SourceProfile) { $SourceProfile = $mo.SelectedProfile }
+    if ($SourceProfile -ieq $ProfileName) { throw 'The source profile and the new profile are the same.' }
+    $src = Join-Path $mo.ProfilesDirectory $SourceProfile
+    $dst = Join-Path $mo.ProfilesDirectory $ProfileName
+
+    $created = $false
+    if (-not (Test-Path -LiteralPath $dst)) {
+        if (-not (Test-Path -LiteralPath $src)) { throw "Source profile not found: $src" }
+        New-Item -ItemType Directory -Path $dst | Out-Null
+        # Files only: a profile's saves folder is not copied.
+        foreach ($f in @(Get-ChildItem -LiteralPath $src -File)) { Copy-Item -LiteralPath $f.FullName -Destination $dst }
+        $created = $true
+    }
+
+    $settings = Join-Path $dst 'settings.ini'
+    Set-IniValue $settings 'General' 'LocalSaves' 'true'
+    Set-IniValue $settings 'General' 'LocalSettings' 'true'
+
+    $header = '# This file was automatically generated by Mod Organizer.'
+    $bom = "$([char]0xEF)$([char]0xBB)$([char]0xBF)"
+
+    # modlist.txt: '+Name' on, '-Name' off, '*Name' not managed. First entry wins conflicts.
+    $modlist = Join-Path $dst 'modlist.txt'
+    $out = New-Object System.Collections.Generic.List[string]
+    $placed = $false
+    $switchedOff = 0
+    $in = @(Read-RawLines $modlist)
+    if ($in.Count -eq 0) { $in = @($header) }
+    foreach ($l in $in) {
+        if ($l.TrimStart($bom.ToCharArray()).StartsWith('#')) { $out.Add($l); continue }
+        if (-not $placed) { $out.Add("+$ModName"); $placed = $true }
+        if ($l.Length -gt 1 -and $l.Substring(1) -ieq $ModName) { continue }
+        if ($created -and $l.StartsWith('+')) { $out.Add('-' + $l.Substring(1)); $switchedOff++ } else { $out.Add($l) }
+    }
+    if (-not $placed) { $out.Add("+$ModName") }
+    Write-RawLines $modlist $out.ToArray()
+
+    # plugins.txt: '*Name' active.
+    $plugins = Join-Path $dst 'plugins.txt'
+    $out = New-Object System.Collections.Generic.List[string]
+    $in = @(Read-RawLines $plugins)
+    if ($in.Count -eq 0) { $in = @($header) }
+    foreach ($l in $in) {
+        if ($l.TrimStart($bom.ToCharArray()).StartsWith('#')) { $out.Add($l); continue }
+        if ($l.TrimStart('*') -ieq $PluginName) { continue }
+        if ($created) { $out.Add($l.TrimStart('*')) } else { $out.Add($l) }
+    }
+    $out.Add("*$PluginName")
+    Write-RawLines $plugins $out.ToArray()
+
+    $loadorder = Join-Path $dst 'loadorder.txt'
+    if (Test-Path -LiteralPath $loadorder) {
+        $in = @(Read-RawLines $loadorder)
+        if (-not ($in | Where-Object { $_ -ieq $PluginName })) { Write-RawLines $loadorder (@($in) + $PluginName) }
+    }
+
+    # Settings for this profile only.
+    $custom = Join-Path $dst 'fallout4custom.ini'
+    Set-IniValue $custom 'Papyrus' 'bEnableLogging' '1'
+    Set-IniValue $custom 'Papyrus' 'bEnableTrace' '1'
+    Set-IniValue $custom 'Papyrus' 'bLoadDebugInformation' '1'
+    Set-IniValue $custom 'Archive' 'bInvalidateOlderFiles' '1'
+    Set-IniValue $custom 'Archive' 'sResourceDataDirsFinal' ''
+
+    $exe = @($mo.Executables | Where-Object { $_.Binary -and ((Split-Path -Leaf $_.Binary) -ieq 'Fallout4.exe') } | Select-Object -First 1)
+    [pscustomobject]@{
+        Created       = $created
+        Path          = $dst
+        Name          = $ProfileName
+        SourceProfile = $SourceProfile
+        ModsSwitchedOff = $switchedOff
+        GameTitle     = if ($exe.Count) { $exe[0].Title } else { $null }
     }
 }
 
@@ -564,4 +737,5 @@ function Find-BaseScriptSource {
 Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Get-Fallout4UserState,
     Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration,
     Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue, Invoke-Native, Get-SteamAppState,
-    Find-CreationKitFolders, Get-VortexInfo, Get-VortexDeployment, Get-GogProductNames, Hide-UserFolder
+    Find-CreationKitFolders, Get-VortexInfo, Get-VortexDeployment, Get-GogProductNames, Hide-UserFolder,
+    Read-RawLines, Write-RawLines, Set-IniValue, Test-ModOrganizerRunning, New-TlmDevProfile

@@ -40,5 +40,5 @@ Do NOT build late-story factions first. Propose an implementation-ready design f
 - Run `tools/run_checks.sh` before committing any change to quest rules, scripts or the plugin spec. It needs Python 3 and the .NET 8 SDK, not the game.
 - Change rules in this order: `tools/logic_model/` (model and tests), `scripts/Source/User/TLM/*.psc`, `tools/PluginBuilder/Spec.cs`. The checks fail if they drift apart.
 - A pass means the design is internally consistent. It is not a compile and not a game test; say so when reporting.
-- On a PC with Fallout 4, follow `docs/design/TEST_RUNBOOK.md`. Record what was actually run in `docs/design/BUILD_ENV.md` and `docs/design/VERIFY_LOG.md`.
+- On a PC with Fallout 4, follow `docs/design/TEST_RUNBOOK.md`. Record what was actually run in `docs/design/VERIFY_LOG.md`. `docs/design/BUILD_ENV.md` is the scan's inventory of that PC: it is git-ignored and must not be committed, and only the facts the build depends on go into the public docs.
 - Never copy files into a Fallout London install. `tools/win/Install-Dev.ps1` refuses by default; do not override it without the owner saying so.

@@ -64,7 +64,7 @@ Line '# Build environment'
 Line
 Line "Recorded $(Get-Date -Format 'yyyy-MM-dd HH:mm') by ``tools/win/Get-BuildEnv.ps1`` (read-only scan). Re-run it after any game or Creation Kit update."
 Line
-Line 'Paths inside the Windows user folder are written as `%USERPROFILE%`, so this file can be committed without naming the account.'
+Line 'This is an inventory of one PC. It is git-ignored and stays on that PC. Paths inside the Windows user folder are written as `%USERPROFILE%`, so it can be pasted into a chat without naming the account.'
 Line
 Line "- OS: $([System.Runtime.InteropServices.RuntimeInformation]::OSDescription)"
 Line "- PowerShell: $($PSVersionTable.PSVersion)"

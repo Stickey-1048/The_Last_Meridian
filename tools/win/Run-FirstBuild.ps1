@@ -26,9 +26,13 @@
   The certificate is untrusted and unused; `dotnet dev-certs https --clean`
   removes it.
 
-  What it never touches: the game folder Mod Organizer manages, the Mod
-  Organizer instance, profiles, load order, saves. Nothing is installed into
-  the game. That is a separate, deliberate step (Install-Dev.ps1).
+  What it never touches: any game folder, existing Mod Organizer profiles,
+  the shared load order, saves. By default nothing is installed anywhere.
+
+  With -Install, and only if the build and the compile both passed, it also
+  runs Install-Dev.ps1 -CreateProfile: the build is copied into a Mod
+  Organizer mod folder and a separate test profile is created. Mod Organizer
+  must be closed for that step.
 
   Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-11 and
   every step passed. Additions since then (clipboard copy, wider scan) have
@@ -50,7 +54,10 @@ param(
     [string]$LocalAppDataRoot,
     [string]$AppDataRoot,
     # Do not copy the log to the clipboard at the end.
-    [switch]$NoClipboard
+    [switch]$NoClipboard,
+    # After a successful build, install it as a Mod Organizer mod and set up
+    # the test profile (Install-Dev.ps1 -ModOrganizerRoot ... -CreateProfile).
+    [switch]$Install
 )
 
 Set-StrictMode -Version Latest
@@ -71,6 +78,9 @@ New-Item -ItemType Directory -Force -Path $build | Out-Null
 $logPath = Join-Path $build 'first-build-log.txt'
 $log = New-Object System.Collections.Generic.List[string]
 $results = New-Object System.Collections.Generic.List[object]
+$pluginOk = $false
+$compileOk = $false
+$installed = $false
 
 function Say([string]$s = '') { $log.Add($s); Write-Host $s }
 function Result([string]$step, [string]$status, [string]$detail = '') {
@@ -175,6 +185,7 @@ try {
         $pb = Invoke-Native -Exe 'dotnet' -Arguments @('run', '--project', (Join-Path (Join-Path $repo 'tools') 'PluginBuilder'), '--', '--out', $build, '--fallout4-esm', $esm)
         $pb.Output | Where-Object { $_ -notmatch 'warning (NU|CS)' } | ForEach-Object { Say "  $_" }
         if ($pb.ExitCode -eq 0) {
+            $pluginOk = $true
             Result 'Plugin build' 'PASSED' 'build\TheLastMeridian.esp'
             $report = Join-Path $build 'TheLastMeridian.report.txt'
             if (Test-Path -LiteralPath $report) {
@@ -192,8 +203,21 @@ try {
         if (-not $NoExtractBase) { $compileArgs['ExtractBase'] = $true }
         $c = Invoke-Sibling 'Build-Scripts.ps1' $compileArgs
         $c.Output | ForEach-Object { Say "  $_" }
-        if ($c.ExitCode -eq 0) { Result 'Papyrus compile' 'PASSED' 'build\Scripts\TLM\*.pex' }
+        if ($c.ExitCode -eq 0) { $compileOk = $true; Result 'Papyrus compile' 'PASSED' 'build\Scripts\TLM\*.pex' }
         else { Result 'Papyrus compile' 'FAILED' "exit code $($c.ExitCode); compiler messages are above" }
+    }
+
+    # ---------------------------------------------------------- 6. install
+    if ($Install) {
+        Section '6. Install for testing (Mod Organizer mod and test profile)'
+        if (-not ($pluginOk -and $compileOk)) { Result 'Install for testing' 'SKIPPED' 'the plugin build and the compile must both pass first' }
+        elseif (-not $moOk) { Result 'Install for testing' 'SKIPPED' "no Mod Organizer instance at '$ModOrganizerRoot'" }
+        else {
+            $inst = Invoke-Sibling 'Install-Dev.ps1' @{ ModOrganizerRoot = $ModOrganizerRoot; CreateProfile = $true }
+            $inst.Output | ForEach-Object { Say "  $_" }
+            if ($inst.ExitCode -eq 0) { $installed = $true; Result 'Install for testing' 'PASSED' 'Mod Organizer mod and test profile' }
+            else { Result 'Install for testing' 'FAILED' 'see the message above' }
+        }
     }
 } catch {
     Say ''
@@ -205,7 +229,12 @@ try {
     Say '== Summary =='
     foreach ($r in $results) { Say ("  {0,-18} {1}{2}" -f $r.Step, $r.Status, $(if ($r.Detail) { "  ($($r.Detail))" } else { '' })) }
     Say ''
-    Say 'Nothing was installed into the game or a mod manager.'
+    if ($installed) {
+        Say 'Installed as a Mod Organizer mod with its own test profile. The game folders were not touched.'
+        Say 'The NEXT STEPS are listed under step 6 above.'
+    } else {
+        Say 'Nothing was installed into the game or a mod manager.'
+    }
 
     # The scan's full findings go into the same log, so one paste carries everything.
     $envFile = Join-Path (Join-Path (Join-Path $repo 'docs') 'design') 'BUILD_ENV.md'
