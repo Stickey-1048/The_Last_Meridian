@@ -320,11 +320,12 @@ if (Test-Path -LiteralPath $myGames) {
             $shared.Add(("  {0,-20} {1,8} bytes  {2}  lines mentioning London: {3}" -f $name, $f.Length, (Get-Stamp $f), @(Get-LondonLines $ini 999).Count))
         } else { $shared.Add("  $name : not present") }
     }
-    $recentSince = if ($haveSince) { $Since } else { (Get-Date).AddHours(-24) }
-    $recent = @(Get-ChildItem -LiteralPath $myGames -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -ge $recentSince } | Sort-Object LastWriteTime -Descending)
-    $shared.Add("  Files written there $(if ($haveSince) { 'since this session started' } else { 'in the last 24 hours' }): $($recent.Count)")
-    foreach ($f in ($recent | Select-Object -First 15)) {
-        $shared.Add(("    {0,-56} {1,9} bytes  {2}" -f $f.FullName.Substring($myGames.Length).TrimStart('\', '/'), $f.Length, (Get-Stamp $f)))
+    # The last day, not just this session: an earlier attempt may have written here too.
+    $recent = @(Get-ChildItem -LiteralPath $myGames -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -ge (Get-Date).AddHours(-24) } | Sort-Object LastWriteTime -Descending)
+    $shared.Add("  Files written there in the last 24 hours: $($recent.Count)$(if ($recent.Count -gt 20) { ' (newest 20 shown)' })")
+    foreach ($f in ($recent | Select-Object -First 20)) {
+        $mark = if ($haveSince -and $f.LastWriteTime -ge $Since) { '  (this session)' } else { '' }
+        $shared.Add(("    {0,-56} {1,9} bytes  {2}{3}" -f $f.FullName.Substring($myGames.Length).TrimStart('\', '/'), $f.Length, (Get-Stamp $f), $mark))
     }
 } else {
     $shared.Add('  (folder not found)')
