@@ -200,9 +200,21 @@ EndFunction
 
 Function DoLeaveAmbush()
 	{Leaving a live ambush: its centre is moved beyond the evade distance, and
-	the quest's own distance watch is expected to set stage 32.}
+	the quest's own distance watch is expected to set stage 32.
+
+	The stage is set by the quest on a thread of its own, and a stage reads as
+	done while its handler is still at work: the handler kills the drover and
+	empties the wagon last. So this waits for the handler to have finished,
+	not only for the stage. Otherwise the next step could reach the town
+	stage first and find the drover still alive.}
+	int handledBefore = mq.StageEventsHandled()
 	center.MoveTo(player, mq.EvadeDistance + 1000.0, 0.0, 0.0)
 	WaitStage(32)
+	int tries = 0
+	While mq.StageEventsHandled() <= handledBefore && tries < 16
+		Utility.Wait(0.5)
+		tries += 1
+	EndWhile
 EndFunction
 
 Function DoReachTown()
@@ -225,11 +237,13 @@ Function DoAttackCutter()
 EndFunction
 
 Function DoBreakCombat()
-	{break_combat: the fight ends without anyone leaving.}
+	{break_combat: the fight ends without anyone leaving. The Cutters are told
+	to stop, and so is anyone else who has joined in against the player.}
 	lead.StopCombat()
 	cutterA.StopCombat()
 	cutterB.StopCombat()
 	cutterC.StopCombat()
+	player.StopCombatAlarm()
 	WaitCombat(false)
 EndFunction
 

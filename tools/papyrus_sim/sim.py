@@ -1098,7 +1098,14 @@ class Session:
         self.actor_event(actor, "OnCombatStateChanged", [target, 1], COMBAT_EVENT_DELAY)
 
     def n_actor_stopcombat(self, actor, context):
+        # [documented] "Removes this actor from combat." [assumed] that it stays out.
         self._stop_combat(actor)
+
+    def n_actor_stopcombatalarm(self, actor, context):
+        # [documented] "Stops all combat and alarms against this actor."
+        for other in self.actors:
+            if other.combat_target is actor:
+                self._stop_combat(other)
 
     # ---- what a person or the runner does from outside the scripts
     def set_global(self, editor_id: str, value: float):
