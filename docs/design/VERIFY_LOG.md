@@ -33,6 +33,18 @@ Second run, same day, commit `59b917c`, after the Steam copy of the game finishe
 
 What follows: the first in-game test goes through a separate Mod Organizer profile, so that nothing shared with Fallout London is read or written (TEST_RUNBOOK.md, steps 4 and 5).
 
+Third run, same day, commit `859f468`, with `-Install`. Reported as the pasted log.
+
+| What | Result |
+|---|---|
+| `PlayerRef` | **Resolved.** Record `000014` is still not visible to the library as a placed actor, but 13 vanilla quest aliases force that reference and all 13 are named like "Player" (for example quest `RESceneKMK02`, alias `Player`), which meets the builder's threshold of ten. The player alias is now filled with `000014:Fallout4.esm` |
+| Scripts compile | 8 of 8, including the new self-test script, on its first compile |
+| Plugin | 10,692 bytes; 31 items still not wired (all of them placed references and the location, which need the test cell) |
+| Install as a Mod Organizer mod | Passed: 17 files in `C:\Modlists\TMR\mods\TheLastMeridian-Dev` |
+| Test profile | Created as `TLM-Dev` from the selected profile, with that profile's 109 enabled mods switched off in the copy. Not yet opened by Mod Organizer |
+
+Checklist item 5 below is now done for `Caps001` and `PlayerRef`.
+
 Still not done anywhere: opening the plugin in the Creation Kit, loading it in the game, any quest test.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
@@ -99,7 +111,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
 3. All seven scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 7 of 7.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
-5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` fix awaiting a re-run; the .44 revolver and its ammo still to do.
+5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In; Essential and Protected flags; alias on the player receiving `OnPlayerLoadGame`.
 7. `Kill` on a Protected actor; `Disable` on an aliased actor.
 8. Message box with a hidden button: which index comes back.

@@ -11,7 +11,7 @@ Run it once per game session, from the console:   cqf TLM_Core RunSelfTest
 Results go to Documents\My Games\Fallout4\Logs\Script\User\TLM.0.log (Papyrus
 logging has to be on), to the Papyrus log, and to a message box.
 
-NOT YET COMPILED OR RUN IN THE GAME.}
+COMPILES (2026-11-11); NOT YET RUN IN THE GAME.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
