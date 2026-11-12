@@ -4,18 +4,16 @@ Scriptname TLM:MQ01Quest extends Quest
 COMPILES. RAN IN THE GAME on 2026-11-12 in the development self-test, with
 nobody at the keyboard (docs/design/VERIFY_LOG.md):
 - by stages alone, every alias empty (scenario 1);
-- with actors and markers made at run time in its aliases, from the start to
-  the hand-off, once for each way the encounter can end: evaded, saved after
-  a fight, missed, betrayal on the road, murder after saving, the deal
-  (scenarios 4 to 9), and the distance watch on its own (scenario 3).
-Every stage handler except 15, 37, 55 and 900 has run, and each left the
-state the logic model predicts. In those runs a stage number stood in for
-every trigger, pickup and conversation, and EvadeTimerElapsed was called
-directly. NOT run: the 90-second timer itself, the move to the caravan yard
-over a distance, the three unnamed Cutters, the speech check's failure
-(stage 37), "she's lying" (stage 55), recovery (stage 900 and OnGameLoaded),
-dialogue, and anything in a built place. Written without Fallout 4 or the
-Creation Kit.
+- with actors and markers made at run time in its aliases: the rows of the
+  test matrix that need no built place, save or dialogue, 28 cases, compared
+  with the logic model after every event (scenarios 101 to 128), and six
+  hand-written cases before that (scenarios 4 to 9).
+Every stage handler has run, and each left the state the logic model
+predicts. In those runs a stage number stood in for every trigger, pickup
+and conversation, and EvadeTimerElapsed was called directly. NOT run: the
+90-second timer itself, the move to the caravan yard over a distance,
+OnGameLoaded, dialogue, saving and loading, and anything in a built place.
+Written without Fallout 4 or the Creation Kit.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.

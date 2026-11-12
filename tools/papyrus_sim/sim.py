@@ -844,6 +844,8 @@ class Session:
 
     def n_quest_setobjectivecompleted(self, quest, context, index, completed=True):
         self._objective(quest, index)
+        # [seen] an objective completed without ever having been displayed
+        # reads as completed (case 213)
         quest.completed_objectives[index] = truthy(completed)
 
     def n_quest_isobjectivedisplayed(self, quest, context, index):
@@ -1098,7 +1100,10 @@ class Session:
         self.actor_event(actor, "OnCombatStateChanged", [target, 1], COMBAT_EVENT_DELAY)
 
     def n_actor_stopcombat(self, actor, context):
-        # [documented] "Removes this actor from combat." [assumed] that it stays out.
+        # [documented] "Removes this actor from combat." [seen] together with
+        # StopCombatAlarm on the player: the player was out of combat
+        # afterwards and stayed out (case 121). Which of the two calls did it
+        # was not told apart.
         self._stop_combat(actor)
 
     def n_actor_stopcombatalarm(self, actor, context):

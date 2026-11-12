@@ -1,13 +1,16 @@
 Scriptname TLM:SQ01Quest extends Quest
 {TLM_SQ01 "Signed Clean". Owns all quest logic.
 
-COMPILES. RAN IN THE GAME on 2026-11-12 for ONE scripted scenario only (the
-self-test: a clue before the ledger, the ledger, the journal, posted naming
-the Yard Office, a second decision ignored), with every alias empty. The
-handlers for stages 5, 10, 11, 13, 20, 25, 43, 44, 50 and 100 ran and left the
-state the logic model predicts. The other outcomes, the clue objects and the
-message boxes have NOT run (docs/design/VERIFY_LOG.md). Written without
-Fallout 4 or the Creation Kit.
+COMPILES. RAN IN THE GAME on 2026-11-12 in the development self-test, with
+nobody at the keyboard (docs/design/VERIFY_LOG.md): by stages alone with
+every alias empty (scenario 1), and the rows of the test matrix that need no
+built place, save or dialogue, 21 cases compared with the logic model after
+every event (scenarios 201 to 221), with a settler made at run time as
+Haskell. Every stage handler and all six outcomes have run and left the state
+the logic model predicts. In those runs a stage number stood in for every
+pickup, examined clue, notice board, stove and conversation. NOT run: the
+clue objects and their message boxes, OnGameLoaded, dialogue, saving and
+loading. Written without Fallout 4 or the Creation Kit.
 
 Stages are the API (same pattern as TLM:MQ01Quest):
    5  running, hidden (set by MQ01 stage 10)

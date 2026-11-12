@@ -3,8 +3,8 @@ Scriptname TLM:MQ01CutterAlias extends ReferenceAlias
 COMPILES. RAN IN THE GAME on 2026-11-12 for an actor made at run time and
 forced into the lead's alias: its death gave stage 31 (self-test scenarios 2,
 5 and 8), and when it started a fight with the player the quest set stage 30
-(scenario 5). Not run on the three unnamed Cutters' aliases
-(docs/design/VERIFY_LOG.md).}
+(scenario 5). On the three unnamed Cutters' aliases their deaths left the
+ambush live, as designed (scenario 103) (docs/design/VERIFY_LOG.md).}
 
 Event OnDeath(Actor akKiller)
 	TLM:MQ01Quest q = GetOwningQuest() as TLM:MQ01Quest
