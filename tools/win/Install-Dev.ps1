@@ -27,9 +27,10 @@
   is refused unless -AllowFalloutLondon is given. -WhatIf shows what would be
   copied without copying anything (it does not preview the profile).
 
-  Status: tested on Linux PowerShell 7 against stand-in folder trees. Not yet
-  run on a real PC, and a profile made this way has not yet been opened by a
-  real Mod Organizer.
+  Status: ran on the owner's PC on 2026-11-11 (Windows PowerShell 5.1): the mod
+  folder and the test profile were created, and the real Mod Organizer 2.5.2
+  opened the profile and showed the plugin active. Whether the game then loads
+  the plugin is NOT yet established (docs/design/VERIFY_LOG.md).
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -134,8 +135,13 @@ if ($written.Count -gt 0) {
         }
     }
     if ($profileInfo) { $profileFolder = $profileInfo.Path }
-    [pscustomobject]@{ Root = $root; ModFolder = $modFolder; ProfileFolder = $profileFolder; Installed = (Get-Date -Format 'o'); Files = $all } |
-        ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $manifestPath -Encoding utf8
+    $moRoot = if ($mo) { $mo.Root } else { $null }
+    $profileNameUsed = if ($profileFolder) { Split-Path -Leaf $profileFolder } else { $null }
+    [pscustomobject]@{
+        Root = $root; ModFolder = $modFolder; ProfileFolder = $profileFolder
+        ModOrganizerRoot = $moRoot; ProfileName = $profileNameUsed
+        Installed = (Get-Date -Format 'o'); Files = $all
+    } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $manifestPath -Encoding utf8
 }
 
 Write-Host "Install target : $root"
@@ -152,19 +158,13 @@ if ($written.Count -eq 0) { return }
 
 Write-Host ''
 if ($profileInfo) {
-    $title = if ($profileInfo.GameTitle) { "'$($profileInfo.GameTitle)'" } else { 'the entry that starts Fallout4.exe (not F4SE, not the launcher)' }
-    Write-Host 'NEXT STEPS'
-    Write-Host "  1. Start Mod Organizer:  $(Join-Path $mo.Root 'ModOrganizer.exe')"
-    Write-Host "  2. In the Profile list at the top, choose:  $($profileInfo.Name)"
-    Write-Host "  3. In the list next to the Run button (top right), choose:  $title"
-    Write-Host '  4. Click Run. At the game''s main menu press the ~ key (left of the 1 key) and type:'
-    Write-Host '         coc qasmoke'
-    Write-Host '     When the room has loaded, press ~ again and type:'
-    Write-Host '         cqf TLM_Core RunSelfTest'
-    Write-Host '     Press ~ to close the console and wait for a message box (about 15 seconds).'
-    Write-Host '  5. Quit the game, then in this window run:'
-    Write-Host '         powershell -ExecutionPolicy Bypass -File tools\win\Get-TestResults.ps1'
-    Write-Host '     and paste the result into the chat (Ctrl+V).'
+    Write-Host 'NEXT STEP'
+    Write-Host '  Keep Mod Organizer closed and run, in this window:'
+    Write-Host '      powershell -ExecutionPolicy Bypass -File tools\win\Start-TestGame.ps1'
+    Write-Host "  It starts the base game in profile '$($profileInfo.Name)', says which copy of the game really started,"
+    Write-Host '  tells you what to type in the game, and collects the results when the game closes.'
+    Write-Host '  Do not start the test from ''Fallout Launcher'' in Mod Organizer''s Run list: on a PC with more than one'
+    Write-Host '  copy of the game the launcher can start a different copy.'
     Write-Host ''
     Write-Host 'When you are done, switch Mod Organizer back to your own profile.'
 } elseif ($modFolder) {

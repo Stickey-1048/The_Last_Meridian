@@ -1,7 +1,7 @@
 # Verification log
 
-**Date:** 2026-11-11. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; and, from the same day, the first build run on the owner's PC.
-**Not checked:** anything inside the Creation Kit editor or the running game.
+**Dates:** 2026-11-11 and 2026-11-12. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
+**Not checked:** anything inside the Creation Kit editor. In the running game, only that the test room loads; the plugin has not been seen to load.
 
 ## Results from the game PC
 
@@ -45,7 +45,38 @@ Third run, same day, commit `859f468`, with `-Install`. Reported as the pasted l
 
 Checklist item 5 below is now done for `Caps001` and `PlayerRef`.
 
-Still not done anywhere: opening the plugin in the Creation Kit, loading it in the game, any quest test.
+### First attempt in the game, 2026-11-12
+
+Build of the third run, started by the owner from Mod Organizer's window. Reported by screenshots and in the owner's words. Which entry of the Run list was used is not known; "Fallout Launcher" was the one selected in the screenshots taken just before.
+
+| What | Result |
+|---|---|
+| Mod Organizer and the script-made profile | **Works.** Mod Organizer 2.5.2 listed the profile `TLM-Dev` and showed `TheLastMeridian.esp` active beside the base game's seven master files (8 active) |
+| What the game showed | The **Fallout London** main menu, in a small window. Then a loading screen in a layout that is not the base game's, carrying base-game text, and the base game's test room after `coc qasmoke` |
+| `cqf TLM_Core RunSelfTest` | The console answered "Compiled script not saved!"; in the owner's words it said the quest was not found. The quest was therefore not among the data the running game had loaded |
+| Reading | The game that ran was using Fallout London's files, so it was not the base game with Mod Organizer's files in view. **Not established:** which copy of the game ran and why, and whether the plugin loads when the right copy runs |
+| `coc qasmoke` from the main menu | Works (in whichever copy that was) |
+
+Read afterwards in Mod Organizer's own source, release 2.5.2 unless marked (this is reading, not a test):
+
+| Fact | Where |
+|---|---|
+| The enabled mods are mapped onto the Data folder of the managed game only. Another copy of the game started from Mod Organizer does not see them | `src/organizercore.cpp`, `fileMapping` |
+| The profile's `plugins.txt` is mapped onto the shared `%LOCALAPPDATA%\Fallout4\plugins.txt`, and the game's own master files are left out of it | game plugin `gamefallout4.cpp`, `mappings`; `creationgameplugins.cpp`, `writePluginList` (both read from the current development branch, not the 2.5.2 tag) |
+| When an instance is created, the game folder is taken from the registry value `Bethesda Softworks\Fallout4\Installed Path`. On this PC that value names the Fallout London folder | `gamegamebryo.cpp`, `identifyGamePath` (development branch); the scan of 2026-11-11 |
+| Entries of the Run list are kept as stored and only missing ones are added, so an entry can point at a different folder from the managed one | `src/executableslist.cpp`, `load` |
+| `ModOrganizer.exe -p <profile> run <program>` runs one program inside the virtual file system, in that profile, waits for it and exits. If Mod Organizer is already open with a different profile it refuses | `src/commandline.cpp`, `RunCommand`; `src/main.cpp`; `src/moapplication.cpp` |
+| Which file was started is written to Mod Organizer's log only at log level Debug | `src/spawn.cpp`, `logSpawning` |
+
+Not verified at all: forum reports that the game's launcher starts the copy named in the registry rather than the one in its own folder. That would explain both the owner's impression that the GOG game "just runs London" and this attempt, if the launcher entry was the one used.
+
+What was changed in response (tested against stand-ins only; not yet run on the PC):
+
+- `tools/win/Start-TestGame.ps1` starts `Fallout4.exe` in the managed folder by its full path through Mod Organizer's `run` command, then reads from the running process which file it is and whether Mod Organizer's file-system library is loaded in it.
+- `tools/win/Get-TestResults.ps1` now also reports which file each Run-list entry starts, the registry's game folder, whether either game folder holds Fallout London files, the settings the test profile hands the game, and marks logs older than the session.
+- `TLM:Core` writes `TLM_Core: started` to the game's script log when its quest starts, and shows "The Last Meridian test build is loaded." on screen a few seconds later (development only). That script change is not yet compiled.
+
+Still not done anywhere: opening the plugin in the Creation Kit, loading the plugin in the game, any quest test.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
@@ -103,13 +134,15 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 |---|---|---|
 | `cqf` (CallQuestFunction) | Documented | `CQF <quest> <function> [params]`. Missing parameters are filled with zero or None, not with the script's defaults. |
 | `sqv` (ShowQuestVars) | Documented | `SQV <QuestID> [filter]` shows variables, aliases and quest state. |
-| `coc`, `startquest`, `setstage`, `getstage`, `sqs`, `sqt`, `prid`, `kill`, `tgm`, `player.additem` | Needs the game | No page on the wiki. |
+| `coc` | Seen in the game | `coc qasmoke` typed at the main menu loaded the test room (2026-11-12). |
+| `startquest`, `setstage`, `getstage`, `sqs`, `sqt`, `prid`, `kill`, `tgm`, `player.additem` | Needs the game | No page on the wiki. |
 
 ## Checklist for the game PC
 
 1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`). **Done 2026-11-11.** The file stays on the PC (git-ignored); the facts the build depends on are in the tables above.
 2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
-3. All seven scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 7 of 7.**
+3. All scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 8 of 8** (`TLM:Core` has changed since and awaits a recompile).
+3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **First attempt failed 2026-11-12:** see above.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In; Essential and Protected flags; alias on the player receiving `OnPlayerLoadGame`.

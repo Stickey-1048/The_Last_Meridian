@@ -34,6 +34,11 @@
   Organizer mod folder and a separate test profile is created. Mod Organizer
   must be closed for that step.
 
+  With -Install -Play, and only if the install passed, it then runs
+  Start-TestGame.ps1: the base game is started through Mod Organizer in the
+  test profile, and when the game closes the test results (with this build's
+  summary on top) replace the build log on the clipboard.
+
   Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-11 and
   every step passed. Additions since then (clipboard copy, wider scan) have
   only run on Linux PowerShell 7 against stand-ins.
@@ -57,7 +62,10 @@ param(
     [switch]$NoClipboard,
     # After a successful build, install it as a Mod Organizer mod and set up
     # the test profile (Install-Dev.ps1 -ModOrganizerRoot ... -CreateProfile).
-    [switch]$Install
+    [switch]$Install,
+    # After a successful install, start the base game in the test profile and
+    # collect the results when it closes (Start-TestGame.ps1). Needs -Install.
+    [switch]$Play
 )
 
 Set-StrictMode -Version Latest
@@ -81,8 +89,16 @@ $results = New-Object System.Collections.Generic.List[object]
 $pluginOk = $false
 $compileOk = $false
 $installed = $false
+$head = $null
 
 function Say([string]$s = '') { $log.Add($s); Write-Host $s }
+
+# The install step needs Mod Organizer closed, and the test must not mistake a
+# game that is already running for the one it starts. Ask before the long build.
+if (($Install -or $Play) -and -not (Wait-GameAndManagerClosed)) {
+    Write-Host 'Still open after ten minutes. Nothing was built or installed. Close them and run the command again.'
+    exit 1
+}
 function Result([string]$step, [string]$status, [string]$detail = '') {
     $results.Add([pscustomobject]@{ Step = $step; Status = $status; Detail = $detail })
     Say ("  -> {0}: {1}{2}" -f $step, $status, $(if ($detail) { " ($detail)" } else { '' }))
@@ -231,7 +247,7 @@ try {
     Say ''
     if ($installed) {
         Say 'Installed as a Mod Organizer mod with its own test profile. The game folders were not touched.'
-        Say 'The NEXT STEPS are listed under step 6 above.'
+        if ($Play) { Say 'The game is started next, for the in-game test.' } else { Say 'The NEXT STEP is given under step 6 above.' }
     } else {
         Say 'Nothing was installed into the game or a mod manager.'
     }
@@ -254,10 +270,33 @@ try {
     if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
         try { Set-Clipboard -Value $text; $copied = $true } catch { }
     }
-    if ($copied) {
+    if ($Play -and $installed) {
+        Write-Host 'Nothing to send yet: the game is started next, and when it closes the test results'
+        Write-Host '(with this build''s summary on top) go on the clipboard instead.'
+    } elseif ($copied) {
         Write-Host ''
         Write-Host 'The whole log is on your clipboard. Click in the chat and press Ctrl+V to send it.'
     } else {
         Write-Host 'Send that file (or its contents) back.'
+    }
+
+    if ($Play) {
+        Write-Host ''
+        if (-not $installed) {
+            Write-Host 'The game was not started: the install step did not pass (see the summary above).'
+        } else {
+            Write-Host '== Starting the game for the in-game test =='
+            $preface = New-Object System.Collections.Generic.List[string]
+            $preface.Add('== Build that was installed ==')
+            if ($head -and $head.Found -and $head.ExitCode -eq 0) { $preface.Add("Commit: $($head.Output | Select-Object -First 1)") }
+            foreach ($r in $results) { $preface.Add(("  {0,-18} {1}{2}" -f $r.Step, $r.Status, $(if ($r.Detail) { "  ($($r.Detail))" } else { '' }))) }
+            $preface.Add('')
+            $playArgs = @{ ModOrganizerRoot = $ModOrganizerRoot; Preface = $preface.ToArray() }
+            if ($DocumentsRoot) { $playArgs['DocumentsRoot'] = $DocumentsRoot }
+            if ($LocalAppDataRoot) { $playArgs['LocalAppDataRoot'] = $LocalAppDataRoot }
+            if ($NoClipboard) { $playArgs['NoClipboard'] = $true }
+            try { & (Join-Path $PSScriptRoot 'Start-TestGame.ps1') @playArgs }
+            catch { Write-Host "The game was not started: $($_.Exception.Message)" }
+        }
     }
 }

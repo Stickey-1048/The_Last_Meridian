@@ -1,7 +1,10 @@
 # Shared helpers for the Windows-side scripts in tools/win.
 #
-# Everything in this module only READS the machine. Nothing here changes the
-# game folder, the registry, saves or load order.
+# Almost everything in this module only READS the machine. The exceptions are
+# Write-RawLines, Set-IniValue and New-TlmDevProfile, which write files inside
+# this project's own Mod Organizer test profile. Nothing here changes a game
+# folder, the registry, saves, the shared load order or an existing profile,
+# and nothing here starts or stops a program.
 #
 # Status: first ran on a real Windows PC (Windows PowerShell 5.1) on 2026-11-11
 # through Run-FirstBuild.ps1; the installs, the Mod Organizer instance and the
@@ -508,15 +511,19 @@ function Get-ModOrganizerInfo {
     foreach ($line in Get-Content -LiteralPath $ini) {
         $t = $line.Trim()
         if ($t -match '^\[(.+)\]$') { $inExe = ($Matches[1] -ieq 'customExecutables'); continue }
-        if ($inExe -and $t -match '^(\d+)\\(binary|title)=(.*)$') {
+        if ($inExe -and $t -match '^(\d+)\\(binary|title|arguments|workingDirectory|hide)=(.*)$') {
             $idx = $Matches[1]; $what = $Matches[2]; $val = ConvertFrom-MoValue $Matches[3]
-            if (-not $exeByIndex.ContainsKey($idx)) { $exeByIndex[$idx] = @{ title = ''; binary = '' } }
+            if (-not $exeByIndex.ContainsKey($idx)) { $exeByIndex[$idx] = @{ title = ''; binary = ''; arguments = ''; workingDirectory = ''; hide = '' } }
             $exeByIndex[$idx][$what] = $val
             if ($what -eq 'binary' -and $val -match '(CreationKit|f4se_loader|Fallout4Launcher|Fallout4|FO4Edit|xEdit)[^\\/]*\.exe$') { $tools += (Split-Path -Leaf $val) }
         }
     }
     $executables = @($exeByIndex.Keys | Sort-Object { [int]$_ } | ForEach-Object {
-            [pscustomobject]@{ Title = $exeByIndex[$_].title; Binary = $exeByIndex[$_].binary }
+            $e = $exeByIndex[$_]
+            [pscustomobject]@{
+                Index = [int]$_; Title = $e['title']; Binary = $e['binary']; Arguments = $e['arguments']
+                WorkingDirectory = $e['workingDirectory']; Hidden = ($e['hide'] -ieq 'true')
+            }
         })
 
     $modCount = 0
@@ -546,6 +553,85 @@ function Get-ModOrganizerInfo {
         TlmModInstalled  = Test-Path -LiteralPath (Join-Path $mods 'TheLastMeridian-Dev')
         ExePresent       = Test-Path -LiteralPath (Join-Path $rootPath 'ModOrganizer.exe')
     }
+}
+
+function Test-FalloutLondonFolder {
+    <# True if the folder is a Fallout London copy of the game (its master file is in Data). #>
+    param([string]$GameRoot)
+    if (-not $GameRoot) { return $false }
+    return (Test-Path -LiteralPath (Join-Path (Join-Path $GameRoot 'Data') 'LondonWorldSpace.esm'))
+}
+
+function Test-SamePath {
+    <# Compares two file-system paths ignoring case, slash style and a trailing slash. #>
+    param([string]$A, [string]$B)
+    if (-not $A -or -not $B) { return $false }
+    $na = ($A -replace '/', '\').TrimEnd('\')
+    $nb = ($B -replace '/', '\').TrimEnd('\')
+    return ($na -ieq $nb)
+}
+
+function Get-BethesdaInstalledPath {
+    <#
+      The game folder recorded in the Windows registry under Bethesda's own key.
+      Mod managers use it to find the game, and the game's launcher is reported
+      to start the copy it names. One folder at most; whichever copy of the game
+      wrote it last wins. Read-only. $null off Windows or if the key is absent.
+    #>
+    foreach ($k in 'HKLM:\SOFTWARE\WOW6432Node\Bethesda Softworks\Fallout4', 'HKLM:\SOFTWARE\Bethesda Softworks\Fallout4') {
+        $v = Get-RegistryValueSafe $k 'Installed Path'
+        if ($v) { return ([string]$v).TrimEnd('\', '/') }
+    }
+    return $null
+}
+
+function Get-RunningGame {
+    <# Every Fallout4.exe process running now. Read-only. #>
+    return @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -ieq 'Fallout4' -or $_.ProcessName -ieq 'Fallout4.exe' })
+}
+
+function Wait-GameAndManagerClosed {
+    <#
+      Waits until neither Mod Organizer nor Fallout 4 is running, saying once
+      what to close. Returns $false if something is still open when the time
+      runs out. Closes nothing itself.
+    #>
+    param([int]$TimeoutMinutes = 10)
+    $deadline = (Get-Date).AddMinutes($TimeoutMinutes)
+    $told = $false
+    while ($true) {
+        $moOpen = Test-ModOrganizerRunning
+        $gameOpen = [bool](@(Get-RunningGame).Count)
+        if (-not $moOpen -and -not $gameOpen) {
+            if ($told) { Write-Host 'Closed. Carrying on.' }
+            return $true
+        }
+        if (-not $told) {
+            $what = @()
+            if ($gameOpen) { $what += 'Fallout 4' }
+            if ($moOpen) { $what += 'Mod Organizer' }
+            $many = $what.Count -gt 1
+            Write-Host "$($what -join ' and ') $(if ($many) { 'are' } else { 'is' }) open. Close $(if ($many) { 'them' } else { 'it' }) now$(if ($gameOpen -and $moOpen) { ' (quit the game first)' }). This window carries on by itself afterwards."
+            $told = $true
+        }
+        if ((Get-Date) -gt $deadline) { return $false }
+        Start-Sleep -Seconds 2
+    }
+}
+
+function Get-ProcessFacts {
+    <#
+      What can be read about a running process without elevated rights: the
+      file it was started from, when, and the names of the libraries loaded
+      into it. Anything that cannot be read comes back empty. Read-only.
+    #>
+    param([Parameter(Mandatory)][System.Diagnostics.Process]$Process)
+    $path = $null; $started = $null; $modules = @()
+    try { $Process.Refresh() } catch { }
+    try { $path = $Process.MainModule.FileName } catch { }
+    try { $started = $Process.StartTime } catch { }
+    try { $modules = @($Process.Modules | ForEach-Object { $_.ModuleName }) } catch { }
+    [pscustomobject]@{ Id = $Process.Id; Path = $path; Started = $started; Modules = $modules }
 }
 
 # ---------------------------------------------------------------------------
@@ -738,4 +824,6 @@ Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Ge
     Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration,
     Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue, Invoke-Native, Get-SteamAppState,
     Find-CreationKitFolders, Get-VortexInfo, Get-VortexDeployment, Get-GogProductNames, Hide-UserFolder,
-    Read-RawLines, Write-RawLines, Set-IniValue, Test-ModOrganizerRunning, New-TlmDevProfile
+    Read-RawLines, Write-RawLines, Set-IniValue, Test-ModOrganizerRunning, New-TlmDevProfile,
+    Test-FalloutLondonFolder, Test-SamePath, Get-BethesdaInstalledPath, Get-RunningGame, Get-ProcessFacts,
+    Get-RegistryValueSafe, Wait-GameAndManagerClosed
