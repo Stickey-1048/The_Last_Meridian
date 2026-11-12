@@ -12,10 +12,19 @@
     5. compiles the Papyrus scripts into build\Scripts            (Build-Scripts.ps1)
   and writes everything it saw to build\first-build-log.txt.
 
-  What it changes: files inside this repository folder, plus one thing outside
-  it: the Creation Kit's own Base.zip is unpacked beside itself in the Creation
-  Kit folder if the script sources are still zipped (pass -NoExtractBase to
-  skip; then step 5 cannot run).
+  What it changes: files inside this repository folder, plus two things
+  outside it:
+    - the Creation Kit's own Base.zip is unpacked beside itself in the Creation
+      Kit folder if the script sources are still zipped (pass -NoExtractBase to
+      skip; then step 5 cannot run);
+    - .NET downloads the plugin builder's libraries into its own cache in the
+      Windows user folder (.nuget\packages) the first time it builds.
+
+  On the first real run (2026-11-11), before the settings at the top of this
+  script existed, .NET's first use on that PC also created a development HTTPS
+  certificate in the user's certificate store and had its usage telemetry on.
+  The certificate is untrusted and unused; `dotnet dev-certs https --clean`
+  removes it.
 
   What it never touches: the game folder Mod Organizer manages, the Mod
   Organizer instance, profiles, load order, saves. Nothing is installed into
@@ -48,9 +57,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 
-# For this run only: no .NET first-run banner, and no usage data sent to Microsoft.
+# For this run only: no .NET first-run banner, no usage data sent to Microsoft,
+# and none of the extras .NET sets up the first time it is ever used on a PC
+# (a development HTTPS certificate in the user's certificate store, a PATH entry).
 $env:DOTNET_NOLOGO = '1'
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+$env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false'
+$env:DOTNET_ADD_GLOBAL_TOOLS_TO_PATH = 'false'
 
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $build = Join-Path $repo 'build'
