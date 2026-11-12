@@ -1,7 +1,7 @@
 # Verification log
 
 **Dates:** 2026-11-11 and 2026-11-12. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
-**Not checked:** anything inside the Creation Kit editor. In the running game (all on 2026-11-12): the plugin loads, its scripts run, and nine scripted scenarios pass all 220 of their checks with nobody at the keyboard. Six of them play the main quest from start to hand-off with actors and markers made at run time, one for each way the caravan encounter can end. Nothing is placed in the world, so nothing that needs a built place, dialogue or a player has been tested; triggers, pickups and conversations are stood in for by stage numbers; and the side quest has been through one path only.
+**Not checked:** anything inside the Creation Kit editor. In the running game (all on 2026-11-12): the plugin loads, its scripts run, and 58 scripted scenarios pass all 1,456 of their checks with nobody at the keyboard. 49 of them are the rows of the two quests' test matrices, played with actors and markers made at run time and compared with the logic model after every event. Nothing is placed in the world, so nothing that needs a built place, dialogue, a save or a player has been tested: triggers, pickups and conversations are stood in for by stage numbers, and ten rows of the matrices cannot be played this way at all.
 
 ## Results from the game PC
 
@@ -285,7 +285,7 @@ What the game was seen to do in these runs is now also written down as rules in 
 
 ### Prepared for the next run: the test matrix as cases
 
-Not yet compiled and not yet run in the game. Written after the ninth run.
+Written after the ninth run, before any of it had been compiled or run. It has since run: see "The test matrix passes in the game" below.
 
 The rows of the two test matrices are now cases the game can play with nobody at the keyboard: 49 cases, 309 events, 1,236 checks (self-test scenarios 101 to 128 for the main quest, 201 to 221 for the side quest). A case is a list of the logic model's events. For each event `TLM:CaseDriver` does what stands for it in the game, then compares everything it can see of both quests with the state the model reaches after that event: every stage of both quests, the outcome, method and reputation, the debrief variant and answer, both pairs of objectives, the four counters, who is alive, who is in the town aliases, whether the Cutters are disabled, the cargo, the three quest items, the evidence count and level, the side quest's outcome and its three flags, Haskell, and the caps from a sale. The cases themselves (`TLM:MatrixCases`) are written by `tools/gen_matrix_cases.py` from the model, so no expected value is typed by hand. `tools/matrix_cases.json` lists each case, the rows it stands for and its events.
 
@@ -316,6 +316,42 @@ What only the game can say, and the next run will: whether eight settlers at onc
 One thing the stand-in engine could not show, found by an independent read of the driver before it went to the PC: in the stand-in nothing takes time, so two script threads never overlap. In the game they do. When the player leaves a live ambush, the quest sets stage 32 on a thread of its own, and the stage reads as done while its handler is still at work; the handler kills the drover last. The driver waited only for the stage, so its next step, the town stage, could arrive first, find the drover alive and put him in the town alias, where he cannot be killed. Four cases would have failed for that reason and not for anything in the rules. The driver now waits for the handler to have finished. With an engine copy that charges time for every call into the game, those cases failed before the change at some timings and none fail after it.
 
 **Open, in the quest itself:** the same overlap is possible in play if the town stage follows a distance-triggered "evaded" within a fraction of a second, which needs something like fast travel from a live ambush to a spot inside the town gate's trigger. The result would be a drover alive in town who should be dead; no counter or outcome depends on it. Not yet addressed; it wants a guard in `ApplyTown` and a case that provokes it.
+
+### The test matrix passes in the game, 2026-11-12
+
+Tenth run, 14:07 to 14:42 by the PC's clock, commit `499104e`, started with `tools\win\Update-And-Run.ps1 -Install -Unattended`. Reported as the pasted results. Nobody touched the game. 58 game sessions took 2,097 seconds, 36 seconds each on average.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed: `TLM:CaseDriver`, the generated `TLM:MatrixCases` (2,665 lines) and the changed `TLM:SelfTest` on their first compile |
+| **All 58 scenarios** | **Passed: 1,456 checks, 0 failed.** Every session closed itself |
+| The nine earlier scenarios | The same passes, the same reported lines and the same stage-event counts as in the ninth run |
+| The 49 matrix cases | Each passed exactly as many checks as the generator wrote for it (four per event) |
+| The game's script log | No error or warning naming this project in any of the 58 sessions (the report lists them for every session that has any) |
+| Afterwards | Everything put back; the installed plugin identical to the build |
+
+So for every row of the two matrices that can be played without a built place, a save or dialogue, the quest scripts did in the game what the logic model says, at every step, in everything the driver can see. That is 28 cases for the main quest (rows T01 to T12d, T14 to T14c, T17 to T19c, T21, T23 to T26c) and 21 for the side quest (S01 to S13, S15, S17 to S19, S21 to S24).
+
+What the game showed that had only been assumed:
+
+| What | Result |
+|---|---|
+| Eight settlers made at once and forced into aliases | Behaved; no case was disturbed by them |
+| Stage 37, the Cutters turning on the player | The player was in combat afterwards, and survived four attackers for the seconds the case lasts (case 106). Whether that was `Debug.SetGodMode` or luck is not known |
+| Ending a fight by script | After `StopCombat` on the four Cutters and `StopCombatAlarm` on the player, the player was out of combat, and the evade timer's function then resolved the ambush (case 121). Which of the two calls did it is not known |
+| The evade timer during a fight | Did not resolve the ambush (case 119) |
+| An objective completed without ever having been shown | Reads as completed (case 213, the side quest's second objective after "destroy") |
+| A caravan hand in the town alias | Neither could be killed with the player named as killer (case 118) |
+| The three unnamed Cutters | Their deaths alone did not resolve the ambush; the lead's then did (case 103) |
+| Recovery | Stage 900 gave back a lost dispatch and a lost ledger once, and gave nothing unearned (cases 124, 125, 218) |
+| The hand-over without the dispatch | Stood, and did not set stage 900 (case 126) |
+| Naming Haskell when he is dead | Posted the pages with no name (case 217) |
+| The sale | Took the ledger and the journal and gave 120 caps (case 212) |
+| Leaving a live ambush with the caravan there, then the town stage | The drover was dead and out of the town alias in all four cases that do this (110, 120, 122, 123), with the driver waiting for the evade handler to finish first |
+
+The stand-in engine (`tools/papyrus_sim`) had given the same 58 results beforehand, check for check. This run is now the fifth recorded in `tools/papyrus_sim/game_runs.json`.
+
+What this is not. No trigger was walked into, nothing was picked up from the world, no line was spoken, nothing was saved or loaded, no AI package ran, and there is no place. A stage number stood for each of those. The ten rows listed above remain unplayed. And one fault is known in the quest script that no case provokes yet: the overlap described under "Prepared for the next run".
 
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
@@ -395,6 +431,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **Done 2026-11-12** on the second attempt.
 3b. Stage events reach the quest scripts and the self-test passes. **Done 2026-11-12: 60 of 60**, after a first run failed 34 because the stages had no items.
 3c. The self-test runs with nobody at the keyboard (`tools/win/Run-Scenarios.ps1`). **Done 2026-11-12: nine scenarios, 220 checks, 0 failed.**
+3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).

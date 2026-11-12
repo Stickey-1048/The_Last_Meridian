@@ -66,10 +66,10 @@
   limit here is the second line of defence.
 
   Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-12,
-  twice. The chain works there: the game enters the room, starts the scenario
-  and closes by itself, about half a minute per scenario; nine scenarios in a
-  row passed. In the first run a scenario that never finished was closed by
-  this script after the time limit.
+  three times. The chain works there: the game enters the room, starts the
+  scenario and closes by itself, 36 seconds per scenario on average; 58
+  scenarios in a row passed in 35 minutes. In the first run a scenario that
+  never finished was closed by this script after the time limit.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1

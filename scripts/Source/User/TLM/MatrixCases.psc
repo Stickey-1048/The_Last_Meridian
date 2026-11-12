@@ -12,8 +12,10 @@ action in the game stands for, and what a pass does and does not say, is in
 TLM:CaseDriver. Rows that cannot be played this way are listed in the
 generator with the reason.
 
-NOT YET COMPILED. NOT YET RUN IN THE GAME. Every case passes in the stand-in
-engine (tools/papyrus_sim), which is not the game.}
+First compiled and run in the game on 2026-11-12. docs/design/VERIFY_LOG.md
+says which cases have passed in the game and at which commit; a case added
+since then has only run in the stand-in engine (tools/papyrus_sim), which is
+not the game.}
 
 Function RunCase(int aiCase, TLM:SelfTest akTest)
 	{Runs the case with this scenario number.}

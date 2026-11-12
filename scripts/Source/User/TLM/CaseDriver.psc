@@ -23,8 +23,8 @@ So a pass says the quest scripts keep to the model once those stages are set
 and those deaths happen. It says nothing about triggers, pickups, dialogue
 conditions, AI or a built place.
 
-NOT YET COMPILED. NOT YET RUN IN THE GAME. Runs in the stand-in engine
-(tools/papyrus_sim), which is not the game.}
+COMPILES. RAN IN THE GAME on 2026-11-12: it drove all 49 matrix cases, 1,236
+checks, 0 failed (docs/design/VERIFY_LOG.md).}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

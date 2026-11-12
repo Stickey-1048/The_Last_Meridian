@@ -8,9 +8,12 @@
       "plugin_fault": "stages_without_items",
       "scenarios": {
         "1": {
-          "passed": 26, "failed": 34, "result_line": true,
+          "passed": 26,
+          "failed": 34,
+          "result_line": true,
           "first_failure": "MQ01 objective 10 displayed: expected true, was false",
-          "main_stage_events": 0, "side_stage_events": 0
+          "main_stage_events": 0,
+          "side_stage_events": 0
         }
       }
     },
@@ -20,9 +23,14 @@
       "how": "console",
       "scenarios": {
         "1": {
-          "passed": 60, "failed": 0, "result_line": true,
-          "main_stage_events": 10, "side_stage_events": 10,
-          "info": ["stage handlers already finished when SetStage returned: 13 of 13"]
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
         }
       }
     },
@@ -32,16 +40,24 @@
       "how": "unattended",
       "scenarios": {
         "1": {
-          "passed": 60, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 10, "side_stage_events": 10,
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "stage handlers already finished when SetStage returned: 13 of 13"
           ]
         },
         "2": {
-          "passed": 15, "failed": 0, "result_line": false, "ends_by_itself": false,
-          "main_stage_events": 5, "side_stage_events": 1,
+          "passed": 15,
+          "failed": 0,
+          "result_line": false,
+          "ends_by_itself": false,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "probe: drover in a Protected alias: IsEssential = False",
@@ -59,16 +75,24 @@
       "how": "unattended",
       "scenarios": {
         "1": {
-          "passed": 60, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 10, "side_stage_events": 10,
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "stage handlers already finished when SetStage returned: 13 of 13"
           ]
         },
         "2": {
-          "passed": 14, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 5, "side_stage_events": 1,
+          "passed": 14,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "probe: drover in a Protected alias: IsEssential = False",
@@ -80,8 +104,12 @@
           ]
         },
         "3": {
-          "passed": 8, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 4, "side_stage_events": 1,
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 4,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "probe: distance to the new marker = 0.000000",
@@ -93,8 +121,12 @@
           ]
         },
         "4": {
-          "passed": 27, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 10, "side_stage_events": 1,
+          "passed": 27,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "C4: player in combat before the evade timer runs out: False",
@@ -103,8 +135,12 @@
           ]
         },
         "5": {
-          "passed": 24, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 9, "side_stage_events": 1,
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "C5: after StartCombat on the Cutter lead: stage 30 set = True, lead in combat = True, player in combat = True",
@@ -113,8 +149,12 @@
           ]
         },
         "6": {
-          "passed": 22, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 8, "side_stage_events": 1,
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "C6: drover straight after the town stage: dead = True",
@@ -122,28 +162,464 @@
           ]
         },
         "7": {
-          "passed": 22, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 9, "side_stage_events": 1,
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "stage handlers already finished when SetStage returned: 7 of 7"
           ]
         },
         "8": {
-          "passed": 22, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 10, "side_stage_events": 1,
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "stage handlers already finished when SetStage returned: 7 of 7"
           ]
         },
         "9": {
-          "passed": 21, "failed": 0, "result_line": true, "ends_by_itself": true,
-          "main_stage_events": 9, "side_stage_events": 1,
+          "passed": 21,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
           "info": [
             "unattended run: the game closes itself when the scenario has finished",
             "stage handlers already finished when SetStage returned: 8 of 8"
           ]
+        }
+      }
+    },
+    {
+      "name": "tenth run, 2026-11-12: the nine scenarios and the 49 matrix cases all pass",
+      "commit": "499104e",
+      "how": "unattended",
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        },
+        "2": {
+          "passed": 14,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: caravan master after Kill(player): dead = True",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "3": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 4,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: distance to the new marker = 0.000000",
+            "probe: distance to the marker after moving it = 2000.000000; the event reported 2000.000000",
+            "probe: distance to the ambush centre = 5000.000000; the quest's evade distance is 4000.000000",
+            "probe: the item with no model was placed; Is3DLoaded = False",
+            "this experiment did not come back, and the scenario was ended here: EXPERIMENT: moving a placed item that has no model by 300 units",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "4": {
+          "passed": 27,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C4: player in combat before the evade timer runs out: False",
+            "C4: caravan master in the town alias, which is flagged Essential: IsEssential = True",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "5": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C5: after StartCombat on the Cutter lead: stage 30 set = True, lead in combat = True, player in combat = True",
+            "C5: player in combat after the rescue: False",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "6": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C6: drover straight after the town stage: dead = True",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "7": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "8": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "9": {
+          "passed": 21,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "101": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "102": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "103": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "104": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "105": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "106": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "107": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "108": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "109": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "110": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "111": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "112": {
+          "passed": 40,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "113": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "114": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "115": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "116": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "117": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "118": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "119": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "120": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "121": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "122": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "123": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "124": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "125": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "126": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "127": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "128": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "201": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "202": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "203": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "204": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "205": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "206": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "207": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "208": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "209": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "210": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "211": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "212": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "213": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "214": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "215": {
+          "passed": 44,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "216": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "217": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "218": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "219": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "220": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "221": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
         }
       }
     }
