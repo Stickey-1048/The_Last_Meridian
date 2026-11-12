@@ -232,7 +232,7 @@ What was changed because of it (not yet compiled, not yet run):
 
 With scenario 1 (the debrief for a caravan master lost to something other than the player) these reach all four caravan outcomes and all six debrief variants. They are six paths through the rules, not the matrix: T01 to T28 has other rows, and the side quest's S01 to S24 are untouched.
 
-What scenarios 4 to 9 stand in for, and what they leave out: the dispatch, the triggers and the conversation with the sheriff are stage numbers set by the test; the evade timer's handler is called directly, the 90 seconds are not waited for; the deal is its stage number, set as the conversation would set it; the wagon's cargo is three items in a fourth settler's pockets. The stand-ins are settlers with their own AI and guns, so the player is made invulnerable for the length of the case.
+What scenarios 4 to 9 stand in for, and what they leave out: the dispatch, the triggers and the conversation with the sheriff are stage numbers set by the test; the function the evade timer calls when it runs out is called directly, the 90 seconds are not waited for; the deal is its stage number, set as the conversation would set it; the wagon's cargo is three items in a fourth settler's pockets. The stand-ins are settlers with their own AI and guns, so the player is made invulnerable for the length of the case.
 
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
@@ -264,7 +264,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | `OnCombatStateChanged` | Documented | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. |
 | `OnHit` | Documented | Needs `RegisterForHitEvent` first and fires once per registration. The scripts use `OnCombatStateChanged` instead. |
 | Distance polling | Corrected | `RegisterForDistanceGreaterThanEvent(ScriptObject, ScriptObject, float)` and `Event OnDistanceGreaterThan(...)` exist and the wiki recommends them over polling `GetDistance`. One event per registration; "if the objects are already that far apart, the event will be sent immediately". Not yet seen in the game. |
-| Calling an event like a function | Documented | "Calling events is identical to calling a function." The world cases call the main quest's `OnTimer` this way. Not yet compiled. |
+| Calling an event like a function | Documented, not used | "Calling events is identical to calling a function." Nothing in the project relies on it: the evade timer's handler is a function of its own (`EvadeTimerElapsed`), which the timer event and the self-test both call. |
 | `Message.Show` return value | Documented | "If the message displays a message box to the user, it returns the button the user hit. If it doesn't, it will return -1 immediately." |
 | Does a hidden button shift the returned index? | Needs the game | Not stated. |
 | `RemoveItem` | Documented | `RemoveItem(Form akItemToRemove, int aiCount = 1, bool abSilent = false, ObjectReference akOtherContainer = None)`. |

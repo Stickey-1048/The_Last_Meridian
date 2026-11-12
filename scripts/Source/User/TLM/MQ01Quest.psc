@@ -10,6 +10,8 @@ lead's death gave stage 31, a caravan hand killed by the player gave stage 35
 and betrayal replaced "saved". The evade timer, the distance watch, the town
 move, the wagon, the deal, dialogue and saving have NOT run
 (docs/design/VERIFY_LOG.md). Written without Fallout 4 or the Creation Kit.
+Since those runs the evade timer's handler has been moved, unchanged, into
+EvadeTimerElapsed: THIS VERSION IS NOT YET COMPILED.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.
@@ -246,7 +248,15 @@ Function ArmEvadeWatch()
 EndFunction
 
 Event OnTimer(int aiTimerID)
-	If aiTimerID == TIMER_EVADE && IsLive()
+	If aiTimerID == TIMER_EVADE
+		EvadeTimerElapsed()
+	EndIf
+EndEvent
+
+Function EvadeTimerElapsed()
+	{The evade timer has run out (the logic model's evade_timer). A function of
+	its own so that the development self-test can call it without waiting.}
+	If IsLive()
 		If Game.GetPlayer().IsInCombat()
 			; Never resolve "evaded" over the top of a fight. Check again later.
 			StartTimer(EvadeSeconds, TIMER_EVADE)
@@ -254,7 +264,7 @@ Event OnTimer(int aiTimerID)
 			SetStage(32)
 		EndIf
 	EndIf
-EndEvent
+EndFunction
 
 Event OnDistanceGreaterThan(ObjectReference akObj1, ObjectReference akObj2, float afDistance)
 	; The player has left, fight or no fight.

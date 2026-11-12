@@ -55,7 +55,7 @@ Actor player
 Actor nell
 Actor abel
 Actor lead
-Actor cargo
+Actor wagonStandIn
 ObjectReference yard
 ObjectReference center
 
@@ -81,7 +81,7 @@ Function CaseEvaded(TLM:SelfTest akTest)
 	; ---- evade_timer: the watch runs out and there is no fight
 	test.Note("C4: player in combat before the evade timer runs out: " + player.IsInCombat())
 	test.Step("C4: the evade timer runs out (its handler is called directly; the 90 seconds are not waited for)")
-	mq.OnTimer(1)
+	mq.EvadeTimerElapsed()
 	AwaitStage(32)
 	Utility.Wait(1.5)
 	test.CheckTrue("C4 stage 32 set when the evade timer runs out", TLM_MQ01.GetStageDone(32))
@@ -90,7 +90,7 @@ Function CaseEvaded(TLM:SelfTest akTest)
 	test.CheckTrue("C4 the drover is dead once the Cutters have the wagon", abel.IsDead())
 	test.CheckFalse("C4 the caravan master is dead", nell.IsDead())
 	test.CheckFalse("C4 the drover's death at the Cutters' hands counts as a betrayal", TLM_MQ01.GetStageDone(35))
-	test.CheckInt("C4 cargo left on the wagon after evading", cargo.GetItemCount(TornTransitPass), 0)
+	test.CheckInt("C4 cargo left on the wagon after evading", wagonStandIn.GetItemCount(TornTransitPass), 0)
 
 	; ---- goto_town
 	test.Reach(TLM_MQ01, 40)
@@ -176,7 +176,7 @@ Function CaseFightSaved(TLM:SelfTest akTest)
 	test.CheckInt("C5 method after the lead's death", TLM_G_CaravanMethod.GetValueInt(), 0)
 	test.CheckFalse("C5 the caravan master is dead", nell.IsDead())
 	test.CheckFalse("C5 the drover is dead", abel.IsDead())
-	test.CheckInt("C5 cargo left on the wagon after the rescue", cargo.GetItemCount(TornTransitPass), 3)
+	test.CheckInt("C5 cargo left on the wagon after the rescue", wagonStandIn.GetItemCount(TornTransitPass), 3)
 	test.Note("C5: player in combat after the rescue: " + player.IsInCombat())
 
 	; ---- goto_town
@@ -242,7 +242,7 @@ Function CaseMissed(TLM:SelfTest akTest)
 	test.CheckTrue("C6 the drover is dead once the Cutters have the wagon", abel.IsDead())
 	test.CheckFalse("C6 the caravan master is dead", nell.IsDead())
 	test.CheckFalse("C6 the drover's death at the Cutters' hands counts as a betrayal", TLM_MQ01.GetStageDone(35))
-	test.CheckInt("C6 cargo left on the wagon", cargo.GetItemCount(TornTransitPass), 0)
+	test.CheckInt("C6 cargo left on the wagon", wagonStandIn.GetItemCount(TornTransitPass), 0)
 
 	; ---- pritchard_handover
 	test.Reach(TLM_MQ01, 50)
@@ -293,7 +293,7 @@ Function CaseRoadBetrayal(TLM:SelfTest akTest)
 	test.CheckInt("C7 method after the killing", TLM_G_CaravanMethod.GetValueInt(), 2)
 	test.CheckTrue("C7 the caravan master is dead", nell.IsDead())
 	test.CheckTrue("C7 the drover is dead once the Cutters overrun the wagon", abel.IsDead())
-	test.CheckInt("C7 cargo left on the wagon after the killing", cargo.GetItemCount(TornTransitPass), 0)
+	test.CheckInt("C7 cargo left on the wagon after the killing", wagonStandIn.GetItemCount(TornTransitPass), 0)
 
 	; ---- goto_town
 	test.Reach(TLM_MQ01, 40)
@@ -359,7 +359,7 @@ Function CaseMurderAfterSaving(TLM:SelfTest akTest)
 	test.CheckInt("C8 method after the murder", TLM_G_CaravanMethod.GetValueInt(), 2)
 	test.CheckTrue("C8 the caravan master is dead", nell.IsDead())
 	test.CheckFalse("C8 the drover is dead", abel.IsDead())
-	test.CheckInt("C8 cargo left on the wagon after the murder", cargo.GetItemCount(TornTransitPass), 3)
+	test.CheckInt("C8 cargo left on the wagon after the murder", wagonStandIn.GetItemCount(TornTransitPass), 3)
 
 	; ---- goto_town
 	test.Reach(TLM_MQ01, 40)
@@ -415,7 +415,7 @@ Function CaseDeal(TLM:SelfTest akTest)
 	test.CheckTrue("C9 the drover is dead after the deal", abel.IsDead())
 	test.CheckFalse("C9 the caravan master is dead", nell.IsDead())
 	test.CheckFalse("C9 the deal counts as a killing by the player", TLM_MQ01.GetStageDone(35))
-	test.CheckInt("C9 cargo left on the wagon after the deal", cargo.GetItemCount(TornTransitPass), 0)
+	test.CheckInt("C9 cargo left on the wagon after the deal", wagonStandIn.GetItemCount(TornTransitPass), 0)
 
 	; ---- goto_town
 	test.Reach(TLM_MQ01, 40)
@@ -470,10 +470,10 @@ bool Function MakeCaravan(string asName)
 	nell = SpawnFixture()
 	abel = SpawnFixture()
 	lead = SpawnFixture()
-	cargo = SpawnFixture()
+	wagonStandIn = SpawnFixture()
 	yard = player.PlaceAtMe(FixtureMarkerBase)
 	center = player.PlaceAtMe(FixtureMarkerBase)
-	If !nell || !abel || !lead || !cargo || !yard || !center
+	If !nell || !abel || !lead || !wagonStandIn || !yard || !center
 		test.Fail(asName + ": a stand-in could not be made")
 		Return false
 	EndIf
@@ -481,10 +481,10 @@ bool Function MakeCaravan(string asName)
 	mq.Alias_CaravanMaster.ForceRefTo(nell)
 	mq.Alias_CaravanDrover.ForceRefTo(abel)
 	mq.Alias_CutterLead.ForceRefTo(lead)
-	mq.Alias_Wagon.ForceRefTo(cargo)
+	mq.Alias_Wagon.ForceRefTo(wagonStandIn)
 	mq.Alias_CaravanYard.ForceRefTo(yard)
 	mq.Alias_AmbushCenter.ForceRefTo(center)
-	cargo.AddItem(TornTransitPass, CARGO_COUNT, true)
+	wagonStandIn.AddItem(TornTransitPass, CARGO_COUNT, true)
 	Utility.Wait(1.0)
 	Return true
 EndFunction
@@ -499,7 +499,7 @@ bool Function CaravanStands()
 	If mq.Alias_CutterLead.GetActorReference() != lead || lead.IsDead()
 		Return false
 	EndIf
-	If mq.Alias_Wagon.GetReference() != cargo
+	If mq.Alias_Wagon.GetReference() != wagonStandIn
 		Return false
 	EndIf
 	If mq.Alias_CaravanYard.GetReference() != yard
@@ -508,7 +508,7 @@ bool Function CaravanStands()
 	If mq.Alias_AmbushCenter.GetReference() != center
 		Return false
 	EndIf
-	Return cargo.GetItemCount(TornTransitPass) == CARGO_COUNT
+	Return wagonStandIn.GetItemCount(TornTransitPass) == CARGO_COUNT
 EndFunction
 
 Function EndCase()
@@ -516,7 +516,7 @@ Function EndCase()
 	RemoveFixture(nell)
 	RemoveFixture(abel)
 	RemoveFixture(lead)
-	RemoveFixture(cargo)
+	RemoveFixture(wagonStandIn)
 	RemoveFixture(yard)
 	RemoveFixture(center)
 	Debug.SetGodMode(false)

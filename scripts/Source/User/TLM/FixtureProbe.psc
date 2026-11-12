@@ -211,22 +211,22 @@ Function RunDistance(TLM:SelfTest akTest)
 	; distance event on it and moving it 3000 units. These steps repeat that,
 	; apart and in order, to show which call it was.
 	akTest.Step("EXPERIMENT: moving a placed item that has no model by 300 units", 20.0, true)
-	ObjectReference item = player.PlaceAtMe(TornTransitPass)
-	If item
-		akTest.Note("probe: the item with no model was placed; Is3DLoaded = " + item.Is3DLoaded())
-		item.MoveTo(player, 300.0, 0.0, 0.0)
-		akTest.Note("probe: MoveTo by 300 units on the item with no model came back; distance now " + player.GetDistance(item))
+	ObjectReference placedItem = player.PlaceAtMe(TornTransitPass)
+	If placedItem
+		akTest.Note("probe: the item with no model was placed; Is3DLoaded = " + placedItem.Is3DLoaded())
+		placedItem.MoveTo(player, 300.0, 0.0, 0.0)
+		akTest.Note("probe: MoveTo by 300 units on the item with no model came back; distance now " + player.GetDistance(placedItem))
 		akTest.Step("EXPERIMENT: a distance event on the item with no model, then moving it 3000 units", 20.0, true)
 		distanceEvents = 0
-		RegisterForDistanceGreaterThanEvent(player, item, 400.0)
-		item.MoveTo(player, 3000.0, 0.0, 0.0)
+		RegisterForDistanceGreaterThanEvent(player, placedItem, 400.0)
+		placedItem.MoveTo(player, 3000.0, 0.0, 0.0)
 		akTest.Note("probe: MoveTo by 3000 units on the item with no model came back")
 		WaitForDistanceEvents(1)
 		akTest.Note("probe: distance events for the item with no model: " + distanceEvents)
-		UnregisterForDistanceEvents(player, item)
+		UnregisterForDistanceEvents(player, placedItem)
 		akTest.Step("EXPERIMENT: removing the item with no model", 20.0, true)
-		item.Disable()
-		item.Delete()
+		placedItem.Disable()
+		placedItem.Delete()
 		akTest.Note("probe: the item with no model was removed")
 	Else
 		akTest.Note("probe: the item with no model could not be placed this time")

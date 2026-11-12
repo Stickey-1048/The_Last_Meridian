@@ -190,21 +190,21 @@ Function RunSelfTest(int aiScenario = 0)
 			probe.RunDistance(Self)
 		EndIf
 	ElseIf scenario >= 4 && scenario <= 9
-		TLM:WorldCases cases = (Self as Quest) as TLM:WorldCases
-		If !cases
+		TLM:WorldCases worldCases = (Self as Quest) as TLM:WorldCases
+		If !worldCases
 			Fail("the world cases script is not attached to this quest")
 		ElseIf scenario == 4
-			cases.CaseEvaded(Self)
+			worldCases.CaseEvaded(Self)
 		ElseIf scenario == 5
-			cases.CaseFightSaved(Self)
+			worldCases.CaseFightSaved(Self)
 		ElseIf scenario == 6
-			cases.CaseMissed(Self)
+			worldCases.CaseMissed(Self)
 		ElseIf scenario == 7
-			cases.CaseRoadBetrayal(Self)
+			worldCases.CaseRoadBetrayal(Self)
 		ElseIf scenario == 8
-			cases.CaseMurderAfterSaving(Self)
+			worldCases.CaseMurderAfterSaving(Self)
 		Else
-			cases.CaseDeal(Self)
+			worldCases.CaseDeal(Self)
 		EndIf
 	Else
 		Fail("there is no scenario " + scenario)
