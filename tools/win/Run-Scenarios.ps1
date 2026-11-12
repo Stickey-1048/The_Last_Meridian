@@ -49,6 +49,17 @@
     7  the same: the caravan master killed by the player at the ambush
     8  the same: the caravan saved, then the caravan master killed
     9  the same: the Cutter lead's deal taken
+    101 and up   the rows of the two test matrices, generated from the logic
+                 model. tools\matrix_cases.json lists them: which rows each
+                 stands for and the events it plays.
+
+  -Scenarios takes numbers, ranges and names, separated by commas:
+    all      1 to 9 and every matrix case (the default; about half an hour)
+    basic    1 to 9
+    matrix   every matrix case
+    main     the matrix cases of the main quest (101 to 199)
+    side     the matrix cases of the side quest (201 to 299)
+    4,104-110,side   and so on
 
   A scenario that stops inside a call which never comes back is ended by a
   watchdog in the self-test itself, which writes where it stopped; the time
@@ -64,11 +75,16 @@
   powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1 -Scenarios 2
+.EXAMPLE
+  powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1 -Scenarios basic
+.EXAMPLE
+  powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1 -Scenarios 119-121,side
 #>
 [CmdletBinding()]
 param(
-    # Scenario numbers, separated by commas; see the description for what each is.
-    [string]$Scenarios = '1,2,3,4,5,6,7,8,9',
+    # Numbers, ranges (101-128) and names (all, basic, matrix, main, side),
+    # separated by commas; see the description.
+    [string]$Scenarios = 'all',
     # Defaults come from build\install-manifest.json (written by Install-Dev.ps1).
     [string]$ModOrganizerRoot,
     [string]$ProfileName,
@@ -96,8 +112,40 @@ $pluginName = 'TheLastMeridian.esp'
 $globalName = 'TLM_G_DevScenario'
 $enterCommand = 'coc qasmoke'
 
-$list = @($Scenarios -split '[,; ]+' | Where-Object { $_ -ne '' } | ForEach-Object { [int]$_ })
-if ($list.Count -eq 0) { throw 'No scenario numbers given.' }
+# The matrix cases, generated from the logic model: number -> what it is.
+$caseTitles = @{}
+$matrixNumbers = @()
+$matrixFile = Join-Path (Join-Path $repo 'tools') 'matrix_cases.json'
+if (Test-Path -LiteralPath $matrixFile) {
+    foreach ($c in @((Get-Content -LiteralPath $matrixFile -Raw | ConvertFrom-Json).cases)) {
+        $matrixNumbers += [int]$c.scenario
+        $caseTitles[[int]$c.scenario] = "$(@($c.rows) -join ', '): $($c.title)"
+    }
+}
+$basicNumbers = @(1..9)
+$basicTitles = @{
+    1 = 'both quests by stages alone'; 2 = 'actors made at run time, in the aliases, killed'
+    3 = 'distance events and the quest''s "the player has left" watch'; 4 = 'evaded'; 5 = 'saved after a fight'
+    6 = 'missed'; 7 = 'betrayal on the road'; 8 = 'murder after saving'; 9 = 'the deal'
+}
+foreach ($k in $basicTitles.Keys) { $caseTitles[[int]$k] = $basicTitles[$k] }
+
+$list = New-Object System.Collections.Generic.List[int]
+foreach ($word in @($Scenarios -split '[,; ]+' | Where-Object { $_ -ne '' })) {
+    $add = @()
+    switch -Regex ($word.ToLowerInvariant()) {
+        '^all$'    { $add = $basicNumbers + $matrixNumbers; break }
+        '^basic$'  { $add = $basicNumbers; break }
+        '^matrix$' { $add = $matrixNumbers; break }
+        '^main$'   { $add = @($matrixNumbers | Where-Object { $_ -ge 100 -and $_ -lt 200 }); break }
+        '^side$'   { $add = @($matrixNumbers | Where-Object { $_ -ge 200 -and $_ -lt 300 }); break }
+        '^(\d+)-(\d+)$' { $add = @([int]$Matches[1]..[int]$Matches[2]); break }
+        '^\d+$'    { $add = @([int]$word); break }
+        default    { throw "Not a scenario number, a range or a set name: $word" }
+    }
+    foreach ($n in $add) { if (-not $list.Contains([int]$n)) { $list.Add([int]$n) } }
+}
+if ($list.Count -eq 0) { throw 'No scenarios to run. (A set name gives nothing if tools\matrix_cases.json is missing.)' }
 foreach ($n in $list) { if ($n -lt 1 -or $n -gt 999) { throw "Not a scenario number: $n" } }
 
 $manifestPath = Join-Path $build 'install-manifest.json'
@@ -206,7 +254,8 @@ $restoreNotes = New-Object System.Collections.Generic.List[string]
 $runStarted = Get-Date
 try {
     Say '== Unattended scenario run =='
-    Say "Scenarios            : $($list -join ', ')"
+    Say "Scenarios            : $($list.Count) ($Scenarios)"
+    Write-Host "This takes about $([math]::Max(1, [int][math]::Round($list.Count * 36 / 60))) minutes: $($list.Count) game sessions of roughly half a minute each."
     Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
     Say "Through              : $moExe   profile $ProfileName"
     Say "Scenario number in the installed plugin before the run: $valueAtStart"
@@ -347,11 +396,17 @@ foreach ($l in $ev) { $out.Add($l) }
 
 $out.Add('')
 $out.Add('== Scenarios ==')
-$out.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f '#', 'result', 'passed', 'failed', 'seconds', 'how it ended'))
+$totalPassed = 0; $totalFailed = 0
+foreach ($r in $results) { if ($r.Logs) { $totalPassed += $r.Logs.Passed; $totalFailed += $r.Logs.FailLines.Count } }
+$okCount = @($results | Where-Object { $_.Status -eq 'PASSED' }).Count
+$out.Add("  $($results.Count) of $($list.Count) run: $okCount passed, $($results.Count - $okCount) did not. Checks: $totalPassed passed, $totalFailed failed.")
+$out.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f '#', 'result', 'passed', 'failed', 'seconds', 'what it is'))
 foreach ($r in $results) {
     $p = if ($r.Logs) { $r.Logs.Passed } else { 0 }
     $f = if ($r.Logs) { $r.Logs.FailLines.Count } else { 0 }
-    $out.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f $r.Scenario, $r.Status, $p, $f, $r.Seconds, $r.Note))
+    $what = if ($caseTitles.ContainsKey([int]$r.Scenario)) { $caseTitles[[int]$r.Scenario] } else { '' }
+    if ($r.Note -ne 'the game closed itself') { $what = "$what  [$($r.Note)]" }
+    $out.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f $r.Scenario, $r.Status, $p, $f, $r.Seconds, $what))
 }
 $notRun = @($list | Where-Object { $n = $_; -not @($results | Where-Object { $_.Scenario -eq $n }).Count })
 if ($notRun.Count) { $out.Add("  not run: $($notRun -join ', ')") }
@@ -364,6 +419,8 @@ if ($stoppedEarly) {
 
 foreach ($r in $results) {
     if (-not $r.Logs) { continue }
+    # A matrix case that passed with a clean script log has nothing more to say than its row in the table.
+    if ([int]$r.Scenario -ge 100 -and $r.Status -eq 'PASSED' -and -not $r.Logs.Problems.Count) { continue }
     $out.Add('')
     $out.Add("== Scenario $($r.Scenario): $($r.Status) ==")
     if ($r.Logs.Header) { $out.Add("  $($r.Logs.Header)") }

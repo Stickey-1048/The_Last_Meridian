@@ -182,10 +182,15 @@ class MQ01Matrix(unittest.TestCase):
             apply(s, "recovery")               # grants nothing twice
         self.assertTrue(run(FINISH, start=s).done(100))
 
-    def test_T19c_handover_repairs_a_missing_dispatch(self):
-        """Amendment A9: Pritchard's greeting is keyed on stage 20."""
+    def test_T19c_handover_stands_without_the_dispatch(self):
+        """Amendment A9: Pritchard's greeting is keyed on stage 20. The delivery
+        stands; the recovery stage is not set by it (the script never did, and
+        until 2026-11-12 this model wrongly said it was)."""
         s = run(["start", "take_dispatch", "dispatch_vanishes", "goto_town", "pritchard_handover"])
-        self.assertTrue(s.done(50) and s.done(900))
+        self.assertTrue(s.done(50))
+        self.assertFalse(s.done(900))
+        self.assertFalse(s.has_dispatch)
+        self.assertEqual(s.rep, 1)
         old = run(["start", "take_dispatch", "dispatch_vanishes", "goto_town"], rules=V01)
         with self.assertRaises(NotAvailable):
             apply(old, "pritchard_handover", V01)            # v0.1: no greeting fits

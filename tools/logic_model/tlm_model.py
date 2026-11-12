@@ -589,8 +589,10 @@ def ev_pritchard_handover(s: State, r: Rules) -> Optional[State]:
         if not s.done(20):
             return None
         if not s.has_dispatch:
-            # EnsureDispatch(): stage 900 repair, then hand it over.
-            s = replace(set_stage(s, 900), has_dispatch=True, dispatch_lost=False)
+            # A9: the hand-over is keyed on stage 20. If the item has gone
+            # missing the delivery stands: nothing is given back first and
+            # stage 900 is not involved (TLM:MQ01Quest.ApplyDelivered).
+            s = replace(s, dispatch_lost=False)
     elif not s.has_dispatch:
         return None
     if not s.done(40):
@@ -734,7 +736,9 @@ def _sq_apply(s: State, outcome: int) -> State:
     """TLM_SQ01_QuestScript.ApplyOutcome(). One outcome, ever."""
     assert s.sq_outcome == SQ_NONE
     if s.ledger_lost:
-        s = replace(s, ledger_lost=False, has_ledger=True)   # the stage is the proof
+        # The stage is the proof, so the decision stands without the item.
+        # The item is not given back (TLM:SQ01Quest.ApplyOutcome).
+        s = replace(s, ledger_lost=False)
     s = replace(s, sq_outcome=outcome, sq_o10=COMPLETE, sq_o20=COMPLETE)
     if outcome == SQ_REPORTED:
         s = replace(s, yard_alerted=1, truth=s.truth + 1, competence=s.competence + 1)

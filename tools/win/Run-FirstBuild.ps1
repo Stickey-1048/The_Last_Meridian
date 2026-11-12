@@ -76,7 +76,8 @@ param(
     # enters the test room, runs the scenario and closes by itself. Needs
     # -Install. If both are given, this wins over -Play.
     [switch]$Unattended,
-    # Scenario numbers for -Unattended, separated by commas. Default: all of them.
+    # For -Unattended: scenario numbers, ranges (101-128) and set names (all,
+    # basic, matrix, main, side), separated by commas. Default: all.
     [string]$Scenarios,
     # Run even though this folder is behind GitHub (see the check below).
     [switch]$AllowStale

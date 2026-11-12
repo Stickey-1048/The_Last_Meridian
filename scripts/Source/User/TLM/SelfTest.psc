@@ -11,17 +11,20 @@ Run it once per game session, from the console:   cqf TLM_Core RunSelfTest
 Results go to Documents\My Games\Fallout4\Logs\Script\User\TLM.0.log (Papyrus
 logging has to be on), to the Papyrus log, and to a message box.
 
-Scenarios: 1 here; 2 and 3 in TLM:FixtureProbe; 4 to 9 in TLM:WorldCases.
+Scenarios: 1 here; 2 and 3 in TLM:FixtureProbe; 4 to 9 in TLM:WorldCases;
+101 and up in TLM:MatrixCases, which is generated from the logic model.
 A number after the function name picks one:   cqf TLM_Core RunSelfTest 4
 One fresh game session per scenario: the quests run once.
 
-COMPILES. RAN IN THE GAME on 2026-11-12 with nobody at the keyboard: all nine
-scenarios passed, 220 checks, 0 failed (docs/design/VERIFY_LOG.md). The
-watchdog was seen to work: it ended scenario 3 inside an experiment that did
-not come back, and the result was still written. Scenario 1 also ran from the
-console. (An earlier run of scenario 1 reported 26 passed, 34 failed, because
-no OnStageSet event reached the quest scripts; that was a fault in the
-generated plugin.)}
+RAN IN THE GAME on 2026-11-12 with nobody at the keyboard: all nine scenarios
+passed, 220 checks, 0 failed (docs/design/VERIFY_LOG.md). The watchdog was
+seen to work: it ended scenario 3 inside an experiment that did not come
+back, and the result was still written. Scenario 1 also ran from the console.
+(An earlier run of scenario 1 reported 26 passed, 34 failed, because no
+OnStageSet event reached the quest scripts; that was a fault in the generated
+plugin.)
+Since that run Pass() and the scenarios from 101 up were added: THIS VERSION
+IS NOT YET COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
@@ -141,7 +144,8 @@ Function RunSelfTest(int aiScenario = 0)
 	and side quest by stages alone. 2: actors made at run time and put into the
 	quest's aliases. 3: distance events. 4 to 9: the main quest played with a
 	caravan made at run time, one case for each way the encounter can end
-	(TLM:WorldCases).}
+	(TLM:WorldCases). 101 and up: the test matrix, generated from the logic
+	model (TLM:MatrixCases, with TLM:CaseDriver).}
 	If busy
 		Debug.Notification("TLM self-test is already running")
 		Return
@@ -206,6 +210,13 @@ Function RunSelfTest(int aiScenario = 0)
 			worldCases.CaseMurderAfterSaving(Self)
 		Else
 			worldCases.CaseDeal(Self)
+		EndIf
+	ElseIf scenario >= 100
+		TLM:MatrixCases matrixCases = (Self as Quest) as TLM:MatrixCases
+		If !matrixCases
+			Fail("the generated cases script is not attached to this quest")
+		Else
+			matrixCases.RunCase(scenario, Self)
 		EndIf
 	Else
 		Fail("there is no scenario " + scenario)
@@ -399,6 +410,12 @@ Function CheckFalse(string asName, bool abActual)
 	Else
 		Fail(asName + ": expected false, was true")
 	EndIf
+EndFunction
+
+Function Pass(string asName)
+	{For a check that compares several things itself and reports once.}
+	passed += 1
+	Log("PASS  " + asName)
 EndFunction
 
 Function Fail(string asWhat)

@@ -234,6 +234,38 @@ public static class Spec
                 new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
                 new VanillaProp("FixtureActorBase", "WorkshopNPC", "Npc"),
                 new VanillaProp("FixtureMarkerBase", "XMarker", "Static")),
+            // Development only: self-test scenarios 101 and up, the rows of
+            // the test matrices. TLM:MatrixCases is generated from the logic
+            // model (tools/gen_matrix_cases.py); TLM:CaseDriver does in the
+            // game what stands for each of the model's events and compares
+            // both quests with the model after every one.
+            new ScriptBind("TLM:CaseDriver",
+                new FormProp("TLM_MQ01", "TLM_MQ01"),
+                new FormProp("TLM_SQ01", "TLM_SQ01"),
+                new FormProp("TLM_G_CaravanMethod", "TLM_G_CaravanMethod"),
+                new FormProp("TLM_G_CaravanAliveAtMercy", "TLM_G_CaravanAliveAtMercy"),
+                new FormProp("TLM_G_Rep_MercyCrossing", "TLM_G_Rep_MercyCrossing"),
+                new FormProp("TLM_G_MQ01_Done", "TLM_G_MQ01_Done"),
+                new FormProp("TLM_G_MQ01_DebriefVariant", "TLM_G_MQ01_DebriefVariant"),
+                new FormProp("TLM_G_MQ01_DebriefAnswer", "TLM_G_MQ01_DebriefAnswer"),
+                new FormProp("TLM_Truth", "TLM_Truth"),
+                new FormProp("TLM_Competence", "TLM_Competence"),
+                new FormProp("TLM_Accountability", "TLM_Accountability"),
+                new FormProp("TLM_MutualTrust", "TLM_MutualTrust"),
+                new FormProp("TLM_G_SQ01_EvidenceCount", "TLM_G_SQ01_EvidenceCount"),
+                new FormProp("TLM_G_SQ01_EvidenceLevel", "TLM_G_SQ01_EvidenceLevel"),
+                new FormProp("TLM_G_SQ01_Outcome", "TLM_G_SQ01_Outcome"),
+                new FormProp("TLM_G_SQ01_YardAlerted", "TLM_G_SQ01_YardAlerted"),
+                new FormProp("TLM_G_SQ01_VaneHasLedger", "TLM_G_SQ01_VaneHasLedger"),
+                new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
+                new FormProp("DispatchItem", "TLM_MISC_Dispatch"),
+                new FormProp("LedgerItem", "TLM_BOOK_RailMaintLedger"),
+                new FormProp("JournalItem", "TLM_BOOK_MarshalLog"),
+                new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
+                new VanillaProp("Caps", "Caps001", "MiscItem"),
+                new VanillaProp("FixtureActorBase", "WorkshopNPC", "Npc"),
+                new VanillaProp("FixtureMarkerBase", "XMarker", "Static")),
+            new ScriptBind("TLM:MatrixCases"),
         });
 
     // --------------------------------------------------------------- MQ01

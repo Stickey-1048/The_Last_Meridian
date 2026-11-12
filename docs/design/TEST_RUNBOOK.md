@@ -133,7 +133,7 @@ Switch Mod Organizer back to your own profile afterwards.
 powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended
 ```
 
-or, without rebuilding, `powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1` (`-Scenarios 2` runs one of them, `-Scenarios 3,4` two).
+or, without rebuilding, `powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1` (`-Scenarios 2` runs one of them, `-Scenarios basic` the first nine).
 
 Each scenario needs a fresh session, because the quests run once. For each scenario `Run-Scenarios.ps1` writes the scenario number into the installed copy of the plugin (the value of the global `TLM_G_DevScenario`: four bytes), starts the game as above, and waits. For the length of the run the test profile's `fallout4custom.ini` carries `sStartingConsoleCommand=coc qasmoke`, so the game enters the test room by itself, and `bAlwaysActive=1`, so it keeps running when its window is not in front. In the game `TLM:Core` sees the scenario number, runs that scenario a few seconds after the room has loaded, and closes the game. The script then reads the logs, moves on to the next scenario, and at the end puts the scenario number back to 0 and the two settings back, and copies a table of results to the clipboard.
 
@@ -149,13 +149,20 @@ Each scenario needs a fresh session, because the quests run once. For each scena
 | 8 | The same, murder after saving: the Cutter lead dies, then the caravan master, both by the player's hand. "Exploited" should replace "saved", the drover reach town as the witness, and confessing count for truth and accountability |
 | 9 | The same, the deal: stage 33 is set as the talk with the Cutter lead would set it. The drover should die, the cargo go, the caravan master be the witness, and blaming the Cutters cost truth |
 
+| 101 to 128 | The rows of the main quest's test matrix, as cases generated from the logic model (`TLM:MatrixCases`, with `TLM:CaseDriver` doing the work). After every event the driver compares everything it can see of both quests with the model. `tools/matrix_cases.json` says which rows each case stands for |
+| 201 to 221 | The same for the side quest's matrix |
+
+`-Scenarios` takes numbers, ranges and names, separated by commas: `all` (the default: 1 to 9 and every matrix case, about 35 to 40 minutes), `basic` (1 to 9), `matrix`, `main`, `side`, or for example `4,104-110,side`. With that many scenarios the report shows one line each, and details only for the ones that did not pass.
+
 Lines beginning INFO report what the game did without scoring it. Lines beginning STEP name what the scenario was about to do, so a run that stops shows where.
 
-Scenarios 4 to 9 make the player invulnerable while they run (the stand-ins are settlers with guns and their own minds) and take that back at the end. The expected numbers in them are the logic model's: `tools/logic_model/test_worldcases_expectations.py` fails if the script and the model disagree.
+Scenarios 4 to 9 and the matrix cases make the player invulnerable while they run (the stand-ins are settlers with guns and their own minds) and take that back at the end. The expected numbers in scenarios 4 to 9 are the logic model's: `tools/logic_model/test_worldcases_expectations.py` fails if the script and the model disagree. The matrix cases are written by `tools/gen_matrix_cases.py` from the model; never edit `MatrixCases.psc` by hand.
+
+Before any of this goes to the PC it can be rehearsed without the game: `python3 tools/papyrus_sim all` runs the real scripts against a stand-in for the game (see `tools/README.md`). That is a rehearsal, not a result.
 
 **A scenario that stops is ended twice over.** The self-test gives every step a number of seconds; when a step does not come back in time, the self-test itself writes where it stopped and closes the game. Behind that, **the script closes the game it started** if a scenario has not finished after four minutes: first by asking the window to close, then by ending the process. It only runs if no game and no Mod Organizer was open when it began. Nothing is saved by hand in these sessions.
 
-Seen on the PC on 2026-11-12: the start-up console command enters the room, the scenario starts by itself, `Debug.QuitGame()` closes the game, a settler can be spawned in the test room, the watchdog ends a scenario that has stopped, and all nine scenarios pass, in five and a half minutes together. Scenario 3 always ends through the watchdog: its last part is an experiment known not to come back (moving a placed item that has no model), kept as a record of that fact. If the first scenario never starts by itself the script stops and says so, and the scenarios can still be run by hand: `Start-TestGame.ps1`, then in the game `coc qasmoke` and `cqf TLM_Core RunSelfTest 2`.
+Seen on the PC on 2026-11-12: the start-up console command enters the room, the scenario starts by itself, `Debug.QuitGame()` closes the game, a settler can be spawned in the test room, the watchdog ends a scenario that has stopped, and all nine scenarios pass, in five and a half minutes together. The matrix cases (101 and up) have not run in the game. Scenario 3 always ends through the watchdog: its last part is an experiment known not to come back (moving a placed item that has no model), kept as a record of that fact. If the first scenario never starts by itself the script stops and says so, and the scenarios can still be run by hand: `Start-TestGame.ps1`, then in the game `coc qasmoke` and `cqf TLM_Core RunSelfTest 2`.
 
 ### Checking by hand
 

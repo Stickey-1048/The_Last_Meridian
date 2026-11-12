@@ -29,6 +29,9 @@ fi
 python3 tools/check_plugin_layout.py --self-test build/TheLastMeridian.esp
 
 echo "== 3/5 consistency =="
+# The in-game cases of the test matrix are generated from the logic model;
+# the committed files must be what the generator writes now.
+python3 tools/gen_matrix_cases.py --check
 python3 tools/check_consistency.py
 
 echo "== 4/5 plugin build against a stand-in master =="
@@ -72,4 +75,4 @@ echo "  vanilla lookups work against five stand-in masters (spelling, fallback, 
 
 echo "== 5/5 the scripts against a stand-in for the game =="
 (cd tools/papyrus_sim && python3 -m unittest 2>&1 | tail -4)
-python3 tools/papyrus_sim --plugin build/sim/TheLastMeridian.json 1 2 3 4 5 6 7 8 9 | grep -E "^scenario|stand-in"
+python3 tools/papyrus_sim --brief all

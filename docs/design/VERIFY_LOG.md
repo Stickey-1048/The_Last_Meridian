@@ -283,6 +283,36 @@ Not run in the game: T05 and T05b (the three unnamed Cutters), T07 and T08 (the 
 
 What the game was seen to do in these runs is now also written down as rules in `tools/papyrus_sim`, a stand-in for the game that runs the project's real scripts on a machine without Fallout 4. Replaying the four recorded runs in it, with the scripts as they were at each commit, gives what the game gave each time (`tools/papyrus_sim/game_runs.json`, checked by `tools/run_checks.sh`). That makes it a fair rehearsal for a script change before it goes to the PC. It is not evidence about the game: where a rule in it is marked "assumed", only the game can say.
 
+### Prepared for the next run: the test matrix as cases
+
+Not yet compiled and not yet run in the game. Written after the ninth run.
+
+The rows of the two test matrices are now cases the game can play with nobody at the keyboard: 49 cases, 309 events, 1,236 checks (self-test scenarios 101 to 128 for the main quest, 201 to 221 for the side quest). A case is a list of the logic model's events. For each event `TLM:CaseDriver` does what stands for it in the game, then compares everything it can see of both quests with the state the model reaches after that event: every stage of both quests, the outcome, method and reputation, the debrief variant and answer, both pairs of objectives, the four counters, who is alive, who is in the town aliases, whether the Cutters are disabled, the cargo, the three quest items, the evidence count and level, the side quest's outcome and its three flags, Haskell, and the caps from a sale. The cases themselves (`TLM:MatrixCases`) are written by `tools/gen_matrix_cases.py` from the model, so no expected value is typed by hand. `tools/matrix_cases.json` lists each case, the rows it stands for and its events.
+
+Three kinds of step: an event the model allows; an *attempt* at an event the model does not allow, where the guard is in the quest script and nothing may change (a second debrief answer, the evade timer during a fight, killing a caravan hand in town, a decision without evidence, a second decision, recovery with nothing to recover); and one place where the script turns a request into another one (naming Haskell when he is dead posts the pages with no name).
+
+What stands for what, as before: a trigger, a pickup or a line of dialogue is its stage number; picking up the dispatch, the ledger or the journal also gives the item; a kill by the player is `Kill` with the player named; leaving the ambush is moving its centre marker away; the timer running out is a direct call. Eight settlers and two markers are made for every case.
+
+Rows no case stands for, and why:
+
+| Row | Why not |
+|---|---|
+| T13 | ownership and theft: needs a placed container |
+| T15, T16, S16 | need a save and a load |
+| T20 | the sheriff's Essential flag: needs the placed actor |
+| T22 | arrival at night: packages and time of day |
+| T27 | clean plugin load: seen in every run, not a case |
+| T28 | unrelated saves |
+| S14, S20 | Pike dead, Vane dead: the guards are dialogue conditions, and there is no dialogue yet |
+
+Also left out: the one attempt in T08 whose only guard is a dialogue condition (the deal after a fight has started).
+
+Two places where the logic model and the scripts disagreed came out of this, and the model was the one that was wrong both times (DESIGN_AMENDMENTS_v0.2.md, test matrix changes): the hand-over does not set stage 900 when the dispatch is missing, and deciding with a lost ledger does not give the ledger back.
+
+All 49 cases, and the nine older scenarios, pass when the real scripts are run in the stand-in engine. Its tests also show the checks bite: a changed rule in either quest script, a stage the model does not expect, and each single expected value changed in turn (46 of them) are all reported. One hole was found that way and closed: the first version of the driver read any expected value below zero as "not looked at", and the counters do go below zero.
+
+What only the game can say, and the next run will: whether eight settlers at once behave; whether stage 37 (the Cutters turning on the player) puts the player in combat; whether `StopCombat` on the Cutters ends it (case 121; the stand-in engine simply assumes so); and everything else the stand-in engine marks as assumed.
+
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:

@@ -85,9 +85,10 @@ New or changed globals: `TLM_G_CaravanMethod` (0 none, 1 deal, 2 betrayal), `TLM
 - **T10** splits: sneaking past *within sight* is Evaded; never entering the sight trigger is **Missed** (outcome 4).
 - **T12** splits: killing Nell (the Cutters finish Abel) leaves no witness; killing only Abel leaves Nell as the witness; killing a hand after saving them is still Betrayal.
 - **T14** splits: no Evaded while fighting; leaving mid-fight is Evaded; hiding until the timer expires is Evaded.
-- **T19** adds: the hand-over works even if the dispatch has gone missing.
+- **T19** adds: the hand-over works even if the dispatch has gone missing. (Corrected 2026-11-12: the logic model said the hand-over first sets the recovery stage, 900. Amendment A9 and the script never did; the model now agrees with them, and T19c checks that stage 900 is *not* set.)
 - **T26** adds: the Pritchard conversation can be left and resumed; the gate trigger can be bypassed.
-- **S18–S24** are new: journal before ledger, Haskell dead, Vane dead, ledger lost, report before and after MQ01, evidence frozen after an outcome.
+- **S18–S24** are new: journal before ledger, Haskell dead, Vane dead, ledger lost, report before and after MQ01, evidence frozen after an outcome. (Corrected 2026-11-12: the logic model said that deciding with a lost ledger gives the ledger back. The script never did; the decision stands without the item, and S21 now checks that.)
+- Both corrections came from writing the in-game cases, which compare the whole of what can be seen with the model after every event; the older checks compared only the values a test happened to name.
 - Engine-only cases the model cannot cover and that must be run in the game: **T13, T15, T16, T20, T22, T27, T28, S16**.
 
 ## Decisions needed from the owner

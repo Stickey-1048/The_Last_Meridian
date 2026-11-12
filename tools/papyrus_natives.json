@@ -744,6 +744,18 @@
     "source": "falloutck.uesp.net/wiki/StartTimer_-_ScriptObject"
    }
   ],
+  "StopCombat": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/StopCombat_-_Actor"
+   }
+  ],
   "Trace": [
    {
     "global": true,

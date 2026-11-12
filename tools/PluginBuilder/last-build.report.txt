@@ -87,6 +87,30 @@ Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=
            TLM_Accountability = TLM_Accountability
            TLM_MutualTrust = TLM_MutualTrust
            TornTransitPass = TLM_MISC_TornTransitPass
+  script TLM:CaseDriver
+           TLM_MQ01 = TLM_MQ01
+           TLM_SQ01 = TLM_SQ01
+           TLM_G_CaravanMethod = TLM_G_CaravanMethod
+           TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
+           TLM_G_Rep_MercyCrossing = TLM_G_Rep_MercyCrossing
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           TLM_G_MQ01_DebriefVariant = TLM_G_MQ01_DebriefVariant
+           TLM_G_MQ01_DebriefAnswer = TLM_G_MQ01_DebriefAnswer
+           TLM_Truth = TLM_Truth
+           TLM_Competence = TLM_Competence
+           TLM_Accountability = TLM_Accountability
+           TLM_MutualTrust = TLM_MutualTrust
+           TLM_G_SQ01_EvidenceCount = TLM_G_SQ01_EvidenceCount
+           TLM_G_SQ01_EvidenceLevel = TLM_G_SQ01_EvidenceLevel
+           TLM_G_SQ01_Outcome = TLM_G_SQ01_Outcome
+           TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
+           TLM_G_SQ01_VaneHasLedger = TLM_G_SQ01_VaneHasLedger
+           TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
+           DispatchItem = TLM_MISC_Dispatch
+           LedgerItem = TLM_BOOK_RailMaintLedger
+           JournalItem = TLM_BOOK_MarshalLog
+           TornTransitPass = TLM_MISC_TornTransitPass
+  script TLM:MatrixCases
   structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
 
 Quest TLM_MQ01  00081A  "Six Rounds to Mercy"  type=MainQuest priority=60 flags=[RunOnce, WarnOnAliasFillFailure]
@@ -250,7 +274,7 @@ Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOn
                     RequireStageDone = 10
                     BlockIfStageDone = 50
 
-Not wired yet (37):
+Not wired yet (40):
   - TLM_MISC_Dispatch: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_BOOK_RailMaintLedger: no world model yet
@@ -259,6 +283,9 @@ Not wired yet (37):
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
+  - TLM_Core script TLM:CaseDriver.Caps: needs 'Caps001' from Fallout4.esm
+  - TLM_Core script TLM:CaseDriver.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
+  - TLM_Core script TLM:CaseDriver.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_MQ01 alias Player: needs PlayerRef from Fallout4.esm
   - TLM_MQ01 alias Marshal: no reference yet (Dead Rail Marshal Tobias Gantt (TLM_NPC_MARSHAL_DEAD))
   - TLM_MQ01 alias Revolver: no reference yet (Placed revolver. Not a quest object: the player may sell or drop it.)

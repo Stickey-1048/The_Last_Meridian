@@ -158,7 +158,11 @@ class SQ01Matrix(unittest.TestCase):
         self.assertTrue(s.has_ledger)
         self.assertEqual(apply(s, "sq_report").sq_outcome, m.SQ_REPORTED)
         # The decision is keyed on stage 20, so it also works unrepaired.
-        self.assertEqual(apply(lost, "sq_report").sq_outcome, m.SQ_REPORTED)
+        unrepaired = apply(lost, "sq_report")
+        self.assertEqual(unrepaired.sq_outcome, m.SQ_REPORTED)
+        # ... and the item is not given back by deciding (the script never
+        # did; until 2026-11-12 this model wrongly said it was).
+        self.assertFalse(unrepaired.has_ledger)
 
     def test_S22_report_before_the_dispatch_is_delivered(self):
         """Amendment: the report topic must not depend on holding the dispatch."""
