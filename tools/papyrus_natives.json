@@ -31,6 +31,32 @@
     "source": "falloutck.uesp.net/wiki/CancelTimer_-_ScriptObject"
    }
   ],
+  "CloseUserLog": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Debug",
+    "params": [
+     "string asLogName"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/CloseUserLog_-_Debug"
+   }
+  ],
+  "Delete": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/Delete_-_ObjectReference"
+   }
+  ],
   "Disable": [
    {
     "global": false,
@@ -197,6 +223,18 @@
     "params": [],
     "returns": "bool",
     "source": "falloutck.uesp.net/wiki/IsDead_-_Actor"
+   }
+  ],
+  "IsEssential": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsEssential_-_Actor"
    }
   ],
   "IsInCombat": [
@@ -449,6 +487,36 @@
     ],
     "returns": "bool",
     "source": "falloutck.uesp.net/wiki/OpenUserLog_-_Debug"
+   }
+  ],
+  "PlaceAtMe": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 5,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "Form akFormToPlace",
+     "int aiCount = 1",
+     "bool abForcePersist = false",
+     "bool abInitiallyDisabled = false",
+     "bool abDeleteWhenAble = true"
+    ],
+    "returns": "ObjectReference",
+    "source": "falloutck.uesp.net/wiki/PlaceAtMe_-_ObjectReference"
+   }
+  ],
+  "QuitGame": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Debug",
+    "params": [],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/QuitGame_-_Debug"
    }
   ],
   "RegisterForDistanceGreaterThanEvent": [
@@ -718,6 +786,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/UnregisterForDistanceEvents_-_ScriptObject"
+   }
+  ],
+  "Wait": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Utility",
+    "params": [
+     "float afSeconds"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/Wait_-_Utility"
    }
   ],
   "WaitMenuMode": [

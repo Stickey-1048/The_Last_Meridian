@@ -6,6 +6,11 @@ reported (docs/design/VERIFY_LOG.md).}
 
 GlobalVariable Property TLM_G_DataVersion Auto Const Mandatory
 Quest Property TLM_MQ01 Auto Const Mandatory
+GlobalVariable Property TLM_G_DevScenario Auto Const
+{Development only; 0 in every build. The unattended test runner on the PC
+(tools/win/Run-Scenarios.ps1) writes a scenario number into the installed copy
+of the plugin. When it is not 0, the self-test runs that scenario by itself a
+few seconds after this quest starts, and then closes the game.}
 
 int DATA_VERSION = 1 Const
 
@@ -25,6 +30,15 @@ EndEvent
 Event OnTimer(int aiTimerID)
 	If aiTimerID == TIMER_HELLO
 		Debug.Notification("The Last Meridian test build is loaded.")
+		If TLM_G_DevScenario
+			int scenario = TLM_G_DevScenario.GetValueInt()
+			If scenario > 0
+				TLM:SelfTest test = (Self as Quest) as TLM:SelfTest
+				If test
+					test.RunUnattended(scenario)
+				EndIf
+			EndIf
+		EndIf
 	EndIf
 EndEvent
 

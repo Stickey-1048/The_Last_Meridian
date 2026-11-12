@@ -2,9 +2,10 @@
 #
 # Almost everything in this module only READS the machine. The exceptions are
 # Write-RawLines, Set-IniValue and New-TlmDevProfile, which write files inside
-# this project's own Mod Organizer test profile. Nothing here changes a game
-# folder, the registry, saves, the shared load order or an existing profile,
-# and nothing here starts or stops a program.
+# this project's own Mod Organizer test profile, and Set-PluginGlobal, which
+# changes four bytes of this project's own installed plugin. Nothing here
+# changes a game folder, the registry, saves, the shared load order or an
+# existing profile, and nothing here starts or stops a program.
 #
 # Status: first ran on a real Windows PC (Windows PowerShell 5.1) on 2026-11-11
 # through Run-FirstBuild.ps1; the installs, the Mod Organizer instance and the
@@ -608,6 +609,79 @@ function Get-RunningGame {
     return @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -ieq 'Fallout4' -or $_.ProcessName -ieq 'Fallout4.exe' })
 }
 
+function Find-Bytes {
+    <# Every position at which a byte pattern occurs in a byte array. #>
+    param([byte[]]$Haystack, [byte[]]$Needle)
+    $found = New-Object System.Collections.Generic.List[int]
+    $last = $Haystack.Length - $Needle.Length
+    for ($i = 0; $i -le $last; $i++) {
+        if ($Haystack[$i] -ne $Needle[0]) { continue }
+        $same = $true
+        for ($j = 1; $j -lt $Needle.Length; $j++) {
+            if ($Haystack[$i + $j] -ne $Needle[$j]) { $same = $false; break }
+        }
+        if ($same) { $found.Add($i) }
+    }
+    return $found.ToArray()
+}
+
+function Get-PluginGlobalOffset {
+    <#
+      Where the value of one global variable sits in a plugin file: the offset
+      of the four bytes of its FLTV subrecord. The global is found by its
+      EditorID, and everything around it is checked (a GLOB record, an EDID
+      subrecord of the right length, an FLTV subrecord of four bytes). Throws
+      if anything is not as expected. Reads only.
+    #>
+    param([Parameter(Mandatory)][byte[]]$Bytes, [Parameter(Mandatory)][string]$EditorId)
+    $ascii = [System.Text.Encoding]::ASCII
+    $name = $ascii.GetBytes($EditorId)
+    $pattern = New-Object System.Collections.Generic.List[byte]
+    $pattern.AddRange($ascii.GetBytes('EDID'))
+    $pattern.AddRange([System.BitConverter]::GetBytes([uint16]($name.Length + 1)))
+    $pattern.AddRange($name)
+    $pattern.Add(0)
+    $hits = @(Find-Bytes -Haystack $Bytes -Needle $pattern.ToArray())
+    if ($hits.Count -ne 1) { throw "Expected exactly one record with EditorID $EditorId in the plugin; found $($hits.Count)." }
+    $edid = $hits[0]
+    if ($edid -lt 24 -or $ascii.GetString($Bytes, $edid - 24, 4) -ne 'GLOB') { throw "$EditorId is not a global variable record." }
+    $after = $edid + $pattern.Count
+    $fltv = -1
+    for ($i = $after; $i -le ($after + 16) -and ($i + 10) -le $Bytes.Length; $i++) {
+        if ($ascii.GetString($Bytes, $i, 4) -eq 'FLTV') { $fltv = $i; break }
+    }
+    if ($fltv -lt 0) { throw "No FLTV subrecord after the EditorID of $EditorId." }
+    if ([System.BitConverter]::ToUInt16($Bytes, $fltv + 4) -ne 4) { throw "The FLTV subrecord of $EditorId is not four bytes long." }
+    return ($fltv + 6)
+}
+
+function Get-PluginGlobal {
+    <# The value of one global variable in a plugin file. Reads only. #>
+    param([Parameter(Mandatory)][string]$Path, [Parameter(Mandatory)][string]$EditorId)
+    $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $Path).Path)
+    return [System.BitConverter]::ToSingle($bytes, (Get-PluginGlobalOffset -Bytes $bytes -EditorId $EditorId))
+}
+
+function Set-PluginGlobal {
+    <#
+      Writes a new value into one global variable of a plugin file, in place:
+      four bytes change and nothing else. Used on this project's own installed
+      plugin only, to tell the game which self-test scenario to run. Returns
+      the value that was there.
+    #>
+    param([Parameter(Mandatory)][string]$Path, [Parameter(Mandatory)][string]$EditorId, [Parameter(Mandatory)][single]$Value)
+    $full = (Resolve-Path -LiteralPath $Path).Path
+    $bytes = [System.IO.File]::ReadAllBytes($full)
+    $at = Get-PluginGlobalOffset -Bytes $bytes -EditorId $EditorId
+    $old = [System.BitConverter]::ToSingle($bytes, $at)
+    $new = [System.BitConverter]::GetBytes([single]$Value)
+    for ($i = 0; $i -lt 4; $i++) { $bytes[$at + $i] = $new[$i] }
+    [System.IO.File]::WriteAllBytes($full, $bytes)
+    $check = Get-PluginGlobal -Path $full -EditorId $EditorId
+    if ($check -ne [single]$Value) { throw "Writing $EditorId = $Value into $full did not take: it reads back as $check." }
+    return $old
+}
+
 function Wait-GameAndManagerClosed {
     <#
       Waits until neither Mod Organizer nor Fallout 4 is running, saying once
@@ -859,4 +933,4 @@ Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Ge
     Find-CreationKitFolders, Get-VortexInfo, Get-VortexDeployment, Get-GogProductNames, Hide-UserFolder,
     Read-RawLines, Write-RawLines, Set-IniValue, Test-ModOrganizerRunning, New-TlmDevProfile,
     Test-FalloutLondonFolder, Test-SamePath, Get-BethesdaInstalledPath, Get-RunningGame, Get-ProcessFacts,
-    Get-RegistryValueSafe, Wait-GameAndManagerClosed
+    Get-RegistryValueSafe, Wait-GameAndManagerClosed, Find-Bytes, Get-PluginGlobalOffset, Get-PluginGlobal, Set-PluginGlobal

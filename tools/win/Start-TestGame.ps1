@@ -238,6 +238,7 @@ try {
             Write-Host '  3. Press ~, type   cqf TLM_Core RunSelfTest   press Enter, press ~ again to close the console,'
             Write-Host '     and wait for a message box (about 15 seconds).'
             Write-Host '  4. Quit the game: Esc, Quit, Quit to Desktop.'
+        Write-Host '  (Another scenario: add its number, for example   cqf TLM_Core RunSelfTest 2   . One fresh session each.)'
             Write-Host 'Leave this window open. When the game closes it collects the results by itself.'
         }
 

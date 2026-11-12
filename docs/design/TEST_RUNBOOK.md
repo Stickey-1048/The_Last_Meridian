@@ -125,6 +125,25 @@ Seen in the game so far (2026-11-12): `coc qasmoke` typed at the main menu loads
 
 Switch Mod Organizer back to your own profile afterwards.
 
+### Running scenarios with nobody at the keyboard
+
+```powershell
+git pull; powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1 -Install -Unattended
+```
+
+or, without rebuilding, `powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1` (`-Scenarios 2` runs one of them).
+
+Each scenario needs a fresh session, because the quests run once. For each scenario `Run-Scenarios.ps1` writes the scenario number into the installed copy of the plugin (the value of the global `TLM_G_DevScenario`: four bytes), starts the game as above, and waits. For the length of the run the test profile's `fallout4custom.ini` carries `sStartingConsoleCommand=coc qasmoke`, so the game should enter the test room by itself, and `bAlwaysActive=1`, so it keeps running when its window is not in front. In the game `TLM:Core` sees the scenario number, runs that scenario a few seconds after the room has loaded, and closes the game. The script then reads the logs, moves on to the next scenario, and at the end puts the scenario number back to 0 and the two settings back, and copies a table of results to the clipboard.
+
+| Scenario | What it is |
+|---|---|
+| 1 | The self-test described above: both quests by stages alone, 60 checks |
+| 2 | The fixture probe (`TLM:FixtureProbe`): spawns the game's generic settler three times, forces the actors into the drover, Cutter lead and caravan master aliases, kills them, and checks that the alias scripts hear it (the Cutter lead's death by the player's hand should set stage 31, the caravan master's stage 35); a timer; a distance event. Lines beginning INFO report what the game did without scoring it |
+
+**The script closes the game it started** if a scenario has not finished after four minutes: first by asking the window to close, then by ending the process. It only runs if no game and no Mod Organizer was open when it began. Nothing is saved by hand in these sessions.
+
+Unverified, all of it: that the start-up console command enters the room; that the scenario then starts by itself; that `Debug.QuitGame()` closes the game; that a settler can be spawned in the test room; everything the probe reports. If the first scenario never starts by itself the script stops and says so, and the scenarios can still be run by hand: `Start-TestGame.ps1`, then in the game `coc qasmoke` and `cqf TLM_Core RunSelfTest 2`.
+
 ### Checking by hand
 
 The same things can be checked one at a time in the console. The `setstage` and `sqv` commands themselves are unverified.

@@ -1,6 +1,6 @@
 TheLastMeridian.esp  (masters: Fallout4.esm; header version 0.95; lowest FormID 0x800)
 
-Global (18)
+Global (19)
   000800  TLM_G_DataVersion
   000801  TLM_G_CaravanOutcome
   000802  TLM_G_CaravanMethod
@@ -19,6 +19,7 @@ Global (18)
   00080F  TLM_G_SQ01_YardAlerted
   000810  TLM_G_SQ01_VaneHasLedger
   000811  TLM_G_SQ01_HaskellScapegoated
+  000822  TLM_G_DevScenario
 Faction (3)
   000812  TLM_Fac_Cutters
   000813  TLM_Fac_Caravan
@@ -49,6 +50,7 @@ Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=
   script TLM:Core
            TLM_G_DataVersion = TLM_G_DataVersion
            TLM_MQ01 = TLM_MQ01
+           TLM_G_DevScenario = TLM_G_DevScenario
   script TLM:SelfTest
            TLM_MQ01 = TLM_MQ01
            TLM_SQ01 = TLM_SQ01
@@ -69,6 +71,9 @@ Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=
            TLM_G_SQ01_Outcome = TLM_G_SQ01_Outcome
            TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
            TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
+           TornTransitPass = TLM_MISC_TornTransitPass
+  script TLM:FixtureProbe
+           TLM_MQ01 = TLM_MQ01
            TornTransitPass = TLM_MISC_TornTransitPass
   structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
 
@@ -233,11 +238,12 @@ Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOn
                     RequireStageDone = 10
                     BlockIfStageDone = 50
 
-Not wired yet (33):
+Not wired yet (34):
   - TLM_MISC_Dispatch: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_BOOK_RailMaintLedger: no world model yet
   - TLM_BOOK_MarshalLog: no world model yet
+  - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_MQ01 alias Player: needs PlayerRef from Fallout4.esm
   - TLM_MQ01 alias Marshal: no reference yet (Dead Rail Marshal Tobias Gantt (TLM_NPC_MARSHAL_DEAD))
   - TLM_MQ01 alias Revolver: no reference yet (Placed revolver. Not a quest object: the player may sell or drop it.)

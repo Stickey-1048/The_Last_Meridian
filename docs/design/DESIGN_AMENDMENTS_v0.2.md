@@ -99,6 +99,7 @@ New or changed globals: `TLM_G_CaravanMethod` (0 none, 1 deal, 2 betrayal), `TLM
 | **D4** | Player-facing text written for this build is provisional: stage 35 log ("You turned your gun on the wagon's own."), the three SQ01 log entries, both tutorial hints, the E2 observation, message titles and item names. | Marked provisional in `tools/PluginBuilder/Spec.cs`. |
 | **D5** | Keep "destroy the ledger" with a stove activator, or cut it from the slice? | Kept, with a confirm message. |
 | **D6** | Stage the ambush as a hold-up rather than a firefight (A11)? | Scripts assume a hold-up. |
-| **D7** | Generate the plugin from code (A20)? | Yes for data records. Nothing generated has been loaded in the Creation Kit yet. |
+| **D7** | Generate the plugin from code (A20)? | Yes for data records. The game loads the result (2026-11-12). Nothing generated has been loaded in the Creation Kit yet. |
+| **D8** | Run the test matrix first with actors and markers made at run time by a test script, in the game's own test room, rather than waiting for a hand-built test cell (T2)? | A probe is written to find out whether it works at all (`TLM:FixtureProbe`, self-test scenario 2): it spawns the game's generic settler, forces it into the quest's aliases and kills it. Not yet run. If it works, the rules that involve actors can be tested in the game without anyone operating the Creation Kit; what the player would see and walk through still needs a real cell. |
 
 Still open from v0.1: how a new game starts at the wreck (T1), whether to prove the logic in a test cell first (T2), whether an innocent should pay for the player's mistake in the opening hours (S-Q2), and the provisional minor names.

@@ -66,3 +66,5 @@ TLM_MSG_PublishChoice
 2080
 TLM_MSG_BurnLedger
 2081
+TLM_G_DevScenario
+2082

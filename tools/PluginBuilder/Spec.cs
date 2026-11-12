@@ -114,6 +114,11 @@ public static class Spec
         "TLM_G_SQ01_YardAlerted",
         "TLM_G_SQ01_VaneHasLedger",
         "TLM_G_SQ01_HaskellScapegoated",
+        // Development only. 0 in every build. The unattended test runner
+        // (tools/win/Run-Scenarios.ps1) writes a scenario number into the
+        // installed copy of the plugin; TLM:Core then runs that scenario of
+        // the self-test by itself and closes the game. Remove before release.
+        "TLM_G_DevScenario",
     };
 
     public static readonly string[] Factions =
@@ -174,7 +179,8 @@ public static class Spec
         Aliases: Array.Empty<AliasSpec>(),
         Script: new ScriptBind("TLM:Core",
             new FormProp("TLM_G_DataVersion", "TLM_G_DataVersion"),
-            new FormProp("TLM_MQ01", "TLM_MQ01")),
+            new FormProp("TLM_MQ01", "TLM_MQ01"),
+            new FormProp("TLM_G_DevScenario", "TLM_G_DevScenario")),
         // Development only: the in-game self-test (console: cqf TLM_Core RunSelfTest).
         // Remove this binding, and scripts/Source/User/TLM/SelfTest.psc, before any release.
         ExtraScripts: new[]
@@ -200,6 +206,15 @@ public static class Spec
                 new FormProp("TLM_G_SQ01_YardAlerted", "TLM_G_SQ01_YardAlerted"),
                 new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
                 new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass")),
+            // Development only: self-test scenario 2. Finds out in the game
+            // whether actors can be made at run time and put into the quest's
+            // aliases, so that the test matrix can be run without a hand-built
+            // test cell. The actor base is the game's generic settler, looked
+            // up when the plugin is built; without Fallout4.esm it stays unset.
+            new ScriptBind("TLM:FixtureProbe",
+                new FormProp("TLM_MQ01", "TLM_MQ01"),
+                new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
+                new VanillaProp("FixtureActorBase", "WorkshopNPC", "Npc")),
         });
 
     // --------------------------------------------------------------- MQ01

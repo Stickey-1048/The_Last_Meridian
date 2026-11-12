@@ -55,11 +55,27 @@ bool busy = false
 ; and then reads what it changed. Reported, not scored.
 int reaches = 0
 int handledBeforeReturn = 0
+; True when TLM:Core started the run for the unattended runner: no message
+; boxes, and the game is closed at the end.
+bool unattended = false
 
 ; ------------------------------------------------------------------- entry
 
+Function RunUnattended(int aiScenario)
+	{Called by TLM:Core when the installed plugin carries a scenario number
+	(tools/win/Run-Scenarios.ps1 puts it there). Runs that scenario, makes sure
+	the results are on disk, and closes the game: the runner on the PC is
+	waiting for the game to end.}
+	unattended = true
+	RunSelfTest(aiScenario)
+	Debug.CloseUserLog("TLM")
+	Utility.Wait(3.0)
+	Debug.QuitGame()
+EndFunction
+
 Function RunSelfTest(int aiScenario = 0)
-	{aiScenario is reserved. The console passes 0 when no number is given.}
+	{Scenario 1 (also what the console gets when no number is given): the main
+	and side quest by stages alone. Scenario 2: the fixture probe.}
 	If busy
 		Debug.Notification("TLM self-test is already running")
 		Return
@@ -70,21 +86,45 @@ Function RunSelfTest(int aiScenario = 0)
 	firstFailure = ""
 	reaches = 0
 	handledBeforeReturn = 0
+	int scenario = aiScenario
+	If scenario < 1
+		scenario = 1
+	EndIf
 	Debug.OpenUserLog("TLM")
-	Log("==== The Last Meridian self-test: scenario 1 (saved, delivered, posted) ====")
+	If scenario == 1
+		Log("==== The Last Meridian self-test: scenario 1 (saved, delivered, posted) ====")
+	Else
+		Log("==== The Last Meridian self-test: scenario " + scenario + " ====")
+	EndIf
+	If unattended
+		Log("INFO  unattended run: the game closes itself when the scenario has finished")
+	EndIf
 
 	If TLM_MQ01.GetStageDone(10) || TLM_SQ01.GetStageDone(10)
 		Log("ABORTED: the quests were already started in this session.")
 		Log("Quit to the main menu, start a fresh session, and run the test once.")
-		Debug.MessageBox("The Last Meridian self-test\n\nNot run: the quests were already started in this session. Quit to the main menu and try again in a fresh session.")
+		If !unattended
+			Debug.MessageBox("The Last Meridian self-test\n\nNot run: the quests were already started in this session. Quit to the main menu and try again in a fresh session.")
+		EndIf
 		busy = false
 		Return
 	EndIf
 
 	Debug.Notification("TLM self-test running")
-	CheckInt("core data version", TLM_G_DataVersion.GetValueInt(), 1)
-	TestMainQuest()
-	TestSideQuest()
+	If scenario == 1
+		CheckInt("core data version", TLM_G_DataVersion.GetValueInt(), 1)
+		TestMainQuest()
+		TestSideQuest()
+	ElseIf scenario == 2
+		TLM:FixtureProbe probe = (Self as Quest) as TLM:FixtureProbe
+		If probe
+			probe.Run(Self)
+		Else
+			Fail("scenario 2: the fixture probe script is not attached to this quest")
+		EndIf
+	Else
+		Fail("there is no scenario " + scenario)
+	EndIf
 
 	Log("INFO  stage handlers already finished when SetStage returned: " + handledBeforeReturn + " of " + reaches)
 	Log("==== RESULT: " + passed + " passed, " + failed + " failed ====")
@@ -92,7 +132,9 @@ Function RunSelfTest(int aiScenario = 0)
 	If failed > 0
 		summary += "\n\nFirst failure:\n" + firstFailure
 	EndIf
-	Debug.MessageBox(summary)
+	If !unattended
+		Debug.MessageBox(summary)
+	EndIf
 	busy = false
 EndFunction
 
@@ -271,6 +313,11 @@ Function Fail(string asWhat)
 	If firstFailure == ""
 		firstFailure = asWhat
 	EndIf
+EndFunction
+
+Function Note(string asLine)
+	{A fact about the game that is reported, not scored.}
+	Log("INFO  " + asLine)
 EndFunction
 
 Function Log(string asLine)

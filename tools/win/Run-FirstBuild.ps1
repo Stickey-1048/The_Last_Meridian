@@ -39,6 +39,11 @@
   test profile, and when the game closes the test results (with this build's
   summary on top) replace the build log on the clipboard.
 
+  With -Install -Unattended it runs Run-Scenarios.ps1 instead: the game is
+  started once per self-test scenario, enters the test room, runs the scenario
+  and closes by itself. Read that script's description first: it closes the
+  game it started if a scenario does not finish in time.
+
   Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-11 and
   every step passed. Additions since then (clipboard copy, wider scan) have
   only run on Linux PowerShell 7 against stand-ins.
@@ -65,7 +70,14 @@ param(
     [switch]$Install,
     # After a successful install, start the base game in the test profile and
     # collect the results when it closes (Start-TestGame.ps1). Needs -Install.
-    [switch]$Play
+    [switch]$Play,
+    # After a successful install, run the self-test scenarios with nobody at
+    # the keyboard (Run-Scenarios.ps1): the game is started once per scenario,
+    # enters the test room, runs the scenario and closes by itself. Needs
+    # -Install. If both are given, this wins over -Play.
+    [switch]$Unattended,
+    # Scenario numbers for -Unattended, separated by commas. Default: all of them.
+    [string]$Scenarios
 )
 
 Set-StrictMode -Version Latest
@@ -97,7 +109,7 @@ function Say([string]$s = '') { $log.Add($s); Write-Host $s }
 
 # The install step needs Mod Organizer closed, and the test must not mistake a
 # game that is already running for the one it starts. Ask before the long build.
-if (($Install -or $Play) -and -not (Wait-GameAndManagerClosed)) {
+if (($Install -or $Play -or $Unattended) -and -not (Wait-GameAndManagerClosed)) {
     Write-Host 'Still open after ten minutes. Nothing was built or installed. Close them and run the command again.'
     exit 1
 }
@@ -252,7 +264,9 @@ try {
     Say ''
     if ($installed) {
         Say 'Installed as a Mod Organizer mod with its own test profile. The game folders were not touched.'
-        if ($Play) { Say 'The game is started next, for the in-game test.' } else { Say 'The NEXT STEP is given under step 6 above.' }
+        if ($Unattended) { Say 'The self-test scenarios are run next, unattended.' }
+        elseif ($Play) { Say 'The game is started next, for the in-game test.' }
+        else { Say 'The NEXT STEP is given under step 6 above.' }
     } elseif ($installTried) {
         # The install copies the build into the mod folder first and sets up the profile second.
         Say 'The install step did not finish. It copies the build into the Mod Organizer mod folder before it sets up'
@@ -279,7 +293,7 @@ try {
     if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
         try { Set-Clipboard -Value $text; $copied = $true } catch { }
     }
-    if ($Play -and $installed) {
+    if (($Play -or $Unattended) -and $installed) {
         Write-Host 'Nothing to send yet: the game is started next, and when it closes the test results'
         Write-Host '(with this build''s summary on top) go on the clipboard instead.'
     } elseif ($copied) {
@@ -289,12 +303,12 @@ try {
         Write-Host 'Send that file (or its contents) back.'
     }
 
-    if ($Play) {
+    if ($Play -or $Unattended) {
         Write-Host ''
         if (-not $installed) {
             Write-Host 'The game was not started: the install step did not pass (see the summary above).'
         } else {
-            Write-Host '== Starting the game for the in-game test =='
+            Write-Host $(if ($Unattended) { '== Running the self-test scenarios unattended ==' } else { '== Starting the game for the in-game test ==' })
             $preface = New-Object System.Collections.Generic.List[string]
             $preface.Add('== Build that was installed ==')
             if ($head -and $head.Found -and $head.ExitCode -eq 0) { $preface.Add("Commit: $($head.Output | Select-Object -First 1)") }
@@ -305,7 +319,12 @@ try {
             if ($DocumentsRoot) { $playArgs['DocumentsRoot'] = $DocumentsRoot }
             if ($LocalAppDataRoot) { $playArgs['LocalAppDataRoot'] = $LocalAppDataRoot }
             if ($NoClipboard) { $playArgs['NoClipboard'] = $true }
-            try { & (Join-Path $PSScriptRoot 'Start-TestGame.ps1') @playArgs }
+            $playScript = 'Start-TestGame.ps1'
+            if ($Unattended) {
+                $playScript = 'Run-Scenarios.ps1'
+                if ($Scenarios) { $playArgs['Scenarios'] = $Scenarios }
+            }
+            try { & (Join-Path $PSScriptRoot $playScript) @playArgs }
             catch {
                 # Nothing was collected, so the build log carries the reason instead.
                 $why = "The game was not started: $($_.Exception.Message)"

@@ -164,6 +164,11 @@ Also read from the fifth run's log after the fact: that session too began by loa
 
 The managed game's Data folder has one loose compiled script directly under `Scripts`, and it is not one of the game's own base scripts; the several hundred other files under `Scripts` are in subfolders. So the leftovers there do not replace the game's base scripts.
 
+Prepared for the next run, and unverified until it has happened:
+
+- `tools/win/Run-Scenarios.ps1` runs scenarios one game session each, unattended. It depends on three things not yet seen in the game: `sStartingConsoleCommand=coc qasmoke` in the profile's settings entering the test room at start-up (forum reports say the setting works, some that it is ignored under a mod manager); `TLM:Core` then starting the scenario by itself from its timer; and `Debug.QuitGame()` closing the game. The last is listed on the wiki as a debug-only function; the other debug-only functions the scripts use (`Trace`, `TraceUser`, `OpenUserLog`) do work in this game when the scripts are compiled as they are now.
+- Self-test scenario 2, `TLM:FixtureProbe`, spawns the game's generic settler (`WorkshopNPC`, looked up when the plugin is built; if the name is not in `Fallout4.esm` the probe says so and stops), forces the actors into three of the quest's aliases and kills them. It answers checklist items 6 and 7 as far as they can be answered without a placed world, and decides whether the test matrix can be run with actors made at run time (owner decision D8).
+
 Still not done anywhere: any test with an actor or an object, opening the plugin in the Creation Kit, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
