@@ -9,6 +9,9 @@ game's runner would print.
                                            every call out of a script takes a
                                            sixtieth of a second, so that two
                                            script threads can overlap
+  python3 tools/papyrus_sim --brief --shake 5 all
+                                           every scenario five times, the
+                                           timing shaken differently each time
 
 It needs a plugin description built against a master that holds the settler
 and the marker. tools/run_checks.sh builds one, against a stand-in master,
@@ -60,13 +63,20 @@ def main():
     ap.add_argument("--brief", action="store_true", help="print only a total and the scenarios that did not pass")
     ap.add_argument("--calls-per-second", type=float, default=0.0,
                     help="make every call out of a script take 1/N seconds; 0 (the default): nothing takes time")
+    ap.add_argument("--shake", type=int, default=0, metavar="N",
+                    help="run every scenario N times, the timing shaken a different way each time: calls, stage handlers "
+                         "and events take a few frames more or less, and ready threads run in any order (sim.Session); "
+                         "0 (the default): once, unshaken")
     args = ap.parse_args()
+    if args.shake and args.calls_per_second:
+        ap.error("--shake sets its own times for calls; leave --calls-per-second out")
     vanilla = args.vanilla or str(Path(args.plugin).with_name("TheLastMeridian.vanilla.json"))
-    wanted = numbers(args.scenarios)
+    wanted = [(n, shake) for n in numbers(args.scenarios) for shake in (range(args.shake) if args.shake else [None])]
     bad = checks = 0
-    for n in wanted:
+    for n, shake in wanted:
         s = run_scenario(n, args.scripts, args.plugin, vanilla, str(ROOT / "tools" / "papyrus_natives.json"),
-                         until=2000.0, native_delay=(1.0 / args.calls_per_second if args.calls_per_second else 0.0))
+                         until=3000.0 if args.shake else 2000.0,
+                         native_delay=(1.0 / args.calls_per_second if args.calls_per_second else 0.0), shake=shake)
         lines = s.user_logs.get("TLM", [])
         passed = sum(1 for l in lines if l.startswith("PASS"))
         fails = [l for l in lines if l.startswith("FAIL")]
@@ -77,15 +87,18 @@ def main():
         checks += passed
         if args.brief and ok:
             continue
-        print("scenario %d: %s  %d passed, %d failed; the session ended by: %s; virtual seconds: %.1f"
-              % (n, "PASSED" if ok else "NOT PASSED", passed, len(fails), s.ended, s.now))
+        print("scenario %d%s: %s  %d passed, %d failed; the session ended by: %s; virtual seconds: %.1f"
+              % (n, "" if shake is None else " (shake %d)" % shake, "PASSED" if ok else "NOT PASSED",
+                 passed, len(fails), s.ended, s.now))
         for l in (lines if args.log else [l for l in lines if l.startswith(("FAIL", "INFO"))] + result):
             print("    " + l)
-        for l in errors:
+        # what the main quest's timing guards wrote (amendment A24), and any error
+        for l in [l for l in s.papyrus_log if l.startswith("TLM_MQ01: A24")] + errors:
             print("    script log: " + l)
     if args.brief:
         how = ", with %g calls a second" % args.calls_per_second if args.calls_per_second else ""
-        print("%d of %d scenarios passed, %d checks%s" % (len(wanted) - bad, len(wanted), checks, how))
+        how = ", each shaken %d ways" % args.shake if args.shake else how
+        print("%d of %d %s passed, %d checks%s" % (len(wanted) - bad, len(wanted), "runs" if args.shake else "scenarios", checks, how))
     print("(the stand-in engine, not the game)")
     return 1 if bad else 0
 

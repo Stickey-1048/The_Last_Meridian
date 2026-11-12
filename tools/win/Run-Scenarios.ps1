@@ -219,8 +219,8 @@ function Read-ScenarioLogs([datetime]$since) {
     # What the game wrote for the session that began at $since.
     $r = [ordered]@{
         HasUserLog = $false; Header = $null; ResultLine = $null; Passed = 0; FailLines = @(); InfoLines = @(); Aborted = $false
-        LastStep = $null; LastLine = $null
-        HasScriptLog = $false; CoreStarted = $false; Problems = @(); MqEvents = 0; SqEvents = 0; ScriptLogLines = 0
+        LastStep = $null; LastLine = $null; TimingNotes = @()
+        HasScriptLog = $false; CoreStarted = $false; Problems = @(); MqEvents = 0; SqEvents = 0; ScriptLogLines = 0; GuardLines = @()
     }
     if ((Test-Path -LiteralPath $userLog) -and ((Get-Item -LiteralPath $userLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $userLog)
@@ -234,6 +234,8 @@ function Read-ScenarioLogs([datetime]$since) {
         # Where a scenario that did not finish had got to.
         $r.LastStep = @($lines | Where-Object { $_ -match '\]\s*STEP\s' }) | Select-Object -Last 1
         $r.LastLine = @($lines | Where-Object { "$_".Trim() -ne '' }) | Select-Object -Last 1
+        # A case that sets two things off at once notes whether they did overlap in this session.
+        $r.TimingNotes = @($lines | Where-Object { $_ -match '\]\s*INFO\s' -and $_ -match 'still at work' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*INFO\s*', '') })
     }
     if ((Test-Path -LiteralPath $papyrusLog) -and ((Get-Item -LiteralPath $papyrusLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $papyrusLog)
@@ -243,6 +245,10 @@ function Read-ScenarioLogs([datetime]$since) {
         $r.Problems = @($lines | Where-Object { $_ -match 'TLM' -and $_ -notmatch 'TLM_SelfTest:' -and $_ -match '(?i)\b(error|warning):' })
         $r.MqEvents = @($lines | Where-Object { $_ -match 'TLM_MQ01: stage \d+ item' }).Count
         $r.SqEvents = @($lines | Where-Object { $_ -match 'TLM_SQ01: stage \d+ item' }).Count
+        # The main quest's guards against late deaths and overlapping handlers (amendment A24)
+        # write a line when they change what happens. Without it a pass does not say whether
+        # the guard acted or the game's timing never asked it to.
+        $r.GuardLines = @($lines | Where-Object { $_ -match 'TLM_MQ01: A24 ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*', '') })
     }
     return [pscustomobject]$r
 }
@@ -415,6 +421,19 @@ if ($stoppedEarly) {
     $out.Add("STOPPED EARLY: $stoppedEarly")
     $out.Add('To run a scenario by hand instead: powershell -ExecutionPolicy Bypass -File tools\win\Start-TestGame.ps1')
     $out.Add('and in the game:  coc qasmoke   then   cqf TLM_Core RunSelfTest <number>   (one fresh session per scenario).')
+}
+
+$timing = New-Object System.Collections.Generic.List[string]
+foreach ($r in $results) {
+    if (-not $r.Logs) { continue }
+    foreach ($l in $r.Logs.TimingNotes) { $timing.Add(('  {0,3}  self-test : {1}' -f $r.Scenario, $l)) }
+    foreach ($l in $r.Logs.GuardLines) { $timing.Add(('  {0,3}  script log: {1}' -f $r.Scenario, $l)) }
+}
+if ($timing.Count -or @($results | Where-Object { [int]$_.Scenario -ge 100 }).Count) {
+    $out.Add('')
+    $out.Add('== Timing: where the main quest''s guards acted (amendment A24) ==')
+    if ($timing.Count) { foreach ($l in $timing) { $out.Add($l) } }
+    else { $out.Add('  nowhere: no guard wrote a line in this run, and no case noted an overlap') }
 }
 
 foreach ($r in $results) {

@@ -355,7 +355,7 @@ What this is not. No trigger was walked into, nothing was picked up from the wor
 
 ### After the matrix: time
 
-Not yet compiled and not yet run in the game. Written after the tenth run.
+Not yet compiled and not yet run in the game. Written after the tenth run. Everything in this section was found and checked in the stand-in engine, which is not the game.
 
 The logic model has no time in it: an event is over before the next begins, and the 49 cases that passed play it that way, waiting after each step. The game does not keep to that, in two ways already seen in it. A death is announced about a second after it happens (`OnDeath` comes "when the actor has finished dying", while `IsDead` is true at once). And every handler runs on a thread of its own and gives other threads a turn at each call it makes into the game.
 
@@ -375,7 +375,37 @@ Three guards were added to `TLM:MQ01Quest`; no rule changed. How they were check
 - Four cases were added that do two things with no time between them (scenarios 129 to 132). With the quest script as it was at `499104e`, the first three fail in the ordinary mode and the fourth fails when calls take time, each with the fault in the table above. With the guards all four pass in both modes, and so do all 62 scenarios at 30, 60 and 144 calls a second.
 - Two more tests set two resolutions going a few frames apart, 100 and 100 ways. With the guards the result is always one of them whole, and a betrayal always stands; with the old script it is not.
 
-What the next run can show: that the changed quest script still passes everything it passed, and cases 129 to 131, which need no luck with timing. Case 132 reports whether the overlap actually happened in the game; if it did not, the case passes without having shown anything, and says so.
+**The guards as first written were not enough.** They were given to an independent reader (a second session with no part in writing them, working from the code and the stand-in engine). It found nothing that should fail to compile and no change to ordinary play, and three gaps, each of which still let a fault from the table above through under some timing:
+
+| Gap | What could still happen | Closed by |
+|---|---|---|
+| `WaitForResolutions` read the number of handlers at work first and then called into the game to count the stages. A handler could begin during those calls: no longer "set and yet to begin", and not counted as at work | The town stage goes ahead beside an "evaded" that has just begun: the drover alive in town | Reading the number of handlers at work last, with no call after it |
+| The town stage waited before the resolution it asks for itself, but not after it | When the distance watch resolves the ambush at the same moment, the town stage's own request stands aside, and it moves the hands while the other handler is still killing and looting | A second wait after its own resolution |
+| A betrayal that saw no outcome yet, and then lost the claim to a resolution that began in that instant, wrote at once | The other resolution writes its outcome afterwards: a betrayal lost | A betrayal that is not the first resolution waits again before it writes |
+
+The same reading showed two weaknesses in the tests: nothing in them could tell the first or the third gap from a sound script, and cases 129 and 130 would pass without the guard having done anything if the death happened to be announced first. So:
+
+- The guards now write a line to the game's script log when they change what happens (`TLM_MQ01: A24 ...`). The runner's report lists those lines under "Timing", with what case 132 notes about the overlap. A pass with no such line means the game's timing never asked the guard to act; it does not mean the guard works.
+- The stand-in engine got a third mode, in which the timing is shaken: every call into the game takes 0 to 3 frames, a stage's handler begins 0 to 3 frames after the stage reads as set, events arrive up to 3 frames late, and threads that are ready in the same instant run in any order; differently for each of any number of seeds. This is harsher than the game is documented to be (there a call on the script's own quest gives no other thread a turn). `python3 tools/papyrus_sim --shake 5 all` runs scenarios this way.
+
+Four pairs of things happening at once were then run under that shaking (`tools/papyrus_sim/test_overlap.py`, class `Shaken`). The number of runs that ended in a state the logic model does not allow:
+
+| The quest script | Leaving, and the gate (760 runs) | Saved, and evaded (240) | A betrayal, and the timer (2,600) | The lead dead, and the gate (120) |
+|---|---|---|---|---|
+| Before the guards (`499104e`, the version that passed the matrix in the game) | 626 | 10 | 223 | 120 |
+| The guards as first written (`8b94566`) | 522 | 0 | 95 | 0 |
+| As it is now, with the first gap opened again | 8 | 0 | 0 | 0 |
+| As it is now, with the second gap opened again | 191 | 0 | 0 | 0 |
+| As it is now, with the third gap opened again | 0 | 0 | 7 | 0 |
+| **As it is now** | **0** | **0** | **0** | **0** |
+
+These numbers say nothing about how often any of it would happen in the game, where the timing is far gentler. They show that each of the three corrections is needed, and that the tests now notice when one is missing: each row but the last is a test that must find at least one wrong ending. All 62 scenarios also pass under the shaking, each three ways.
+
+**Any two things at once.** Those four pairs were chosen by hand, and the reading had just shown what hand-picked pairs miss. So every ordered pair out of twelve things that can happen at a live ambush was run as well: the lead, another Cutter or either caravan hand killed by the player; Nell dead by nobody's hand; the timer; leaving; the gate; the three ways the conversation with the lead can end; a fight beginning. The second was fired zero to seven frames after the first, each 40 shakings: 42,240 runs. Asked of each: is the end one that the logic model gives for those two events in one order or the other? With the script as it is, every time. With the script before the guards, and with the guards as first written, not. The test suite keeps a sweep of 2,640 runs for the script as it is, and two smaller ones that must catch the older versions (`test_overlap.py`, class `AnyTwoThingsAtOnce`). This does not say which of two near-simultaneous things ought to win. It says the result is never a mixture of both, and a betrayal is never lost.
+
+One thing the sweep does not look at, on purpose: when two resolution stages are set in the same instant, both read as set afterwards though only one was applied. Nothing reads those flags today; amendment A24 records what that means for the log entries still to be written.
+
+What the next run can show: that the changed quest script compiles and still passes everything it passed, and cases 129 to 131. Whether the guard acted in those three, and whether the overlap of case 132 happened at all in the game, is in the "Timing" part of the report; a case that passes without its guard having acted has shown nothing about the guard, and the report now says which it was.
 
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 

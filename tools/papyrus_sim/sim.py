@@ -24,6 +24,7 @@ each other under those rules. Only a run in the game says what the game does.
 """
 import json
 import math
+import random
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -49,6 +50,7 @@ class _Return(Exception):
 DEATH_EVENT_DELAY = 0.7
 COMBAT_EVENT_DELAY = 0.3      # [assumed] number; [seen] that the event arrives
 DISTANCE_EVENT_DELAY = 0.1    # [assumed] number; [seen] within a second
+FRAME = 1.0 / 60.0
 
 
 # ------------------------------------------------------------ game objects
@@ -258,7 +260,7 @@ class Session:
     """One game session: from the main menu into the test room, until the game closes."""
 
     def __init__(self, scripts_folder, plugin_json, vanilla_json=None, natives_json=None, older_scripts=False,
-                 native_delay=0.0):
+                 native_delay=0.0, shake=None):
         """older_scripts: the scripts are an earlier version than the plugin
         description (used to replay a recorded game run). A property the
         plugin fills and the older script does not declare is then left out
@@ -272,9 +274,23 @@ class Session:
         frame the stand-in lets threads overlap at exactly those points. That
         is a pessimistic picture, not a measured one: in the game many calls
         come back within the frame. It is for provoking overlaps, not for
-        predicting timings."""
+        predicting timings.
+
+        shake: a number. With it the session is shaken, the same way every
+        time for the same number: every call into the game takes 0 to 3
+        frames, a stage's handlers begin 0 to 3 frames after the stage is
+        marked as set ([assumed] that this can happen; [seen] only that
+        SetStage comes back after them), events arrive up to 3 frames late,
+        and threads that are ready at the same instant run in any order. For
+        hunting interleavings that a fixed timing never produces. It is
+        harsher than the game: there, [documented], a call on the script's
+        own quest or alias does not give other threads a turn; here it may.
+        Only what a script does with no call at all between two steps is
+        left whole."""
         self.older_scripts = older_scripts
         self.native_delay = float(native_delay)
+        self.rng = random.Random(shake) if shake is not None else None
+        self.shake_frames = 3
         # Which of two threads that are ready at the same instant goes first.
         # The game promises no order; a test of overlapping handlers should
         # hold either way.
@@ -405,8 +421,10 @@ class Session:
         self.threads.append(th)
         return th
 
-    def later(self, delay: float, name: str, make):
+    def later(self, delay: float, name: str, make, exact: bool = False):
         self.order += 1
+        if self.rng and not exact:
+            delay += self.rng.randint(0, self.shake_frames) * FRAME
         self.pending.append((self.now + delay, self.order, name, make))
 
     def send_event(self, inst: Instance, event: str, args: list, delay: float = 0.0):
@@ -448,7 +466,10 @@ class Session:
         progressed = True
         while progressed:
             progressed = False
-            for th in (list(reversed(self.threads)) if self.newest_first else list(self.threads)):
+            order = list(reversed(self.threads)) if self.newest_first else list(self.threads)
+            if self.rng:
+                self.rng.shuffle(order)
+            for th in order:
                 if th.done or th.blocked or th.wake > self.now + 1e-9:
                     continue
                 self._step(th)
@@ -769,7 +790,11 @@ class Session:
         if fn is None:
             who = global_script or type(obj).__name__
             raise SimError("%s line %d: %s.%s is not modelled by the stand-in" % (frame["inst"].script.name, line, who, name))
-        if self.native_delay and (global_script or obj is not frame["inst"].obj):
+        if self.rng:
+            delay = self.rng.randint(0, self.shake_frames) * FRAME
+            if delay:
+                yield ("sleep", delay)
+        elif self.native_delay and (global_script or obj is not frame["inst"].obj):
             # a call out of the script: other threads get a turn
             yield ("sleep", self.native_delay)
         result = fn(*args) if global_script else fn(obj, context, *args)
@@ -857,6 +882,11 @@ class Session:
         info = quest.stages[stage]
         if info["CompleteQuest"]:
             quest.completed = True                  # [seen] the quest goes on running and handling stages
+        if self.rng:
+            # the stage reads as set; its handlers have yet to begin
+            wait = self.rng.randint(0, self.shake_frames) * FRAME
+            if wait:
+                yield ("sleep", wait)
         # [seen] the game tells the scripts once per stage item, none for a
         # stage without items; and SetStage returns after the handlers.
         for item in range(info["Items"]):
@@ -1210,11 +1240,11 @@ class Session:
 
 
 def run_scenario(scenario: int, scripts_folder, plugin_json, vanilla_json=None, natives_json=None,
-                 until: float = 900.0, older_scripts: bool = False, native_delay: float = 0.0) -> Session:
+                 until: float = 900.0, older_scripts: bool = False, native_delay: float = 0.0, shake=None) -> Session:
     """What tools/win/Run-Scenarios.ps1 does with the game: the scenario number
     goes into the plugin's global, the game enters the test room, and the
     self-test runs by itself until it closes the game."""
-    s = Session(scripts_folder, plugin_json, vanilla_json, natives_json, older_scripts, native_delay)
+    s = Session(scripts_folder, plugin_json, vanilla_json, natives_json, older_scripts, native_delay, shake)
     s.set_global("TLM_G_DevScenario", scenario)
     s.enter_game()
     s.run(until)

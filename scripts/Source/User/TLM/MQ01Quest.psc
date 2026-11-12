@@ -227,12 +227,20 @@ Function WaitForResolutions(int aiMine)
 	{Comes back when no resolution of the encounter is half done on another
 	thread: none whose handler is at work, and none whose stage is set while
 	its handler has yet to begin. aiMine is 1 when the caller is itself a
-	resolution's handler, otherwise 0. Never waits longer than five seconds.}
+	resolution's handler, otherwise 0. Never waits longer than five seconds.
+
+	The count of handlers at work is read last, with no call into the game
+	after it. Read first, a handler could begin during the calls that follow
+	and be missed: no longer "yet to begin", and not counted as at work.}
 	int tries = 0
-	While tries < 50 && (resolutionsAtWork > aiMine || (Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun))
+	While tries < 50 && ((Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun) || resolutionsAtWork > aiMine)
 		Utility.Wait(0.1)
 		tries += 1
 	EndWhile
+	If tries > 0
+		; For the test runs: the only sign that this guard did something.
+		Debug.Trace("TLM_MQ01: A24 waited " + tries + " tenths of a second for another resolution to finish")
+	EndIf
 EndFunction
 
 bool Function LeadIsDown()
@@ -249,6 +257,8 @@ Function ResolveUnattended()
 	already dead this is a rescue whose news has not arrived yet, not an
 	evasion.}
 	If LeadIsDown()
+		; For the test runs: the only sign that this guard did something.
+		Debug.Trace("TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion")
 		SetStage(31)
 	Else
 		SetStage(32)
@@ -444,6 +454,12 @@ Function ApplyBetrayal()
 	; this one then replaces its outcome instead of being overwritten by it.
 	WaitForResolutions(1)
 	bool firstResolution = (Outcome() == OUT_NONE) && ClaimEncounter()
+	If !firstResolution
+		; Another resolution claimed the encounter while the outcome was being
+		; read just now. It writes its outcome when it gets there; this one
+		; has to write after it.
+		WaitForResolutions(1)
+	EndIf
 	TLM_G_CaravanOutcome.SetValueInt(OUT_EXPLOITED)
 	TLM_G_CaravanMethod.SetValueInt(METHOD_BETRAYAL)
 	If firstResolution
@@ -534,6 +550,11 @@ Function ApplyTown()
 	ElseIf IsLive()
 		ResolveUnattended()
 	EndIf
+	; And again: the resolution this stage has just asked for may be another
+	; thread's. If its stage had been set a moment earlier, SetStage above came
+	; straight back; if another resolution claimed the encounter first, the
+	; handler above stood aside. Either way someone else is still at work.
+	WaitForResolutions(0)
 	MoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown)
 	MoveHandToTown(Alias_CaravanDrover, Alias_CaravanDroverInTown)
 	Alias_CutterLead.TryToDisable()
