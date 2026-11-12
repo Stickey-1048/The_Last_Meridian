@@ -1,6 +1,6 @@
 # Test runbook — getting from the repository to a first in-game result
 
-**Status:** steps 1 to 5 have run on the owner's PC. On 2026-11-12 the base game was started by command through Mod Organizer, the plugin loaded, its scripts ran, and the self-test reported 26 passed and 34 failed: the generated plugin's stages had no items, so the game never told the quest scripts that a stage was set (details in [VERIFY_LOG.md](VERIFY_LOG.md)). That is fixed in the builder and checked at the level of the file's bytes, but **not yet re-tested in the game**. No stage handler has run in the game so far.
+**Status:** steps 1 to 5 have run on the owner's PC and pass. On 2026-11-12 the base game was started by command through Mod Organizer, the plugin loaded, its scripts ran, and the self-test reported **60 passed, 0 failed** (details in [VERIFY_LOG.md](VERIFY_LOG.md); an earlier run that day failed 34 checks on a fault in the generated plugin). That is one scripted scenario of stages and globals with every alias empty. Steps 6 and 7 have not been started: nothing has been opened in the Creation Kit, and nothing with an actor, an object or a player has been tested.
 
 Run the commands in PowerShell from the repository folder on the PC that has Fallout 4 and the Creation Kit.
 
@@ -119,7 +119,9 @@ If Mod Organizer opens but starts nothing, the script says how to start the game
 
 The self-test (`scripts/Source/User/TLM/SelfTest.psc`, attached to `TLM_Core`, development only) starts `TLM_MQ01`, walks it through dispatch, ambush, saved, delivery and hand-off, then walks `TLM_SQ01` through a clue found before the ledger, the ledger, the journal and a public posting. It makes 60 checks of stages, objectives and globals. Every expected number is the logic model's prediction: `tools/logic_model/test_selftest_expectations.py` fails if the two differ. It can run once per game session, because the quests run once.
 
-Seen in the game so far (2026-11-12): `coc qasmoke` typed at the main menu loads the test room; the plugin loads; the scripts bind without errors; scripts compiled with the Creation Kit 1.11 compiler run on game build 1.10.163; `cqf` runs the self-test; setting a stage starts a stopped quest. Not yet seen: a stage handler running. The self-test's first run reported 26 passed and 34 failed for that reason; whatever fails first on the next run is the next finding.
+Seen in the game so far (2026-11-12): `coc qasmoke` typed at the main menu loads the test room; the plugin loads; the scripts bind without errors; scripts compiled with the Creation Kit 1.11 compiler run on game build 1.10.163; `cqf` runs the self-test; setting a stage starts a stopped quest; stage events reach the quest scripts; `SetStage` returns after the stage's handler has finished; the self-test passes 60 of 60.
+
+**Always enter with `coc qasmoke` from the main menu.** Do not use "Continue" or "Load" in the test profile: its saves folder holds saves from earlier test sessions (and from the Fallout London copy that started by mistake on the first attempt), and a loaded save carries old quest state, in which the self-test refuses to run.
 
 Switch Mod Organizer back to your own profile afterwards.
 

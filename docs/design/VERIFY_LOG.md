@@ -1,7 +1,7 @@
 # Verification log
 
 **Dates:** 2026-11-11 and 2026-11-12. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
-**Not checked:** anything inside the Creation Kit editor. In the running game: the plugin loads and its scripts run (2026-11-12), but no quest stage handler has run yet, and nothing is placed in the world.
+**Not checked:** anything inside the Creation Kit editor. In the running game: the plugin loads, its scripts run, and one scripted scenario of stages and globals passes all 60 of its checks (2026-11-12). Nothing is placed in the world, so nothing that needs an actor, an object, a timer, dialogue or a player has been tested.
 
 ## Results from the game PC
 
@@ -136,7 +136,35 @@ Fixed after the fifth run (checks pass; not yet re-tested in the game):
 - The results script reports a finished self-test even when a second attempt in the same session was refused.
 - The self-test also reports, without scoring it, how often a stage's handler had already finished when `SetStage` returned. The wiki says `SetStage` waits for the stage's fragment "and event if any"; the quest scripts depend on that wherever a handler sets another stage and then reads what it changed (for example the delivery forcing the town stage), so the next run measures it.
 
-Still not done anywhere: a stage handler running in the game, opening the plugin in the Creation Kit, any test of the quest as a player would meet it.
+### The self-test passes, 2026-11-12
+
+Sixth run, 08:58 to 09:16 by the PC's clock, commit `63b31d1`, with `-Install -Play`. Reported as the pasted results.
+
+| What | Result |
+|---|---|
+| Scripts compile | 8 of 8, with the changes |
+| How the game's own quests are laid out (`Fallout4.esm`, build 1.10.163) | 1,336 quests, every one with the condition marker. 8,680 stages, 63 of them (0.73%) with no item. 9,058 stage items, every one with its flags subrecord. 1,198 objectives, every one with flags. So the Creation Kit always writes the three things this plugin had left out, and the comparison now reads "present in all" for this plugin on each line |
+| Stage events | **Arrive.** During the self-test 10 reached the main quest's script and 10 the side quest's, each logged as "item 0" |
+| `SetStage` and the handler | **In 13 of 13 cases the stage's handler had finished when `SetStage` returned.** That includes stages set from inside a handler: the log shows stage 50's event, then stage 40's, before the checks that follow the delivery; likewise 60 then 100, and in the side quest 10 then 20, 13 then 25, 43 then 50 then 100 |
+| Self-test | **60 passed, 0 failed**, in a fresh session entered with `coc qasmoke` |
+
+What the 60 checks cover: one scenario. In the main quest the start, the dispatch, the ambush going live, "saved", a second outcome being ignored, the delivery forcing the town stage, a debrief answer the variant does not offer being ignored, the hand-off and completion. In the side quest a clue examined before the ledger, the ledger, the journal, the posting that names the Yard Office, and a second decision being ignored. They read stages, objectives, globals and one item given to the player. Every alias was empty.
+
+What they do not cover: anything with an actor or an object in the world, the evade timer and distance watch, dialogue, the message boxes, the four other caravan outcomes, the five other side-quest outcomes, and saving and loading.
+
+Seen by accident in the same session, before the self-test: the owner first loaded a save made during the fifth run, in which the faulty plugin had left the quests with stages set and nothing applied.
+
+| What | Result |
+|---|---|
+| The alias on the player | The script on the main quest's player alias received `OnPlayerLoadGame`. So the alias forced to record `000014` is filled with the player, and an alias receives its reference's events (checklist item 6, the last part) |
+| Recovery on load | The side quest's `OnGameLoaded` ran: it logged "ledger was missing; replaced", gave the ledger, recomputed the evidence and set stages 20 and 25, whose events arrived. That is the designed recovery path running on a state only the old fault could produce. Whether what it did was right for a player has not been judged |
+| The self-test in that session | Refused to run, as designed, because the quests had already been started |
+
+Also read from the fifth run's log after the fact: that session too began by loading a save, not with `coc`. Three seconds before `TLM_Core` started, the game warned about a Fallout London variable "loaded from save". The test profile's own saves folder holds saves the Fallout London copy made during the first attempt, and "Continue" loads the newest. It does not change the cause of that run's 34 failures. **For testing, always enter with `coc qasmoke` from the main menu; never "Continue" or "Load" in the test profile.**
+
+The managed game's Data folder has one loose compiled script directly under `Scripts`, and it is not one of the game's own base scripts; the several hundred other files under `Scripts` are in subfolders. So the leftovers there do not replace the game's base scripts.
+
+Still not done anywhere: any test with an actor or an object, opening the plugin in the Creation Kit, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
@@ -154,7 +182,9 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | Do timers survive a save and load? | Needs the game | Not stated. The scripts do not rely on it: the evade timer and distance watch are re-armed on every load. |
 | `GlobalVariable.SetValue` | Documented | `SetValue(float)`, plus `SetValueInt(int)`, `GetValueInt()`, and `Mod(float)` which is thread-safe. The scripts use `Mod` for all increments. |
 | Quest stage fragments are unavoidable | Corrected | `Event OnStageSet(int auiStageID, int auiItemID)` exists on Quest and runs alongside any fragment. The scripts use it for everything, so there are no fragments (A12). |
-| `OnStageSet` for a stage with no item | Seen in the game | The wiki does not say. In the game on 2026-11-12, stages without an item were set and no event arrived (A22). Whether it arrives once every stage has an item is the next thing to see. |
+| `OnStageSet` for a stage with no item | Seen in the game | The wiki does not say. In the game on 2026-11-12, stages without an item were set and no event arrived (A22). With one item on every stage the event arrives, as item 0. |
+| `SetStage` waits for the stage's handler | Seen in the game | The wiki says it waits for the fragment "and event if any". In the game the handler had finished in 13 of 13 cases when `SetStage` returned, including stages set from inside a handler. |
+| An alias on the player receives `OnPlayerLoadGame` | Seen in the game | Once, on 2026-11-12, when a save was loaded. |
 | Setting a stage twice | Corrected | "SetStage has no effect after it is called the first time for any stage on a running quest" unless Allow Repeated Stages is on. v0.1's repeatable stage 15 (SQ01) and stage 900 could not work as written (A12, A15). |
 | Alias scripts before the quest starts | Corrected | Aliases receive their reference's events as part of a running quest. SQ01 must already be running for clue scripts to fire (A8). |
 | `OnContainerChanged` | Documented | `Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldContainer)`. Once an object is in a container it "ceases to exist in most cases". |
@@ -204,7 +234,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
 3. All scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 8 of 8**, again after the change to `TLM:Core`.
 3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **Done 2026-11-12** on the second attempt.
-3b. Stage events reach the quest scripts and the self-test passes. **Failed 2026-11-12 (26 of 60):** the stages had no items. Fixed in the builder; awaiting a re-run.
+3b. Stage events reach the quest scripts and the self-test passes. **Done 2026-11-12: 60 of 60**, after a first run failed 34 because the stages had no items.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In; Essential and Protected flags; alias on the player receiving `OnPlayerLoadGame`.

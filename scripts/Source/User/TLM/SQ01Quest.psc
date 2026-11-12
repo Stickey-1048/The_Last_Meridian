@@ -1,10 +1,13 @@
 Scriptname TLM:SQ01Quest extends Quest
 {TLM_SQ01 "Signed Clean". Owns all quest logic.
 
-COMPILES. In the game on 2026-11-12 it attached to the quest without errors,
-but NONE OF ITS STAGE HANDLERS HAS RUN YET: the plugin's stages had no items,
-so the game never sent OnStageSet (docs/design/VERIFY_LOG.md). Written without
-Fallout 4 or the Creation Kit. Behaviour in the game is unverified.
+COMPILES. RAN IN THE GAME on 2026-11-12 for ONE scripted scenario only (the
+self-test: a clue before the ledger, the ledger, the journal, posted naming
+the Yard Office, a second decision ignored), with every alias empty. The
+handlers for stages 5, 10, 11, 13, 20, 25, 43, 44, 50 and 100 ran and left the
+state the logic model predicts. The other outcomes, the clue objects and the
+message boxes have NOT run (docs/design/VERIFY_LOG.md). Written without
+Fallout 4 or the Creation Kit.
 
 Stages are the API (same pattern as TLM:MQ01Quest):
    5  running, hidden (set by MQ01 stage 10)
