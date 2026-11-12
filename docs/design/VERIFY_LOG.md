@@ -281,6 +281,8 @@ Which rows of the main quest's matrix this stands for, with stage numbers in pla
 
 Not run in the game: T05 and T05b (the three unnamed Cutters), T07 and T08 (the speech check), T10a, T12b, T14 to T14c (no early "evaded" during a fight), T17 to T19c (the dispatch taken late, lost, repaired), T25, T26b and T26c; the rows the model cannot express (T13, T15, T16, T20, T22, T27, T28); and every row of the side quest's matrix except the one path of scenario 1.
 
+What the game was seen to do in these runs is now also written down as rules in `tools/papyrus_sim`, a stand-in for the game that runs the project's real scripts on a machine without Fallout 4. Replaying the four recorded runs in it, with the scripts as they were at each commit, gives what the game gave each time (`tools/papyrus_sim/game_runs.json`, checked by `tools/run_checks.sh`). That makes it a fair rehearsal for a script change before it goes to the PC. It is not evidence about the game: where a rule in it is marked "assumed", only the game can say.
+
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:

@@ -1,0 +1,151 @@
+{
+  "_note": "What Fallout 4 1.10.163 actually did with this project's scripts on the owner's PC, as reported back (docs/design/VERIFY_LOG.md). tools/papyrus_sim/test_sim.py replays each run in the stand-in engine, with the scripts as they were at that commit, and fails if the stand-in gives a different result. Add a run here only from a real report; never edit a number to make a test pass.",
+  "runs": [
+    {
+      "name": "fifth run, 2026-11-12: the stages had no items",
+      "commit": "87d04d5",
+      "how": "console",
+      "plugin_fault": "stages_without_items",
+      "scenarios": {
+        "1": {
+          "passed": 26, "failed": 34, "result_line": true,
+          "first_failure": "MQ01 objective 10 displayed: expected true, was false",
+          "main_stage_events": 0, "side_stage_events": 0
+        }
+      }
+    },
+    {
+      "name": "sixth run, 2026-11-12: the self-test passes, by hand",
+      "commit": "63b31d1",
+      "how": "console",
+      "scenarios": {
+        "1": {
+          "passed": 60, "failed": 0, "result_line": true,
+          "main_stage_events": 10, "side_stage_events": 10,
+          "info": ["stage handlers already finished when SetStage returned: 13 of 13"]
+        }
+      }
+    },
+    {
+      "name": "eighth run, 2026-11-12: the first unattended run",
+      "commit": "1b832da",
+      "how": "unattended",
+      "scenarios": {
+        "1": {
+          "passed": 60, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 10, "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        },
+        "2": {
+          "passed": 15, "failed": 0, "result_line": false, "ends_by_itself": false,
+          "main_stage_events": 5, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: caravan master after Kill(player): dead = True"
+          ]
+        }
+      }
+    },
+    {
+      "name": "ninth run, 2026-11-12: all nine scenarios pass",
+      "commit": "3b73468",
+      "how": "unattended",
+      "scenarios": {
+        "1": {
+          "passed": 60, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 10, "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        },
+        "2": {
+          "passed": 14, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 5, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: caravan master after Kill(player): dead = True",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "3": {
+          "passed": 8, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 4, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: distance to the new marker = 0.000000",
+            "probe: distance to the marker after moving it = 2000.000000; the event reported 2000.000000",
+            "probe: distance to the ambush centre = 5000.000000; the quest's evade distance is 4000.000000",
+            "probe: the item with no model was placed; Is3DLoaded = False",
+            "this experiment did not come back, and the scenario was ended here: EXPERIMENT: moving a placed item that has no model by 300 units",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "4": {
+          "passed": 27, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 10, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C4: player in combat before the evade timer runs out: False",
+            "C4: caravan master in the town alias, which is flagged Essential: IsEssential = True",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "5": {
+          "passed": 24, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 9, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C5: after StartCombat on the Cutter lead: stage 30 set = True, lead in combat = True, player in combat = True",
+            "C5: player in combat after the rescue: False",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "6": {
+          "passed": 22, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 8, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C6: drover straight after the town stage: dead = True",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "7": {
+          "passed": 22, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 9, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "8": {
+          "passed": 22, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 10, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "9": {
+          "passed": 21, "failed": 0, "result_line": true, "ends_by_itself": true,
+          "main_stage_events": 9, "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        }
+      }
+    }
+  ]
+}

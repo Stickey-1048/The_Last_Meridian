@@ -7,6 +7,10 @@
 //   default          The player reference is spelled "PlayerREF". On the real
 //                    master a lookup for "PlayerRef" failed until the lookup
 //                    stopped depending on letter case; this keeps that covered.
+//                    Also holds an actor "WorkshopNPC" and a static "XMarker",
+//                    the two forms the self-test makes its stand-ins from, so
+//                    a plugin built against this file has them wired as the
+//                    one built on the game PC does.
 //   unnamed-player   The player reference has no EditorID at all and sits at
 //                    the conventional id 0x14. Exercises the builder's fallback.
 //   wrong-player     Record 0x14 places some other actor. The builder must
@@ -31,6 +35,13 @@ mod.MiscItems.Add(caps);
 var player = new Npc(lowIds ? Key(0x7) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Player" };
 mod.Npcs.Add(player);
 var someoneElse = mod.Npcs.AddNew("SomeoneElse");
+string fixtures = "";
+if (variant == "default")
+{
+    var settler = mod.Npcs.AddNew("WorkshopNPC");
+    var marker = mod.Statics.AddNew("XMarker");
+    fixtures = $" WorkshopNPC={settler.FormKey} XMarker={marker.FormKey}";
+}
 
 var cell = new Cell(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "StandInCell" };
 
@@ -81,5 +92,5 @@ mod.Cells.Records.Add(block);
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
 // Real masters use ids below 0x800; a stand-in may too.
 mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();
-Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={(placed == null ? "none" : $"{placed.FormKey} EditorID='{placed.EditorID}'")}");
+Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={(placed == null ? "none" : $"{placed.FormKey} EditorID='{placed.EditorID}'")}{fixtures}");
 return 0;

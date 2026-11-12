@@ -27,6 +27,8 @@ public static class Report
     public sealed record ButtonInfo(string Text, List<string> Conditions);
     public sealed record MessageInfo(string EditorId, string FormKey, string? Title, string? Text, bool Box, List<ButtonInfo> Buttons);
     public sealed record SimpleInfo(string Type, string EditorId, string FormKey, string? Name);
+    /// <summary>A record of the game's own that the plugin points at.</summary>
+    public sealed record VanillaInfo(string EditorId, string FormKey, string Kind);
     public sealed record PluginInfo(string File, List<string> Masters, float HeaderVersion, uint LowestFormId,
         List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests);
 

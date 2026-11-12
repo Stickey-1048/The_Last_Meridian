@@ -42,6 +42,10 @@ Builder.Write(mod, plugin);
 var info = Report.Read(plugin);
 File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.report.txt"), Report.ToText(info, builder.Pending, builder.VanillaNotes));
 File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.json"), Report.ToJson(info));
+// Which of the game's own records the plugin points at. Not in the plugin file
+// itself (it only holds their ids), so it is written beside the description.
+File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.vanilla.json"),
+    System.Text.Json.JsonSerializer.Serialize(builder.VanillaFound, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
 
 var problems = SelfCheck.Run(info);
 Console.WriteLine($"{plugin}: {new FileInfo(plugin).Length} bytes, mode={(esm == null ? "skeleton (no Fallout4.esm)" : "full")}, header version {info.HeaderVersion:0.00}, lowest FormID 0x{info.LowestFormId:X}");

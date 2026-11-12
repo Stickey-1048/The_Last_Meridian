@@ -38,6 +38,8 @@ public sealed class Builder
     /// the record found, and the EditorID as the master spells it.
     /// </summary>
     public List<string> VanillaNotes { get; } = new();
+    /// <summary>Game records found in Fallout4.esm: the name asked for, the record, and its kind.</summary>
+    public List<Report.VanillaInfo> VanillaFound { get; } = new();
 
     public Fallout4Mod Mod => _mod;
 
@@ -409,6 +411,7 @@ public sealed class Builder
             key = found;
             var spelled = actual == null || actual == editorId ? "" : $", which the master spells '{actual}'";
             VanillaNotes.Add($"{editorId} -> {found} ({name}{spelled})");
+            if (!VanillaFound.Any(v => v.FormKey == found.ToString())) VanillaFound.Add(new(editorId, found.ToString(), name));
             return true;
         }
         if (kind != null && !TypedLookups.Any(t => string.Equals(t.Kind, kind, StringComparison.OrdinalIgnoreCase)))
@@ -446,6 +449,7 @@ public sealed class Builder
             {
                 VanillaNotes.Add($"PlayerRef: {key} places actor '{baseNpc.EditorID}' ({baseNpc.FormKey}); accepted");
                 alias.ForcedReference = new FormLinkNullable<IPlacedGetter>(key);
+                NotePlayer(key);
                 return true;
             }
             VanillaNotes.Add($"PlayerRef: {key} is a placed actor but does not place the actor 'Player' (its base is {placed.Base.FormKey}); not used");
@@ -477,11 +481,19 @@ public sealed class Builder
             {
                 VanillaNotes.Add($"PlayerRef: {forced} vanilla quest aliases force {key}, {namedPlayer} of them named like 'Player' (e.g. {example}); accepted");
                 alias.ForcedReference = new FormLinkNullable<IPlacedGetter>(key);
+                NotePlayer(key);
                 return true;
             }
             VanillaNotes.Add($"PlayerRef: only {namedPlayer} vanilla quest aliases named like 'Player' force {key} ({forced} aliases in all; {enough} needed); not used");
         }
         return false;
+    }
+
+    /// <summary>The reference accepted as the player goes into the list of game records found, once.</summary>
+    void NotePlayer(FormKey key)
+    {
+        VanillaFound.RemoveAll(v => v.FormKey == key.ToString());
+        VanillaFound.Add(new("PlayerRef", key.ToString(), "Player"));
     }
 
     // ------------------------------------------------------------ factory
