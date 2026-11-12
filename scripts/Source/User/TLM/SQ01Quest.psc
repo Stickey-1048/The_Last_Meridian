@@ -55,6 +55,9 @@ int SQ_POSTED_HASKELL = 4 Const
 int SQ_SOLD = 5 Const
 int SQ_DESTROYED = 6 Const
 
+; Development aid, read through StageEventsHandled().
+int handledCount = 0
+
 Event OnStageSet(int auiStageID, int auiItemID)
 	; One line per stage event in the game's script log (see TLM:MQ01Quest).
 	Debug.Trace("TLM_SQ01: stage " + auiStageID + " item " + auiItemID)
@@ -71,7 +74,14 @@ Event OnStageSet(int auiStageID, int auiItemID)
 	ElseIf auiStageID == 900
 		Recover()
 	EndIf
+	handledCount += 1
 EndEvent
+
+int Function StageEventsHandled()
+	{Development aid for the self-test: how many stage events this script has
+	finished handling.}
+	Return handledCount
+EndFunction
 
 int Function EvidenceLevel()
 	{Design section 3.2.}

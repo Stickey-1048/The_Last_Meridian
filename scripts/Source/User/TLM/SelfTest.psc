@@ -50,6 +50,11 @@ int passed = 0
 int failed = 0
 string firstFailure = ""
 bool busy = false
+; How often a stage's handler had already finished when SetStage returned.
+; The quest scripts rely on that order wherever a handler sets another stage
+; and then reads what it changed. Reported, not scored.
+int reaches = 0
+int handledBeforeReturn = 0
 
 ; ------------------------------------------------------------------- entry
 
@@ -63,6 +68,8 @@ Function RunSelfTest(int aiScenario = 0)
 	passed = 0
 	failed = 0
 	firstFailure = ""
+	reaches = 0
+	handledBeforeReturn = 0
 	Debug.OpenUserLog("TLM")
 	Log("==== The Last Meridian self-test: scenario 1 (saved, delivered, posted) ====")
 
@@ -79,6 +86,7 @@ Function RunSelfTest(int aiScenario = 0)
 	TestMainQuest()
 	TestSideQuest()
 
+	Log("INFO  stage handlers already finished when SetStage returned: " + handledBeforeReturn + " of " + reaches)
 	Log("==== RESULT: " + passed + " passed, " + failed + " failed ====")
 	string summary = "The Last Meridian self-test\n\n" + passed + " passed, " + failed + " failed."
 	If failed > 0
@@ -203,13 +211,31 @@ Function Reach(Quest akQuest, int aiStage)
 	{Sets a stage and waits until the quest reports it done. SetStage itself
 	returns only after the stage's handlers have finished; the short waits are
 	a margin, and they count time while the console is open.}
+	int before = HandledCount(akQuest)
 	akQuest.SetStage(aiStage)
+	reaches += 1
+	If HandledCount(akQuest) > before
+		handledBeforeReturn += 1
+	EndIf
 	int tries = 0
 	While !akQuest.GetStageDone(aiStage) && tries < 50
 		Utility.WaitMenuMode(0.1)
 		tries += 1
 	EndWhile
 	Utility.WaitMenuMode(0.25)
+EndFunction
+
+int Function HandledCount(Quest akQuest)
+	{How many stage events the quest's own script has finished handling.}
+	TLM:MQ01Quest mq = akQuest as TLM:MQ01Quest
+	If mq
+		Return mq.StageEventsHandled()
+	EndIf
+	TLM:SQ01Quest sq = akQuest as TLM:SQ01Quest
+	If sq
+		Return sq.StageEventsHandled()
+	EndIf
+	Return 0
 EndFunction
 
 Function CheckInt(string asName, int aiActual, int aiExpected)

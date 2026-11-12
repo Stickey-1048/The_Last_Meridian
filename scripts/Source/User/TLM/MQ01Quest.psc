@@ -103,6 +103,8 @@ int ANS_SILENT = 9 Const
 
 ; The only mutable script state. Not authoritative: stages and globals are.
 int handsKilledByPlayer = 0
+; Development aid, read through StageEventsHandled().
+int handledCount = 0
 
 ; ------------------------------------------------------------ stage dispatch
 
@@ -149,7 +151,14 @@ Event OnStageSet(int auiStageID, int auiItemID)
 	ElseIf auiStageID == 900
 		Recover()
 	EndIf
+	handledCount += 1
 EndEvent
+
+int Function StageEventsHandled()
+	{Development aid for the self-test: how many stage events this script has
+	finished handling.}
+	Return handledCount
+EndFunction
 
 ; ------------------------------------------------------------ state helpers
 

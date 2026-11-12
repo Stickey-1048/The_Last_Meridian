@@ -134,6 +134,7 @@ Fixed after the fifth run (checks pass; not yet re-tested in the game):
 - With the real master supplied, the builder prints how the game's own quests are laid out (how many stages have no item, how many items lack flags) beside this plugin's, so the claim "the Creation Kit always writes this" is checked against the game's data on the PC.
 - `TLM:MQ01Quest` and `TLM:SQ01Quest` write one line to the script log for every stage event they receive, and the results script counts them.
 - The results script reports a finished self-test even when a second attempt in the same session was refused.
+- The self-test also reports, without scoring it, how often a stage's handler had already finished when `SetStage` returned. The wiki says `SetStage` waits for the stage's fragment "and event if any"; the quest scripts depend on that wherever a handler sets another stage and then reads what it changed (for example the delivery forcing the town stage), so the next run measures it.
 
 Still not done anywhere: a stage handler running in the game, opening the plugin in the Creation Kit, any test of the quest as a player would meet it.
 

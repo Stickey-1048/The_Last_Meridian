@@ -268,6 +268,8 @@ try {
         if ($mqEvents + $sqEvents -gt 0) { $verdict.Add("Stage events        : $mqEvents reached the main quest's script, $sqEvents the side quest's") }
         else { $verdict.Add('Stage events        : NONE reached the quest scripts (no "TLM_MQ01: stage ..." line in the log). Stages that were set stayed silent.') }
     }
+    $timing = @($selfLines | Where-Object { $_ -match 'INFO\s+stage handlers already finished' }) | Select-Object -Last 1
+    if ($selfFromRun -and $timing) { $verdict.Add("Handler timing      : $(($timing -replace '^.*INFO\s+', '').Trim())") }
     if ($resultLine) {
         $verdict.Add("Self-test           : RAN. $(($resultLine -replace '^.*==== RESULT:\s*', '') -replace '\s*====\s*$', '')  (PASS lines counted: $passCount, FAIL lines: $($failLines.Count))")
         if ($aborted) { $verdict.Add('                      A later attempt in the same session was refused, as intended: the quests run once per session.') }
