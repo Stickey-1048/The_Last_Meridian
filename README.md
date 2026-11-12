@@ -2,7 +2,7 @@
 
 An original, fan-created **Fallout 4 total-conversion RPG concept** set in the southern Appalachian Mountains in 2317: eastern Tennessee, western North Carolina and northern Georgia. A gunslinger frontier encounters underground societies, buried research, mutant human lineages and a predictive intelligence.
 
-**Status:** Preproduction. There are design documents, a logic model, Papyrus scripts that compile, and a generated plugin skeleton. On 2026-11-12 the game loaded the plugin for the first time and a scripted self-test of one scenario passed: the quests' stage logic set the stages, objectives and counters the logic model predicts. A second scripted scenario showed that the quest's scripts act on characters created by the test itself. Nothing is placed in the world yet, so nothing in a built place or with a player has been tested, and no playable mod exists.
+**Status:** Preproduction. There are design documents, a logic model, Papyrus scripts that compile, and a generated plugin skeleton. On 2026-11-12 the game loaded the plugin for the first time and a scripted self-test passed: in nine scenarios, run with nobody at the keyboard, the quests' logic set the stages, objectives and counters the logic model predicts, including the first quest played from start to finish six times, once for each way its caravan encounter can end, with characters the test creates itself. Nothing is placed in the world yet, so nothing in a built place or with a player has been tested, and no playable mod exists.
 
 ## Start here
 - [Open Ledger doctrine](docs/doctrine-of-the-open-ledger.md): approved philosophical spine, exile cause and quest evidence.

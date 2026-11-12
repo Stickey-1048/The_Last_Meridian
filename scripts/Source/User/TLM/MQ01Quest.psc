@@ -1,17 +1,21 @@
 Scriptname TLM:MQ01Quest extends Quest
 {TLM_MQ01 "Six Rounds to Mercy". Owns all quest logic.
 
-COMPILES. RAN IN THE GAME on 2026-11-12 for one scripted scenario (the
-self-test: start, dispatch, ambush live, saved, delivery, hand-off) with every
-alias empty: the handlers for stages 10, 20, 30, 31, 32, 40, 50, 52, 60 and
-100 ran and left the state the logic model predicts. The same day, with
-actors made at run time in three aliases (self-test scenario 2): the Cutter
-lead's death gave stage 31, a caravan hand killed by the player gave stage 35
-and betrayal replaced "saved". The evade timer, the distance watch, the town
-move, the wagon, the deal, dialogue and saving have NOT run
-(docs/design/VERIFY_LOG.md). Written without Fallout 4 or the Creation Kit.
-Since those runs the evade timer's handler has been moved, unchanged, into
-EvadeTimerElapsed: THIS VERSION IS NOT YET COMPILED.
+COMPILES. RAN IN THE GAME on 2026-11-12 in the development self-test, with
+nobody at the keyboard (docs/design/VERIFY_LOG.md):
+- by stages alone, every alias empty (scenario 1);
+- with actors and markers made at run time in its aliases, from the start to
+  the hand-off, once for each way the encounter can end: evaded, saved after
+  a fight, missed, betrayal on the road, murder after saving, the deal
+  (scenarios 4 to 9), and the distance watch on its own (scenario 3).
+Every stage handler except 15, 37, 55 and 900 has run, and each left the
+state the logic model predicts. In those runs a stage number stood in for
+every trigger, pickup and conversation, and EvadeTimerElapsed was called
+directly. NOT run: the 90-second timer itself, the move to the caravan yard
+over a distance, the three unnamed Cutters, the speech check's failure
+(stage 37), "she's lying" (stage 55), recovery (stage 900 and OnGameLoaded),
+dialogue, and anything in a built place. Written without Fallout 4 or the
+Creation Kit.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.

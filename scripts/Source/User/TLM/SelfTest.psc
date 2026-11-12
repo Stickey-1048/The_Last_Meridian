@@ -15,12 +15,13 @@ Scenarios: 1 here; 2 and 3 in TLM:FixtureProbe; 4 to 9 in TLM:WorldCases.
 A number after the function name picks one:   cqf TLM_Core RunSelfTest 4
 One fresh game session per scenario: the quests run once.
 
-Scenario 1 ran in the game on 2026-11-12, from the console and with nobody at
-the keyboard: 60 passed, 0 failed, once the plugin's stages had been given
-items. (The run before reported 26 passed, 34 failed, because no OnStageSet
-event reached the quest scripts; docs/design/VERIFY_LOG.md.)
-The watchdog, Step() and the scenarios above 2 were added after that run:
-THIS VERSION IS NOT YET COMPILED.}
+COMPILES. RAN IN THE GAME on 2026-11-12 with nobody at the keyboard: all nine
+scenarios passed, 220 checks, 0 failed (docs/design/VERIFY_LOG.md). The
+watchdog was seen to work: it ended scenario 3 inside an experiment that did
+not come back, and the result was still written. Scenario 1 also ran from the
+console. (An earlier run of scenario 1 reported 26 passed, 34 failed, because
+no OnStageSet event reached the quest scripts; that was a fault in the
+generated plugin.)}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

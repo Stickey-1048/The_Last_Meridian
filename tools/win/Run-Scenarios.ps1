@@ -54,12 +54,11 @@
   watchdog in the self-test itself, which writes where it stopped; the time
   limit here is the second line of defence.
 
-  Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-12
-  with scenarios 1 and 2. The chain works there: the game entered the room,
-  started the scenario and closed by itself (scenario 1, 32 seconds); a
-  scenario that never finished was closed by this script after the time
-  limit (scenario 2). Changes since then (more scenarios, the last step in
-  the report) have only run on Linux PowerShell 7 against stand-ins.
+  Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-12,
+  twice. The chain works there: the game enters the room, starts the scenario
+  and closes by itself, about half a minute per scenario; nine scenarios in a
+  row passed. In the first run a scenario that never finished was closed by
+  this script after the time limit.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1

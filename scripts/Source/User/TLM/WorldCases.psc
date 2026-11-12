@@ -19,7 +19,8 @@ sequence of events; tools/logic_model/test_worldcases_expectations.py replays
 the sequences and fails if a number here differs. So a failure in the game
 means the game disagrees with the design, not that the number was typed wrong.
 
-NOT YET COMPILED. NOT YET RUN IN THE GAME.}
+COMPILES. RAN IN THE GAME on 2026-11-12: all six cases passed, 138 checks,
+0 failed (docs/design/VERIFY_LOG.md).}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

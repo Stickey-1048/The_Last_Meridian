@@ -15,11 +15,11 @@ Most of what it writes is reported, not scored: a line that begins INFO is a
 fact about the game, not about the design. The scored checks are the ones the
 quest's design already relies on.
 
-Scenario 2 COMPILES and RAN IN THE GAME on 2026-11-12 as far as its last part:
-15 checks passed, then the script stopped inside the distance part and never
-came back (docs/design/VERIFY_LOG.md). That part has been taken out of
-scenario 2 and rewritten as scenario 3.
-Scenario 3 and this version of scenario 2: NOT YET COMPILED, NOT YET RUN.}
+COMPILES. RAN IN THE GAME on 2026-11-12: scenario 2 passed its 14 checks and
+scenario 3 its 8 (docs/design/VERIFY_LOG.md). Scenario 3's first experiment
+did not come back: MoveTo on a placed copy of this plugin's item, which has no
+model, never returns. That is what had stopped an earlier version of scenario
+2. The experiments after it have therefore never run.}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory
