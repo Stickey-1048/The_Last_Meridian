@@ -1,7 +1,6 @@
 Scriptname TLM:Core extends Quest
 {TLM_Core: start-game-enabled utility quest. No story logic.
-Compiled on 2026-11-11; the timer and its on-screen line were added after that
-and are NOT YET COMPILED. NOT YET RUN IN THE GAME (docs/design/VERIFY_LOG.md).}
+COMPILES; NOT YET RUN IN THE GAME (docs/design/VERIFY_LOG.md).}
 
 GlobalVariable Property TLM_G_DataVersion Auto Const Mandatory
 Quest Property TLM_MQ01 Auto Const Mandatory

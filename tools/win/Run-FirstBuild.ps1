@@ -89,6 +89,7 @@ $results = New-Object System.Collections.Generic.List[object]
 $pluginOk = $false
 $compileOk = $false
 $installed = $false
+$installTried = $false
 $head = $null
 
 function Say([string]$s = '') { $log.Add($s); Write-Host $s }
@@ -229,6 +230,7 @@ try {
         if (-not ($pluginOk -and $compileOk)) { Result 'Install for testing' 'SKIPPED' 'the plugin build and the compile must both pass first' }
         elseif (-not $moOk) { Result 'Install for testing' 'SKIPPED' "no Mod Organizer instance at '$ModOrganizerRoot'" }
         else {
+            $installTried = $true
             $inst = Invoke-Sibling 'Install-Dev.ps1' @{ ModOrganizerRoot = $ModOrganizerRoot; CreateProfile = $true }
             $inst.Output | ForEach-Object { Say "  $_" }
             if ($inst.ExitCode -eq 0) { $installed = $true; Result 'Install for testing' 'PASSED' 'Mod Organizer mod and test profile' }
@@ -248,6 +250,10 @@ try {
     if ($installed) {
         Say 'Installed as a Mod Organizer mod with its own test profile. The game folders were not touched.'
         if ($Play) { Say 'The game is started next, for the in-game test.' } else { Say 'The NEXT STEP is given under step 6 above.' }
+    } elseif ($installTried) {
+        # The install copies the build into the mod folder first and sets up the profile second.
+        Say 'The install step did not finish. It copies the build into the Mod Organizer mod folder before it sets up'
+        Say 'the test profile, so that mod folder may already hold this build. No game folder was touched.'
     } else {
         Say 'Nothing was installed into the game or a mod manager.'
     }
@@ -296,7 +302,16 @@ try {
             if ($LocalAppDataRoot) { $playArgs['LocalAppDataRoot'] = $LocalAppDataRoot }
             if ($NoClipboard) { $playArgs['NoClipboard'] = $true }
             try { & (Join-Path $PSScriptRoot 'Start-TestGame.ps1') @playArgs }
-            catch { Write-Host "The game was not started: $($_.Exception.Message)" }
+            catch {
+                # Nothing was collected, so the build log carries the reason instead.
+                $why = "The game was not started: $($_.Exception.Message)"
+                Write-Host $why
+                $text = $text + [Environment]::NewLine + [Environment]::NewLine + '== In-game test ==' + [Environment]::NewLine + (Hide-UserFolder $why)
+                try { Set-Content -LiteralPath $logPath -Value $text -Encoding utf8 } catch { }
+                if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
+                    try { Set-Clipboard -Value $text; Write-Host 'The build log, with that message added, is on your clipboard. Click in the chat and press Ctrl+V to send it.' } catch { }
+                }
+            }
         }
     }
 }

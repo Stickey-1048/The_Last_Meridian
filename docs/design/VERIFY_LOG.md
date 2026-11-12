@@ -74,7 +74,21 @@ What was changed in response (tested against stand-ins only; not yet run on the 
 
 - `tools/win/Start-TestGame.ps1` starts `Fallout4.exe` in the managed folder by its full path through Mod Organizer's `run` command, then reads from the running process which file it is and whether Mod Organizer's file-system library is loaded in it.
 - `tools/win/Get-TestResults.ps1` now also reports which file each Run-list entry starts, the registry's game folder, whether either game folder holds Fallout London files, the settings the test profile hands the game, and marks logs older than the session.
-- `TLM:Core` writes `TLM_Core: started` to the game's script log when its quest starts, and shows "The Last Meridian test build is loaded." on screen a few seconds later (development only). That script change is not yet compiled.
+- `TLM:Core` writes `TLM_Core: started` to the game's script log when its quest starts, and shows "The Last Meridian test build is loaded." on screen a few seconds later (development only).
+
+Fourth run, 2026-11-11 21:41 by the PC's clock, commit `c2bfd36`, with `-Install -Play`. Reported as the pasted log.
+
+| What | Result |
+|---|---|
+| Scripts compile | 8 of 8, including the changed `TLM:Core` (timer and on-screen line) |
+| Plugin | Unchanged: 10,692 bytes, player alias forced to `000014:Fallout4.esm` |
+| Install | **Failed, through a fault in this project's script:** "The source profile and the new profile are the same." The test profile was by then the one selected in Mod Organizer, and the script took the selected profile as the one to copy from even though the test profile already existed and only needed refreshing. The stand-in tests had never put the stand-in Mod Organizer in that state. The build had already been copied into the mod folder when the step stopped, although the summary said nothing was installed; no profile and no game folder was changed |
+| In-game test | Not started, because the install did not pass |
+| Scan | The test profile shows 1 mod and 1 plugin switched on, with its own settings and saves and script logging on. A game script log now exists in the shared settings folder, where there was none before the first attempt in the game |
+
+Reading of that last line: script logging is off in the shared settings and on in the test profile only, so the session that showed the Fallout London menu ran with the test profile's settings in effect. That fits a Fallout London copy of the game started inside Mod Organizer's file system. It is an inference; the log itself has not been read yet.
+
+Fixed after the fourth run (tested against stand-ins only): an existing test profile is refreshed without any source profile; a new one is copied from the selected profile or, if that cannot serve, the first other profile; the record of copied files is written before the profile step; the summary no longer claims nothing was installed when the install stopped part-way; the stand-in Mod Organizer now remembers the profile it was started with, as the real one does; and every part of the results report is collected on its own, so a failure in one part cannot keep the rest from the clipboard.
 
 Still not done anywhere: opening the plugin in the Creation Kit, loading the plugin in the game, any quest test.
 
@@ -141,7 +155,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 
 1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`). **Done 2026-11-11.** The file stays on the PC (git-ignored); the facts the build depends on are in the tables above.
 2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
-3. All scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 8 of 8** (`TLM:Core` has changed since and awaits a recompile).
+3. All scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 8 of 8**, again after the change to `TLM:Core`.
 3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **First attempt failed 2026-11-12:** see above.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.

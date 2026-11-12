@@ -113,140 +113,149 @@ $ev = New-Object System.Collections.Generic.List[string]
 foreach ($l in $Preface) { $ev.Add($l) }
 function Say([string]$s = '') { $ev.Add($s); Write-Host $s }
 
-$builtPlugin = Join-Path $build $pluginName
-$sameAsBuild = if (-not (Test-Path -LiteralPath $builtPlugin)) { 'no build file to compare with' }
-elseif ((Get-FileHash -LiteralPath $builtPlugin).Hash -eq (Get-FileHash -LiteralPath $installedPlugin).Hash) { 'yes' }
-else { 'NO: the installed plugin is not the one in build\. Run the install again.' }
-
+# From here on nothing is allowed to stop the script before the results are
+# collected: whatever goes wrong is written into them instead.
 $startedAt = Get-Date
-$argLine = '-p "{0}" run "{1}"' -f $ProfileName, $gameExe
-Say '== Starting the game =='
-Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
-Say "Through              : $moExe"
-Say "Command line         : ModOrganizer.exe $argLine"
-Say "Profile              : $ProfileName  (mod switched on: $modOn; plugin active: $pluginOn)"
-Say "Installed plugin is the current build: $sameAsBuild"
-$registryPath = Get-BethesdaInstalledPath
-if ($registryPath) { Say "Game folder in the Windows registry: $registryPath$(if (Test-SamePath $registryPath $mo.GamePath) { '  (the managed folder)' } else { '  (NOT the managed folder; the launcher would start this one)' })" }
-Say "Started at           : $($startedAt.ToString('yyyy-MM-dd HH:mm:ss'))"
-
-$moProc = Start-Process -FilePath $moExe -ArgumentList $argLine -WorkingDirectory $mo.Root -PassThru
-# Windows PowerShell 5.1 only reports the exit code later if the handle was read while the process lived.
-try { $null = $moProc.Handle } catch { }
-
-Write-Host ''
-Write-Host 'Waiting for the game to appear. Mod Organizer needs a moment to start first.'
-
-# Waits for a Fallout4.exe process. Gives up early if Mod Organizer has gone.
-function Wait-ForGame([int]$seconds) {
-    $deadline = (Get-Date).AddSeconds($seconds)
-    $lastNote = Get-Date
-    while ((Get-Date) -lt $deadline) {
-        $running = @(Get-RunningGame)
-        if ($running.Count) { return $running[0] }
-        if ($moProc.HasExited -and -not (Test-ModOrganizerRunning)) { return $null }
-        if (((Get-Date) - $lastNote).TotalSeconds -ge 20) {
-            Write-Host '  ... still waiting. If Mod Organizer is showing a question or a message, answer it.'
-            $lastNote = Get-Date
-        }
-        Start-Sleep -Milliseconds 500
-    }
-    return $null
-}
-
-$game = Wait-ForGame $StartTimeoutSeconds
-$byHand = $false
-if (-not $game -and -not ($moProc.HasExited -and -not (Test-ModOrganizerRunning))) {
-    # Mod Organizer is open but started nothing: carry on by hand in its window.
-    $byHand = $true
-    Say ''
-    Say "Mod Organizer did not start the game by itself within $StartTimeoutSeconds seconds."
-    Write-Host 'Do it by hand in the Mod Organizer window that is open:'
-    Write-Host "  1. Profile list (top): choose   $ProfileName"
-    Write-Host '  2. List next to the Run button (top right): choose   Fallout 4   (NOT Fallout Launcher, NOT F4SE)'
-    Write-Host '  3. Click Run.'
-    Write-Host "This window keeps watching for the game for another $([int]($ManualTimeoutSeconds / 60)) minutes."
-    $game = Wait-ForGame $ManualTimeoutSeconds
-}
-
+$game = $null
 $rightGame = $false
 $startedFrom = $null
-if (-not $game) {
-    Say ''
-    if ($moProc.HasExited -and -not (Test-ModOrganizerRunning)) { Say "RESULT: the game did NOT start. Mod Organizer closed again$(if ($moProc.HasExited) { " (exit code $($moProc.ExitCode))" })." }
-    else { Say 'RESULT: the game did NOT start. Mod Organizer is still open; look at its window for a message.' }
-    Write-Host ''
-    Write-Host 'To run the test by hand instead: open Mod Organizer, choose the profile above in the Profile list,'
-    Write-Host 'choose   Fallout 4   (NOT Fallout Launcher) in the list next to the Run button, click Run, do the'
-    Write-Host 'test in the game, quit, and then run:'
-    Write-Host '    powershell -ExecutionPolicy Bypass -File tools\win\Get-TestResults.ps1'
-} else {
-    # Give the process a moment to load its libraries before looking at them.
-    Start-Sleep -Seconds 4
-    $facts = Get-ProcessFacts $game
-    for ($i = 0; $i -lt 5 -and -not @($facts.Modules | Where-Object { $_ -match '(?i)^usvfs' }).Count; $i++) {
-        Start-Sleep -Seconds 2
-        if (-not @(Get-RunningGame | Where-Object { $_.Id -eq $game.Id }).Count) { break }
-        $facts = Get-ProcessFacts $game
-    }
-    $usvfs = @($facts.Modules | Where-Object { $_ -match '(?i)^usvfs' })
-    $f4se = @($facts.Modules | Where-Object { $_ -match '(?i)^f4se' })
+try {
+    $builtPlugin = Join-Path $build $pluginName
+    $sameAsBuild = if (-not (Test-Path -LiteralPath $builtPlugin)) { 'no build file to compare with' }
+    elseif ((Get-FileHash -LiteralPath $builtPlugin).Hash -eq (Get-FileHash -LiteralPath $installedPlugin).Hash) { 'yes' }
+    else { 'NO: the installed plugin is not the one in build\. Run the install again.' }
 
-    # Windows' own process table: a second way to read the file name, and who started the process.
-    $parent = $null
-    $startedFrom = $facts.Path
-    if (Get-Command Get-CimInstance -ErrorAction SilentlyContinue) {
-        try {
-            $cim = Get-CimInstance Win32_Process -Filter "ProcessId = $($game.Id)" -ErrorAction Stop
-            if ($cim) {
-                if (-not $startedFrom -and $cim.ExecutablePath) { $startedFrom = $cim.ExecutablePath }
-                $pp = Get-Process -Id $cim.ParentProcessId -ErrorAction SilentlyContinue
-                $parent = if ($pp) { "$($pp.ProcessName) (id $($cim.ParentProcessId))" } else { "process $($cim.ParentProcessId), which has already ended" }
+    $argLine = '-p "{0}" run "{1}"' -f $ProfileName, $gameExe
+    Say '== Starting the game =='
+    Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
+    Say "Through              : $moExe"
+    Say "Command line         : ModOrganizer.exe $argLine"
+    Say "Profile              : $ProfileName  (mod switched on: $modOn; plugin active: $pluginOn)"
+    Say "Installed plugin is the current build: $sameAsBuild"
+    $registryPath = Get-BethesdaInstalledPath
+    if ($registryPath) { Say "Game folder in the Windows registry: $registryPath$(if (Test-SamePath $registryPath $mo.GamePath) { '  (the managed folder)' } else { '  (NOT the managed folder; the launcher would start this one)' })" }
+    Say "Started at           : $($startedAt.ToString('yyyy-MM-dd HH:mm:ss'))"
+
+    $moProc = Start-Process -FilePath $moExe -ArgumentList $argLine -WorkingDirectory $mo.Root -PassThru
+    # Windows PowerShell 5.1 only reports the exit code later if the handle was read while the process lived.
+    try { $null = $moProc.Handle } catch { }
+
+    Write-Host ''
+    Write-Host 'Waiting for the game to appear. Mod Organizer needs a moment to start first.'
+
+    # Waits for a Fallout4.exe process. Gives up early if Mod Organizer has gone.
+    function Wait-ForGame([int]$seconds) {
+        $deadline = (Get-Date).AddSeconds($seconds)
+        $lastNote = Get-Date
+        while ((Get-Date) -lt $deadline) {
+            $running = @(Get-RunningGame)
+            if ($running.Count) { return $running[0] }
+            if ($moProc.HasExited -and -not (Test-ModOrganizerRunning)) { return $null }
+            if (((Get-Date) - $lastNote).TotalSeconds -ge 20) {
+                Write-Host '  ... still waiting. If Mod Organizer is showing a question or a message, answer it.'
+                $lastNote = Get-Date
             }
-        } catch { }
+            Start-Sleep -Milliseconds 500
+        }
+        return $null
     }
-    $rightGame = [bool]$startedFrom -and (Test-SamePath $startedFrom $gameExe)
 
-    Say ''
-    Say '== The game that actually started =='
-    if ($byHand) { Say 'Started by hand from the Mod Organizer window, not by this script''s command.' }
-    Say "Process              : id $($facts.Id)$(if ($facts.Started) { ", started $($facts.Started.ToString('HH:mm:ss'))" })$(if ($parent) { ", started by $parent" })"
-    Say "Started from         : $(if ($startedFrom) { $startedFrom } else { '(could not be read)' })"
-    if (-not $startedFrom) { Say 'Is the managed base game : UNKNOWN: Windows did not let this script read the file name.' }
-    elseif ($rightGame) { Say 'Is the managed base game : YES' }
-    else {
-        $kind = if (Test-FalloutLondonFolder (Split-Path -Parent $startedFrom)) { 'It is a FALLOUT LONDON copy.' } else { 'It is another copy of the game.' }
-        Say "Is the managed base game : NO. $kind This project's files are not visible to it."
+    $game = Wait-ForGame $StartTimeoutSeconds
+    $byHand = $false
+    if (-not $game -and -not ($moProc.HasExited -and -not (Test-ModOrganizerRunning))) {
+        # Mod Organizer is open but started nothing: carry on by hand in its window.
+        $byHand = $true
+        Say ''
+        Say "Mod Organizer did not start the game by itself within $StartTimeoutSeconds seconds."
+        Write-Host 'Do it by hand in the Mod Organizer window that is open:'
+        Write-Host "  1. Profile list (top): choose   $ProfileName"
+        Write-Host '  2. List next to the Run button (top right): choose   Fallout 4   (NOT Fallout Launcher, NOT F4SE)'
+        Write-Host '  3. Click Run.'
+        Write-Host "This window keeps watching for the game for another $([int]($ManualTimeoutSeconds / 60)) minutes."
+        $game = Wait-ForGame $ManualTimeoutSeconds
     }
-    Say "Mod Organizer's file system inside the game : $(if ($usvfs.Count) { "YES ($($usvfs -join ', ') is loaded)" } elseif ($facts.Modules.Count) { "NOT DETECTED among $($facts.Modules.Count) loaded libraries" } else { 'UNKNOWN: the list of loaded libraries could not be read' })"
-    Say "Script extender (F4SE) inside the game      : $(if ($f4se.Count) { "yes ($($f4se -join ', '))" } elseif ($facts.Modules.Count) { 'no' } else { 'unknown' })"
 
-    Write-Host ''
-    if ($startedFrom -and -not $rightGame) {
-        Write-Host 'This is the wrong copy of the game, so there is nothing to test in it. Quit the game;'
-        Write-Host 'this window will then collect what it can and put it on the clipboard.'
+    if (-not $game) {
+        Say ''
+        if ($moProc.HasExited -and -not (Test-ModOrganizerRunning)) { Say "RESULT: the game did NOT start. Mod Organizer closed again$(if ($moProc.HasExited) { " (exit code $($moProc.ExitCode))" })." }
+        else { Say 'RESULT: the game did NOT start. Mod Organizer is still open; look at its window for a message.' }
+        Write-Host ''
+        Write-Host 'To run the test by hand instead: open Mod Organizer, choose the profile above in the Profile list,'
+        Write-Host 'choose   Fallout 4   (NOT Fallout Launcher) in the list next to the Run button, click Run, do the'
+        Write-Host 'test in the game, quit, and then run:'
+        Write-Host '    powershell -ExecutionPolicy Bypass -File tools\win\Get-TestResults.ps1'
     } else {
-        Write-Host 'IN THE GAME NOW:'
-        Write-Host '  1. At the main menu press the ~ key (left of the 1 key), type   coc qasmoke   and press Enter.'
-        Write-Host '  2. When the room has loaded, press ~ to close the console. Within about ten seconds a line should'
-        Write-Host '     appear in the top-left corner:  The Last Meridian test build is loaded.'
-        Write-Host '     (If it never appears, the plugin is not loaded. Skip step 3 and quit.)'
-        Write-Host '  3. Press ~, type   cqf TLM_Core RunSelfTest   press Enter, press ~ again to close the console,'
-        Write-Host '     and wait for a message box (about 15 seconds).'
-        Write-Host '  4. Quit the game: Esc, Quit, Quit to Desktop.'
-        Write-Host 'Leave this window open. When the game closes it collects the results by itself.'
+        # Give the process a moment to load its libraries before looking at them.
+        Start-Sleep -Seconds 4
+        $facts = Get-ProcessFacts $game
+        for ($i = 0; $i -lt 5 -and -not @($facts.Modules | Where-Object { $_ -match '(?i)^usvfs' }).Count; $i++) {
+            Start-Sleep -Seconds 2
+            if (-not @(Get-RunningGame | Where-Object { $_.Id -eq $game.Id }).Count) { break }
+            $facts = Get-ProcessFacts $game
+        }
+        $usvfs = @($facts.Modules | Where-Object { $_ -match '(?i)^usvfs' })
+        $f4se = @($facts.Modules | Where-Object { $_ -match '(?i)^f4se' })
+
+        # Windows' own process table: a second way to read the file name, and who started the process.
+        $parent = $null
+        $startedFrom = $facts.Path
+        if (Get-Command Get-CimInstance -ErrorAction SilentlyContinue) {
+            try {
+                $cim = Get-CimInstance Win32_Process -Filter "ProcessId = $($game.Id)" -ErrorAction Stop
+                if ($cim) {
+                    if (-not $startedFrom -and $cim.ExecutablePath) { $startedFrom = $cim.ExecutablePath }
+                    $pp = Get-Process -Id $cim.ParentProcessId -ErrorAction SilentlyContinue
+                    $parent = if ($pp) { "$($pp.ProcessName) (id $($cim.ParentProcessId))" } else { "process $($cim.ParentProcessId), which has already ended" }
+                }
+            } catch { }
+        }
+        $rightGame = [bool]$startedFrom -and (Test-SamePath $startedFrom $gameExe)
+
+        Say ''
+        Say '== The game that actually started =='
+        if ($byHand) { Say 'Started by hand from the Mod Organizer window, not by this script''s command.' }
+        Say "Process              : id $($facts.Id)$(if ($facts.Started) { ", started $($facts.Started.ToString('HH:mm:ss'))" })$(if ($parent) { ", started by $parent" })"
+        Say "Started from         : $(if ($startedFrom) { $startedFrom } else { '(could not be read)' })"
+        if (-not $startedFrom) { Say 'Is the managed base game : UNKNOWN: Windows did not let this script read the file name.' }
+        elseif ($rightGame) { Say 'Is the managed base game : YES' }
+        else {
+            $kind = if (Test-FalloutLondonFolder (Split-Path -Parent $startedFrom)) { 'It is a FALLOUT LONDON copy.' } else { 'It is another copy of the game.' }
+            Say "Is the managed base game : NO. $kind This project's files are not visible to it."
+        }
+        Say "Mod Organizer's file system inside the game : $(if ($usvfs.Count) { "YES ($($usvfs -join ', ') is loaded)" } elseif ($facts.Modules.Count) { "NOT DETECTED among $($facts.Modules.Count) loaded libraries" } else { 'UNKNOWN: the list of loaded libraries could not be read' })"
+        Say "Script extender (F4SE) inside the game      : $(if ($f4se.Count) { "yes ($($f4se -join ', '))" } elseif ($facts.Modules.Count) { 'no' } else { 'unknown' })"
+
+        Write-Host ''
+        if ($startedFrom -and -not $rightGame) {
+            Write-Host 'This is the wrong copy of the game, so there is nothing to test in it. Quit the game;'
+            Write-Host 'this window will then collect what it can and put it on the clipboard.'
+        } else {
+            Write-Host 'IN THE GAME NOW:'
+            Write-Host '  1. At the main menu press the ~ key (left of the 1 key), type   coc qasmoke   and press Enter.'
+            Write-Host '  2. When the room has loaded, press ~ to close the console. Within about ten seconds a line should'
+            Write-Host '     appear in the top-left corner:  The Last Meridian test build is loaded.'
+            Write-Host '     (If it never appears, the plugin is not loaded. Skip step 3 and quit.)'
+            Write-Host '  3. Press ~, type   cqf TLM_Core RunSelfTest   press Enter, press ~ again to close the console,'
+            Write-Host '     and wait for a message box (about 15 seconds).'
+            Write-Host '  4. Quit the game: Esc, Quit, Quit to Desktop.'
+            Write-Host 'Leave this window open. When the game closes it collects the results by itself.'
+        }
+
+        while (@(Get-RunningGame).Count) { Start-Sleep -Seconds 2 }
+        $endedAt = Get-Date
+        Say "Game closed at       : $($endedAt.ToString('HH:mm:ss'))  (ran for $([int]($endedAt - $startedAt).TotalSeconds) seconds)"
     }
 
-    while (@(Get-RunningGame).Count) { Start-Sleep -Seconds 2 }
-    $endedAt = Get-Date
-    Say "Game closed at       : $($endedAt.ToString('HH:mm:ss'))  (ran for $([int]($endedAt - $startedAt).TotalSeconds) seconds)"
+    # Mod Organizer tidies up and closes by itself after a command-line run.
+    $moDeadline = (Get-Date).AddSeconds(90)
+    while ((Test-ModOrganizerRunning) -and (Get-Date) -lt $moDeadline) { Start-Sleep -Seconds 1 }
+    if (Test-ModOrganizerRunning) { Say 'Mod Organizer is still open. That is harmless; close it when you like.' }
+    Say "Mod Organizer now has profile '$ProfileName' selected. Switch back to your own profile before you play."
+} catch {
+    Say ''
+    Say "UNEXPECTED ERROR in Start-TestGame.ps1: $($_.Exception.Message)"
+    foreach ($line in ("$($_.ScriptStackTrace)" -split "`r?`n")) { Say "    $line" }
 }
-
-# Mod Organizer tidies up and closes by itself after a command-line run.
-$moDeadline = (Get-Date).AddSeconds(90)
-while ((Test-ModOrganizerRunning) -and (Get-Date) -lt $moDeadline) { Start-Sleep -Seconds 1 }
-if (Test-ModOrganizerRunning) { Say 'Mod Organizer is still open. That is harmless; close it when you like.' }
-Say "Mod Organizer now has profile '$ProfileName' selected. Switch back to your own profile before you play."
 
 # ------------------------------------------------------------ collect
 Write-Host ''
@@ -254,6 +263,17 @@ $resArgs = @{ ModOrganizerRoot = $mo.Root; Since = $startedAt; Preface = $ev.ToA
 if ($DocumentsRoot) { $resArgs['DocumentsRoot'] = $DocumentsRoot }
 if ($LocalAppDataRoot) { $resArgs['LocalAppDataRoot'] = $LocalAppDataRoot }
 if ($NoClipboard) { $resArgs['NoClipboard'] = $true }
-& (Join-Path $PSScriptRoot 'Get-TestResults.ps1') @resArgs
+try {
+    & (Join-Path $PSScriptRoot 'Get-TestResults.ps1') @resArgs
+} catch {
+    # Even then, what this script saw goes on the clipboard.
+    $lines = @($ev) + @('', "Get-TestResults.ps1 failed: $($_.Exception.Message)") + @("$($_.ScriptStackTrace)" -split "`r?`n")
+    $text = Hide-UserFolder ($lines -join [Environment]::NewLine)
+    Write-Host $text
+    try { Set-Content -LiteralPath (Join-Path $build 'test-results.txt') -Value $text -Encoding utf8 } catch { }
+    if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
+        try { Set-Clipboard -Value $text; Write-Host 'That text is on your clipboard. Click in the chat and press Ctrl+V to send it.' } catch { }
+    }
+}
 
 if (-not $game -or ($startedFrom -and -not $rightGame)) { exit 1 }

@@ -723,14 +723,29 @@ function New-TlmDevProfile {
     $mo = Get-ModOrganizerInfo -Root $ModOrganizerRoot
     if (-not $mo) { throw "No ModOrganizer.ini in $ModOrganizerRoot" }
     if ($ProfileName -notmatch '^[\w .\-]+$') { throw "Unusable profile name: $ProfileName" }
-    if (-not $SourceProfile) { $SourceProfile = $mo.SelectedProfile }
-    if ($SourceProfile -ieq $ProfileName) { throw 'The source profile and the new profile are the same.' }
-    $src = Join-Path $mo.ProfilesDirectory $SourceProfile
     $dst = Join-Path $mo.ProfilesDirectory $ProfileName
 
     $created = $false
-    if (-not (Test-Path -LiteralPath $dst)) {
-        if (-not (Test-Path -LiteralPath $src)) { throw "Source profile not found: $src" }
+    if (Test-Path -LiteralPath $dst) {
+        # The test profile exists: it is refreshed in place and no source is needed.
+        # (Once the test profile is the one selected in Mod Organizer, the default
+        # source would be the test profile itself.)
+        $SourceProfile = ''
+    } else {
+        # A source is only needed to make a new profile.
+        if ($SourceProfile) {
+            if ($SourceProfile -ieq $ProfileName) { throw 'The source profile and the new profile are the same.' }
+            if (-not (Test-Path -LiteralPath (Join-Path $mo.ProfilesDirectory $SourceProfile))) { throw "Source profile not found: $(Join-Path $mo.ProfilesDirectory $SourceProfile)" }
+        } else {
+            # Default: the selected profile; if that cannot serve (it is the test
+            # profile's own name, or its folder is gone), the first other profile.
+            $candidates = @($mo.SelectedProfile) + @($mo.Profiles | Sort-Object Name | ForEach-Object { $_.Name })
+            # ($SourceProfile is declared as a string, so the search result is held in its own variable.)
+            $pick = @($candidates | Where-Object { $_ -and ($_ -ine $ProfileName) -and (Test-Path -LiteralPath (Join-Path $mo.ProfilesDirectory $_)) } | Select-Object -First 1)
+            if ($pick.Count -eq 0) { throw "No existing Mod Organizer profile to copy from in $($mo.ProfilesDirectory). Create one in Mod Organizer first, or pass -SourceProfile." }
+            $SourceProfile = [string]$pick[0]
+        }
+        $src = Join-Path $mo.ProfilesDirectory $SourceProfile
         New-Item -ItemType Directory -Path $dst | Out-Null
         # Files only: a profile's saves folder is not copied.
         foreach ($f in @(Get-ChildItem -LiteralPath $src -File)) { Copy-Item -LiteralPath $f.FullName -Destination $dst }

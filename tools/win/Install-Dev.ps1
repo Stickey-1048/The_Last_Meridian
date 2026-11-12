@@ -118,23 +118,19 @@ foreach ($p in $plan) {
     $written.Add($p.To)
 }
 
-$profileInfo = $null
-if ($CreateProfile -and $written.Count -gt 0) {
-    $profileInfo = New-TlmDevProfile -ModOrganizerRoot $ModOrganizerRoot -ProfileName $ProfileName -SourceProfile $SourceProfile -ModName $ModName
-}
-
-if ($written.Count -gt 0) {
+# The record of what was copied is written before anything else can fail, so
+# Uninstall-Dev.ps1 always knows about files that are already in place.
+function Save-Manifest([string]$profileFolderNow) {
     $manifestPath = Join-Path $build 'install-manifest.json'
     $all = @($written)
-    $profileFolder = $null
+    $profileFolder = $profileFolderNow
     if (Test-Path -LiteralPath $manifestPath) {
         $old = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
         if ($old.Root -eq $root) {
             $all = @(@($old.Files) + $all | Sort-Object -Unique)
-            if ($old.PSObject.Properties.Name -contains 'ProfileFolder') { $profileFolder = $old.ProfileFolder }
+            if (-not $profileFolder -and ($old.PSObject.Properties.Name -contains 'ProfileFolder')) { $profileFolder = $old.ProfileFolder }
         }
     }
-    if ($profileInfo) { $profileFolder = $profileInfo.Path }
     $moRoot = if ($mo) { $mo.Root } else { $null }
     $profileNameUsed = if ($profileFolder) { Split-Path -Leaf $profileFolder } else { $null }
     [pscustomobject]@{
@@ -142,6 +138,15 @@ if ($written.Count -gt 0) {
         ModOrganizerRoot = $moRoot; ProfileName = $profileNameUsed
         Installed = (Get-Date -Format 'o'); Files = $all
     } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $manifestPath -Encoding utf8
+}
+
+$profileInfo = $null
+if ($written.Count -gt 0) {
+    Save-Manifest $null
+    if ($CreateProfile) {
+        $profileInfo = New-TlmDevProfile -ModOrganizerRoot $ModOrganizerRoot -ProfileName $ProfileName -SourceProfile $SourceProfile -ModName $ModName
+        Save-Manifest $profileInfo.Path
+    }
 }
 
 Write-Host "Install target : $root"
