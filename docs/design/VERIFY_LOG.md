@@ -544,9 +544,9 @@ Everything seen in the game so far was made at run time by a test script. A plac
 
 | What the plugin gains | |
 |---|---|
-| Its own copy of the record of the cell `QASmoke`, with four persistent references under it | A settler (initially disabled), a box trigger on an activator of the plugin's, the same box on the game's own empty trigger for comparison, and an item that borrows the bottle cap's world model. Placed from the room's arrival marker, which the builder reads from the master |
-| A quest of its own, `TLM_Trial` | Four aliases forced to those references; the game's `DefaultAliasOnTriggerEnter` and `DefaultAliasOnContainerChangedTo` on three of them; stages 10, 11, 20 and 100. The two real quests are not touched |
-| Scenario 10 (`TLM:PlacedTrial`) | 18 scored checks: the aliases hold what was placed; the person starts disabled and can be enabled; picking the object up sets a stage; entering the trigger sets a stage. Positions, distances and the comparison trigger are reported |
+| Its own copy of the record of the cell `QASmoke`, with five persistent references under it | A settler (initially disabled), a box trigger on an activator of the plugin's, two more for comparison (the same box on the game's own empty trigger, and on another collision layer), and an item that borrows the bottle cap's world model. Placed from the room's arrival marker, which the builder reads from the master |
+| A quest of its own, `TLM_Trial` | Five aliases forced to those references; the game's `DefaultAliasOnTriggerEnter` and `DefaultAliasOnContainerChangedTo` on four of them; stages 10, 11, 12, 20 and 100. The two real quests are not touched |
+| Scenario 10 (`TLM:PlacedTrial`) | 18 scored checks: the aliases hold what was placed; the person starts disabled and can be enabled; picking the object up sets a stage; entering the trigger sets a stage. Positions, distances and the two comparison triggers are reported |
 
 What was found out on the way, without the game:
 
@@ -558,7 +558,7 @@ What was found out on the way, without the game:
 
 Checks: `tools/run_checks.sh` passes. 63 scenarios pass on the stand-in engine, 1,579 checks (the 62 from before unchanged, at 1,561). The written plugin is read back through the library and, separately, from its bytes, where eight kinds of deliberate damage to the cell and its references are each caught. The Windows chain ran against the stand-in PC.
 
-**What that is worth.** Less than the same sentence was worth before. The stand-in engine's other rules each rest on something seen in the game. Its rules for placed references, triggers and picking things up rest on the wiki and, where the wiki is silent, on a cautious guess; they are marked so in `sim.py` and in `test_placed.py`. And four of the seven names the builder looks up for this (`QASmoke`, `COCMarkerHeading`, `L_TRIGGER`, `DefaultEmptyTrigger`) have never been looked up in the real master. The run on the PC is the test.
+**What that is worth.** Less than the same sentence was worth before. The stand-in engine's other rules each rest on something seen in the game. Its rules for placed references, triggers and picking things up rest on the wiki and, where the wiki is silent, on a cautious guess; they are marked so in `sim.py` and in `test_placed.py`. And five of the eight names the builder looks up for this (`QASmoke`, `COCMarkerHeading`, `L_TRIGGER`, `L_ACTORZONE`, `DefaultEmptyTrigger`) have never been looked up in the real master. The run on the PC is the test.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
@@ -647,7 +647,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3c. The self-test runs with nobody at the keyboard (`tools/win/Run-Scenarios.ps1`). **Done 2026-11-12: nine scenarios, 220 checks, 0 failed.**
 3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed**, and again in the eleventh run.
 3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done 2026-11-12 for three of the four cases** (130, 131, 132: the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path: still to do. Twice something else got there first (the fight rule on 2026-11-12, the death's announcement on 2026-11-13); the case now uses a death with nobody named as the killer. In the twelfth run the wait guard also acted in scenario 2, where nothing was arranged.
-3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). Still to do. With it: the first compile of `TLM:PlacedTrial`, and the first look-up of `QASmoke`, `COCMarkerHeading`, `L_TRIGGER` and `DefaultEmptyTrigger` in the real master.
+3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). Still to do. With it: the first compile of `TLM:PlacedTrial`, and the first look-up of `QASmoke`, `COCMarkerHeading`, `L_TRIGGER`, `L_ACTORZONE` and `DefaultEmptyTrigger` in the real master.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).

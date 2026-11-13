@@ -179,8 +179,9 @@ public static class Spec
     // ------------------------------------------------- placed references
     // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
     // References in the game's own test room, which the plugin overrides for
-    // the purpose: a person, a trigger and an object, and a second trigger made
-    // on the game's own empty trigger for comparison.
+    // the purpose: a person, a trigger and an object; and two more triggers for
+    // comparison, each differing from the first in one thing: one is made on
+    // the game's own empty trigger, the other is on another collision layer.
     //
     // The person starts disabled, so that nobody new stands about in the other
     // scenarios: a bystander changes what the game makes of a killing
@@ -192,8 +193,11 @@ public static class Spec
     public const string TrialCell = "QASmoke";
     public const float TrialTriggerHalf = 150f;
     // "Typically L_TRIGGER", and actors set such a trigger off: the Creation
-    // Kit wiki's page on OnTriggerEnter.
+    // Kit wiki's page on OnTriggerEnter. A forum report has the editor giving
+    // a new trigger L_ACTORZONE instead, which only actors set off. Which the
+    // game's own triggers use, the build output counts.
     public const string TriggerLayer = "L_TRIGGER";
+    public const string ActorOnlyLayer = "L_ACTORZONE";
 
     static readonly float[] TrialBox = { TrialTriggerHalf, TrialTriggerHalf, TrialTriggerHalf };
 
@@ -205,6 +209,8 @@ public static class Spec
         new("TLM_REF_TrialTriggerGameBase", TrialCell, "DefaultEmptyTrigger", "Activator", Ahead: 600, Right: 200, Up: 100,
             BoxHalfExtents: TrialBox, CollisionLayer: TriggerLayer),
         new("TLM_REF_TrialObject", TrialCell, "TLM_MISC_TrialObject", null, Ahead: 150, Right: -60, Up: 20),
+        new("TLM_REF_TrialTriggerActorZone", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 950, Right: 0, Up: 100,
+            BoxHalfExtents: TrialBox, CollisionLayer: ActorOnlyLayer),
     };
 
     public static readonly BookSpec[] Books =
@@ -541,6 +547,7 @@ public static class Spec
         {
             new(10, Note: "The player entered the trigger"),
             new(11, Note: "The player entered the trigger made on the game's own empty trigger"),
+            new(12, Note: "The player entered the trigger on the layer only actors set off"),
             new(20, Note: "The player picked the object up"),
             new(100, CompleteQuest: true, Note: "Trial finished"),
         },
@@ -551,12 +558,14 @@ public static class Spec
             new("Trigger", Fill.Placed, Placed: "TLM_REF_TrialTrigger", Scripts: SetStageOnTrigger(10, traces: true)),
             new("TriggerGameBase", Fill.Placed, Placed: "TLM_REF_TrialTriggerGameBase", Scripts: SetStageOnTrigger(11, traces: true)),
             new("Object", Fill.Placed, Placed: "TLM_REF_TrialObject", Scripts: SetStageOnPickup(20, traces: true)),
+            new("TriggerActorZone", Fill.Placed, Placed: "TLM_REF_TrialTriggerActorZone", Scripts: SetStageOnTrigger(12, traces: true)),
         },
         Script: new ScriptBind("TLM:PlacedTrial",
             new AliasProp("Alias_Person", "Person"),
             new AliasProp("Alias_Trigger", "Trigger"),
             new AliasProp("Alias_TriggerGameBase", "TriggerGameBase"),
             new AliasProp("Alias_Object", "Object"),
+            new AliasProp("Alias_TriggerActorZone", "TriggerActorZone"),
             new FormProp("TrialObject", "TLM_MISC_TrialObject"),
             new VanillaProp("MarkerBase", "XMarker", "Static")));
 

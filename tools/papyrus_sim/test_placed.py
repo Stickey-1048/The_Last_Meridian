@@ -30,8 +30,8 @@ ARRIVALS = PLUGIN.with_name("TheLastMeridian.arrivals.json")
 # The plugin as built without the game's master: nothing is placed.
 SKELETON = ROOT / "build" / "TheLastMeridian.json"
 
-PERSON, TRIGGER, GAME_TRIGGER, OBJECT = ("TLM_REF_TrialPerson", "TLM_REF_TrialTrigger",
-                                         "TLM_REF_TrialTriggerGameBase", "TLM_REF_TrialObject")
+PERSON, TRIGGER, GAME_TRIGGER, OBJECT, ZONE_TRIGGER = ("TLM_REF_TrialPerson", "TLM_REF_TrialTrigger", "TLM_REF_TrialTriggerGameBase",
+                                                       "TLM_REF_TrialObject", "TLM_REF_TrialTriggerActorZone")
 CHECKS = 18
 
 
@@ -82,8 +82,9 @@ class TheTrialAsBuilt(unittest.TestCase):
         self.assertEqual(s.ended, "quit", "the scenario did not close the game by itself")
         self.assertEqual(errors(s), [])
         self.assertEqual(s.message_boxes, [])
-        # the comparison trigger, reported and not scored
+        # the two comparison triggers, reported and not scored
         self.assertIn("trial: entering the trigger made on the game's own empty trigger: stage 11 set = True (it was False before)", got["info"])
+        self.assertIn("trial: entering the trigger on the layer L_ACTORZONE: stage 12 set = True (it was False before)", got["info"])
         # the fallback for a pick-up that did not set the stage was not needed
         self.assertFalse([l for l in got["info"] if "AddItem" in l])
         # the two real quests were never touched
@@ -199,6 +200,14 @@ class WhatTheScenarioCatches(unittest.TestCase):
         got = self.run_with(lambda d: placed(d, TRIGGER).update(Primitive=None, Box=None, CollisionLayer=None), script_errors=2)
         self.assertEqual(got["failures"], ["trial: entering the placed trigger sets stage 10 (the game's own script on the alias): expected true, was false"])
 
+    def test_a_comparison_trigger_that_does_not_work_is_reported_and_costs_nothing(self):
+        """The comparisons are there to be read, not to be scored."""
+        def no_script(d):
+            alias(d, "TriggerActorZone").update(Scripts=[])
+        got = self.run_with(no_script)
+        self.assertEqual((got["failures"], got["passed"]), ([], CHECKS))
+        self.assertIn("trial: entering the trigger on the layer L_ACTORZONE: stage 12 set = False (it was False before)", got["info"])
+
     def test_the_comparison_trigger_left_out_is_reported_and_costs_nothing(self):
         """What a build against a master without the game's empty trigger gives."""
         def left_out(d):
@@ -290,9 +299,9 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
         s = self.session()
         quest = s.quests["TLM_Trial"]
         self.assertFalse(quest.running)
-        self.assertEqual([a.ref for a in quest.aliases.values()], [None] * 4)
+        self.assertEqual([a.ref for a in quest.aliases.values()], [None] * 5)
         self.assertTrue(s.n_quest_start(quest, None))
-        self.assertEqual([a.ref for a in quest.aliases.values()], [s.placed[x] for x in (PERSON, TRIGGER, GAME_TRIGGER, OBJECT)])
+        self.assertEqual([a.ref for a in quest.aliases.values()], [s.placed[x] for x in (PERSON, TRIGGER, GAME_TRIGGER, OBJECT, ZONE_TRIGGER)])
 
     def test_what_is_placed_is_where_and_how_the_plugin_says(self):
         s = self.session()

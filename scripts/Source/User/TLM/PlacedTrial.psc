@@ -15,10 +15,12 @@ finds out whether they work there:
     items, can be picked up, and the game's own script on its alias
     (DefaultAliasOnContainerChangedTo) then sets a stage;
   - the placed trigger sets a stage when the player enters it, through the
-    game's own script on its alias (DefaultAliasOnTriggerEnter). A second
-    trigger, made on the game's own empty trigger, is tried for comparison and
-    reported, not scored: if ours fails and that one works, the fault is in the
-    activator this plugin makes.
+    game's own script on its alias (DefaultAliasOnTriggerEnter). Two more
+    triggers are tried for comparison and reported, not scored. Each differs
+    from the first in one thing: one is made on the game's own empty trigger
+    (if ours fails and that one works, the fault is in the activator this
+    plugin makes); the other is on the collision layer L_ACTORZONE where the
+    first is on L_TRIGGER (if ours fails and that one works, it is the layer).
 
 Lines that begin INFO are facts about the game, reported and not scored.
 
@@ -37,6 +39,7 @@ Group Aliases
 	ReferenceAlias Property Alias_Trigger Auto Const Mandatory
 	ReferenceAlias Property Alias_TriggerGameBase Auto Const Mandatory
 	ReferenceAlias Property Alias_Object Auto Const Mandatory
+	ReferenceAlias Property Alias_TriggerActorZone Auto Const Mandatory
 EndGroup
 
 Group Forms
@@ -50,6 +53,7 @@ EndGroup
 
 int STAGE_TRIGGER = 10 Const
 int STAGE_TRIGGER_GAME_BASE = 11 Const
+int STAGE_TRIGGER_ACTOR_ZONE = 12 Const
 int STAGE_OBJECT = 20 Const
 int STAGE_DONE = 100 Const
 
@@ -115,9 +119,10 @@ Function Run(TLM:SelfTest akTest)
 		EndIf
 	EndIf
 
-	; ---- 4. The placed trigger, and the one made on the game's own empty trigger.
+	; ---- 4. The placed trigger, and the two that each differ from it in one thing.
 	EnterTrigger(akTest, playerRef, Alias_Trigger, STAGE_TRIGGER, "the placed trigger", true)
 	EnterTrigger(akTest, playerRef, Alias_TriggerGameBase, STAGE_TRIGGER_GAME_BASE, "the trigger made on the game's own empty trigger", false)
+	EnterTrigger(akTest, playerRef, Alias_TriggerActorZone, STAGE_TRIGGER_ACTOR_ZONE, "the trigger on the layer L_ACTORZONE", false)
 
 	; ---- 5. Back to where the scenario began, and the quest's last stage.
 	If homeMarker

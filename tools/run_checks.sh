@@ -61,6 +61,7 @@ python3 tools/check_plugin_layout.py --self-test "$tmp/default/out/TheLastMeridi
 python3 tools/check_plugin_layout.py "$tmp/default/out/TheLastMeridian.esp" >/dev/null || { echo "FAILED: the plugin built against a master has the wrong layout"; exit 1; }
 grep -q "TLM_REF_TrialPerson  PlacedNpc of .* at (1500, -950, 64) turned (0, 0, 270)  \[Persistent, InitiallyDisabled\]  in the Persistent list" "$(report default)" || { echo "FAILED: the placed person is not where the arrival marker and its heading put it"; exit 1; }
 grep -q "TLM_REF_TrialTrigger  PlacedObject of TLM_ACTI_TrialTrigger  at (1800, -600, 164) .*  Box (150, 150, 150)  collision layer 12" "$(report default)" || { echo "FAILED: the placed trigger is not as specified"; exit 1; }
+grep -q "TLM_REF_TrialTriggerActorZone  PlacedObject of TLM_ACTI_TrialTrigger  at (2150, -800, 164) .*  Box (150, 150, 150)  collision layer 22" "$(report default)" || { echo "FAILED: the trigger on the other collision layer is not as specified"; exit 1; }
 grep -q "TLM_MISC_TrialObject  \"Trial Object\"  model: " "$(report default)" || { echo "FAILED: the trial object did not borrow a world model from the master"; exit 1; }
 grep -q "alias  0 Person  (reference) \[Optional, AllowDisabled\]  fill: forced .*  shown as: TLM_MSG_TrialPersonName" "$(report default)" || { echo "FAILED: the Person alias does not point at the placed person"; exit 1; }
 grep -q "FixtureActorBase = " "$(report default)" || { echo "FAILED: the settler the self-test's stand-ins are made from was not found in the master"; exit 1; }
@@ -98,6 +99,7 @@ grep -q "placing from the origin (0, 0, 0)" "$(report bare-room)" || { echo "FAI
 grep -q "TLM_REF_TrialTrigger: placed without a collision layer" "$(report bare-room)" || { echo "FAILED: a trigger without its collision layer was not reported"; exit 1; }
 grep -q "TLM_REF_TrialTriggerGameBase: not placed (no Activator 'DefaultEmptyTrigger' in Fallout4.esm)" "$(report bare-room)" || { echo "FAILED: the missing comparison trigger was not reported"; exit 1; }
 grep -q "alias  2 TriggerGameBase  (reference) \[Optional\]$" "$(report bare-room)" || { echo "FAILED: the alias of a reference that was not placed is filled"; exit 1; }
+grep -q "TLM_REF_TrialTriggerActorZone: placed without a collision layer" "$(report bare-room)" || { echo "FAILED: the second trigger without its collision layer was not reported"; exit 1; }
 
 [ "$(git hash-object tools/PluginBuilder/formkeys.txt)" = "$ids_before" ] || { echo "FAILED: a build against a master changed tools/PluginBuilder/formkeys.txt; ids must be given out the same with and without Fallout4.esm"; exit 1; }
 echo "  vanilla lookups work against six stand-in masters (spelling, fallback, rejection, quest evidence, weak evidence, a bare test room)"

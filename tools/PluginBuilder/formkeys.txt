@@ -84,3 +84,5 @@ TLM_REF_TrialTriggerGameBase
 2089
 TLM_REF_TrialObject
 2090
+TLM_REF_TrialTriggerActorZone
+2091

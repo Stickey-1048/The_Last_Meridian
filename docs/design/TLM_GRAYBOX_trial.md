@@ -26,9 +26,12 @@ All of it is development only and marked "trial" in `tools/PluginBuilder/Spec.cs
 | `TLM_REF_TrialPerson` | A placed copy of the game's generic settler (`WorkshopNPC`), **initially disabled** |
 | `TLM_REF_TrialTrigger` | A placed `TLM_ACTI_TrialTrigger` with a box reaching 150 units from its middle on each axis, on the collision layer `L_TRIGGER` |
 | `TLM_REF_TrialTriggerGameBase` | The same box on the game's own empty trigger (`DefaultEmptyTrigger`), for comparison. Left out, and reported, if the game has no activator of that name |
+| `TLM_REF_TrialTriggerActorZone` | The same box on `TLM_ACTI_TrialTrigger` again, on the collision layer `L_ACTORZONE`, for comparison |
 | `TLM_REF_TrialObject` | A placed `TLM_MISC_TrialObject` |
 
-The four references are persistent, which a reference needs to be for a quest alias to point at it.
+The five references are persistent, which a reference needs to be for a quest alias to point at it.
+
+**Why two comparison triggers.** The wiki says a trigger's layer is "typically L_TRIGGER". A forum report (Nexus Mods, game not certain) has someone changing a trigger's layer *from* `L_ACTORZONE`, which suggests that is what the editor gives a new trigger. Both should let the player set a trigger off. Each comparison differs from the scored trigger in one thing, so one run answers both questions: is it the activator, is it the layer.
 
 The person starts disabled so that nobody new stands about in the other 62 scenarios. A bystander changes what the game makes of a killing (VERIFY_LOG, the twelfth run), and those scenarios must stay what they were.
 
@@ -40,7 +43,8 @@ The builder does not know the room. It reads from the game's master where the co
 |---|---|---|---|
 | Person | 300 | 150 | 0 |
 | Trigger | 600 | 200 to the left | 100 |
-| Comparison trigger | 600 | 200 | 100 |
+| Comparison trigger on the game's base | 600 | 200 | 100 |
+| Comparison trigger on `L_ACTORZONE` | 950 | 0 | 100 |
 | Object | 150 | 60 to the left | 20 |
 
 Whether those spots are open floor is not known. It does not matter for the test, which moves the player by script and picks the object up by script; it matters for a person who walks in to look. The build output says where the arrival marker is and where each thing went, and the scenario reports where the player and each thing really are, so the two can be compared.
@@ -54,7 +58,8 @@ Not Start Game Enabled. Run Once. Started only by scenario 10.
 | Stage | Set by | Meaning |
 |---|---|---|
 | 10 | `DefaultAliasOnTriggerEnter` on the `Trigger` alias | The player entered the placed trigger |
-| 11 | The same script on the `TriggerGameBase` alias | The player entered the comparison trigger |
+| 11 | The same script on the `TriggerGameBase` alias | The player entered the comparison trigger made on the game's own empty trigger |
+| 12 | The same script on the `TriggerActorZone` alias | The player entered the comparison trigger on `L_ACTORZONE` |
 | 20 | `DefaultAliasOnContainerChangedTo` on the `Object` alias | The player picked the placed object up |
 | 100 | Scenario 10, at its end | Finished. Completes the quest |
 
@@ -66,6 +71,7 @@ No objectives, no log text. Each stage has its one item, as every stage of this 
 | `Trigger` | `TLM_REF_TrialTrigger` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 10 |
 | `TriggerGameBase` | `TLM_REF_TrialTriggerGameBase` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 11 |
 | `Object` | `TLM_REF_TrialObject` | Optional | `DefaultAliasOnContainerChangedTo`, `StageToSet` = 20 |
+| `TriggerActorZone` | `TLM_REF_TrialTriggerActorZone` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 12 |
 
 Every alias is Optional on purpose: an alias that stays empty in the game is then reported by name, and the quest still starts. `Person` needs Allow Disabled because its reference starts disabled.
 
@@ -93,7 +99,7 @@ Reported, not scored (lines beginning INFO):
 - whether the person's and the object's 3D is loaded;
 - what `Start` and `Activate` returned;
 - how many things each trigger counts inside itself before and after the move;
-- the comparison trigger: whether entering it set stage 11. If ours fails and this one works, the fault is in the activator the plugin makes;
+- the two comparison triggers: whether entering each set its stage (11, 12). If ours fails and the one on the game's base works, the fault is in the activator the plugin makes; if the one on `L_ACTORZONE` works, it is the layer;
 - if picking the object up did not set stage 20, the reference is moved into the player's inventory by `AddItem` and the result reported, which tells a pick-up that failed from a script that did not hear it.
 
 At the end the player is moved back to where the scenario began.
@@ -111,10 +117,10 @@ Looked up by name in `Fallout4.esm` when the plugin is built; none is hard-coded
 | `WorkshopNPC` | Actor | The person is not placed |
 | `Caps001` | Item | The object has no world model |
 | `XMarker` | Static | The player is not moved back at the end |
-| `L_TRIGGER` | Collision layer | The triggers are placed without one, and the build says so |
+| `L_TRIGGER`, `L_ACTORZONE` | Collision layers | A trigger whose layer is missing is placed without one, and the build says so |
 | `DefaultEmptyTrigger` | Activator | The comparison trigger is left out |
 
-`WorkshopNPC`, `Caps001` and `XMarker` have been found in the real master before. The other four have not been looked up there yet; the names are from memory of the game's data and the wiki, and the first build on the PC shows whether they are right.
+`WorkshopNPC`, `Caps001` and `XMarker` have been found in the real master before. The other five have not been looked up there yet. The names are from memory of the game's data, the wiki (`L_TRIGGER`) and forum posts that use them (`DefaultEmptyTrigger`, `L_ACTORZONE`, `COCMarkerHeading`); the first build on the PC shows whether they are right.
 
 From the game itself: the scripts `DefaultAliasOnTriggerEnter` and `DefaultAliasOnContainerChangedTo`.
 
@@ -142,7 +148,7 @@ Not documented anywhere I could find, and assumed:
 
 ## Implementation checklist
 
-- [x] `Spec.cs`: the item with a borrowed model, the activator, the name message, the four placed references, the quest.
+- [x] `Spec.cs`: the item with a borrowed model, the activator, the name message, the five placed references, the quest.
 - [x] `Builder.cs`: model borrowing; the copy of the cell's record; the arrival marker; placing from it; the box, with its colour copied from one of the game's own box triggers when one is found; the collision layer by name; forced-reference aliases; alias display names. Ids for the placed references are given out with and without the master, so `formkeys.txt` never changes on the PC.
 - [x] The build output says what was found and where everything went, including a count of which collision layers the game's own box triggers use (a sample of a few hundred), for comparison if ours does not work.
 - [x] `Report.cs`, `SelfCheck.cs`: the written file is read back and compared with the spec, the references included; the cell's copy must be filed where the master files the cell and hold only this plugin's references.
@@ -164,11 +170,11 @@ On Linux, all in `tools/run_checks.sh`:
 | What | Shows |
 |---|---|
 | Plugin built without a master | Nothing is placed, the aliases are empty and Optional, ids are still given out |
-| Plugin built against the stand-in room | Four references, where the arrival marker and its heading put them; read back through the library and again from the bytes; the id file unchanged |
+| Plugin built against the stand-in room | Five references, where the arrival marker and its heading put them; read back through the library and again from the bytes; the id file unchanged |
 | Plugin built against a bare room | Placed from the origin; no collision layer; no comparison trigger; each said in the build output; the file still sound |
 | Deliberate damage to the written file (12 kinds, 8 of them to the cell and its references) | Each is caught by the byte check |
 | Scenario 10 on the stand-in engine | 18 passed, in the ordinary mode, with every call taking a frame, and shaken 25 ways |
-| `test_placed.py`, 11 tests that each break one thing in the plugin or in how the game answers | The scenario fails on the check that is there for that thing, and still closes the game |
+| `test_placed.py`, 12 tests that each break one thing in the plugin or in how the game answers | The scenario fails on the check that is there for that thing, and still closes the game |
 | `test_placed.py`, 15 tests of the stand-in's new rules | The rules do what `sim.py` says |
 | The other 62 scenarios | Unchanged: 1,561 checks |
 | The Windows chain against the stand-in PC | Build, compile (a stand-in compiler), install, scenario 10, report |
@@ -195,9 +201,11 @@ About ten minutes. Scenario 10 runs first, so that a plugin the game cannot load
 | The person is not in the player's cell, or absurdly far | The cell's copy landed somewhere other than the room |
 | Stage 20 not set, and the `AddItem` line says it then was | `Activate` did not pick the object up; the default script is fine |
 | Stage 20 not set either way | The default script did not act, or did not hear |
-| Stage 10 not set, things inside the trigger = 0 | The game does not see the player in the box: the box, its layer or the activator. Compare with the comparison trigger and with the layers the build output counted |
+| Stage 10 not set, things inside the trigger = 0 | The game does not see the player in the box: the box, its layer or the activator. Compare with the two comparison triggers and with the layers the build output counted |
 | Stage 10 not set, things inside = 1 | The trigger works; the default script did not act |
 | Stage 10 not set, stage 11 set | Our activator is the fault |
+| Stage 10 not set, stage 12 set | The layer is the fault: use `L_ACTORZONE` |
+| None of 10, 11, 12 set | Something the three share: the box itself, the default script, or that a move by script is not "entering" |
 | All 18 pass | Placed people, triggers and objects can be generated. The rough walk-through can be built this way |
 
 ## Rollback
