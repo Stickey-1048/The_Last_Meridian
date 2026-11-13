@@ -273,6 +273,18 @@
     "source": "falloutck.uesp.net/wiki/IsInCombat_-_Actor"
    }
   ],
+  "IsInDialogueWithPlayer": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/IsInDialogueWithPlayer_-_ObjectReference"
+   }
+  ],
   "IsObjectiveCompleted": [
    {
     "global": false,

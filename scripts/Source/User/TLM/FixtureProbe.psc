@@ -19,7 +19,10 @@ COMPILES. RAN IN THE GAME on 2026-11-12: scenario 2 passed its 14 checks and
 scenario 3 its 8 (docs/design/VERIFY_LOG.md). Scenario 3's first experiment
 did not come back: MoveTo on a placed copy of this plugin's item, which has no
 model, never returns. That is what had stopped an earlier version of scenario
-2. The experiments after it have therefore never run.}
+2. The experiments after it have therefore never run.
+Since that run one check was added to scenario 2, which now makes 15: that an
+actor nobody is talking to is "not in dialogue with the player" (amendment
+A25). THAT LINE IS NOT YET COMPILED.}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory
@@ -74,6 +77,10 @@ Function Run(TLM:SelfTest akTest)
 	mq.Alias_CaravanDrover.ForceRefTo(abel)
 	akTest.CheckTrue("probe: ForceRefTo fills the drover alias", mq.Alias_CaravanDrover.GetActorReference() == abel)
 	akTest.CheckTrue("probe: the quest script sees the drover alive", mq.IsAliveAlias(mq.Alias_CaravanDrover))
+	; Amendment A25 asks the game whether the Cutter lead is talking to the
+	; player. There is no dialogue to make that true; this shows only that the
+	; question can be asked and is answered "no" when nobody is talking.
+	akTest.CheckFalse("probe: an actor nobody is talking to is not in dialogue with the player", abel.IsInDialogueWithPlayer())
 	akTest.Note("probe: drover in a Protected alias: IsEssential = " + abel.IsEssential())
 	akTest.Step("killing the drover with no killer")
 	abel.Kill()

@@ -895,6 +895,8 @@
   "T22": "arrival at night: packages and time of day",
   "T27": "clean plugin load: seen in every run, not a case",
   "T28": "unrelated saves: needs other saves",
+  "T29": "the timer during the conversation with the Cutter lead: there is no dialogue yet, and nothing else makes the game say he is talking to the player",
+  "T29b": "leaving that conversation: there is no dialogue yet",
   "S14": "Pike dead: the guard is a dialogue condition, and there is no dialogue yet",
   "S16": "reload: needs a save and a load",
   "S20": "Vane dead hides the sale: the guard is a dialogue condition, and there is no dialogue yet"

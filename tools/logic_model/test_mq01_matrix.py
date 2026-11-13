@@ -279,6 +279,46 @@ class MQ01Matrix(unittest.TestCase):
         self.assertTrue(s.hands_in_town)
 
     @unittest.skip(ENGINE_ONLY + " (plugin load and logs)")
+    def test_T29_the_timer_stands_still_during_the_conversation(self):
+        """Owner decision D9, amendment A25: the evade timer does not resolve
+        the ambush while the player is talking to the Cutter lead."""
+        s = run(TO_AMBUSH + ["dunmore_talk"])
+        self.assertTrue(s.talking)
+        with self.assertRaises(NotAvailable):
+            apply(s, "evade_timer")
+        # so a deal taken late is still a deal
+        s = apply(s, "dunmore_deal")
+        self.assertEqual((s.outcome, s.method), (m.OUT_EXPLOITED, m.METHOD_DEAL))
+        self.assertFalse(s.talking)
+        # v0.1: the timer resolved the ambush under the conversation, and the deal was gone
+        old = run(TO_AMBUSH + ["dunmore_talk", "evade_timer"], rules=V01)
+        self.assertEqual(old.outcome, m.OUT_EVADED)
+        self.assertFalse(old.talking)
+        with self.assertRaises(NotAvailable):
+            apply(old, "dunmore_deal", V01)
+
+    def test_T29b_only_the_timer_is_held_back(self):
+        # left without a line chosen: the timer runs out as before
+        s = run(TO_AMBUSH + ["dunmore_talk", "walk_away_from_dunmore"])
+        self.assertFalse(s.talking)
+        self.assertEqual(s.outcome, m.OUT_NONE)
+        self.assertEqual(apply(s, "evade_timer").outcome, m.OUT_EVADED)
+        # leaving is still leaving, conversation or not
+        self.assertEqual(run(TO_AMBUSH + ["dunmore_talk", "goto_town"]).outcome, m.OUT_EVADED)
+        self.assertEqual(run(TO_AMBUSH + ["dunmore_talk", "goto_wreck"]).outcome, m.OUT_EVADED)
+        # a fight ends the conversation, and then the fight holds the timer back
+        fight = run(TO_AMBUSH + ["dunmore_talk", "attack_cutter"])
+        self.assertFalse(fight.talking)
+        with self.assertRaises(NotAvailable):
+            apply(fight, "evade_timer")
+        # each line closes it
+        for line in ("dunmore_speech_success", "dunmore_speech_fail", "dunmore_deal", "dunmore_refuse"):
+            self.assertFalse(run(TO_AMBUSH + ["dunmore_talk", line]).talking, line)
+        # it cannot be opened in a fight, or twice, or once the ambush is over
+        for before in (["attack_cutter"], ["dunmore_talk"], ["evade_timer"], ["player_kills_lead"]):
+            with self.assertRaises(NotAvailable):
+                run(TO_AMBUSH + before + ["dunmore_talk"])
+
     def test_T27_clean_plugin_load(self):
         pass
 

@@ -136,6 +136,8 @@ def check_mq01_state(s: State) -> List[str]:
         bad("debrief answer %r is not offered for variant %r" % (s.debrief_answer, s.debrief_variant))
     if s.reward_taken and not s.done(31):
         bad("Nell's reward given without the caravan ever being saved")
+    if s.talking and not m._dunmore_available(s):
+        bad("the conversation with the Cutter lead is open though he cannot be talked to")
     return v
 
 
@@ -200,6 +202,8 @@ def check_edges(graph: Dict[State, List[Tuple[str, State]]]) -> List[str]:
                 v.add("caravan 'saved' by an NPC kill with no player action")
             if name == "evade_timer" and s.in_combat and t.outcome == m.OUT_EVADED:
                 v.add("evade timer resolved Evaded while the player was in combat")
+            if name == "evade_timer" and s.talking and t.outcome == m.OUT_EVADED:
+                v.add("evade timer resolved Evaded while the player was talking to the Cutter lead")
             if s.done(50) and (t.outcome != s.outcome or t.rep != s.rep or t.method != s.method):
                 v.add("caravan outcome or reputation changed after the debrief")
             if s.sq_outcome != m.SQ_NONE and t.sq_outcome != s.sq_outcome:

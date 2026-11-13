@@ -304,6 +304,7 @@ Rows no case stands for, and why:
 | T27 | clean plugin load: seen in every run, not a case |
 | T28 | unrelated saves |
 | S14, S20 | Pike dead, Vane dead: the guards are dialogue conditions, and there is no dialogue yet |
+| T29, T29b | added 2026-11-13 (amendment A25): the timer during the conversation with the Cutter lead. There is no dialogue yet, and nothing else makes the game say he is talking to the player |
 
 Also left out: the one attempt in T08 whose only guard is a dialogue condition (the deal after a fight has started).
 
@@ -401,11 +402,28 @@ Four pairs of things happening at once were then run under that shaking (`tools/
 
 These numbers say nothing about how often any of it would happen in the game, where the timing is far gentler. They show that each of the three corrections is needed, and that the tests now notice when one is missing: each row but the last is a test that must find at least one wrong ending. All 62 scenarios also pass under the shaking, each three ways.
 
-**Any two things at once.** Those four pairs were chosen by hand, and the reading had just shown what hand-picked pairs miss. So every ordered pair out of twelve things that can happen at a live ambush was run as well: the lead, another Cutter or either caravan hand killed by the player; Nell dead by nobody's hand; the timer; leaving; the gate; the three ways the conversation with the lead can end; a fight beginning. The second was fired zero to seven frames after the first, each 40 shakings: 42,240 runs. Asked of each: is the end one that the logic model gives for those two events in one order or the other? With the script as it is, every time. With the script before the guards, and with the guards as first written, not. The test suite keeps a sweep of 2,640 runs for the script as it is, and two smaller ones that must catch the older versions (`test_overlap.py`, class `AnyTwoThingsAtOnce`). This does not say which of two near-simultaneous things ought to win. It says the result is never a mixture of both, and a betrayal is never lost.
+**Any two things at once.** Those four pairs were chosen by hand, and the reading had just shown what hand-picked pairs miss. So every ordered pair out of twelve things that can happen at a live ambush was run as well: the lead, another Cutter or either caravan hand killed by the player; Nell dead by nobody's hand; the timer; leaving; the gate; the three ways the conversation with the lead can end; a fight beginning. The second was fired zero to seven frames after the first, each 40 shakings: 42,240 runs. Asked of each: is the end one that the logic model gives for those two events in one order or the other? With the script as it is, every time. With the script before the guards, and with the guards as first written, not. The test suite keeps a smaller sweep for the script as it is, and two smaller still that must catch the older versions (`test_overlap.py`, class `AnyTwoThingsAtOnce`); since 2026-11-13 it has a thirteenth thing in it, the conversation with the lead being open (3,120 runs). This does not say which of two near-simultaneous things ought to win. It says the result is never a mixture of both, and a betrayal is never lost.
 
 One thing the sweep does not look at, on purpose: when two resolution stages are set in the same instant, both read as set afterwards though only one was applied. Nothing reads those flags today; amendment A24 records what that means for the log entries still to be written.
 
 What the next run can show: that the changed quest script compiles and still passes everything it passed, and cases 129 to 131. Whether the guard acted in those three, and whether the overlap of case 132 happened at all in the game, is in the "Timing" part of the report; a case that passes without its guard having acted has shown nothing about the guard, and the report now says which it was.
+
+### The timer and the conversation, 2026-11-13
+
+Not yet compiled and not yet run in the game. Owner decision D9: the evade timer is to be held while the player is talking to the Cutter lead (amendment A25).
+
+The fault it removes was in the design, not in the script: 90 seconds after the ambush goes live the timer resolved it as "evaded" unless the player was fighting, and a hold-up conversation is not a fight. A player still choosing a line in the 91st second had the drover killed and the wagon looted under the conversation, and the line then chosen was silently refused.
+
+What was done, in the order the project asks for:
+
+| Where | What |
+|---|---|
+| Logic model | A state "the conversation is open", two events (it opens; it is left without a line being chosen), and the rule: the timer does nothing while it is open. The conversation closes by itself whenever the lead can no longer be talked to. Two matrix rows, T29 and T29b. The exhaustive search finds no violation under the amended rules, and finds the fault under the v0.1 rules |
+| `TLM:MQ01Quest` | One condition in `EvadeTimerElapsed`: if the lead `IsInDialogueWithPlayer`, the timer starts over, as it does during a fight. No flag is kept; the game is asked each time |
+| Plugin | Nothing: no record changes |
+| Stand-in engine | A switch on an actor, "is talking to the player", that only a test flips. Seven tests (`tools/papyrus_sim/test_conversation.py`) with the real 90-second timer: it does not run out on a conversation of any length; a deal taken afterwards is a deal; after the conversation it runs out on its next turn; leaving, each line and a killing are not held back; and with the script as it was before the rule the deal is lost. The conversation is also one of the thirteen things in the sweep of pairs |
+
+What the game can say today, and what it cannot. The plugin has no dialogue, so nothing can make the game answer "yes, he is talking to the player". The next run shows only that the question compiles and is answered "no" when nobody is talking: scenario 2 asks it outright (one check more, 15), and every case in which the timer resolves the ambush depends on that answer. Rows T29 and T29b stay unplayed in the game until the hold-up conversation exists. Whether the game's answer is "yes" for the whole of a conversation, the player's turn to choose included, is checklist item 10a.
 
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
@@ -435,6 +453,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. |
 | `OnPlayerLoadGame` | Documented | Sent only to the player actor; fires "for the first time on the next load". An alias pointing at the player should receive it, since aliases get their reference's events. *That last step needs the game.* |
 | `OnCombatStateChanged` | Seen in the game | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. On 2026-11-12 an alias script received it, with the player as target, when `StartCombat(player)` was called on its actor. |
+| `IsInDialogueWithPlayer` | Documented | `bool Function IsInDialogueWithPlayer() native`, a member of ObjectReference: "Is this actor or talking activator currently talking to the player?" Used by A25 on the Cutter lead's actor. *Needs the game twice over:* that it answers "no" when nobody is talking (asked in self-test scenario 2 from the next run on), and that it answers "yes" for the whole of a conversation, which cannot be seen until there is one. |
 | `OnHit` | Documented | Needs `RegisterForHitEvent` first and fires once per registration. The scripts use `OnCombatStateChanged` instead. |
 | Distance polling | Corrected | `RegisterForDistanceGreaterThanEvent(ScriptObject, ScriptObject, float)` and `Event OnDistanceGreaterThan(...)` exist and the wiki recommends them over polling `GetDistance`. One event per registration; "if the objects are already that far apart, the event will be sent immediately". **Seen in the game** on 2026-11-12, all three statements. |
 | Calling an event like a function | Documented, not used | "Calling events is identical to calling a function." Nothing in the project relies on it: the evade timer's handler is a function of its own (`EvadeTimerElapsed`), which the timer event and the self-test both call. |
@@ -493,4 +512,5 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 8. Message box with a hidden button: which index comes back.
 9. Distance events (**done 2026-11-12**). Timers and distance registrations across a save and load (still to do).
 10. Dialogue: option count, speech checks, unvoiced lines, and whether an actor in a hold-up will talk (A11).
+10a. Once the hold-up conversation exists: does `IsInDialogueWithPlayer` on the Cutter lead read true from the first line to the last, the player's turn to choose included (A25)? Stand in the conversation past the 90th second and see that the ambush is still live; rows T29 and T29b.
 11. The remaining console commands.

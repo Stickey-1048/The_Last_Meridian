@@ -97,6 +97,9 @@ class ObjectReference:
         self.disabled = False
         self.deleted = False
         self.inventory: Dict[Form, int] = {}
+        # Nothing in the stand-in opens a conversation. A test that wants one
+        # sets this, as a person would by talking to the actor.
+        self.talking_to_player = False
 
     def has_3d(self) -> bool:
         # [seen] a placed copy of an item with no model reports Is3DLoaded false
@@ -1150,6 +1153,12 @@ class Session:
 
     def n_actor_isdead(self, actor, context):
         return actor.dead
+
+    def n_objectreference_isindialoguewithplayer(self, ref, context):
+        # [documented] "Is this actor or talking activator currently talking
+        # to the player?" [assumed] not once it is dead or disabled. Not seen
+        # in the game either way: the project has no dialogue yet.
+        return bool(ref.talking_to_player) and not getattr(ref, "dead", False) and not ref.disabled
 
     def n_actor_isessential(self, actor, context):
         return self.is_essential(actor)

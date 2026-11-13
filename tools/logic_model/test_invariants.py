@@ -151,6 +151,7 @@ class V01Draft(unittest.TestCase):
             "player killed a caravan hand but the outcome is not Exploited",
             "caravan 'saved' by an NPC kill with no player action",
             "evade timer resolved Evaded while the player was in combat",
+            "evade timer resolved Evaded while the player was talking to the Cutter lead",
         }
         self.assertTrue(expected <= set(self.found), set(expected) - set(self.found))
 

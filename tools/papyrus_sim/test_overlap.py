@@ -386,8 +386,8 @@ class Shaken(unittest.TestCase):
 
 
 class AnyTwoThingsAtOnce(unittest.TestCase):
-    """Every pair of things that can happen at a live ambush, the second a few
-    frames after the first, with the timing shaken.
+    """Every pair of thirteen things that can happen at a live ambush, the
+    second a few frames after the first, with the timing shaken.
 
     What is asked is less than in the classes above and asked of far more: the
     end has to be one that the logic model gives for the two events in one
@@ -404,7 +404,7 @@ class AnyTwoThingsAtOnce(unittest.TestCase):
 
     TO_THE_AMBUSH = ["start", "take_dispatch", "goto_ambush"]
     EVENTS = ["player_kills_lead", "player_kills_cutter", "player_kills_nell", "player_kills_abel", "nell_dies_other",
-              "evade_timer", "goto_wreck", "goto_town", "dunmore_speech_success", "dunmore_deal",
+              "evade_timer", "goto_wreck", "goto_town", "dunmore_talk", "dunmore_speech_success", "dunmore_deal",
               "dunmore_speech_fail", "attack_cutter"]
 
     def happens(self, event, s, driver, mq):
@@ -439,6 +439,7 @@ class AnyTwoThingsAtOnce(unittest.TestCase):
             "player_kills_abel": lambda: s.n_actor_kill(v["abel"], None, s.player),
             "nell_dies_other": nobody_kills_nell,
             "goto_wreck": the_player_is_far_away,
+            "dunmore_talk": lambda: setattr(v["lead"], "talking_to_player", True),
             "attack_cutter": lambda: s.n_actor_startcombat(v["lead"], None, s.player),
         }[event])
 

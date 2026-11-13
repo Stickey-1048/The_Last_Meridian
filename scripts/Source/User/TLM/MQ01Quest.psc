@@ -16,8 +16,10 @@ OnGameLoaded, dialogue, saving and loading, and anything in a built place.
 Written without Fallout 4 or the Creation Kit.
 Since those runs the guards of amendment A24 were added (ClaimEncounter,
 WaitForResolutions, LeadIsDown, ResolveUnattended and the counting at the top
-of OnStageSet): THIS VERSION IS NOT YET COMPILED. It passes in the stand-in
-engine, which is not the game.
+of OnStageSet), and the rule of amendment A25 (PlayerIsTalkingToLead: the
+evade timer does not run out on a conversation with the Cutter lead): THIS
+VERSION IS NOT YET COMPILED. It passes in the stand-in engine, which is not
+the game.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.
@@ -357,12 +359,26 @@ Event OnTimer(int aiTimerID)
 	EndIf
 EndEvent
 
+bool Function PlayerIsTalkingToLead()
+	{The hold-up conversation with the Cutter lead is open (amendment A25).
+	Asked of the game each time rather than kept as a flag, so that nothing
+	needs putting right after a load, or after a conversation that ends in a
+	way nobody planned for.
+	NOT SEEN TRUE IN THE GAME: there is no dialogue yet. Whether it reads true
+	for the whole of a conversation, the player's turn to choose included, has
+	to be seen once there is one (docs/design/VERIFY_LOG.md).}
+	Actor a = Alias_CutterLead.GetActorReference()
+	Return a && a.IsInDialogueWithPlayer()
+EndFunction
+
 Function EvadeTimerElapsed()
 	{The evade timer has run out (the logic model's evade_timer). A function of
 	its own so that the development self-test can call it without waiting.}
 	If IsLive()
-		If Game.GetPlayer().IsInCombat()
-			; Never resolve "evaded" over the top of a fight. Check again later.
+		If Game.GetPlayer().IsInCombat() || PlayerIsTalkingToLead()
+			; Never resolve "evaded" over the top of a fight, or of the
+			; conversation with the Cutter lead (A25). Check again later: the
+			; timer starts over with its whole length.
 			StartTimer(EvadeSeconds, TIMER_EVADE)
 		Else
 			ResolveUnattended()

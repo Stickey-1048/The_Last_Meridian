@@ -62,6 +62,11 @@ class Rules:
     # A10: caravan hands become Essential once they are in town, so the
     #      "no witness" line can only follow a killing on the road.
     hands_essential_in_town: bool = True
+    # A25 (owner decision D9, 2026-11-13): the evade timer never resolves
+    #      while the hold-up conversation with the Cutter lead is open
+    #      (v0.1: it kept running, and a deal taken after it ran out was
+    #      silently refused).
+    evade_blocked_in_conversation: bool = True
 
 
 V02 = Rules()
@@ -76,6 +81,7 @@ V01 = Rules(
     sq01_runs_from_start=False,
     handover_keyed_on_stage=False,
     hands_essential_in_town=False,
+    evade_blocked_in_conversation=False,
 )
 
 # --------------------------------------------------------------------------
@@ -133,6 +139,7 @@ class State:
     loc: str = WRECK
     caravan_state: int = DORMANT
     in_combat: bool = False            # player currently in combat with Cutters
+    talking: bool = False              # the hold-up conversation with the Cutter lead is open
     lead_alive: bool = True
     cutters_alive: int = 3             # the three unnamed Cutters
     cutters_gone: bool = False         # withdrew / disabled after resolution
@@ -415,6 +422,8 @@ def ev_evade_timer(s: State, r: Rules) -> Optional[State]:
         return None
     if r.evade_blocked_in_combat and s.in_combat:
         return None                              # timer restarts; no change
+    if r.evade_blocked_in_conversation and s.talking:
+        return None                              # A25: the same while he is being talked to
     return _resolve_evaded(s)
 
 
@@ -480,6 +489,40 @@ def _dunmore_available(s: State) -> bool:
         and not s.in_combat
         and not s.cutters_gone
     )
+
+
+def ev_dunmore_talk(s: State, r: Rules) -> Optional[State]:
+    """The hold-up conversation opens and no line has been chosen yet (A25).
+
+    The four lines below can also be taken in one step from a state where
+    the conversation is not open: that stands for opening it and choosing
+    at once, which is how the matrix rows written before A25 read."""
+    if not _dunmore_available(s) or s.talking:
+        return None
+    return replace(s, talking=True)
+
+
+def ev_walk_away_from_dunmore(s: State, r: Rules) -> Optional[State]:
+    """The conversation is left without a line being chosen. Nothing else
+    changes; the ambush is as live as it was."""
+    if not s.talking:
+        return None
+    return replace(s, talking=False)
+
+
+def _conversation_closes(ev: "Event") -> "Event":
+    """The conversation cannot outlast what it needs. Whatever else an event
+    does, the conversation is over once the Cutter lead cannot be talked to:
+    a line was chosen, a fight began, he died, the player left, or the
+    ambush was resolved some other way."""
+    def settled(s: State, r: Rules) -> Optional[State]:
+        t = ev(s, r)
+        if t is not None and t.talking and not _dunmore_available(t):
+            t = replace(t, talking=False)
+        return t
+    settled.__name__ = getattr(ev, "__name__", "event")
+    settled.__doc__ = ev.__doc__
+    return settled
 
 
 def ev_dunmore_speech_success(s: State, r: Rules) -> Optional[State]:
@@ -853,6 +896,8 @@ MQ01_EVENTS: Dict[str, Event] = {
     "player_kills_lead": ev_player_kills_lead,
     "player_kills_cutter": ev_player_kills_cutter,
     "npc_kills_lead": ev_npc_kills_lead,
+    "dunmore_talk": ev_dunmore_talk,
+    "walk_away_from_dunmore": ev_walk_away_from_dunmore,
     "dunmore_speech_success": ev_dunmore_speech_success,
     "dunmore_speech_fail": ev_dunmore_speech_fail,
     "dunmore_deal": ev_dunmore_deal,
@@ -872,6 +917,7 @@ MQ01_EVENTS: Dict[str, Event] = {
     "pritchard_handoff": ev_pritchard_handoff,
     "walk_away_from_pritchard": ev_walk_away_from_pritchard,
 }
+MQ01_EVENTS = {name: _conversation_closes(ev) for name, ev in MQ01_EVENTS.items()}
 
 SQ01_EVENTS: Dict[str, Event] = {
     "take_ledger": ev_take_ledger,
