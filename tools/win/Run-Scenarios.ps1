@@ -193,6 +193,23 @@ $valueAtStart = Get-PluginGlobal -Path $installedPlugin -EditorId $globalName
 $customIni = Join-Path $profileFolder 'fallout4custom.ini'
 $alwaysActiveBefore = Get-IniValue $customIni 'General' 'bAlwaysActive'
 
+# A run that never reached its end (the PC shut down, the window was closed) could not
+# put back what it had changed, and this run would then take what it finds for how things
+# were. So a run writes down how things were before it changes anything, and removes the
+# note when it has put them back. A note still there means the run before did not finish:
+# its "before" is the real one.
+$unfinishedPath = Join-Path $build 'scenario-run.unfinished.json'
+$unfinished = $null
+if (Test-Path -LiteralPath $unfinishedPath) {
+    try { $unfinished = Get-Content -LiteralPath $unfinishedPath -Raw | ConvertFrom-Json } catch { $unfinished = $null }
+    $sameProfile = $unfinished -and ($unfinished.PSObject.Properties.Name -contains 'CustomIni') -and (Test-SamePath "$($unfinished.CustomIni)" $customIni)
+    if (-not $sameProfile) { $unfinished = $null }
+}
+if ($unfinished) {
+    $alwaysActiveBefore = $unfinished.AlwaysActiveBefore
+    if ($null -ne $unfinished.ScenarioBefore) { $valueAtStart = [int]$unfinished.ScenarioBefore }
+}
+
 if (-not (Wait-GameAndManagerClosed)) { throw 'Mod Organizer or Fallout 4 is still open. Close them, then run this again.' }
 
 # ------------------------------------------------------------- helpers
@@ -266,6 +283,20 @@ try {
     Write-Host "This takes about $([math]::Max(1, [int][math]::Round($list.Count * 36 / 60))) minutes: $($list.Count) game sessions of roughly half a minute each."
     Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
     Say "Through              : $moExe   profile $ProfileName"
+    if ($unfinished) {
+        Say "An earlier run did not finish (it began $($unfinished.Began)): the PC was shut down, or its window was closed."
+        Say "  What it had changed in the test profile is still changed. This run puts back what was there before THAT run:"
+        Say "  scenario number $($unfinished.ScenarioBefore), keep-running-without-focus $(if ($null -eq $unfinished.AlwaysActiveBefore -or "$($unfinished.AlwaysActiveBefore)" -eq '') { 'not set' } else { $unfinished.AlwaysActiveBefore }), no start-up command."
+    } else {
+        # Written before anything is changed; removed when everything has been put back.
+        $note = [ordered]@{
+            Began              = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+            CustomIni          = $customIni
+            AlwaysActiveBefore = $alwaysActiveBefore
+            ScenarioBefore     = $valueAtStart
+        }
+        Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
+    }
     Say "Scenario number in the installed plugin before the run: $valueAtStart"
     Say "Start-up command for the run: [General] sStartingConsoleCommand=$enterCommand  (in $customIni)"
     Set-IniValue $customIni 'General' 'sStartingConsoleCommand' $enterCommand
@@ -388,6 +419,13 @@ try {
     if (Test-Path -LiteralPath $builtPlugin) {
         $same = (Get-FileHash -LiteralPath $builtPlugin).Hash -eq (Get-FileHash -LiteralPath $installedPlugin).Hash
         $restoreNotes.Add("Installed plugin identical to the build again: $(if ($same) { 'yes' } else { 'NO' })")
+    }
+    # The note about how things were goes only when all of it has been put back.
+    if (-not @($restoreNotes | Where-Object { $_ -match '^COULD NOT' }).Count) {
+        try { if (Test-Path -LiteralPath $unfinishedPath) { Remove-Item -LiteralPath $unfinishedPath -Force } } catch { }
+        if ($unfinished) { $restoreNotes.Add("What the earlier, unfinished run had changed (it began $($unfinished.Began)): put back with the above") }
+    } else {
+        $restoreNotes.Add("Not everything could be put back. The note of how things were is kept (build\scenario-run.unfinished.json), and the next run will try again.")
     }
 }
 
