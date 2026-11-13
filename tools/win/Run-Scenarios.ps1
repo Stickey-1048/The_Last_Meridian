@@ -209,6 +209,14 @@ if ($unfinished) {
     $alwaysActiveBefore = $unfinished.AlwaysActiveBefore
     if ($null -ne $unfinished.ScenarioBefore) { $valueAtStart = [int]$unfinished.ScenarioBefore }
 }
+# A run cut off before these notes existed left none. Its mark is the start-up command
+# itself: every run that ends empties it, so if it is there now, a run did not end. How
+# things were before that run is then not known, and the game's own defaults are put back.
+$cutOffWithoutNote = (-not $unfinished) -and ("$(Get-IniValue $customIni 'General' 'sStartingConsoleCommand')".Trim() -ieq $enterCommand)
+if ($cutOffWithoutNote) {
+    $alwaysActiveBefore = '0'
+    $valueAtStart = 0
+}
 
 if (-not (Wait-GameAndManagerClosed)) { throw 'Mod Organizer or Fallout 4 is still open. Close them, then run this again.' }
 
@@ -287,6 +295,10 @@ try {
         Say "An earlier run did not finish (it began $($unfinished.Began)): the PC was shut down, or its window was closed."
         Say "  What it had changed in the test profile is still changed. This run puts back what was there before THAT run:"
         Say "  scenario number $($unfinished.ScenarioBefore), keep-running-without-focus $(if ($null -eq $unfinished.AlwaysActiveBefore -or "$($unfinished.AlwaysActiveBefore)" -eq '') { 'not set' } else { $unfinished.AlwaysActiveBefore }), no start-up command."
+    } elseif ($cutOffWithoutNote) {
+        Say "An earlier run did not finish: its start-up command is still in the test profile, and every run that ends removes it."
+        Say "  It left no note of how things were before it. This run puts back the game's own defaults:"
+        Say "  scenario number 0, keep-running-without-focus 0, no start-up command."
     } else {
         # Written before anything is changed; removed when everything has been put back.
         $note = [ordered]@{
@@ -424,6 +436,7 @@ try {
     if (-not @($restoreNotes | Where-Object { $_ -match '^COULD NOT' }).Count) {
         try { if (Test-Path -LiteralPath $unfinishedPath) { Remove-Item -LiteralPath $unfinishedPath -Force } } catch { }
         if ($unfinished) { $restoreNotes.Add("What the earlier, unfinished run had changed (it began $($unfinished.Began)): put back with the above") }
+        if ($cutOffWithoutNote) { $restoreNotes.Add("What an earlier, unfinished run had changed: the game's own defaults were put back, as above") }
     } else {
         $restoreNotes.Add("Not everything could be put back. The note of how things were is kept (build\scenario-run.unfinished.json), and the next run will try again.")
     }
