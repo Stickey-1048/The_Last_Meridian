@@ -215,9 +215,19 @@ public sealed class Builder
             // This plugin's copy of the cell's record. The game's own
             // references in the cell are not copied: they stay in the master.
             var cell = context.GetOrAddAsOverride(_mod);
+            // The library's copy leaves out what is in the cell (read from its
+            // copy mask: references, navigation meshes and land are all off).
+            // Should that ever differ, nothing of the game's may stay: a copy
+            // of one of its references here would replace it in the game.
             var theirs = cell.Persistent.Count + cell.Temporary.Count + cell.NavigationMeshes.Count + (cell.Landscape == null ? 0 : 1);
             if (theirs != 0)
-                throw new InvalidOperationException($"the copy of cell '{group.Key}' came with {theirs} of the game's references, navigation meshes or land; it must come with none");
+            {
+                cell.Persistent.Clear();
+                cell.Temporary.Clear();
+                cell.NavigationMeshes.Clear();
+                cell.Landscape = null;
+                VanillaNotes.Add($"NOTE {group.Key}: the copy of the cell's record came with {theirs} of the game's references, navigation meshes or land; they were taken out again");
+            }
 
             foreach (var p in group)
             {
@@ -268,6 +278,13 @@ public sealed class Builder
                             Unknown = sample?.Template?.Unknown ?? 0.3f,
                             Type = PlacedPrimitive.TypeEnum.Box,
                         };
+                        // The file holds the box's reach a second time, as the
+                        // reference's bound (XMBO). The format notes for the
+                        // game before this one say the editor refuses a box
+                        // whose two sets of numbers differ. Written as the
+                        // editor would; the build output says how many of the
+                        // game's own box triggers carry it.
+                        obj.BoundHalfExtents = new P3Float(p.BoxHalfExtents[0], p.BoxHalfExtents[1], p.BoxHalfExtents[2]);
                         if (p.CollisionLayer != null)
                         {
                             if (TryVanilla(p.CollisionLayer, "CollisionLayer", out var layerKey)
@@ -394,6 +411,8 @@ public sealed class Builder
     {
         public int Cells;
         public int Triggers;
+        public int WithBound;                                 // carry their reach a second time, as a bound
+        public int BoundAgrees;                               // ... and the two agree
         public Dictionary<long, int> ByLayer = new();        // -1: no collision layer given
         public Dictionary<uint, string> LayerNames = new();
         public IPlacedPrimitiveGetter? Template;
@@ -432,6 +451,13 @@ public sealed class Builder
                             if (primitive == null || primitive.Type != PlacedPrimitive.TypeEnum.Box) continue;
                             if (!_vanilla.TryResolve<IActivatorGetter>(placed.Base.FormKey, out _)) continue;
                             sample.Triggers++;
+                            if (placed.BoundHalfExtents is { } bound)
+                            {
+                                sample.WithBound++;
+                                // the library gives the primitive's whole sizes
+                                if (MathF.Abs(bound.X - primitive.Bounds.X / 2) < 0.01f && MathF.Abs(bound.Y - primitive.Bounds.Y / 2) < 0.01f
+                                    && MathF.Abs(bound.Z - primitive.Bounds.Z / 2) < 0.01f) sample.BoundAgrees++;
+                            }
                             var key = placed.CollisionLayer.HasValue ? placed.CollisionLayer.Value : -1L;
                             sample.ByLayer[key] = sample.ByLayer.GetValueOrDefault(key) + 1;
                             if (sample.Template == null)
@@ -458,6 +484,8 @@ public sealed class Builder
             var layers = string.Join(", ", sample.ByLayer.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => $"{sample.Describe(kv.Key)} x {kv.Value}"));
             var t = sample.Template!;
             VanillaNotes.Add($"the game's own box triggers, {sample.Triggers} in {sample.Cells} interior cells: collision layer {layers}");
+            VanillaNotes.Add($"of those {sample.Triggers}, {sample.WithBound} carry the box's reach a second time, as the reference's bound, and in {sample.BoundAgrees} the two agree"
+                + (sample.WithBound * 2 < sample.Triggers ? "  NOTE: this builder writes that bound on every box" : ""));
             VanillaNotes.Add($"the box's colour and unknown number are copied from {sample.TemplateFrom}: colour ({t.Color.R}, {t.Color.G}, {t.Color.B}), unknown {t.Unknown:0.###}; that box reaches ({t.Bounds.X / 2:0.#}, {t.Bounds.Y / 2:0.#}, {t.Bounds.Z / 2:0.#}) from its middle");
         }
         return sample;

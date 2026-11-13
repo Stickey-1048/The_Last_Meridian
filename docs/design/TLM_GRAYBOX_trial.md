@@ -22,7 +22,7 @@ All of it is development only and marked "trial" in `tools/PluginBuilder/Spec.cs
 | `TLM_ACTI_TrialTrigger` | An activator with no model. Placed with a box around it, it is a trigger |
 | `TLM_MSG_TrialPersonName` | A message whose title, "Trial Settler", is the name the placed person is shown under. A placeholder, not a character and not in the naming registry |
 | `TLM_Trial` | The quest (below) |
-| A copy of the record of the game's test room, `QASmoke` | A plugin puts something into a cell it does not own by carrying its own copy of that cell's record with the new references under it. Only the cell's record is copied. The game's own contents of the room stay in the game's master file; the builder stops if the copy comes with any of them, and the checks look again in the written file |
+| A copy of the record of the game's test room, `QASmoke` | A plugin puts something into a cell it does not own by carrying its own copy of that cell's record with the new references under it. Only the cell's record is copied. The game's own contents of the room stay in the game's master file: the library's copy leaves them out, the builder takes out and reports anything that comes along all the same, and the checks look again in the written file |
 | `TLM_REF_TrialPerson` | A placed copy of the game's generic settler (`WorkshopNPC`), **initially disabled** |
 | `TLM_REF_TrialTrigger` | A placed `TLM_ACTI_TrialTrigger` with a box reaching 150 units from its middle on each axis, on the collision layer `L_TRIGGER` |
 | `TLM_REF_TrialTriggerGameBase` | The same box on the game's own empty trigger (`DefaultEmptyTrigger`), for comparison. Left out, and reported, if the game has no activator of that name |
@@ -145,7 +145,9 @@ No script extender. No new dependency on the PC.
 | A message used as a name: "fill in the Title and leave the Message Text blank" | Wiki, *Message* |
 | `GetDisplayName` needs F4SE | Wiki, *GetDisplayName - ObjectReference* |
 | How a cell and its references are laid out in the file | The library that writes it (Mutagen), and the layout in xEdit's record definitions as remembered, not re-read for this work. The written bytes are checked against that layout by `tools/check_plugin_layout.py` |
-| The library's box sizes are whole sizes, and the file holds half of each | Seen in the bytes the library wrote: a box given as 150 came out as 75. The builder now doubles what it hands over, and the check reads the bytes |
+| The library's box sizes are whole sizes, and the file holds half of each | Seen in the bytes the library wrote: a box given as 150 came out as 75. The builder now doubles what it hands over, and the check reads the bytes. UESP's file-format page for the game before this one says the same of the file ("Bounds / 2") |
+| A box's reach is in the file twice: in the primitive, and again as the reference's bound; the editor refuses a box where the two differ | UESP, *Skyrim Mod:Mod File Format/REFR* (fields XPRM, XMBO), for the game before this one. Taken to hold here because the library's Fallout 4 records have the same field. The builder writes both, the byte check compares them, and the build output counts how many of the game's own box triggers carry the bound |
+| A trigger's collision layer is stored as a number, the index of the layer's record | The same UESP page (field XTRI), and the library. The builder looks the layer up by name and stores its index |
 
 Not documented anywhere I could find, and assumed:
 
@@ -158,7 +160,7 @@ Not documented anywhere I could find, and assumed:
 - [x] `Builder.cs`: model borrowing; the copy of the cell's record; the arrival marker; placing from it; the box, with its colour copied from one of the game's own box triggers when one is found; the collision layer by name; forced-reference aliases; alias display names. Ids for the placed references are given out with and without the master, so `formkeys.txt` never changes on the PC.
 - [x] The build output says what was found and where everything went, including a count of which collision layers the game's own box triggers use (a sample of a few hundred), for comparison if ours does not work.
 - [x] `Report.cs`, `SelfCheck.cs`: the written file is read back and compared with the spec, the references included; the cell's copy must be filed where the master files the cell and hold only this plugin's references.
-- [x] `tools/check_plugin_layout.py`: the same from the bytes, without the library, with eight kinds of deliberate damage that must each be caught.
+- [x] `tools/check_plugin_layout.py`: the same from the bytes, without the library, with ten kinds of deliberate damage that must each be caught.
 - [x] `tools/StandInMaster`: a stand-in test room, so that all of the above runs on Linux; and a bare room with nothing in it that the builder looks for.
 - [x] `TLM:PlacedTrial` and scenario 10 in `TLM:SelfTest`.
 - [x] `tools/papyrus_sim`: placed references, forced fills, triggers, picking up, and the game's two default alias scripts played from their documentation. `test_placed.py`.
@@ -178,7 +180,7 @@ On Linux, all in `tools/run_checks.sh`:
 | Plugin built without a master | Nothing is placed, the aliases are empty and Optional, ids are still given out |
 | Plugin built against the stand-in room | Five references, where the arrival marker and its heading put them; read back through the library and again from the bytes; the id file unchanged |
 | Plugin built against a bare room | Placed from the origin; no collision layer; no comparison trigger; each said in the build output; the file still sound |
-| Deliberate damage to the written file (12 kinds, 8 of them to the cell and its references) | Each is caught by the byte check |
+| Deliberate damage to the written file (14 kinds, 10 of them to the cell and its references) | Each is caught by the byte check |
 | Scenario 10 on the stand-in engine | 18 passed, in the ordinary mode, with every call taking a frame, and shaken 25 ways |
 | `test_placed.py`, 12 tests that each break one thing in the plugin or in how the game answers | The scenario fails on the check that is there for that thing, and still closes the game |
 | `test_placed.py`, 15 tests of the stand-in's new rules | The rules do what `sim.py` says |

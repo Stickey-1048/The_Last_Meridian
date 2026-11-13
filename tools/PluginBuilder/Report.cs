@@ -41,8 +41,9 @@ public static class Report
     /// <param name="Group">Which of the cell's two lists holds it: Persistent or Temporary.</param>
     /// <param name="Box">How far the box reaches from its middle on each axis (half its size), when the reference has a box: the numbers the file holds.</param>
     /// <param name="CollisionLayer">Index of the collision layer, when one is given.</param>
+    /// <param name="Bound">The reference's bound, when it has one: for a box, the same reach again.</param>
     public sealed record PlacedInfo(string? EditorId, string FormKey, string Kind, string Base, float[] Position, float[] Rotation,
-        bool Persistent, bool InitiallyDisabled, string Group, string? Primitive, float[]? Box, uint? CollisionLayer);
+        bool Persistent, bool InitiallyDisabled, string Group, string? Primitive, float[]? Box, uint? CollisionLayer, float[]? Bound = null);
     /// <summary>A cell record in the plugin. For a cell of the game's it is this plugin's copy of the record.</summary>
     /// <param name="OfThisPlugin">False: the cell belongs to a master, and the plugin only adds to it.</param>
     public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed);
@@ -96,7 +97,8 @@ public static class Report
                                     placed.Add(new(o.EditorID, o.FormKey.ToString(), "PlacedObject", Target(o.Base.FormKey), V(o.Position), V(o.Rotation),
                                         (flags & 0x400) != 0, (flags & 0x800) != 0, name,
                                         // The library gives the whole sizes; the file holds half of each, and so does this.
-                                        o.Primitive?.Type.ToString(), o.Primitive == null ? null : V(o.Primitive.Bounds / 2), o.CollisionLayer));
+                                        o.Primitive?.Type.ToString(), o.Primitive == null ? null : V(o.Primitive.Bounds / 2), o.CollisionLayer,
+                                        o.BoundHalfExtents is { } bound ? V(bound) : null));
                                     break;
                                 default:
                                     placed.Add(new(p.EditorID, p.FormKey.ToString(), p.GetType().Name, "?", Array.Empty<float>(), Array.Empty<float>(),
@@ -235,6 +237,7 @@ public static class Report
                 string Vec(float[] v) => "(" + string.Join(", ", v.Select(x => x.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))) + ")";
                 sb.AppendLine($"  {p.FormKey[..6]}  {p.EditorId ?? "(no EditorID)"}  {p.Kind} of {p.Base}  at {Vec(p.Position)} turned {Vec(p.Rotation.Select(r => r * 180 / MathF.PI).ToArray())}  [{string.Join(", ", flags)}]  in the {p.Group} list"
                     + (p.Primitive == null ? "" : $"  {p.Primitive} {Vec(p.Box!)}")
+                    + (p.Bound == null ? "" : $"  bound {Vec(p.Bound)}")
                     + (p.CollisionLayer == null ? "" : $"  collision layer {p.CollisionLayer}"));
             }
         }

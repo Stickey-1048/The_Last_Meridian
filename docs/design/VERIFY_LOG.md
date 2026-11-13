@@ -556,7 +556,7 @@ What was found out on the way, without the game:
 | Reading a display name | `GetDisplayName` is a script-extender function. Without one a script cannot read the name an alias gives its reference, so the name is not checked by scenario 10; a person has to look |
 | The id file | Ids for the placed references are given out even when nothing is placed, so `formkeys.txt` is the same with and without the master. `tools/run_checks.sh` now fails if a build against a master changes it |
 
-Checks: `tools/run_checks.sh` passes. 63 scenarios pass on the stand-in engine, 1,579 checks (the 62 from before unchanged, at 1,561). The written plugin is read back through the library and, separately, from its bytes, where eight kinds of deliberate damage to the cell and its references are each caught. The Windows chain ran against the stand-in PC.
+Checks: `tools/run_checks.sh` passes. 63 scenarios pass on the stand-in engine, 1,579 checks (the 62 from before unchanged, at 1,561). The written plugin is read back through the library and, separately, from its bytes, where ten kinds of deliberate damage to the cell and its references are each caught. The Windows chain ran against the stand-in PC.
 
 **What that is worth.** Less than the same sentence was worth before. The stand-in engine's other rules each rest on something seen in the game. Its rules for placed references, triggers and picking things up rest on the wiki and, where the wiki is silent, on a cautious guess; they are marked so in `sim.py` and in `test_placed.py`. And five of the eight names the builder looks up for this (`QASmoke`, `COCMarkerHeading`, `L_TRIGGER`, `L_ACTORZONE`, `DefaultEmptyTrigger`) have never been looked up in the real master. The run on the PC is the test.
 

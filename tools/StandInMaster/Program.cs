@@ -104,6 +104,8 @@ if (room)
                     Unknown = 0.25f,
                     Type = PlacedPrimitive.TypeEnum.Box,
                 };
+                // As the editor writes a box: its reach once more, as the reference's bound. One has none.
+                if (i != 4) trigger.BoundHalfExtents = new P3Float((64 + i) / 2f, 48, 64);
                 // Most on L_TRIGGER, some on L_ACTORZONE, one with none.
                 if (i < 3) trigger.CollisionLayer = 12;
                 else if (i == 3) trigger.CollisionLayer = 22;

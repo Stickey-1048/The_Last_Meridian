@@ -199,10 +199,11 @@ public static class SelfCheck
             Expect(got.Group == "Persistent", $"{p.EditorId}: is in the cell's {got.Group} list");
             Expect(got.InitiallyDisabled == p.InitiallyDisabled, $"{p.EditorId}: Initially Disabled differs");
             if (p.BoxHalfExtents == null)
-                Expect(got.Primitive == null && got.CollisionLayer == null, $"{p.EditorId}: has a primitive or a collision layer the spec does not ask for");
+                Expect(got.Primitive == null && got.CollisionLayer == null && got.Bound == null, $"{p.EditorId}: has a primitive, a bound or a collision layer the spec does not ask for");
             else
             {
                 Expect(got.Primitive == "Box" && got.Box != null && got.Box.SequenceEqual(p.BoxHalfExtents), $"{p.EditorId}: the box differs");
+                Expect(got.Bound != null && got.Bound.SequenceEqual(p.BoxHalfExtents), $"{p.EditorId}: the reference's bound is not the box's reach");
                 var layerPending = builder.Pending.Any(x => x.StartsWith(p.EditorId + ": placed without a collision layer"));
                 Expect((got.CollisionLayer != null) == (p.CollisionLayer != null && !layerPending), $"{p.EditorId}: collision layer is {(got.CollisionLayer == null ? "missing" : "present")}");
             }
