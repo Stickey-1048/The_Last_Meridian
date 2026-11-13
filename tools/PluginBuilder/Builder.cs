@@ -49,6 +49,9 @@ public sealed class Builder
     /// <summary>World models borrowed from items of the game: this plugin's item, and the path of the model file.</summary>
     public Dictionary<string, string> BorrowedModels { get; } = new();
 
+    /// <summary>True when this build gave its boxes a bound as well (it does as most of the game's own box triggers do).</summary>
+    public bool WritesBoxBound { get; private set; }
+
     /// <summary>Where the master files each cell this build placed something in: its block and sub-block.
     /// This plugin's copy of the cell's record has to be filed the same way.</summary>
     public Dictionary<string, (int Block, int SubBlock)> CellsFiled { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -278,13 +281,18 @@ public sealed class Builder
                             Unknown = sample?.Template?.Unknown ?? 0.3f,
                             Type = PlacedPrimitive.TypeEnum.Box,
                         };
-                        // The file holds the box's reach a second time, as the
-                        // reference's bound (XMBO). The format notes for the
-                        // game before this one say the editor refuses a box
-                        // whose two sets of numbers differ. Written as the
-                        // editor would; the build output says how many of the
-                        // game's own box triggers carry it.
-                        obj.BoundHalfExtents = new P3Float(p.BoxHalfExtents[0], p.BoxHalfExtents[1], p.BoxHalfExtents[2]);
+                        // The file can hold the box's reach a second time, as
+                        // the reference's bound (XMBO); the format notes for
+                        // the game before this one say the editor refuses a
+                        // box whose two sets of numbers differ. Whether a
+                        // plain trigger carries it is not known, so this does
+                        // as most of the game's own box triggers do, and the
+                        // build output says which way that went.
+                        if (sample != null && sample.MostCarryBound)
+                        {
+                            obj.BoundHalfExtents = new P3Float(p.BoxHalfExtents[0], p.BoxHalfExtents[1], p.BoxHalfExtents[2]);
+                            WritesBoxBound = true;
+                        }
                         if (p.CollisionLayer != null)
                         {
                             if (TryVanilla(p.CollisionLayer, "CollisionLayer", out var layerKey)
@@ -417,6 +425,7 @@ public sealed class Builder
         public Dictionary<uint, string> LayerNames = new();
         public IPlacedPrimitiveGetter? Template;
         public FormKey TemplateFrom;
+        public bool MostCarryBound => Triggers > 0 && WithBound * 2 > Triggers;
         public long MostUsedLayer => ByLayer.Count == 0 ? -1 : ByLayer.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).First().Key;
         public string Describe(long layer) => layer < 0
             ? "none"
@@ -484,8 +493,8 @@ public sealed class Builder
             var layers = string.Join(", ", sample.ByLayer.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => $"{sample.Describe(kv.Key)} x {kv.Value}"));
             var t = sample.Template!;
             VanillaNotes.Add($"the game's own box triggers, {sample.Triggers} in {sample.Cells} interior cells: collision layer {layers}");
-            VanillaNotes.Add($"of those {sample.Triggers}, {sample.WithBound} carry the box's reach a second time, as the reference's bound, and in {sample.BoundAgrees} the two agree"
-                + (sample.WithBound * 2 < sample.Triggers ? "  NOTE: this builder writes that bound on every box" : ""));
+            VanillaNotes.Add($"of those {sample.Triggers}, {sample.WithBound} carry the box's reach a second time, as the reference's bound, and in {sample.BoundAgrees} the two agree; "
+                + (sample.MostCarryBound ? "this build writes it too, as most of them do" : "this build does not write it, as most of them do not"));
             VanillaNotes.Add($"the box's colour and unknown number are copied from {sample.TemplateFrom}: colour ({t.Color.R}, {t.Color.G}, {t.Color.B}), unknown {t.Unknown:0.###}; that box reaches ({t.Bounds.X / 2:0.#}, {t.Bounds.Y / 2:0.#}, {t.Bounds.Z / 2:0.#}) from its middle");
         }
         return sample;

@@ -203,7 +203,8 @@ public static class SelfCheck
             else
             {
                 Expect(got.Primitive == "Box" && got.Box != null && got.Box.SequenceEqual(p.BoxHalfExtents), $"{p.EditorId}: the box differs");
-                Expect(got.Bound != null && got.Bound.SequenceEqual(p.BoxHalfExtents), $"{p.EditorId}: the reference's bound is not the box's reach");
+                Expect(builder.WritesBoxBound ? got.Bound != null && got.Bound.SequenceEqual(p.BoxHalfExtents) : got.Bound == null,
+                    $"{p.EditorId}: the reference's bound is {(got.Bound == null ? "missing" : "(" + string.Join(", ", got.Bound) + ")")}; this build {(builder.WritesBoxBound ? "writes the box's reach there" : "writes none")}");
                 var layerPending = builder.Pending.Any(x => x.StartsWith(p.EditorId + ": placed without a collision layer"));
                 Expect((got.CollisionLayer != null) == (p.CollisionLayer != null && !layerPending), $"{p.EditorId}: collision layer is {(got.CollisionLayer == null ? "missing" : "present")}");
             }

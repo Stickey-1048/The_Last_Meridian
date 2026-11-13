@@ -25,10 +25,10 @@ What it asserts where the plugin places references in a cell of the game
     plugin's: the game's own references are not copied;
   - every reference is a placed actor or object (ACHR, REFR) with a base (NAME)
     and a position (DATA, 24 bytes); it is flagged persistent exactly when it
-    is in the cell's persistent group; a box (XPRM) is 32 bytes, and its reach
-    is in the file a second time as the reference's bound (XMBO), the same
-    three numbers (the format notes for the game before this one say the
-    editor refuses a box whose two sets of numbers differ);
+    is in the cell's persistent group; a box (XPRM) is 32 bytes; where its
+    reach is in the file a second time, as the reference's bound (XMBO), the
+    two are the same three numbers (the format notes for the game before this
+    one say the editor refuses a box where they differ);
   - and, read beside the description the builder wrote (TheLastMeridian.json
     in the same folder): position, the box's sizes as the file holds them, the
     collision layer and the "initially disabled" flag are what it says. The
@@ -273,10 +273,11 @@ def check_cells(buf, described=None):
                                     shape = struct.unpack_from("<I", subs["XPRM"], 28)[0]
                                     if shape not in (1, 2, 3, 4, 5):
                                         problems.append(f"{who}: the primitive has the unknown shape {shape}")
-                                    if len(subs.get("XMBO", b"")) != 12:
-                                        problems.append(f"{who}: a box without its bound (XMBO, 12 bytes)")
-                                    elif any(abs(a - b) > 0.001 for a, b in zip(struct.unpack("<3f", subs["XMBO"]), box)):
-                                        problems.append(f"{who}: the bound {struct.unpack('<3f', subs['XMBO'])} is not the box's reach {box}")
+                                    if "XMBO" in subs:
+                                        if len(subs["XMBO"]) != 12:
+                                            problems.append(f"{who}: the bound (XMBO) is {len(subs['XMBO'])} bytes, expected 12")
+                                        elif any(abs(a - b) > 0.001 for a, b in zip(struct.unpack("<3f", subs["XMBO"]), box)):
+                                            problems.append(f"{who}: the bound {struct.unpack('<3f', subs['XMBO'])} is not the box's reach {box}")
                             if "XTRI" in subs and len(subs["XTRI"]) != 4:
                                 problems.append(f"{who}: the collision layer (XTRI) is {len(subs['XTRI'])} bytes, expected 4")
                             if described is None:
@@ -292,6 +293,8 @@ def check_cells(buf, described=None):
                                 problems.append(f"{who}: 'initially disabled' is {bool(flags & INITIALLY_DISABLED)} in the file, {want['InitiallyDisabled']} in the description")
                             if (box is None) != (want["Box"] is None) or (box and any(abs(a - b) > 0.001 for a, b in zip(box, want["Box"]))):
                                 problems.append(f"{who}: the box is {box} in the file, {want['Box']} in the description")
+                            if ("XMBO" in subs) != (want.get("Bound") is not None):
+                                problems.append(f"{who}: the bound is {'in' if 'XMBO' in subs else 'not in'} the file, and {'in' if want.get('Bound') is not None else 'not in'} the description")
                             layer = struct.unpack("<I", subs["XTRI"])[0] if len(subs.get("XTRI", b"")) == 4 else None
                             if layer != want["CollisionLayer"]:
                                 problems.append(f"{who}: collision layer {layer} in the file, {want['CollisionLayer']} in the description")
@@ -367,16 +370,15 @@ def cell_damage(buf):
     r = first_ref(buf, with_sub=b"XPRM")
     if r < 0:
         out.append(("a box of another size", None))
-        out.append(("a box whose bound says another size", None))
-        out.append(("a box without its bound", None))
         out.append(("a reference moved", None))
     else:
         size = struct.unpack_from("<I", buf, r + 4)[0]
         x = buf.find(b"XPRM", r + 24, r + 24 + size)
         out.append(("a box of another size", patch(buf, x + 6, struct.pack("<f", struct.unpack_from("<f", buf, x + 6)[0] / 2))))
         b = buf.find(b"XMBO", r + 24, r + 24 + size)
-        out.append(("a box whose bound says another size", None if b < 0 else patch(buf, b + 6, struct.pack("<f", struct.unpack_from("<f", buf, b + 6)[0] + 1))))
-        out.append(("a box without its bound", None if b < 0 else patch(buf, b, b"XMBX")))
+        if b >= 0:      # a build that follows a master whose own triggers have no bound writes none
+            out.append(("a box whose bound says another size", patch(buf, b + 6, struct.pack("<f", struct.unpack_from("<f", buf, b + 6)[0] + 1))))
+            out.append(("a box without the bound its description has", patch(buf, b, b"XMBX")))
         x = buf.find(b"XTRI", r + 24, r + 24 + size)
         if x >= 0:      # a build against a master without collision layers has none to lose
             out.append(("a trigger without its collision layer", patch(buf, x, b"XTRX")))

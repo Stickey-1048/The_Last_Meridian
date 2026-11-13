@@ -146,13 +146,13 @@ No script extender. No new dependency on the PC.
 | `GetDisplayName` needs F4SE | Wiki, *GetDisplayName - ObjectReference* |
 | How a cell and its references are laid out in the file | The library that writes it (Mutagen), and the layout in xEdit's record definitions as remembered, not re-read for this work. The written bytes are checked against that layout by `tools/check_plugin_layout.py` |
 | The library's box sizes are whole sizes, and the file holds half of each | Seen in the bytes the library wrote: a box given as 150 came out as 75. The builder now doubles what it hands over, and the check reads the bytes. UESP's file-format page for the game before this one says the same of the file ("Bounds / 2") |
-| A box's reach is in the file twice: in the primitive, and again as the reference's bound; the editor refuses a box where the two differ | UESP, *Skyrim Mod:Mod File Format/REFR* (fields XPRM, XMBO), for the game before this one. Taken to hold here because the library's Fallout 4 records have the same field. The builder writes both, the byte check compares them, and the build output counts how many of the game's own box triggers carry the bound |
+| A box's reach can be in the file twice: in the primitive, and again as the reference's bound; the editor refuses a box where the two differ | UESP, *Skyrim Mod:Mod File Format/REFR* (fields XPRM, XMBO), for the game before this one; the library's Fallout 4 records have the same field. Whether a plain trigger carries the bound is not known, so the builder does as most of the game's own box triggers do: the build output counts them and says which way it went. Where it writes the bound, the byte check compares the two |
 | A trigger's collision layer is stored as a number, the index of the layer's record | The same UESP page (field XTRI), and the library. The builder looks the layer up by name and stores its index |
 
 Not documented anywhere I could find, and assumed:
 
 - that an alias is not filled with a disabled reference unless it has Allow Disabled. The plugin sets the flag, so the game's answer does not matter to the trial; the stand-in engine takes the cautious reading;
-- that the player moved into a trigger by script "enters" it. If stage 10 is not set, the count of things inside the trigger after the move says whether the game saw the player in it.
+- that the player moved into a trigger by script "enters" it. The nearest thing to a source is a note on the wiki of the game before this one, seen only as quoted in a search result, not read on the page: a trigger around a door's arrival marker fires for the player who comes through the door. If stage 10 is not set, the count of things inside the trigger after the move says whether the game saw the player in it.
 
 ## Implementation checklist
 
