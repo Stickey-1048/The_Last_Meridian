@@ -74,12 +74,17 @@
   On 2026-11-13, the first run after the PC had been restarted, the game
   never appeared: Mod Organizer was started and nothing came of it for three
   minutes. The likely cause is its question about Steam (see Tlm.psm1,
-  Confirm-SteamForManager). What was added for that has only been rehearsed
-  against stand-ins: Steam is seen to before anything is started; while the
-  game is awaited the window Mod Organizer shows is watched and named; and
-  if the game never appears, what is running is listed and the Mod Organizer
-  this script started is closed, so that it cannot start the game later
-  with the run's settings already taken away.
+  Confirm-SteamForManager). What was added for that: Steam is seen to before
+  anything is started; while the game is awaited the window Mod Organizer
+  shows is watched and named; and if the game never appears, what is running
+  is listed and the Mod Organizer this script started is closed, so that it
+  cannot start the game later with the run's settings already taken away.
+
+  The next run that day, with those changes, passed all 62 scenarios. It
+  took the path "Steam is running" and reported that the game folder holds
+  steam_api64.dll. The other paths (Steam started by the script, Mod
+  Organizer showing a window, the game never appearing, a run cut off and
+  repaired) have only been rehearsed against stand-ins.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1
@@ -285,8 +290,10 @@ function Read-ScenarioLogs([datetime]$since) {
         # Where a scenario that did not finish had got to.
         $r.LastStep = @($lines | Where-Object { $_ -match '\]\s*STEP\s' }) | Select-Object -Last 1
         $r.LastLine = @($lines | Where-Object { "$_".Trim() -ne '' }) | Select-Object -Last 1
-        # A case that sets two things off at once notes whether they did overlap in this session.
-        $r.TimingNotes = @($lines | Where-Object { $_ -match '\]\s*INFO\s' -and $_ -match 'still at work' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*INFO\s*', '') })
+        # What a matrix case reports about one of its steps ("C132 #4 ...: ..."): whether two
+        # things did overlap in this session, and the like. These lines are about timing, and
+        # a case that passed shows nothing else of itself in the report.
+        $r.TimingNotes = @($lines | Where-Object { $_ -match '\]\s*INFO\s+C\d+ #\d+ ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*INFO\s*', '') })
     }
     if ((Test-Path -LiteralPath $papyrusLog) -and ((Get-Item -LiteralPath $papyrusLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $papyrusLog)

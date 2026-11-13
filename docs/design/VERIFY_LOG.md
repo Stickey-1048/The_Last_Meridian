@@ -495,6 +495,45 @@ An independent read of this change found no fault in the rule or the script, and
 
 What the game can say today, and what it cannot. The plugin has no dialogue, so nothing can make the game answer "yes, he is talking to the player". The next run shows only that the question compiles and is answered "no" when nobody is talking: scenario 2 asks it outright (one check more, 15), and every case in which the timer resolves the ambush depends on that answer (if the game counted a settler's greeting as a conversation, those cases would fail, and the `A25` line would say why). Rows T29 and T29b stay unplayed in the game until the hold-up conversation exists. Whether the game's answer is "yes" for the whole of a conversation, the player's turn to choose included, is checklist item 10a.
 
+### The twelfth run, 2026-11-13
+
+Twelfth run, 09:36 to 10:44 by the PC's clock, commit `11b92ad`, started with the usual command. Reported as the pasted build log and results. Nobody touched the game; the owner used the PC for other things meanwhile. 62 game sessions took 4,093 seconds, 66 seconds each. That is 28 seconds more per session than the day before, all of it before the scenario begins; why is not known.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed, 12 of 12, on their first compile: `TLM:MQ01Quest` with the rule of A25 and the two lines that say what held the timer back, the changed action in `TLM:CaseDriver`, the new lines in `TLM:FixtureProbe` |
+| **All 62 scenarios** | **Passed: 1,561 checks, 0 failed** (one more than before: the new check in scenario 2). Every session closed itself. No error or warning naming this project in any session |
+| The runner's new parts | Ran on the PC: the Steam line, the Timing part with the new lines, the note of how things were before the run (written, then removed). Everything put back |
+
+What it settled:
+
+| Question | Answer |
+|---|---|
+| Does the GOG game's folder hold Steam's library file? | Yes: `steam_api64.dll`. So Mod Organizer does ask about Steam for this game when Steam is not running, which is the reading given above for the run that never started. In this run Steam was running and Mod Organizer asked nothing |
+| `IsInDialogueWithPlayer` on an actor nobody is talking to | False (scenario 2's new check). Every case in which the timer resolves the ambush passed as well, so for the test's actors, alive or just killed, the answer was "no" |
+| What holds the timer back in case 119 | The script log now says: `A2 the evade timer ran out during a fight` |
+| Is a kill by the player a fight? | With nobody else alive: no. In scenario 2 the player was not in combat straight after `Kill(player)`, nor once the death had been announced. With others standing by it is still only the inference from the eleventh run: the lines case 129 wrote about it were not in the report, which showed a passed case's notes only when they were about an overlap. It shows all of them now |
+
+What it showed that was not expected:
+
+| What | Seen |
+|---|---|
+| How soon a death is announced | In scenario 2, two kills, both announcements and the checks between them carry the same second. On 2026-11-12 each announcement took about a second. So "about a second" was that day's pace, not a rule of the game |
+| The wait guard acting where nothing was arranged | Scenario 2: `A24 waited 1 tenths of a second for another resolution to finish`. The caravan master's death was announced while the rescue before it was still being handled, so two resolutions were at work at once in a scenario not built for that, and the betrayal waited for the rescue to finish. The result would have been right without the guard here; it is the first sign from the game that such overlaps happen without being arranged |
+| Case 132 | The overlap happened again; the town stage waited 4 tenths of a second this time |
+| Case 129 | Passed, again with no line from its guard, and this time with none from the fight rule either: the timer's function found the ambush already resolved. The calls the case now made between the kill and the timer took longer than the death took to be announced. The guard on the timer's path has still not been seen to act in the game |
+| The Essential flag in town | Scenario 4 reported the caravan master as not Essential straight after the town stage had put her into the alias that is flagged so. In the four runs before she was. Case 118 still passed: a little later the hands in town could not be killed. So the flag is not always in force the instant the alias is filled |
+| A fight making the ambush live | Scenario 5: eight seconds after `StartCombat` the lead and the player were in combat and stage 30 was still not set. In the three runs before it was. The case then set the stage itself, as it is written to, and passed. The Cutter alias script's fallback (a fight makes the ambush live) is therefore not dependable; the sight trigger and a death are the other two ways, and the trigger is the one the design relies on |
+
+Four of those lines came out as they did because of how that session happened to run, and the stand-in engine does not model pace. The run is the seventh recorded in `tools/papyrus_sim/game_runs.json`; those four lines are recorded with it, each marked as not replayed and with the reason, and the replay fails if the stand-in ever does give them, so that the mark cannot go stale. Everything else about the run the stand-in gives as the game did.
+
+Changed after this run (checks pass; none of it compiled or run in the game):
+
+- **Case 129.** The lead now dies with nobody named as his killer, which the game does not take for a fight, and the timer's function is called in the next breath, as the town stage is in case 131, where the guard has acted twice. The quest does not ask who killed a Cutter.
+- **Scenario 2** has an experiment, reported and not scored: one Cutter killed as the player while another stands by; is the player in combat then, and does `StopCombatAlarm` end it.
+- **The report's Timing part** lists every note a matrix case writes about one of its steps, not only the ones about an overlap.
+- **The stand-in engine's rule** about a kill by the player: a fight only while somebody else stands by.
+
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
@@ -520,11 +559,11 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | Alias scripts before the quest starts | Corrected | Aliases receive their reference's events as part of a running quest. SQ01 must already be running for clue scripts to fire (A8). |
 | `OnContainerChanged` | Documented | `Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldContainer)`. Once an object is in a container it "ceases to exist in most cases". |
 | `OnTriggerEnter` | Documented | `Event OnTriggerEnter(ObjectReference akActionRef)`. Can arrive out of order with `OnTriggerLeave`; the trigger's collision layer decides what fires it. |
-| `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. |
+| `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. How long "finishes dying" takes is not fixed: about a second on 2026-11-12, well under a second on 2026-11-13 (two kills and both announcements within one second). |
 | `OnPlayerLoadGame` | Documented | Sent only to the player actor; fires "for the first time on the next load". An alias pointing at the player should receive it, since aliases get their reference's events. *That last step needs the game.* |
-| The player "in combat" after `Kill(player)` | Seen in the game, indirectly | Not on the wiki. In the eleventh run (2026-11-12, case 129) the evade timer's function, called straight after `Kill` with the player named as killer, did not resolve the ambush and wrote no guard line: it can only have found the player in combat. Two seconds after such a kill the player is out of combat (scenario 5). *Needs the game:* asked outright from the next run on, with and without bystanders, and whether `StopCombatAlarm` ends it. |
-| `OnCombatStateChanged` | Seen in the game | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. On 2026-11-12 an alias script received it, with the player as target, when `StartCombat(player)` was called on its actor. |
-| `IsInDialogueWithPlayer` | Documented | `bool Function IsInDialogueWithPlayer() native`, a member of ObjectReference: "Is this actor or talking activator currently talking to the player?" Used by A25 on the Cutter lead's actor. *Needs the game twice over:* that it answers "no" when nobody is talking (asked in self-test scenario 2 from the next run on), and that it answers "yes" for the whole of a conversation, which cannot be seen until there is one. |
+| The player "in combat" after `Kill(player)` | Seen in the game, in part | Not on the wiki. With nobody else alive: not in combat, straight after the kill and after the death was announced (2026-11-13, scenario 2). With others standing by: only inferred. In the eleventh run (2026-11-12, case 129) the evade timer's function, called straight after `Kill` with the player named as killer, did not resolve the ambush and wrote no guard line; with five other actors alive it can only have found the player in combat. Two seconds after such a kill the player is out of combat (scenario 5). *Needs the game:* asked outright in scenario 2 from the next run on, with one actor standing by, and whether `StopCombatAlarm` ends it. |
+| `OnCombatStateChanged` | Seen in the game, not dependable | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. On 2026-11-12, in three runs, an alias script received it, with the player as target, when `StartCombat(player)` was called on its actor. On 2026-11-13 the stage that event sets had not been set eight seconds after `StartCombat`, though the actor and the player were both in combat (scenario 5). Nothing in the quest may depend on it alone. |
+| `IsInDialogueWithPlayer` | Documented | `bool Function IsInDialogueWithPlayer() native`, a member of ObjectReference: "Is this actor or talking activator currently talking to the player?" Used by A25 on the Cutter lead's actor. **Seen in the game for the answer "no"** (2026-11-13): false for an actor nobody is talking to, in scenario 2 and in every case where the timer runs out. *Still needs the game:* that it answers "yes" for the whole of a conversation, which cannot be seen until there is one. |
 | `OnHit` | Documented | Needs `RegisterForHitEvent` first and fires once per registration. The scripts use `OnCombatStateChanged` instead. |
 | Distance polling | Corrected | `RegisterForDistanceGreaterThanEvent(ScriptObject, ScriptObject, float)` and `Event OnDistanceGreaterThan(...)` exist and the wiki recommends them over polling `GetDistance`. One event per registration; "if the objects are already that far apart, the event will be sent immediately". **Seen in the game** on 2026-11-12, all three statements. |
 | Calling an event like a function | Documented, not used | "Calling events is identical to calling a function." Nothing in the project relies on it: the evade timer's handler is a function of its own (`EvadeTimerElapsed`), which the timer event and the self-test both call. |
@@ -533,7 +572,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | `RemoveItem` | Documented | `RemoveItem(Form akItemToRemove, int aiCount = 1, bool abSilent = false, ObjectReference akOtherContainer = None)`. |
 | `Kill`, protection | Documented | `Kill(Actor akKiller = None)`; `SetProtected(bool abProtected = true)`; `SetEssential` then overrides alias flags. Protected: "The Player is the only one allowed to kill a Protected Actor." |
 | Does `Kill` work on a Protected actor? | Seen in the game | Not stated on the wiki. In the game on 2026-11-12, for an actor in an alias flagged Protected: `Kill()` with no killer did nothing; `Kill(player)` killed; `SetProtected(false)` then `Kill()` killed. The scripts clear the flag first. |
-| `ForceRefTo` with an actor made by `PlaceAtMe` | Seen in the game | The alias holds the actor and its script receives the actor's events (2026-11-12). |
+| `ForceRefTo` with an actor made by `PlaceAtMe` | Seen in the game | The alias holds the actor and its script receives the actor's events (2026-11-12). The alias's flags are not always in force the instant the call returns: on 2026-11-13 an actor just put into an alias flagged Essential reported `IsEssential` false straight afterwards; in four earlier runs it reported true. |
 | `MoveTo` | Seen in the game | Listed among the latent functions: the script is suspended until the game has moved the reference. On 2026-11-12, twice, a script that called it on a placed item with no model never continued; the second time nothing else was involved. On the game's plain marker it returns at once. **Nothing without a model may be moved by script** (A23). |
 | An alias flagged Essential | Seen in the game | The wiki's alias page is empty. In the game on 2026-11-12 the actor forced into such an alias reported `IsEssential()` = true and `Kill(player)` did not kill it. |
 | `IsDead()` straight after `Kill` | Seen in the game | True at once (2026-11-12), not only when the actor has finished dying. `OnDeath` still arrives later. |
@@ -576,7 +615,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3b. Stage events reach the quest scripts and the self-test passes. **Done 2026-11-12: 60 of 60**, after a first run failed 34 because the stages had no items.
 3c. The self-test runs with nobody at the keyboard (`tools/win/Run-Scenarios.ps1`). **Done 2026-11-12: nine scenarios, 220 checks, 0 failed.**
 3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed**, and again in the eleventh run.
-3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done 2026-11-12 for three of the four cases** (130, 131, 132: the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path: still to do, with the kill made a quiet one.
+3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done 2026-11-12 for three of the four cases** (130, 131, 132: the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path: still to do. Twice something else got there first (the fight rule on 2026-11-12, the death's announcement on 2026-11-13); the case now uses a death with nobody named as the killer. In the twelfth run the wait guard also acted in scenario 2, where nothing was arranged.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).

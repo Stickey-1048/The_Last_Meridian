@@ -1656,7 +1656,7 @@ EndFunction
 
 Function Case129(TLM:SelfTest akTest)
 	{A24 timer: the lead killed, and the timer runs out before his death is announced: a rescue.
-	In the logic model: start, take_dispatch, goto_ambush, player_kills_lead, quietly, with the timer running out before the death is announced, goto_town, pritchard_handover, pritchard_handoff.}
+	In the logic model: start, take_dispatch, goto_ambush, player_kills_lead, as a death the game does not take for a fight, with the timer running out before it is announced, goto_town, pritchard_handover, pritchard_handoff.}
 	TLM:CaseDriver caseDriver = (Self as Quest) as TLM:CaseDriver
 	If !caseDriver
 		akTest.Fail("C129: the case driver script is not attached to this quest")
@@ -1683,7 +1683,7 @@ Function Case129(TLM:SelfTest akTest)
 	caseDriver.ExpectWorld(1, 1, 1, 3, 3, 0, 0, 0, 1, -999)
 	caseDriver.ExpectMetrics(0, 0, 0, 0)
 	caseDriver.ExpectSide(" 5", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-	caseDriver.Mark(4, "player_kills_lead, quietly, with the timer running out before the death is announced")
+	caseDriver.Mark(4, "player_kills_lead, as a death the game does not take for a fight, with the timer running out before it is announced")
 	caseDriver.DoKillLeadThenTimer()
 	caseDriver.ExpectMain(" 10 20 30 31", 1, 0, 0, 0, 0, 0, 0, 2, 1)
 	caseDriver.ExpectWorld(1, 1, 0, 3, 3, 0, 0, 0, 1, -999)

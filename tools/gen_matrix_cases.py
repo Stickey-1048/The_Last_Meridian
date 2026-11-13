@@ -87,7 +87,7 @@ def race(events, how):
 
 # how -> (driver call, main-quest stages the driver sets by hand, words for the step)
 RACES = {
-    "timer": ("DoKillLeadThenTimer()", set(), "quietly, with the timer running out before the death is announced"),
+    "timer": ("DoKillLeadThenTimer()", set(), "as a death the game does not take for a fight, with the timer running out before it is announced"),
     "leaving": ("DoKillLeadThenLeave()", set(), "with the player gone before the death is announced"),
     "town": ("DoKillLeadThenTown()", {40}, "with the town stage before the death is announced"),
     "overlap": ("DoLeaveAndReachTownAtOnce()", {40}, "with the town stage set while the evade stage is still being handled"),

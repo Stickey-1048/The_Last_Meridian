@@ -496,7 +496,7 @@
     "start",
     "take_dispatch",
     "goto_ambush",
-    "player_kills_lead, quietly, with the timer running out before the death is announced",
+    "player_kills_lead, as a death the game does not take for a fight, with the timer running out before it is announced",
     "goto_town",
     "pritchard_handover",
     "pritchard_handoff"

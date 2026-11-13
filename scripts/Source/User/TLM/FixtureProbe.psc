@@ -23,7 +23,9 @@ model, never returns. That is what had stopped an earlier version of scenario
 Since that run one check was added to scenario 2, which now makes 15: that an
 actor nobody is talking to is "not in dialogue with the player" (amendment
 A25); and two reported lines about whether a kill by the player counts as a
-fight. THOSE THREE LINES ARE NOT YET COMPILED.}
+fight. Those compiled and ran on 2026-11-13: the check passed, and with
+nobody standing by the kill was no fight. Added after that run, and NOT YET
+COMPILED: the experiment with one Cutter standing by (part 3b).}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory
@@ -135,6 +137,27 @@ Function Run(TLM:SelfTest akTest)
 		akTest.Fail("probe: a third actor could not be spawned")
 	EndIf
 
+	; ---- 3b. Reported, not scored. With nobody standing by, the game did not take a
+	; kill by the player for a fight (2026-11-13, the two lines above). A case on
+	; 2026-11-12 says that with others standing by it does. Here one stands by; and
+	; then the fight, if there is one, is told to end.
+	akTest.Step("EXPERIMENT: one Cutter killed as the player while another stands by", 30.0, true)
+	Actor one = SpawnActor(player)
+	Actor other = SpawnActor(player)
+	If one && other
+		mq.Alias_CutterA.ForceRefTo(one)
+		mq.Alias_CutterB.ForceRefTo(other)
+		one.Kill(player)
+		akTest.Note("probe: player in combat straight after Kill(player) on a Cutter, another Cutter standing by = " + player.IsInCombat())
+		other.StopCombat()
+		player.StopCombatAlarm()
+		akTest.Note("probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = " + player.IsInCombat())
+		Utility.Wait(2.0)
+		akTest.Note("probe: two seconds later: player in combat = " + player.IsInCombat() + ", the one standing by in combat = " + other.IsInCombat())
+	Else
+		akTest.Note("probe: the two actors for this experiment could not be spawned")
+	EndIf
+
 	; ---- 4. The timer started at the top.
 	akTest.CheckTrue("probe: a timer on a quest script fires", timerFired)
 
@@ -143,6 +166,8 @@ Function Run(TLM:SelfTest akTest)
 	RemoveSpawned(abel)
 	RemoveSpawned(lead)
 	RemoveSpawned(nell)
+	RemoveSpawned(one)
+	RemoveSpawned(other)
 EndFunction
 
 ; ------------------------------------------------------------- scenario 3

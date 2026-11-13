@@ -28,7 +28,10 @@ RAN IN THE GAME on 2026-11-12: it drove all 53 cases, 1,340 checks, 0 failed
 time between them (DoKillLeadThenTimer, DoKillLeadThenLeave,
 DoKillLeadThenTown, DoLeaveAndReachTownAtOnce). Since then
 DoKillLeadThenTimer was changed, to make the kill a quiet one and to report
-what the game says about the fight: THAT ACTION IS NOT YET COMPILED.}
+what the game says about the fight; that version ran on 2026-11-13 and its
+guard did not act (the death was announced first). It has been changed
+again since, to a death with nobody named as the killer: THAT ACTION IS NOT
+YET COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
@@ -249,20 +252,16 @@ Function DoKillLeadThenTimer()
 	been announced (amendment A24). He is dead at once; OnDeath comes about a
 	second later.
 
-	In the run of 2026-11-12 the game took the kill itself for a fight: the
-	timer's function found the player in combat and started over, so the
-	guard this case is for never acted. The kill is therefore made a quiet
-	one: the three Cutters still standing are told to stand down and the
-	alarm against the player is ended, as after break_combat. Whether that
-	is enough in the game is reported, not scored: the case passes either
-	way, and the report's "Timing" part says which rule decided it.}
-	lead.Kill(player)
-	test.Note(stepLabel + ": player in combat straight after the kill: " + player.IsInCombat())
-	cutterA.StopCombat()
-	cutterB.StopCombat()
-	cutterC.StopCombat()
-	player.StopCombatAlarm()
-	test.Note(stepLabel + ": player in combat after the Cutters were told to stand down: " + player.IsInCombat())
+	The guard this case is for sits behind two other things, and each got
+	there first in a run. On 2026-11-12 the kill was made with the player
+	named, and the timer's function held back as it does for a fight. On
+	2026-11-13 the Cutters were told to stand down first, and by the time
+	that was done the death had been announced. So the lead now dies with
+	nobody named as his killer, which is no fight, and the timer's function
+	is called in the next breath. The quest does not ask who killed a
+	Cutter. The report's "Timing" part says whether the guard acted.}
+	lead.SetProtected(false)
+	lead.Kill()
 	mq.EvadeTimerElapsed()
 	WaitStage(31)
 	Utility.Wait(2.0)

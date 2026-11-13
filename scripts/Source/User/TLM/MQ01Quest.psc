@@ -19,11 +19,12 @@ and conversation, and EvadeTimerElapsed was called directly. NOT run: the
 90-second timer itself, the move to the caravan yard over a distance,
 OnGameLoaded, dialogue, saving and loading, and anything in a built place.
 Written without Fallout 4 or the Creation Kit.
-Since that run the rule of amendment A25 was added (PlayerIsTalkingToLead:
-the evade timer does not run out on a conversation with the Cutter lead),
-and two lines that say in the script log what held the timer back: THIS
-VERSION IS NOT YET COMPILED. It passes in the stand-in engine, which is not
-the game. A25 cannot be seen at work in the game until there is dialogue.
+This version, with the rule of amendment A25 (PlayerIsTalkingToLead: the
+evade timer does not run out on a conversation with the Cutter lead) and two
+lines that say in the script log what held the timer back, compiled and ran
+on 2026-11-13: all 62 scenarios passed. In that run the question A25 asks
+was only ever answered "no". A25 HAS NOT BEEN SEEN AT WORK: that needs a
+conversation, and there is no dialogue yet.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.

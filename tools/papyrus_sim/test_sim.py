@@ -120,10 +120,17 @@ class ReplaysOfGameRuns(unittest.TestCase):
                         s = run_scenario(int(number), folder, plugin, VANILLA, NATIVES, until=400.0, older_scripts=True,
                                          native_delay=frame)
                     got = summary(s)
+                    # Lines that depended on the pace of that session, with the reason for each.
+                    excused = run.get("not_replayed", {}).get(number, {})
                     for key, value in want.items():
                         if key.startswith("stand_in_"):
                             continue                # an instruction to this replay, not something the game reported
                         have = got[key]
+                        if key in excused:
+                            self.assertGreater(len(excused[key]), 40, "a line is left out of the replay without a reason")
+                            self.assertNotEqual(have, value, "%s, scenario %s: the stand-in now gives '%s' as the game did; "
+                                                "take it out of not_replayed" % (run["name"], number, key))
+                            continue
                         if key == "guard_lines" and frame:
                             # that mode provokes overlaps; how long one lasts in it is not a prediction
                             have = [re.sub(r"waited \d+ tenths", "waited N tenths", l) for l in have]
@@ -131,6 +138,12 @@ class ReplaysOfGameRuns(unittest.TestCase):
                         self.assertEqual(have, value, "%s, scenario %s: %s" % (run["name"], number, key))
                     replayed += 1
         self.assertEqual(replayed, sum(len(r["scenarios"]) for r in GAME_RUNS))
+        # an exemption has to name a scenario and a key that are really recorded
+        for run in GAME_RUNS:
+            for number, keys in run.get("not_replayed", {}).items():
+                for key in keys:
+                    self.assertIn(key, run["scenarios"][number], "%s: not_replayed names %s of scenario %s, which is not recorded"
+                                  % (run["name"], key, number))
 
 
 class TheScriptsAsTheyAreNow(unittest.TestCase):
@@ -467,28 +480,35 @@ class RulesAboutActors(unittest.TestCase):
         self.s.run(self.s.now + 2.0)
         self.assertFalse(self.s.player_in_combat())
 
-    def test_a_kill_by_the_player_is_a_fight_until_it_is_announced(self):
-        # [seen], indirectly: in the eleventh run (case 129) the evade timer's
-        # function, called straight after Kill(player), found the player in
-        # combat. [assumed]: until the death is announced and no longer; and
-        # that StopCombatAlarm ends it, as the wiki says it ends all combat.
+    def test_a_kill_by_the_player_is_a_fight_while_others_stand_by(self):
+        # Nobody else alive: no fight. [seen] in the twelfth run (scenario 2).
         a = self.actor("CutterLead")
         self.s.n_actor_kill(a, None, self.s.player)
+        self.assertFalse(self.s.player_in_combat())
+        # Others standing by: a fight. [seen], indirectly, in the eleventh run
+        # (case 129): the evade timer's function, called straight after
+        # Kill(player), found the player in combat. [assumed]: until the death
+        # is announced and no longer; and that StopCombatAlarm ends it, as the
+        # wiki says it ends all combat.
+        b = self.actor("CutterA")
+        c = self.actor("CutterB")
+        self.s.n_actor_kill(b, None, self.s.player)
         self.assertTrue(self.s.player_in_combat())
         self.s.run(self.s.now + 0.5)
         self.assertTrue(self.s.player_in_combat())
         self.s.run(self.s.now + 0.5)
         self.assertFalse(self.s.player_in_combat())
-        b = self.actor("CutterA")
-        self.s.n_actor_kill(b, None, self.s.player)
+        d = self.actor("CutterC")
+        self.s.n_actor_kill(d, None, self.s.player)
         self.assertTrue(self.s.player_in_combat())
         self.s.n_actor_stopcombatalarm(self.s.player, None)
         self.assertFalse(self.s.player_in_combat())
-        # a death by nobody's hand is nobody's fight
-        c = self.actor()
-        self.s.n_actor_kill(c, None, None)
-        self.assertTrue(c.dead)
+        # a death by nobody's hand is nobody's fight, whoever stands by
+        e = self.actor()
+        self.s.n_actor_kill(e, None, None)
+        self.assertTrue(e.dead)
         self.assertFalse(self.s.player_in_combat())
+        self.assertFalse(c.dead)
 
     def test_moveto_on_a_reference_with_no_model_never_comes_back(self):
         # [seen] twice on 2026-11-12

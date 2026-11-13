@@ -1160,16 +1160,19 @@ class Session:
         for other in self.actors:
             if other.combat_target is actor:
                 self._stop_combat(other)
-        if killer is not None and killer.is_player:
-            # [seen], indirectly, in the eleventh run (case 129): the evade
-            # timer's function, called straight after Kill(player) on the
-            # Cutter lead, found the player in combat. No other path through
-            # the script gives what that case gave. [assumed] that it lasts
-            # until the death is announced and no longer (two seconds later
-            # the player was out of combat: scenario 5, every run), that it
-            # needs no bystanders, and that StopCombatAlarm ends it like any
-            # other fight ([documented] "Stops all combat and alarms against
-            # this actor").
+        bystanders = [a for a in self.actors
+                      if a is not actor and not a.is_player and not a.dead and not a.disabled]
+        if killer is not None and killer.is_player and bystanders:
+            # With others standing by: [seen], indirectly, in the eleventh run
+            # (case 129): the evade timer's function, called straight after
+            # Kill(player) on the Cutter lead, found the player in combat; no
+            # other path through the script gives what that case gave. With
+            # nobody else alive: [seen] in the twelfth run (scenario 2), the
+            # player is NOT in combat straight after such a kill. [assumed]
+            # that it lasts until the death is announced and no longer (two
+            # seconds later the player was out of combat: scenario 5), and
+            # that StopCombatAlarm ends it like any other fight ([documented]
+            # "Stops all combat and alarms against this actor").
             actor.fights_player_until = self.now + DEATH_EVENT_DELAY
         self.actor_event(actor, "OnDeath", [killer], DEATH_EVENT_DELAY)
 
