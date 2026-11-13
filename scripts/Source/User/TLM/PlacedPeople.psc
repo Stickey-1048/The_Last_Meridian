@@ -105,56 +105,56 @@ Function Run(TLM:SelfTest akTest)
 
 	; Where the scenario began. The player is moved only if the person cannot
 	; be activated from here, and is brought back afterwards.
-	ObjectReference home = None
+	ObjectReference homeMarker = None
 	If MarkerBase
-		home = playerRef.PlaceAtMe(MarkerBase)
+		homeMarker = playerRef.PlaceAtMe(MarkerBase)
 	EndIf
 
 	; ---- 2. Who is there, and where the plugin put them. All four are still
 	; disabled, so each is where it was placed.
 	akTest.Step("looking at the placed people")
-	Actor own = Alias_PersonOwn.GetActorReference()
-	Actor bare = Alias_PersonBare.GetActorReference()
-	Actor onFloor = Alias_SettlerOnFloor.GetActorReference()
-	Actor settler = Alias_Person.GetActorReference()
-	akTest.CheckTrue("people: the PersonOwn alias holds an actor", own != None)
-	akTest.Note("people: the other aliases hold an actor: PersonBare = " + (bare != None) + ", SettlerOnFloor = " + (onFloor != None) + ", Person = " + (settler != None))
+	Actor ownPerson = Alias_PersonOwn.GetActorReference()
+	Actor barePerson = Alias_PersonBare.GetActorReference()
+	Actor floorSettler = Alias_SettlerOnFloor.GetActorReference()
+	Actor firstSettler = Alias_Person.GetActorReference()
+	akTest.CheckTrue("people: the PersonOwn alias holds an actor", ownPerson != None)
+	akTest.Note("people: the other aliases hold an actor: PersonBare = " + (barePerson != None) + ", SettlerOnFloor = " + (floorSettler != None) + ", Person = " + (firstSettler != None))
 
-	float ownX
-	float ownY
-	float ownZ
-	float bareX
-	float bareY
-	float bareZ
-	float floorX
-	float floorY
-	float floorZ
-	float settlerX
-	float settlerY
-	float settlerZ
-	If own
-		ownX = own.GetPositionX()
-		ownY = own.GetPositionY()
-		ownZ = own.GetPositionZ()
-		akTest.Note("people: the person of the plugin's own was placed at (" + ownX + ", " + ownY + ", " + ownZ + "), " + playerRef.GetDistance(own) + " from the player")
+	float ownX = 0.0
+	float ownY = 0.0
+	float ownZ = 0.0
+	float bareX = 0.0
+	float bareY = 0.0
+	float bareZ = 0.0
+	float floorX = 0.0
+	float floorY = 0.0
+	float floorZ = 0.0
+	float settlerX = 0.0
+	float settlerY = 0.0
+	float settlerZ = 0.0
+	If ownPerson
+		ownX = ownPerson.GetPositionX()
+		ownY = ownPerson.GetPositionY()
+		ownZ = ownPerson.GetPositionZ()
+		akTest.Note("people: the person of the plugin's own was placed at (" + ownX + ", " + ownY + ", " + ownZ + "), " + playerRef.GetDistance(ownPerson) + " from the player")
 	EndIf
-	If bare
-		bareX = bare.GetPositionX()
-		bareY = bare.GetPositionY()
-		bareZ = bare.GetPositionZ()
-		akTest.Note("people: the person with no default package list was placed at (" + bareX + ", " + bareY + ", " + bareZ + "); disabled = " + bare.IsDisabled())
+	If barePerson
+		bareX = barePerson.GetPositionX()
+		bareY = barePerson.GetPositionY()
+		bareZ = barePerson.GetPositionZ()
+		akTest.Note("people: the person with no default package list was placed at (" + bareX + ", " + bareY + ", " + bareZ + "); disabled = " + barePerson.IsDisabled())
 	EndIf
-	If onFloor
-		floorX = onFloor.GetPositionX()
-		floorY = onFloor.GetPositionY()
-		floorZ = onFloor.GetPositionZ()
-		akTest.Note("people: the game's settler on the same spot was placed at (" + floorX + ", " + floorY + ", " + floorZ + "); disabled = " + onFloor.IsDisabled())
+	If floorSettler
+		floorX = floorSettler.GetPositionX()
+		floorY = floorSettler.GetPositionY()
+		floorZ = floorSettler.GetPositionZ()
+		akTest.Note("people: the game's settler on the same spot was placed at (" + floorX + ", " + floorY + ", " + floorZ + "); disabled = " + floorSettler.IsDisabled())
 	EndIf
-	If settler
-		settlerX = settler.GetPositionX()
-		settlerY = settler.GetPositionY()
-		settlerZ = settler.GetPositionZ()
-		akTest.Note("people: the game's settler of scenario 10 was placed at (" + settlerX + ", " + settlerY + ", " + settlerZ + "); disabled = " + settler.IsDisabled())
+	If firstSettler
+		settlerX = firstSettler.GetPositionX()
+		settlerY = firstSettler.GetPositionY()
+		settlerZ = firstSettler.GetPositionZ()
+		akTest.Note("people: the game's settler of scenario 10 was placed at (" + settlerX + ", " + settlerY + ", " + settlerZ + "); disabled = " + firstSettler.IsDisabled())
 	EndIf
 
 	; What became of each: "not there" until it has been watched.
@@ -170,35 +170,35 @@ Function Run(TLM:SelfTest akTest)
 	float ownEnabledAt = 0.0
 
 	; ---- 3. The person of the plugin's own: does it stay, can it be spoken to?
-	If own
-		akTest.CheckTrue("people: the person of the plugin's own starts disabled", own.IsDisabled())
-		float ownAway = Watch(akTest, own, "the person of the plugin's own", ownX, ownY, ownZ, false)
+	If ownPerson
+		akTest.CheckTrue("people: the person of the plugin's own starts disabled", ownPerson.IsDisabled())
+		float ownAway = Watch(akTest, ownPerson, "the person of the plugin's own", ownX, ownY, ownZ, false)
 		ownEnabledAt = clockFrom
-		akTest.CheckFalse("people: the person of the plugin's own is disabled after Enable", own.IsDisabled())
+		akTest.CheckFalse("people: the person of the plugin's own is disabled after Enable", ownPerson.IsDisabled())
 		akTest.CheckTrue("people: the person of the plugin's own is within 64 units of where it was placed, six seconds after it was enabled", ownAway <= STAY_WITHIN)
 		ownStrayed = ownAway > STAY_WITHIN
 		ownStayed = YesNo(!ownStrayed)
 
 		akTest.CheckFalse("people: stage 30 is set before the person has been activated", GetStageDone(STAGE_TALK))
 		akTest.Step("having the player activate the person of the plugin's own")
-		bool first = own.Activate(playerRef)
+		bool firstTry = ownPerson.Activate(playerRef)
 		WaitForStage(STAGE_TALK)
-		akTest.Note("people: the first try: Activate on the person from " + playerRef.GetDistance(own) + " away returned " + first + "; stage 30 set = " + GetStageDone(STAGE_TALK))
+		akTest.Note("people: the first try: Activate on the person from " + playerRef.GetDistance(ownPerson) + " away returned " + firstTry + "; stage 30 set = " + GetStageDone(STAGE_TALK))
 		If !GetStageDone(STAGE_TALK)
 			; Once more from close by, as a player would do it: that tells an
 			; activation the game does not perform from afar from a script
 			; that did not hear one.
 			akTest.Step("moving the player next to the person of the plugin's own", MOVE_SECONDS)
-			playerRef.MoveTo(own, NEXT_TO, 0.0, 0.0)
+			playerRef.MoveTo(ownPerson, NEXT_TO, 0.0, 0.0)
 			movedPlayer = true
 			If GetStageDone(STAGE_TALK)
 				; The first activation was only slow to be heard.
 				akTest.Note("people: stage 30 was set while the player was being moved: the first try was heard late, and there is no second")
 			Else
 				akTest.Step("having the player activate the person from close by")
-				bool second = own.Activate(playerRef)
+				bool secondTry = ownPerson.Activate(playerRef)
 				WaitForStage(STAGE_TALK)
-				akTest.Note("people: the second try: Activate on the person from " + playerRef.GetDistance(own) + " away returned " + second + "; stage 30 set = " + GetStageDone(STAGE_TALK))
+				akTest.Note("people: the second try: Activate on the person from " + playerRef.GetDistance(ownPerson) + " away returned " + secondTry + "; stage 30 set = " + GetStageDone(STAGE_TALK))
 			EndIf
 		EndIf
 		akTest.CheckTrue("people: activating the person sets stage 30 (TLM:MessageStageAlias on its alias)", GetStageDone(STAGE_TALK))
@@ -215,95 +215,95 @@ Function Run(TLM:SelfTest akTest)
 
 	; ---- 5. Tidying up after the scored part.
 	If movedPlayer
-		If home
+		If homeMarker
 			akTest.Step("moving the player back to where the scenario began", MOVE_SECONDS, true)
-			playerRef.MoveTo(home)
+			playerRef.MoveTo(homeMarker)
 			akTest.Note("people: the player is back at " + Where(playerRef))
 		Else
 			akTest.Note("people: no marker base was found when the plugin was built, so the player was not brought back and stands at " + Where(playerRef) + " for the rest of the scenario")
 		EndIf
 	EndIf
-	If home
+	If homeMarker
 		akTest.Step("removing the marker of where the scenario began", 45.0, true)
-		home.Disable()
-		home.Delete()
+		homeMarker.Disable()
+		homeMarker.Delete()
 	EndIf
-	If own
+	If ownPerson
 		clockFrom = ownEnabledAt
-		Tell(akTest, own, "the person of the plugin's own", "after it was activated", ownX, ownY, ownZ)
+		Tell(akTest, ownPerson, "the person of the plugin's own", "after it was activated", ownX, ownY, ownZ)
 		akTest.Step("disabling the person of the plugin's own", 45.0, true)
-		own.Disable()
+		ownPerson.Disable()
 	EndIf
 
 	; ---- 6. The others, one at a time.
-	If bare
-		bareStrayed = Watch(akTest, bare, "the person with no default package list", bareX, bareY, bareZ, true) > STAY_WITHIN
+	If barePerson
+		bareStrayed = Watch(akTest, barePerson, "the person with no default package list", bareX, bareY, bareZ, true) > STAY_WITHIN
 		bareStayed = YesNo(!bareStrayed)
 		akTest.Step("disabling the person with no default package list", 45.0, true)
-		bare.Disable()
+		barePerson.Disable()
 	EndIf
-	If onFloor
-		floorStrayed = Watch(akTest, onFloor, "the game's settler on the same spot", floorX, floorY, floorZ, true) > STAY_WITHIN
+	If floorSettler
+		floorStrayed = Watch(akTest, floorSettler, "the game's settler on the same spot", floorX, floorY, floorZ, true) > STAY_WITHIN
 		floorStayed = YesNo(!floorStrayed)
 		akTest.Step("disabling the game's settler on the same spot", 45.0, true)
-		onFloor.Disable()
+		floorSettler.Disable()
 	EndIf
-	If settler
-		settlerStrayed = Watch(akTest, settler, "the game's settler of scenario 10", settlerX, settlerY, settlerZ, true) > STAY_WITHIN
+	If firstSettler
+		settlerStrayed = Watch(akTest, firstSettler, "the game's settler of scenario 10", settlerX, settlerY, settlerZ, true) > STAY_WITHIN
 		settlerStayed = YesNo(!settlerStrayed)
 		akTest.Step("disabling the game's settler of scenario 10", 45.0, true)
-		settler.Disable()
+		firstSettler.Disable()
 	EndIf
 	akTest.Note("people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = " + ownStayed + ", the person with no default package list = " + bareStayed + ", the game's settler on the same spot = " + floorStayed + ", the game's settler of scenario 10 = " + settlerStayed)
 
 	; ---- 7. What keeps in place a person that did not stay: moved back, and
 	; restrained. The person of the plugin's own first.
-	If own && ownStrayed
-		PutBack(akTest, own, "the person of the plugin's own", ownX, ownY, ownZ)
+	If ownPerson && ownStrayed
+		PutBack(akTest, ownPerson, "the person of the plugin's own", ownX, ownY, ownZ)
 	EndIf
-	If bare && bareStrayed
-		PutBack(akTest, bare, "the person with no default package list", bareX, bareY, bareZ)
+	If barePerson && bareStrayed
+		PutBack(akTest, barePerson, "the person with no default package list", bareX, bareY, bareZ)
 	EndIf
-	If onFloor && floorStrayed
-		PutBack(akTest, onFloor, "the game's settler on the same spot", floorX, floorY, floorZ)
+	If floorSettler && floorStrayed
+		PutBack(akTest, floorSettler, "the game's settler on the same spot", floorX, floorY, floorZ)
 	EndIf
-	If settler && settlerStrayed
-		PutBack(akTest, settler, "the game's settler of scenario 10", settlerX, settlerY, settlerZ)
+	If firstSettler && settlerStrayed
+		PutBack(akTest, firstSettler, "the game's settler of scenario 10", settlerX, settlerY, settlerZ)
 	EndIf
 
 	; ---- 8. The navigation mesh under the two spots.
-	If settler
+	If firstSettler
 		Probe(akTest, playerRef, "where the game's settler of scenario 10 was placed", settlerX, settlerY, settlerZ)
 	EndIf
-	If own
+	If ownPerson
 		Probe(akTest, playerRef, "where the person of the plugin's own was placed", ownX, ownY, ownZ)
 	EndIf
 
 	; ---- 9. The same people with their AI off. Kept apart and late: of all
 	; the experiments it is the one least sure to come back.
-	If own && ownStrayed
-		WithoutAI(akTest, own, "the person of the plugin's own", ownX, ownY, ownZ)
+	If ownPerson && ownStrayed
+		WithoutAI(akTest, ownPerson, "the person of the plugin's own", ownX, ownY, ownZ)
 	EndIf
-	If bare && bareStrayed
-		WithoutAI(akTest, bare, "the person with no default package list", bareX, bareY, bareZ)
+	If barePerson && bareStrayed
+		WithoutAI(akTest, barePerson, "the person with no default package list", bareX, bareY, bareZ)
 	EndIf
-	If onFloor && floorStrayed
-		WithoutAI(akTest, onFloor, "the game's settler on the same spot", floorX, floorY, floorZ)
+	If floorSettler && floorStrayed
+		WithoutAI(akTest, floorSettler, "the game's settler on the same spot", floorX, floorY, floorZ)
 	EndIf
-	If settler && settlerStrayed
-		WithoutAI(akTest, settler, "the game's settler of scenario 10", settlerX, settlerY, settlerZ)
+	If firstSettler && settlerStrayed
+		WithoutAI(akTest, firstSettler, "the game's settler of scenario 10", settlerX, settlerY, settlerZ)
 	EndIf
 
 	; ---- 10. A place in the room, or a place near the player? The player
 	; has stood in one spot all along. Now the player stands where the
 	; person of the plugin's own was placed, and the settler is enabled again.
-	If settler && settlerStrayed && own
+	If firstSettler && settlerStrayed && ownPerson
 		akTest.Step("experiment: moving the player to where the person of the plugin's own was placed", MOVE_SECONDS, true)
 		playerRef.SetPosition(ownX, ownY, ownZ)
 		akTest.Note("people: the player now stands at " + Where(playerRef))
-		Watch(akTest, settler, "the game's settler of scenario 10, with the player standing elsewhere", settlerX, settlerY, settlerZ, true)
+		Watch(akTest, firstSettler, "the game's settler of scenario 10, with the player standing elsewhere", settlerX, settlerY, settlerZ, true)
 		akTest.Step("disabling the game's settler of scenario 10", 45.0, true)
-		settler.Disable()
+		firstSettler.Disable()
 	EndIf
 	akTest.Step("finishing the scenario", 45.0, true)
 EndFunction
@@ -333,10 +333,10 @@ float Function Tell(TLM:SelfTest akTest, Actor akWho, string asName, string asWh
 	float x = akWho.GetPositionX()
 	float y = akWho.GetPositionY()
 	float z = akWho.GetPositionZ()
-	float flat = Math.sqrt((x - afX) * (x - afX) + (y - afY) * (y - afY))
-	float away = Math.sqrt((x - afX) * (x - afX) + (y - afY) * (y - afY) + (z - afZ) * (z - afZ))
-	akTest.Note("people: " + asName + ", " + asWhen + " (" + (Utility.GetCurrentRealTime() - clockFrom) + " s on the clock): at (" + x + ", " + y + ", " + z + "), " + away + " from where it was placed (" + flat + " seen from above, " + (z - afZ) + " higher), " + akWho.GetDistance(Game.GetPlayer()) + " from the player; package = " + akWho.GetCurrentPackage() + ", sit state = " + akWho.GetSitState() + ", in combat = " + akWho.IsInCombat())
-	Return away
+	float flatAway = Math.sqrt((x - afX) * (x - afX) + (y - afY) * (y - afY))
+	float awayNow = Math.sqrt((x - afX) * (x - afX) + (y - afY) * (y - afY) + (z - afZ) * (z - afZ))
+	akTest.Note("people: " + asName + ", " + asWhen + " (" + (Utility.GetCurrentRealTime() - clockFrom) + " s on the clock): at (" + x + ", " + y + ", " + z + "), " + awayNow + " from where it was placed (" + flatAway + " seen from above, " + (z - afZ) + " higher), " + akWho.GetDistance(Game.GetPlayer()) + " from the player; package = " + akWho.GetCurrentPackage() + ", sit state = " + akWho.GetSitState() + ", in combat = " + akWho.IsInCombat())
+	Return awayNow
 EndFunction
 
 Function PutBack(TLM:SelfTest akTest, Actor akWho, string asName, float afX, float afY, float afZ)
@@ -420,8 +420,8 @@ Function TellMesh(TLM:SelfTest akTest, ObjectReference akMarker, string asFrom, 
 	float x = akMarker.GetPositionX()
 	float y = akMarker.GetPositionY()
 	float z = akMarker.GetPositionZ()
-	float flat = Math.sqrt((x - afX) * (x - afX) + (y - afY) * (y - afY))
-	akTest.Note("people: the nearest place on the navigation mesh, asked " + asFrom + ", is at (" + x + ", " + y + ", " + z + "): " + flat + " from the spot seen from above, " + (z - afZ) + " higher than it")
+	float flatAway = Math.sqrt((x - afX) * (x - afX) + (y - afY) * (y - afY))
+	akTest.Note("people: the nearest place on the navigation mesh, asked " + asFrom + ", is at (" + x + ", " + y + ", " + z + "): " + flatAway + " from the spot seen from above, " + (z - afZ) + " higher than it")
 EndFunction
 
 ; ----------------------------------------------------------------- helpers
