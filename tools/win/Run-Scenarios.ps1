@@ -324,7 +324,8 @@ function Read-ScenarioLogs([datetime]$since) {
         # The placed-content trial (scenario 10) asks the game's own scripts on its aliases to
         # write what they do (their ShowTraces property). Whatever the script log says of the
         # trial's quest, by whomever, that is not already listed as a problem.
-        $r.TrialLines = @($lines | Where-Object { $_ -match 'TLM_Trial' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
+        # (Dated lines only: the lines of an error's stack begin with a tab and belong to the error.)
+        $r.TrialLines = @($lines | Where-Object { $_ -match '^\[' -and $_ -match 'TLM_Trial' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
         $r.MqEvents = @($lines | Where-Object { $_ -match 'TLM_MQ01: stage \d+ item' }).Count
         $r.SqEvents = @($lines | Where-Object { $_ -match 'TLM_SQ01: stage \d+ item' }).Count
         # The main quest writes a line, beginning with the amendment's number, when a rule about

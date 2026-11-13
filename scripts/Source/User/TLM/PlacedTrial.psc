@@ -85,12 +85,14 @@ Function Run(TLM:SelfTest akTest)
 	If placedPerson
 		akTest.CheckTrue("trial: the placed person starts disabled", placedPerson.IsDisabled())
 		akTest.CheckFalse("trial: the placed person is dead", placedPerson.IsDead())
-		akTest.CheckTrue("trial: the placed person is in the cell the player is in", placedPerson.GetParentCell() == playerRef.GetParentCell())
-		akTest.Note("trial: the placed person is at " + Where(placedPerson) + ", " + playerRef.GetDistance(placedPerson) + " from the player")
+		; Which cell a disabled reference says it is in is not known, so that is
+		; reported here and scored once the person is enabled.
+		akTest.Note("trial: the placed person, still disabled, is at " + Where(placedPerson) + ", " + playerRef.GetDistance(placedPerson) + " from the player; in the player's cell = " + (placedPerson.GetParentCell() == playerRef.GetParentCell()))
 		akTest.Step("enabling the placed person")
 		placedPerson.Enable()
 		WaitFor3D(placedPerson)
 		akTest.CheckFalse("trial: the placed person is disabled after Enable", placedPerson.IsDisabled())
+		akTest.CheckTrue("trial: the placed person is in the cell the player is in", placedPerson.GetParentCell() == playerRef.GetParentCell())
 		akTest.Note("trial: the placed person once enabled: 3D loaded = " + placedPerson.Is3DLoaded() + ", at " + Where(placedPerson))
 	EndIf
 
