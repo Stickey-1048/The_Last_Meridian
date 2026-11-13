@@ -11,7 +11,9 @@ Three kinds:
   3. The stand-in's own rules, one by one, each with where the rule comes from.
 
 They need a description of the plugin built against a master that holds the
-settler and the marker. tools/run_checks.sh builds one into build/sim/.
+settler, the marker and the test room. tools/run_checks.sh builds one into
+build/sim/. (Scenario 10 and the stand-in's rules for what the plugin places
+in a cell have tests of their own, in test_placed.py.)
 """
 import json
 import os
@@ -33,7 +35,7 @@ VANILLA = BUILD / "TheLastMeridian.vanilla.json"
 GAME_RUNS = json.loads((HERE / "game_runs.json").read_text())["runs"]
 
 # Scenarios that exist in the scripts as they are now.
-CURRENT_SCENARIOS = list(range(1, 10))
+CURRENT_SCENARIOS = list(range(1, 11))
 
 
 def need_build(test):

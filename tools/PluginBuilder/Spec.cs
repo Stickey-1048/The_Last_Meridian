@@ -19,6 +19,10 @@ public enum Fill
     ScriptFilled,
     // The player reference, resolved from Fallout4.esm by EditorID.
     Player,
+    // A reference this plugin itself places in a cell of the game
+    // (Spec.Placed). Without Fallout4.esm there is no cell to place it in,
+    // and the alias stays Optional.
+    Placed,
 }
 
 public sealed record ScriptBind(string Script, params Prop[] Props);
@@ -47,6 +51,8 @@ public sealed record AliasSpec(
     string? CreateInAlias = null,   // alias name, for Fill.CreateIn
     bool IsLocation = false,
     string? Note = null,
+    string? Placed = null,          // EditorID of the placed reference, for Fill.Placed
+    string? DisplayName = null,     // EditorID of a message whose title the reference is shown under
     params ScriptBind[] Scripts);
 
 public sealed record StageSpec(int Index, string? Log = null, bool CompleteQuest = false, string? Note = null);
@@ -85,7 +91,33 @@ public sealed record MessageSpec(string EditorId, string? Title, string Text, bo
 
 public sealed record BookSpec(string EditorId, string Name, string Text);
 
-public sealed record MiscSpec(string EditorId, string Name);
+/// <param name="ModelFrom">EditorID of an item in Fallout4.esm whose world model and bounds this item borrows.
+/// Only the path is copied, into the plugin as built; no file of the game's is. Null: no world model.</param>
+public sealed record MiscSpec(string EditorId, string Name, string? ModelFrom = null);
+
+// An activator with no model. Placed with a box around it, it is a trigger.
+public sealed record ActivatorSpec(string EditorId);
+
+/// <summary>
+/// A reference this plugin places in a cell of the game. Where it goes is given
+/// from the cell's arrival marker (the spot where the console command "coc"
+/// puts the player, and the way the player then faces), which the builder
+/// reads from the cell itself: so many units ahead of it, to its right, and up.
+/// </summary>
+/// <param name="Base">EditorID of what is placed.</param>
+/// <param name="VanillaKind">Null: Base is a record of this plugin. Otherwise the kind of game record to look Base up as;
+/// if the game has no such record the reference is left out and reported.</param>
+/// <param name="BoxHalfExtents">For a trigger: half the size of the box, in game units, on each axis.</param>
+/// <param name="CollisionLayer">For a trigger: EditorID of the game's collision layer that decides what sets it off.</param>
+public sealed record PlacedSpec(
+    string EditorId,
+    string Cell,
+    string Base,
+    string? VanillaKind,
+    float Ahead, float Right, float Up,
+    bool InitiallyDisabled = false,
+    float[]? BoxHalfExtents = null,
+    string? CollisionLayer = null);
 
 public static class Spec
 {
@@ -131,7 +163,48 @@ public static class Spec
     public static readonly MiscSpec[] MiscItems =
     {
         new("TLM_MISC_Dispatch", "Sealed Rail Dispatch"),
+        // Kept without a world model on purpose: self-test scenario 3 ends with
+        // an experiment on what the game does with a placed item that has none.
         new("TLM_MISC_TornTransitPass", "Torn Transit Pass"),
+        // Development only (the placed-content trial). Looks like a bottle cap.
+        new("TLM_MISC_TrialObject", "Trial Object", ModelFrom: "Caps001"),
+    };
+
+    public static readonly ActivatorSpec[] Activators =
+    {
+        // Development only (the placed-content trial).
+        new("TLM_ACTI_TrialTrigger"),
+    };
+
+    // ------------------------------------------------- placed references
+    // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
+    // References in the game's own test room, which the plugin overrides for
+    // the purpose: a person, a trigger and an object, and a second trigger made
+    // on the game's own empty trigger for comparison.
+    //
+    // The person starts disabled, so that nobody new stands about in the other
+    // scenarios: a bystander changes what the game makes of a killing
+    // (docs/design/VERIFY_LOG.md, the twelfth run).
+    //
+    // The triggers must not hold the spot where the player arrives: someone
+    // already inside when the quest starts never "enters". TrialTriggerHalf and
+    // the distances below keep them well clear, and the builder checks it.
+    public const string TrialCell = "QASmoke";
+    public const float TrialTriggerHalf = 150f;
+    // "Typically L_TRIGGER", and actors set such a trigger off: the Creation
+    // Kit wiki's page on OnTriggerEnter.
+    public const string TriggerLayer = "L_TRIGGER";
+
+    static readonly float[] TrialBox = { TrialTriggerHalf, TrialTriggerHalf, TrialTriggerHalf };
+
+    public static readonly PlacedSpec[] Placed =
+    {
+        new("TLM_REF_TrialPerson", TrialCell, "WorkshopNPC", "Npc", Ahead: 300, Right: 150, Up: 0, InitiallyDisabled: true),
+        new("TLM_REF_TrialTrigger", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 600, Right: -200, Up: 100,
+            BoxHalfExtents: TrialBox, CollisionLayer: TriggerLayer),
+        new("TLM_REF_TrialTriggerGameBase", TrialCell, "DefaultEmptyTrigger", "Activator", Ahead: 600, Right: 200, Up: 100,
+            BoxHalfExtents: TrialBox, CollisionLayer: TriggerLayer),
+        new("TLM_REF_TrialObject", TrialCell, "TLM_MISC_TrialObject", null, Ahead: 150, Right: -60, Up: 20),
     };
 
     public static readonly BookSpec[] Books =
@@ -169,6 +242,9 @@ public static class Spec
         new("TLM_MSG_BurnLedger", "Stove", "Burn the ledger?", Box: true,
             new ButtonSpec("Burn it"),
             new ButtonSpec("Keep it")),
+        // Development only (the placed-content trial): its title is the name
+        // the placed person is shown under. A placeholder, not a character.
+        new("TLM_MSG_TrialPersonName", "Trial Settler", "", Box: false),
     };
 
     // --------------------------------------------------------------- core
@@ -205,7 +281,8 @@ public static class Spec
                 new FormProp("TLM_G_SQ01_Outcome", "TLM_G_SQ01_Outcome"),
                 new FormProp("TLM_G_SQ01_YardAlerted", "TLM_G_SQ01_YardAlerted"),
                 new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
-                new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass")),
+                new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
+                new FormProp("TLM_Trial", "TLM_Trial")),
             // Development only: self-test scenarios 2 and 3. Finds out in the
             // game whether actors and markers can be made at run time and put
             // into the quest's aliases, so that the test matrix can be run
@@ -269,11 +346,18 @@ public static class Spec
         });
 
     // --------------------------------------------------------------- MQ01
-    static ScriptBind SetStageOnPickup(int stage) =>
-        new("DefaultAliasOnContainerChangedTo", new IntProp("StageToSet", stage));
+    // The game's own scripts. "ShowTraces: Set to TRUE if you want the traces in
+    // this script to show up in the log" (the Creation Kit wiki's pages on
+    // both). Whether the scripts as shipped still write anything then is not
+    // known; the trial asks for it, since a line from the script itself would
+    // say more than a stage that was or was not set.
+    static ScriptBind SetStageOnPickup(int stage, bool traces = false) => traces
+        ? new("DefaultAliasOnContainerChangedTo", new IntProp("StageToSet", stage), new BoolProp("ShowTraces", true))
+        : new("DefaultAliasOnContainerChangedTo", new IntProp("StageToSet", stage));
 
-    static ScriptBind SetStageOnTrigger(int stage) =>
-        new("DefaultAliasOnTriggerEnter", new IntProp("StageToSet", stage));
+    static ScriptBind SetStageOnTrigger(int stage, bool traces = false) => traces
+        ? new("DefaultAliasOnTriggerEnter", new IntProp("StageToSet", stage), new BoolProp("ShowTraces", true))
+        : new("DefaultAliasOnTriggerEnter", new IntProp("StageToSet", stage));
 
     static readonly ScriptBind CutterScript = new("TLM:MQ01CutterAlias");
     static readonly ScriptBind HandScript = new("TLM:MQ01CaravanHandAlias");
@@ -441,5 +525,40 @@ public static class Spec
             new FormProp("JournalItem", "TLM_BOOK_MarshalLog"),
             new VanillaProp("Caps", "Caps001", "MiscItem")));
 
-    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01 };
+    // -------------------------------------------------------------- trial
+    // Development only: the placed-content trial, self-test scenario 10
+    // (docs/design/TLM_GRAYBOX_trial.md). A quest of its own, so that nothing
+    // about it can touch the two real quests: one alias for each placed
+    // reference, the game's own default scripts on the triggers and the
+    // object, and a stage for each of those scripts to set. It is started by
+    // the test only. Every alias is Optional, so that one that stays empty is
+    // reported by name and does not keep the quest from starting.
+    // Remove it, the records above marked "trial" and
+    // scripts/Source/User/TLM/PlacedTrial.psc before any release.
+    public static readonly QuestSpec Trial = new(
+        "TLM_Trial", "The Last Meridian (placed-content trial)", "None", 30, StartGameEnabled: false,
+        Stages: new StageSpec[]
+        {
+            new(10, Note: "The player entered the trigger"),
+            new(11, Note: "The player entered the trigger made on the game's own empty trigger"),
+            new(20, Note: "The player picked the object up"),
+            new(100, CompleteQuest: true, Note: "Trial finished"),
+        },
+        Objectives: Array.Empty<ObjectiveSpec>(),
+        Aliases: new AliasSpec[]
+        {
+            new("Person", Fill.Placed, AllowDisabled: true, Placed: "TLM_REF_TrialPerson", DisplayName: "TLM_MSG_TrialPersonName"),
+            new("Trigger", Fill.Placed, Placed: "TLM_REF_TrialTrigger", Scripts: SetStageOnTrigger(10, traces: true)),
+            new("TriggerGameBase", Fill.Placed, Placed: "TLM_REF_TrialTriggerGameBase", Scripts: SetStageOnTrigger(11, traces: true)),
+            new("Object", Fill.Placed, Placed: "TLM_REF_TrialObject", Scripts: SetStageOnPickup(20, traces: true)),
+        },
+        Script: new ScriptBind("TLM:PlacedTrial",
+            new AliasProp("Alias_Person", "Person"),
+            new AliasProp("Alias_Trigger", "Trigger"),
+            new AliasProp("Alias_TriggerGameBase", "TriggerGameBase"),
+            new AliasProp("Alias_Object", "Object"),
+            new FormProp("TrialObject", "TLM_MISC_TrialObject"),
+            new VanillaProp("MarkerBase", "XMarker", "Static")));
+
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial };
 }

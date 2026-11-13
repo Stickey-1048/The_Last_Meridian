@@ -34,7 +34,7 @@ import unittest
 from pathlib import Path
 
 from sim import FRAME, Session, run_scenario
-from test_sim import NATIVES, PLUGIN, ROOT, SCRIPTS, VANILLA, need_build, summary
+from test_sim import CURRENT_SCENARIOS, NATIVES, PLUGIN, ROOT, SCRIPTS, VANILLA, need_build, summary
 
 sys.path.insert(0, str(ROOT / "tools" / "logic_model"))
 import tlm_model as model                                         # noqa: E402
@@ -143,7 +143,7 @@ class TwoHandlersAtOnce(unittest.TestCase):
 class EveryScenarioWhenCallsTakeTime(unittest.TestCase):
     def test_all_of_them_pass(self):
         need_build(self)
-        numbers = list(range(1, 10)) + [c["scenario"] for c in json.loads((ROOT / "tools" / "matrix_cases.json").read_text())["cases"]]
+        numbers = CURRENT_SCENARIOS + [c["scenario"] for c in json.loads((ROOT / "tools" / "matrix_cases.json").read_text())["cases"]]
         for n in numbers:
             with self.subTest(scenario=n):
                 s = run_scenario(n, SCRIPTS, PLUGIN, VANILLA, NATIVES, until=2000.0, native_delay=FRAME)
@@ -157,7 +157,7 @@ class EveryScenarioWhenCallsTakeTime(unittest.TestCase):
         four cases written to provoke them, no guard changes anything, whether
         calls take time or not."""
         need_build(self)
-        numbers = list(range(1, 10)) + [c["scenario"] for c in json.loads((ROOT / "tools" / "matrix_cases.json").read_text())["cases"]]
+        numbers = CURRENT_SCENARIOS + [c["scenario"] for c in json.loads((ROOT / "tools" / "matrix_cases.json").read_text())["cases"]]
         for delay in (0.0, FRAME):
             acted = [n for n in numbers
                      if guard_lines(run_scenario(n, SCRIPTS, PLUGIN, VANILLA, NATIVES, until=2000.0, native_delay=delay))]
@@ -329,7 +329,7 @@ class Shaken(unittest.TestCase):
 
     def test_every_scenario_passes_however_it_is_shaken(self):
         need_build(self)
-        numbers = list(range(1, 10)) + [c["scenario"] for c in json.loads((ROOT / "tools" / "matrix_cases.json").read_text())["cases"]]
+        numbers = CURRENT_SCENARIOS + [c["scenario"] for c in json.loads((ROOT / "tools" / "matrix_cases.json").read_text())["cases"]]
         for shake in range(3):
             for n in numbers:
                 with self.subTest(scenario=n, shake=shake):

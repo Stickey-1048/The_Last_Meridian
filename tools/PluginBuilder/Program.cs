@@ -47,10 +47,17 @@ File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.json"), Report.ToJson(in
 File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.vanilla.json"),
     System.Text.Json.JsonSerializer.Serialize(builder.VanillaFound, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
 
-var problems = SelfCheck.Run(info);
+// Where the player arrives in the cells the plugin places things in: read from
+// the game's master, so not in the plugin either. The stand-in engine starts
+// its player there.
+File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.arrivals.json"),
+    System.Text.Json.JsonSerializer.Serialize(builder.Arrivals, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+
+var problems = SelfCheck.Run(info, builder);
 Console.WriteLine($"{plugin}: {new FileInfo(plugin).Length} bytes, mode={(esm == null ? "skeleton (no Fallout4.esm)" : "full")}, header version {info.HeaderVersion:0.00}, lowest FormID 0x{info.LowestFormId:X}");
 Console.WriteLine($"  {info.Records.Count} simple records, {info.Messages.Count} messages, {info.Quests.Count} quests, " +
-                  $"{info.Quests.Sum(q => q.Stages.Count)} stages, {info.Quests.Sum(q => q.Aliases.Count)} aliases");
+                  $"{info.Quests.Sum(q => q.Stages.Count)} stages, {info.Quests.Sum(q => q.Aliases.Count)} aliases, " +
+                  $"{info.Cells.Sum(c => c.Placed.Count)} placed references in {info.Cells.Count} cell(s) of the game");
 Console.WriteLine($"  not wired yet: {builder.Pending.Count} (see TheLastMeridian.report.txt)");
 foreach (var note in builder.VanillaNotes) Console.WriteLine($"  lookup: {note}");
 

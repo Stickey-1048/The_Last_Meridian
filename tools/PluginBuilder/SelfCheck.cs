@@ -7,7 +7,10 @@ namespace Tlm.PluginBuilder;
 /// </summary>
 public static class SelfCheck
 {
-    public static List<string> Run(Report.PluginInfo info)
+    /// <param name="builder">The builder that wrote the plugin: which references it placed, where the player
+    /// arrives in their cells, and which of the game's records it found. Those are not in the spec; they depend
+    /// on the master the plugin was built against.</param>
+    public static List<string> Run(Report.PluginInfo info, Builder builder)
     {
         var problems = new List<string>();
         void Expect(bool ok, string message) { if (!ok) problems.Add(message); }
@@ -20,7 +23,8 @@ public static class SelfCheck
 
         var ids = info.Records.Select(r => r.EditorId)
             .Concat(info.Messages.Select(m => m.EditorId))
-            .Concat(info.Quests.Select(q => q.EditorId)).ToList();
+            .Concat(info.Quests.Select(q => q.EditorId))
+            .Concat(info.Cells.SelectMany(c => c.Placed).Select(p => p.EditorId ?? "(a placed reference without an EditorID)")).ToList();
         Expect(ids.All(id => id.StartsWith("TLM_")), "an EditorID is missing the TLM_ prefix");
         Expect(ids.Distinct(StringComparer.OrdinalIgnoreCase).Count() == ids.Count, "duplicate EditorID");
 
@@ -31,13 +35,24 @@ public static class SelfCheck
         foreach (var b in Spec.Books)
             Expect(info.Records.Any(r => r.Type == "Book" && r.EditorId == b.EditorId && r.Name == b.Name), $"book {b.EditorId} missing or misnamed");
         foreach (var m in Spec.MiscItems)
-            Expect(info.Records.Any(r => r.Type == "MiscItem" && r.EditorId == m.EditorId && r.Name == m.Name), $"misc item {m.EditorId} missing or misnamed");
+        {
+            var got = info.Records.FirstOrDefault(r => r.Type == "MiscItem" && r.EditorId == m.EditorId && r.Name == m.Name);
+            if (got == null) { problems.Add($"misc item {m.EditorId} missing or misnamed"); continue; }
+            builder.BorrowedModels.TryGetValue(m.EditorId, out var model);
+            Expect(got.Model == model, $"misc item {m.EditorId}: world model is '{got.Model ?? "none"}', expected '{model ?? "none"}'");
+            Expect(m.ModelFrom != null || got.Model == null, $"misc item {m.EditorId}: has a world model the spec does not ask for");
+        }
+        foreach (var a in Spec.Activators)
+            Expect(info.Records.Any(r => r.Type == "Activator" && r.EditorId == a.EditorId && r.Model == null), $"activator {a.EditorId} missing, or it has a model");
+
+        CheckPlaced(info, builder, Expect);
 
         foreach (var m in Spec.Messages)
         {
             var got = info.Messages.FirstOrDefault(x => x.EditorId == m.EditorId);
             if (got == null) { problems.Add($"message {m.EditorId} missing"); continue; }
             Expect(got.Text == m.Text, $"message {m.EditorId}: text differs");
+            Expect((got.Title ?? "") == (m.Title ?? ""), $"message {m.EditorId}: title is '{got.Title}', expected '{m.Title}'");
             Expect(got.Box == m.Box, $"message {m.EditorId}: box flag differs");
             Expect(got.Buttons.Select(b => b.Text).SequenceEqual(m.Buttons.Select(b => b.Text)), $"message {m.EditorId}: buttons differ");
             for (var i = 0; i < Math.Min(got.Buttons.Count, m.Buttons.Length); i++)
@@ -96,6 +111,17 @@ public static class SelfCheck
                 if (a.Fill == Fill.CreateIn)
                     Expect(ga.Fill != null && ga.Fill.StartsWith($"create {a.CreateItem} In alias {Array.FindIndex(q.Aliases, x => x.Name == a.CreateInAlias)}"),
                         $"{q.EditorId} alias {a.Name}: create-in fill differs ({ga.Fill})");
+                if (a.Fill == Fill.Placed)
+                {
+                    var want = builder.PlacedKeys.TryGetValue(a.Placed ?? "", out var key) ? $"forced {key}" : null;
+                    Expect(ga.Fill == want, $"{q.EditorId} alias {a.Name}: fill is '{ga.Fill ?? "none"}', expected '{want ?? "none"}'");
+                    Expect(ga.Flags.Contains("Optional"), $"{q.EditorId} alias {a.Name}: an alias for a placed reference must be Optional");
+                    Expect(Spec.Placed.Any(p => p.EditorId == a.Placed), $"{q.EditorId} alias {a.Name}: the spec places no reference '{a.Placed}'");
+                    var spec = Spec.Placed.FirstOrDefault(p => p.EditorId == a.Placed);
+                    Expect(spec == null || !spec.InitiallyDisabled || a.AllowDisabled,
+                        $"{q.EditorId} alias {a.Name}: its reference starts disabled, so the alias needs Allow Disabled");
+                }
+                Expect(ga.DisplayName == a.DisplayName, $"{q.EditorId} alias {a.Name}: display name is '{ga.DisplayName ?? "none"}', expected '{a.DisplayName ?? "none"}'");
             }
 
             Expect(got.Scripts.Select(s => s.Name).SequenceEqual(q.AllScripts().Select(s => s.Script)), $"{q.EditorId}: attached scripts differ");
@@ -119,5 +145,74 @@ public static class SelfCheck
             }
         }
         return problems;
+    }
+
+    /// <summary>
+    /// The references the plugin places in cells of the game, as read back from the file.
+    /// </summary>
+    static void CheckPlaced(Report.PluginInfo info, Builder builder, Action<bool, string> Expect)
+    {
+        var placedIds = Spec.Placed.Select(p => p.EditorId).ToList();
+        Expect(placedIds.Distinct(StringComparer.OrdinalIgnoreCase).Count() == placedIds.Count, "two placed references share an EditorID");
+
+        var built = Spec.Placed.Where(p => builder.PlacedKeys.ContainsKey(p.EditorId)).ToList();
+        var cellNames = built.Select(p => p.Cell).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        Expect(info.Cells.Count == cellNames.Count, $"the plugin has {info.Cells.Count} cell record(s), expected {cellNames.Count}");
+
+        foreach (var cell in info.Cells)
+        {
+            var name = cell.EditorId ?? "(no EditorID)";
+            Expect(!cell.OfThisPlugin, $"cell {name}: is a new cell of this plugin; only copies of the game's cells are expected");
+            Expect(cellNames.Contains(name, StringComparer.OrdinalIgnoreCase), $"cell {name}: the spec places nothing there");
+            // The plugin's copy of the cell's record goes where the master files the cell.
+            if (builder.CellsFiled.TryGetValue(name, out var filed))
+                Expect((cell.Block, cell.SubBlock) == filed,
+                    $"cell {name} ({cell.FormKey}): filed under block {cell.Block}, sub-block {cell.SubBlock}; the master files it under {filed.Block} and {filed.SubBlock}");
+            else
+                Expect(false, $"cell {name} ({cell.FormKey}): the builder did not find where the master files it");
+            foreach (var p in cell.Placed)
+            {
+                // The game's own references in the cell stay in the master. A copy
+                // of one here would override it, and would be the game's data.
+                Expect(p.FormKey.EndsWith(":" + Spec.PluginName, StringComparison.OrdinalIgnoreCase),
+                    $"cell {name}: holds {p.FormKey}, which is not a reference of this plugin");
+                Expect(placedIds.Contains(p.EditorId ?? "", StringComparer.OrdinalIgnoreCase), $"cell {name}: holds {p.EditorId ?? p.FormKey}, which the spec does not place");
+            }
+        }
+
+        foreach (var p in built)
+        {
+            var key = builder.PlacedKeys[p.EditorId].ToString();
+            var cell = info.Cells.FirstOrDefault(c => string.Equals(c.EditorId, p.Cell, StringComparison.OrdinalIgnoreCase));
+            var got = cell?.Placed.FirstOrDefault(x => x.FormKey == key);
+            if (got == null) { Expect(false, $"{p.EditorId}: not in cell {p.Cell} of the written plugin"); continue; }
+            Expect(got.EditorId == p.EditorId, $"{p.EditorId}: EditorID read back as '{got.EditorId}'");
+            var isNpc = string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
+            Expect(got.Kind == (isNpc ? "PlacedNpc" : "PlacedObject"), $"{p.EditorId}: is a {got.Kind}");
+            var wantBase = p.VanillaKind == null
+                ? p.Base
+                : builder.VanillaFound.FirstOrDefault(v => string.Equals(v.EditorId, p.Base, StringComparison.OrdinalIgnoreCase)
+                                                           && string.Equals(v.Kind, p.VanillaKind, StringComparison.OrdinalIgnoreCase))?.FormKey;
+            Expect(wantBase != null && got.Base == wantBase, $"{p.EditorId}: places {got.Base}, expected {wantBase ?? p.Base}");
+            // A reference a quest alias points at has to be persistent, in both senses the file has.
+            Expect(got.Persistent, $"{p.EditorId}: the Persistent flag is not set");
+            Expect(got.Group == "Persistent", $"{p.EditorId}: is in the cell's {got.Group} list");
+            Expect(got.InitiallyDisabled == p.InitiallyDisabled, $"{p.EditorId}: Initially Disabled differs");
+            if (p.BoxHalfExtents == null)
+                Expect(got.Primitive == null && got.CollisionLayer == null, $"{p.EditorId}: has a primitive or a collision layer the spec does not ask for");
+            else
+            {
+                Expect(got.Primitive == "Box" && got.Box != null && got.Box.SequenceEqual(p.BoxHalfExtents), $"{p.EditorId}: the box differs");
+                var layerPending = builder.Pending.Any(x => x.StartsWith(p.EditorId + ": placed without a collision layer"));
+                Expect((got.CollisionLayer != null) == (p.CollisionLayer != null && !layerPending), $"{p.EditorId}: collision layer is {(got.CollisionLayer == null ? "missing" : "present")}");
+            }
+            var arrival = builder.Arrivals.FirstOrDefault(a => string.Equals(a.Cell, p.Cell, StringComparison.OrdinalIgnoreCase));
+            if (arrival == null) { Expect(false, $"{p.EditorId}: the builder did not say where the player arrives in {p.Cell}"); continue; }
+            double Sq(double x) => x * x;
+            var want = Math.Sqrt(Sq(p.Ahead) + Sq(p.Right) + Sq(p.Up));
+            var have = Math.Sqrt(Sq(got.Position[0] - arrival.Position[0]) + Sq(got.Position[1] - arrival.Position[1]) + Sq(got.Position[2] - arrival.Position[2]));
+            Expect(Math.Abs(want - have) < 0.5, $"{p.EditorId}: is {have:0.#} from the arrival point, expected {want:0.#}");
+            Expect(Math.Abs(got.Position[2] - arrival.Position[2] - p.Up) < 0.01, $"{p.EditorId}: height above the arrival point differs");
+        }
     }
 }

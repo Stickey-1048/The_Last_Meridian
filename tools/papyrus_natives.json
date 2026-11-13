@@ -1,6 +1,21 @@
 {
  "_note": "Signatures of the Fallout 4 Papyrus natives this project calls, as documented on the Creation Kit wiki (fetched 2026-11-11). Used by tools/check_consistency.py. Documentation-level check only: nothing here has been compiled.",
  "natives": {
+  "Activate": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "ObjectReference akActivator",
+     "bool abDefaultProcessingOnly = false"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/Activate_-_ObjectReference"
+   }
+  ],
   "AddItem": [
    {
     "global": false,
@@ -151,6 +166,18 @@
     "source": "falloutck.uesp.net/wiki/GetOwningQuest_-_Alias"
    }
   ],
+  "GetParentCell": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "Cell",
+    "source": "falloutck.uesp.net/wiki/GetParentCell_-_ObjectReference"
+   }
+  ],
   "GetPlayer": [
    {
     "global": true,
@@ -161,6 +188,42 @@
     "params": [],
     "returns": "Actor",
     "source": "falloutck.uesp.net/wiki/GetPlayer_-_Game"
+   }
+  ],
+  "GetPositionX": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/GetPositionX_-_ObjectReference"
+   }
+  ],
+  "GetPositionY": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/GetPositionY_-_ObjectReference"
+   }
+  ],
+  "GetPositionZ": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/GetPositionZ_-_ObjectReference"
    }
   ],
   "GetReference": [
@@ -187,6 +250,18 @@
     ],
     "returns": "bool",
     "source": "falloutck.uesp.net/wiki/GetStageDone_-_Quest"
+   }
+  ],
+  "GetTriggerObjectCount": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "int",
+    "source": "falloutck.uesp.net/wiki/GetTriggerObjectCount_-_ObjectReference"
    }
   ],
   "GetValueInt": [
@@ -724,6 +799,18 @@
     ],
     "returns": "int",
     "source": "falloutck.uesp.net/wiki/Show_-_Message"
+   }
+  ],
+  "Start": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/Start_-_Quest"
    }
   ],
   "StartCombat": [

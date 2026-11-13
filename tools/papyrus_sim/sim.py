@@ -50,7 +50,18 @@ class _Return(Exception):
 DEATH_EVENT_DELAY = 0.7
 COMBAT_EVENT_DELAY = 0.3      # [assumed] number; [seen] that the event arrives
 DISTANCE_EVENT_DELAY = 0.1    # [assumed] number; [seen] within a second
+TRIGGER_EVENT_DELAY = 0.1     # [assumed] number, and not seen: nothing placed has run in the game yet
+CONTAINER_EVENT_DELAY = 0.1   # [assumed] number, and not seen
 FRAME = 1.0 / 60.0
+# How much of an actor counts for a trigger: from its feet this far up. [assumed]
+ACTOR_HEIGHT = 120.0
+# The room the runner sends the game to (coc qasmoke). [seen]
+START_CELL = "QASmoke"
+# The game's own scripts that the plugin attaches to aliases by name. The
+# stand-in does not have their source; it plays what the Creation Kit wiki says
+# they do. [documented], and not seen: no alias carrying one has ever been
+# filled in the game.
+DEFAULT_ALIAS_SCRIPTS = ("defaultaliasontriggerenter", "defaultaliasoncontainerchangedto")
 
 
 # ------------------------------------------------------------ game objects
@@ -86,6 +97,11 @@ class Faction(Form):
         self.player_enemy = False
 
 
+class Cell(Form):
+    def __init__(self, editor_id):
+        super().__init__(editor_id, "Cell")
+
+
 class ObjectReference:
     count = 0
 
@@ -100,6 +116,16 @@ class ObjectReference:
         # Nothing in the stand-in opens a conversation. A test that wants one
         # sets this, as a person would by talking to the actor.
         self.talking_to_player = False
+        self.cell: Optional[Cell] = None
+        self.heading = 0.0                       # radians, from north towards east
+        self.editor_id: Optional[str] = None     # for a reference the plugin places
+        # A box around the reference makes it a trigger: how far the box
+        # reaches from its middle on each axis, and its collision layer.
+        self.box: Optional[tuple] = None
+        self.layer: Optional[int] = None
+        self.inside: set = set()                 # ids of the actors inside the box
+        # Who carries it, once it has been picked up or put somewhere.
+        self.container: Optional["ObjectReference"] = None
 
     def has_3d(self) -> bool:
         # [seen] a placed copy of an item with no model reports Is3DLoaded false
@@ -130,6 +156,8 @@ class Alias:
         self.fill = info.get("Fill")
         self.ref: Optional[ObjectReference] = None
         self.scripts: List["Instance"] = []
+        # The game's own scripts on the alias: (name in lower case, its properties).
+        self.default_scripts: List[tuple] = []
 
     def __repr__(self):
         return "[alias %s on %s]" % (self.name, self.quest.editor_id)
@@ -175,7 +203,7 @@ class Thread:
 NATIVE_TYPES = {
     "scriptobject": object, "form": Form, "quest": Quest, "globalvariable": GlobalVariable,
     "message": Message, "faction": Faction, "objectreference": ObjectReference, "actor": Actor,
-    "alias": Alias, "referencealias": Alias,
+    "alias": Alias, "referencealias": Alias, "cell": Cell,
     # base forms the scripts only pass around
     "miscobject": Form, "book": Form, "actorbase": Form, "static": Form,
 }
@@ -322,8 +350,19 @@ class Session:
         self.calls_on_none = 0
         self.forms: Dict[str, Form] = {}
         self.quests: Dict[str, Quest] = {}
+        self.cells: Dict[str, Cell] = {}
         self.player = Actor(Form("Player", "Npc", has_model=True), is_player=True)
+        self.player.cell = self._cell(START_CELL)
         self.actors: List[Actor] = [self.player]
+        self.triggers: List[ObjectReference] = []
+        self.placed: Dict[str, ObjectReference] = {}      # EditorID -> a reference the plugin places
+        # For a test: False makes Activate do nothing, as if the game did not
+        # take it for picking the thing up.
+        self.activate_picks_up = True
+        # Where the player arrives in the cells the plugin places things in:
+        # written by the builder beside the plugin's description.
+        arrivals = Path(plugin_json).with_name("TheLastMeridian.arrivals.json")
+        self.arrivals = json.loads(arrivals.read_text()) if arrivals.exists() else []
         self._build()
 
     # ---- building the world from the plugin's description
@@ -335,8 +374,10 @@ class Session:
             elif rec["Type"] == "Faction":
                 self.forms[eid] = Faction(eid)
             else:
-                # The plugin's items carry no model yet. [seen] Is3DLoaded false.
-                self.forms[eid] = Form(eid, rec["Type"], has_model=False)
+                # An item of the plugin's without a model: [seen] Is3DLoaded
+                # false. One that borrows a model of the game's has one;
+                # whether the game then loads it has not been seen.
+                self.forms[eid] = Form(eid, rec["Type"], has_model=bool(rec.get("Model")))
         for m in self.plugin["Messages"]:
             self.forms[m["EditorId"]] = Message(m["EditorId"], m["Box"], m["Buttons"])
         self.by_formkey: Dict[str, Any] = {}
@@ -362,9 +403,53 @@ class Session:
             for a in q["Aliases"]:
                 alias = quest.aliases[a["Id"]]
                 for bind in a["Scripts"]:
+                    if bind["Name"].lower() in DEFAULT_ALIAS_SCRIPTS:
+                        alias.default_scripts.append((bind["Name"].lower(), {p["Name"].lower(): p["Value"] for p in bind["Props"]}))
                     inst = self._attach(bind, alias, quest)
                     if inst:
                         alias.scripts.append(inst)
+        self._place()
+
+    def _cell(self, editor_id: str) -> Cell:
+        key = editor_id.lower()
+        if key not in self.cells:
+            self.cells[key] = Cell(editor_id)
+        return self.cells[key]
+
+    def _place(self):
+        """The references the plugin places in cells of the game (none in a
+        plugin built without the game's master). [assumed] throughout that the
+        game loads them as the plugin describes them: nothing placed has run
+        in the game yet."""
+        for c in self.plugin.get("Cells", []):
+            cell = self._cell(c["EditorId"] or c["FormKey"])
+            for p in c["Placed"]:
+                base = self._target(p["Base"])
+                made = Actor(base, p["Position"]) if p["Kind"] == "PlacedNpc" else ObjectReference(base, p["Position"])
+                if isinstance(made, Actor):
+                    self.actors.append(made)
+                made.cell = cell
+                made.heading = p["Rotation"][2]
+                made.editor_id = p["EditorId"]
+                made.disabled = p["InitiallyDisabled"]
+                if p["Primitive"] == "Box":
+                    made.box = tuple(p["Box"])
+                    made.layer = p["CollisionLayer"]
+                    self.triggers.append(made)
+                elif p["Primitive"] is not None:
+                    raise SimError("%s: a %s primitive is not modelled" % (p["EditorId"], p["Primitive"]))
+                self.by_formkey[p["FormKey"]] = made
+                self.placed[p["EditorId"]] = made
+        # [assumed] The player arrives at the cell's arrival marker. The
+        # scenario reports where the player really is.
+        for a in self.arrivals:
+            if a["Cell"].lower() == START_CELL.lower():
+                self.player.pos = tuple(a["Position"])
+                self.player.heading = a["Heading"]
+        # Whoever is inside a trigger when the room loads is inside it: no
+        # script that could be told is listening yet.
+        for trig in self.triggers:
+            trig.inside = {a.id for a in self.actors if self._in_box(trig, a)}
 
     def _target(self, name: str):
         if name in self.forms:
@@ -376,8 +461,10 @@ class Session:
     def _attach(self, bind, obj, quest) -> Optional[Instance]:
         script = self.scripts.get(bind["Name"].lower())
         if script is None:
-            # One of the game's own scripts (DefaultAliasOn...). Not run here.
-            self.unknown_scripts.add(bind["Name"])
+            # One of the game's own scripts. Two of them are played from their
+            # documentation (DEFAULT_ALIAS_SCRIPTS); any other is not run.
+            if bind["Name"].lower() not in DEFAULT_ALIAS_SCRIPTS:
+                self.unknown_scripts.add(bind["Name"])
             return None
         inst = Instance(script, obj)
         for p in bind["Props"]:
@@ -440,13 +527,74 @@ class Session:
 
     def actor_event(self, actor: Actor, event: str, args: list, delay: float):
         """[documented] an alias's scripts receive its reference's events; [seen] for OnDeath, OnCombatStateChanged, OnPlayerLoadGame."""
+        self.ref_event(actor, event, args, delay)
+
+    def ref_event(self, ref: ObjectReference, event: str, args: list, delay: float):
+        """An event of a reference, sent to the scripts on every alias that
+        holds it: the project's own, and the two of the game's that the
+        stand-in plays from their documentation."""
         for quest in self.quests.values():
             if not quest.running:
                 continue
             for alias in quest.aliases.values():
-                if alias.ref is actor:
+                if alias.ref is ref:
                     for inst in alias.scripts:
                         self.send_event(inst, event, args, delay)
+                    for name, props in alias.default_scripts:
+                        self._default_alias_script(alias, name, props, event, args, delay)
+
+    def _default_alias_script(self, alias: Alias, name: str, props: dict, event: str, args: list, delay: float):
+        """What the Creation Kit wiki says the game's own script does.
+          DefaultAliasOnTriggerEnter: "Stage to Set"; "PlayerTriggerOnly: If
+            set to TRUE (DEFAULT) then this stage will only set if Triggered
+            by the player."
+          DefaultAliasOnContainerChangedTo: "Stage to Set"; "PlayerPickupOnly:
+            If set to TRUE (DEFAULT) then the stage will only set if this is
+            picked up by the player."
+        [documented], and not seen. Only the properties the plugin sets are
+        played; one it does not know stops the session. ShowTraces
+        ("if you want the traces in this script to show up in the log") changes
+        nothing the scripts can see, and what the lines would be is not known,
+        so the stand-in writes none."""
+        known = {"stagetoset", "showtraces"}
+        if set(props) - known:
+            raise SimError("%s on %r: the stand-in does not play its properties %s" % (name, alias, sorted(set(props) - known)))
+        wanted = {"defaultaliasontriggerenter": "ontriggerenter", "defaultaliasoncontainerchangedto": "oncontainerchanged"}[name]
+        if event.lower() != wanted or unwrap(args[0]) is not self.player:
+            return
+        stage = props["stagetoset"]
+        self.later(delay, "%s on %s" % (name, alias.name), lambda: self.n_quest_setstage(alias.quest, None, stage))
+
+    # ---- triggers
+    def _in_box(self, trig: ObjectReference, actor: Actor) -> bool:
+        """Is any of the actor, from its feet up, inside the trigger's box? The
+        box is turned with the reference."""
+        if trig.disabled or trig.deleted or actor.disabled or actor.deleted or trig.cell is not actor.cell:
+            return False
+        dx, dy = actor.pos[0] - trig.pos[0], actor.pos[1] - trig.pos[1]
+        sin, cos = math.sin(trig.heading), math.cos(trig.heading)
+        across, along = dx * cos - dy * sin, dx * sin + dy * cos
+        feet = actor.pos[2] - trig.pos[2]
+        return abs(across) <= trig.box[0] and abs(along) <= trig.box[1] and feet <= trig.box[2] and feet + ACTOR_HEIGHT >= -trig.box[2]
+
+    def check_triggers(self):
+        """After anything has moved, appeared or gone: who has entered or left
+        a trigger. [documented] "Event called when the object reference is a
+        trigger volume and has been entered", and that actors set off a
+        trigger on the layer triggers are typically on. Not seen."""
+        for trig in self.triggers:
+            now_inside = {a.id for a in self.actors if self._in_box(trig, a)}
+            entered, left = now_inside - trig.inside, trig.inside - now_inside
+            trig.inside = now_inside
+            if entered and trig.layer is None:
+                # The builder leaves the layer out when the master has none.
+                # What the game makes of such a box is not known.
+                raise SimError("%r was entered, and it has no collision layer: what the game does then is not modelled" % trig)
+            for actor in self.actors:
+                if actor.id in entered:
+                    self.ref_event(trig, "OnTriggerEnter", [actor], TRIGGER_EVENT_DELAY)
+                elif actor.id in left:
+                    self.ref_event(trig, "OnTriggerLeave", [actor], TRIGGER_EVENT_DELAY)
 
     def run(self, until: float = 900.0) -> str:
         """Runs until the game is closed by a script, nothing is left that could
@@ -878,9 +1026,23 @@ class Session:
         quest.running = True
         for alias in quest.aliases.values():
             if alias.fill and alias.fill.startswith("forced "):
-                alias.ref = self.by_formkey.get(alias.fill.split(" ", 1)[1])
+                ref = self.by_formkey.get(alias.fill.split(" ", 1)[1])
+                if isinstance(ref, ObjectReference) and ref.disabled and "AllowDisabled" not in alias.flags:
+                    # [assumed] from the editor's description of the flag for
+                    # the earlier games ("allow disabled references to fill
+                    # this alias"); the Fallout 4 wiki does not describe it.
+                    # The cautious reading: without the flag the alias stays empty.
+                    ref = None
+                alias.ref = ref if isinstance(ref, ObjectReference) else None
         for inst in quest.scripts:
             self.send_event(inst, "OnQuestInit", [])
+
+    def n_quest_start(self, quest: Quest, context):
+        # [documented] "Starts this quest. Is latent and will not return until
+        # the quest is actually started"; "True if the quest was successfully
+        # started." [assumed] true as well for a quest already running.
+        self.start_quest(quest)
+        return quest.running
 
     def n_quest_setstage(self, quest: Quest, context, stage):
         if stage not in quest.stages:
@@ -1057,6 +1219,8 @@ class Session:
         else:
             made = ObjectReference(form, ref.pos)   # [seen] a marker and an item
         made.disabled = truthy(disabled)
+        made.cell = ref.cell
+        self.check_triggers()
         return made
 
     def n_objectreference_moveto(self, ref, context, target, x=0.0, y=0.0, z=0.0, match_rotation=True):
@@ -1069,7 +1233,9 @@ class Session:
             while True:
                 yield ("block",)
         ref.pos = (target.pos[0] + x, target.pos[1] + y, target.pos[2] + z)
+        ref.cell = target.cell
         self.check_distances()
+        self.check_triggers()
 
     def n_objectreference_getdistance(self, ref, context, other):
         other = unwrap(other)
@@ -1082,12 +1248,59 @@ class Session:
         ref.disabled = True
         if isinstance(ref, Actor):
             self._stop_combat(ref)
+        self.check_triggers()
 
     def n_objectreference_disable(self, ref, context, fade=False):
         self._disable(ref)
 
     def n_objectreference_enable(self, ref, context, fade=False):
         ref.disabled = False
+        self.check_triggers()
+
+    def n_objectreference_getparentcell(self, ref, context):
+        return ref.cell                             # [documented] "the Cell the object is currently in"
+
+    def n_objectreference_getpositionx(self, ref, context):
+        return float(ref.pos[0])
+
+    def n_objectreference_getpositiony(self, ref, context):
+        return float(ref.pos[1])
+
+    def n_objectreference_getpositionz(self, ref, context):
+        return float(ref.pos[2])
+
+    def n_objectreference_gettriggerobjectcount(self, ref, context):
+        if ref.box is None:
+            # [documented] "only works if this is actually a trigger and will error otherwise"
+            self.papyrus_error("GetTriggerObjectCount on %r, which is not a trigger" % ref)
+            return 0
+        return len(ref.inside)
+
+    def _into_container(self, ref: ObjectReference, container: Optional[ObjectReference]):
+        """A reference goes into a container, with what that tells the scripts
+        on its aliases. [documented] OnContainerChanged: the container it
+        enters, the one it left (None: it was picked up from the world)."""
+        old = ref.container
+        if old is not None:
+            old.inventory[ref.base] = old.inventory.get(ref.base, 0) - 1
+        ref.container = container
+        if container is not None:
+            container.inventory[ref.base] = container.inventory.get(ref.base, 0) + 1
+        self.ref_event(ref, "OnContainerChanged", [container, old], CONTAINER_EVENT_DELAY)
+
+    def n_objectreference_activate(self, ref, context, activator, default_only=False):
+        activator = unwrap(activator)
+        if ref.base is None or ref.base.kind not in ("MiscItem", "Book"):
+            raise SimError("Activate on %r: only picking up an item is modelled" % ref)
+        if not isinstance(activator, Actor):
+            raise SimError("Activate on %r by %r: only an actor picking it up is modelled" % (ref, activator))
+        if not self.activate_picks_up or ref.disabled or ref.deleted or ref.container is not None:
+            return False                            # [assumed] nothing to pick up
+        # [documented] "normal processing (i.e. picking up the object, opening
+        # the door, etc)"; returns "True if default activation processing was
+        # performed (and succeeded)". Not seen.
+        self._into_container(ref, activator)
+        return True
 
     def n_objectreference_delete(self, ref, context):
         ref.deleted = True
@@ -1102,6 +1315,12 @@ class Session:
         form = unwrap(form)
         if form is None:
             self.papyrus_error("AddItem: the item is None")
+            return
+        if isinstance(form, ObjectReference):
+            # [documented] "If it is a reference, it will move/remove it from
+            # its place/container to this container." Not seen.
+            if form.container is not ref:
+                self._into_container(form, ref)
             return
         ref.inventory[form] = ref.inventory.get(form, 0) + int(count)
 

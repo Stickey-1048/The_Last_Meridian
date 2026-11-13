@@ -12,6 +12,7 @@ Results go to Documents\My Games\Fallout4\Logs\Script\User\TLM.0.log (Papyrus
 logging has to be on), to the Papyrus log, and to a message box.
 
 Scenarios: 1 here; 2 and 3 in TLM:FixtureProbe; 4 to 9 in TLM:WorldCases;
+10 in TLM:PlacedTrial, which is on a quest of its own (TLM_Trial);
 101 and up in TLM:MatrixCases, which is generated from the logic model.
 A number after the function name picks one:   cqf TLM_Core RunSelfTest 4
 One fresh game session per scenario: the quests run once.
@@ -22,11 +23,16 @@ watchdog was seen to work: it ends scenario 3 inside an experiment that does
 not come back, and the result is still written. Scenario 1 also ran from the
 console. (An earlier run of scenario 1 reported 26 passed, 34 failed, because
 no OnStageSet event reached the quest scripts; that was a fault in the
-generated plugin.)}
+generated plugin.)
+Since then scenario 10 was added: the property TLM_Trial, its branch in
+RunSelfTest and its part of the "already started" test below are NOT YET
+COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
 	Quest Property TLM_SQ01 Auto Const Mandatory
+	Quest Property TLM_Trial Auto Const Mandatory
+	{Development only: the quest of the placed-content trial, scenario 10.}
 EndGroup
 
 Group Globals
@@ -142,8 +148,10 @@ Function RunSelfTest(int aiScenario = 0)
 	and side quest by stages alone. 2: actors made at run time and put into the
 	quest's aliases. 3: distance events. 4 to 9: the main quest played with a
 	caravan made at run time, one case for each way the encounter can end
-	(TLM:WorldCases). 101 and up: the test matrix, generated from the logic
-	model (TLM:MatrixCases, with TLM:CaseDriver).}
+	(TLM:WorldCases). 10: a person, a trigger and an object that the plugin
+	itself places in the test room (TLM:PlacedTrial). 101 and up: the test
+	matrix, generated from the logic model (TLM:MatrixCases, with
+	TLM:CaseDriver).}
 	If busy
 		Debug.Notification("TLM self-test is already running")
 		Return
@@ -168,7 +176,7 @@ Function RunSelfTest(int aiScenario = 0)
 		Log("INFO  unattended run: the game closes itself when the scenario has finished")
 	EndIf
 
-	If TLM_MQ01.GetStageDone(10) || TLM_SQ01.GetStageDone(10)
+	If TLM_MQ01.GetStageDone(10) || TLM_SQ01.GetStageDone(10) || TLM_Trial.IsRunning()
 		Log("ABORTED: the quests were already started in this session.")
 		Log("Quit to the main menu, start a fresh session, and run the test once.")
 		If !unattended
@@ -208,6 +216,13 @@ Function RunSelfTest(int aiScenario = 0)
 			worldCases.CaseMurderAfterSaving(Self)
 		Else
 			worldCases.CaseDeal(Self)
+		EndIf
+	ElseIf scenario == 10
+		TLM:PlacedTrial placedTrial = TLM_Trial as TLM:PlacedTrial
+		If !placedTrial
+			Fail("the placed-content trial script is not attached to its quest")
+		Else
+			placedTrial.Run(Self)
 		EndIf
 	ElseIf scenario >= 100
 		TLM:MatrixCases matrixCases = (Self as Quest) as TLM:MatrixCases

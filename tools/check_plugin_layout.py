@@ -16,15 +16,32 @@ What it asserts for every quest (QUST) record:
     before a QSDT;
   - every objective (QOBJ) is followed at once by its flags (FNAM).
 
+What it asserts where the plugin places references in a cell of the game
+(none in a plugin built without the game's master file):
+  - the cell's record is filed where an interior cell belongs: under the block
+    numbered by the last decimal digit of its id and the sub-block numbered by
+    the digit before it, with its references in a group of their own under it;
+  - the cell is one of a master's, and every reference under it is one of this
+    plugin's: the game's own references are not copied;
+  - every reference is a placed actor or object (ACHR, REFR) with a base (NAME)
+    and a position (DATA, 24 bytes); it is flagged persistent exactly when it
+    is in the cell's persistent group; a box (XPRM) is 32 bytes;
+  - and, read beside the description the builder wrote (TheLastMeridian.json
+    in the same folder): position, the box's sizes as the file holds them, the
+    collision layer and the "initially disabled" flag are what it says. The
+    description is read back through the library; this reads the bytes.
+
 The layout is the one in xEdit's record definitions for Fallout 4
-(wbDefinitionsFO4.pas, record QUST). It is a check of the file's shape. It
-does not prove what the game does with it.
+(wbDefinitionsFO4.pas, records QUST, CELL, REFR, ACHR, and the group types).
+It is a check of the file's shape. It does not prove what the game does with it.
 
 Usage:  check_plugin_layout.py <plugin.esp>     exit 0 if the layout is as expected
         check_plugin_layout.py --self-test <plugin.esp>
             also damages copies of the file in memory and requires each kind
             of damage to be caught
 """
+import json
+import os
 import struct
 import sys
 import zlib
@@ -128,6 +145,156 @@ def check(buf):
     return problems, quests
 
 
+# ------------------------------------------------------------------ cells
+
+GROUP_TOP, GROUP_CELL_BLOCK, GROUP_CELL_SUBBLOCK = 0, 2, 3
+GROUP_CELL_CHILDREN, GROUP_CELL_PERSISTENT, GROUP_CELL_TEMPORARY = 6, 8, 9
+PERSISTENT, INITIALLY_DISABLED, COMPRESSED = 0x400, 0x800, 0x00040000
+
+
+def items(buf, start, end):
+    """Yields what lies directly between start and end: ('group', type, label bytes, start of content, end)
+    or ('record', type, FormID, flags, data bytes)."""
+    i = start
+    while i < end:
+        kind = buf[i:i + 4].decode("latin1")
+        if kind == "GRUP":
+            size, label, gtype = struct.unpack_from("<I4sI", buf, i + 4)
+            if size < 24 or i + size > end:
+                raise ValueError(f"group at {i} has size {size}")
+            yield "group", gtype, label, i + 24, i + size
+            i += size
+        else:
+            size, flags, formid = struct.unpack_from("<III", buf, i + 4)
+            data = buf[i + 24:i + 24 + size]
+            if flags & COMPRESSED:
+                data = zlib.decompress(data[4:])
+            yield "record", kind, formid, flags, data
+            i += 24 + size
+
+
+def master_count(buf):
+    for item in items(buf, 0, len(buf)):
+        if item[0] == "record" and item[1] == "TES4":
+            return sum(1 for t, _ in subrecords(item[4]) if t == "MAST")
+        break
+    raise ValueError("the file does not begin with a TES4 record")
+
+
+def placed_from_json(path):
+    """FormID -> what the builder's description says about each placed reference, or None without the file."""
+    if not os.path.exists(path):
+        return None
+    out = {}
+    for cell in json.load(open(path, encoding="utf-8-sig")).get("Cells", []):
+        for p in cell["Placed"]:
+            out[int(p["FormKey"].split(":")[0], 16)] = p
+    return out
+
+
+def check_cells(buf, described=None):
+    """Returns (problems, number of cell records, number of references under them)."""
+    problems = []
+    masters = master_count(buf)
+    cells = refs = 0
+    seen = set()
+    for item in items(buf, 0, len(buf)):
+        if item[0] != "group" or item[1] != GROUP_TOP or item[2] != b"CELL":
+            continue
+        for block in items(buf, item[3], item[4]):
+            if block[0] != "group" or block[1] != GROUP_CELL_BLOCK:
+                problems.append(f"the CELL group holds something that is not an interior cell block: {block[:3]}")
+                continue
+            block_number = struct.unpack("<i", block[2])[0]
+            for sub in items(buf, block[3], block[4]):
+                if sub[0] != "group" or sub[1] != GROUP_CELL_SUBBLOCK:
+                    problems.append(f"cell block {block_number} holds something that is not a sub-block: {sub[:3]}")
+                    continue
+                sub_number = struct.unpack("<i", sub[2])[0]
+                cell = None
+                for thing in items(buf, sub[3], sub[4]):
+                    if thing[0] == "record":
+                        if thing[1] != "CELL":
+                            problems.append(f"cell sub-block {block_number}/{sub_number} holds a {thing[1]} record")
+                            cell = None
+                            continue
+                        cell = thing[2]
+                        cells += 1
+                        name = f"cell {cell:08X}"
+                        object_id = cell & 0xFFFFFF
+                        if (block_number, sub_number) != (object_id % 10, object_id // 10 % 10):
+                            problems.append(f"{name}: filed under block {block_number}, sub-block {sub_number}; "
+                                            f"its id asks for {object_id % 10} and {object_id // 10 % 10}")
+                        if cell >> 24 >= masters:
+                            problems.append(f"{name}: is a new cell of this plugin; only copies of a master's cells are expected")
+                        continue
+                    if thing[1] != GROUP_CELL_CHILDREN or cell is None or struct.unpack("<I", thing[2])[0] != cell:
+                        problems.append(f"cell sub-block {block_number}/{sub_number}: a group of type {thing[1]} that does not belong to the cell record before it")
+                        continue
+                    name = f"cell {cell:08X}"
+                    for part in items(buf, thing[3], thing[4]):
+                        if part[0] != "group" or part[1] not in (GROUP_CELL_PERSISTENT, GROUP_CELL_TEMPORARY):
+                            problems.append(f"{name}: its group holds something that is neither its persistent nor its temporary references: {part[:3]}")
+                            continue
+                        if struct.unpack("<I", part[2])[0] != cell:
+                            problems.append(f"{name}: a group of references labelled for another cell")
+                        in_persistent = part[1] == GROUP_CELL_PERSISTENT
+                        for ref in items(buf, part[3], part[4]):
+                            if ref[0] != "record":
+                                problems.append(f"{name}: a group inside its list of references")
+                                continue
+                            _, kind, formid, flags, data = ref
+                            refs += 1
+                            seen.add(formid)
+                            who = f"{kind} {formid:08X}"
+                            if kind not in ("ACHR", "REFR"):
+                                problems.append(f"{name}: holds a {kind} record")
+                                continue
+                            if formid >> 24 != masters:
+                                problems.append(f"{who}: is not a reference of this plugin (a master's reference copied into the plugin would replace it)")
+                            if bool(flags & PERSISTENT) != in_persistent:
+                                problems.append(f"{who}: flagged {'persistent' if flags & PERSISTENT else 'temporary'} "
+                                                f"but in the cell's {'persistent' if in_persistent else 'temporary'} group")
+                            subs = dict(subrecords(data))
+                            if len(subs.get("NAME", b"")) != 4:
+                                problems.append(f"{who}: no base (NAME)")
+                            if len(subs.get("DATA", b"")) != 24:
+                                problems.append(f"{who}: position and rotation (DATA) are {len(subs.get('DATA', b''))} bytes, expected 24")
+                                continue
+                            box = None
+                            if "XPRM" in subs:
+                                if len(subs["XPRM"]) != 32:
+                                    problems.append(f"{who}: the primitive (XPRM) is {len(subs['XPRM'])} bytes, expected 32")
+                                else:
+                                    box = struct.unpack_from("<3f", subs["XPRM"], 0)
+                                    shape = struct.unpack_from("<I", subs["XPRM"], 28)[0]
+                                    if shape not in (1, 2, 3, 4, 5):
+                                        problems.append(f"{who}: the primitive has the unknown shape {shape}")
+                            if "XTRI" in subs and len(subs["XTRI"]) != 4:
+                                problems.append(f"{who}: the collision layer (XTRI) is {len(subs['XTRI'])} bytes, expected 4")
+                            if described is None:
+                                continue
+                            want = described.get(formid & 0xFFFFFF)
+                            if want is None:
+                                problems.append(f"{who}: not in the builder's description of the plugin")
+                                continue
+                            position = struct.unpack_from("<3f", subs["DATA"], 0)
+                            if any(abs(a - b) > 0.001 for a, b in zip(position, want["Position"])):
+                                problems.append(f"{who}: at {position} in the file, {want['Position']} in the description")
+                            if bool(flags & INITIALLY_DISABLED) != want["InitiallyDisabled"]:
+                                problems.append(f"{who}: 'initially disabled' is {bool(flags & INITIALLY_DISABLED)} in the file, {want['InitiallyDisabled']} in the description")
+                            if (box is None) != (want["Box"] is None) or (box and any(abs(a - b) > 0.001 for a, b in zip(box, want["Box"]))):
+                                problems.append(f"{who}: the box is {box} in the file, {want['Box']} in the description")
+                            layer = struct.unpack("<I", subs["XTRI"])[0] if len(subs.get("XTRI", b"")) == 4 else None
+                            if layer != want["CollisionLayer"]:
+                                problems.append(f"{who}: collision layer {layer} in the file, {want['CollisionLayer']} in the description")
+    if described is not None:
+        for formid, want in described.items():
+            if not any(s & 0xFFFFFF == formid for s in seen):
+                problems.append(f"{want['EditorId']}: in the builder's description, but not under any cell in the file")
+    return problems, cells, refs
+
+
 def rename_nth(buf, old, new, nth):
     """Returns a copy with the nth occurrence (0-based) of a 4-byte signature replaced. Sizes are untouched."""
     pos = -1
@@ -138,9 +305,90 @@ def rename_nth(buf, old, new, nth):
     return buf[:pos] + new + buf[pos + 4:]
 
 
-def self_test(buf):
-    """Each kind of damage must produce a problem. Returns the list of damages that went unnoticed."""
+def find_group(buf, gtype):
+    """Offset of the first group of that type, or -1. Groups are found by walking the file, not by searching bytes."""
+    def walk(start, end):
+        i = start
+        while i < end:
+            if buf[i:i + 4] == b"GRUP":
+                size, _label, kind = struct.unpack_from("<I4sI", buf, i + 4)
+                if kind == gtype:
+                    return i
+                found = walk(i + 24, i + size)
+                if found >= 0:
+                    return found
+                i += size
+            else:
+                i += 24 + struct.unpack_from("<I", buf, i + 4)[0]
+        return -1
+    return walk(0, len(buf))
+
+
+def first_ref(buf, kind=None, with_sub=None):
+    """Offset of the first reference record under a cell (optionally of one kind, or having one subrecord), or -1."""
+    for gtype in (GROUP_CELL_PERSISTENT, GROUP_CELL_TEMPORARY):
+        g = find_group(buf, gtype)
+        if g < 0:
+            continue
+        size = struct.unpack_from("<I", buf, g + 4)[0]
+        i = g + 24
+        while i < g + size:
+            rec_size = struct.unpack_from("<I", buf, i + 4)[0]
+            if (kind is None or buf[i:i + 4] == kind) and (with_sub is None or with_sub in buf[i + 24:i + 24 + rec_size]):
+                return i
+            i += 24 + rec_size
+    return -1
+
+
+def patch(buf, offset, new):
+    return buf[:offset] + new + buf[offset + len(new):]
+
+
+def cell_damage(buf):
+    """(name, damaged copy or None) for each kind of damage to the cells part. Sizes are never changed."""
+    out = []
+    g = find_group(buf, GROUP_CELL_BLOCK)
+    label = struct.unpack_from("<i", buf, g + 8)[0] if g >= 0 else 0
+    out.append(("a cell filed under the wrong block", None if g < 0 else patch(buf, g + 8, struct.pack("<i", (label + 1) % 10))))
+    g = find_group(buf, GROUP_CELL_PERSISTENT)
+    out.append(("persistent references in the temporary group", None if g < 0 else patch(buf, g + 12, struct.pack("<I", GROUP_CELL_TEMPORARY))))
+    r = first_ref(buf)
+    flags = struct.unpack_from("<I", buf, r + 8)[0] if r >= 0 else 0
+    out.append(("a reference in the persistent group without the persistent flag", None if r < 0 else patch(buf, r + 8, struct.pack("<I", flags & ~PERSISTENT))))
+    out.append(("a reference that belongs to the master", None if r < 0 else patch(buf, r + 15, b"\x00")))
+    out.append(("a reference whose 'initially disabled' flag was flipped", None if r < 0 else patch(buf, r + 8, struct.pack("<I", flags ^ INITIALLY_DISABLED))))
+    r = first_ref(buf, with_sub=b"XPRM")
+    if r < 0:
+        out.append(("a box of another size", None))
+        out.append(("a reference moved", None))
+    else:
+        size = struct.unpack_from("<I", buf, r + 4)[0]
+        x = buf.find(b"XPRM", r + 24, r + 24 + size)
+        out.append(("a box of another size", patch(buf, x + 6, struct.pack("<f", struct.unpack_from("<f", buf, x + 6)[0] / 2))))
+        x = buf.find(b"XTRI", r + 24, r + 24 + size)
+        if x >= 0:      # a build against a master without collision layers has none to lose
+            out.append(("a trigger without its collision layer", patch(buf, x, b"XTRX")))
+        x = buf.find(b"DATA", r + 24, r + 24 + size)
+        out.append(("a reference moved", None if x < 0 else patch(buf, x + 6, struct.pack("<f", struct.unpack_from("<f", buf, x + 6)[0] + 10))))
+    return out
+
+
+def self_test(buf, described=None, cells=0):
+    """Each kind of damage must produce a problem. Returns the list of damages that went unnoticed, and how many kinds were tried."""
     unnoticed = []
+    tried = 0
+    if cells:
+        for name, damaged in cell_damage(buf):
+            tried += 1
+            if damaged is None:
+                unnoticed.append(f"{name}: could not construct the damaged file")
+                continue
+            try:
+                problems, _, _ = check_cells(damaged, described)
+            except Exception as exc:
+                problems = [str(exc)]
+            if not problems:
+                unnoticed.append(name)
     cases = [
         ("a stage item without its flags", b"QSDT", b"XSDT", 0),
         ("a later stage item without its flags", b"QSDT", b"XSDT", 5),
@@ -158,13 +406,14 @@ def self_test(buf):
         if damaged is None:
             unnoticed.append(f"{name}: could not construct the damaged file (signature not found)")
             continue
+        tried += 1
         try:
             problems, _ = check(damaged)
         except Exception as exc:          # a parse failure also counts as noticed
             problems = [str(exc)]
         if not problems:
             unnoticed.append(name)
-    return unnoticed
+    return unnoticed, tried
 
 
 def main(argv):
@@ -177,20 +426,28 @@ def main(argv):
     if quests == 0:
         print(f"{args[0]}: no quest records found")
         return 1
+    described = placed_from_json(os.path.splitext(args[0])[0] + ".json")
+    cell_problems, cells, refs = check_cells(buf, described)
+    problems += cell_problems
     if problems:
         print(f"PLUGIN LAYOUT CHECK FAILED ({len(problems)}):")
         for p in problems:
             print("  " + p)
         return 1
     print(f"plugin layout: {quests} quest records; every stage has one item starting with its flags, every objective has flags, the NEXT marker is present")
+    if cells:
+        beside = "and agrees with the builder's description" if described is not None else "(no description beside the plugin to compare with)"
+        print(f"plugin layout: {refs} placed references under {cells} cell record(s) of the game; each is this plugin's own, filed and flagged as it should be, {beside}")
+    else:
+        print("plugin layout: no cell records (nothing is placed in the world by this build)")
     if "--self-test" in argv:
-        unnoticed = self_test(buf)
+        unnoticed, tried = self_test(buf, described, cells)
         if unnoticed:
             print("LAYOUT SELF-TEST FAILED: damage that went unnoticed:")
             for u in unnoticed:
                 print("  " + u)
             return 1
-        print("plugin layout: 4 kinds of deliberate damage were each caught")
+        print(f"plugin layout: {tried} kinds of deliberate damage were each caught")
     return 0
 
 

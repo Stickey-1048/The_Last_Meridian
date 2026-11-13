@@ -16,7 +16,8 @@ public static class Report
 {
     public sealed record PropInfo(string Name, string Kind, string? Target, int? Alias, object? Value);
     public sealed record ScriptInfo(string Name, List<PropInfo> Props);
-    public sealed record AliasInfo(int Id, string Name, string Kind, List<string> Flags, string? Fill, List<ScriptInfo> Scripts);
+    /// <param name="DisplayName">The message whose title the alias's reference is shown under, if any.</param>
+    public sealed record AliasInfo(int Id, string Name, string Kind, List<string> Flags, string? Fill, List<ScriptInfo> Scripts, string? DisplayName = null);
     /// <param name="Items">How many items (log entries) the stage has. The game announces a stage per item.</param>
     /// <param name="ItemsWithFlags">How many of those carry their flags subrecord (QSDT).</param>
     public sealed record StageInfo(int Index, string? Log, string? Note, bool CompleteQuest, int Items, int ItemsWithFlags);
@@ -26,11 +27,27 @@ public static class Report
         List<StageInfo> Stages, List<ObjectiveInfo> Objectives, List<AliasInfo> Aliases, List<ScriptInfo> Scripts, bool HasConditionMarker);
     public sealed record ButtonInfo(string Text, List<string> Conditions);
     public sealed record MessageInfo(string EditorId, string FormKey, string? Title, string? Text, bool Box, List<ButtonInfo> Buttons);
-    public sealed record SimpleInfo(string Type, string EditorId, string FormKey, string? Name);
+    /// <param name="Model">Path of the world model, for the kinds of record that can lie in the world. Null: none.</param>
+    public sealed record SimpleInfo(string Type, string EditorId, string FormKey, string? Name, string? Model = null);
     /// <summary>A record of the game's own that the plugin points at.</summary>
     public sealed record VanillaInfo(string EditorId, string FormKey, string Kind);
+    /// <summary>Where the player arrives in a cell of the game this plugin places things in. Not in the plugin file:
+    /// it is what the builder read from the game's master.</summary>
+    /// <param name="Found">False: the cell has no arrival marker, and the origin was used.</param>
+    public sealed record ArrivalInfo(string Cell, string FormKey, float[] Position, float Heading, bool Found);
+    /// <summary>A reference in a cell.</summary>
+    /// <param name="Kind">PlacedNpc or PlacedObject.</param>
+    /// <param name="Base">EditorID when the base is a record of this plugin, otherwise its id in the master.</param>
+    /// <param name="Group">Which of the cell's two lists holds it: Persistent or Temporary.</param>
+    /// <param name="Box">How far the box reaches from its middle on each axis (half its size), when the reference has a box: the numbers the file holds.</param>
+    /// <param name="CollisionLayer">Index of the collision layer, when one is given.</param>
+    public sealed record PlacedInfo(string? EditorId, string FormKey, string Kind, string Base, float[] Position, float[] Rotation,
+        bool Persistent, bool InitiallyDisabled, string Group, string? Primitive, float[]? Box, uint? CollisionLayer);
+    /// <summary>A cell record in the plugin. For a cell of the game's it is this plugin's copy of the record.</summary>
+    /// <param name="OfThisPlugin">False: the cell belongs to a master, and the plugin only adds to it.</param>
+    public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed);
     public sealed record PluginInfo(string File, List<string> Masters, float HeaderVersion, uint LowestFormId,
-        List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests);
+        List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests, List<CellInfo> Cells);
 
     public static PluginInfo Read(string path)
     {
@@ -54,8 +71,41 @@ public static class Report
         var simple = new List<SimpleInfo>();
         foreach (var g in mod.Globals) simple.Add(new("Global", g.EditorID!, g.FormKey.ToString(), null));
         foreach (var f in mod.Factions) simple.Add(new("Faction", f.EditorID!, f.FormKey.ToString(), f.Name?.String));
-        foreach (var m in mod.MiscItems) simple.Add(new("MiscItem", m.EditorID!, m.FormKey.ToString(), m.Name?.String));
-        foreach (var b in mod.Books) simple.Add(new("Book", b.EditorID!, b.FormKey.ToString(), b.Name?.String));
+        foreach (var m in mod.MiscItems) simple.Add(new("MiscItem", m.EditorID!, m.FormKey.ToString(), m.Name?.String, NullIfEmpty(m.Model?.File)));
+        foreach (var b in mod.Books) simple.Add(new("Book", b.EditorID!, b.FormKey.ToString(), b.Name?.String, NullIfEmpty(b.Model?.File)));
+        foreach (var a in mod.Activators) simple.Add(new("Activator", a.EditorID!, a.FormKey.ToString(), a.Name?.String, NullIfEmpty(a.Model?.File)));
+
+        var cells = new List<CellInfo>();
+        foreach (var block in mod.Cells.Records)
+            foreach (var sub in block.SubBlocks)
+                foreach (var cell in sub.Cells)
+                {
+                    var placed = new List<PlacedInfo>();
+                    foreach (var (list, name) in new[] { (cell.Persistent, "Persistent"), (cell.Temporary, "Temporary") })
+                        foreach (var p in list)
+                        {
+                            var flags = (uint)p.MajorRecordFlagsRaw;
+                            float[] V(Noggog.P3Float v) => new[] { v.X, v.Y, v.Z };
+                            switch (p)
+                            {
+                                case IPlacedNpcGetter n:
+                                    placed.Add(new(n.EditorID, n.FormKey.ToString(), "PlacedNpc", Target(n.Base.FormKey), V(n.Position), V(n.Rotation),
+                                        (flags & 0x400) != 0, (flags & 0x800) != 0, name, null, null, null));
+                                    break;
+                                case IPlacedObjectGetter o:
+                                    placed.Add(new(o.EditorID, o.FormKey.ToString(), "PlacedObject", Target(o.Base.FormKey), V(o.Position), V(o.Rotation),
+                                        (flags & 0x400) != 0, (flags & 0x800) != 0, name,
+                                        // The library gives the whole sizes; the file holds half of each, and so does this.
+                                        o.Primitive?.Type.ToString(), o.Primitive == null ? null : V(o.Primitive.Bounds / 2), o.CollisionLayer));
+                                    break;
+                                default:
+                                    placed.Add(new(p.EditorID, p.FormKey.ToString(), p.GetType().Name, "?", Array.Empty<float>(), Array.Empty<float>(),
+                                        (flags & 0x400) != 0, (flags & 0x800) != 0, name, null, null, null));
+                                    break;
+                            }
+                        }
+                    cells.Add(new(cell.EditorID, cell.FormKey.ToString(), cell.FormKey.ModKey == mod.ModKey, block.BlockNumber, sub.BlockNumber, placed));
+                }
 
         var messages = mod.Messages.Select(m => new MessageInfo(
             m.EditorID!, m.FormKey.ToString(), m.Name?.String, m.Description?.String,
@@ -82,7 +132,8 @@ public static class Report
                         else if (!r.ForcedReference.IsNull) fill = $"forced {r.ForcedReference.FormKey}";
                         else if (!r.UniqueActor.IsNull) fill = $"unique {Target(r.UniqueActor.FormKey)}";
                         aliases.Add(new((int)r.ID, r.Name ?? "", "reference", FlagNames(r.Flags), fill,
-                            aliasScripts.TryGetValue((int)r.ID, out var rs) ? rs : new()));
+                            aliasScripts.TryGetValue((int)r.ID, out var rs) ? rs : new(),
+                            r.DisplayName.IsNull ? null : Target(r.DisplayName.FormKey)));
                         break;
                     case IQuestLocationAliasGetter l:
                         aliases.Add(new((int)l.ID, l.Name ?? "", "location", FlagNames(l.Flags), null, new()));
@@ -112,8 +163,10 @@ public static class Report
             mod.ModHeader.MasterReferences.Select(m => m.Master.FileName.String).ToList(),
             mod.ModHeader.Stats.Version,
             ids.Keys.Where(k => k.ModKey == mod.ModKey).Select(k => k.ID).DefaultIfEmpty(0u).Min(),
-            simple, messages, quests);
+            simple, messages, quests, cells);
     }
+
+    static string? NullIfEmpty(string? s) => string.IsNullOrEmpty(s) ? null : s;
 
     static List<string> FlagNames<T>(T? flags) where T : struct, Enum =>
         flags.HasValue ? FlagNames(flags.Value) : new();
@@ -144,12 +197,12 @@ public static class Report
         foreach (var grp in info.Records.GroupBy(r => r.Type))
         {
             sb.AppendLine($"{grp.Key} ({grp.Count()})");
-            foreach (var r in grp) sb.AppendLine($"  {r.FormKey[..6]}  {r.EditorId}{(r.Name == null ? "" : $"  \"{r.Name}\"")}");
+            foreach (var r in grp) sb.AppendLine($"  {r.FormKey[..6]}  {r.EditorId}{(r.Name == null ? "" : $"  \"{r.Name}\"")}{(r.Model == null ? "" : $"  model: {r.Model}")}");
         }
         sb.AppendLine($"Message ({info.Messages.Count})");
         foreach (var m in info.Messages)
         {
-            sb.AppendLine($"  {m.FormKey[..6]}  {m.EditorId}  {(m.Box ? "[box]" : "[notification]")}  \"{m.Text}\"");
+            sb.AppendLine($"  {m.FormKey[..6]}  {m.EditorId}  {(m.Box ? "[box]" : "[notification]")}  \"{m.Text}\"{(string.IsNullOrEmpty(m.Title) ? "" : $"  title: \"{m.Title}\"")}");
             for (var i = 0; i < m.Buttons.Count; i++)
                 sb.AppendLine($"          button {i}: \"{m.Buttons[i].Text}\"{(m.Buttons[i].Conditions.Count == 0 ? "" : "  if " + string.Join(" and ", m.Buttons[i].Conditions))}");
         }
@@ -166,10 +219,26 @@ public static class Report
                 sb.AppendLine($"  objective {o.Index}: \"{o.Text}\"{(o.TargetAliases.Count == 0 ? "" : "  -> alias " + string.Join(",", o.TargetAliases))}");
             foreach (var a in q.Aliases)
             {
-                sb.AppendLine($"  alias {a.Id,2} {a.Name}  ({a.Kind}) [{string.Join(", ", a.Flags)}]{(a.Fill == null ? "" : "  fill: " + a.Fill)}");
+                sb.AppendLine($"  alias {a.Id,2} {a.Name}  ({a.Kind}) [{string.Join(", ", a.Flags)}]{(a.Fill == null ? "" : "  fill: " + a.Fill)}{(a.DisplayName == null ? "" : "  shown as: " + a.DisplayName)}");
                 foreach (var s in a.Scripts) AppendScript(sb, "           script ", s);
             }
         }
+        foreach (var c in info.Cells)
+        {
+            sb.AppendLine();
+            sb.AppendLine($"Cell {c.EditorId ?? "(no EditorID)"}  {c.FormKey}  {(c.OfThisPlugin ? "of this plugin" : "of the game: this plugin's copy of its record, with what the plugin adds")}  block {c.Block}, sub-block {c.SubBlock}");
+            foreach (var p in c.Placed)
+            {
+                var flags = new List<string>();
+                if (p.Persistent) flags.Add("Persistent");
+                if (p.InitiallyDisabled) flags.Add("InitiallyDisabled");
+                string Vec(float[] v) => "(" + string.Join(", ", v.Select(x => x.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))) + ")";
+                sb.AppendLine($"  {p.FormKey[..6]}  {p.EditorId ?? "(no EditorID)"}  {p.Kind} of {p.Base}  at {Vec(p.Position)} turned {Vec(p.Rotation.Select(r => r * 180 / MathF.PI).ToArray())}  [{string.Join(", ", flags)}]  in the {p.Group} list"
+                    + (p.Primitive == null ? "" : $"  {p.Primitive} {Vec(p.Box!)}")
+                    + (p.CollisionLayer == null ? "" : $"  collision layer {p.CollisionLayer}"));
+            }
+        }
+
         var notes = (vanillaNotes ?? Enumerable.Empty<string>()).ToList();
         if (notes.Count > 0)
         {

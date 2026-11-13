@@ -14,9 +14,9 @@ game's runner would print.
                                            timing shaken differently each time
 
 It needs a plugin description built against a master that holds the settler
-and the marker. tools/run_checks.sh builds one, against a stand-in master,
-into build/sim/; without those two forms the scenarios that make actors say
-so and stop.
+and the marker, and, for scenario 10, the test room. tools/run_checks.sh
+builds one, against a stand-in master, into build/sim/; without those the
+scenarios that make actors or use what the plugin places say so and stop.
 """
 import argparse
 import json
@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sim import run_scenario  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
-BASIC = list(range(1, 10))
+BASIC = list(range(1, 11))
 
 
 def matrix_numbers():

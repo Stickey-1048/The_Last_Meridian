@@ -536,6 +536,30 @@ Changed after this run (checks pass; none of it compiled or run in the game):
 
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
+### Prepared for the next run: things the plugin places, 2026-11-13
+
+Branch `feat/tlm-mq01-graybox`. **None of this has been compiled or run in the game.** The design, the reasons, how to read the result and how to take it out again are in [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md).
+
+Everything seen in the game so far was made at run time by a test script. A place a player can walk through needs people, triggers and objects that are in the plugin, placed in a cell, with quest aliases pointing at them. The builder now writes a first few into the game's own test room, and scenario 10 asks the game whether they work:
+
+| What the plugin gains | |
+|---|---|
+| Its own copy of the record of the cell `QASmoke`, with four persistent references under it | A settler (initially disabled), a box trigger on an activator of the plugin's, the same box on the game's own empty trigger for comparison, and an item that borrows the bottle cap's world model. Placed from the room's arrival marker, which the builder reads from the master |
+| A quest of its own, `TLM_Trial` | Four aliases forced to those references; the game's `DefaultAliasOnTriggerEnter` and `DefaultAliasOnContainerChangedTo` on three of them; stages 10, 11, 20 and 100. The two real quests are not touched |
+| Scenario 10 (`TLM:PlacedTrial`) | 18 scored checks: the aliases hold what was placed; the person starts disabled and can be enabled; picking the object up sets a stage; entering the trigger sets a stage. Positions, distances and the comparison trigger are reported |
+
+What was found out on the way, without the game:
+
+| What | Found |
+|---|---|
+| The size of a trigger's box | The library that writes the plugin takes the **whole** size of the box and writes half of it, which is what the file holds. The first trigger written here came out half as large as specified. Seen in the written bytes; the builder now hands over twice the reach, and `tools/check_plugin_layout.py` reads the bytes back |
+| Reading a display name | `GetDisplayName` is a script-extender function. Without one a script cannot read the name an alias gives its reference, so the name is not checked by scenario 10; a person has to look |
+| The id file | Ids for the placed references are given out even when nothing is placed, so `formkeys.txt` is the same with and without the master. `tools/run_checks.sh` now fails if a build against a master changes it |
+
+Checks: `tools/run_checks.sh` passes. 63 scenarios pass on the stand-in engine, 1,579 checks (the 62 from before unchanged, at 1,561). The written plugin is read back through the library and, separately, from its bytes, where eight kinds of deliberate damage to the cell and its references are each caught. The Windows chain ran against the stand-in PC.
+
+**What that is worth.** Less than the same sentence was worth before. The stand-in engine's other rules each rest on something seen in the game. Its rules for placed references, triggers and picking things up rest on the wiki and, where the wiki is silent, on a cautious guess; they are marked so in `sim.py` and in `test_placed.py`. And four of the seven names the builder looks up for this (`QASmoke`, `COCMarkerHeading`, `L_TRIGGER`, `DefaultEmptyTrigger`) have never been looked up in the real master. The run on the PC is the test.
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
@@ -558,7 +582,12 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | Setting a stage twice | Corrected | "SetStage has no effect after it is called the first time for any stage on a running quest" unless Allow Repeated Stages is on. v0.1's repeatable stage 15 (SQ01) and stage 900 could not work as written (A12, A15). |
 | Alias scripts before the quest starts | Corrected | Aliases receive their reference's events as part of a running quest. SQ01 must already be running for clue scripts to fire (A8). |
 | `OnContainerChanged` | Documented | `Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldContainer)`. Once an object is in a container it "ceases to exist in most cases". |
-| `OnTriggerEnter` | Documented | `Event OnTriggerEnter(ObjectReference akActionRef)`. Can arrive out of order with `OnTriggerLeave`; the trigger's collision layer decides what fires it. |
+| `OnTriggerEnter` | Documented | `Event OnTriggerEnter(ObjectReference akActionRef)`. Can arrive out of order with `OnTriggerLeave`; the trigger's collision layer "(typically L_TRIGGER)" decides what fires it: "actors do, statics don't". *Needs the game:* scenario 10 moves the player into a placed trigger by script; whether that counts as entering is not stated. |
+| `Activate` | Documented | `bool Function Activate(ObjectReference akActivator, bool abDefaultProcessingOnly = false)`: "normal processing (i.e. picking up the object, opening the door, etc)"; returns whether that was performed. Scenario 10 uses it to have the player pick up a placed item. *Needs the game.* |
+| `Quest.Start` | Documented | `bool Function Start() native`, latent: "will not return until the quest is actually started". Used by scenario 10 for a quest that is not Start Game Enabled. Until now every quest of the project was started by `SetStage`. *Needs the game.* |
+| `GetTriggerObjectCount` | Documented | How many things are inside a trigger; "will error otherwise". Scenario 10 reports it before and after the player is moved in. |
+| `GetParentCell`, `GetPositionX/Y/Z` | Documented | The cell a reference is in; its position. Scenario 10 checks that the placed person and object are in the player's cell and reports where everything is. |
+| `GetDisplayName` | Not usable | A script-extender (F4SE) function. The project uses no script extender, so the name an alias gives its reference cannot be read by a script. |
 | `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. How long "finishes dying" takes is not fixed: about a second on 2026-11-12, well under a second on 2026-11-13 (two kills and both announcements within one second). |
 | `OnPlayerLoadGame` | Documented | Sent only to the player actor; fires "for the first time on the next load". An alias pointing at the player should receive it, since aliases get their reference's events. *That last step needs the game.* |
 | The player "in combat" after `Kill(player)` | Seen in the game, in part | Not on the wiki. With nobody else alive: not in combat, straight after the kill and after the death was announced (2026-11-13, scenario 2). With others standing by: only inferred. In the eleventh run (2026-11-12, case 129) the evade timer's function, called straight after `Kill` with the player named as killer, did not resolve the ambush and wrote no guard line; with five other actors alive it can only have found the player in combat. Two seconds after such a kill the player is out of combat (scenario 5). *Needs the game:* asked outright in scenario 2 from the next run on, with one actor standing by, and whether `StopCombatAlarm` ends it. |
@@ -589,7 +618,9 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | Quest type for SQ01 | Corrected | "Miscellaneous quests ... do not display objective descriptions and summaries" (A18). |
 | Stage and objective fields | Documented | Stage index 0–65535, log entries with Complete Quest / Fail Quest; objectives have an index, display text and alias targets. |
 | Alias flag labels and fill types | Needs the game | The wiki's alias page is empty. The flag names in the plugin come from the file format (Quest Object, Essential, Protected, Allow Dead, Allow Disabled, Optional). |
-| Message form | Documented | Message Box checkbox; Menu Buttons, each with its own conditions. No button limit is stated. |
+| Message form | Documented | Message Box checkbox; Menu Buttons, each with its own conditions. No button limit is stated. "For Text Overrides, fill in the Title and leave the Message Text blank": that is how a message serves as the display name of an alias (`TLM_MSG_TrialPersonName`). *Needs the game, and a person to look.* |
+| A reference placed in a cell of the game by a plugin | Needs the game | Not on the wiki. The plugin carries its own copy of the cell's record with its references under it; the layout is the library's, checked byte by byte against what is known of the format (`tools/check_plugin_layout.py`). Never loaded by the game or the Creation Kit. |
+| A forced-reference alias; Allow Disabled | Needs the game | The wiki's alias page is empty. The plugin gives the alias of the placed person, who starts disabled, the Allow Disabled flag. |
 | Dialogue: four options, speech checks, unvoiced lines | Needs the game | The wiki has no usable dialogue pages. |
 | Papyrus compiler | Documented | `<game>\Papyrus Compiler\PapyrusCompiler.exe`; flags file `Institute_Papyrus_Flags.flg`; project files (`.ppj`) with import folders `Data\Scripts\Source\User` and `...\Base`. |
 | Unpacking the base script sources | Needs the game | Not described on the pages read. |
@@ -616,7 +647,8 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3c. The self-test runs with nobody at the keyboard (`tools/win/Run-Scenarios.ps1`). **Done 2026-11-12: nine scenarios, 220 checks, 0 failed.**
 3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed**, and again in the eleventh run.
 3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done 2026-11-12 for three of the four cases** (130, 131, 132: the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path: still to do. Twice something else got there first (the fight rule on 2026-11-12, the death's announcement on 2026-11-13); the case now uses a death with nobody named as the killer. In the twelfth run the wait guard also acted in scenario 2, where nothing was arranged.
-4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
+3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). Still to do. With it: the first compile of `TLM:PlacedTrial`, and the first look-up of `QASmoke`, `COCMarkerHeading`, `L_TRIGGER` and `DefaultEmptyTrigger` in the real master.
+4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).
 7. `Kill` on a Protected actor (**done 2026-11-12**); `Disable` on an aliased actor (**done 2026-11-12**).

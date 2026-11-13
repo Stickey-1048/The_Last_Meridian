@@ -30,8 +30,8 @@ MODEL = (ROOT / "tools" / "logic_model" / "tlm_model.py").read_text()
 # Base-game scripts the plugin attaches by name. Property names come from the
 # wiki pages of the same name; the scripts themselves ship with the game.
 DEFAULT_SCRIPTS = {
-    "DefaultAliasOnContainerChangedTo": {"StageToSet"},
-    "DefaultAliasOnTriggerEnter": {"StageToSet"},
+    "DefaultAliasOnContainerChangedTo": {"StageToSet", "ShowTraces"},
+    "DefaultAliasOnTriggerEnter": {"StageToSet", "ShowTraces"},
 }
 
 problems = []

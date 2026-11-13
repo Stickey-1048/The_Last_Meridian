@@ -1,0 +1,189 @@
+Scriptname TLM:PlacedTrial extends Quest
+{Development only, attached to TLM_Trial. Self-test scenario 10: the
+placed-content trial (docs/design/TLM_GRAYBOX_trial.md). It must be removed
+before any release, with its quest and the records the builder marks "trial".
+
+Every earlier scenario makes what it needs at run time. A place a player can
+walk through needs things that are in the plugin itself: people, triggers and
+objects placed in a cell, and quest aliases that point at them. The builder now
+writes a few of those into the game's own test room (QASmoke). This scenario
+finds out whether they work there:
+
+  - the quest starts, and its aliases hold the references the plugin placed;
+  - the placed person is there, starts disabled, and can be enabled;
+  - the placed object, which borrows the world model of one of the game's
+    items, can be picked up, and the game's own script on its alias
+    (DefaultAliasOnContainerChangedTo) then sets a stage;
+  - the placed trigger sets a stage when the player enters it, through the
+    game's own script on its alias (DefaultAliasOnTriggerEnter). A second
+    trigger, made on the game's own empty trigger, is tried for comparison and
+    reported, not scored: if ours fails and that one works, the fault is in the
+    activator this plugin makes.
+
+Lines that begin INFO are facts about the game, reported and not scored.
+
+What it cannot check: the name the placed person is shown under. The plugin
+gives the alias a display name, but a script can only read it with a script
+extender, which this project does not use. A person has to look.
+
+NOT YET COMPILED. NEVER RUN IN THE GAME. On Linux it passes against the
+stand-in engine (tools/papyrus_sim), whose rules for placed references,
+triggers and picking things up come from the Creation Kit wiki and not from
+anything seen: a pass there says the script, the plugin and the expectations
+agree with each other, and nothing about the game.}
+
+Group Aliases
+	ReferenceAlias Property Alias_Person Auto Const Mandatory
+	ReferenceAlias Property Alias_Trigger Auto Const Mandatory
+	ReferenceAlias Property Alias_TriggerGameBase Auto Const Mandatory
+	ReferenceAlias Property Alias_Object Auto Const Mandatory
+EndGroup
+
+Group Forms
+	Form Property TrialObject Auto Const Mandatory
+	{TLM_MISC_TrialObject, the item the placed object is a copy of.}
+	Form Property MarkerBase Auto Const
+	{The game's plain marker (XMarker), looked up in Fallout4.esm when the plugin
+	is built. None if it was not found. Used to bring the player back to where
+	the scenario began.}
+EndGroup
+
+int STAGE_TRIGGER = 10 Const
+int STAGE_TRIGGER_GAME_BASE = 11 Const
+int STAGE_OBJECT = 20 Const
+int STAGE_DONE = 100 Const
+
+; -------------------------------------------------------------- scenario 10
+
+Function Run(TLM:SelfTest akTest)
+	Actor playerRef = Game.GetPlayer()
+	akTest.Note("trial: the player begins at " + Where(playerRef))
+
+	; ---- 1. The quest starts.
+	akTest.Step("starting the trial quest")
+	akTest.CheckFalse("trial: the quest is running before the test has started it", IsRunning())
+	bool started = Start()
+	akTest.Note("trial: Start returned " + started)
+	akTest.CheckTrue("trial: the quest runs once it has been started", IsRunning())
+
+	; Where the scenario began, to come back to.
+	ObjectReference homeMarker = None
+	If MarkerBase
+		homeMarker = playerRef.PlaceAtMe(MarkerBase)
+	EndIf
+
+	; ---- 2. The placed person.
+	akTest.Step("looking at the placed person")
+	ObjectReference personRef = Alias_Person.GetReference()
+	Actor placedPerson = Alias_Person.GetActorReference()
+	akTest.CheckTrue("trial: the Person alias holds a reference", personRef != None)
+	akTest.CheckTrue("trial: the reference in the Person alias is an actor", placedPerson != None)
+	If placedPerson
+		akTest.CheckTrue("trial: the placed person starts disabled", placedPerson.IsDisabled())
+		akTest.CheckFalse("trial: the placed person is dead", placedPerson.IsDead())
+		akTest.CheckTrue("trial: the placed person is in the cell the player is in", placedPerson.GetParentCell() == playerRef.GetParentCell())
+		akTest.Note("trial: the placed person is at " + Where(placedPerson) + ", " + playerRef.GetDistance(placedPerson) + " from the player")
+		akTest.Step("enabling the placed person")
+		placedPerson.Enable()
+		WaitFor3D(placedPerson)
+		akTest.CheckFalse("trial: the placed person is disabled after Enable", placedPerson.IsDisabled())
+		akTest.Note("trial: the placed person once enabled: 3D loaded = " + placedPerson.Is3DLoaded() + ", at " + Where(placedPerson))
+	EndIf
+
+	; ---- 3. The placed object.
+	akTest.Step("looking at the placed object")
+	ObjectReference placedObject = Alias_Object.GetReference()
+	akTest.CheckTrue("trial: the Object alias holds a reference", placedObject != None)
+	If placedObject
+		akTest.CheckTrue("trial: the placed object is in the cell the player is in", placedObject.GetParentCell() == playerRef.GetParentCell())
+		akTest.Note("trial: the placed object is at " + Where(placedObject) + ", " + playerRef.GetDistance(placedObject) + " from the player; 3D loaded = " + placedObject.Is3DLoaded())
+		akTest.CheckInt("trial: how many of the object the player has before picking it up", playerRef.GetItemCount(TrialObject), 0)
+		akTest.CheckFalse("trial: stage 20 is set before the object has been picked up", GetStageDone(STAGE_OBJECT))
+		akTest.Step("having the player pick the placed object up")
+		bool activated = placedObject.Activate(playerRef)
+		WaitForStage(STAGE_OBJECT)
+		akTest.Note("trial: Activate on the placed object returned " + activated)
+		akTest.CheckInt("trial: how many of the object the player has after picking it up", playerRef.GetItemCount(TrialObject), 1)
+		akTest.CheckTrue("trial: picking the object up sets stage 20 (the game's own script on the alias)", GetStageDone(STAGE_OBJECT))
+		If !GetStageDone(STAGE_OBJECT)
+			; Reported, not scored: another way for the reference to reach the
+			; player, to tell a pick-up that failed from a script that did not hear it.
+			akTest.Step("moving the placed object into the player's inventory by script")
+			playerRef.AddItem(placedObject)
+			WaitForStage(STAGE_OBJECT)
+			akTest.Note("trial: after AddItem of the placed object: the player has " + playerRef.GetItemCount(TrialObject) + ", stage 20 set = " + GetStageDone(STAGE_OBJECT))
+		EndIf
+	EndIf
+
+	; ---- 4. The placed trigger, and the one made on the game's own empty trigger.
+	EnterTrigger(akTest, playerRef, Alias_Trigger, STAGE_TRIGGER, "the placed trigger", true)
+	EnterTrigger(akTest, playerRef, Alias_TriggerGameBase, STAGE_TRIGGER_GAME_BASE, "the trigger made on the game's own empty trigger", false)
+
+	; ---- 5. Back to where the scenario began, and the quest's last stage.
+	If homeMarker
+		akTest.Step("moving the player back to where the scenario began")
+		playerRef.MoveTo(homeMarker)
+		akTest.Note("trial: the player is back at " + Where(playerRef))
+		homeMarker.Disable()
+		homeMarker.Delete()
+	EndIf
+	akTest.Step("setting the trial quest's last stage")
+	SetStage(STAGE_DONE)
+	WaitForStage(STAGE_DONE)
+	akTest.CheckTrue("trial: the quest is completed by its last stage", IsCompleted())
+EndFunction
+
+Function EnterTrigger(TLM:SelfTest akTest, Actor akPlayer, ReferenceAlias akAlias, int aiStage, string asName, bool abScored)
+	{Moves the player into the middle of a placed trigger and waits for the
+	stage that the game's own script on the trigger's alias should set.}
+	akTest.Step("looking at " + asName)
+	ObjectReference triggerRef = akAlias.GetReference()
+	If abScored
+		akTest.CheckTrue("trial: the alias of " + asName + " holds a reference", triggerRef != None)
+	EndIf
+	If !triggerRef
+		If !abScored
+			akTest.Note("trial: " + asName + " is not in this build of the plugin, or its alias is empty: nothing was tried")
+		EndIf
+		Return
+	EndIf
+	bool before = GetStageDone(aiStage)
+	If abScored
+		akTest.CheckFalse("trial: stage " + aiStage + " is set before the player has entered " + asName, before)
+	EndIf
+	akTest.Note("trial: " + asName + " is at " + Where(triggerRef) + ", " + akPlayer.GetDistance(triggerRef) + " from the player; inside it before the move: " + triggerRef.GetTriggerObjectCount())
+	akTest.Step("moving the player into " + asName)
+	akPlayer.MoveTo(triggerRef)
+	WaitForStage(aiStage)
+	akTest.Note("trial: after the move the player is at " + Where(akPlayer) + ", " + akPlayer.GetDistance(triggerRef) + " from the middle of " + asName + "; inside it: " + triggerRef.GetTriggerObjectCount())
+	If abScored
+		akTest.CheckTrue("trial: entering " + asName + " sets stage " + aiStage + " (the game's own script on the alias)", GetStageDone(aiStage))
+	Else
+		akTest.Note("trial: entering " + asName + ": stage " + aiStage + " set = " + GetStageDone(aiStage) + " (it was " + before + " before)")
+	EndIf
+EndFunction
+
+; ----------------------------------------------------------------- helpers
+
+string Function Where(ObjectReference akRef)
+	Return "(" + akRef.GetPositionX() + ", " + akRef.GetPositionY() + ", " + akRef.GetPositionZ() + ")"
+EndFunction
+
+Function WaitForStage(int aiStage)
+	{Waits until this quest reports the stage, or five seconds.}
+	int tries = 0
+	While !GetStageDone(aiStage) && tries < 20
+		Utility.Wait(0.25)
+		tries += 1
+	EndWhile
+EndFunction
+
+Function WaitFor3D(ObjectReference akRef)
+	{Waits until the reference's 3D is loaded, or five seconds. Not the game's
+	own WaitFor3DLoad: a wait of this script's can be counted on to end.}
+	int tries = 0
+	While !akRef.Is3DLoaded() && tries < 20
+		Utility.Wait(0.25)
+		tries += 1
+	EndWhile
+EndFunction

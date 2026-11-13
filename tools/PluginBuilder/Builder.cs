@@ -5,6 +5,7 @@ using Mutagen.Bethesda.Plugins.Allocators;
 using Mutagen.Bethesda.Plugins.Cache;
 using Mutagen.Bethesda.Plugins.Records;
 using Noggog;
+using Color = System.Drawing.Color;
 
 namespace Tlm.PluginBuilder;
 
@@ -26,9 +27,10 @@ public sealed class Builder
     public static readonly ModKey Fallout4Esm = ModKey.FromNameAndExtension("Fallout4.esm");
 
     readonly Fallout4Mod _mod;
-    readonly ILinkCache? _vanilla;
+    readonly ILinkCache<IFallout4Mod, IFallout4ModGetter>? _vanilla;
     readonly IFallout4ModGetter? _vanillaMod;
     readonly Dictionary<string, IFallout4MajorRecordGetter> _byId = new(StringComparer.OrdinalIgnoreCase);
+    readonly Dictionary<string, FormKey> _placed = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Things this build could not wire, with the reason.</summary>
     public List<string> Pending { get; } = new();
@@ -41,9 +43,22 @@ public sealed class Builder
     /// <summary>Game records found in Fallout4.esm: the name asked for, the record, and its kind.</summary>
     public List<Report.VanillaInfo> VanillaFound { get; } = new();
 
+    /// <summary>The references this build placed in cells of the game, by EditorID. Empty without Fallout4.esm.</summary>
+    public IReadOnlyDictionary<string, FormKey> PlacedKeys => _placed;
+
+    /// <summary>World models borrowed from items of the game: this plugin's item, and the path of the model file.</summary>
+    public Dictionary<string, string> BorrowedModels { get; } = new();
+
+    /// <summary>Where the master files each cell this build placed something in: its block and sub-block.
+    /// This plugin's copy of the cell's record has to be filed the same way.</summary>
+    public Dictionary<string, (int Block, int SubBlock)> CellsFiled { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Where the player arrives in each cell this build placed something in (for the stand-in engine).</summary>
+    public List<Report.ArrivalInfo> Arrivals { get; } = new();
+
     public Fallout4Mod Mod => _mod;
 
-    public Builder(Fallout4Mod mod, ILinkCache? vanilla, IFallout4ModGetter? vanillaMod = null)
+    public Builder(Fallout4Mod mod, ILinkCache<IFallout4Mod, IFallout4ModGetter>? vanilla, IFallout4ModGetter? vanillaMod = null)
     {
         _mod = mod;
         _vanilla = vanilla;
@@ -72,7 +87,18 @@ public sealed class Builder
             var item = _mod.MiscItems.AddNew(m.EditorId);
             item.Name = m.Name;
             Track(item);
-            Pending.Add($"{m.EditorId}: no world model yet (it exists only in inventories until one is assigned)");
+            if (m.ModelFrom == null)
+                Pending.Add($"{m.EditorId}: no world model yet (it exists only in inventories until one is assigned)");
+            else if (!TryBorrowModel(item, m.ModelFrom))
+                Pending.Add($"{m.EditorId}: no world model (it borrows the one of '{m.ModelFrom}', which needs Fallout4.esm)");
+        }
+
+        foreach (var a in Spec.Activators)
+        {
+            // No model: placed with a box around it, it is a trigger. The
+            // bounds are written (all zero), as on every record that can be placed.
+            var activator = _mod.Activators.AddNew(a.EditorId);
+            Track(activator);
         }
 
         foreach (var b in Spec.Books)
@@ -113,7 +139,328 @@ public sealed class Builder
             Track(msg);
         }
 
+        // Before the quests are filled in: their aliases point at these.
+        PlaceReferences();
+
         foreach (var q in Spec.Quests) Fill(quests[q.EditorId], q);
+    }
+
+    // ------------------------------------------------- placed references
+
+    /// <summary>
+    /// Gives this item the world model of an item of the game's: the path of
+    /// the model file and the size of the box around it. Nothing else is
+    /// copied; the file itself stays where it is, in the game's own archives.
+    /// </summary>
+    bool TryBorrowModel(MiscItem item, string from)
+    {
+        if (_vanilla == null) return false;
+        if (!TryVanilla(from, "MiscItem", out var key) || !_vanilla.TryResolve<IMiscItemGetter>(key, out var source)) return false;
+        var file = source.Model?.File;
+        if (string.IsNullOrEmpty(file))
+        {
+            VanillaNotes.Add($"{from}: has no world model to borrow");
+            return false;
+        }
+        item.Model = new Model { File = file };
+        item.ObjectBounds = source.ObjectBounds.DeepCopy();
+        BorrowedModels[item.EditorID!] = file;
+        var b = item.ObjectBounds;
+        VanillaNotes.Add($"{item.EditorID}: world model borrowed from {from}: '{file}', bounds ({b.First.X}, {b.First.Y}, {b.First.Z}) to ({b.Second.X}, {b.Second.Y}, {b.Second.Z})");
+        return true;
+    }
+
+    /// <summary>Where the player arrives in a cell, and which way the player then faces.</summary>
+    sealed record Arrival(P3Float Position, float Heading, bool Found);
+
+    const uint PersistentFlag = 0x400;
+    const uint InitiallyDisabledFlag = 0x800;
+
+    /// <summary>
+    /// Puts <see cref="Spec.Placed"/> into cells of the game. A plugin places
+    /// something in a cell it does not own by carrying its own copy of the
+    /// cell's record (not of what the game has in the cell) with the new
+    /// references under it.
+    ///
+    /// UNTESTED in the game and in the Creation Kit until docs/design/VERIFY_LOG.md says otherwise.
+    /// </summary>
+    void PlaceReferences()
+    {
+        CheckPlacedSpec();
+        foreach (var group in Spec.Placed.GroupBy(p => p.Cell, StringComparer.OrdinalIgnoreCase))
+        {
+            // Ids are given out whether or not anything is placed, so that the
+            // tracked id file comes out the same with and without Fallout4.esm.
+            // A build that changed it would later block a pull on the game PC.
+            var keys = new Dictionary<string, FormKey>();
+            foreach (var p in group) keys.Add(p.EditorId, _mod.GetNextFormKey(p.EditorId));
+
+            if (_vanilla == null)
+            {
+                foreach (var p in group) Pending.Add($"{p.EditorId}: not placed (the cell '{p.Cell}' is in Fallout4.esm)");
+                continue;
+            }
+            if (!TryVanilla(group.Key, "Cell", out var cellKey)
+                || !_vanilla.TryResolveContext<ICell, ICellGetter>(cellKey, out var context))
+            {
+                foreach (var p in group) Pending.Add($"{p.EditorId}: not placed (no cell '{p.Cell}' in Fallout4.esm)");
+                continue;
+            }
+
+            NoteWhereFiled(cellKey, group.Key);
+            var arrival = FindArrival(context.Record, group.Key);
+            Arrivals.Add(new(group.Key, cellKey.ToString(), new[] { arrival.Position.X, arrival.Position.Y, arrival.Position.Z }, arrival.Heading, arrival.Found));
+            var sample = group.Any(p => p.BoxHalfExtents != null) ? SampleGameTriggers() : null;
+
+            // This plugin's copy of the cell's record. The game's own
+            // references in the cell are not copied: they stay in the master.
+            var cell = context.GetOrAddAsOverride(_mod);
+            var theirs = cell.Persistent.Count + cell.Temporary.Count + cell.NavigationMeshes.Count + (cell.Landscape == null ? 0 : 1);
+            if (theirs != 0)
+                throw new InvalidOperationException($"the copy of cell '{group.Key}' came with {theirs} of the game's references, navigation meshes or land; it must come with none");
+
+            foreach (var p in group)
+            {
+                FormKey baseKey;
+                if (p.VanillaKind == null) baseKey = Local(p.Base).FormKey;
+                else if (!TryVanilla(p.Base, p.VanillaKind, out baseKey))
+                {
+                    Pending.Add($"{p.EditorId}: not placed (no {p.VanillaKind} '{p.Base}' in Fallout4.esm)");
+                    continue;
+                }
+
+                var (sin, cos) = (MathF.Sin(arrival.Heading), MathF.Cos(arrival.Heading));
+                // Heading is measured from north (+Y) towards east (+X): ahead is (sin, cos), right is (cos, -sin).
+                var position = new P3Float(
+                    arrival.Position.X + p.Ahead * sin + p.Right * cos,
+                    arrival.Position.Y + p.Ahead * cos - p.Right * sin,
+                    arrival.Position.Z + p.Up);
+                var flags = PersistentFlag | (p.InitiallyDisabled ? InitiallyDisabledFlag : 0u);
+                var isNpc = string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
+                if (isNpc)
+                {
+                    var npc = new PlacedNpc(keys[p.EditorId], Fallout4Release.Fallout4) { EditorID = p.EditorId };
+                    npc.Base.SetTo(baseKey);
+                    npc.Position = position;
+                    // Facing the spot where the player arrives.
+                    npc.Rotation = new P3Float(0, 0, NormalizeAngle(arrival.Heading + MathF.PI));
+                    npc.MajorRecordFlagsRaw |= (int)flags;
+                    cell.Persistent.Add(npc);
+                }
+                else
+                {
+                    var obj = new PlacedObject(keys[p.EditorId], Fallout4Release.Fallout4) { EditorID = p.EditorId };
+                    obj.Base.SetTo(baseKey);
+                    obj.Position = position;
+                    obj.Rotation = new P3Float(0, 0, NormalizeAngle(arrival.Heading));
+                    obj.MajorRecordFlagsRaw |= (int)flags;
+                    if (p.BoxHalfExtents != null)
+                    {
+                        obj.Primitive = new PlacedPrimitive
+                        {
+                            // The library's Bounds are the whole sizes; the file
+                            // holds half of each. Seen in the written bytes, and
+                            // tools/check_plugin_layout.py reads them to make sure.
+                            Bounds = new P3Float(2 * p.BoxHalfExtents[0], 2 * p.BoxHalfExtents[1], 2 * p.BoxHalfExtents[2]),
+                            // What the editor draws the box with. Taken from one of
+                            // the game's own box triggers when one was found.
+                            Color = sample?.Template?.Color ?? Color.FromArgb(255, 128, 0),
+                            Unknown = sample?.Template?.Unknown ?? 0.3f,
+                            Type = PlacedPrimitive.TypeEnum.Box,
+                        };
+                        if (p.CollisionLayer != null)
+                        {
+                            if (TryVanilla(p.CollisionLayer, "CollisionLayer", out var layerKey)
+                                && _vanilla.TryResolve<ICollisionLayerGetter>(layerKey, out var layer))
+                            {
+                                obj.CollisionLayer = layer.Index;
+                                if (sample != null && sample.Triggers > 0 && sample.MostUsedLayer != layer.Index)
+                                    VanillaNotes.Add($"NOTE {p.EditorId}: uses collision layer {p.CollisionLayer} (index {layer.Index}); most of the game's box triggers sampled use {sample.Describe(sample.MostUsedLayer)}");
+                            }
+                            else
+                                Pending.Add($"{p.EditorId}: placed without a collision layer (no '{p.CollisionLayer}' in Fallout4.esm)");
+                        }
+                    }
+                    cell.Persistent.Add(obj);
+                }
+                _placed.Add(p.EditorId, keys[p.EditorId]);
+                VanillaNotes.Add($"{p.EditorId}: placed in {group.Key} at ({position.X:0.#}, {position.Y:0.#}, {position.Z:0.#}): {p.Ahead:0.#} ahead of the arrival point, {p.Right:0.#} to its right, {p.Up:0.#} up");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Finds the block and sub-block the master files an interior cell under.
+    /// The usual rule is the last decimal digit of the cell's id and the one
+    /// before it; what the master really does is what counts, so it is read,
+    /// and a difference from the rule is reported, not acted on.
+    /// </summary>
+    void NoteWhereFiled(FormKey cellKey, string cellId)
+    {
+        if (_vanillaMod == null) return;
+        foreach (var block in _vanillaMod.Cells.Records)
+            foreach (var sub in block.SubBlocks)
+                foreach (var cell in sub.Cells)
+                {
+                    if (cell.FormKey != cellKey) continue;
+                    CellsFiled[cellId] = (block.BlockNumber, sub.BlockNumber);
+                    var (ruleBlock, ruleSub) = ((int)(cellKey.ID % 10), (int)(cellKey.ID / 10 % 10));
+                    var rule = (block.BlockNumber, sub.BlockNumber) == (ruleBlock, ruleSub)
+                        ? "as its id asks"
+                        : $"NOTE: its id would ask for block {ruleBlock}, sub-block {ruleSub}";
+                    VanillaNotes.Add($"{cellId}: an interior cell, filed in the master under block {block.BlockNumber}, sub-block {sub.BlockNumber} ({rule})");
+                    return;
+                }
+        VanillaNotes.Add($"NOTE {cellId}: not among the master's interior cells; this builder has only ever placed things in an interior cell");
+    }
+
+    static float NormalizeAngle(float radians)
+    {
+        var full = 2 * MathF.PI;
+        var r = radians % full;
+        return r < 0 ? r + full : r;
+    }
+
+    /// <summary>
+    /// Things about <see cref="Spec.Placed"/> that can be wrong without the game:
+    /// a trigger that holds the spot where the player arrives (someone already
+    /// inside never "enters" it), and two triggers that overlap.
+    /// </summary>
+    static void CheckPlacedSpec()
+    {
+        const float clear = 100f;      // further than a standing player reaches
+        var boxes = Spec.Placed.Where(p => p.BoxHalfExtents != null).ToList();
+        foreach (var p in boxes)
+        {
+            var h = p.BoxHalfExtents!;
+            if (h.Length != 3 || h.Any(x => x <= 0)) throw new InvalidOperationException($"{p.EditorId}: a box needs three sizes above zero");
+            if (MathF.Abs(p.Right) <= h[0] + clear && MathF.Abs(p.Ahead) <= h[1] + clear)
+                throw new InvalidOperationException($"{p.EditorId}: the box holds, or nearly holds, the spot where the player arrives");
+        }
+        for (var i = 0; i < boxes.Count; i++)
+            for (var j = i + 1; j < boxes.Count; j++)
+            {
+                var (a, b) = (boxes[i], boxes[j]);
+                if (!string.Equals(a.Cell, b.Cell, StringComparison.OrdinalIgnoreCase)) continue;
+                var apart = MathF.Abs(a.Right - b.Right) > a.BoxHalfExtents![0] + b.BoxHalfExtents![0]
+                         || MathF.Abs(a.Ahead - b.Ahead) > a.BoxHalfExtents[1] + b.BoxHalfExtents[1]
+                         || MathF.Abs(a.Up - b.Up) > a.BoxHalfExtents[2] + b.BoxHalfExtents[2];
+                if (!apart) throw new InvalidOperationException($"{a.EditorId} and {b.EditorId}: the two boxes overlap");
+            }
+    }
+
+    /// <summary>
+    /// The cell's arrival marker: where the console command "coc" puts the
+    /// player. Without one the origin is used, and said so.
+    /// </summary>
+    Arrival FindArrival(ICellGetter cell, string cellId)
+    {
+        const string markerId = "COCMarkerHeading";
+        var none = new Arrival(new P3Float(0, 0, 0), 0f, false);
+        FormKey markerBase = FormKey.Null;
+        if (!TryVanilla(markerId, "Static", out markerBase) && !TryVanilla(markerId, "Activator", out markerBase))
+        {
+            VanillaNotes.Add($"{cellId}: no arrival marker base '{markerId}' in Fallout4.esm; placing from the origin (0, 0, 0)");
+            return none;
+        }
+        List<IPlacedObjectGetter> objects;
+        List<IPlacedObjectGetter> markers;
+        try
+        {
+            objects = cell.Persistent.Concat(cell.Temporary).OfType<IPlacedObjectGetter>().ToList();
+            markers = objects.Where(o => o.Base.FormKey == markerBase).ToList();
+        }
+        catch (Exception e)
+        {
+            // Where things go matters less than that they are there: the
+            // scenario moves the player to them. So a cell whose contents the
+            // library cannot read is no reason to stop the build.
+            VanillaNotes.Add($"NOTE {cellId}: its placed objects could not be read ({e.GetType().Name}: {e.Message}); placing from the origin (0, 0, 0)");
+            return none;
+        }
+        if (markers.Count == 0)
+        {
+            VanillaNotes.Add($"{cellId}: none of its {objects.Count} placed objects is an arrival marker ({markerId}); placing from the origin (0, 0, 0)");
+            return none;
+        }
+        var m = markers[0];
+        VanillaNotes.Add($"{cellId}: arrival marker {m.FormKey} at ({m.Position.X:0.#}, {m.Position.Y:0.#}, {m.Position.Z:0.#}), heading {m.Rotation.Z * 180 / MathF.PI:0.#} degrees"
+            + (markers.Count > 1 ? $" (the first of {markers.Count})" : "") + $"; the cell has {objects.Count} placed objects");
+        return new Arrival(m.Position, m.Rotation.Z, true);
+    }
+
+    /// <summary>What a look at some of the game's own box triggers found.</summary>
+    sealed class TriggerSample
+    {
+        public int Cells;
+        public int Triggers;
+        public Dictionary<long, int> ByLayer = new();        // -1: no collision layer given
+        public Dictionary<uint, string> LayerNames = new();
+        public IPlacedPrimitiveGetter? Template;
+        public FormKey TemplateFrom;
+        public long MostUsedLayer => ByLayer.Count == 0 ? -1 : ByLayer.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).First().Key;
+        public string Describe(long layer) => layer < 0
+            ? "none"
+            : LayerNames.TryGetValue((uint)layer, out var name) ? $"{name} (index {layer})" : $"index {layer}";
+    }
+
+    /// <summary>
+    /// Looks at box triggers in the game's own interior cells: which collision
+    /// layers they use, and what the box of one of them looks like. Reported
+    /// in the build output, so that a trigger of ours that does not work can
+    /// be compared with ones that do. It stops after a few hundred.
+    /// </summary>
+    TriggerSample SampleGameTriggers()
+    {
+        const int maxCells = 400, maxTriggers = 300;
+        var sample = new TriggerSample();
+        if (_vanilla == null || _vanillaMod == null) return sample;
+        try
+        {
+            foreach (var layer in _vanillaMod.CollisionLayers)
+                if (layer.EditorID != null) sample.LayerNames[layer.Index] = layer.EditorID;
+            foreach (var block in _vanillaMod.Cells.Records)
+            {
+                foreach (var sub in block.SubBlocks)
+                {
+                    foreach (var cell in sub.Cells)
+                    {
+                        sample.Cells++;
+                        foreach (var placed in cell.Persistent.Concat(cell.Temporary).OfType<IPlacedObjectGetter>())
+                        {
+                            var primitive = placed.Primitive;
+                            if (primitive == null || primitive.Type != PlacedPrimitive.TypeEnum.Box) continue;
+                            if (!_vanilla.TryResolve<IActivatorGetter>(placed.Base.FormKey, out _)) continue;
+                            sample.Triggers++;
+                            var key = placed.CollisionLayer.HasValue ? placed.CollisionLayer.Value : -1L;
+                            sample.ByLayer[key] = sample.ByLayer.GetValueOrDefault(key) + 1;
+                            if (sample.Template == null)
+                            {
+                                sample.Template = primitive;
+                                sample.TemplateFrom = placed.FormKey;
+                            }
+                        }
+                        if (sample.Cells >= maxCells || sample.Triggers >= maxTriggers) goto done;
+                    }
+                }
+            }
+            done:;
+        }
+        catch (Exception e)
+        {
+            // The sample is for information. What was counted so far is still reported.
+            VanillaNotes.Add($"the look at the game's own box triggers stopped early: {e.GetType().Name}: {e.Message}");
+        }
+        if (sample.Triggers == 0)
+            VanillaNotes.Add($"the game's own box triggers: none found in {sample.Cells} interior cells; the box is drawn with this builder's own colour");
+        else
+        {
+            var layers = string.Join(", ", sample.ByLayer.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => $"{sample.Describe(kv.Key)} x {kv.Value}"));
+            var t = sample.Template!;
+            VanillaNotes.Add($"the game's own box triggers, {sample.Triggers} in {sample.Cells} interior cells: collision layer {layers}");
+            VanillaNotes.Add($"the box's colour and unknown number are copied from {sample.TemplateFrom}: colour ({t.Color.R}, {t.Color.G}, {t.Color.B}), unknown {t.Unknown:0.###}; that box reaches ({t.Bounds.X / 2:0.#}, {t.Bounds.Y / 2:0.#}, {t.Bounds.Z / 2:0.#}) from its middle");
+        }
+        return sample;
     }
 
     void Track(IFallout4MajorRecordGetter rec)
@@ -261,11 +608,21 @@ public sealed class Builder
                         Pending.Add($"{spec.EditorId} alias {a.Name}: needs PlayerRef from Fallout4.esm");
                     }
                     break;
+                case Tlm.PluginBuilder.Fill.Placed:
+                    // Optional even when filled: an alias that stays empty in
+                    // the game is then reported by name, and the quest starts.
+                    aliasFlags |= AQuestAlias.Flag.Optional;
+                    if (_placed.TryGetValue(a.Placed ?? throw new InvalidOperationException($"{spec.EditorId} alias {a.Name}: no placed reference named"), out var placedKey))
+                        alias.ForcedReference = new FormLinkNullable<IPlacedGetter>(placedKey);
+                    else
+                        Pending.Add($"{spec.EditorId} alias {a.Name}: its reference {a.Placed} is not placed");
+                    break;
                 default:
                     aliasFlags |= AQuestAlias.Flag.Optional;
                     Pending.Add($"{spec.EditorId} alias {a.Name}: no reference yet ({a.Note ?? "placed in the test cell"})");
                     break;
             }
+            if (a.DisplayName != null) alias.DisplayName.SetTo(Local(a.DisplayName).FormKey);
             alias.Flags = aliasFlags;
             quest.Aliases!.Add(alias);
 
@@ -357,6 +714,7 @@ public sealed class Builder
     // one and reports the spelling the master actually uses.
 
     delegate bool TypedLookup(ILinkCache cache, string editorId, out FormKey key, out string? actual);
+    // (the link cache is asked through its untyped face here; placing things needs the typed one)
 
     static bool Typed<T>(ILinkCache cache, string editorId, out FormKey key, out string? actual)
         where T : class, IFallout4MajorRecordGetter
@@ -393,6 +751,7 @@ public sealed class Builder
         ("Package", Typed<IPackageGetter>),
         ("Quest", Typed<IQuestGetter>),
         ("Location", Typed<ILocationGetter>),
+        ("CollisionLayer", Typed<ICollisionLayerGetter>),
         ("Cell", Typed<ICellGetter>),
         ("Worldspace", Typed<IWorldspaceGetter>),
         ("PlacedNpc", Typed<IPlacedNpcGetter>),
@@ -510,12 +869,12 @@ public sealed class Builder
     {
         var mod = new Fallout4Mod(ModKey.FromNameAndExtension(Spec.PluginName), Fallout4Release.Fallout4);
         mod.ModHeader.Stats.Version = headerVersion;
-        ILinkCache? vanilla = null;
+        ILinkCache<IFallout4Mod, IFallout4ModGetter>? vanilla = null;
         IFallout4ModGetter? master = null;
         if (fallout4Esm != null)
         {
             master = Fallout4Mod.CreateFromBinaryOverlay(fallout4Esm, Fallout4Release.Fallout4);
-            vanilla = master.ToImmutableLinkCache();
+            vanilla = master.ToImmutableLinkCache<IFallout4Mod, IFallout4ModGetter>();
         }
 
         // EditorID -> FormID assignments are kept in a text file under version

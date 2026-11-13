@@ -49,13 +49,17 @@
     7  the same: the caravan master killed by the player at the ambush
     8  the same: the caravan saved, then the caravan master killed
     9  the same: the Cutter lead's deal taken
+    10 a person, a trigger and an object that the plugin itself places in the
+       test room, and the quest aliases that point at them (the placed-content
+       trial, docs\design\TLM_GRAYBOX_trial.md)
     101 and up   the rows of the two test matrices, generated from the logic
                  model. tools\matrix_cases.json lists them: which rows each
                  stands for and the events it plays.
 
   -Scenarios takes numbers, ranges and names, separated by commas:
-    all      1 to 9 and every matrix case (the default; about half an hour)
-    basic    1 to 9
+    all      1 to 10 and every matrix case (the default; over an hour at the
+             pace of 2026-11-13)
+    basic    1 to 10
     matrix   every matrix case
     main     the matrix cases of the main quest (101 to 199)
     side     the matrix cases of the side quest (201 to 299)
@@ -148,11 +152,12 @@ if (Test-Path -LiteralPath $matrixFile) {
         $caseTitles[[int]$c.scenario] = "$(@($c.rows) -join ', '): $($c.title)"
     }
 }
-$basicNumbers = @(1..9)
+$basicNumbers = @(1..10)
 $basicTitles = @{
     1 = 'both quests by stages alone'; 2 = 'actors made at run time, in the aliases, killed'
     3 = 'distance events and the quest''s "the player has left" watch'; 4 = 'evaded'; 5 = 'saved after a fight'
     6 = 'missed'; 7 = 'betrayal on the road'; 8 = 'murder after saving'; 9 = 'the deal'
+    10 = 'a person, a trigger and an object placed by the plugin (the placed-content trial)'
 }
 foreach ($k in $basicTitles.Keys) { $caseTitles[[int]$k] = $basicTitles[$k] }
 
@@ -277,6 +282,7 @@ function Read-ScenarioLogs([datetime]$since) {
         HasUserLog = $false; Header = $null; ResultLine = $null; Passed = 0; FailLines = @(); InfoLines = @(); Aborted = $false
         LastStep = $null; LastLine = $null; TimingNotes = @()
         HasScriptLog = $false; CoreStarted = $false; Problems = @(); MqEvents = 0; SqEvents = 0; ScriptLogLines = 0; GuardLines = @()
+        TrialLines = @(); OtherUserLogs = @()
     }
     if ((Test-Path -LiteralPath $userLog) -and ((Get-Item -LiteralPath $userLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $userLog)
@@ -300,7 +306,25 @@ function Read-ScenarioLogs([datetime]$since) {
         $r.HasScriptLog = $true
         $r.ScriptLogLines = $lines.Count
         $r.CoreStarted = [bool](@($lines | Where-Object { $_ -match 'TLM_Core: started' }).Count)
-        $r.Problems = @($lines | Where-Object { $_ -match 'TLM' -and $_ -notmatch 'TLM_SelfTest:' -and $_ -match '(?i)\b(error|warning):' })
+        # Errors and warnings that name this project. An error raised inside a call often does
+        # not: the game writes what went wrong on one line and the scripts it went wrong in on
+        # the lines after it ("stack:" and one line per script). Such a line counts when one of
+        # those next lines names the project, and is shown with it.
+        $problems = New-Object System.Collections.Generic.List[string]
+        for ($i = 0; $i -lt $lines.Count; $i++) {
+            $line = $lines[$i]
+            if ($line -notmatch '(?i)\b(error|warning):' -or $line -match 'TLM_SelfTest:') { continue }
+            if ($line -match 'TLM') { $problems.Add($line); continue }
+            for ($j = $i + 1; $j -lt $lines.Count -and $j -le $i + 6; $j++) {
+                if ($lines[$j] -match '^\[') { break }          # the next dated line: the stack has ended
+                if ($lines[$j] -match 'TLM') { $problems.Add("$line  <- $($lines[$j].Trim())"); break }
+            }
+        }
+        $r.Problems = @($problems)
+        # The placed-content trial (scenario 10) asks the game's own scripts on its aliases to
+        # write what they do (their ShowTraces property). Whatever the script log says of the
+        # trial's quest, by whomever, that is not already listed as a problem.
+        $r.TrialLines = @($lines | Where-Object { $_ -match 'TLM_Trial' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
         $r.MqEvents = @($lines | Where-Object { $_ -match 'TLM_MQ01: stage \d+ item' }).Count
         $r.SqEvents = @($lines | Where-Object { $_ -match 'TLM_SQ01: stage \d+ item' }).Count
         # The main quest writes a line, beginning with the amendment's number, when a rule about
@@ -309,6 +333,16 @@ function Read-ScenarioLogs([datetime]$since) {
         # overlapping handlers (A24). Without these a pass does not say which rule acted, or
         # whether the game's timing ever asked one to.
         $r.GuardLines = @($lines | Where-Object { $_ -match 'TLM_MQ01: A\d+ ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*', '') })
+    }
+    # Other logs scripts wrote in this session: the game's own scripts may keep one of their own.
+    $userFolder = Split-Path -Parent $userLog
+    if (Test-Path -LiteralPath $userFolder) {
+        foreach ($f in @(Get-ChildItem -LiteralPath $userFolder -Filter '*.log' -File | Where-Object { $_.FullName -ne $userLog -and $_.LastWriteTime -ge $since })) {
+            $other = @(Get-Content -LiteralPath $f.FullName)
+            $named = @($other | Where-Object { $_ -match 'TLM' })
+            $r.OtherUserLogs += "$($f.Name): $($other.Count) lines, $($named.Count) naming this project"
+            foreach ($l in ($named | Select-Object -First 20)) { $r.OtherUserLogs += "    $l" }
+        }
     }
     return [pscustomobject]$r
 }
@@ -578,6 +612,18 @@ foreach ($r in $results) {
         foreach ($l in ($r.Logs.Problems | Select-Object -First 25)) { $out.Add("    $l") }
     } else {
         $out.Add("  errors and warnings in the game's script log that name this project: none")
+    }
+    if ([int]$r.Scenario -eq 10 -or $r.Logs.TrialLines.Count) {
+        if ($r.Logs.TrialLines.Count) {
+            $out.Add("  other lines in the game's script log that name the trial's quest ($($r.Logs.TrialLines.Count)$(if ($r.Logs.TrialLines.Count -gt 40) { ', first 40 shown' })):")
+            foreach ($l in ($r.Logs.TrialLines | Select-Object -First 40)) { $out.Add("    $l") }
+        } else {
+            $out.Add("  other lines in the game's script log that name the trial's quest: none (the game's own scripts on its aliases wrote nothing there)")
+        }
+    }
+    if ($r.Logs.OtherUserLogs.Count) {
+        $out.Add('  other logs written by scripts in this session:')
+        foreach ($l in $r.Logs.OtherUserLogs) { $out.Add("    $l") }
     }
 }
 

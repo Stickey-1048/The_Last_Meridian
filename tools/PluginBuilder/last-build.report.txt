@@ -24,27 +24,31 @@ Faction (3)
   000812  TLM_Fac_Cutters
   000813  TLM_Fac_Caravan
   000814  TLM_Fac_MercyCrossing
-MiscItem (2)
+MiscItem (3)
   000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
   000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
+  000823  TLM_MISC_TrialObject  "Trial Object"
 Book (2)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
-Message (6)
+Activator (1)
+  000824  TLM_ACTI_TrialTrigger
+Message (7)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
-  00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."
+  00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
           button 0: "Step back"
-  00081F  TLM_MSG_E2  [box]  "The draw-bar is cracked through. The break is dark with old rust."
+  00081F  TLM_MSG_E2  [box]  "The draw-bar is cracked through. The break is dark with old rust."  title: "Draw-bar"
           button 0: "Step back"
-  000820  TLM_MSG_PublishChoice  [box]  "Post the ledger pages where the town can read them?"
+  000820  TLM_MSG_PublishChoice  [box]  "Post the ledger pages where the town can read them?"  title: "Notice board"
           button 0: "Post the pages, no name"
           button 1: "Name the Yard Office"  if GetGlobalValue TLM_G_SQ01_EvidenceLevel GreaterThanOrEqualTo 2
           button 2: "Name Corwin Haskell"
           button 3: "Leave it"
-  000821  TLM_MSG_BurnLedger  [box]  "Burn the ledger?"
+  000821  TLM_MSG_BurnLedger  [box]  "Burn the ledger?"  title: "Stove"
           button 0: "Burn it"
           button 1: "Keep it"
+  000826  TLM_MSG_TrialPersonName  [notification]  ""  title: "Trial Settler"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
   script TLM:Core
@@ -72,6 +76,7 @@ Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=
            TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
            TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
            TornTransitPass = TLM_MISC_TornTransitPass
+           TLM_Trial = TLM_Trial
   script TLM:FixtureProbe
            TLM_MQ01 = TLM_MQ01
            TornTransitPass = TLM_MISC_TornTransitPass
@@ -274,11 +279,42 @@ Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOn
                     RequireStageDone = 10
                     BlockIfStageDone = 50
 
-Not wired yet (40):
+Quest TLM_Trial  000825  "The Last Meridian (placed-content trial)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:PlacedTrial
+           Alias_Person = alias 0 on TLM_Trial
+           Alias_Trigger = alias 1 on TLM_Trial
+           Alias_TriggerGameBase = alias 2 on TLM_Trial
+           Alias_Object = alias 3 on TLM_Trial
+           TrialObject = TLM_MISC_TrialObject
+  structure: 4 of 4 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  stage   10  (The player entered the trigger)
+  stage   11  (The player entered the trigger made on the game's own empty trigger)
+  stage   20  (The player picked the object up)
+  stage  100 [complete]  (Trial finished)
+  alias  0 Person  (reference) [Optional, AllowDisabled]  shown as: TLM_MSG_TrialPersonName
+  alias  1 Trigger  (reference) [Optional]
+           script DefaultAliasOnTriggerEnter
+                    StageToSet = 10
+                    ShowTraces = True
+  alias  2 TriggerGameBase  (reference) [Optional]
+           script DefaultAliasOnTriggerEnter
+                    StageToSet = 11
+                    ShowTraces = True
+  alias  3 Object  (reference) [Optional]
+           script DefaultAliasOnContainerChangedTo
+                    StageToSet = 20
+                    ShowTraces = True
+
+Not wired yet (50):
   - TLM_MISC_Dispatch: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
+  - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model yet
   - TLM_BOOK_MarshalLog: no world model yet
+  - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_TrialTrigger: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_TrialObject: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -315,3 +351,8 @@ Not wired yet (40):
   - TLM_SQ01 alias Haskell: no reference yet (Unique actor TLM_NPC_FREIGHT_MERCY)
   - TLM_SQ01 alias NoticeBoard: no reference yet (TLM_ACTI_NoticeBoard)
   - TLM_SQ01 alias Stove: no reference yet (Any stove or the wreck fire)
+  - TLM_Trial script TLM:PlacedTrial.MarkerBase: needs 'XMarker' from Fallout4.esm
+  - TLM_Trial alias Person: its reference TLM_REF_TrialPerson is not placed
+  - TLM_Trial alias Trigger: its reference TLM_REF_TrialTrigger is not placed
+  - TLM_Trial alias TriggerGameBase: its reference TLM_REF_TrialTriggerGameBase is not placed
+  - TLM_Trial alias Object: its reference TLM_REF_TrialObject is not placed
