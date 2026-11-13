@@ -205,8 +205,11 @@ public static class SelfCheck
                 Expect(got.Primitive == "Box" && got.Box != null && got.Box.SequenceEqual(p.BoxHalfExtents), $"{p.EditorId}: the box differs");
                 Expect(builder.WritesBoxBound ? got.Bound != null && got.Bound.SequenceEqual(p.BoxHalfExtents) : got.Bound == null,
                     $"{p.EditorId}: the reference's bound is {(got.Bound == null ? "missing" : "(" + string.Join(", ", got.Bound) + ")")}; this build {(builder.WritesBoxBound ? "writes the box's reach there" : "writes none")}");
-                var layerPending = builder.Pending.Any(x => x.StartsWith(p.EditorId + ": placed without a collision layer"));
-                Expect((got.CollisionLayer != null) == (p.CollisionLayer != null && !layerPending), $"{p.EditorId}: collision layer is {(got.CollisionLayer == null ? "missing" : "present")}");
+                // The layer is stored as the number the master gives the layer the spec names.
+                uint? wantLayer = builder.PlacedLayers.TryGetValue(p.EditorId, out var index) ? index : null;
+                Expect(got.CollisionLayer == wantLayer, $"{p.EditorId}: collision layer is {got.CollisionLayer?.ToString() ?? "missing"}, expected {wantLayer?.ToString() ?? "none"}");
+                Expect(wantLayer != null || p.CollisionLayer == null || builder.Pending.Any(x => x.StartsWith(p.EditorId + ": placed without a collision layer")),
+                    $"{p.EditorId}: has no collision layer, and the build did not say why");
             }
             var arrival = builder.Arrivals.FirstOrDefault(a => string.Equals(a.Cell, p.Cell, StringComparison.OrdinalIgnoreCase));
             if (arrival == null) { Expect(false, $"{p.EditorId}: the builder did not say where the player arrives in {p.Cell}"); continue; }

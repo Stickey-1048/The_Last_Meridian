@@ -49,6 +49,9 @@ public sealed class Builder
     /// <summary>World models borrowed from items of the game: this plugin's item, and the path of the model file.</summary>
     public Dictionary<string, string> BorrowedModels { get; } = new();
 
+    /// <summary>The collision layer each placed trigger was given: the index the master has for the layer the spec names.</summary>
+    public Dictionary<string, uint> PlacedLayers { get; } = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>True when this build gave its boxes a bound as well (it does as most of the game's own box triggers do).</summary>
     public bool WritesBoxBound { get; private set; }
 
@@ -299,6 +302,7 @@ public sealed class Builder
                                 && _vanilla.TryResolve<ICollisionLayerGetter>(layerKey, out var layer))
                             {
                                 obj.CollisionLayer = layer.Index;
+                                PlacedLayers[p.EditorId] = layer.Index;
                                 if (sample != null && sample.Triggers > 0 && sample.MostUsedLayer != layer.Index)
                                     VanillaNotes.Add($"NOTE {p.EditorId}: uses collision layer {p.CollisionLayer} (index {layer.Index}); most of the game's box triggers sampled use {sample.Describe(sample.MostUsedLayer)}");
                             }
