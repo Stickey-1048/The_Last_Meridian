@@ -104,7 +104,13 @@ Reported, not scored (lines beginning INFO):
 
 At the end the player is moved back to where the scenario began.
 
-**What it cannot check: the person's name.** The alias gives the reference a display name, but a script can only read a display name through a script extender (`GetDisplayName` is an F4SE function), and this project does not use one. A person has to look. `tools\win\Run-FirstBuild.ps1 -Install -Play` starts the game for that; the settler stands to the front and right of where you arrive, and is disabled until scenario 10 has run in that session.
+**What it cannot check: the person's name.** The alias gives the reference a display name, but a script can only read a display name through a script extender (`GetDisplayName` is an F4SE function), and this project does not use one. A person has to look, and only once the unattended run has shown that the rest works:
+
+1. `powershell -ExecutionPolicy Bypass -File tools\win\Start-TestGame.ps1`, and at the main menu `coc qasmoke` in the console, as in the runbook.
+2. In the console: `cqf TLM_Core RunSelfTest 10`. Close the console and wait for the message box with the result. (Run by hand, the scenario does not close the game.)
+3. The settler now stands to the front and right of where you arrived. Walk up and look at them: the name shown should be "Trial Settler". If it is "Settler", the display name did not take.
+
+Do not save. Quit to the desktop afterwards.
 
 ## What it rests on
 
