@@ -76,6 +76,10 @@ if (room)
 
     if (variant == "default")
     {
+        // Two more things in far corners, so that the room is large enough to
+        // hold what the builder places in it.
+        qaSmoke.Temporary.Add(Put(clutter.ToLink(), -500, -2000, 0));
+        qaSmoke.Temporary.Add(Put(clutter.ToLink(), 3000, 500, 300));
         // Where "coc qasmoke" puts the player: off the origin and turned, so
         // that a mistake in the builder's arithmetic shows.
         var cocMarker = mod.Statics.AddNew("COCMarkerHeading");

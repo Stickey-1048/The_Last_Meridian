@@ -62,6 +62,7 @@ python3 tools/check_plugin_layout.py "$tmp/default/out/TheLastMeridian.esp" >/de
 grep -q "TLM_REF_TrialPerson  PlacedNpc of .* at (1500, -950, 64) turned (0, 0, 270)  \[Persistent, InitiallyDisabled\]  in the Persistent list" "$(report default)" || { echo "FAILED: the placed person is not where the arrival marker and its heading put it"; exit 1; }
 grep -q "TLM_REF_TrialTrigger  PlacedObject of TLM_ACTI_TrialTrigger  at (1800, -600, 164) .*  Box (150, 150, 150)  bound (150, 150, 150)  collision layer 12" "$(report default)" || { echo "FAILED: the placed trigger is not as specified"; exit 1; }
 grep -q "TLM_REF_TrialTriggerActorZone  PlacedObject of TLM_ACTI_TrialTrigger  at (2150, -800, 164) .*  Box (150, 150, 150)  bound (150, 150, 150)  collision layer 22" "$(report default)" || { echo "FAILED: the trigger on the other collision layer is not as specified"; exit 1; }
+grep -q "TLM_REF_TrialTriggerActorZone: placed in QASmoke at (2150, -800, 164): .*; seen from above, within the span of the room's own objects" "$(report default)" || { echo "FAILED: a reference inside the stand-in room was not reported as inside it"; exit 1; }
 grep -q "TLM_MISC_TrialObject  \"Trial Object\"  model: " "$(report default)" || { echo "FAILED: the trial object did not borrow a world model from the master"; exit 1; }
 grep -q "alias  0 Person  (reference) \[Optional, AllowDisabled\]  fill: forced .*  shown as: TLM_MSG_TrialPersonName" "$(report default)" || { echo "FAILED: the Person alias does not point at the placed person"; exit 1; }
 grep -q "FixtureActorBase = " "$(report default)" || { echo "FAILED: the settler the self-test's stand-ins are made from was not found in the master"; exit 1; }
@@ -95,6 +96,7 @@ grep -q "TLM_REF_TrialPerson: not placed (no cell 'QASmoke' in Fallout4.esm)" "$
 # from the origin, and says what it left out.
 standin bare-room
 python3 tools/check_plugin_layout.py "$tmp/bare-room/out/TheLastMeridian.esp" >/dev/null || { echo "FAILED: the plugin built against the bare room has the wrong layout"; exit 1; }
+grep -q "TLM_REF_TrialTrigger: placed in QASmoke at (-200, 600, 100): .*NOTE: seen from above, outside the span of the room's own objects" "$(report bare-room)" || { echo "FAILED: a reference outside the bare room was not reported as outside it"; exit 1; }
 grep -q "placing from the origin (0, 0, 0)" "$(report bare-room)" || { echo "FAILED: a test room without an arrival marker was not reported"; exit 1; }
 grep -q "TLM_REF_TrialTrigger: placed without a collision layer" "$(report bare-room)" || { echo "FAILED: a trigger without its collision layer was not reported"; exit 1; }
 grep -q "TLM_REF_TrialTriggerGameBase: not placed (no Activator 'DefaultEmptyTrigger' in Fallout4.esm)" "$(report bare-room)" || { echo "FAILED: the missing comparison trigger was not reported"; exit 1; }

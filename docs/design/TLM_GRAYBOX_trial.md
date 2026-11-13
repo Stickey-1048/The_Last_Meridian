@@ -47,7 +47,7 @@ The builder does not know the room. It reads from the game's master where the co
 | Comparison trigger on `L_ACTORZONE` | 950 | 0 | 100 |
 | Object | 150 | 60 to the left | 20 |
 
-Whether those spots are open floor is not known. It does not matter for the test, which moves the player by script and picks the object up by script; it matters for a person who walks in to look. The build output says where the arrival marker is and where each thing went, and the scenario reports where the player and each thing really are, so the two can be compared.
+Whether those spots are open floor is not known. It does not matter for the test, which moves the player by script and picks the object up by script; it matters for a person who walks in to look. The build output says where the arrival marker is, how far the room's own objects reach, where each thing went and whether that is within their reach seen from above; and the scenario reports where the player and each thing really are, so the two can be compared.
 
 The builder refuses a trigger whose box holds, or nearly holds, the arrival point (someone already inside never "enters"), and two boxes that overlap. If the room has no arrival marker it places from the origin and says so.
 

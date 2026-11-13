@@ -176,8 +176,16 @@ public sealed class Builder
         return true;
     }
 
-    /// <summary>Where the player arrives in a cell, and which way the player then faces.</summary>
-    sealed record Arrival(P3Float Position, float Heading, bool Found);
+    /// <summary>Where the player arrives in a cell, and which way the player then faces; and the box that
+    /// holds the middles of everything the game has placed in the cell (null if that could not be read).</summary>
+    sealed record Arrival(P3Float Position, float Heading, bool Found, P3Float? Low = null, P3Float? High = null)
+    {
+        /// <summary>Is the point, seen from above, within the span of the cell's own objects? Not a promise of
+        /// open floor; outside it is likely outside the room. Height is left out: a box in the air is not outside.</summary>
+        public bool? Holds(P3Float p) => Low is { } lo && High is { } hi
+            ? p.X >= lo.X && p.X <= hi.X && p.Y >= lo.Y && p.Y <= hi.Y
+            : null;
+    }
 
     const uint PersistentFlag = 0x400;
     const uint InitiallyDisabledFlag = 0x800;
@@ -313,7 +321,13 @@ public sealed class Builder
                     cell.Persistent.Add(obj);
                 }
                 _placed.Add(p.EditorId, keys[p.EditorId]);
-                VanillaNotes.Add($"{p.EditorId}: placed in {group.Key} at ({position.X:0.#}, {position.Y:0.#}, {position.Z:0.#}): {p.Ahead:0.#} ahead of the arrival point, {p.Right:0.#} to its right, {p.Up:0.#} up");
+                var within = arrival.Holds(position) switch
+                {
+                    true => "; seen from above, within the span of the room's own objects",
+                    false => "; NOTE: seen from above, outside the span of the room's own objects, so likely outside the room",
+                    null => "",
+                };
+                VanillaNotes.Add($"{p.EditorId}: placed in {group.Key} at ({position.X:0.#}, {position.Y:0.#}, {position.Z:0.#}): {p.Ahead:0.#} ahead of the arrival point, {p.Right:0.#} to its right, {p.Up:0.#} up{within}");
             }
         }
     }
@@ -386,18 +400,18 @@ public sealed class Builder
     {
         const string markerId = "COCMarkerHeading";
         var none = new Arrival(new P3Float(0, 0, 0), 0f, false);
-        FormKey markerBase = FormKey.Null;
-        if (!TryVanilla(markerId, "Static", out markerBase) && !TryVanilla(markerId, "Activator", out markerBase))
-        {
-            VanillaNotes.Add($"{cellId}: no arrival marker base '{markerId}' in Fallout4.esm; placing from the origin (0, 0, 0)");
-            return none;
-        }
         List<IPlacedObjectGetter> objects;
-        List<IPlacedObjectGetter> markers;
+        P3Float? low = null, high = null;
         try
         {
             objects = cell.Persistent.Concat(cell.Temporary).OfType<IPlacedObjectGetter>().ToList();
-            markers = objects.Where(o => o.Base.FormKey == markerBase).ToList();
+            if (objects.Count > 0)
+            {
+                low = new P3Float(objects.Min(o => o.Position.X), objects.Min(o => o.Position.Y), objects.Min(o => o.Position.Z));
+                high = new P3Float(objects.Max(o => o.Position.X), objects.Max(o => o.Position.Y), objects.Max(o => o.Position.Z));
+                // How big the room is, to judge where things were put and where more could go.
+                VanillaNotes.Add($"{cellId}: its {objects.Count} placed objects lie between ({low.Value.X:0.#}, {low.Value.Y:0.#}, {low.Value.Z:0.#}) and ({high.Value.X:0.#}, {high.Value.Y:0.#}, {high.Value.Z:0.#})");
+            }
         }
         catch (Exception e)
         {
@@ -407,6 +421,14 @@ public sealed class Builder
             VanillaNotes.Add($"NOTE {cellId}: its placed objects could not be read ({e.GetType().Name}: {e.Message}); placing from the origin (0, 0, 0)");
             return none;
         }
+        none = none with { Low = low, High = high };
+        FormKey markerBase = FormKey.Null;
+        if (!TryVanilla(markerId, "Static", out markerBase) && !TryVanilla(markerId, "Activator", out markerBase))
+        {
+            VanillaNotes.Add($"{cellId}: no arrival marker base '{markerId}' in Fallout4.esm; placing from the origin (0, 0, 0)");
+            return none;
+        }
+        var markers = objects.Where(o => o.Base.FormKey == markerBase).ToList();
         if (markers.Count == 0)
         {
             VanillaNotes.Add($"{cellId}: none of its {objects.Count} placed objects is an arrival marker ({markerId}); placing from the origin (0, 0, 0)");
@@ -414,8 +436,8 @@ public sealed class Builder
         }
         var m = markers[0];
         VanillaNotes.Add($"{cellId}: arrival marker {m.FormKey} at ({m.Position.X:0.#}, {m.Position.Y:0.#}, {m.Position.Z:0.#}), heading {m.Rotation.Z * 180 / MathF.PI:0.#} degrees"
-            + (markers.Count > 1 ? $" (the first of {markers.Count})" : "") + $"; the cell has {objects.Count} placed objects");
-        return new Arrival(m.Position, m.Rotation.Z, true);
+            + (markers.Count > 1 ? $" (the first of {markers.Count})" : ""));
+        return new Arrival(m.Position, m.Rotation.Z, true, low, high);
     }
 
     /// <summary>What a look at some of the game's own box triggers found.</summary>
