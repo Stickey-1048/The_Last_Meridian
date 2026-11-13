@@ -10,7 +10,7 @@ Output:
                                             runner on the PC and the docs)
 
 A case is a row, or a few rows, of the test matrices in tools/logic_model
-(T01-T28 for TLM_MQ01, S01-S24 for TLM_SQ01), written as a list of the logic
+(T01-T29 for TLM_MQ01, S01-S24 for TLM_SQ01), written as a list of the logic
 model's events. For every event the generated code
 
   1. does what stands for the event in the game (TLM:CaseDriver), and
@@ -87,7 +87,7 @@ def race(events, how):
 
 # how -> (driver call, main-quest stages the driver sets by hand, words for the step)
 RACES = {
-    "timer": ("DoKillLeadThenTimer()", set(), "with the timer running out before the death is announced"),
+    "timer": ("DoKillLeadThenTimer()", set(), "quietly, with the timer running out before the death is announced"),
     "leaving": ("DoKillLeadThenLeave()", set(), "with the player gone before the death is announced"),
     "town": ("DoKillLeadThenTown()", {40}, "with the town stage before the death is announced"),
     "overlap": ("DoLeaveAndReachTownAtOnce()", {40}, "with the town stage set while the evade stage is still being handled"),

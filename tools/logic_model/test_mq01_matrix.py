@@ -278,7 +278,6 @@ class MQ01Matrix(unittest.TestCase):
         self.assertTrue(s.done(40))
         self.assertTrue(s.hands_in_town)
 
-    @unittest.skip(ENGINE_ONLY + " (plugin load and logs)")
     def test_T29_the_timer_stands_still_during_the_conversation(self):
         """Owner decision D9, amendment A25: the evade timer does not resolve
         the ambush while the player is talking to the Cutter lead."""
@@ -319,6 +318,7 @@ class MQ01Matrix(unittest.TestCase):
             with self.assertRaises(NotAvailable):
                 run(TO_AMBUSH + before + ["dunmore_talk"])
 
+    @unittest.skip(ENGINE_ONLY + " (plugin load and logs)")
     def test_T27_clean_plugin_load(self):
         pass
 

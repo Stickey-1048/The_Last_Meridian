@@ -117,6 +117,8 @@ class Actor(ObjectReference):
         self.protected_override: Optional[bool] = None
         self.essential_override: Optional[bool] = None
         self.combat_target: Optional["Actor"] = None
+        # Killed by the player: counts as fighting the player until then.
+        self.fights_player_until = -1.0
 
 
 class Alias:
@@ -448,10 +450,17 @@ class Session:
 
     def run(self, until: float = 900.0) -> str:
         """Runs until the game is closed by a script, nothing is left that could
-        ever happen ('idle'), or the clock passes `until` ('timeout')."""
+        ever happen ('idle'), or the clock reaches `until` ('timeout').
+
+        Unless the game was closed, the clock then stands at `until`, so that a
+        test which says run(t) and then does something does it at t. (It used
+        to stay at the last thing that had happened, and a test written as if
+        it did not tested nothing.)"""
         while True:
             state = self.run_once(until)
             if state != "running":
+                if state in ("idle", "timeout"):
+                    self.now = max(self.now, float(until))
                 return state
 
     def run_once(self, until: float) -> str:
@@ -1129,9 +1138,11 @@ class Session:
         return any("Protected" in a.flags for a in self.aliases_holding(actor))
 
     def player_in_combat(self) -> bool:
-        return any(a.combat_target is self.player and not a.dead and not a.disabled for a in self.actors)
+        return any((a.combat_target is self.player and not a.dead and not a.disabled)
+                   or a.fights_player_until > self.now + 1e-9 for a in self.actors)
 
     def _stop_combat(self, actor: Actor):
+        actor.fights_player_until = -1.0
         if actor.combat_target is not None:
             actor.combat_target = None
             self.actor_event(actor, "OnCombatStateChanged", [None, 0], COMBAT_EVENT_DELAY)
@@ -1149,6 +1160,17 @@ class Session:
         for other in self.actors:
             if other.combat_target is actor:
                 self._stop_combat(other)
+        if killer is not None and killer.is_player:
+            # [seen], indirectly, in the eleventh run (case 129): the evade
+            # timer's function, called straight after Kill(player) on the
+            # Cutter lead, found the player in combat. No other path through
+            # the script gives what that case gave. [assumed] that it lasts
+            # until the death is announced and no longer (two seconds later
+            # the player was out of combat: scenario 5, every run), that it
+            # needs no bystanders, and that StopCombatAlarm ends it like any
+            # other fight ([documented] "Stops all combat and alarms against
+            # this actor").
+            actor.fights_player_until = self.now + DEATH_EVENT_DELAY
         self.actor_event(actor, "OnDeath", [killer], DEATH_EVENT_DELAY)
 
     def n_actor_isdead(self, actor, context):
@@ -1191,6 +1213,8 @@ class Session:
         for other in self.actors:
             if other.combat_target is actor:
                 self._stop_combat(other)
+            if actor.is_player:
+                other.fights_player_until = -1.0    # [assumed]: see n_actor_kill
 
     # ---- what a person or the runner does from outside the scripts
     def set_global(self, editor_id: str, value: float):

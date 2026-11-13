@@ -140,7 +140,7 @@ Each scenario needs a fresh session, because the quests run once. For each scena
 | Scenario | What it is |
 |---|---|
 | 1 | The self-test described above: both quests by stages alone, 60 checks |
-| 2 | The fixture probe (`TLM:FixtureProbe`): spawns the game's generic settler three times, forces the actors into the drover, Cutter lead and caravan master aliases, kills them, and checks that the alias scripts hear it (the Cutter lead's death by the player's hand sets stage 31, the caravan master's stage 35); a timer; and, since amendment A25, that an actor nobody is talking to is not "in dialogue with the player". 15 checks (14 in the runs up to 2026-11-12) |
+| 2 | The fixture probe (`TLM:FixtureProbe`): spawns the game's generic settler three times, forces the actors into the drover, Cutter lead and caravan master aliases, kills them, and checks that the alias scripts hear it (the Cutter lead's death by the player's hand sets stage 31, the caravan master's stage 35); a timer; and, since amendment A25, that an actor nobody is talking to is not "in dialogue with the player". 15 checks (14 in the runs up to 2026-11-12). Two of its INFO lines report whether the game takes a kill by the player for a fight |
 | 3 | Distance events (`TLM:FixtureProbe`): one of the game's plain markers is placed at the player and moved away; registering while already apart; then the main quest's own watch, with a marker as the centre of a live ambush moved beyond the evade distance, which sets stage 32. It ends with experiments on a placed item that has no model; the first never comes back, so the watchdog ends the scenario there, 8 checks passed |
 | 4 | The main quest played through with a caravan made at run time (`TLM:WorldCases`): the player meets the ambush and does nothing. The drover should die, the cargo go, the caravan master reach the town alias and be unkillable there, the debrief be the "evaded" one, and admitting it count for truth and accountability |
 | 5 | The same, saved: the Cutter lead starts a fight and dies by the player's hand. Both hands should reach town, the cargo stay, the debrief be the "saved" one with its extra reputation and trust |
@@ -150,7 +150,7 @@ Each scenario needs a fresh session, because the quests run once. For each scena
 | 9 | The same, the deal: stage 33 is set as the talk with the Cutter lead would set it. The drover should die, the cargo go, the caravan master be the witness, and blaming the Cutters cost truth |
 
 | 101 to 128 | The rows of the main quest's test matrix, as cases generated from the logic model (`TLM:MatrixCases`, with `TLM:CaseDriver` doing the work). After every event the driver compares everything it can see of both quests with the model. `tools/matrix_cases.json` says which rows each case stands for |
-| 129 to 132 | Not rows of the matrix: the main quest when the game does two things with no time between them (amendment A24). The Cutter lead killed and the timer, leaving, or the town stage before his death is announced; and the town stage set while "evaded" is still being handled. Case 132 says in an INFO line whether that overlap really happened. The report has a part headed "Timing" that lists, per scenario, each line a guard wrote to the script log (`TLM_MQ01: A24 ...`) and that INFO line. A case here that passes with no guard line has passed because the game's timing never put the guard to the test |
+| 129 to 132 | Not rows of the matrix: the main quest when the game does two things with no time between them (amendment A24). The Cutter lead killed and the timer, leaving, or the town stage before his death is announced; and the town stage set while "evaded" is still being handled. Case 132 says in an INFO line whether that overlap really happened. The report has a part headed "Timing" that lists, per scenario, that INFO line and each line the main quest wrote to the script log when a rule about timing decided something: `TLM_MQ01: A2 ...` (the evade timer held back by a fight), `TLM_MQ01: A24 ...` (a guard against a late death or an overlap) and `TLM_MQ01: A25 ...` (the timer held back by the conversation with the Cutter lead). A case here that passes with no `A24` line has passed because the game's timing never put the guard to the test. That was so for case 129 on 2026-11-12: the game took the kill for a fight. Case 129 now makes the kill a quiet one first, and says in two INFO lines whether the game agrees |
 | 201 to 221 | The same for the side quest's matrix |
 
 `-Scenarios` takes numbers, ranges and names, separated by commas: `all` (the default: 1 to 9 and every case from 101 up, about 40 minutes), `basic` (1 to 9), `matrix`, `main`, `side`, or for example `4,104-110,side`. With that many scenarios the report shows one line each, and details only for the ones that did not pass.
@@ -187,7 +187,21 @@ Not attempted yet, and not needed for step 5. The Creation Kit on this PC (1.11.
 
 ## 7. Then, and only then
 
-Build the temporary test cell (wreck, road, ambush, gate), place the actors and markers, fill the aliases, remove the Optional flags, and run T01–T28 and S01–S24 for real. That is the `mq01-logic-proof` milestone.
+Build the temporary test cell (wreck, road, ambush, gate), place the actors and markers, fill the aliases, remove the Optional flags, and run T01–T29 and S01–S24 for real.
+
+When this was written, that was to be the `mq01-logic-proof` milestone. By the owner's decision of 2026-11-13 the tag of that name marks the scripted proof of 2026-11-12 instead (commit `c1e6d48`, 62 scenarios with actors and markers made at run time); the built cell is still the next step.
+
+## Tagging a milestone
+
+A tag has to be pushed from the owner's PC: the cloud session that does the day-to-day work may push the branch but not tags. With the folder up to date:
+
+```
+cd C:\Dev\The_Last_Meridian
+git pull --ff-only
+powershell -ExecutionPolicy Bypass -File tools\win\Push-MilestoneTag.ps1
+```
+
+The script creates the tag `mq01-logic-proof` on commit `c1e6d48` with the text in `docs\design\tags\mq01-logic-proof.txt`, pushes that one tag and nothing else, and prints what GitHub then shows. It stops without pushing if the tag already exists anywhere pointing at another commit, if the text is missing, or if git does not know who is tagging (the name and e-mail git is configured with are published with a tag). The first push from the PC may open a GitHub sign-in window. If `git pull --ff-only` is refused, run the usual test command once instead; it brings the folder up to date before it does anything else.
 
 ## What to report back
 

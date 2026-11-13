@@ -22,7 +22,8 @@ model, never returns. That is what had stopped an earlier version of scenario
 2. The experiments after it have therefore never run.
 Since that run one check was added to scenario 2, which now makes 15: that an
 actor nobody is talking to is "not in dialogue with the player" (amendment
-A25). THAT LINE IS NOT YET COMPILED.}
+A25); and two reported lines about whether a kill by the player counts as a
+fight. THOSE THREE LINES ARE NOT YET COMPILED.}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory
@@ -105,8 +106,13 @@ Function Run(TLM:SelfTest akTest)
 		mq.Alias_CutterLead.ForceRefTo(lead)
 		akTest.CheckTrue("probe: ForceRefTo fills the Cutter lead alias", mq.Alias_CutterLead.GetActorReference() == lead)
 		lead.Kill(player)
+		; Reported, not scored. In the run of 2026-11-12 a case showed, indirectly,
+		; that the game takes a kill by the player for a fight, with three other
+		; actors standing by. Here nobody else is alive.
+		akTest.Note("probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = " + player.IsInCombat())
 		WaitForStage(31)
 		akTest.Note("probe: Cutter lead after Kill(player): dead = " + lead.IsDead())
+		akTest.Note("probe: player in combat once his death has been announced = " + player.IsInCombat())
 		akTest.CheckTrue("probe: the Cutter alias script heard the death and set stage 31", TLM_MQ01.GetStageDone(31))
 		akTest.CheckTrue("probe: the outcome is 'saved'", mq.Outcome() == 1)
 	Else

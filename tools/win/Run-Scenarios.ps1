@@ -245,10 +245,12 @@ function Read-ScenarioLogs([datetime]$since) {
         $r.Problems = @($lines | Where-Object { $_ -match 'TLM' -and $_ -notmatch 'TLM_SelfTest:' -and $_ -match '(?i)\b(error|warning):' })
         $r.MqEvents = @($lines | Where-Object { $_ -match 'TLM_MQ01: stage \d+ item' }).Count
         $r.SqEvents = @($lines | Where-Object { $_ -match 'TLM_SQ01: stage \d+ item' }).Count
-        # The main quest's guards against late deaths and overlapping handlers (amendment A24)
-        # write a line when they change what happens. Without it a pass does not say whether
-        # the guard acted or the game's timing never asked it to.
-        $r.GuardLines = @($lines | Where-Object { $_ -match 'TLM_MQ01: A24 ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*', '') })
+        # The main quest writes a line, beginning with the amendment's number, when a rule about
+        # timing decides something: the evade timer held back by a fight (A2) or by the
+        # conversation with the Cutter lead (A25), and the guards against late deaths and
+        # overlapping handlers (A24). Without these a pass does not say which rule acted, or
+        # whether the game's timing ever asked one to.
+        $r.GuardLines = @($lines | Where-Object { $_ -match 'TLM_MQ01: A\d+ ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*', '') })
     }
     return [pscustomobject]$r
 }
@@ -431,9 +433,9 @@ foreach ($r in $results) {
 }
 if ($timing.Count -or @($results | Where-Object { [int]$_.Scenario -ge 100 }).Count) {
     $out.Add('')
-    $out.Add('== Timing: where the main quest''s guards acted (amendment A24) ==')
+    $out.Add('== Timing: where a rule about timing decided something (amendments A2, A24, A25) ==')
     if ($timing.Count) { foreach ($l in $timing) { $out.Add($l) } }
-    else { $out.Add('  nowhere: no guard wrote a line in this run, and no case noted an overlap') }
+    else { $out.Add('  nowhere: the main quest wrote no such line in this run, and no case noted an overlap') }
 }
 
 foreach ($r in $results) {

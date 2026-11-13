@@ -15,12 +15,13 @@ settler and the marker. tools/run_checks.sh builds one into build/sim/.
 """
 import json
 import os
+import re
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 
-from sim import Actor, Session, SimError, run_scenario
+from sim import FRAME, Actor, Session, SimError, run_scenario
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -79,7 +80,12 @@ def plugin_with(fault):
 def summary(session):
     lines = session.user_logs.get("TLM", [])
     fails = [l[len("FAIL"):].strip() for l in lines if l.startswith("FAIL")]
+    overlap = [l.rsplit(": ", 1)[1] for l in lines if l.startswith("INFO") and "was still at work: " in l]
     return {
+        # what the main quest's timing guards wrote to the script log (TLM_MQ01: A24 ..., A2 ..., A25 ...)
+        "guard_lines": [l for l in session.papyrus_log if re.match(r"TLM_MQ01: A\d+ ", l)],
+        # what a case that sets two things off at once noted about them: "True", "False", or None
+        "overlap": overlap[-1] if overlap else None,
         "passed": sum(1 for l in lines if l.startswith("PASS")),
         "failed": len(fails),
         "first_failure": fails[0] if fails else None,
@@ -109,10 +115,20 @@ class ReplaysOfGameRuns(unittest.TestCase):
                         s.console_cqf("TLM_Core", "RunSelfTest", [])
                         s.run(400.0)
                     else:
-                        s = run_scenario(int(number), folder, plugin, VANILLA, NATIVES, until=400.0, older_scripts=True)
+                        # The game overlapped two handlers here. The ordinary mode cannot.
+                        frame = FRAME if want.get("stand_in_mode") == "calls take a frame" else 0.0
+                        s = run_scenario(int(number), folder, plugin, VANILLA, NATIVES, until=400.0, older_scripts=True,
+                                         native_delay=frame)
                     got = summary(s)
                     for key, value in want.items():
-                        self.assertEqual(got[key], value, "%s, scenario %s: %s" % (run["name"], number, key))
+                        if key.startswith("stand_in_"):
+                            continue                # an instruction to this replay, not something the game reported
+                        have = got[key]
+                        if key == "guard_lines" and frame:
+                            # that mode provokes overlaps; how long one lasts in it is not a prediction
+                            have = [re.sub(r"waited \d+ tenths", "waited N tenths", l) for l in have]
+                            value = [re.sub(r"waited \d+ tenths", "waited N tenths", l) for l in value]
+                        self.assertEqual(have, value, "%s, scenario %s: %s" % (run["name"], number, key))
                     replayed += 1
         self.assertEqual(replayed, sum(len(r["scenarios"]) for r in GAME_RUNS))
 
@@ -442,12 +458,36 @@ class RulesAboutActors(unittest.TestCase):
         self.assertEqual(self.s.get_global("TLM_G_CaravanOutcome"), 1)
 
     def test_combat_with_the_player(self):
-        # [seen] scenario 5
+        # [seen] scenario 5: in combat once StartCombat is called, out of it two seconds after the kill
         a = self.actor("CutterLead")
         self.assertFalse(self.s.player_in_combat())
         self.s.n_actor_startcombat(a, None, self.s.player)
         self.assertTrue(self.s.player_in_combat())
         self.s.n_actor_kill(a, None, self.s.player)
+        self.s.run(self.s.now + 2.0)
+        self.assertFalse(self.s.player_in_combat())
+
+    def test_a_kill_by_the_player_is_a_fight_until_it_is_announced(self):
+        # [seen], indirectly: in the eleventh run (case 129) the evade timer's
+        # function, called straight after Kill(player), found the player in
+        # combat. [assumed]: until the death is announced and no longer; and
+        # that StopCombatAlarm ends it, as the wiki says it ends all combat.
+        a = self.actor("CutterLead")
+        self.s.n_actor_kill(a, None, self.s.player)
+        self.assertTrue(self.s.player_in_combat())
+        self.s.run(self.s.now + 0.5)
+        self.assertTrue(self.s.player_in_combat())
+        self.s.run(self.s.now + 0.5)
+        self.assertFalse(self.s.player_in_combat())
+        b = self.actor("CutterA")
+        self.s.n_actor_kill(b, None, self.s.player)
+        self.assertTrue(self.s.player_in_combat())
+        self.s.n_actor_stopcombatalarm(self.s.player, None)
+        self.assertFalse(self.s.player_in_combat())
+        # a death by nobody's hand is nobody's fight
+        c = self.actor()
+        self.s.n_actor_kill(c, None, None)
+        self.assertTrue(c.dead)
         self.assertFalse(self.s.player_in_combat())
 
     def test_moveto_on_a_reference_with_no_model_never_comes_back(self):

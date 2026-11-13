@@ -7,19 +7,23 @@ nobody at the keyboard (docs/design/VERIFY_LOG.md):
 - with actors and markers made at run time in its aliases: the rows of the
   test matrix that need no built place, save or dialogue, 28 cases, compared
   with the logic model after every event (scenarios 101 to 128), and six
-  hand-written cases before that (scenarios 4 to 9).
+  hand-written cases before that (scenarios 4 to 9);
+- with the guards of amendment A24 (ClaimEncounter, WaitForResolutions,
+  LeadIsDown, ResolveUnattended and the counting at the top of OnStageSet):
+  four cases that do two things at once (scenarios 129 to 132). The guard
+  was seen to act in three of them. That was commit c1e6d48, the one the
+  tag mq01-logic-proof is for.
 Every stage handler has run, and each left the state the logic model
 predicts. In those runs a stage number stood in for every trigger, pickup
 and conversation, and EvadeTimerElapsed was called directly. NOT run: the
 90-second timer itself, the move to the caravan yard over a distance,
 OnGameLoaded, dialogue, saving and loading, and anything in a built place.
 Written without Fallout 4 or the Creation Kit.
-Since those runs the guards of amendment A24 were added (ClaimEncounter,
-WaitForResolutions, LeadIsDown, ResolveUnattended and the counting at the top
-of OnStageSet), and the rule of amendment A25 (PlayerIsTalkingToLead: the
-evade timer does not run out on a conversation with the Cutter lead): THIS
+Since that run the rule of amendment A25 was added (PlayerIsTalkingToLead:
+the evade timer does not run out on a conversation with the Cutter lead),
+and two lines that say in the script log what held the timer back: THIS
 VERSION IS NOT YET COMPILED. It passes in the stand-in engine, which is not
-the game.
+the game. A25 cannot be seen at work in the game until there is dialogue.
 
 Design: stages are the API. Anything that changes the quest sets a stage
 (default scripts, dialogue, the console), and OnStageSet applies the effect.
@@ -375,10 +379,15 @@ Function EvadeTimerElapsed()
 	{The evade timer has run out (the logic model's evade_timer). A function of
 	its own so that the development self-test can call it without waiting.}
 	If IsLive()
-		If Game.GetPlayer().IsInCombat() || PlayerIsTalkingToLead()
-			; Never resolve "evaded" over the top of a fight, or of the
-			; conversation with the Cutter lead (A25). Check again later: the
-			; timer starts over with its whole length.
+		; Never resolve "evaded" over the top of a fight (A2), or of the
+		; conversation with the Cutter lead (A25). Check again later: the timer
+		; starts over with its whole length. The two lines written here are for
+		; the test runs: the only sign of which of the two held it back.
+		If Game.GetPlayer().IsInCombat()
+			Debug.Trace("TLM_MQ01: A2 the evade timer ran out during a fight: it starts over")
+			StartTimer(EvadeSeconds, TIMER_EVADE)
+		ElseIf PlayerIsTalkingToLead()
+			Debug.Trace("TLM_MQ01: A25 the evade timer ran out during the conversation with the Cutter lead: it starts over")
 			StartTimer(EvadeSeconds, TIMER_EVADE)
 		Else
 			ResolveUnattended()

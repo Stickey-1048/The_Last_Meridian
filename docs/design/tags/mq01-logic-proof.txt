@@ -1,0 +1,28 @@
+MQ01 logic proof: in Fallout 4 the quest scripts do what the logic model says
+
+What passed. On 2026-11-12, with nobody at the keyboard, the plugin and
+scripts built from this commit were installed and run in Fallout 4
+1.10.163 by tools/win/Update-And-Run.ps1 -Install -Unattended:
+62 game sessions, 62 passed, 1,560 checks, 0 failed, and no error or
+warning naming this project in the game's script log.
+
+What that covers. Every row of the two test matrices that needs no built
+place, no save and no dialogue: 28 cases for TLM_MQ01 (T01 to T12d, T14 to
+T14c, T17 to T19c, T21, T23 to T26c) and 21 for TLM_SQ01 (S01 to S13, S15,
+S17 to S19, S21 to S24), each compared with the logic model after every
+event; four cases for late deaths and overlapping handlers (amendment
+A24), in three of which the guard was seen to act; and nine earlier
+scenarios. Actors and markers were made at run time in the game's test
+room, and a stage number stood for each trigger, pickup and line of
+dialogue.
+
+What it does not cover. Rows T13, T15, T16, T20, T22, T27, T28, S14, S16
+and S20. Anything in a built place. Dialogue. Saving and loading. The
+plugin opened in the Creation Kit. The quest as a player would meet it.
+The design called this milestone the matrix played in a built test cell;
+by the owner's decision of 2026-11-13 the tag marks this proof with
+run-time fixtures instead, and the built cell is still to come.
+
+The record of the run is in docs/design/VERIFY_LOG.md on the branch
+feat/tlm-mq01-prebuild. The plugin itself is not in the repository:
+tools/PluginBuilder writes it from this commit.

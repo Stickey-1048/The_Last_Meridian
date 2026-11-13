@@ -23,11 +23,12 @@ So a pass says the quest scripts keep to the model once those stages are set
 and those deaths happen. It says nothing about triggers, pickups, dialogue
 conditions, AI or a built place.
 
-RAN IN THE GAME on 2026-11-12: it drove all 49 matrix cases, 1,236 checks,
-0 failed (docs/design/VERIFY_LOG.md). Since then four actions were added
-that do two things with no time between them (DoKillLeadThenTimer,
-DoKillLeadThenLeave, DoKillLeadThenTown, DoLeaveAndReachTownAtOnce):
-THIS VERSION IS NOT YET COMPILED.}
+RAN IN THE GAME on 2026-11-12: it drove all 53 cases, 1,340 checks, 0 failed
+(docs/design/VERIFY_LOG.md), the four included that do two things with no
+time between them (DoKillLeadThenTimer, DoKillLeadThenLeave,
+DoKillLeadThenTown, DoLeaveAndReachTownAtOnce). Since then
+DoKillLeadThenTimer was changed, to make the kill a quiet one and to report
+what the game says about the fight: THAT ACTION IS NOT YET COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
@@ -246,8 +247,22 @@ EndFunction
 Function DoKillLeadThenTimer()
 	{player_kills_lead, with the evade timer running out before the death has
 	been announced (amendment A24). He is dead at once; OnDeath comes about a
-	second later.}
+	second later.
+
+	In the run of 2026-11-12 the game took the kill itself for a fight: the
+	timer's function found the player in combat and started over, so the
+	guard this case is for never acted. The kill is therefore made a quiet
+	one: the three Cutters still standing are told to stand down and the
+	alarm against the player is ended, as after break_combat. Whether that
+	is enough in the game is reported, not scored: the case passes either
+	way, and the report's "Timing" part says which rule decided it.}
 	lead.Kill(player)
+	test.Note(stepLabel + ": player in combat straight after the kill: " + player.IsInCombat())
+	cutterA.StopCombat()
+	cutterB.StopCombat()
+	cutterC.StopCombat()
+	player.StopCombatAlarm()
+	test.Note(stepLabel + ": player in combat after the Cutters were told to stand down: " + player.IsInCombat())
 	mq.EvadeTimerElapsed()
 	WaitStage(31)
 	Utility.Wait(2.0)

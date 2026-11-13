@@ -27,6 +27,17 @@ import tlm_model as model                                         # noqa: E402
 BEFORE_THE_RULE = "c1e6d48"
 TO_THE_AMBUSH = ["start", "take_dispatch", "goto_ambush"]
 
+# What the quest script writes to the script log when it holds the timer back
+# or steps in. In the game these lines are the only sign of which rule acted.
+HELD_BY_A_FIGHT = "TLM_MQ01: A2 the evade timer ran out during a fight: it starts over"
+HELD_BY_THE_CONVERSATION = ("TLM_MQ01: A25 the evade timer ran out during the conversation with the Cutter lead: "
+                            "it starts over")
+ALREADY_DEAD = "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+
+
+def said(session):
+    return [l for l in session.papyrus_log if l.startswith("TLM_MQ01: A")]
+
 
 class TheTimerAndTheConversation(unittest.TestCase):
     def live(self, scripts=SCRIPTS):
@@ -72,6 +83,35 @@ class TheTimerAndTheConversation(unittest.TestCase):
         self.assertEqual(self.seen(s, driver, mq), self.in_the_model([]))
         s.run(due + 1.0)
         self.assertEqual(self.seen(s, driver, mq), self.in_the_model(["evade_timer"]))
+        self.assertEqual(said(s), [])
+
+    def test_with_no_lead_at_all_the_timer_runs_out(self):
+        """The alias empty, as it is when the quest is played by stages alone:
+        the question about the conversation must not be put to nobody."""
+        need_build(self)
+        s = Session(SCRIPTS, PLUGIN, VANILLA, NATIVES)
+        s.enter_game()
+        s.run(1.0)
+        mq = s.quests["TLM_MQ01"]
+        for stage in (10, 20, 30):
+            self.set_stage(s, mq, stage)
+        self.assertEqual(s.get_global("TLM_G_CaravanOutcome"), model.OUT_NONE)
+        s.run(self.timer_due(s) + 1.0)
+        self.assertEqual(s.get_global("TLM_G_CaravanOutcome"), model.OUT_EVADED)
+        self.assertEqual([l for l in s.papyrus_log if l.startswith("error:")], [])
+        self.assertEqual(s.calls_on_none, 0)
+
+    def test_a_fight_holds_it_back_and_the_script_says_which(self):
+        need_build(self)
+        s, driver, mq, due = self.live()
+        s.n_actor_startcombat(driver.vars["lead"], None, s.player)
+        s.run(due + 1.0)
+        self.assertEqual(self.seen(s, driver, mq)[0], model.OUT_NONE)
+        self.assertEqual(said(s), [HELD_BY_A_FIGHT])
+        # a fight and a conversation at once: the fight is what is reported
+        driver.vars["lead"].talking_to_player = True
+        s.run(due + 91.0)
+        self.assertEqual(said(s), [HELD_BY_A_FIGHT, HELD_BY_A_FIGHT])
 
     def test_it_does_not_run_out_on_the_conversation(self):
         need_build(self)
@@ -79,6 +119,7 @@ class TheTimerAndTheConversation(unittest.TestCase):
         driver.vars["lead"].talking_to_player = True
         s.run(due + 1.0)
         self.assertEqual(self.seen(s, driver, mq), self.in_the_model(["dunmore_talk"]))
+        self.assertEqual(said(s), [HELD_BY_THE_CONVERSATION])
         with self.assertRaises(model.NotAvailable):
             model.run(TO_THE_AMBUSH + ["dunmore_talk", "evade_timer"])
         # it has started over, with its whole length
@@ -117,13 +158,17 @@ class TheTimerAndTheConversation(unittest.TestCase):
         s.check_distances()
         s.run(s.now + 5.0)
         self.assertEqual(self.seen(s, driver, mq), self.in_the_model(["dunmore_talk", "goto_wreck"]))
-        # each line of the conversation
+        # each line of the conversation. The third changes nothing that is
+        # compared above: it starts a fight, so that is compared as well.
         for stage, line in ((31, "dunmore_speech_success"), (33, "dunmore_deal"), (37, "dunmore_speech_fail")):
             with self.subTest(line=line):
                 s, driver, mq, _due = self.live()
                 driver.vars["lead"].talking_to_player = True
                 self.set_stage(s, mq, stage)
                 self.assertEqual(self.seen(s, driver, mq), self.in_the_model(["dunmore_talk", line]))
+                self.assertEqual(s.player_in_combat(),
+                                 model.run(TO_THE_AMBUSH + ["dunmore_talk", line]).in_combat)
+        self.assertTrue(model.run(TO_THE_AMBUSH + ["dunmore_talk", "dunmore_speech_fail"]).in_combat)
         # a killing
         s, driver, mq, _due = self.live()
         driver.vars["lead"].talking_to_player = True
@@ -133,16 +178,29 @@ class TheTimerAndTheConversation(unittest.TestCase):
 
     def test_killing_him_in_mid_conversation_is_a_rescue(self):
         """The timer runs out between his death and the news of it (amendment
-        A24), with the conversation never closed by anyone. Whatever the game
-        says about a dead man's conversation, it has to come out a rescue."""
+        A24), with the conversation never closed by anyone. It has to come out
+        a rescue, by whichever rule gets there first."""
         need_build(self)
+        # Killed by the player: the game takes that for a fight, and the fight holds the timer back.
         s, driver, mq, due = self.live()
         driver.vars["lead"].talking_to_player = True
         s.run(due - 0.3)
+        self.assertAlmostEqual(s.now, due - 0.3)
         s.n_actor_kill(driver.vars["lead"], None, s.player)
         s.run(due + 5.0)
         self.assertEqual(self.seen(s, driver, mq), self.in_the_model(["dunmore_talk", "player_kills_lead"]))
         self.assertEqual(self.seen(s, driver, mq)[0], model.OUT_SAVED)
+        self.assertEqual(said(s), [HELD_BY_A_FIGHT])
+        # Dead by nobody's hand, so no fight: the timer finds him dead and the ambush still live.
+        s, driver, mq, due = self.live()
+        driver.vars["lead"].talking_to_player = True
+        s.run(due - 0.3)
+        s.n_actor_setprotected(driver.vars["lead"], None, False)
+        s.n_actor_kill(driver.vars["lead"], None, None)
+        self.assertTrue(driver.vars["lead"].dead)
+        s.run(due + 5.0)
+        self.assertEqual(self.seen(s, driver, mq)[0], model.OUT_SAVED)
+        self.assertEqual(said(s), [ALREADY_DEAD])
 
     def test_before_the_rule_the_deal_was_lost(self):
         """What the owner's decision D9 is about: the ambush resolved under the

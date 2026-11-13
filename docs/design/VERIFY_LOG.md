@@ -1,7 +1,7 @@
 # Verification log
 
-**Dates:** 2026-11-11 and 2026-11-12. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
-**Not checked:** anything inside the Creation Kit editor. In the running game (all on 2026-11-12): the plugin loads, its scripts run, and 58 scripted scenarios pass all 1,456 of their checks with nobody at the keyboard. 49 of them are the rows of the two quests' test matrices, played with actors and markers made at run time and compared with the logic model after every event. Nothing is placed in the world, so nothing that needs a built place, dialogue, a save or a player has been tested: triggers, pickups and conversations are stood in for by stage numbers, and ten rows of the matrices cannot be played this way at all.
+**Dates:** 2026-11-11 to 2026-11-13. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
+**Not checked:** anything inside the Creation Kit editor. In the running game (all on 2026-11-12): the plugin loads, its scripts run, and 62 scripted scenarios pass all 1,560 of their checks with nobody at the keyboard. 49 of them are the rows of the two quests' test matrices, played with actors and markers made at run time and compared with the logic model after every event; four more do two things at once. The commit that did this, `c1e6d48`, is the one the tag `mq01-logic-proof` is for. Nothing is placed in the world, so nothing that needs a built place, dialogue, a save or a player has been tested: triggers, pickups and conversations are stood in for by stage numbers, and ten rows of the matrices cannot be played this way at all.
 
 ## Results from the game PC
 
@@ -356,7 +356,7 @@ What this is not. No trigger was walked into, nothing was picked up from the wor
 
 ### After the matrix: time
 
-Not yet compiled and not yet run in the game. Written after the tenth run. Everything in this section was found and checked in the stand-in engine, which is not the game.
+Written after the tenth run and before the eleventh, when none of it had been compiled or run in the game; what the game then did with it is in the next section but one ("The guards in the game"). Everything in this section was found and checked in the stand-in engine, which is not the game.
 
 The logic model has no time in it: an event is over before the next begins, and the 49 cases that passed play it that way, waiting after each step. The game does not keep to that, in two ways already seen in it. A death is announced about a second after it happens (`OnDeath` comes "when the actor has finished dying", while `IsDead` is true at once). And every handler runs on a thread of its own and gives other threads a turn at each call it makes into the game.
 
@@ -389,7 +389,7 @@ The same reading showed two weaknesses in the tests: nothing in them could tell 
 - The guards now write a line to the game's script log when they change what happens (`TLM_MQ01: A24 ...`). The runner's report lists those lines under "Timing", with what case 132 notes about the overlap. A pass with no such line means the game's timing never asked the guard to act; it does not mean the guard works.
 - The stand-in engine got a third mode, in which the timing is shaken: every call into the game takes 0 to 3 frames, a stage's handler begins 0 to 3 frames after the stage reads as set, events arrive up to 3 frames late, and threads that are ready in the same instant run in any order; differently for each of any number of seeds. This is harsher than the game is documented to be (there a call on the script's own quest gives no other thread a turn). `python3 tools/papyrus_sim --shake 5 all` runs scenarios this way.
 
-Four pairs of things happening at once were then run under that shaking (`tools/papyrus_sim/test_overlap.py`, class `Shaken`). The number of runs that ended in a state the logic model does not allow:
+Four pairs of things happening at once were then run under that shaking (`tools/papyrus_sim/test_overlap.py`, class `Shaken`). The number of runs that ended in a state the logic model does not allow (measured again on 2026-11-13, after the later changes to the script and to the stand-in; one figure moved, from 7 to 11, which is all a different shaking means):
 
 | The quest script | Leaving, and the gate (760 runs) | Saved, and evaded (240) | A betrayal, and the timer (2,600) | The lead dead, and the gate (120) |
 |---|---|---|---|---|
@@ -397,7 +397,7 @@ Four pairs of things happening at once were then run under that shaking (`tools/
 | The guards as first written (`8b94566`) | 522 | 0 | 95 | 0 |
 | As it is now, with the first gap opened again | 8 | 0 | 0 | 0 |
 | As it is now, with the second gap opened again | 191 | 0 | 0 | 0 |
-| As it is now, with the third gap opened again | 0 | 0 | 7 | 0 |
+| As it is now, with the third gap opened again | 0 | 0 | 11 | 0 |
 | **As it is now** | **0** | **0** | **0** | **0** |
 
 These numbers say nothing about how often any of it would happen in the game, where the timing is far gentler. They show that each of the three corrections is needed, and that the tests now notice when one is missing: each row but the last is a test that must find at least one wrong ending. All 62 scenarios also pass under the shaking, each three ways.
@@ -407,6 +407,45 @@ These numbers say nothing about how often any of it would happen in the game, wh
 One thing the sweep does not look at, on purpose: when two resolution stages are set in the same instant, both read as set afterwards though only one was applied. Nothing reads those flags today; amendment A24 records what that means for the log entries still to be written.
 
 What the next run can show: that the changed quest script compiles and still passes everything it passed, and cases 129 to 131. Whether the guard acted in those three, and whether the overlap of case 132 happened at all in the game, is in the "Timing" part of the report; a case that passes without its guard having acted has shown nothing about the guard, and the report now says which it was.
+
+### The guards in the game, 2026-11-12
+
+Eleventh run, 20:06 to 20:45 by the PC's clock, commit `c1e6d48`, started with `tools\win\Update-And-Run.ps1 -Install -Unattended`. Reported as the pasted results. Nobody touched the game. 62 game sessions took 2,344 seconds, 38 seconds each on average.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed: the changed `TLM:MQ01Quest` (the guards of A24 with the three corrections), `TLM:CaseDriver` with its four new actions, and the regenerated `TLM:MatrixCases`, on their first compile |
+| **All 62 scenarios** | **Passed: 1,560 checks, 0 failed.** Every session closed itself |
+| The 58 scenarios of the tenth run | Each the same number of passes as then; for the nine older ones the same reported lines and stage-event counts as well. So the guards changed nothing where one thing happens at a time |
+| Cases 129 to 132 | Passed: 28, 28, 24 and 24 checks |
+| The game's script log | No error or warning naming this project in any of the 62 sessions |
+| Afterwards | Everything put back; the installed plugin identical to the build |
+
+What the "Timing" part of the report showed, which is the part that says whether a guard did anything:
+
+| Case | In the game |
+|---|---|
+| 130: the lead killed, and the player gone before his death is announced | The guard acted: "the Cutter lead is already dead: a rescue, not an evasion" |
+| 131: the lead killed, and the town stage before his death is announced | The guard acted, with the same line |
+| 132: leaving a live ambush and reaching the gate in the same breath | The overlap happened: the town stage was set while the evade stage's handler was still at work. The town stage waited "3 tenths of a second for another resolution to finish", and the drover was dead and out of the town alias, as the model says |
+| 129: the lead killed, and the timer runs out before his death is announced | Passed, with no line from the guard. Only one path through the script gives that: the timer's function found the player in combat straight after `Kill(player)` and started the timer over, and the death, announced a second later, made it a rescue. So the game takes a kill by the player for a fight, and on the timer's path the fight rule (A2) got there before the guard could |
+
+So, of what amendment A24 lists: the town stage arriving beside a half-finished "evaded" was provoked in the game and the guard held; a rescue mistaken for an evasion was provoked on two of its three paths and the guard made it a rescue; on the third path, the timer, the case as written showed nothing about the guard.
+
+What follows from case 129:
+
+- A fact about the game, seen indirectly: straight after `Kill` with the player named as the killer, the player is in combat. How long, and whether it needs the three other Cutters standing by, is not known. Two seconds after such a kill the player was out of combat again (scenario 5, every run).
+- The stand-in engine had it wrong. It gave the same 62 results beforehand, check for check, and the same lines for 130, 131 and 132 (132 only in its mode where calls take a frame, and there the same three tenths, which is a coincidence and not a prediction: that mode is for provoking overlaps). For 129 it had the guard acting. Its rule now says a kill by the player counts as a fight with the player until the death is announced, marked as seen indirectly and assumed in its details. The run is the sixth recorded in `tools/papyrus_sim/game_runs.json`, with the lines the guards wrote, so the replay fails if the stand-in gives 129 any other way.
+- Case 129 is changed so that the next run can show the guard on the timer's path: the kill is made a quiet one (the three Cutters still standing are told to stand down and the alarm against the player is ended, as after "break_combat") before the timer's function is called. Whether that is enough to end the fight in the game is reported in two INFO lines; the case passes either way. Scenario 2 reports the same question with nobody standing by. Not yet compiled.
+- From now on the quest script also says in the script log when the evade timer was held back and by what: `TLM_MQ01: A2 ...` for a fight, `TLM_MQ01: A25 ...` for the conversation. With that line in the eleventh run, case 129 would have explained itself.
+
+### The tag `mq01-logic-proof`
+
+Owner decision, 2026-11-13: the commit that passed the eleventh run is to carry the tag `mq01-logic-proof`. That also settles what was left of decision D8. The runbook had called this milestone the test matrix played in a built test cell; the tag now stands for the scripted proof with actors and markers made at run time, and playing the matrix in a built cell is still to do.
+
+What the tag says, in full, is in [`tags/mq01-logic-proof.txt`](tags/mq01-logic-proof.txt): what passed, what that covers, and what it does not (ten rows of the matrices, anything in a built place, dialogue, saving and loading, the Creation Kit, the quest as a player would meet it).
+
+State of the tag itself: **not yet on GitHub.** The session that wrote this record is allowed to push the branch but not tags (the push of the tag was refused). The owner creates and pushes it from the PC with the four commands under "Tagging a milestone" in [TEST_RUNBOOK.md](TEST_RUNBOOK.md); this paragraph is to be changed when that has been done.
 
 ### The timer and the conversation, 2026-11-13
 
@@ -419,11 +458,15 @@ What was done, in the order the project asks for:
 | Where | What |
 |---|---|
 | Logic model | A state "the conversation is open", two events (it opens; it is left without a line being chosen), and the rule: the timer does nothing while it is open. The conversation closes by itself whenever the lead can no longer be talked to. Two matrix rows, T29 and T29b. The exhaustive search finds no violation under the amended rules, and finds the fault under the v0.1 rules |
-| `TLM:MQ01Quest` | One condition in `EvadeTimerElapsed`: if the lead `IsInDialogueWithPlayer`, the timer starts over, as it does during a fight. No flag is kept; the game is asked each time |
+| `TLM:MQ01Quest` | One condition in `EvadeTimerElapsed`: if the lead `IsInDialogueWithPlayer`, the timer starts over, as it does during a fight. No flag is kept; the game is asked each time. When the timer is held back the script writes which rule did it to the script log (`TLM_MQ01: A2 ...` for a fight, `TLM_MQ01: A25 ...` for the conversation) |
 | Plugin | Nothing: no record changes |
-| Stand-in engine | A switch on an actor, "is talking to the player", that only a test flips. Seven tests (`tools/papyrus_sim/test_conversation.py`) with the real 90-second timer: it does not run out on a conversation of any length; a deal taken afterwards is a deal; after the conversation it runs out on its next turn; leaving, each line and a killing are not held back; and with the script as it was before the rule the deal is lost. The conversation is also one of the thirteen things in the sweep of pairs |
+| Stand-in engine | A switch on an actor, "is talking to the player", that only a test flips. Nine tests (`tools/papyrus_sim/test_conversation.py`) with the real 90-second timer: it does not run out on a conversation of any length, and the script says so; a deal taken afterwards is a deal; after the conversation it runs out on its next turn; a fight holds it back and is reported as a fight; leaving, each line and a killing are not held back; an empty alias is not asked; and with the script as it was before the rule the deal is lost. The conversation is also one of the thirteen things in the sweep of pairs, which cannot see the rule itself (either order of "talks" and "the timer runs out" is allowed there) but would see anything else being held back |
 
-What the game can say today, and what it cannot. The plugin has no dialogue, so nothing can make the game answer "yes, he is talking to the player". The next run shows only that the question compiles and is answered "no" when nobody is talking: scenario 2 asks it outright (one check more, 15), and every case in which the timer resolves the ambush depends on that answer. Rows T29 and T29b stay unplayed in the game until the hold-up conversation exists. Whether the game's answer is "yes" for the whole of a conversation, the player's turn to choose included, is checklist item 10a.
+What "held" means here. It is not a stopwatch that stops and goes on. The timer is looked at when it runs out: if the conversation is open at that moment it starts over with its whole 90 seconds, as it does for a fight. A conversation that is over before the 90 seconds are up does not lengthen them; one that is open when they run out buys a whole new 90. What is guaranteed is only that the ambush is never resolved under an open conversation. The logic model has no time in it and cannot tell the two readings apart; if the owner wants a true pause, that is a change to the script alone.
+
+An independent read of this change found no fault in the rule or the script, and three in my tests of it, all corrected before any run. The model's test for row T29 had slipped under another row's "skip" mark and never ran. One stand-in test did not happen when it said it did, because the engine's clock stayed where the last event had left it, so it tested nothing; the engine's `run` now leaves the clock where it was told to, and that test fails if the guard of A24 is taken out. And a third compared nothing that the failed speech check changes. The same read asked for the line the script now writes when it holds the timer back, without which a held timer in the game could not be told from a fight.
+
+What the game can say today, and what it cannot. The plugin has no dialogue, so nothing can make the game answer "yes, he is talking to the player". The next run shows only that the question compiles and is answered "no" when nobody is talking: scenario 2 asks it outright (one check more, 15), and every case in which the timer resolves the ambush depends on that answer (if the game counted a settler's greeting as a conversation, those cases would fail, and the `A25` line would say why). Rows T29 and T29b stay unplayed in the game until the hold-up conversation exists. Whether the game's answer is "yes" for the whole of a conversation, the player's turn to choose included, is checklist item 10a.
 
 Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
 
@@ -452,6 +495,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | `OnTriggerEnter` | Documented | `Event OnTriggerEnter(ObjectReference akActionRef)`. Can arrive out of order with `OnTriggerLeave`; the trigger's collision layer decides what fires it. |
 | `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. |
 | `OnPlayerLoadGame` | Documented | Sent only to the player actor; fires "for the first time on the next load". An alias pointing at the player should receive it, since aliases get their reference's events. *That last step needs the game.* |
+| The player "in combat" after `Kill(player)` | Seen in the game, indirectly | Not on the wiki. In the eleventh run (2026-11-12, case 129) the evade timer's function, called straight after `Kill` with the player named as killer, did not resolve the ambush and wrote no guard line: it can only have found the player in combat. Two seconds after such a kill the player is out of combat (scenario 5). *Needs the game:* asked outright from the next run on, with and without bystanders, and whether `StopCombatAlarm` ends it. |
 | `OnCombatStateChanged` | Seen in the game | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. On 2026-11-12 an alias script received it, with the player as target, when `StartCombat(player)` was called on its actor. |
 | `IsInDialogueWithPlayer` | Documented | `bool Function IsInDialogueWithPlayer() native`, a member of ObjectReference: "Is this actor or talking activator currently talking to the player?" Used by A25 on the Cutter lead's actor. *Needs the game twice over:* that it answers "no" when nobody is talking (asked in self-test scenario 2 from the next run on), and that it answers "yes" for the whole of a conversation, which cannot be seen until there is one. |
 | `OnHit` | Documented | Needs `RegisterForHitEvent` first and fires once per registration. The scripts use `OnCombatStateChanged` instead. |
@@ -504,7 +548,8 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **Done 2026-11-12** on the second attempt.
 3b. Stage events reach the quest scripts and the self-test passes. **Done 2026-11-12: 60 of 60**, after a first run failed 34 because the stages had no items.
 3c. The self-test runs with nobody at the keyboard (`tools/win/Run-Scenarios.ps1`). **Done 2026-11-12: nine scenarios, 220 checks, 0 failed.**
-3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed.**
+3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed**, and again in the eleventh run.
+3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done 2026-11-12 for three of the four cases** (130, 131, 132: the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path: still to do, with the kill made a quiet one.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).
@@ -512,5 +557,5 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 8. Message box with a hidden button: which index comes back.
 9. Distance events (**done 2026-11-12**). Timers and distance registrations across a save and load (still to do).
 10. Dialogue: option count, speech checks, unvoiced lines, and whether an actor in a hold-up will talk (A11).
-10a. Once the hold-up conversation exists: does `IsInDialogueWithPlayer` on the Cutter lead read true from the first line to the last, the player's turn to choose included (A25)? Stand in the conversation past the 90th second and see that the ambush is still live; rows T29 and T29b.
+10a. Once the hold-up conversation exists: does `IsInDialogueWithPlayer` on the Cutter lead read true from the first line to the last, the player's turn to choose included (A25)? Stand in the conversation past the 90th second and look in the script log for `TLM_MQ01: A25 the evade timer ran out during the conversation`. The ambush still being live is not enough by itself: a fight gives the same (the log then says `A2`), and so would a timer that does not count while a conversation is open. Rows T29 and T29b.
 11. The remaining console commands.
