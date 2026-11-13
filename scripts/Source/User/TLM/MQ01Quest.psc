@@ -11,8 +11,8 @@ nobody at the keyboard (docs/design/VERIFY_LOG.md):
 - with the guards of amendment A24 (ClaimEncounter, WaitForResolutions,
   LeadIsDown, ResolveUnattended and the counting at the top of OnStageSet):
   four cases that do two things at once (scenarios 129 to 132). The guard
-  was seen to act in three of them. That was commit c1e6d48, the one the
-  tag mq01-logic-proof is for.
+  was seen to act in three of them. That was commit c1e6d48, which
+  carries the tag mq01-logic-proof.
 Every stage handler has run, and each left the state the logic model
 predicts. In those runs a stage number stood in for every trigger, pickup
 and conversation, and EvadeTimerElapsed was called directly. NOT run: the

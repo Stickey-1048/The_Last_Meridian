@@ -31,10 +31,10 @@
   Status: tested on Linux PowerShell 7 against scratch clones (new tag, tag
   already pushed, tag pointing elsewhere here and on the remote, missing or
   empty text, unknown commit, no identity, -NoPush, and started through
-  Update-And-Run.ps1 -Tag). On the owner's PC, under Windows PowerShell 5.1,
-  it has run once (2026-11-12) as far as creating the tag, where it stopped
-  as it should: git there had no name and e-mail. Creating and pushing a tag
-  HAVE NOT YET RUN ON A REAL PC.
+  Update-And-Run.ps1 -Tag). RAN ON THE OWNER'S PC under Windows PowerShell
+  5.1: on 2026-11-12 as far as creating the tag, where it stopped as it
+  should (git there had no name and e-mail), and on 2026-11-13 all the way:
+  it created mq01-logic-proof on c1e6d48 and pushed it.
 
 .PARAMETER Name
   The tag. Default: mq01-logic-proof.

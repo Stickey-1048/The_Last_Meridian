@@ -195,7 +195,7 @@ When this was written, that was to be the `mq01-logic-proof` milestone. By the o
 
 ## Tagging a milestone
 
-A tag has to be pushed from the owner's PC: the cloud session that does the day-to-day work may push the branch but not tags. One command, the usual one with `-Tag` in place of the other options:
+Done for `mq01-logic-proof` on 2026-11-13. For the next milestone: a tag has to be pushed from the owner's PC, because the cloud session that does the day-to-day work may push the branch but not tags. One command, the usual one with `-Tag` in place of the other options:
 
 ```
 cd C:\Dev\The_Last_Meridian
