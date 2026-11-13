@@ -71,6 +71,16 @@
   scenarios in a row passed in 35 minutes. In the first run a scenario that
   never finished was closed by this script after the time limit.
 
+  On 2026-11-13, the first run after the PC had been restarted, the game
+  never appeared: Mod Organizer was started and nothing came of it for three
+  minutes. The likely cause is its question about Steam (see Tlm.psm1,
+  Confirm-SteamForManager). What was added for that has only been rehearsed
+  against stand-ins: Steam is seen to before anything is started; while the
+  game is awaited the window Mod Organizer shows is watched and named; and
+  if the game never appears, what is running is listed and the Mod Organizer
+  this script started is closed, so that it cannot start the game later
+  with the run's settings already taken away.
+
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1
 .EXAMPLE
@@ -90,6 +100,17 @@ param(
     [string]$ProfileName,
     # How long to wait for Fallout4.exe to appear after starting Mod Organizer.
     [int]$StartTimeoutSeconds = 180,
+    # The same for the first scenario, which also has to wake everything up
+    # (the first start after the PC was restarted is the slowest).
+    [int]$FirstStartTimeoutSeconds = 300,
+    # If Steam is not running and Mod Organizer would stop to ask about it,
+    # this script starts Steam in the background. With this switch it asks the
+    # person to start Steam and waits instead.
+    [switch]$NoSteamStart,
+    # How long to wait for the person to start Steam, in that case.
+    [int]$SteamWaitSeconds = 600,
+    # Steam's folder, if it is not where the registry says (also for testing off Windows).
+    [string]$SteamRoot,
     # How long one scenario may take, from the game appearing to the game closing.
     [int]$ScenarioTimeoutSeconds = 240,
     # Lines to show at the top of the collected results.
@@ -220,6 +241,11 @@ if ($cutOffWithoutNote) {
 
 if (-not (Wait-GameAndManagerClosed)) { throw 'Mod Organizer or Fallout 4 is still open. Close them, then run this again.' }
 
+# Mod Organizer stops and asks about Steam, for a game folder that holds Steam's library,
+# when Steam is not running. Nobody is there to answer, so see to it first.
+$steam = Confirm-SteamForManager -GameFolder $mo.GamePath -SteamRoot $SteamRoot -NoSteamStart:$NoSteamStart -WaitSeconds $SteamWaitSeconds
+if (-not $steam.Ok) { throw ((@($steam.Lines) -join ' ') -replace '\s+', ' ').Trim() }
+
 # ------------------------------------------------------------- helpers
 $ev = New-Object System.Collections.Generic.List[string]
 foreach ($l in $Preface) { $ev.Add($l) }
@@ -291,6 +317,7 @@ try {
     Write-Host "This takes about $([math]::Max(1, [int][math]::Round($list.Count * 36 / 60))) minutes: $($list.Count) game sessions of roughly half a minute each."
     Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
     Say "Through              : $moExe   profile $ProfileName"
+    foreach ($l in @($steam.Lines)) { Say $l }
     if ($unfinished) {
         Say "An earlier run did not finish (it began $($unfinished.Began)): the PC was shut down, or its window was closed."
         Say "  What it had changed in the test profile is still changed. This run puts back what was there before THAT run:"
@@ -327,17 +354,49 @@ try {
         $moProc = Start-Process -FilePath $moExe -ArgumentList $argLine -WorkingDirectory $mo.Root -PassThru
         try { $null = $moProc.Handle } catch { }
 
-        # wait for the game to appear
+        # Wait for the game to appear. Started this way Mod Organizer has no window of its
+        # own, so a window it shows meanwhile is a question or a message it is waiting on.
         $game = $null
-        $deadline = $since.AddSeconds($StartTimeoutSeconds)
+        $waitFor = if ($first) { [math]::Max($StartTimeoutSeconds, $FirstStartTimeoutSeconds) } else { $StartTimeoutSeconds }
+        $deadline = $since.AddSeconds($waitFor)
+        $titlesSeen = New-Object System.Collections.Generic.List[string]
+        $titleNow = ''
+        $toldAbout = ''
+        $lastWord = Get-Date
         while ((Get-Date) -lt $deadline) {
             $running = @(Get-RunningGame)
             if ($running.Count) { $game = $running[0]; break }
             if ($moProc.HasExited -and -not (Test-ModOrganizerRunning)) { break }
+            $titleNow = Get-MainWindowTitle $moProc
+            if ($titleNow -and -not $titlesSeen.Contains($titleNow)) { $titlesSeen.Add($titleNow) }
+            $waited = [int]((Get-Date) - $since).TotalSeconds
+            if ($titleNow -and $titleNow -ne $toldAbout -and $waited -ge 20) {
+                Write-Host "  Mod Organizer has not started the game yet and is showing a window titled '$titleNow'."
+                Write-Host '  If it is asking something and you are there, answer it; the run carries on when the game appears.'
+                $toldAbout = $titleNow
+            } elseif (((Get-Date) - $lastWord).TotalSeconds -ge 30) {
+                Write-Host "  ... waiting for the game to appear ($waited of at most $waitFor seconds)"
+                $lastWord = Get-Date
+            }
             Start-Sleep -Milliseconds 500
         }
         if (-not $game) {
-            $results.Add([pscustomobject]@{ Scenario = $n; Status = 'NOT STARTED'; Seconds = [int]((Get-Date) - $since).TotalSeconds; Logs = $null; Note = 'the game did not appear after Mod Organizer was started' })
+            # Why not, as far as it can be seen from outside; and Mod Organizer must not be
+            # left to start the game later, when this run's settings have been taken away.
+            $why = 'the game did not appear after Mod Organizer was started'
+            if ($titlesSeen.Count) { $why += "; Mod Organizer was showing a window titled '$($titlesSeen -join "', then '")', so it was waiting for an answer" }
+            Say ''
+            Say "Scenario ${n}: $why."
+            $others = @(Get-ProgramsOfInterest)
+            if ($others.Count) {
+                Say '  Running at that moment (name, started, file):'
+                foreach ($o in $others) {
+                    Say ("    {0,-18} {1,-9} {2}" -f $o.Name, $(if ($o.Started) { $o.Started.ToString('HH:mm:ss') } else { '?' }), $(if ($o.Path) { $o.Path } else { '(could not be read)' }))
+                }
+            } else { Say '  Neither a game, a launcher, Steam, GOG Galaxy nor Mod Organizer was running at that moment.' }
+            $closed = Close-ManagerStartedSince -Process $moProc -Since $since
+            Say "  $closed."
+            $results.Add([pscustomobject]@{ Scenario = $n; Status = 'NOT STARTED'; Seconds = [int]((Get-Date) - $since).TotalSeconds; Logs = $null; Note = $why })
             $stoppedEarly = "Scenario ${n}: the game did not start. Nothing further was run."
             break
         }
@@ -353,8 +412,11 @@ try {
             Say "Game process         : started from $(if ($startedFrom) { $startedFrom } else { '(could not be read)' })"
             Say "Mod Organizer's file system inside the game : $(if ($usvfs.Count) { 'yes' } elseif ($facts.Modules.Count) { 'NOT DETECTED' } else { 'unknown' })"
             if ($startedFrom -and -not (Test-SamePath $startedFrom $gameExe)) {
-                Say 'This is NOT the managed base game. Close it. Nothing further was run.'
-                while (@(Get-RunningGame).Count) { Start-Sleep -Seconds 2 }
+                Say 'This is NOT the managed base game. Nothing further was run.'
+                Write-Host 'Close that game. If it is still open in two minutes this script closes it, because this run started it.'
+                $until = (Get-Date).AddSeconds(120)
+                while (@(Get-RunningGame).Count -and (Get-Date) -lt $until) { Start-Sleep -Seconds 2 }
+                if (@(Get-RunningGame).Count) { Say "  Nobody closed it, so this script $(Close-StartedGame)." }
                 $results.Add([pscustomobject]@{ Scenario = $n; Status = 'WRONG GAME'; Seconds = [int]((Get-Date) - $since).TotalSeconds; Logs = $null; Note = "started from $startedFrom" })
                 $stoppedEarly = 'The wrong copy of the game started.'
                 break

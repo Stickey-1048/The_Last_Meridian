@@ -84,6 +84,10 @@ param(
     [string]$Scenarios,
     # Run even though this folder is behind GitHub (see the check below).
     [switch]$AllowStale,
+    # With -Play or -Unattended: if Steam is not running and Mod Organizer would
+    # stop to ask about it, Steam is started in the background. With this
+    # switch the script asks the person to start Steam and waits instead.
+    [switch]$NoSteamStart,
     # Build nothing and install nothing: hand over to Push-MilestoneTag.ps1,
     # which creates the milestone's tag and pushes it, and stop. Here so that
     # the one command the owner already uses, Update-And-Run.ps1, can bring the
@@ -361,6 +365,8 @@ try {
             if ($DocumentsRoot) { $playArgs['DocumentsRoot'] = $DocumentsRoot }
             if ($LocalAppDataRoot) { $playArgs['LocalAppDataRoot'] = $LocalAppDataRoot }
             if ($NoClipboard) { $playArgs['NoClipboard'] = $true }
+            if ($NoSteamStart) { $playArgs['NoSteamStart'] = $true }
+            if ($SteamRoot) { $playArgs['SteamRoot'] = $SteamRoot }
             $playScript = 'Start-TestGame.ps1'
             if ($Unattended) {
                 $playScript = 'Run-Scenarios.ps1'

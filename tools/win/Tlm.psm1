@@ -609,6 +609,177 @@ function Get-RunningGame {
     return @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -ieq 'Fallout4' -or $_.ProcessName -ieq 'Fallout4.exe' })
 }
 
+# ---------------------------------------------------------------------------
+# Steam and Mod Organizer. Read in Mod Organizer's source, release 2.5.2
+# (src/spawn.cpp, checkSteam): before it starts any program of a game whose
+# folder holds steam_api.dll or steam_api64.dll, it looks for a running
+# Steam.exe or SteamService.exe. If there is none it shows a window titled
+# "Launch Steam" ("This program requires Steam") and waits for an answer. A
+# run with nobody at the keyboard stops there, and the game never appears.
+# That is what happened on the owner's PC on 2026-11-13, after a restart had
+# closed Steam.
+
+function Get-SteamFileManagerLooksFor {
+    <# The file in a game folder that makes Mod Organizer ask about Steam, or $null. Read-only. #>
+    param([Parameter(Mandatory)][string]$GameFolder)
+    foreach ($name in 'steam_api.dll', 'steam_api64.dll') {
+        if (Test-Path -LiteralPath (Join-Path $GameFolder $name)) { return $name }
+    }
+    return $null
+}
+
+function Test-SteamRunning {
+    <# What Mod Organizer looks for: a process called Steam.exe or SteamService.exe. Read-only. #>
+    return [bool](@(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -match '^(?i)(steam|steamservice)(\.exe)?$' }).Count)
+}
+
+function Get-SteamExePath {
+    <# Steam's own program: the registry value Mod Organizer reads, else steam.exe in Steam's folder. $null if neither is there. #>
+    param([string]$SteamRoot)
+    $exe = $null
+    if (-not $SteamRoot) {
+        $exe = Get-RegistryValueSafe 'HKCU:\Software\Valve\Steam' 'SteamExe'
+        if ($exe) { $exe = "$exe" -replace '/', '\' }
+        if (-not $exe -or -not (Test-Path -LiteralPath $exe)) {
+            $exe = $null
+            $SteamRoot = Get-RegistryValueSafe 'HKLM:\SOFTWARE\WOW6432Node\Valve\Steam' 'InstallPath'
+            if (-not $SteamRoot) { $SteamRoot = Get-RegistryValueSafe 'HKCU:\SOFTWARE\Valve\Steam' 'SteamPath' }
+        }
+    }
+    if (-not $exe -and $SteamRoot) { $exe = Join-Path $SteamRoot 'steam.exe' }
+    if ($exe -and (Test-Path -LiteralPath $exe)) { return $exe }
+    return $null
+}
+
+function Confirm-SteamForManager {
+    <#
+      Sees to it, before anything is started, that Mod Organizer will not stop
+      to ask about Steam. If the game folder holds a file that makes it ask and
+      Steam is not running, Steam is started in the background (steam.exe
+      -silent), which is what answering "Start Steam" in that window does; with
+      -NoSteamStart, or if Steam's program is not found, the person is asked to
+      start it and the script waits. Steam is left running afterwards.
+
+      Returns Ok (go ahead or not), Lines (for the report), Started (this
+      script started Steam). Changes nothing else.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$GameFolder,
+        [string]$SteamRoot,
+        [switch]$NoSteamStart,
+        [int]$WaitSeconds = 600
+    )
+    $lines = New-Object System.Collections.Generic.List[string]
+    $file = Get-SteamFileManagerLooksFor -GameFolder $GameFolder
+    if (-not $file) {
+        $lines.Add('Steam                : Mod Organizer does not ask for it here (no steam_api.dll or steam_api64.dll in the game folder)')
+        return [pscustomobject]@{ Ok = $true; Lines = $lines.ToArray(); Started = $false }
+    }
+    if (Test-SteamRunning) {
+        $lines.Add("Steam                : running, so Mod Organizer will not stop to ask about it (the game folder holds $file)")
+        return [pscustomobject]@{ Ok = $true; Lines = $lines.ToArray(); Started = $false }
+    }
+    Write-Host ''
+    Write-Host "Steam is not running. The game folder holds $file, and for such a game Mod Organizer shows a window"
+    Write-Host '("Launch Steam") and waits for an answer before it starts anything. With nobody to answer, the game never appears.'
+    $started = $false
+    $exe = $null
+    if (-not $NoSteamStart) { $exe = Get-SteamExePath -SteamRoot $SteamRoot }
+    if ($exe) {
+        try {
+            Start-Process -FilePath $exe -ArgumentList '-silent' | Out-Null
+            Write-Host "So this script has started Steam in the background ($exe -silent). Waiting for it to be running ..."
+            $deadline = (Get-Date).AddSeconds(120)
+            while (-not (Test-SteamRunning) -and (Get-Date) -lt $deadline) { Start-Sleep -Seconds 1 }
+            if (Test-SteamRunning) { $started = $true; Start-Sleep -Seconds 5 }
+        } catch { Write-Host "Steam could not be started from here: $($_.Exception.Message)" }
+    }
+    if (-not (Test-SteamRunning)) {
+        Write-Host "Start Steam now. This window carries on by itself when Steam is running (it waits up to $([int][math]::Ceiling($WaitSeconds / 60.0)) minutes)."
+        $deadline = (Get-Date).AddSeconds($WaitSeconds)
+        while (-not (Test-SteamRunning) -and (Get-Date) -lt $deadline) { Start-Sleep -Seconds 2 }
+        if (Test-SteamRunning) { Write-Host 'Steam is running. Carrying on.'; Start-Sleep -Seconds 5 }
+    }
+    if (-not (Test-SteamRunning)) {
+        $lines.Add("Steam                : NOT RUNNING, and the game folder holds ${file}: Mod Organizer would stop and ask about it. Nothing was started.")
+        return [pscustomobject]@{ Ok = $false; Lines = $lines.ToArray(); Started = $false }
+    }
+    if ($started) {
+        $lines.Add("Steam                : was not running; started by this script in the background and left running (the game folder holds $file, and Mod Organizer asks about Steam for such a game)")
+    } else {
+        $lines.Add("Steam                : was not running at first; running now (the game folder holds $file)")
+    }
+    return [pscustomobject]@{ Ok = $true; Lines = $lines.ToArray(); Started = $started }
+}
+
+function Get-MainWindowTitle {
+    <#
+      The title of the window a process is showing, or '' if it shows none or
+      it cannot be read. When Mod Organizer is started to run one program it
+      has no window of its own, so a title here is a question or a message it
+      is waiting on. Read-only.
+
+      Off Windows a process has no window title to read; the stand-in tests
+      name a file in TLM_STANDIN_WINDOW_TITLE_FILE whose content is used.
+    #>
+    param([System.Diagnostics.Process]$Process)
+    if ($env:TLM_STANDIN_WINDOW_TITLE_FILE) {
+        try {
+            if (Test-Path -LiteralPath $env:TLM_STANDIN_WINDOW_TITLE_FILE) { return "$(Get-Content -LiteralPath $env:TLM_STANDIN_WINDOW_TITLE_FILE -Raw)".Trim() }
+        } catch { }
+        return ''
+    }
+    if (-not $Process) { return '' }
+    try { $Process.Refresh(); return "$($Process.MainWindowTitle)".Trim() } catch { return '' }
+}
+
+function Get-ProgramsOfInterest {
+    <#
+      The programs running now that have to do with starting the game: any
+      copy of the game or its launcher, the script extender's loader, Steam,
+      GOG Galaxy, Mod Organizer. For each: name, when it started and the file
+      it was started from, as far as they can be read. Read-only.
+    #>
+    $out = @()
+    foreach ($p in @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -match '^(?i)(Fallout4|Fallout4Launcher|f4se_loader|steam|GalaxyClient|ModOrganizer)(\.exe?)?$' })) {
+        $f = Get-ProcessFacts $p
+        $path = $f.Path
+        if (-not $path -and $script:OnWindows -and (Get-Command Get-CimInstance -ErrorAction SilentlyContinue)) {
+            try { $path = (Get-CimInstance Win32_Process -Filter "ProcessId = $($p.Id)" -ErrorAction Stop).ExecutablePath } catch { }
+        }
+        $out += [pscustomobject]@{ Name = $p.ProcessName; Id = $p.Id; Started = $f.Started; Path = $path }
+    }
+    return @($out)
+}
+
+function Close-ManagerStartedSince {
+    <#
+      Closes the Mod Organizer this script started and that is still open:
+      asks its window to close, then ends the process. Used only when the game
+      never appeared, so that Mod Organizer cannot start the game later, after
+      the run's settings have been taken away again. Returns what it did.
+    #>
+    param([System.Diagnostics.Process]$Process, [datetime]$Since)
+    $mine = @()
+    if ($Process) { try { if (-not $Process.HasExited) { $mine += $Process } } catch { } }
+    foreach ($p in @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -match '^(?i)ModOrganizer(\.exe?)?$' })) {
+        $when = $null
+        try { $when = $p.StartTime } catch { }
+        if ($when -and $when -ge $Since.AddSeconds(-2) -and -not @($mine | Where-Object { $_.Id -eq $p.Id }).Count) { $mine += $p }
+    }
+    if (-not $mine.Count) { return 'Mod Organizer had already gone' }
+    foreach ($p in $mine) { try { [void]$p.CloseMainWindow() } catch { } }
+    $deadline = (Get-Date).AddSeconds(8)
+    while ((Get-Date) -lt $deadline) {
+        $left = @($mine | Where-Object { try { $_.Refresh(); -not $_.HasExited } catch { $false } })
+        if (-not $left.Count) { return 'Mod Organizer was asked to close, and did' }
+        Start-Sleep -Milliseconds 500
+    }
+    foreach ($p in $mine) { try { if (-not $p.HasExited) { Stop-Process -Id $p.Id -Force -ErrorAction Stop } } catch { } }
+    Start-Sleep -Seconds 1
+    return 'Mod Organizer did not close when asked, and was ended'
+}
+
 function Find-Bytes {
     <# Every position at which a byte pattern occurs in a byte array. #>
     param([byte[]]$Haystack, [byte[]]$Needle)
@@ -933,4 +1104,6 @@ Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Ge
     Find-CreationKitFolders, Get-VortexInfo, Get-VortexDeployment, Get-GogProductNames, Hide-UserFolder,
     Read-RawLines, Write-RawLines, Set-IniValue, Test-ModOrganizerRunning, New-TlmDevProfile,
     Test-FalloutLondonFolder, Test-SamePath, Get-BethesdaInstalledPath, Get-RunningGame, Get-ProcessFacts,
-    Get-RegistryValueSafe, Wait-GameAndManagerClosed, Find-Bytes, Get-PluginGlobalOffset, Get-PluginGlobal, Set-PluginGlobal
+    Get-RegistryValueSafe, Wait-GameAndManagerClosed, Find-Bytes, Get-PluginGlobalOffset, Get-PluginGlobal, Set-PluginGlobal,
+    Get-SteamFileManagerLooksFor, Test-SteamRunning, Get-SteamExePath, Confirm-SteamForManager, Get-MainWindowTitle,
+    Get-ProgramsOfInterest, Close-ManagerStartedSince

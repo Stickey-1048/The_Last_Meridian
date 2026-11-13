@@ -67,6 +67,7 @@ Read afterwards in Mod Organizer's own source, release 2.5.2 unless marked (this
 | Entries of the Run list are kept as stored and only missing ones are added, so an entry can point at a different folder from the managed one | `src/executableslist.cpp`, `load` |
 | `ModOrganizer.exe -p <profile> run <program>` runs one program inside the virtual file system, in that profile, waits for it and exits. If Mod Organizer is already open with a different profile it refuses | `src/commandline.cpp`, `RunCommand`; `src/main.cpp`; `src/moapplication.cpp` |
 | Which file was started is written to Mod Organizer's log only at log level Debug | `src/spawn.cpp`, `logSpawning` |
+| Before it starts any program of a game whose folder holds `steam_api.dll` or `steam_api64.dll`, it looks for a running `Steam.exe` or `SteamService.exe`. If there is none it shows a window titled "Launch Steam" ("This program requires Steam": Start Steam / Continue without starting Steam / Cancel) and waits for an answer; after "Start Steam" it shows a second one ("Please press OK once you're logged into steam"). Only then is the program started | `src/spawn.cpp`, `checkSteam`, `startSteam` (read 2026-11-13) |
 
 Not verified at all: forum reports that the game's launcher starts the copy named in the registry rather than the one in its own folder. That would explain both the owner's impression that the GOG game "just runs London" and this attempt, if the launcher entry was the one used.
 
@@ -450,6 +451,28 @@ State of the tag itself: **on GitHub since 2026-11-13.** The owner created and p
 How it got there. The session that wrote this record is allowed to push the branch but not tags: the push of the tag was refused three times, the last after the owner had reconnected GitHub to it, while a push of the branch went through each time. So the tag had to come from the PC. (After the first version of that script was handed over, the owner's next paste was the eleventh run's report again: the script printed its message but did not copy it to the clipboard, as every other script here does. It does now, and it can be started through the usual command.)
 
 First run of the script on the PC, 2026-11-12 22:06 by its clock: it read the text, found the commit, asked GitHub (no tag there), and stopped when git refused to create the tag, because git on that PC had no name and e-mail to put on it. Nothing was created and nothing was pushed, and the message came back by the clipboard. The script now proposes the name and GitHub no-reply address that most of the repository's own commits already carry, and leaves out of its message the Windows account and PC name that git prints in that error. With that identity set for the folder, the second run created the tag and pushed it.
+
+### A run that never started, 2026-11-13
+
+The first run after the owner's PC had applied an update and restarted. Reported by a screenshot of the end of the runner's report and in the owner's words; the top of the report, with the commit, was not in the screenshot.
+
+| What | Result |
+|---|---|
+| Seen in the report | Scenario 1: NOT STARTED after 181 seconds, "the game did not appear after Mod Organizer was started". No other scenario was run. Everything was put back (scenario number 0, start-up command emptied, keep-running setting back to 0, which it had been before: so no earlier run had been cut off by the restart) |
+| In the owner's words | "It got to the Fallout 4 start screen, but nothing happened. It ran Steam Fallout 4, whereas your scenarios run through GOG." |
+| Not known | Which copy of the game that was, and what came before it on the screen. The runner saw no process called Fallout4 for three minutes, so whatever reached a start screen did so after the runner had given up and taken its start-up command away again; a game that starts then sits at its menu and does nothing |
+
+Reading, not established: Mod Organizer stopped on its question about Steam. It asks that question for a game whose folder holds Steam's library file when Steam is not running (the fact from its source in the table further up), and Steam does not survive a restart of the PC unless it starts with Windows. Every earlier run was made on the two days when Steam had just been used to install the game and the Creation Kit. With nobody answering, the game does not start; answered three minutes late, it starts with nothing to do. That fits the report and the owner's "it ran Steam". What it needs, and what is not confirmed, is that the GOG game's folder holds `steam_api64.dll`. The next run's report says so in its "Steam" line; if the file is not there, this reading is wrong.
+
+Reproduced off the PC: with the runner as it was, a stand-in Mod Organizer that asks that question, and a stand-in game folder holding the file, the report is the one in the screenshot, and the stand-in game then starts by itself with no start-up command.
+
+What was changed (rehearsed against stand-ins in ten situations; not yet run on the PC):
+
+- Before anything is started, the runner and the hand-started test look for that file in the managed game folder. If it is there and Steam is not running, they start Steam in the background (`steam.exe -silent`, which is what answering "Start Steam" does) and leave it running; `-NoSteamStart` makes them ask the person and wait instead. If Steam cannot be had, nothing is started and nothing is changed.
+- While the game is awaited, the window Mod Organizer is showing is read. Started for one program it has no window of its own, so a title there is a question or a message. After twenty seconds the runner names it on the screen, and if the game never appears the report names it.
+- If the game never appears, the report lists what was running at that moment (any copy of the game or its launcher, the script extender's loader, Steam, GOG Galaxy, Mod Organizer, each with the file it was started from), and the runner closes the Mod Organizer it started, so that it cannot start the game later with the run's settings already taken away.
+- The first scenario is given five minutes to appear instead of three: the first start after a restart is the slowest.
+- A wrong copy of the game that nobody closes is closed by the runner after two minutes; before, it waited for ever with the test profile's settings still changed.
 
 ### The timer and the conversation, 2026-11-13
 

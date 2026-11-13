@@ -47,6 +47,14 @@ param(
     [int]$ManualTimeoutSeconds = 900,
     # How long to wait for an open Mod Organizer or game to be closed first.
     [int]$CloseTimeoutMinutes = 10,
+    # If Steam is not running and Mod Organizer would stop to ask about it,
+    # this script starts Steam in the background. With this switch it asks the
+    # person to start Steam and waits instead.
+    [switch]$NoSteamStart,
+    # How long to wait for the person to start Steam, in that case.
+    [int]$SteamWaitSeconds = 600,
+    # Steam's folder, if it is not where the registry says (also for testing off Windows).
+    [string]$SteamRoot,
     # Lines to show at the top of the collected results.
     [string[]]$Preface = @(),
     # Overrides for testing off Windows.
@@ -108,6 +116,11 @@ if (-not (Wait-GameAndManagerClosed -TimeoutMinutes $CloseTimeoutMinutes)) {
     throw 'Mod Organizer or Fallout 4 is still open. Close them, then run this again.'
 }
 
+# Mod Organizer stops and asks about Steam, for a game folder that holds Steam's library,
+# when Steam is not running. See to it before anything is started.
+$steam = Confirm-SteamForManager -GameFolder $mo.GamePath -SteamRoot $SteamRoot -NoSteamStart:$NoSteamStart -WaitSeconds $SteamWaitSeconds
+if (-not $steam.Ok) { throw ((@($steam.Lines) -join ' ') -replace '\s+', ' ').Trim() }
+
 # ------------------------------------------------------------- start
 $ev = New-Object System.Collections.Generic.List[string]
 foreach ($l in $Preface) { $ev.Add($l) }
@@ -129,6 +142,7 @@ try {
     Say '== Starting the game =='
     Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
     Say "Through              : $moExe"
+    foreach ($l in @($steam.Lines)) { Say $l }
     Say "Command line         : ModOrganizer.exe $argLine"
     Say "Profile              : $ProfileName  (mod switched on: $modOn; plugin active: $pluginOn)"
     Say "Installed plugin is the current build: $sameAsBuild"
@@ -152,7 +166,9 @@ try {
             if ($running.Count) { return $running[0] }
             if ($moProc.HasExited -and -not (Test-ModOrganizerRunning)) { return $null }
             if (((Get-Date) - $lastNote).TotalSeconds -ge 20) {
-                Write-Host '  ... still waiting. If Mod Organizer is showing a question or a message, answer it.'
+                $title = Get-MainWindowTitle $moProc
+                if ($title) { Write-Host "  ... still waiting. Mod Organizer is showing a window titled '$title': if it is asking something, answer it." }
+                else { Write-Host '  ... still waiting. If Mod Organizer is showing a question or a message, answer it.' }
                 $lastNote = Get-Date
             }
             Start-Sleep -Milliseconds 500
