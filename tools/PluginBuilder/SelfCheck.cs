@@ -63,9 +63,16 @@ public static class SelfCheck
             var wantFromTemplate = n.KeepDefaultPackageList && had.FromTemplate;
             Expect(got.HasDefaultPackageList == wantList, $"actor {n.EditorId}: {(got.HasDefaultPackageList ? "has a" : "has no")} default package list, expected {(wantList ? "the one of " + n.CopyFrom : "none")}");
             Expect(got.TemplateFlags.Contains("DefPackList") == wantFromTemplate, $"actor {n.EditorId}: {(wantFromTemplate ? "no longer takes" : "still takes")} its default package list from a template");
+            var wantLink = n.KeepDefaultPackageList && had.TemplateActor;
+            Expect(got.TemplateLinks.Contains("DefPackList") == wantLink, $"actor {n.EditorId}: {(wantLink ? "no longer names" : "still names")} a template actor for its default package list");
+            Expect(!got.Compressed, $"actor {n.EditorId}: its record is compressed");
             Expect(got.Scripts.Count == 0, $"actor {n.EditorId}: still has script(s) {string.Join(", ", got.Scripts)}");
             foreach (var flag in new[] { "AiPackages", "Script" })
+            {
                 Expect(!got.TemplateFlags.Contains(flag), $"actor {n.EditorId}: still takes {flag} from a template");
+                // The flag gone and the actor still named for it: which of the two the game goes by is not known.
+                Expect(!got.TemplateLinks.Contains(flag), $"actor {n.EditorId}: still names a template actor for {flag}");
+            }
         }
         Expect(info.Npcs.All(x => Spec.Npcs.Any(n => n.EditorId == x.EditorId)), "the plugin holds an actor the spec does not ask for");
 

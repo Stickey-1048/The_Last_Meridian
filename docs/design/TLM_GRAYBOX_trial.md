@@ -33,7 +33,7 @@ All of it is development only and marked "trial" in `tools/PluginBuilder/Spec.cs
 | `TLM_REF_TrialTriggerNoLayer` | The same box on `TLM_ACTI_TrialTrigger` again, naming no collision layer, for comparison |
 | `TLM_REF_TrialObject` | A placed `TLM_MISC_TrialObject` |
 
-The five references are persistent, which a reference needs to be for a quest alias to point at it.
+Every reference the plugin places is persistent, which a reference needs to be for a quest alias to point at it.
 
 **Why two comparison triggers.** In the first run the comparisons were a box on the game's own empty trigger and a box on the layer `L_ACTORZONE`, and both worked, as the scored one did. The same build counted which layers the game's own box triggers name: none, for 405 of 407. So the comparisons now ask the question that is left: does a box of ours work with no layer named, on the game's activator and on the plugin's? If so, a trigger needs nothing but its box, and the walk-through's triggers will be written the way the game writes its own.
 
@@ -59,7 +59,7 @@ The builder refuses a trigger whose box holds, or nearly holds, the arrival poin
 
 ## The quest: `TLM_Trial`
 
-Not Start Game Enabled. Run Once. Started only by scenario 10.
+Not Start Game Enabled. Run Once. Started only by scenario 10 or by scenario 11 (part two), each in a session of its own.
 
 | Stage | Set by | Meaning |
 |---|---|---|
@@ -183,7 +183,7 @@ Not documented anywhere I could find, and assumed:
 
 ## Tests
 
-On Linux, all in `tools/run_checks.sh`:
+On Linux. All but three rows are in `tools/run_checks.sh`. The two rows of faults put into the builder and into the script, and the Windows chain, were done by hand for this change, with scripts that are not in the repository. The numbers are those of part one's own commit.
 
 | What | Shows |
 |---|---|
@@ -281,22 +281,23 @@ Development only, marked "trial" in `Spec.cs`, like part one.
 
 | Record | What it is |
 |---|---|
-| `TLM_NPC_TrialPerson` | An actor. **The builder makes it when the plugin is built, as a copy of the game's settler (`WorkshopNPC`)**, and takes away what the settler goes about with: its packages, its scripts, and the template flags that would fetch either from the actor the settler is modelled on. It keeps the settler's default package list, as an ordinary actor of the game's has one. Named "Second Trial Settler": a placeholder, not a character and not in the naming registry |
+| `TLM_NPC_TrialPerson` | An actor. **The builder makes it when the plugin is built, as a copy of the game's settler (`WorkshopNPC`)**, and takes away what the settler goes about with: its packages and its scripts, the template flags that would fetch either from the actor the settler is modelled on, and the template actors named for them. It keeps the settler's default package list as the settler has it, in its record or from a template (how many of the game's actors name such a list, the build output counts). Named "Second Trial Settler": a placeholder, not a character and not in the naming registry |
 | `TLM_NPC_TrialPersonBare` | The same, and no default package list either. "Third Trial Settler" |
 | `TLM_MSG_TrialTalk` | The line shown when the person is activated: "The second trial settler has nothing to say yet." Not a box, so nothing waits for an answer |
 | `TLM_REF_TrialPersonOwn` | A placed `TLM_NPC_TrialPerson`, initially disabled |
-| `TLM_REF_TrialPersonBare` | A placed `TLM_NPC_TrialPersonBare`, on the same spot, initially disabled. The two are never enabled together |
-| `TLM_REF_TrialSettlerOnFloor` | A second placed copy of the game's settler, initially disabled |
+| `TLM_REF_TrialPersonBare` | A placed `TLM_NPC_TrialPersonBare`, on the same spot, initially disabled |
+| `TLM_REF_TrialSettlerOnFloor` | A second placed copy of the game's settler, on the same spot again, initially disabled. The three are never enabled together |
 
 **What "a copy of the game's settler" means, and where it lives.** The copy is a record: numbers, flags and links to the game's own records (race, voice, outfit, the lists its looks are drawn from). No model, texture or sound file is copied. It is made on the PC, from that PC's own `Fallout4.esm`, and exists only in the built plugin, which is not committed to this repository; nothing of it is in the repository. That is the ordinary way a mod changes or reuses one of the game's records, and it is acceptable for a development build. It is one more reason the trial must not ship: the walk-through's people should in the end be records the builder writes from the spec, not copies.
 
+The copy is made without reading the settler's scripts or packages at all, written out on its own and read back before it goes into the plugin, and written as a plain record whether or not the game's is compressed. If any of that fails, the build says why, leaves the actor and whoever stands on it out, and carries on: the rest of the plugin, and scenarios 10 and 2, do not depend on it.
+
 | Reference | Ahead | To the right | Up |
 |---|---|---|---|
-| Person of the plugin's own, and the one with no default package list | 600 | 200 to the left | 0 |
-| The game's settler on open floor | 600 | 200 | 0 |
+| Person of the plugin's own; the one with no default package list; the game's settler "on the same spot" | 600 | 200 to the left | 0 |
 | The game's settler of part one (unchanged) | 300 | 150 | 0 |
 
-The two spots at 600 ahead are the only places in the room known to be open floor: in the first run the player, moved there by script, came down at height 0 on both. So if a person does not stay there, the spot is not the reason. They are the middles of part one's first two trigger boxes, on the floor; a person standing in a box does not set its stage, which the game's script sets for the player only, and scenario 11 does not look at those stages.
+The spot at 600 ahead is one of the two places in the room known to be open floor: in the first run the player, moved there by script, came down at height 0. Three people share it, so that what differs between them is the actor and nothing else; the settler of part one stands elsewhere and tells the spot. It is the middle of part one's first trigger box, on the floor. A person standing in the box does not set its stage, which the game's script sets for the player only; and should the player be moved next to the person, the player lands in the box and sets stage 10, which scenario 11 does not look at.
 
 The quest gains stage 30 ("the player activated the person of the plugin's own") and three aliases, all forced references, Optional and Allow Disabled:
 
@@ -314,31 +315,33 @@ The quest carries a second script, `TLM:PlacedPeople`, which holds scenario 11 a
 
 `cqf TLM_Core RunSelfTest 11`, or unattended. A fresh session: it uses the trial's quest, which runs once, so it cannot follow scenario 10 in the same session (the runner gives every scenario its own).
 
-Scored, 8 checks, in this order:
+**Scored, 8 checks, all before anything that is only reported:**
 
 1. the quest runs once started;
 2. the `PersonOwn` alias holds an actor, and it starts disabled;
-3. enabled, it is no longer disabled, and **six seconds later it is within 64 units of where the plugin placed it**, seen from above;
-4. stage 30 is not set before; `Activate` by the player sets it, through the script on the alias. The player first activates the person from where the scenario began, some 630 units off. If that sets no stage, the player is moved next to the person, activates it again as a player would, and is brought back; the check is made after that;
+3. enabled, it is no longer disabled, and **six seconds later it is within 64 units of where the plugin placed it**, height included;
+4. stage 30 is not set before; `Activate` by the player sets it, through the script on the alias. The player first activates the person from where the scenario began, some 630 units off. If that sets no stage within five seconds, the player is moved to 100 units from the person and activates it again, as a player would. (If the stage is found set once the player has been moved, the first try was only heard late, and there is no second.) The check is written then, before the player is brought back;
 5. the quest is completed by its last stage.
 
-Reported, not scored. Each person is enabled alone, watched, and disabled again before the next:
+**Reported, not scored.** From here on every step is one the self-test's watchdog writes down as a fact about the game if it has not come back in its time, not as a failure; the eight checks stand whatever happens. Each person is enabled alone and disabled again before the next.
 
-- for each of the four (the person of the plugin's own, the one with no default package list, the settler on open floor, the settler of part one): where it was placed; how long `Enable` took; and at once, two seconds later and six seconds later: where it is, how far that is from its spot, the package it is running, whether it sits, whether it fights. Looking three times tells a person that was put somewhere else at once from one that walked;
-- what `Activate` returned and from how far, for the first try and, if there was one, the second; and where the person was afterwards;
-- one line at the end saying which of the four did not stay.
+- For each of the four (the person of the plugin's own, the one with no default package list, the settler on the same spot, the settler of part one): where it was placed; how long `Enable` took; and at once, two seconds later and six seconds later: where it is, how far that is from its spot (in all, seen from above, and in height), how far from the player, the package it is running, whether it sits, whether it fights. Looking three times tells a person that was put somewhere else at once from one that walked.
+- What each `Activate` returned and from how far.
+- One line saying, for each of the four, whether it stayed: yes, no, or not there.
+- For each person that did not stay, the person of the plugin's own first: is it kept in place when moved back to where it was placed (`MoveToMyEditorLocation`), and when restrained and moved back (`SetRestrained`)?
+- For the two spots: a marker is set down on the spot (`SetPosition`) and the game is asked to move it to the nearest place on the navigation mesh (`MoveToNearestNavmeshLocation`); then the same from 150 units above. If the first answer is the spot itself, the spot is on the mesh; if it is somewhere else, a person placed there may have been moved onto the mesh, which would explain 489 units without any walking. The second answer shows the question was heard: it should come down.
+- For each person that did not stay: is it kept in place with its AI off (`EnableAI`)? Kept apart and late, because of all these it is the one least sure to come back.
+- For the settler of part one, if it did not stay: the player is set down where the person of the plugin's own was placed, and the settler is enabled once more, from wherever the earlier steps left it (its first line says where). On 2026-11-13 it ended 249 units from the player, who has stood on one spot ever since. If it ends at the same place in the room as the first time, it is the room; if it ends as near the player as the first time, it is the player.
 
-**Experiments, last.** These call functions this project has never called. One that does not come back ends the scenario there; the self-test's watchdog writes that down as a fact about the game, and what was scored before stands. In order of how much they are wanted:
+Steps that move somebody or something are given 150 seconds, because one move of the player took 38 seconds on 2026-11-13.
 
-1. for a person of the plugin's own that did not stay: is it kept in place when moved back to where it was placed (`MoveToMyEditorLocation`), when restrained and moved back (`SetRestrained`), when its AI is off and it is moved back (`EnableAI`)?
-2. for each spot a person was put: a marker is set down 150 units above it (`SetPosition`) and the game is asked to move it to the nearest place on the navigation mesh (`MoveToNearestNavmeshLocation`). If the answer is the floor straight below, the spot is on the mesh. If it is somewhere else, a person placed there may have been moved onto the mesh, which would explain 489 units without any walking;
-3. the same three ways of holding a person, for each of the game's settlers that did not stay.
+**The nine functions that are new to the project.** Four only read something and are used in the scored part as well: `Utility.GetCurrentRealTime`, `Math.sqrt`, `GetCurrentPackage`, `GetSitState`. The five that move or hold something (`SetPosition`, `MoveToMyEditorLocation`, `MoveToNearestNavmeshLocation`, `SetRestrained`, `EnableAI`) are used only after the last check.
 
 ### What it rests on
 
-From `Fallout4.esm`, by name: `WorkshopNPC` (if it is missing, the two actors are not made, whoever stands on them is not placed, the build says so, and scenario 11 fails on its second check) and `XMarker` (if it is missing, the navigation mesh is not asked).
+From `Fallout4.esm`, by name: `WorkshopNPC` (if it is missing, the two actors are not made, whoever stands on them is not placed, the build says so, and scenario 11 fails on its second check) and `XMarker` (if it is missing, the navigation mesh is not asked, and a player who had to be moved is not brought back; both are said).
 
-The build output also says what the game's settler goes about with: its packages by name, its default package list, its scripts and its template flags. And it lists the game's packages whose names begin `Default` and hold Stay, Hold, Stand, Wait, EditorLoc or Sandbox. Nothing uses that list. It is there so that, if a person with no packages does not stay, the next build can give it a package of the game's without a run just to learn the names.
+The build output also says what the game's settler goes about with, by name and id: its packages; its default package list and what is in it; its other package lists (for combat, for watching, for following), which a copy keeps; its scripts; what it takes from a template and from which actor; its factions, keywords and voice. A script in the game can name the package a person is running only by its id, so this is where the run's package lines get their names. And it lists the game's packages whose names begin `Default` and hold Stay, Hold, Stand, Wait, EditorLoc or Sandbox. Nothing uses that list. It is there so that, if a person with no packages does not stay, the next build can give it a package of the game's without a run just to learn the names.
 
 | Claim | Source |
 |---|---|
@@ -347,49 +350,57 @@ The build output also says what the game's settler goes about with: its packages
 | A script on an alias receives its reference's events | Seen in the game on 2026-11-12 for deaths and combat; for placed references on 2026-11-13 for triggers and pick-ups |
 | `GetCurrentPackage`, `GetSitState`, `SetRestrained`, `EnableAI` | Wiki, the page of each, *- Actor* |
 | `SetPosition`, `MoveToMyEditorLocation` ("its original editor location and orientation"), `MoveToNearestNavmeshLocation` ("the nearest location that's on a Navmesh that an actor could reach by walking") | Wiki, the page of each, *- ObjectReference* |
-| `Utility.GetCurrentRealTime` | Wiki, *GetCurrentRealTime - Utility*. The page's syntax line leaves out the word `global`; its own example calls it as every function of that script is called |
+| `Utility.GetCurrentRealTime` | Wiki, *GetCurrentRealTime - Utility*. The page's syntax line leaves out the word `global`; the Utility Script page lists it among the global functions, and its own example calls it so |
 | `Math.sqrt` | Wiki, *Sqrt - Math* |
-| Where an actor record keeps its template flags (16 bits, 14 bytes into `ACBS`), and which bit is which | The library that writes the plugin (Mutagen), whose names and numbers the byte check repeats; and xEdit's record definitions as remembered, not re-read for this work. The byte check found the flags at that place in files the same library wrote, which shows the two agree with each other and no more |
+| Where an actor record keeps its template flags (16 bits, 14 bytes into `ACBS`) and the actors named for them (thirteen ids in `TPTA`, in the same order), and which is which | The library that writes the plugin (Mutagen), whose names and numbers the byte check repeats; and xEdit's record definitions as remembered, not re-read for this work. The byte check found both at those places in files the same library wrote, which shows the two agree with each other and no more |
 
 Not documented anywhere I could find, and assumed:
 
 - **that an actor with no packages stands where it is placed.** It is what the scenario asks;
-- what the game does of its own accord when the player activates a person who has nothing to say, and what `Activate` then returns;
-- that moving a marker by script comes back. Moving a placed item with no model never did (seen twice in November); a marker is moved by the game's own scripts all the time, so it should, and it is an experiment for that reason.
+- whether the game goes by the template flag or by the template actor named for a thing. The copy clears both for what it gives up;
+- what the game does with an actor that names no default package list at all. That is the second person, and nothing scored depends on it;
+- that a copy has a face. If the settler takes its looks from a template, as the build output will say, the copy takes them from the same place. If it did not, the copy would have no face files of its own and the game would have to make its face while it runs;
+- what the game does of its own accord when the player activates a person who has nothing to say, what `Activate` then returns, and from how far it will do it;
+- that moving a marker by script comes back. Moving a placed item with no model never did (seen twice in November); a marker is moved by the game's own scripts all the time, so it should.
 
 ### Implementation checklist (part two)
 
 - [x] `Spec.cs`: the two actors, the three placed references, the message, stage 30, the three aliases, the second script on the quest.
-- [x] `Builder.cs`: makes each actor as a copy of the game's and takes away its packages, its scripts and the template flags for both; keeps or drops the default package list as the spec says; reports what the game's actor had. An actor that cannot be made is reported and left out, with whoever stands on it. A person on a base of the plugin's own is written as a placed actor.
-- [x] `Report.cs`, `SelfCheck.cs`: the actors are read back and must have no packages and no scripts, take neither from a template, and have the default package list the spec asks for.
-- [x] `tools/check_plugin_layout.py`: the same from the bytes, with six more kinds of deliberate damage.
-- [x] `tools/StandInMaster`: a settler with packages, a default package list, a script and template flags, so that taking them away is exercised here; and one variant with a settler that has none of the last two.
+- [x] `Builder.cs`: makes each actor as a copy of the game's without reading its scripts or packages; clears the template flags and the template actors for both; keeps or drops the default package list as the spec says; writes the copy on its own and reads it back first; describes the game's actor. An actor that cannot be made is reported and left out, with whoever stands on it. A person on a base of the plugin's own is written as a placed actor.
+- [x] `Report.cs`, `SelfCheck.cs`: the actors are read back and must have no packages and no scripts, take neither by a template flag nor from a template actor, have the default package list the spec asks for, and not be compressed.
+- [x] `tools/check_plugin_layout.py`: the same from the bytes, with ten more kinds of deliberate damage.
+- [x] `tools/StandInMaster`: a settler with packages, package lists with something in them, a script, template flags and template actors, in a compressed record, so that taking them away is exercised here; and one variant with a settler that has none of that.
 - [x] `TLM:PlacedPeople`, and scenario 11 in `TLM:SelfTest`.
-- [x] `tools/papyrus_sim`: activating a person; a placed person that walks off, as the game's settler did; the seven functions new to the project. `test_people.py`.
-- [x] `tools/win/Run-Scenarios.ps1`: scenario 11 in `basic` and `all`.
+- [x] `tools/papyrus_sim`: activating a person; a placed person that walks off, as the game's settler did; the nine functions new to the project; for tests, calls that take long or never come back. `test_people.py`.
+- [x] `tools/win/Run-Scenarios.ps1`: scenario 11 in `basic` and `all`; a scenario may now take fifteen minutes before the runner ends it.
+- [x] An independent review before the first run, and what it found acted on (below).
 - [ ] **Compile on the PC.** `PlacedPeople.psc` and the changed `SelfTest.psc`, `PlacedTrial.psc` and `FixtureProbe.psc` have not been compiled. Nine functions are called for the first time.
 - [ ] **Build against the real `Fallout4.esm`.** The real settler has never been copied. If it cannot be, the build says why and carries on without the two actors.
 - [ ] **Run scenario 11 in the game.**
 
+**What the review changed.** It found nothing that would stop the compile or the build. It found that two of the eight checks were written only after steps that had nothing to do with them, so that a hang in one of those would have cost a check that had in fact passed; they are now written first. The check that a person stayed measured from above only; a person dropped through the floor would have passed. It now counts height. The comparison settler stood on another spot than the plugin's own people, so "it is the actor, not the spot" would have compared two spots; it now stands on theirs. The copy cleared the template flags for packages and scripts and left the template actors named for them; both are cleared now, and checked. Steps that move something were given 30 seconds, less than one move is known to have taken. And several sentences here claimed more than was true, among them that the new functions are called only by experiments.
+
 ### Tests (part two)
 
-On Linux, all in `tools/run_checks.sh`:
+On Linux. All but the last four rows are in `tools/run_checks.sh`. Those four were done by hand for this change, with scripts that are not in the repository.
 
 | What | Shows |
 |---|---|
 | Plugin built without a master | The actors are not made and nobody is placed; said in the report; ids are still given out |
-| Plugin built against the stand-in room | Two actors with no packages and no script; eight references; read back through the library and again from the bytes; the id file unchanged |
+| Plugin built against the stand-in room | Two actors with no packages and no script, taking neither from a template; eight references; read back through the library and again from the bytes; the id file unchanged |
 | Plugin built against a master whose settler names no default package list and takes nothing from a template | The copies have none to keep, and the build says so |
 | Plugin built against a master with no settler | No actor record is written; said in the report |
-| Deliberate damage to the written file (26 kinds, 6 of them to the actors) | Each is caught by the byte check |
-| Scenario 11 on the stand-in engine | 8 passed, in the ordinary mode, with every call taking a frame, and shaken 25 ways; every person is enabled alone; nothing scored comes after an experiment |
-| An experiment that never comes back | The watchdog ends the scenario, and the 8 stand |
-| `test_people.py`, 13 tests that each break one thing in the plugin or in how the game answers | The scenario fails on the check that is there for that thing (or, for what is only reported, says so) and still closes the game. A person that walks off at once and one that walks off after three seconds are both caught; an activation that only works from close by passes, and says so |
-| `test_people.py`, 13 tests of the stand-in's rules for people | The rules do what `sim.py` says |
-| Six faults put into the builder's actor-making code, one at a time | Each is refused by the builder's own read-back check, which is the one that runs on the PC |
-| Twelve faults put into `TLM:PlacedPeople`, one at a time, each in a setting where it matters | The faulty script scores differently from the real one. Seven make the scenario fail as built. Five would hide something (a person walking off, at once or slowly; an activation nobody heard) or lose the second try from close by, and show against a stand-in told to do that |
+| Deliberate damage to the written file (30 kinds, 10 of them to the actors) | Each is caught by the byte check |
+| Scenario 11 on the stand-in engine | 8 passed, in the ordinary mode, with every call taking a frame, and shaken 25 ways; every person is enabled alone |
+| A call that never comes back after the scored part, nine different ones | The watchdog ends the scenario and says where, and the 8 stand |
+| A call that takes 38 seconds | It is waited for, and the scenario goes on |
+| `test_people.py`, 18 tests that each change one thing in the plugin or in how the game answers | The scenario fails on the check that is there for that thing, or, for what is only reported, says so, and still closes the game. Among them: a person that walks off at once, one that walks off after three seconds, one that ends up under the floor; an activation that only works from close by, and one that is heard late |
+| `test_people.py`, 14 tests of the stand-in's rules for people | The rules do what `sim.py` says |
 | All 64 scenarios | 1,586 checks |
+| Ten faults put into the builder's actor-making code, one at a time | Each is refused by the builder itself: by the trial write of the copy or by its read-back check, which are what runs on the PC |
+| Eighteen faults put into `TLM:PlacedPeople`, one at a time, each in a setting where it matters | Sixteen change the score. Two change only what is reported (a needless second activation; a step given too little time) |
 | The Windows chain against the stand-in PC | Build, compile (a stand-in compiler), install, scenarios 11, 10 and 2, report |
+| The independent review's own probes | The scripts' calls against the wiki pages; the builder against a stand-in settler made more like a real record (compressed, leveled template, text in strings files) |
 
 **What none of that shows.** The stand-in engine lets a person of the plugin's own stay because I told it to. The only thing the game has shown about placed people is that its settler did not. A pass on the stand-in says the script, the plugin and that guess agree with each other.
 
@@ -406,18 +417,23 @@ Scenario 10 is run again for its two comparison triggers, which now name no coll
 | What comes back | What it means |
 |---|---|
 | The compile fails and names `PlacedPeople.psc` | One of the functions new to the project is not as the wiki has it. Nothing was installed. The message names the line |
-| In the build output: `NOTE TLM_NPC_TrialPerson: could not be made` | The library could not copy the real settler. Scenario 11 then fails on "the PersonOwn alias holds an actor"; scenarios 10 and 2 are unaffected |
-| "within 64 units" passes | A person with no packages stays. That is the recipe for the walk-through's people. The line for the person with no default package list says whether that list matters |
-| It fails, and the person was already far away "at once" | The game put the person somewhere else when it was enabled; it did not walk. Look at its package and at the navigation mesh line for that spot |
-| It fails, and the person was near "at once" and far later | It walked. The package line says what it was doing; the three "moved back" lines say what holds it |
-| The person of the plugin's own stays and the settler on open floor does not | The settler's packages or script move it: it is the actor, not the spot |
-| Both stay, and the settler of part one does not | The spot. The navigation mesh line for it should say the mesh is elsewhere |
+| In the build output: `NOTE TLM_NPC_TrialPerson: could not be made` | The library could not copy the real settler, or the copy did not read back as it should. Scenario 11 then fails on "the PersonOwn alias holds an actor"; scenarios 10 and 2 are unaffected |
+| Scenario 11 "NO RESULT" and "STOPPED EARLY", so that 10 and 2 were not run | The game did not get as far as the test room with this plugin. The two actor records and the three new placed people are the first suspects: scenario 10 loaded without them on 2026-11-13 |
+| "within 64 units" passes | A person with no packages stood where it was put for six seconds. That is the recipe for the walk-through's people. The line for the person with no default package list says whether that list matters |
+| It fails, and the person was already far away "at once" | The game put the person somewhere else when it was enabled; it did not walk. Look at its package and at the navigation mesh lines for that spot |
+| It fails, and the person was near "at once" and far later | It walked. The package line says what it was doing (the build output has the names); the "moved back" lines say what holds it |
+| It fails with the person at the same place seen from above and much lower or higher | It fell, or was lifted. The spot is not floor after all |
+| The person of the plugin's own stays and the settler on the same spot does not | The settler's packages or script move it: the two stood on one spot, so it is the actor |
+| Both stay, and the settler of part one does not | The spot. The navigation mesh lines for it should say the mesh is elsewhere |
 | None of the four stays | Something they share. The navigation mesh lines, and the packages listed by the build, are the next place to look |
-| "activating the person sets stage 30" passes, with two `Activate` lines | The game does not perform an activation from 630 units off, and does from close by. Nothing is wrong: a player stands next to whoever they speak to |
+| The settler of part one, enabled again with the player elsewhere, ends where it ended the first time | It goes to a place in the room. If it ends as far from the player as the first time, it goes to the player. Its "at once" line says where it started from, which depends on what the steps before did to it |
+| "activating the person sets stage 30" passes after a first try that returned False | The game does not perform an activation from 630 units off, and does from 100. Nothing is wrong: a player stands next to whoever they speak to |
+| It passes after a first try that returned True and set no stage in five seconds | The first activation was performed and heard late, or only the second was heard; the lines say whether there was a second. Either way the script hears activations, slowly |
 | It fails, and `Activate` returned False both times | The game did not perform the activation even from close by. The person may not have been ready, or cannot be activated as it is |
 | It fails, and `Activate` returned True | The activation happened and the script on the alias did not hear it or did not act. An error in the script log that names `MessageStageAlias` would say which |
-| "this experiment did not come back" | That function, called that way, hangs. The line names it. Everything scored was written before |
-| All 8 pass | People can be generated: they stand where they are put and can be activated. Read the INFO lines of the settlers before concluding why the first one moved |
+| "this experiment did not come back" | That call had not come back when its time ran out (150 seconds for one that moves something, 45 otherwise), and the scenario was ended there. The line names it. Everything scored was written before |
+| Scenario 11 "UNFINISHED", with 8 passed | Several calls were slow one after another and the runner's fifteen minutes ran out, or the game went away. The last STEP line says where. The 8 stand |
+| All 8 pass | A person the builder makes stood where it was put for six seconds, and a scripted activation reached the script on its alias. That is enough to lay out the walk-through's people. It is not yet a person who stands for minutes, or one a player has walked up to and spoken to. Read the INFO lines of the settlers before concluding why the first one moved |
 
 ### Rollback (part two)
 

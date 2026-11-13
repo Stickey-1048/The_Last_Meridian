@@ -42,13 +42,15 @@ What it asserts where the plugin places references in a cell of the game
 
 What it asserts for every actor (NPC_) record of the plugin's own (none in a
 plugin built without the game's master file: they are copies of the game's):
-  - it has nothing to go about: no package (PKID) and no script (VMAD), and
-    its template flags (in ACBS) do not fetch either from the actor it is
-    modelled on. That is what the builder means such an actor to be; a
-    placed person with packages did not stay where it was put (2026-11-13);
+  - it has nothing to go about: no package (PKID) and no script (VMAD); its
+    template flags (in ACBS) do not fetch either from the actor it is
+    modelled on, and it names no template actor (in TPTA) for either. That
+    is what the builder means such an actor to be; a placed person with
+    packages did not stay where it was put (2026-11-13);
+  - its record is not compressed;
   - and, read beside the builder's description: the actors in the file are
-    the ones it lists, each with the default package list (DPLT) and the
-    template flags it says.
+    the ones it lists, each with the default package list (DPLT), the
+    template flags and the template actors it says.
 
 The layout is the one in xEdit's record definitions for Fallout 4
 (wbDefinitionsFO4.pas, records QUST, CELL, REFR, ACHR, NPC_, and the group types).
@@ -261,6 +263,8 @@ def check_npcs(buf, described=None):
         names = [d for t, d in subs if t == "EDID"]
         edid = names[0].rstrip(b"\0").decode("latin1") if names else f"{formid:08X}"
         seen.add(edid)
+        if flags & 0x00040000:
+            problems.append(f"actor {edid}: its record is compressed")
         kinds = [t for t, _ in subs]
         if "PKID" in kinds:
             problems.append(f"actor {edid}: has {kinds.count('PKID')} package(s)")
@@ -278,6 +282,18 @@ def check_npcs(buf, described=None):
             for name in ("AiPackages", "Script"):
                 if name in template:
                     problems.append(f"actor {edid}: takes {name} from the actor it is modelled on")
+        # The actor named for each of the thirteen, in the same order; absent if none is named.
+        tpta = [d for t, d in subs if t == "TPTA"]
+        links = set()
+        if len(tpta) > 1 or (tpta and len(tpta[0]) != 4 * len(TEMPLATE_FLAGS)):
+            problems.append(f"actor {edid}: its template actors (TPTA) are not {len(TEMPLATE_FLAGS)} ids")
+            links = None
+        elif tpta:
+            ids = struct.unpack("<%dI" % len(TEMPLATE_FLAGS), tpta[0])
+            links = {name for name, one in zip(TEMPLATE_FLAGS, ids) if one}
+            for name in ("AiPackages", "Script"):
+                if name in links:
+                    problems.append(f"actor {edid}: names a template actor for {name}")
         if described is None:
             continue
         want = described.get(edid)
@@ -290,6 +306,8 @@ def check_npcs(buf, described=None):
             problems.append(f"actor {edid}: {'has a' if 'DPLT' in kinds else 'has no'} default package list; the builder's description says otherwise")
         if template is not None and template != set(want["TemplateFlags"]):
             problems.append(f"actor {edid}: template flags {sorted(template)}; the builder's description says {sorted(want['TemplateFlags'])}")
+        if links is not None and links != set(want["TemplateLinks"]):
+            problems.append(f"actor {edid}: template actors named for {sorted(links)}; the builder's description says {sorted(want['TemplateLinks'])}")
     if described is not None:
         for edid in sorted(set(described) - seen):
             problems.append(f"actor {edid}: in the builder's description, and not in the file")
@@ -560,6 +578,13 @@ def npc_damage(buf):
     out.append(("an actor with a package", None if f < 0 else patch(buf, f, b"PKID")))
     e = buf.find(b"EDID", r + 24, r + 24 + size) if r >= 0 else -1
     out.append(("an actor under another name", None if e < 0 else patch(buf, e + 6, b"X")))
+    r2, size2 = first_own_npc(buf, b"TPTA")
+    tp = buf.find(b"TPTA", r2 + 24, r2 + 24 + size2) if r2 >= 0 else -1
+    if tp >= 0:     # a build against a master whose settler names no template actors has none to bring back
+        out.append(("an actor that names a template actor for its packages", patch(buf, tp + 6 + 4 * 5, struct.pack("<I", 0x800))))
+        out.append(("an actor that names a template actor for its scripts", patch(buf, tp + 6 + 4 * 9, struct.pack("<I", 0x800))))
+        out.append(("an actor that names another template actor than its description says", patch(buf, tp + 6 + 4 * 1, struct.pack("<I", 0x800))))
+    out.append(("an actor whose record says it is compressed", None if r < 0 else patch(buf, r + 8, struct.pack("<I", struct.unpack_from("<I", buf, r + 8)[0] | 0x00040000))))
     r, size = first_own_npc(buf, b"DPLT")
     d = buf.find(b"DPLT", r + 24, r + 24 + size) if r >= 0 else -1
     if d >= 0:      # a build against a master whose settler names no default package list has none to lose
@@ -651,7 +676,7 @@ def main(argv):
         print("plugin layout: no cell records (nothing is placed in the world by this build)")
     if npcs:
         beside = "and each is as the builder's description says" if described_npcs is not None else "(no description beside the plugin to compare with)"
-        print(f"plugin layout: {npcs} actor record(s) of the plugin's own; none has a package or a script, or takes either from a template, {beside}")
+        print(f"plugin layout: {npcs} actor record(s) of the plugin's own; none has a package or a script, takes either from a template or names a template actor for either, {beside}")
     else:
         print("plugin layout: no actor records (this build makes none)")
     if "--self-test" in argv:

@@ -101,14 +101,13 @@ public sealed record ActivatorSpec(string EditorId);
 /// <summary>
 /// An actor of this plugin's own, made as a copy of one of the game's. The copy
 /// keeps what makes the actor look and fight as it does and loses what makes
-/// it go about its business: its packages, its default package list and its
-/// scripts, with the template flags that would bring those back. It is made
-/// when the plugin is built, from the owner's own copy of the game; nothing of
-/// it is in the repository.
+/// it go about its business: its packages and its scripts, with the template
+/// flags and template actors that would bring those back. It is made when the
+/// plugin is built, from the owner's own copy of the game; nothing of it is in
+/// the repository.
 /// </summary>
 /// <param name="CopyFrom">EditorID of the game's actor it is a copy of.</param>
-/// <summary>An actor of the plugin's own, made as a copy of one of the game's without its packages and scripts.</summary>
-/// <param name="KeepDefaultPackageList">Keep the list of packages the game's actor falls back on (most actors of the game's name the same list); false leaves the actor with none at all.</param>
+/// <param name="KeepDefaultPackageList">Keep the default package list as the game's actor has it, in its record or from a template; false leaves the copy with none at all. (How many of the game's actors name such a list, the build output counts.)</param>
 public sealed record NpcSpec(string EditorId, string Name, string CopyFrom, bool KeepDefaultPackageList);
 
 /// <summary>
@@ -247,15 +246,16 @@ public static class Spec
         // box, where the floor was open.)
         new("TLM_REF_TrialTriggerNoLayer", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 360, Right: -520, Up: 100,
             BoxHalfExtents: TrialBox),
-        // Scenario 11, people. Three more persons on the two spots known to be
-        // open floor (the player came down at height 0 on each on 2026-11-13;
-        // they are the middles of the first two boxes, on the floor): the two
-        // persons on bases of the plugin's own, and a second copy of the
-        // game's settler, to tell the spot from the actor. All start disabled,
-        // like the first, and scenario 11 enables them one at a time: the two
-        // of the plugin's own share a spot and are never there together.
+        // Scenario 11, people. Three more persons, all on one spot known to be
+        // open floor (the player came down at height 0 there on 2026-11-13; it
+        // is the middle of the first box, on the floor): the two persons on
+        // bases of the plugin's own, and a second copy of the game's settler.
+        // On one spot, so that what differs between them is the actor and
+        // nothing else; the settler of scenario 10 stands elsewhere and tells
+        // the spot. All start disabled, like the first, and scenario 11
+        // enables them one at a time: they are never there together.
         new("TLM_REF_TrialPersonOwn", TrialCell, "TLM_NPC_TrialPerson", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
-        new("TLM_REF_TrialSettlerOnFloor", TrialCell, "WorkshopNPC", "Npc", Ahead: 600, Right: 200, Up: 0, InitiallyDisabled: true),
+        new("TLM_REF_TrialSettlerOnFloor", TrialCell, "WorkshopNPC", "Npc", Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialPersonBare", TrialCell, "TLM_NPC_TrialPersonBare", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
     };
 

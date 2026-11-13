@@ -125,10 +125,12 @@ param(
     # Steam's folder, if it is not where the registry says (also for testing off Windows).
     [string]$SteamRoot,
     # How long one scenario may take, from the game appearing to the game closing.
-    # Seven minutes. A scenario normally takes half a minute; the one that moves the player about
-    # (10) took 87 seconds on 2026-11-13, 38 of them in a single move, and its steps that move the
-    # player are allowed 150 seconds each by the self-test's own watchdog.
-    [int]$ScenarioTimeoutSeconds = 420,
+    # Fifteen minutes. A scenario normally takes half a minute; the one that moves the player about
+    # (10) took 87 seconds on 2026-11-13, 38 of them in a single move. Its steps that move the
+    # player, and the steps of scenario 11 that move anybody or anything, are allowed 150 seconds
+    # each by the self-test's own watchdog, and scenario 11 has some twenty of those: should
+    # several be slow one after another, this limit must not be what ends the scenario.
+    [int]$ScenarioTimeoutSeconds = 900,
     # Lines to show at the top of the collected results.
     [string[]]$Preface = @(),
     # Overrides for testing off Windows.
@@ -348,8 +350,8 @@ function Read-ScenarioLogs([datetime]$since) {
             }
         }
         $r.Problems = @($problems)
-        # The placed-content trial (scenarios 10 and 11) asks the game's own scripts on its aliases to
-        # write what they do (their ShowTraces property). Whatever the script log says of the
+        # The placed-content trial (scenarios 10 and 11) has scripts on its aliases that are not
+        # this project's: the game's own, in scenario 10. Whatever the script log says of the
         # trial's quest, by whomever, that is not already listed as a problem.
         # (Dated lines only: the lines of an error's stack begin with a tab and belong to the error.)
         $r.TrialLines = @($lines | Where-Object { $_ -match '^\[' -and $_ -match 'TLM_Trial' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
@@ -646,7 +648,7 @@ foreach ($r in $results) {
             $out.Add("  other lines in the game's script log that name the trial's quest ($($r.Logs.TrialLines.Count)$(if ($r.Logs.TrialLines.Count -gt 40) { ', first 40 shown' })):")
             foreach ($l in ($r.Logs.TrialLines | Select-Object -First 40)) { $out.Add("    $l") }
         } elseif ($r.Logs.HasScriptLog) {
-            $out.Add("  other lines in the game's script log that name the trial's quest: none (the game's own scripts on its aliases wrote nothing there)")
+            $out.Add("  other lines in the game's script log that name the trial's quest: none")
         } else {
             $out.Add("  other lines in the game's script log that name the trial's quest: not known, there is no script log for this session")
         }

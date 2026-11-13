@@ -51,8 +51,8 @@ public sealed class Builder
 
     /// <summary>The actors of this plugin's own that this build made (each is a copy of one of the game's, so none without Fallout4.esm).</summary>
     public HashSet<string> MadeNpcs { get; } = new(StringComparer.OrdinalIgnoreCase);
-    /// <summary>For each of the game's actors a copy was made of: does its record name a default package list, and does it take one from a template?</summary>
-    public Dictionary<string, (bool InRecord, bool FromTemplate)> SourceDefaultList { get; } = new(StringComparer.OrdinalIgnoreCase);
+    /// <summary>For each of the game's actors a copy was made of: does its record name a default package list, does it take one from a template, and does it name a template actor for it?</summary>
+    public Dictionary<string, (bool InRecord, bool FromTemplate, bool TemplateActor)> SourceDefaultList { get; } = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>The collision layer each placed trigger was given: the index the master has for the layer the spec names.</summary>
     public Dictionary<string, uint> PlacedLayers { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -172,13 +172,14 @@ public sealed class Builder
     // ------------------------------------------------------------- actors
 
     /// <summary>
-    /// Makes an actor of this plugin's own as a copy of one of the game's, and
-    /// takes away what makes it go about its business: its packages, its
-    /// default package list and its scripts, and the template flags that
-    /// would fetch those from the actor it is modelled on. What it looks
-    /// like, what it carries and how it fights stay as they were. The build
-    /// output says what the game's actor had, which is also the best account
-    /// to be had here of why a placed copy of that actor does what it does.
+    /// Makes an actor of this plugin's own as a copy of one of the game's
+    /// without what makes it go about its business: its packages and its
+    /// scripts, with the template flags and the template actors that would
+    /// fetch either from the actor it is modelled on. Its default package
+    /// list is kept or dropped as the spec says. What it looks like, what it
+    /// carries and how it fights stay as they were. The build output says
+    /// what the game's actor had, which is also the best account to be had
+    /// here of why a placed copy of that actor does what it does.
     ///
     /// UNTESTED in the game and in the Creation Kit until docs/design/VERIFY_LOG.md says otherwise.
     /// </summary>
@@ -188,56 +189,151 @@ public sealed class Builder
         if (_vanilla == null) return $"it is a copy of '{spec.CopyFrom}', which needs Fallout4.esm";
         if (!TryVanilla(spec.CopyFrom, "Npc", out var sourceKey) || !_vanilla.TryResolve<INpcGetter>(sourceKey, out var source))
             return $"no Npc '{spec.CopyFrom}' in Fallout4.esm";
-        Npc? npc = null;
+        // Said once for each of the game's actors, however many copies are made of it.
+        if (!SourceDefaultList.ContainsKey(spec.CopyFrom)) DescribeSource(spec.CopyFrom, source);
         try
         {
-            string Named<T>(FormKey k) where T : class, IFallout4MajorRecordGetter =>
-                _vanilla.TryResolve<T>(k, out var rec) && rec.EditorID != null ? $"{rec.EditorID} ({k})" : k.ToString();
-
-            var packages = source.Packages.Select(p => Named<IPackageGetter>(p.FormKey)).ToList();
-            var defaultList = source.DefaultPackageList.IsNull ? "none" : Named<IFormListGetter>(source.DefaultPackageList.FormKey);
-            var scripts = source.VirtualMachineAdapter?.Scripts.Select(s => s.Name).ToList() ?? new List<string>();
-            // Said once for each of the game's actors, however many copies are made of it.
-            if (SourceDefaultList.TryAdd(spec.CopyFrom, (!source.DefaultPackageList.IsNull, source.UseTemplateActors.HasFlag(Npc.TemplateActorType.DefPackList))))
-                VanillaNotes.Add($"{spec.CopyFrom}: the game's actor has {packages.Count} package(s)" + (packages.Count == 0 ? "" : ": " + string.Join(", ", packages))
-                    + $"; default package list {defaultList}; script(s) {(scripts.Count == 0 ? "none" : string.Join(", ", scripts))}"
-                    + $"; takes from a template: {FlagList(source.UseTemplateActors)}");
-
-            npc = _mod.Npcs.DuplicateInAsNewRecord(source, spec.EditorId, key);
+            // What the copy is to be without is not read for the copy at all:
+            // its scripts, with whatever they are set up with, and its packages.
+            var mask = new Npc.TranslationMask(defaultOn: true)
+            {
+                Packages = false,
+                VirtualMachineAdapter = new VirtualMachineAdapter.TranslationMask(defaultOn: false, onOverall: false),
+            };
+            var npc = source.Duplicate(key, mask);
             npc.EditorID = spec.EditorId;
             // Plain text, so that nothing has to be looked up in the game's strings files when the plugin is written.
             npc.Name = spec.Name;
             npc.ShortName = null;
             npc.Packages.Clear();
             npc.VirtualMachineAdapter = null;
-            // Whatever is taken away from the record must not come back from the actor it is modelled on.
+            // A plain record, whatever the game's is: nothing here is large.
+            npc.IsCompressed = false;
+            // Whatever is taken away from the record must not come back from the
+            // actor it is modelled on: neither by the flag that says "take this
+            // from a template" nor by the template actor named for it.
             var dropped = Npc.TemplateActorType.AiPackages | Npc.TemplateActorType.Script;
+            npc.TemplateActors?.AiPackagesTemplate.Clear();
+            npc.TemplateActors?.ScriptTemplate.Clear();
             if (!spec.KeepDefaultPackageList)
             {
                 npc.DefaultPackageList.Clear();
                 dropped |= Npc.TemplateActorType.DefPackList;
+                npc.TemplateActors?.DefPackListTemplate.Clear();
             }
             npc.UseTemplateActors &= ~dropped;
             // A record of the game's that the library cannot write back would
             // stop the whole build when the plugin is written, long after this.
             // So the copy is written and read on its own first, and left out if that fails.
             TrialWrite(npc);
+            _mod.Npcs.Add(npc);
             Track(npc);
             MadeNpcs.Add(spec.EditorId);
             var list = !spec.KeepDefaultPackageList ? "no default package list"
                 : npc.UseTemplateActors.HasFlag(Npc.TemplateActorType.DefPackList) ? "its default package list still taken from a template"
                 : npc.DefaultPackageList.IsNull ? "no default package list (the game's actor names none)"
                 : "its default package list kept";
-            VanillaNotes.Add($"{spec.EditorId}: made as a copy of {spec.CopyFrom} with no packages and no script, and {list}; named '{spec.Name}'; still from a template: {FlagList(npc.UseTemplateActors)}");
+            VanillaNotes.Add($"{spec.EditorId}: made as a copy of {spec.CopyFrom} with no packages and no script, and {list}; named '{spec.Name}'; still from a template: {FlagList(npc.UseTemplateActors)}; template actors still named for: {LinkList(npc.TemplateActors)}");
             return null;
         }
         catch (Exception e)
         {
             // One actor that cannot be made is no reason to lose the rest of the build.
-            if (npc != null) _mod.Npcs.Remove(npc.FormKey);
+            if (_mod.Npcs.ContainsKey(key)) _mod.Npcs.Remove(key);
             VanillaNotes.Add($"NOTE {spec.EditorId}: could not be made from {spec.CopyFrom} ({e.GetType().Name}: {e.Message})");
             return $"copying '{spec.CopyFrom}' failed: {e.GetType().Name}";
         }
+    }
+
+    /// <summary>The thirteen things an actor can take from another, in the order the file keeps them, with the actor named for each.</summary>
+    static IEnumerable<(string Name, IFormLinkGetter<INpcSpawnGetter> Link)> TemplateLinks(ITemplateActorsGetter t) => new (string, IFormLinkGetter<INpcSpawnGetter>)[]
+    {
+        ("Traits", t.TraitTemplate), ("Stats", t.StatsTemplate), ("Factions", t.FactionsTemplate), ("SpellList", t.SpellListTemplate),
+        ("AiData", t.AiDataTemplate), ("AiPackages", t.AiPackagesTemplate), ("ModelOrAnimation", t.ModelOrAnimationTemplate),
+        ("BaseData", t.BaseDataTemplate), ("Inventory", t.InventoryTemplate), ("Script", t.ScriptTemplate),
+        ("DefPackList", t.DefPackListTemplate), ("AttackData", t.AttackDataTemplate), ("Keywords", t.KeywordsTemplate),
+    };
+
+    public static List<string> LinkNames(ITemplateActorsGetter? t) =>
+        t == null ? new() : TemplateLinks(t).Where(x => !x.Link.IsNull).Select(x => x.Name).ToList();
+
+    static string LinkList(ITemplateActorsGetter? t)
+    {
+        var names = LinkNames(t);
+        return names.Count == 0 ? "nothing" : string.Join(", ", names);
+    }
+
+    /// <summary>
+    /// Says what one of the game's actors goes about with: its packages, the
+    /// lists of packages it falls back on, its scripts, what it takes from a
+    /// template and from whom, and who it is (factions, keywords, voice). A
+    /// script in the game can say which package a person is running only by
+    /// its id; this is where the names are. Each part is read on its own: one
+    /// that cannot be read is said so, and the rest still is.
+    /// </summary>
+    void DescribeSource(string id, INpcGetter source)
+    {
+        string Named<T>(FormKey k) where T : class, IFallout4MajorRecordGetter =>
+            k.IsNull ? "none" : _vanilla!.TryResolve<T>(k, out var rec) && rec.EditorID != null ? $"{rec.EditorID} ({k})" : k.ToString();
+        string Some(IEnumerable<string> names, int most = 12)
+        {
+            var all = names.ToList();
+            return all.Count == 0 ? "none" : string.Join(", ", all.Take(most)) + (all.Count > most ? $", and {all.Count - most} more" : "");
+        }
+        string PackageList(IFormLinkNullableGetter<IFormListGetter> link)
+        {
+            if (link.IsNull) return "none";
+            var name = Named<IFormListGetter>(link.FormKey);
+            if (!_vanilla!.TryResolve<IFormListGetter>(link.FormKey, out var list)) return name;
+            return $"{name}, which holds {list.Items.Count}: {Some(list.Items.Select(i => Named<IPackageGetter>(i.FormKey)))}";
+        }
+        void Say(string what, Func<string> read)
+        {
+            try { VanillaNotes.Add($"{id}: {what}: {read()}"); }
+            catch (Exception e) { VanillaNotes.Add($"NOTE {id}: {what} could not be read ({e.GetType().Name}: {e.Message})"); }
+        }
+
+        var inRecord = false; var fromTemplate = false; var templateActor = false;
+        try
+        {
+            inRecord = !source.DefaultPackageList.IsNull;
+            fromTemplate = source.UseTemplateActors.HasFlag(Npc.TemplateActorType.DefPackList);
+            templateActor = source.TemplateActors != null && !source.TemplateActors.DefPackListTemplate.IsNull;
+        }
+        catch (Exception e)
+        {
+            VanillaNotes.Add($"NOTE {id}: its default package list could not be read ({e.GetType().Name}: {e.Message})");
+        }
+        SourceDefaultList[id] = (inRecord, fromTemplate, templateActor);
+
+        Say("the game's actor has packages", () => $"{source.Packages.Count}: {Some(source.Packages.Select(p => Named<IPackageGetter>(p.FormKey)))}");
+        Say("default package list", () => PackageList(source.DefaultPackageList));
+        Say("other package lists, which a copy keeps", () => Some(new (string Name, IFormLinkNullableGetter<IFormListGetter> Link)[]
+            {
+                ("spectator", source.SpectatorOverridePackageList), ("observe dead body", source.ObserveDeadBodyOverridePackageList),
+                ("guard warn", source.GuardWarnOverridePackageList), ("combat", source.CombatOverridePackageList),
+                ("follower command", source.FollowerCommandPackageList), ("follower elevator", source.FollowerElevatorPackageList),
+            }.Where(x => !x.Link.IsNull).Select(x => $"{x.Name} = {PackageList(x.Link)}")));
+        Say("script(s)", () => Some(source.VirtualMachineAdapter?.Scripts.Select(s => s.Name) ?? Enumerable.Empty<string>()));
+        Say("takes from a template", () => FlagList(source.UseTemplateActors)
+            + $"; template actors named: {(source.TemplateActors == null ? "none" : Some(TemplateLinks(source.TemplateActors).Where(x => !x.Link.IsNull).Select(x => $"{x.Name} from {Named<INpcSpawnGetter>(x.Link.FormKey)}"), 13))}"
+            + $"; default template {Named<INpcSpawnGetter>(source.DefaultTemplate.FormKey)}");
+        Say("who it is", () => $"factions {Some(source.Factions.Select(f => Named<IFactionGetter>(f.Faction.FormKey)))}; keywords {Some((source.Keywords ?? Enumerable.Empty<IFormLinkGetter<IKeywordGetter>>()).Select(k => Named<IKeywordGetter>(k.FormKey)))}"
+            + $"; voice {Named<IVoiceTypeGetter>(source.Voice.FormKey)}; its record is {(source.IsCompressed ? "compressed" : "not compressed")}");
+        Say("the master's actors and their default package lists", () =>
+        {
+            if (_vanillaMod == null) return "no master";
+            var all = 0; var counts = new Dictionary<FormKey, int>();
+            foreach (var n in _vanillaMod.Npcs)
+            {
+                all++;
+                var k = n.DefaultPackageList.FormKeyNullable;
+                if (k is { } named && !named.IsNull) counts[named] = counts.GetValueOrDefault(named) + 1;
+            }
+            var most = counts.OrderByDescending(c => c.Value).ThenBy(c => c.Key.ToString()).Take(3)
+                .Select(c => $"{Named<IFormListGetter>(c.Key)} ({c.Value})");
+            return $"{counts.Values.Sum()} of {all} name one in their own record; different lists: {counts.Count}; the commonest: {Some(most)}";
+        });
     }
 
     /// <summary>
@@ -259,6 +355,8 @@ public sealed class Builder
             var read = back.Npcs.SingleOrDefault() ?? throw new InvalidOperationException("the copy did not read back as one actor");
             if (read.Packages.Count != 0 || read.VirtualMachineAdapter != null)
                 throw new InvalidOperationException("the copy read back with packages or scripts");
+            if (read.IsCompressed)
+                throw new InvalidOperationException("the copy read back compressed");
         }
         finally
         {

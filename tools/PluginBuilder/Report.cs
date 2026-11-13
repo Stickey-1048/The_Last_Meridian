@@ -50,8 +50,9 @@ public static class Report
     public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed, string? Name = null);
     /// <summary>An actor of this plugin's own: what it would go about its business with.</summary>
     /// <param name="TemplateFlags">What the actor takes from the actor it is modelled on.</param>
+    /// <param name="TemplateLinks">For which of those things it names an actor to take it from.</param>
     public sealed record NpcInfo(string EditorId, string FormKey, string? Name, int Packages, bool HasDefaultPackageList,
-        List<string> Scripts, List<string> TemplateFlags);
+        List<string> Scripts, List<string> TemplateFlags, List<string> TemplateLinks, bool Compressed);
     public sealed record PluginInfo(string File, List<string> Masters, float HeaderVersion, uint LowestFormId,
         List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests, List<CellInfo> Cells, List<NpcInfo> Npcs);
 
@@ -85,7 +86,8 @@ public static class Report
         {
             simple.Add(new("Npc", n.EditorID!, n.FormKey.ToString(), n.Name?.String));
             npcs.Add(new(n.EditorID!, n.FormKey.ToString(), n.Name?.String, n.Packages.Count, !n.DefaultPackageList.IsNull,
-                n.VirtualMachineAdapter?.Scripts.Select(s => s.Name).ToList() ?? new(), FlagNames(n.UseTemplateActors)));
+                n.VirtualMachineAdapter?.Scripts.Select(s => s.Name).ToList() ?? new(), FlagNames(n.UseTemplateActors),
+                Builder.LinkNames(n.TemplateActors), n.IsCompressed));
         }
 
         var cells = new List<CellInfo>();
@@ -216,7 +218,8 @@ public static class Report
         }
         foreach (var n in info.Npcs)
             sb.AppendLine($"          {n.EditorId}: {n.Packages} package(s), {(n.HasDefaultPackageList ? "a" : "no")} default package list, " +
-                          $"script(s) {(n.Scripts.Count == 0 ? "none" : string.Join(", ", n.Scripts))}, from a template: {(n.TemplateFlags.Count == 0 ? "nothing" : string.Join(", ", n.TemplateFlags))}");
+                          $"script(s) {(n.Scripts.Count == 0 ? "none" : string.Join(", ", n.Scripts))}, from a template: {(n.TemplateFlags.Count == 0 ? "nothing" : string.Join(", ", n.TemplateFlags))}, " +
+                          $"template actors named for: {(n.TemplateLinks.Count == 0 ? "nothing" : string.Join(", ", n.TemplateLinks))}{(n.Compressed ? ", compressed" : "")}");
         sb.AppendLine($"Message ({info.Messages.Count})");
         foreach (var m in info.Messages)
         {

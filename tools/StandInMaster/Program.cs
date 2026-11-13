@@ -88,9 +88,31 @@ if (room)
     else
     {
         var defaults = mod.FormLists.AddNew("StandInDefaultPackages");
+        defaults.Items.Add(sandbox.ToLink<IFallout4MajorRecordGetter>());
         settler.DefaultPackageList.SetTo(defaults);
+        var inCombat = mod.FormLists.AddNew("StandInCombatPackages");
+        inCombat.Items.Add(patrol.ToLink<IFallout4MajorRecordGetter>());
+        settler.CombatOverridePackageList.SetTo(inCombat);
         settler.UseTemplateActors = Npc.TemplateActorType.Traits | Npc.TemplateActorType.AiPackages | Npc.TemplateActorType.Script
             | Npc.TemplateActorType.Inventory | Npc.TemplateActorType.DefPackList;
+        // It names an actor for each of those, as the game's records do: a
+        // flag taken away is not enough if the actor named for it stays.
+        var looks = mod.LeveledNpcs.AddNew("StandInLCharSettler");
+        settler.DefaultTemplate.SetTo(looks);
+        settler.TemplateActors = new TemplateActors();
+        settler.TemplateActors.TraitTemplate.SetTo(looks);
+        settler.TemplateActors.AiPackagesTemplate.SetTo(looks);
+        settler.TemplateActors.ScriptTemplate.SetTo(looks);
+        settler.TemplateActors.InventoryTemplate.SetTo(looks);
+        settler.TemplateActors.DefPackListTemplate.SetTo(looks);
+        // Who it is, for the builder's account of it.
+        var faction = mod.Factions.AddNew("StandInSettlerFaction");
+        settler.Factions.Add(new RankPlacement { Faction = faction.ToLink<IFactionGetter>(), Rank = 0 });
+        var keyword = mod.Keywords.AddNew("StandInActorTypeSettler");
+        settler.Keywords = new Noggog.ExtendedList<IFormLinkGetter<IKeywordGetter>> { keyword.ToLink<IKeywordGetter>() };
+        settler.Voice.SetTo(mod.VoiceTypes.AddNew("StandInSettlerVoice"));
+        // And its record is compressed, as large records of the game's are.
+        settler.IsCompressed = true;
     }
     var marker = mod.Statics.AddNew("XMarker");
     fixtures = $" WorkshopNPC={settler.FormKey} XMarker={marker.FormKey}";

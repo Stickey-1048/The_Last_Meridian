@@ -396,10 +396,22 @@ class Session:
         # decides (_has_business). And how long the walk takes.
         self.stray_override: Dict[str, bool] = {}
         self.stray_after = STRAY_AFTER
+        self.stray_by = STRAY_BY
         # For a test: from how far the game performs an activation of a
         # person. None: from anywhere, which is [assumed]; what was [seen] is
-        # an item picked up from 163 units.
+        # an item picked up from 163 units. And how long the scripts wait to
+        # hear of one.
         self.activate_reach: Optional[float] = None
+        self.activate_event_delay = ACTIVATE_EVENT_DELAY
+        # For a test: calls into the game that take long, or never come back.
+        # (the function's name in lower case, on whom) -> seconds, or None for
+        # never. On whom: the EditorID of a reference the plugin places,
+        # "player", or "made at run time". With an entry in slow_from_call,
+        # only from that call on (1 is the first). [seen] on 2026-11-13: one
+        # move of the player took 38 seconds.
+        self.slow_calls: Dict[tuple, Optional[float]] = {}
+        self.slow_from_call: Dict[tuple, int] = {}
+        self._calls_seen: Dict[tuple, int] = {}
         # What the plugin says of the actors of its own: how many packages, a
         # default package list or none.
         self.npc_info = {n["EditorId"]: n for n in self.plugin.get("Npcs", [])}
@@ -1313,6 +1325,7 @@ class Session:
         if target is None:
             self.papyrus_error("MoveTo: the target is None")
             return
+        yield from self._slowly("moveto", ref)
         if not ref.has_3d():
             # [seen] twice: MoveTo on a placed reference with no model never comes back.
             while True:
@@ -1322,6 +1335,25 @@ class Session:
         self.check_distances()
         self.check_triggers()
 
+    def _whom(self, ref) -> str:
+        if ref is self.player:
+            return "player"
+        return ref.editor_id or "made at run time"
+
+    def _slowly(self, name: str, ref):
+        """For a test: makes this call take as long as slow_calls says."""
+        key = (name, self._whom(ref))
+        if key not in self.slow_calls:
+            return
+        self._calls_seen[key] = self._calls_seen.get(key, 0) + 1
+        if self._calls_seen[key] < self.slow_from_call.get(key, 1):
+            return
+        seconds = self.slow_calls[key]
+        if seconds is None:
+            while True:
+                yield ("block",)
+        yield ("sleep", seconds)
+
     def _never_comes_back(self, ref):
         # [seen] twice for MoveTo on a placed reference with no model. [assumed]
         # for the other functions that put a reference somewhere and wait for it.
@@ -1329,6 +1361,7 @@ class Session:
             yield ("block",)
 
     def n_objectreference_setposition(self, ref, context, x, y, z):
+        yield from self._slowly("setposition", ref)
         if not ref.has_3d():
             yield from self._never_comes_back(ref)
         ref.pos = (float(x), float(y), float(z))                # [documented]
@@ -1338,6 +1371,7 @@ class Session:
         self.check_triggers()
 
     def n_objectreference_movetomyeditorlocation(self, ref, context):
+        yield from self._slowly("movetomyeditorlocation", ref)
         if not ref.has_3d():
             yield from self._never_comes_back(ref)
         if ref.editor_pos is None:
@@ -1351,6 +1385,7 @@ class Session:
         self.check_triggers()
 
     def n_objectreference_movetonearestnavmeshlocation(self, ref, context):
+        yield from self._slowly("movetonearestnavmeshlocation", ref)
         if not ref.has_3d():
             yield from self._never_comes_back(ref)
         # [documented] "Moves this reference to the nearest location that's on
@@ -1410,7 +1445,7 @@ class Session:
             still = (actor.stray_serial == serial and not actor.disabled and not actor.deleted and not actor.dead
                      and not actor.restrained and actor.ai_on)      # [assumed] what holds a person
             if still:
-                actor.pos = tuple(a + b for a, b in zip(actor.pos, STRAY_BY))
+                actor.pos = tuple(a + b for a, b in zip(actor.pos, self.stray_by))
                 self.check_distances()
                 self.check_triggers()
 
@@ -1428,6 +1463,15 @@ class Session:
         self._disable(ref)
 
     def n_objectreference_enable(self, ref, context, fade=False):
+        if ("enable", self._whom(ref)) in self.slow_calls:
+            return self._enable_slowly(ref)
+        self._enable(ref)
+
+    def _enable_slowly(self, ref):
+        yield from self._slowly("enable", ref)
+        self._enable(ref)
+
+    def _enable(self, ref):
         was_disabled = ref.disabled
         if was_disabled and isinstance(ref, Actor):
             ref.awake_from = self.now + WITNESS_AFTER       # [assumed]: as for one just made
@@ -1488,7 +1532,7 @@ class Session:
             # receive its reference's events. What the game's default
             # processing does with a person who has nothing to say, and what
             # Activate then returns, is [assumed]: nothing, and True.
-            self.ref_event(ref, "OnActivate", [activator], ACTIVATE_EVENT_DELAY)
+            self.ref_event(ref, "OnActivate", [activator], self.activate_event_delay)
             return True
         if ref.base is None or ref.base.kind not in ("MiscItem", "Book"):
             raise SimError("Activate on %r: only picking up an item or activating a person is modelled" % ref)
