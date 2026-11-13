@@ -193,15 +193,14 @@ When this was written, that was to be the `mq01-logic-proof` milestone. By the o
 
 ## Tagging a milestone
 
-A tag has to be pushed from the owner's PC: the cloud session that does the day-to-day work may push the branch but not tags. With the folder up to date:
+A tag has to be pushed from the owner's PC: the cloud session that does the day-to-day work may push the branch but not tags. One command, the usual one with `-Tag` in place of the other options:
 
 ```
 cd C:\Dev\The_Last_Meridian
-git pull --ff-only
-powershell -ExecutionPolicy Bypass -File tools\win\Push-MilestoneTag.ps1
+powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Tag
 ```
 
-The script creates the tag `mq01-logic-proof` on commit `c1e6d48` with the text in `docs\design\tags\mq01-logic-proof.txt`, pushes that one tag and nothing else, and prints what GitHub then shows. It stops without pushing if the tag already exists anywhere pointing at another commit, if the text is missing, or if git does not know who is tagging (the name and e-mail git is configured with are published with a tag). The first push from the PC may open a GitHub sign-in window. If `git pull --ff-only` is refused, run the usual test command once instead; it brings the folder up to date before it does anything else.
+It brings the folder up to date as always and then, instead of building anything, runs `tools\win\Push-MilestoneTag.ps1`. That script creates the tag `mq01-logic-proof` on commit `c1e6d48` with the text in `docs\design\tags\mq01-logic-proof.txt`, pushes that one tag and nothing else, and says what GitHub then shows. It stops without pushing if the tag already exists anywhere pointing at another commit, if the text is missing, or if git does not know who is tagging (the name and e-mail git is configured with are published with a tag). The first push from the PC may open a GitHub sign-in window. Whatever happens, its whole message is copied to the clipboard and written to `build\milestone-tag.txt`: paste it into the chat. The game and Mod Organizer do not have to be closed for this.
 
 ## What to report back
 

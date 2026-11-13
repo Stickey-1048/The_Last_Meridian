@@ -445,7 +445,7 @@ Owner decision, 2026-11-13: the commit that passed the eleventh run is to carry 
 
 What the tag says, in full, is in [`tags/mq01-logic-proof.txt`](tags/mq01-logic-proof.txt): what passed, what that covers, and what it does not (ten rows of the matrices, anything in a built place, dialogue, saving and loading, the Creation Kit, the quest as a player would meet it).
 
-State of the tag itself: **not yet on GitHub.** The session that wrote this record is allowed to push the branch but not tags (the push of the tag was refused). The owner creates and pushes it from the PC with the four commands under "Tagging a milestone" in [TEST_RUNBOOK.md](TEST_RUNBOOK.md); this paragraph is to be changed when that has been done.
+State of the tag itself: **not yet on GitHub.** The session that wrote this record is allowed to push the branch but not tags (the push of the tag was refused). The owner creates and pushes it from the PC with the one command under "Tagging a milestone" in [TEST_RUNBOOK.md](TEST_RUNBOOK.md); this paragraph is to be changed when that has been done. (After the first version of that script was handed over, the owner's next paste was the eleventh run's report again: the script printed its message but did not copy it to the clipboard, as every other script here does. It does now, and it can be started through the usual command.)
 
 ### The timer and the conversation, 2026-11-13
 

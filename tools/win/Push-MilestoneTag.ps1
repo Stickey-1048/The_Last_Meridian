@@ -21,13 +21,17 @@
     5. pushes that one tag (not with -NoPush);
     6. asks GitHub again what the tag points at, and prints it.
 
-  Nothing else is pushed, no file is changed, and no branch is touched. The
-  tag carries the name and e-mail git is configured with on this PC; both are
-  published with it.
+  Nothing else is pushed, no tracked file is changed, and no branch is touched.
+  The tag carries the name and e-mail git is configured with on this PC; both
+  are published with it.
+
+  Whatever happens, the whole message is written to build\milestone-tag.txt
+  and copied to the clipboard, like the other scripts' reports.
 
   Status: tested on Linux PowerShell 7 against scratch clones (new tag, tag
   already pushed, tag pointing elsewhere here and on the remote, missing or
-  empty text, unknown commit, no identity, -NoPush). NOT YET RUN ON A REAL PC.
+  empty text, unknown commit, no identity, -NoPush, and started through
+  Update-And-Run.ps1 -Tag). NOT YET RUN ON A REAL PC.
 
 .PARAMETER Name
   The tag. Default: mq01-logic-proof.
@@ -40,12 +44,18 @@
   Create the tag here and stop.
 
 .EXAMPLE
+  powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Tag
+  The usual way: brings the folder up to date first, then runs this script.
+
+.EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Push-MilestoneTag.ps1
 #>
 param(
     [string]$Name = 'mq01-logic-proof',
     [string]$Commit = 'c1e6d48',
-    [switch]$NoPush
+    [switch]$NoPush,
+    # Do not copy the message to the clipboard at the end.
+    [switch]$NoClipboard
 )
 
 Set-StrictMode -Version Latest
@@ -53,17 +63,38 @@ $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+
+# Whatever happens, the whole message ends up in build\milestone-tag.txt and on
+# the clipboard, as with the other scripts: run it, then paste.
+$said = New-Object System.Collections.Generic.List[string]
+function Say([string]$s = '') { $said.Add($s); Write-Host $s }
+function Finish([int]$code) {
+    $text = Hide-UserFolder ($said -join [Environment]::NewLine)
+    try {
+        $build = Join-Path $repo 'build'
+        New-Item -ItemType Directory -Force -Path $build | Out-Null
+        Set-Content -LiteralPath (Join-Path $build 'milestone-tag.txt') -Value $text -Encoding utf8
+    } catch { }
+    $copied = $false
+    if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
+        try { Set-Clipboard -Value $text; $copied = $true } catch { }
+    }
+    Write-Host ''
+    if ($copied) { Write-Host 'This message is on your clipboard. Click in the chat and press Ctrl+V to send it.' }
+    else { Write-Host 'This message is also in build\milestone-tag.txt.' }
+    exit $code
+}
 function Invoke-Git([string[]]$arguments) { return Invoke-Native -Exe 'git' -Arguments (@('-C', $repo) + $arguments) }
 function Stop-Here([string]$why, [string]$then = 'Nothing was pushed. Send this message back.') {
-    Write-Host ''
-    Write-Host "STOPPED: $why"
-    Write-Host $then
-    exit 1
+    Say ''
+    Say "STOPPED: $why"
+    Say $then
+    Finish 1
 }
 function Get-FirstLine($result) { return "$(@($result.Output) | Select-Object -First 1)".Trim() }
 function Show-Lines($lines) {
     # What git wrote. An empty line on its error stream comes through PowerShell as the name of a type.
-    foreach ($l in @($lines)) { if ("$l" -ne 'System.Management.Automation.RemoteException') { Write-Host "  $l" } }
+    foreach ($l in @($lines)) { if ("$l" -ne 'System.Management.Automation.RemoteException') { Say "  $l" } }
 }
 
 if ($Name -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$') { Stop-Here "'$Name' is not a tag name this script will use." }
@@ -71,8 +102,9 @@ if ($Name -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$') { Stop-Here "'$Name' is not 
 $at = Invoke-Git @('log', '--oneline', '-1')
 if (-not $at.Found) { Stop-Here 'git was not found. Install Git for Windows, then run this again.' }
 if ($at.ExitCode -ne 0) { Stop-Here "this is not a git folder: $(Hide-UserFolder $repo)" }
-Write-Host "Folder : $(Hide-UserFolder $repo)"
-Write-Host "Tag    : $Name"
+Say "The Last Meridian: milestone tag   $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+Say "Folder : $(Hide-UserFolder $repo)"
+Say "Tag    : $Name"
 
 # ---- 1. the text
 $textPath = Join-Path (Join-Path (Join-Path (Join-Path $repo 'docs') 'design') 'tags') "$Name.txt"
@@ -91,7 +123,7 @@ if ($full.ExitCode -ne 0) {
 }
 $sha = Get-FirstLine $full
 $subject = Get-FirstLine (Invoke-Git @('log', '-1', '--format=%h %s', $sha))
-Write-Host "Commit : $subject"
+Say "Commit : $subject"
 
 # ---- 3. what GitHub has
 function Get-RemoteTag {
@@ -115,9 +147,9 @@ if (-not $remote.Ok) {
 }
 if ($remote.Exists) {
     if ($remote.Commit -eq $sha) {
-        Write-Host ''
-        Write-Host "Already on GitHub: $Name -> $($sha.Substring(0, 7)). Nothing to do."
-        exit 0
+        Say ''
+        Say "Already on GitHub: $Name -> $($sha.Substring(0, 7)). Nothing to do."
+        Finish 0
     }
     Stop-Here "GitHub already has a tag $Name, and it points at $($remote.Commit.Substring(0, 7)), not at $($sha.Substring(0, 7)). It was left alone."
 }
@@ -129,21 +161,21 @@ if ($local.ExitCode -eq 0) {
     if ($localSha -ne $sha) {
         Stop-Here "a tag $Name is already in this folder and points at $($localSha.Substring(0, 7)), not at $($sha.Substring(0, 7)). It was left alone. If it is a leftover, remove it with:  git tag -d $Name"
     }
-    Write-Host "The tag is already in this folder and points at the right commit; it is used as it is."
+    Say "The tag is already in this folder and points at the right commit; it is used as it is."
 } else {
     $made = Invoke-Git @('tag', '-a', $Name, $sha, '-F', $textPath)
     if ($made.ExitCode -ne 0) {
         Show-Lines $made.Output
         if (("$($made.Output -join ' ')") -match '(?i)tell me who you are|identity|user\.email|user\.name') {
-            Write-Host ''
-            Write-Host 'git does not know who is tagging. Give this folder a name and an e-mail, then run this again.'
-            Write-Host 'Both are published with the tag; the no-reply address GitHub shows under Settings, Emails will do:'
-            Write-Host '    git config user.name  "Your name on GitHub"'
-            Write-Host '    git config user.email "12345678+yourname@users.noreply.github.com"'
+            Say ''
+            Say 'git does not know who is tagging. Give this folder a name and an e-mail, then run this again.'
+            Say 'Both are published with the tag; the no-reply address GitHub shows under Settings, Emails will do:'
+            Say '    git config user.name  "Your name on GitHub"'
+            Say '    git config user.email "12345678+yourname@users.noreply.github.com"'
         }
         Stop-Here 'the tag could not be created (the lines above are what git said).'
     }
-    Write-Host 'Created the tag in this folder.'
+    Say 'Created the tag in this folder.'
 }
 
 # What the tag says, read back from git, must be the text in the file.
@@ -161,18 +193,18 @@ if (-not $annotated) {
 if (($got -join "`n") -ne ($wanted -join "`n")) {
     Stop-Here "the tag $Name in this folder does not say what docs\design\tags\$Name.txt says. It was not pushed. If it is a leftover, remove it with:  git tag -d $Name"
 }
-Write-Host "Its text: $($wanted[0])"
-Write-Host "          ($($wanted.Count) lines, the same as docs\design\tags\$Name.txt)"
+Say "Its text: $($wanted[0])"
+Say "          ($($wanted.Count) lines, the same as docs\design\tags\$Name.txt)"
 
 if ($NoPush) {
-    Write-Host ''
-    Write-Host "-NoPush: the tag is in this folder only. To push it later:  git push origin refs/tags/$Name"
-    exit 0
+    Say ''
+    Say "-NoPush: the tag is in this folder only. To push it later:  git push origin refs/tags/$Name"
+    Finish 0
 }
 
 # ---- 5. push that one tag
-Write-Host ''
-Write-Host "Pushing the tag (the first push from this PC may open a GitHub sign-in window) ..."
+Say ''
+Say "Pushing the tag (the first push from this PC may open a GitHub sign-in window) ..."
 $push = Invoke-Git @('push', 'origin', "refs/tags/$Name")
 Show-Lines $push.Output
 if ($push.ExitCode -ne 0) {
@@ -185,7 +217,7 @@ if (-not $remote.Ok -or -not $remote.Exists -or $remote.Commit -ne $sha) {
     Show-Lines $remote.Lines
     Stop-Here 'the push reported success, but GitHub does not show the tag on that commit.' 'Send this message back.'
 }
-Write-Host ''
-Write-Host "DONE. On GitHub: $Name -> $subject"
-Write-Host 'Send this message back, so that the record can say the tag is there.'
-exit 0
+Say ''
+Say "DONE. On GitHub: $Name -> $subject"
+Say 'Send this message back, so that the record can say the tag is there.'
+Finish 0

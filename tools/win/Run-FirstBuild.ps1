@@ -44,6 +44,9 @@
   and closes by itself. Read that script's description first: it closes the
   game it started if a scenario does not finish in time.
 
+  With -Tag it does none of the above. It hands over to Push-MilestoneTag.ps1,
+  which creates the milestone's git tag and pushes it, and stops.
+
   Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-11 and
   every step passed. Additions since then (clipboard copy, wider scan) have
   only run on Linux PowerShell 7 against stand-ins.
@@ -80,7 +83,12 @@ param(
     # basic, matrix, main, side), separated by commas. Default: all.
     [string]$Scenarios,
     # Run even though this folder is behind GitHub (see the check below).
-    [switch]$AllowStale
+    [switch]$AllowStale,
+    # Build nothing and install nothing: hand over to Push-MilestoneTag.ps1,
+    # which creates the milestone's tag and pushes it, and stop. Here so that
+    # the one command the owner already uses, Update-And-Run.ps1, can bring the
+    # folder up to date first:  Update-And-Run.ps1 -Tag
+    [switch]$Tag
 )
 
 Set-StrictMode -Version Latest
@@ -129,6 +137,13 @@ if (-not $AllowStale) {
             exit 1
         }
     }
+}
+
+# -Tag: the folder is up to date (the check above); the tag script does the rest
+# and reports for itself, on the screen and on the clipboard.
+if ($Tag) {
+    & (Join-Path $PSScriptRoot 'Push-MilestoneTag.ps1') -NoClipboard:$NoClipboard
+    exit $LASTEXITCODE
 }
 
 # The install step needs Mod Organizer closed, and the test must not mistake a
