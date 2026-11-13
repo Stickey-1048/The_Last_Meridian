@@ -24,8 +24,10 @@ Since that run one check was added to scenario 2, which now makes 15: that an
 actor nobody is talking to is "not in dialogue with the player" (amendment
 A25); and two reported lines about whether a kill by the player counts as a
 fight. Those compiled and ran on 2026-11-13: the check passed, and with
-nobody standing by the kill was no fight. Added after that run, and NOT YET
-COMPILED: the experiment with one Cutter standing by (part 3b).}
+nobody standing by the kill was no fight. The experiment with one Cutter
+standing by (part 3b) compiled and ran on 2026-11-13 as well: no fight, but
+the one standing by had been made in the same breath as the killing. It now
+waits three seconds first; that change is NOT YET COMPILED.}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory
@@ -141,14 +143,20 @@ Function Run(TLM:SelfTest akTest)
 	; kill by the player for a fight (2026-11-13, the two lines above). A case on
 	; 2026-11-12 says that with others standing by it does. Here one stands by; and
 	; then the fight, if there is one, is told to end.
-	akTest.Step("EXPERIMENT: one Cutter killed as the player while another stands by", 30.0, true)
+	; The first time this ran (2026-11-13, the thirteenth run) the one standing by
+	; had been made in the same breath as the killing, and there was no fight: it
+	; had not been there to see anything. So it is given three seconds first.
+	akTest.Step("EXPERIMENT: one Cutter killed as the player while another, there for three seconds, stands by", 30.0, true)
 	Actor one = SpawnActor(player)
 	Actor other = SpawnActor(player)
 	If one && other
 		mq.Alias_CutterA.ForceRefTo(one)
 		mq.Alias_CutterB.ForceRefTo(other)
+		Utility.Wait(3.0)
 		one.Kill(player)
-		akTest.Note("probe: player in combat straight after Kill(player) on a Cutter, another Cutter standing by = " + player.IsInCombat())
+		akTest.Note("probe: player in combat straight after Kill(player) on a Cutter, another having stood by for three seconds = " + player.IsInCombat())
+		Utility.Wait(0.5)
+		akTest.Note("probe: half a second later: player in combat = " + player.IsInCombat() + ", the one standing by in combat = " + other.IsInCombat())
 		other.StopCombat()
 		player.StopCombatAlarm()
 		akTest.Note("probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = " + player.IsInCombat())

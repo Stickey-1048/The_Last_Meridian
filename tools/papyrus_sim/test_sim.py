@@ -494,6 +494,14 @@ class RulesAboutActors(unittest.TestCase):
         # wiki says it ends all combat.
         b = self.actor("CutterA")
         c = self.actor("CutterB")
+        # ... but not others made in the same breath: [seen] in the thirteenth
+        # run (scenario 2), with one other made an instant before the killing.
+        x = self.actor("CutterC")
+        self.s.n_actor_kill(x, None, self.s.player)
+        self.assertFalse(self.s.player_in_combat())
+        self.s.run(self.s.now + 2.0)
+        self.assertFalse(self.s.player_in_combat())
+        # Once they have been there a while, they count.
         self.s.n_actor_kill(b, None, self.s.player)
         self.assertTrue(self.s.player_in_combat())
         self.s.run(self.s.now + 0.5)

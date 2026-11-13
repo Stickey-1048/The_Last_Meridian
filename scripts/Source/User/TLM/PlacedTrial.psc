@@ -5,26 +5,23 @@ before any release, with its quest and the records the builder marks "trial".
 
 Every earlier scenario makes what it needs at run time. A place a player can
 walk through needs things that are in the plugin itself: people, triggers and
-objects placed in a cell, and quest aliases that point at them. The builder now
+objects placed in a cell, and quest aliases that point at them. The builder
 writes a few of those into the game's own test room (QASmoke). This scenario
-finds out whether they work there:
+asks the game whether they work there:
 
   - the quest starts, and its aliases hold the references the plugin placed;
-  - the placed person is there, starts disabled, and can be enabled (done
-    last, so that nobody stands near the triggers while they are tried);
   - the placed object, which borrows the world model of one of the game's
     items, can be picked up, and the game's own script on its alias
     (DefaultAliasOnContainerChangedTo) then sets a stage;
   - the placed trigger sets a stage when the player enters it, through the
     game's own script on its alias (DefaultAliasOnTriggerEnter). Two more
-    triggers are tried for comparison and reported, not scored. Each differs
-    from the first in one thing: one is made on the game's own empty trigger
-    (if ours fails and that one works, the fault is in the activator this
-    plugin makes); the other is on the collision layer L_ACTORZONE where the
-    first is on L_TRIGGER (if ours fails and that one works, it is the layer).
-    The three are the same distance from where the scenario begins, and the
-    player is brought back there before each, so that each is entered the
-    same way.
+    triggers are tried for comparison and reported, not scored;
+  - the placed person is there, starts disabled, and can be enabled (done
+    last, so that nobody stands near the triggers while they are tried).
+
+The three triggers are the same distance from where the scenario begins, and
+the player is brought back there before each, so that each is entered the
+same way.
 
 Lines that begin INFO are facts about the game, reported and not scored.
 
@@ -32,18 +29,24 @@ What it cannot check: the name the placed person is shown under. The plugin
 gives the alias a display name, but a script can only read it with a script
 extender, which this project does not use. A person has to look.
 
-NOT YET COMPILED. NEVER RUN IN THE GAME. On Linux it passes against the
-stand-in engine (tools/papyrus_sim), whose rules for placed references,
-triggers and picking things up come from the Creation Kit wiki and not from
-anything seen: a pass there says the script, the plugin and the expectations
-agree with each other, and nothing about the game.}
+COMPILES. RAN IN THE GAME on 2026-11-13, unattended: 17 of 17, and both
+comparison triggers set their stages (docs/design/VERIFY_LOG.md, the
+thirteenth run). The comparisons were then a box on the game's own empty
+trigger and a box on the layer L_ACTORZONE. Since that run they have been
+changed to leave the collision layer out, as the game's own triggers do, and
+the steps that move the player were given more time (one move took 38
+seconds of the 45 a step was allowed). Those changes are NOT YET COMPILED.
+
+What that run showed besides: the settler, once enabled, did not stand where
+the plugin had put it (it was 489 units away a moment later). Why is not
+known; it is the next thing to find out.}
 
 Group Aliases
 	ReferenceAlias Property Alias_Person Auto Const Mandatory
 	ReferenceAlias Property Alias_Trigger Auto Const Mandatory
 	ReferenceAlias Property Alias_TriggerGameBase Auto Const Mandatory
 	ReferenceAlias Property Alias_Object Auto Const Mandatory
-	ReferenceAlias Property Alias_TriggerActorZone Auto Const Mandatory
+	ReferenceAlias Property Alias_TriggerNoLayer Auto Const Mandatory
 EndGroup
 
 Group Forms
@@ -57,7 +60,11 @@ EndGroup
 
 int STAGE_TRIGGER = 10 Const
 int STAGE_TRIGGER_GAME_BASE = 11 Const
-int STAGE_TRIGGER_ACTOR_ZONE = 12 Const
+int STAGE_TRIGGER_NO_LAYER = 12 Const
+
+; How long a step that moves the player may take. On 2026-11-13 one such move
+; took 38 seconds, where the others took one to eleven; why is not known.
+float MOVE_SECONDS = 150.0 Const
 int STAGE_OBJECT = 20 Const
 int STAGE_DONE = 100 Const
 
@@ -127,12 +134,12 @@ Function Run(TLM:SelfTest akTest)
 	; ---- 4. The placed trigger, and the two that each differ from it in one
 	; thing. All three are the same distance from where the scenario began.
 	EnterTrigger(akTest, playerRef, homeMarker, Alias_Trigger, STAGE_TRIGGER, "the placed trigger", true)
-	EnterTrigger(akTest, playerRef, homeMarker, Alias_TriggerGameBase, STAGE_TRIGGER_GAME_BASE, "the trigger made on the game's own empty trigger", false)
-	EnterTrigger(akTest, playerRef, homeMarker, Alias_TriggerActorZone, STAGE_TRIGGER_ACTOR_ZONE, "the trigger on the layer L_ACTORZONE", false)
+	EnterTrigger(akTest, playerRef, homeMarker, Alias_TriggerGameBase, STAGE_TRIGGER_GAME_BASE, "the trigger made on the game's own empty trigger, with no layer", false)
+	EnterTrigger(akTest, playerRef, homeMarker, Alias_TriggerNoLayer, STAGE_TRIGGER_NO_LAYER, "the trigger of the plugin's own with no layer", false)
 
 	; ---- 5. Back to where the scenario began.
 	If homeMarker
-		akTest.Step("moving the player back to where the scenario began")
+		akTest.Step("moving the player back to where the scenario began", MOVE_SECONDS)
 		playerRef.MoveTo(homeMarker)
 		akTest.Note("trial: the player is back at " + Where(playerRef))
 		homeMarker.Disable()
@@ -172,7 +179,7 @@ Function EnterTrigger(TLM:SelfTest akTest, Actor akPlayer, ObjectReference akHom
 		Return
 	EndIf
 	If akHome
-		akTest.Step("moving the player back to where the scenario began, before " + asName)
+		akTest.Step("moving the player back to where the scenario began, before " + asName, MOVE_SECONDS)
 		akPlayer.MoveTo(akHome)
 	EndIf
 	bool before = GetStageDone(aiStage)
@@ -183,7 +190,7 @@ Function EnterTrigger(TLM:SelfTest akTest, Actor akPlayer, ObjectReference akHom
 	; kind its layer lets in, not only the player, so what matters is the change.
 	int insideBefore = triggerRef.GetTriggerObjectCount()
 	akTest.Note("trial: " + asName + " is at " + Where(triggerRef) + ", " + akPlayer.GetDistance(triggerRef) + " from the player; things inside it before the move: " + insideBefore)
-	akTest.Step("moving the player into " + asName)
+	akTest.Step("moving the player into " + asName, MOVE_SECONDS)
 	akPlayer.MoveTo(triggerRef)
 	WaitForStage(aiStage)
 	int insideAfter = triggerRef.GetTriggerObjectCount()

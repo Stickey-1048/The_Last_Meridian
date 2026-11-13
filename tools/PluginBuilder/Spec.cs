@@ -180,8 +180,14 @@ public static class Spec
     // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
     // References in the game's own test room, which the plugin overrides for
     // the purpose: a person, a trigger and an object; and two more triggers for
-    // comparison, each differing from the first in one thing: one is made on
-    // the game's own empty trigger, the other is on another collision layer.
+    // comparison.
+    //
+    // Seen in the game on 2026-11-13: a box on an activator of the plugin's
+    // and one on the game's own empty trigger, on the layers L_TRIGGER and
+    // L_ACTORZONE, each set its stage when the player was moved into it. The
+    // same build found that the game's own box triggers carry no layer at all
+    // (405 of 407 looked at). So the two comparisons now leave the layer out,
+    // one on each activator: if they work, a trigger needs nothing but its box.
     //
     // The person starts disabled, so that nobody new stands about in the other
     // scenarios: a bystander changes what the game makes of a killing
@@ -193,11 +199,9 @@ public static class Spec
     public const string TrialCell = "QASmoke";
     public const float TrialTriggerHalf = 150f;
     // "Typically L_TRIGGER", and actors set such a trigger off: the Creation
-    // Kit wiki's page on OnTriggerEnter. A forum report has the editor giving
-    // a new trigger L_ACTORZONE instead, which only actors set off. Which the
-    // game's own triggers use, the build output counts.
+    // Kit wiki's page on OnTriggerEnter. Which layers the game's own triggers
+    // name, the build output counts: on 2026-11-13, none.
     public const string TriggerLayer = "L_TRIGGER";
-    public const string ActorOnlyLayer = "L_ACTORZONE";
 
     static readonly float[] TrialBox = { TrialTriggerHalf, TrialTriggerHalf, TrialTriggerHalf };
 
@@ -207,12 +211,15 @@ public static class Spec
         new("TLM_REF_TrialTrigger", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 600, Right: -200, Up: 100,
             BoxHalfExtents: TrialBox, CollisionLayer: TriggerLayer),
         new("TLM_REF_TrialTriggerGameBase", TrialCell, "DefaultEmptyTrigger", "Activator", Ahead: 600, Right: 200, Up: 100,
-            BoxHalfExtents: TrialBox, CollisionLayer: TriggerLayer),
+            BoxHalfExtents: TrialBox),
         new("TLM_REF_TrialObject", TrialCell, "TLM_MISC_TrialObject", null, Ahead: 150, Right: -60, Up: 20),
         // As far from the arrival point as the other two, so that the player
-        // is moved the same distance into each.
-        new("TLM_REF_TrialTriggerActorZone", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 200, Right: 600, Up: 100,
-            BoxHalfExtents: TrialBox, CollisionLayer: ActorOnlyLayer),
+        // is moved the same distance into each. (On 2026-11-13 a box stood at
+        // 200 ahead, 600 to the right, and the player came down on top of
+        // something there. This one is on the other side, nearer the first
+        // box, where the floor was open.)
+        new("TLM_REF_TrialTriggerNoLayer", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 360, Right: -520, Up: 100,
+            BoxHalfExtents: TrialBox),
     };
 
     public static readonly BookSpec[] Books =
@@ -354,18 +361,16 @@ public static class Spec
         });
 
     // --------------------------------------------------------------- MQ01
-    // The game's own scripts. "ShowTraces: Set to TRUE if you want the traces in
-    // this script to show up in the log" (the Creation Kit wiki's pages on
-    // both). Whether the scripts as shipped still write anything then is not
-    // known; the trial asks for it, since a line from the script itself would
-    // say more than a stage that was or was not set.
-    static ScriptBind SetStageOnPickup(int stage, bool traces = false) => traces
-        ? new("DefaultAliasOnContainerChangedTo", new IntProp("StageToSet", stage), new BoolProp("ShowTraces", true))
-        : new("DefaultAliasOnContainerChangedTo", new IntProp("StageToSet", stage));
+    // The game's own scripts. Seen in the game on 2026-11-13, on aliases
+    // filled with references this plugin places: each set its stage.
+    // (Their ShowTraces property, "Set to TRUE if you want the traces in this
+    // script to show up in the log", was tried in that run: the game took it
+    // without complaint and wrote nothing. It is not set any more.)
+    static ScriptBind SetStageOnPickup(int stage) =>
+        new("DefaultAliasOnContainerChangedTo", new IntProp("StageToSet", stage));
 
-    static ScriptBind SetStageOnTrigger(int stage, bool traces = false) => traces
-        ? new("DefaultAliasOnTriggerEnter", new IntProp("StageToSet", stage), new BoolProp("ShowTraces", true))
-        : new("DefaultAliasOnTriggerEnter", new IntProp("StageToSet", stage));
+    static ScriptBind SetStageOnTrigger(int stage) =>
+        new("DefaultAliasOnTriggerEnter", new IntProp("StageToSet", stage));
 
     static readonly ScriptBind CutterScript = new("TLM:MQ01CutterAlias");
     static readonly ScriptBind HandScript = new("TLM:MQ01CaravanHandAlias");
@@ -548,8 +553,8 @@ public static class Spec
         Stages: new StageSpec[]
         {
             new(10, Note: "The player entered the trigger"),
-            new(11, Note: "The player entered the trigger made on the game's own empty trigger"),
-            new(12, Note: "The player entered the trigger on the layer only actors set off"),
+            new(11, Note: "The player entered the trigger made on the game's own empty trigger, with no layer"),
+            new(12, Note: "The player entered the trigger of the plugin's own with no layer"),
             new(20, Note: "The player picked the object up"),
             new(100, CompleteQuest: true, Note: "Trial finished"),
         },
@@ -557,17 +562,17 @@ public static class Spec
         Aliases: new AliasSpec[]
         {
             new("Person", Fill.Placed, AllowDisabled: true, Placed: "TLM_REF_TrialPerson", DisplayName: "TLM_MSG_TrialPersonName"),
-            new("Trigger", Fill.Placed, Placed: "TLM_REF_TrialTrigger", Scripts: SetStageOnTrigger(10, traces: true)),
-            new("TriggerGameBase", Fill.Placed, Placed: "TLM_REF_TrialTriggerGameBase", Scripts: SetStageOnTrigger(11, traces: true)),
-            new("Object", Fill.Placed, Placed: "TLM_REF_TrialObject", Scripts: SetStageOnPickup(20, traces: true)),
-            new("TriggerActorZone", Fill.Placed, Placed: "TLM_REF_TrialTriggerActorZone", Scripts: SetStageOnTrigger(12, traces: true)),
+            new("Trigger", Fill.Placed, Placed: "TLM_REF_TrialTrigger", Scripts: SetStageOnTrigger(10)),
+            new("TriggerGameBase", Fill.Placed, Placed: "TLM_REF_TrialTriggerGameBase", Scripts: SetStageOnTrigger(11)),
+            new("Object", Fill.Placed, Placed: "TLM_REF_TrialObject", Scripts: SetStageOnPickup(20)),
+            new("TriggerNoLayer", Fill.Placed, Placed: "TLM_REF_TrialTriggerNoLayer", Scripts: SetStageOnTrigger(12)),
         },
         Script: new ScriptBind("TLM:PlacedTrial",
             new AliasProp("Alias_Person", "Person"),
             new AliasProp("Alias_Trigger", "Trigger"),
             new AliasProp("Alias_TriggerGameBase", "TriggerGameBase"),
             new AliasProp("Alias_Object", "Object"),
-            new AliasProp("Alias_TriggerActorZone", "TriggerActorZone"),
+            new AliasProp("Alias_TriggerNoLayer", "TriggerNoLayer"),
             new FormProp("TrialObject", "TLM_MISC_TrialObject"),
             new VanillaProp("MarkerBase", "XMarker", "Static")));
 

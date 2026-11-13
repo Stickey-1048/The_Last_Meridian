@@ -2,7 +2,7 @@
 
 Phase 2, first step. Branch `feat/tlm-mq01-graybox`. Self-test scenario 10.
 
-**Status: untested scaffolding.** Nothing described here has been compiled by the Papyrus compiler, opened in the Creation Kit or run in the game. Every check that works without the game passes (`tools/run_checks.sh`); what that does and does not show is in [Tests](#tests). The first run on the game PC decides whether any of it works. Record that run in [VERIFY_LOG.md](VERIFY_LOG.md) and change this line.
+**Status: ran in the game on 2026-11-13 and passed.** Scenario 10, with nobody at the keyboard: 17 of 17 checks, and both comparison triggers set their stages ([VERIFY_LOG.md](VERIFY_LOG.md), the thirteenth run). What the game showed is in [What the first run showed](#what-the-first-run-showed). Two things were changed afterwards and have **not** been compiled or run: the comparison triggers now leave the collision layer out, and the steps that move the player are allowed more time. Not done at all: a look at the plugin in the Creation Kit, and a look at the settler's name by eye.
 
 ## What it is for
 
@@ -25,13 +25,13 @@ All of it is development only and marked "trial" in `tools/PluginBuilder/Spec.cs
 | A copy of the record of the game's test room, `QASmoke` | A plugin puts something into a cell it does not own by carrying its own copy of that cell's record with the new references under it. Only the cell's record is copied. The game's own contents of the room stay in the game's master file: the library's copy leaves them out, the builder takes out and reports anything that comes along all the same, and the checks look again in the written file |
 | `TLM_REF_TrialPerson` | A placed copy of the game's generic settler (`WorkshopNPC`), **initially disabled** |
 | `TLM_REF_TrialTrigger` | A placed `TLM_ACTI_TrialTrigger` with a box reaching 150 units from its middle on each axis, on the collision layer `L_TRIGGER` |
-| `TLM_REF_TrialTriggerGameBase` | The same box on the game's own empty trigger (`DefaultEmptyTrigger`), for comparison. Left out, and reported, if the game has no activator of that name |
-| `TLM_REF_TrialTriggerActorZone` | The same box on `TLM_ACTI_TrialTrigger` again, on the collision layer `L_ACTORZONE`, for comparison |
+| `TLM_REF_TrialTriggerGameBase` | The same box on the game's own empty trigger (`DefaultEmptyTrigger`), naming no collision layer, for comparison. Left out, and reported, if the game has no activator of that name |
+| `TLM_REF_TrialTriggerNoLayer` | The same box on `TLM_ACTI_TrialTrigger` again, naming no collision layer, for comparison |
 | `TLM_REF_TrialObject` | A placed `TLM_MISC_TrialObject` |
 
 The five references are persistent, which a reference needs to be for a quest alias to point at it.
 
-**Why two comparison triggers.** The wiki says a trigger's layer is "typically L_TRIGGER". A forum report (Nexus Mods, game not certain) has someone changing a trigger's layer *from* `L_ACTORZONE`, which suggests that is what the editor gives a new trigger. Both should let the player set a trigger off. Each comparison differs from the scored trigger in one thing, so one run answers both questions: is it the activator, is it the layer.
+**Why two comparison triggers.** In the first run the comparisons were a box on the game's own empty trigger and a box on the layer `L_ACTORZONE`, and both worked, as the scored one did. The same build counted which layers the game's own box triggers name: none, for 405 of 407. So the comparisons now ask the question that is left: does a box of ours work with no layer named, on the game's activator and on the plugin's? If so, a trigger needs nothing but its box, and the walk-through's triggers will be written the way the game writes its own.
 
 The person starts disabled so that nobody new stands about in the other 62 scenarios. A bystander changes what the game makes of a killing (VERIFY_LOG, the twelfth run), and those scenarios must stay what they were.
 
@@ -43,13 +43,13 @@ The builder does not know the room. It reads from the game's master where the co
 |---|---|---|---|
 | Person | 300 | 150 | 0 |
 | Trigger | 600 | 200 to the left | 100 |
-| Comparison trigger on the game's base | 600 | 200 | 100 |
-| Comparison trigger on `L_ACTORZONE` | 200 | 600 | 100 |
+| Comparison trigger on the game's base, no layer | 600 | 200 | 100 |
+| Comparison trigger on the plugin's base, no layer | 360 | 520 to the left | 100 |
 | Object | 150 | 60 to the left | 20 |
 
 The three triggers are the same distance from the arrival point (640 units), and the scenario brings the player back to where it began before each, so that each is entered the same way. A move by script over a longer distance may be handled differently by the game than a short one, and a difference between the three should say something about the one thing each differs in, not about how the player got there.
 
-Whether those spots are open floor is not known. It does not matter for the test, which moves the player by script and picks the object up by script; it matters for a person who walks in to look. The build output says where the arrival marker is, how far the room's own objects reach, where each thing went and whether that is within their reach seen from above; and the scenario reports where the player and each thing really are, so the two can be compared.
+The first two triggers' spots were open floor in the first run. The third box then stood 200 ahead and 600 to the right, where the player came down on top of something; it has been moved. Whether the other spots are open floor is not known. It does not matter for the test, which moves the player by script and picks the object up by script; it matters for a person who walks in to look. The build output says where the arrival marker is, how far the room's own objects reach, where each thing went and whether that is within their reach seen from above; and the scenario reports where the player and each thing really are, so the two can be compared.
 
 The builder refuses a trigger whose box holds, or nearly holds, the arrival point (someone already inside never "enters"), and two boxes that overlap. If the room has no arrival marker it places from the origin and says so.
 
@@ -60,8 +60,8 @@ Not Start Game Enabled. Run Once. Started only by scenario 10.
 | Stage | Set by | Meaning |
 |---|---|---|
 | 10 | `DefaultAliasOnTriggerEnter` on the `Trigger` alias | The player entered the placed trigger |
-| 11 | The same script on the `TriggerGameBase` alias | The player entered the comparison trigger made on the game's own empty trigger |
-| 12 | The same script on the `TriggerActorZone` alias | The player entered the comparison trigger on `L_ACTORZONE` |
+| 11 | The same script on the `TriggerGameBase` alias | The player entered the comparison trigger made on the game's own empty trigger, with no layer |
+| 12 | The same script on the `TriggerNoLayer` alias | The player entered the comparison trigger of the plugin's own with no layer |
 | 20 | `DefaultAliasOnContainerChangedTo` on the `Object` alias | The player picked the placed object up |
 | 100 | Scenario 10, at its end | Finished. Completes the quest |
 
@@ -73,13 +73,13 @@ No objectives, no log text. Each stage has its one item, as every stage of this 
 | `Trigger` | `TLM_REF_TrialTrigger` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 10 |
 | `TriggerGameBase` | `TLM_REF_TrialTriggerGameBase` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 11 |
 | `Object` | `TLM_REF_TrialObject` | Optional | `DefaultAliasOnContainerChangedTo`, `StageToSet` = 20 |
-| `TriggerActorZone` | `TLM_REF_TrialTriggerActorZone` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 12 |
+| `TriggerNoLayer` | `TLM_REF_TrialTriggerNoLayer` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 12 |
 
 Every alias is Optional on purpose: an alias that stays empty in the game is then reported by name, and the quest still starts. `Person` has Allow Disabled because its reference starts disabled; whether the game needs the flag for a reference an alias is forced to is not documented (see below), and with it set the question does not arise.
 
 The two scripts on the aliases are the game's own. They are the same two the main quest's design relies on for the sealed dispatch, the ambush trigger and the town gate, where they have never yet had anything to act on.
 
-For the trial each also has `ShowTraces` set, which the wiki describes as "Set to TRUE if you want the traces in this script to show up in the log". Whether the scripts as shipped still write anything then is not known. If they do, the run's report shows it: for scenario 10 it lists every line of the game's script log that names the trial's quest, and any other log a script wrote in that session.
+In the first run each also had `ShowTraces` set, which the wiki describes as "Set to TRUE if you want the traces in this script to show up in the log". The game took the property without complaint and wrote nothing, to the script log or anywhere else, so it is not set any more. The run's report still lists, for scenario 10, every line of the game's script log that names the trial's quest, and any other log a script wrote in that session.
 
 The quest's own script, `TLM:PlacedTrial`, holds scenario 10 and nothing else.
 
@@ -102,7 +102,7 @@ Reported, not scored (lines beginning INFO):
 - whether the person's and the object's 3D is loaded;
 - what `Start` and `Activate` returned;
 - how many things each trigger counts inside itself before and after the move. A trigger counts things of any kind its layer lets in, and the room is full of loose items, so the number itself means little: what matters is whether it went up by one;
-- the two comparison triggers: whether entering each set its stage (11, 12). If ours fails and the one on the game's base works, the fault is in the activator the plugin makes; if the one on `L_ACTORZONE` works, it is the layer;
+- the two comparison triggers: whether entering each set its stage (11, 12). Both leave the collision layer out. If the one on the game's activator works and the one on the plugin's does not, the plugin's activator needs a layer named; if neither works, a box of ours needs one whatever it stands on;
 - if picking the object up did not set stage 20, the reference is moved into the player's inventory by `AddItem` and the result reported, which tells a pick-up that failed from a script that did not hear it.
 
 The player is brought back to where the scenario began before each trigger and after the last.
@@ -126,10 +126,10 @@ Looked up by name in `Fallout4.esm` when the plugin is built; none is hard-coded
 | `WorkshopNPC` | Actor | The person is not placed |
 | `Caps001` | Item | The object has no world model |
 | `XMarker` | Static | The player is not moved back at the end |
-| `L_TRIGGER`, `L_ACTORZONE` | Collision layers | A trigger whose layer is missing is placed without one, and the build says so |
+| `L_TRIGGER` | Collision layer | The scored trigger is placed without one, and the build says so |
 | `DefaultEmptyTrigger` | Activator | The comparison trigger is left out |
 
-`WorkshopNPC`, `Caps001` and `XMarker` have been found in the real master before. The other five have not been looked up there yet. The names are from memory of the game's data, the wiki (`L_TRIGGER`) and forum posts that use them (`DefaultEmptyTrigger`, `L_ACTORZONE`, `COCMarkerHeading`); the first build on the PC shows whether they are right.
+All of them were found in the real master on 2026-11-13 (`L_ACTORZONE` too, which the trial no longer uses).
 
 From the game itself: the scripts `DefaultAliasOnTriggerEnter` and `DefaultAliasOnContainerChangedTo`.
 
@@ -155,7 +155,7 @@ No script extender. No new dependency on the PC.
 Not documented anywhere I could find, and assumed:
 
 - that an alias is not filled with a disabled reference unless it has Allow Disabled. The plugin sets the flag, so the game's answer does not matter to the trial; the stand-in engine takes the cautious reading;
-- that the player moved into a trigger by script "enters" it. The nearest thing to a source is a note on the wiki of the game before this one, seen only as quoted in a search result, not read on the page: a trigger around a door's arrival marker fires for the player who comes through the door. If stage 10 is not set, the count of things inside the trigger after the move says whether the game saw the player in it.
+- that the player moved into a trigger by script "enters" it. The nearest thing to a source was a note on the wiki of the game before this one, seen only as quoted in a search result, not read on the page: a trigger around a door's arrival marker fires for the player who comes through the door. **Seen in the game on 2026-11-13: it does.**
 
 ## Implementation checklist
 
@@ -169,9 +169,11 @@ Not documented anywhere I could find, and assumed:
 - [x] `TLM:PlacedTrial` and scenario 10 in `TLM:SelfTest`.
 - [x] `tools/papyrus_sim`: placed references, forced fills, triggers, picking up, and the game's two default alias scripts played from their documentation. `test_placed.py`.
 - [x] `tools/win/Run-Scenarios.ps1`: scenario 10 in `basic` and `all`; an error in the game's script log now counts for this project when the scripts it happened in are ours, even if its own line does not name us.
-- [ ] **Compile on the PC** (13 scripts; `PlacedTrial.psc` is new, `SelfTest.psc` changed).
-- [ ] **Build against the real `Fallout4.esm`.** First use of the cell lookup, the arrival marker, the layer and the empty trigger on real data.
-- [ ] **Run scenario 10 in the game.**
+- [x] **Compile on the PC.** Done 2026-11-13.
+- [x] **Build against the real `Fallout4.esm`.** Done 2026-11-13: everything looked up was found, and the read-back check passed.
+- [x] **Run scenario 10 in the game.** Done 2026-11-13: 17 of 17.
+- [ ] Run it again with the comparison triggers that name no layer.
+- [ ] Find out why the settler did not stay where it was placed, and what makes a placed person stay.
 - [ ] Look at the person's name by eye.
 - [ ] Open the plugin in the Creation Kit (checklist item 4 in VERIFY_LOG; it now has a cell and references to look at as well).
 
@@ -195,17 +197,19 @@ On Linux, all in `tools/run_checks.sh`:
 | The other 62 scenarios | Unchanged: 1,561 checks |
 | The Windows chain against the stand-in PC | Build, compile (a stand-in compiler), install, scenario 10, report |
 
-**What none of that shows.** The stand-in engine's rules for everything else have game runs behind them. Its rules for placed references, triggers and picking things up have none: they are the wiki's words and, where the wiki is silent, a cautious guess. A pass says the script, the plugin and those readings agree with each other. It says nothing about the game.
+**What none of that shows.** (Written before the first run; the run has since confirmed the stand-in's rules for triggers, picking up and the two default scripts, and corrected nothing in them. What it does not model is where a placed person ends up.) The stand-in engine's rules for everything else have game runs behind them. Its rules for placed references, triggers and picking things up have none: they are the wiki's words and, where the wiki is silent, a cautious guess. A pass says the script, the plugin and those readings agree with each other. It says nothing about the game.
 
-On the PC:
+On the PC, the first run was started with this, which also moved the folder onto the branch, once:
 
 ```powershell
 git fetch origin; if ($LASTEXITCODE -eq 0) { git checkout feat/tlm-mq01-graybox; if ($LASTEXITCODE -eq 0) { powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 10,1,2,129-132 } }
 ```
 
-The first two steps move the folder onto this branch, once; each step runs only if the one before it worked (rehearsed against a scratch copy: a branch that is not there, a fetch that fails and a switch that git refuses each end with nothing run). After that the usual command is enough.
+It took five minutes: the build, then seven sessions of about half a minute, 87 seconds for scenario 10. From now on the usual command is enough, with the scenarios wanted:
 
-About twelve minutes. Scenario 10 runs first, so that a plugin the game cannot load shows at once (the runner stops there if the first scenario never starts). Scenario 1 says whether the two real quests still behave with the larger plugin. 2 and 129 to 132 are the short run that was already owed (the bystander experiment and the timer guard).
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 10,2
+```
 
 ### Reading the result
 
@@ -238,6 +242,24 @@ The trial is a branch of its own. `main` and `feat/tlm-mq01-prebuild` are untouc
 
 It must not ship. `TLM_Trial`, its records and the copy of `QASmoke` are development only, like the self-test.
 
-## If it works
+## What the first run showed
 
-The same machinery places what *Six Rounds to Mercy* needs: the wreck, the ambush sight trigger, the town gate, the marshal's body with the dispatch, the caravan and the Cutters. Where they go is the next question, and the first real design decision of phase 2: the game's test room again, or a cell of the project's own built from a handful of the game's floor and wall pieces, which is what a player could actually walk through. That is for the owner to decide once this trial has reported.
+The thirteenth run, 2026-11-13, commit `3c7ac5f`; the whole record is in [VERIFY_LOG.md](VERIFY_LOG.md).
+
+**It works.** The game took the plugin's copy of the room's record and the five references under it. The quest started when asked, and each of its aliases held the reference it is forced to. The object, which only borrows the path of one of the game's models, was there to be seen and picked up, and picking it up set its stage through the game's own script. The player, moved into a box, was counted by the box and set its stage through the game's own script, for all three recipes tried. Every reference was where the builder had put it, to the last digit the game prints, and the player arrives exactly at the room's arrival marker: the arithmetic of "so far ahead, so far to the right" is right.
+
+What it also showed, which matters for what is built next:
+
+| What | Seen | So |
+|---|---|---|
+| The game's own triggers name no collision layer | 405 of 407 box triggers looked at in the game's master | A trigger of ours probably needs none either; the two comparison triggers now ask |
+| The settler did not stay where it was placed | Enabled, it stood 489 units from its spot within the same second | People are the open question. The game's settler belongs to the workshop system and brings that system's packages and script; whether those moved it is not known |
+| A scripted move puts the player on the floor, or on whatever stands at that spot | Height 0 at two spots; on top of something at the third | Two spots of open floor are known: 600 ahead of the arrival point, 200 to either side. The room's own objects lie between (-5024, -3776) and (-832, 2176); it is about 4,200 by 5,950 units and called 'Tunnels' |
+| A scripted move of the player can take long | Between a second and 38 seconds, for the same distance | Fine for a test, with a generous limit. Nothing a player would meet should depend on it |
+| The default scripts' `ShowTraces` | Taken, and nothing written | Not worth setting |
+
+## What comes next
+
+Triggers and objects written by the builder can drive a quest. That is two of the three things a rough walk-through of *Six Rounds to Mercy* is made of. The third is people who stand where they are put, can be told apart, and can be "talked to" (in the rough version: activated, with a message box for the conversation). So the next step is a trial of people, small like this one, before anything is laid out.
+
+After that comes the first real design decision of phase 2, and it is the owner's: **where the walk-through stands.** The game's test room again, which is known to load and has a floor, light and paths for people to walk, but is full of the game's own things; or a cell of the project's own, built from a handful of the game's floor and wall pieces, which is what a player could actually walk through but needs a floor, light and, for people to move in it, a navigation mesh, none of which the builder has ever written.

@@ -14,7 +14,7 @@ WHAT IT IS NOT. It is not the game. Every rule below about how the game
 behaves is one of three kinds, and says which:
 
   [seen]        observed in Fallout 4 1.10.163 on the owner's PC
-                (docs/design/VERIFY_LOG.md, 2026-11-12)
+                (docs/design/VERIFY_LOG.md, from 2026-11-12 on)
   [documented]  stated on the Creation Kit wiki
   [assumed]     neither; the simplest behaviour that fits. A scenario that
                 depends on an assumed rule proves nothing about the game.
@@ -50,8 +50,14 @@ class _Return(Exception):
 DEATH_EVENT_DELAY = 0.7
 COMBAT_EVENT_DELAY = 0.3      # [assumed] number; [seen] that the event arrives
 DISTANCE_EVENT_DELAY = 0.1    # [assumed] number; [seen] within a second
-TRIGGER_EVENT_DELAY = 0.1     # [assumed] number, and not seen: nothing placed has run in the game yet
-CONTAINER_EVENT_DELAY = 0.1   # [assumed] number, and not seen
+# How long an actor has to have been there before it can witness anything.
+# [seen] on 2026-11-13 (scenario 2): an actor made in the same breath as a
+# killing by the player did not make that killing a fight, and was not in
+# combat two seconds later. [seen], indirectly, on 2026-11-12 (case 129):
+# actors made some seconds before did. The number between is [assumed].
+WITNESS_AFTER = 1.0
+TRIGGER_EVENT_DELAY = 0.1     # [assumed] number; [seen] that the stage is set within a second of the move
+CONTAINER_EVENT_DELAY = 0.1   # [assumed] number; [seen] that the stage is set within a second of the pick-up
 FRAME = 1.0 / 60.0
 # How much of an actor counts for a trigger: from its feet this far up. [assumed]
 ACTOR_HEIGHT = 120.0
@@ -59,8 +65,9 @@ ACTOR_HEIGHT = 120.0
 START_CELL = "QASmoke"
 # The game's own scripts that the plugin attaches to aliases by name. The
 # stand-in does not have their source; it plays what the Creation Kit wiki says
-# they do. [documented], and not seen: no alias carrying one has ever been
-# filled in the game.
+# they do. [documented], and [seen] on 2026-11-13 for both, on aliases filled
+# with references the plugin places: the trigger's script set its stage when
+# the player was moved into the box, the object's when the player picked it up.
 DEFAULT_ALIAS_SCRIPTS = ("defaultaliasontriggerenter", "defaultaliasoncontainerchangedto")
 
 
@@ -145,6 +152,9 @@ class Actor(ObjectReference):
         self.combat_target: Optional["Actor"] = None
         # Killed by the player: counts as fighting the player until then.
         self.fights_player_until = -1.0
+        # From when it can witness what happens near it (see WITNESS_AFTER).
+        # An actor the plugin places has been there since the room loaded.
+        self.awake_from = 0.0
 
 
 class Alias:
@@ -418,9 +428,12 @@ class Session:
 
     def _place(self):
         """The references the plugin places in cells of the game (none in a
-        plugin built without the game's master). [assumed] throughout that the
-        game loads them as the plugin describes them: nothing placed has run
-        in the game yet."""
+        plugin built without the game's master). [seen] on 2026-11-13: the game
+        loads them where the plugin puts them, an initially disabled actor is
+        disabled, and an item with a borrowed model has its 3D. One thing the
+        stand-in does not do: [seen] the game's generic settler, placed and
+        then enabled, did not stay where it was placed (it stood 489 units
+        away a moment later). Here an actor stays where it is put."""
         for c in self.plugin.get("Cells", []):
             cell = self._cell(c["EditorId"] or c["FormKey"])
             for p in c["Placed"]:
@@ -440,8 +453,8 @@ class Session:
                     raise SimError("%s: a %s primitive is not modelled" % (p["EditorId"], p["Primitive"]))
                 self.by_formkey[p["FormKey"]] = made
                 self.placed[p["EditorId"]] = made
-        # [assumed] The player arrives at the cell's arrival marker. The
-        # scenario reports where the player really is.
+        # [seen] on 2026-11-13: the player arrives at the cell's arrival
+        # marker, to the last digit.
         for a in self.arrivals:
             if a["Cell"].lower() == START_CELL.lower():
                 self.player.pos = tuple(a["Position"])
@@ -554,11 +567,11 @@ class Session:
           DefaultAliasOnContainerChangedTo: "Stage to Set"; "PlayerPickupOnly:
             If set to TRUE (DEFAULT) then the stage will only set if this is
             picked up by the player."
-        [documented], and not seen. Only the properties the plugin sets are
-        played; one it does not know stops the session. ShowTraces
-        ("if you want the traces in this script to show up in the log") changes
-        nothing the scripts can see, and what the lines would be is not known,
-        so the stand-in writes none."""
+        [documented], and [seen] on 2026-11-13 for the player. Only the
+        properties the plugin sets are played; one it does not know stops the
+        session. ShowTraces ("if you want the traces in this script to show up
+        in the log"): [seen] the game takes the property without complaint and
+        writes nothing to the script log, so the stand-in writes none."""
         known = {"stagetoset", "showtraces"}
         if set(props) - known:
             raise SimError("%s on %r: the stand-in does not play its properties %s" % (name, alias, sorted(set(props) - known)))
@@ -586,20 +599,25 @@ class Session:
         trigger volume and has been entered", and that actors set off a
         trigger on the layer triggers are typically on.
 
-        [assumed], all of it, on what counts as entering: an actor moved
-        into the box by script (MoveTo) enters it, as one who walks in
-        would; so does an actor made inside it, or enabled inside it; and
-        enabling a trigger with someone inside is that someone entering.
-        The trial's scenario moves the player in by script, so its pass
-        here rests on the first of these. Nothing here has been seen."""
+        [seen] on 2026-11-13: the player moved into the box by script
+        (MoveTo) enters it: the trigger then counted one thing more inside
+        itself and the script on its alias set its stage, for a box on an
+        activator of the plugin's and on the game's own empty trigger, on the
+        layers L_TRIGGER and L_ACTORZONE.
+
+        [assumed] still: that an actor made inside a box, or enabled inside
+        it, enters it; that enabling a trigger with someone inside is that
+        someone entering; and that any actor but the player sets a trigger
+        off as the player does."""
         for trig in self.triggers:
             now_inside = {a.id for a in self.actors if self._in_box(trig, a)}
             entered, left = now_inside - trig.inside, trig.inside - now_inside
             trig.inside = now_inside
-            if entered and trig.layer is None:
-                # The builder leaves the layer out when the master has none.
-                # What the game makes of such a box is not known.
-                raise SimError("%r was entered, and it has no collision layer: what the game does then is not modelled" % trig)
+            # A box that names no collision layer is a trigger like the rest.
+            # [seen], in the game's own data: of 407 of its box triggers
+            # looked at on 2026-11-13, 405 name none. [assumed] that such a
+            # box of this plugin's lets the player set it off as theirs do;
+            # the trial asks.
             for actor in self.actors:
                 if actor.id in entered:
                     self.ref_event(trig, "OnTriggerEnter", [actor], TRIGGER_EVENT_DELAY)
@@ -1041,7 +1059,9 @@ class Session:
                     # [assumed] from the editor's description of the flag for
                     # the earlier games ("allow disabled references to fill
                     # this alias"); the Fallout 4 wiki does not describe it.
-                    # The cautious reading: without the flag the alias stays empty.
+                    # The cautious reading: without the flag the alias stays
+                    # empty. [seen] on 2026-11-13 only the other half: with
+                    # the flag, an alias takes a reference that is disabled.
                     ref = None
                 alias.ref = ref if isinstance(ref, ObjectReference) else None
         for inst in quest.scripts:
@@ -1050,7 +1070,9 @@ class Session:
     def n_quest_start(self, quest: Quest, context):
         # [documented] "Starts this quest. Is latent and will not return until
         # the quest is actually started"; "True if the quest was successfully
-        # started." [assumed] true as well for a quest already running.
+        # started." [seen] on 2026-11-13: it returned True, the quest ran and
+        # its aliases held their references in the next breath. [assumed] true
+        # as well for a quest already running.
         self.start_quest(quest)
         return quest.running
 
@@ -1225,6 +1247,7 @@ class Session:
             return None
         if form.kind == "Npc":
             made = Actor(form, ref.pos)             # [seen] a settler made this way stands, fights and dies
+            made.awake_from = self.now + WITNESS_AFTER
             self.actors.append(made)
         else:
             made = ObjectReference(form, ref.pos)   # [seen] a marker and an item
@@ -1264,12 +1287,15 @@ class Session:
         self._disable(ref)
 
     def n_objectreference_enable(self, ref, context, fade=False):
+        if ref.disabled and isinstance(ref, Actor):
+            ref.awake_from = self.now + WITNESS_AFTER       # [assumed]: as for one just made
         ref.disabled = False
         self.check_triggers()
 
     def n_objectreference_getparentcell(self, ref, context):
-        # [documented] "the Cell the object is currently in". [assumed] the
-        # same for a reference that is disabled and has never been loaded.
+        # [documented] "the Cell the object is currently in". [seen] on
+        # 2026-11-13 for the player, a placed item, a placed actor still
+        # disabled and the same actor enabled: all the same cell.
         return ref.cell
 
     def n_objectreference_getpositionx(self, ref, context):
@@ -1314,7 +1340,8 @@ class Session:
             return False                            # [assumed] nothing to pick up
         # [documented] "normal processing (i.e. picking up the object, opening
         # the door, etc)"; returns "True if default activation processing was
-        # performed (and succeeded)". Not seen.
+        # performed (and succeeded)". [seen] on 2026-11-13 for a placed item
+        # 163 units from the player: True, and the player then had it.
         self._into_container(ref, activator)
         return True
 
@@ -1396,14 +1423,19 @@ class Session:
             if other.combat_target is actor:
                 self._stop_combat(other)
         bystanders = [a for a in self.actors
-                      if a is not actor and not a.is_player and not a.dead and not a.disabled]
+                      if a is not actor and not a.is_player and not a.dead and not a.disabled
+                      and a.awake_from <= self.now + 1e-9]
         if killer is not None and killer.is_player and bystanders:
             # With others standing by: [seen], indirectly, in the eleventh run
             # (case 129): the evade timer's function, called straight after
             # Kill(player) on the Cutter lead, found the player in combat; no
             # other path through the script gives what that case gave. With
             # nobody else alive: [seen] in the twelfth run (scenario 2), the
-            # player is NOT in combat straight after such a kill. [assumed]
+            # player is NOT in combat straight after such a kill. With one
+            # other who had been made in the same breath: [seen] in the
+            # thirteenth run (scenario 2), not in combat either, and the other
+            # not in combat two seconds later; so a bystander counts only
+            # once it has been there a while (WITNESS_AFTER). [assumed]
             # that it lasts until the death is announced and no longer (two
             # seconds later the player was out of combat: scenario 5), and
             # that StopCombatAlarm ends it like any other fight ([documented]

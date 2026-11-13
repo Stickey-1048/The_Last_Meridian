@@ -24,9 +24,9 @@ not come back, and the result is still written. Scenario 1 also ran from the
 console. (An earlier run of scenario 1 reported 26 passed, 34 failed, because
 no OnStageSet event reached the quest scripts; that was a fault in the
 generated plugin.)
-Since then scenario 10 was added: the property TLM_Trial, its branch in
-RunSelfTest and its part of the "already started" test below are NOT YET
-COMPILED.}
+Scenario 10 was added on 2026-11-13: the property TLM_Trial, its branch in
+RunSelfTest and its part of the "already started" test below compiled and
+ran that day (the thirteenth run: seven scenarios, 196 checks, 0 failed).}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

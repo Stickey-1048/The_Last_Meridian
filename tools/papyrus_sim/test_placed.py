@@ -19,6 +19,7 @@ What the tests are for meanwhile:
   - the stand-in's new rules do what sim.py says they do.
 """
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -30,8 +31,8 @@ ARRIVALS = PLUGIN.with_name("TheLastMeridian.arrivals.json")
 # The plugin as built without the game's master: nothing is placed.
 SKELETON = ROOT / "build" / "TheLastMeridian.json"
 
-PERSON, TRIGGER, GAME_TRIGGER, OBJECT, ZONE_TRIGGER = ("TLM_REF_TrialPerson", "TLM_REF_TrialTrigger", "TLM_REF_TrialTriggerGameBase",
-                                                       "TLM_REF_TrialObject", "TLM_REF_TrialTriggerActorZone")
+PERSON, TRIGGER, GAME_TRIGGER, OBJECT, PLAIN_TRIGGER = ("TLM_REF_TrialPerson", "TLM_REF_TrialTrigger", "TLM_REF_TrialTriggerGameBase",
+                                                        "TLM_REF_TrialObject", "TLM_REF_TrialTriggerNoLayer")
 CHECKS = 17
 
 
@@ -83,8 +84,8 @@ class TheTrialAsBuilt(unittest.TestCase):
         self.assertEqual(errors(s), [])
         self.assertEqual(s.message_boxes, [])
         # the two comparison triggers, reported and not scored
-        self.assertIn("trial: entering the trigger made on the game's own empty trigger: stage 11 set = True (it was False before)", got["info"])
-        self.assertIn("trial: entering the trigger on the layer L_ACTORZONE: stage 12 set = True (it was False before)", got["info"])
+        self.assertIn("trial: entering the trigger made on the game's own empty trigger, with no layer: stage 11 set = True (it was False before)", got["info"])
+        self.assertIn("trial: entering the trigger of the plugin's own with no layer: stage 12 set = True (it was False before)", got["info"])
         # the fallback for a pick-up that did not set the stage was not needed
         self.assertFalse([l for l in got["info"] if "AddItem" in l])
         # the two real quests were never touched
@@ -107,7 +108,7 @@ class TheTrialAsBuilt(unittest.TestCase):
         before = [l for l in got["info"] if "things inside it before the move: " in l]
         after = [l for l in got["info"] if l.startswith("trial: after the move the player is at")]
         self.assertEqual((len(before), len(after)), (3, 3))
-        distances = {l.split(", ")[3].split(" from the player")[0] for l in before}
+        distances = {re.search(r"\), ([0-9.]+) from the player", l).group(1) for l in before}
         self.assertEqual(len(distances), 1, "the three triggers are not the same distance from where the player is moved from: %s" % distances)
         for l in before:
             self.assertTrue(l.endswith("things inside it before the move: 0"), l)
@@ -223,10 +224,10 @@ class WhatTheScenarioCatches(unittest.TestCase):
     def test_a_comparison_trigger_that_does_not_work_is_reported_and_costs_nothing(self):
         """The comparisons are there to be read, not to be scored."""
         def no_script(d):
-            alias(d, "TriggerActorZone").update(Scripts=[])
+            alias(d, "TriggerNoLayer").update(Scripts=[])
         got = self.run_with(no_script)
         self.assertEqual((got["failures"], got["passed"]), ([], CHECKS))
-        self.assertIn("trial: entering the trigger on the layer L_ACTORZONE: stage 12 set = False (it was False before)", got["info"])
+        self.assertIn("trial: entering the trigger of the plugin's own with no layer: stage 12 set = False (it was False before)", got["info"])
 
     def test_the_comparison_trigger_left_out_is_reported_and_costs_nothing(self):
         """What a build against a master without the game's empty trigger gives."""
@@ -236,7 +237,7 @@ class WhatTheScenarioCatches(unittest.TestCase):
             alias(d, "TriggerGameBase")["Fill"] = None
         got = self.run_with(left_out)
         self.assertEqual((got["failures"], got["passed"]), ([], CHECKS))
-        self.assertIn("trial: the trigger made on the game's own empty trigger is not in this build of the plugin, "
+        self.assertIn("trial: the trigger made on the game's own empty trigger, with no layer is not in this build of the plugin, "
                       "or its alias is empty: nothing was tried", got["info"])
 
     def test_the_plugin_built_without_the_games_master(self):
@@ -321,7 +322,7 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
         self.assertFalse(quest.running)
         self.assertEqual([a.ref for a in quest.aliases.values()], [None] * 5)
         self.assertTrue(s.n_quest_start(quest, None))
-        self.assertEqual([a.ref for a in quest.aliases.values()], [s.placed[x] for x in (PERSON, TRIGGER, GAME_TRIGGER, OBJECT, ZONE_TRIGGER)])
+        self.assertEqual([a.ref for a in quest.aliases.values()], [s.placed[x] for x in (PERSON, TRIGGER, GAME_TRIGGER, OBJECT, PLAIN_TRIGGER)])
 
     def test_what_is_placed_is_where_and_how_the_plugin_says(self):
         s = self.session()
@@ -403,12 +404,13 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
         s.run(s.now + 1.0)
         self.assertIn(10, quest.done)
 
-    def test_a_box_without_a_collision_layer_is_not_guessed_at(self):
-        """What the builder writes when the master has no such layer. What the
-        game makes of it is not known, so the stand-in stops and does not invent."""
-        s, _quest = self.started(change=lambda d: placed(d, TRIGGER).update(CollisionLayer=None))
-        with self.assertRaises(SimError):
-            self.move(s, s.player, s.placed[TRIGGER])
+    def test_a_box_that_names_no_collision_layer_is_a_trigger_all_the_same(self):
+        """The game's own box triggers name none (405 of 407 looked at on
+        2026-11-13). That a box of the plugin's then works as theirs do is
+        assumed; two of the trial's three triggers ask the game."""
+        s, quest = self.started(change=lambda d: placed(d, TRIGGER).update(CollisionLayer=None))
+        self.move(s, s.player, s.placed[TRIGGER])
+        self.assertIn(10, quest.done)
 
     def test_only_the_property_the_plugin_sets_today_is_played(self):
         def more(d):
@@ -466,8 +468,14 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
         s.n_actor_kill(first, None, s.player)
         self.assertFalse(s.player_in_combat())
         s.n_objectreference_enable(person, None)
+        # ... and has been there a moment: [seen] on 2026-11-13, one made in
+        # the same breath as a killing did not make it a fight.
         second = self.an_actor(s)
         s.n_actor_kill(second, None, s.player)
+        self.assertFalse(s.player_in_combat())
+        s.run(s.now + 2.0)
+        third = self.an_actor(s)
+        s.n_actor_kill(third, None, s.player)
         self.assertTrue(s.player_in_combat())
 
 

@@ -86,3 +86,5 @@ TLM_REF_TrialObject
 2090
 TLM_REF_TrialTriggerActorZone
 2091
+TLM_REF_TrialTriggerNoLayer
+2092

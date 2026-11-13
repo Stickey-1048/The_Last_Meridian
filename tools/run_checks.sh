@@ -65,8 +65,8 @@ else
 fi
 grep -q "TLM_REF_TrialPerson  PlacedNpc of .* at (1500, -950, 64) turned (0, 0, 270)  \[Persistent, InitiallyDisabled\]  in the Persistent list" "$(report default)" || { echo "FAILED: the placed person is not where the arrival marker and its heading put it"; exit 1; }
 grep -q "TLM_REF_TrialTrigger  PlacedObject of TLM_ACTI_TrialTrigger  at (1800, -600, 164) .*  Box (150, 150, 150)  bound (150, 150, 150)  collision layer 12" "$(report default)" || { echo "FAILED: the placed trigger is not as specified"; exit 1; }
-grep -q "TLM_REF_TrialTriggerActorZone  PlacedObject of TLM_ACTI_TrialTrigger  at (1400, -1400, 164) .*  Box (150, 150, 150)  bound (150, 150, 150)  collision layer 22" "$(report default)" || { echo "FAILED: the trigger on the other collision layer is not as specified"; exit 1; }
-grep -q "TLM_REF_TrialTriggerActorZone: placed in QASmoke at (1400, -1400, 164): .*; seen from above, within the span of the room's own objects" "$(report default)" ||
+grep -q "TLM_REF_TrialTriggerNoLayer  PlacedObject of TLM_ACTI_TrialTrigger  at (1560, -280, 164) .*  Box (150, 150, 150)  bound (150, 150, 150)$" "$(report default)" || { echo "FAILED: the trigger of the plugin's own with no collision layer is not as specified"; exit 1; }
+grep -q "TLM_REF_TrialTriggerNoLayer: placed in QASmoke at (1560, -280, 164): .*; seen from above, within the span of the room's own objects" "$(report default)" ||
   { echo "FAILED: a reference inside the stand-in room was not reported as inside it"; exit 1; }
 grep -q "QASmoke: its name is 'Stand-In Test Room' (the master holds its text itself); this plugin's copy of the cell carries it" "$(report default)" ||
   { echo "FAILED: the cell's name was not carried into the plugin's copy"; exit 1; }
@@ -129,7 +129,6 @@ grep -q "placing from the origin (0, 0, 0)" "$(report bare-room)" || { echo "FAI
 grep -q "TLM_REF_TrialTrigger: placed without a collision layer" "$(report bare-room)" || { echo "FAILED: a trigger without its collision layer was not reported"; exit 1; }
 grep -q "TLM_REF_TrialTriggerGameBase: not placed (no Activator 'DefaultEmptyTrigger' in Fallout4.esm)" "$(report bare-room)" || { echo "FAILED: the missing comparison trigger was not reported"; exit 1; }
 grep -q "alias  2 TriggerGameBase  (reference) \[Optional\]$" "$(report bare-room)" || { echo "FAILED: the alias of a reference that was not placed is filled"; exit 1; }
-grep -q "TLM_REF_TrialTriggerActorZone: placed without a collision layer" "$(report bare-room)" || { echo "FAILED: the second trigger without its collision layer was not reported"; exit 1; }
 
 [ "$(git hash-object tools/PluginBuilder/formkeys.txt)" = "$ids_before" ] || { echo "FAILED: a build against a master changed tools/PluginBuilder/formkeys.txt; ids must be given out the same with and without Fallout4.esm"; exit 1; }
 echo "  vanilla lookups work against eight stand-in masters (spelling, fallback, rejection, quest evidence, weak evidence, text in strings files, triggers without a bound, a bare test room)"

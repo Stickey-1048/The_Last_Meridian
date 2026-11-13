@@ -121,7 +121,10 @@ param(
     # Steam's folder, if it is not where the registry says (also for testing off Windows).
     [string]$SteamRoot,
     # How long one scenario may take, from the game appearing to the game closing.
-    [int]$ScenarioTimeoutSeconds = 240,
+    # Seven minutes. A scenario normally takes half a minute; the one that moves the player about
+    # (10) took 87 seconds on 2026-11-13, 38 of them in a single move, and its steps that move the
+    # player are allowed 150 seconds each by the self-test's own watchdog.
+    [int]$ScenarioTimeoutSeconds = 420,
     # Lines to show at the top of the collected results.
     [string[]]$Preface = @(),
     # Overrides for testing off Windows.
@@ -282,7 +285,7 @@ function Read-ScenarioLogs([datetime]$since) {
         HasUserLog = $false; Header = $null; ResultLine = $null; Passed = 0; FailLines = @(); InfoLines = @(); Aborted = $false
         LastStep = $null; LastLine = $null; TimingNotes = @()
         HasScriptLog = $false; CoreStarted = $false; Problems = @(); MqEvents = 0; SqEvents = 0; ScriptLogLines = 0; GuardLines = @()
-        TrialLines = @(); OtherUserLogs = @()
+        TrialLines = @(); OtherUserLogs = @(); SlowSteps = @()
     }
     if ((Test-Path -LiteralPath $userLog) -and ((Get-Item -LiteralPath $userLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $userLog)
@@ -300,6 +303,25 @@ function Read-ScenarioLogs([datetime]$since) {
         # things did overlap in this session, and the like. These lines are about timing, and
         # a case that passed shows nothing else of itself in the report.
         $r.TimingNotes = @($lines | Where-Object { $_ -match '\]\s*INFO\s+C\d+ #\d+ ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*INFO\s*', '') })
+        # How long each named step took, by the game's own clock on the lines: from a STEP line to
+        # the next STEP line or the RESULT line. The log's clock has whole seconds. A step of ten
+        # seconds or more is listed: on 2026-11-13 one move of the player took 38 seconds, which
+        # showed only as a gap between two other lines.
+        $stepName = $null; $stepAt = $null
+        foreach ($line in $lines) {
+            if ($line -notmatch '^\[(\d\d/\d\d/\d\d\d\d - \d\d:\d\d:\d\d[AP]M)\]\s*(.*)$') { continue }
+            $rest = $Matches[2]
+            $at = $null
+            try { $at = [datetime]::ParseExact($Matches[1], 'MM/dd/yyyy - hh:mm:sstt', [System.Globalization.CultureInfo]::InvariantCulture) } catch { continue }
+            if ($rest -match '^(STEP\s|==== RESULT)') {
+                if ($stepName -and $stepAt) {
+                    $took = [int]($at - $stepAt).TotalSeconds
+                    if ($took -ge 10) { $r.SlowSteps += "$took seconds: $stepName" }
+                }
+                $stepName = if ($rest -match '^STEP\s+(.*)$') { $Matches[1] } else { $null }
+                $stepAt = $at
+            }
+        }
     }
     if ((Test-Path -LiteralPath $papyrusLog) -and ((Get-Item -LiteralPath $papyrusLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $papyrusLog)
@@ -627,6 +649,10 @@ foreach ($r in $results) {
     if ($r.Logs.OtherUserLogs.Count) {
         $out.Add('  other logs written by scripts in this session:')
         foreach ($l in $r.Logs.OtherUserLogs) { $out.Add("    $l") }
+    }
+    if ($r.Logs.SlowSteps.Count) {
+        $out.Add('  steps that took ten seconds or more, by the clock on the log''s lines:')
+        foreach ($l in $r.Logs.SlowSteps) { $out.Add("    $l") }
     }
 }
 

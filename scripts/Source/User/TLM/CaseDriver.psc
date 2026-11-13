@@ -29,9 +29,10 @@ time between them (DoKillLeadThenTimer, DoKillLeadThenLeave,
 DoKillLeadThenTown, DoLeaveAndReachTownAtOnce). Since then
 DoKillLeadThenTimer was changed, to make the kill a quiet one and to report
 what the game says about the fight; that version ran on 2026-11-13 and its
-guard did not act (the death was announced first). It has been changed
-again since, to a death with nobody named as the killer: THAT ACTION IS NOT
-YET COMPILED.}
+guard did not act (the death was announced first). It was changed again, to
+a death with nobody named as the killer; that version compiled and ran later
+on 2026-11-13 (the thirteenth run), and the guard on the timer's path acted
+in the game for the first time.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
