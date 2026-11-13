@@ -31,7 +31,10 @@
   Status: tested on Linux PowerShell 7 against scratch clones (new tag, tag
   already pushed, tag pointing elsewhere here and on the remote, missing or
   empty text, unknown commit, no identity, -NoPush, and started through
-  Update-And-Run.ps1 -Tag). NOT YET RUN ON A REAL PC.
+  Update-And-Run.ps1 -Tag). On the owner's PC, under Windows PowerShell 5.1,
+  it has run once (2026-11-12) as far as creating the tag, where it stopped
+  as it should: git there had no name and e-mail. Creating and pushing a tag
+  HAVE NOT YET RUN ON A REAL PC.
 
 .PARAMETER Name
   The tag. Default: mq01-logic-proof.
@@ -94,7 +97,24 @@ function Stop-Here([string]$why, [string]$then = 'Nothing was pushed. Send this 
 function Get-FirstLine($result) { return "$(@($result.Output) | Select-Object -First 1)".Trim() }
 function Show-Lines($lines) {
     # What git wrote. An empty line on its error stream comes through PowerShell as the name of a type.
-    foreach ($l in @($lines)) { if ("$l" -ne 'System.Management.Automation.RemoteException') { Say "  $l" } }
+    # When git cannot work out who is tagging it names the Windows account and the PC; that is
+    # left out, like the user folder everywhere else: this message is meant to be pasted.
+    foreach ($l in @($lines)) {
+        if ("$l" -eq 'System.Management.Automation.RemoteException') { continue }
+        Say ("  $l" -replace "\(got '[^']*'\)", "(got the Windows account's name and the PC's)")
+    }
+}
+function Get-RepositoryIdentity {
+    # The name and GitHub no-reply address that most of this repository's own commits already
+    # carry, if there is one: nothing new is published by tagging under it.
+    $r = Invoke-Git @('log', '-n', '300', '--format=%an|%ae')
+    if ($r.ExitCode -ne 0) { return $null }
+    $best = @($r.Output | Where-Object { "$_" -match '\|[^|]+@users\.noreply\.github\.com$' } |
+        Group-Object | Sort-Object Count -Descending | Select-Object -First 1)
+    if (-not $best.Count) { return $null }
+    $parts = "$($best[0].Name)".Split('|')
+    if ($parts.Count -ne 2 -or -not $parts[0] -or -not $parts[1]) { return $null }
+    return [pscustomobject]@{ Name = $parts[0]; Email = $parts[1] }
 }
 
 if ($Name -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$') { Stop-Here "'$Name' is not a tag name this script will use." }
@@ -169,9 +189,17 @@ if ($local.ExitCode -eq 0) {
         if (("$($made.Output -join ' ')") -match '(?i)tell me who you are|identity|user\.email|user\.name') {
             Say ''
             Say 'git does not know who is tagging. Give this folder a name and an e-mail, then run this again.'
-            Say 'Both are published with the tag; the no-reply address GitHub shows under Settings, Emails will do:'
-            Say '    git config user.name  "Your name on GitHub"'
-            Say '    git config user.email "12345678+yourname@users.noreply.github.com"'
+            Say 'Both are published with the tag. They are set for this folder only.'
+            $known = Get-RepositoryIdentity
+            if ($known) {
+                Say 'These are the name and the GitHub no-reply address most of this repository''s commits already carry:'
+                Say "    git config user.name  `"$($known.Name)`""
+                Say "    git config user.email `"$($known.Email)`""
+            } else {
+                Say 'The no-reply address GitHub shows under Settings, Emails will do:'
+                Say '    git config user.name  "Your name on GitHub"'
+                Say '    git config user.email "12345678+yourname@users.noreply.github.com"'
+            }
         }
         Stop-Here 'the tag could not be created (the lines above are what git said).'
     }

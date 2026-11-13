@@ -447,6 +447,8 @@ What the tag says, in full, is in [`tags/mq01-logic-proof.txt`](tags/mq01-logic-
 
 State of the tag itself: **not yet on GitHub.** The session that wrote this record is allowed to push the branch but not tags (the push of the tag was refused). The owner creates and pushes it from the PC with the one command under "Tagging a milestone" in [TEST_RUNBOOK.md](TEST_RUNBOOK.md); this paragraph is to be changed when that has been done. (After the first version of that script was handed over, the owner's next paste was the eleventh run's report again: the script printed its message but did not copy it to the clipboard, as every other script here does. It does now, and it can be started through the usual command.)
 
+First run of the script on the PC, 2026-11-12 22:06 by its clock: it read the text, found the commit, asked GitHub (no tag there), and stopped when git refused to create the tag, because git on that PC had no name and e-mail to put on it. Nothing was created and nothing was pushed, and the message came back by the clipboard. The script now proposes the name and GitHub no-reply address that most of the repository's own commits already carry, and leaves out of its message the Windows account and PC name that git prints in that error.
+
 ### The timer and the conversation, 2026-11-13
 
 Not yet compiled and not yet run in the game. Owner decision D9: the evade timer is to be held while the player is talking to the Cutter lead (amendment A25).
