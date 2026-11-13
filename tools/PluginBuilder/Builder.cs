@@ -49,6 +49,11 @@ public sealed class Builder
     /// <summary>World models borrowed from items of the game: this plugin's item, and the path of the model file.</summary>
     public Dictionary<string, string> BorrowedModels { get; } = new();
 
+    /// <summary>The actors of this plugin's own that this build made (each is a copy of one of the game's, so none without Fallout4.esm).</summary>
+    public HashSet<string> MadeNpcs { get; } = new(StringComparer.OrdinalIgnoreCase);
+    /// <summary>For each of the game's actors a copy was made of: does its record name a default package list, and does it take one from a template?</summary>
+    public Dictionary<string, (bool InRecord, bool FromTemplate)> SourceDefaultList { get; } = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>The collision layer each placed trigger was given: the index the master has for the layer the spec names.</summary>
     public Dictionary<string, uint> PlacedLayers { get; } = new(StringComparer.OrdinalIgnoreCase);
 
@@ -110,6 +115,16 @@ public sealed class Builder
             Track(activator);
         }
 
+        foreach (var n in Spec.Npcs)
+        {
+            // The id is given out whether or not the actor can be made, so that
+            // the tracked id file comes out the same with and without Fallout4.esm.
+            var key = _mod.GetNextFormKey(n.EditorId);
+            var whyNot = TryMakeNpc(n, key);
+            if (whyNot != null) Pending.Add($"{n.EditorId}: not made ({whyNot})");
+        }
+        if (Spec.Npcs.Length > 0) NoteStayPackages();
+
         foreach (var b in Spec.Books)
         {
             var book = _mod.Books.AddNew(b.EditorId);
@@ -152,6 +167,144 @@ public sealed class Builder
         PlaceReferences();
 
         foreach (var q in Spec.Quests) Fill(quests[q.EditorId], q);
+    }
+
+    // ------------------------------------------------------------- actors
+
+    /// <summary>
+    /// Makes an actor of this plugin's own as a copy of one of the game's, and
+    /// takes away what makes it go about its business: its packages, its
+    /// default package list and its scripts, and the template flags that
+    /// would fetch those from the actor it is modelled on. What it looks
+    /// like, what it carries and how it fights stay as they were. The build
+    /// output says what the game's actor had, which is also the best account
+    /// to be had here of why a placed copy of that actor does what it does.
+    ///
+    /// UNTESTED in the game and in the Creation Kit until docs/design/VERIFY_LOG.md says otherwise.
+    /// </summary>
+    /// <returns>Nothing if the actor was made; otherwise why it was not.</returns>
+    string? TryMakeNpc(NpcSpec spec, FormKey key)
+    {
+        if (_vanilla == null) return $"it is a copy of '{spec.CopyFrom}', which needs Fallout4.esm";
+        if (!TryVanilla(spec.CopyFrom, "Npc", out var sourceKey) || !_vanilla.TryResolve<INpcGetter>(sourceKey, out var source))
+            return $"no Npc '{spec.CopyFrom}' in Fallout4.esm";
+        Npc? npc = null;
+        try
+        {
+            string Named<T>(FormKey k) where T : class, IFallout4MajorRecordGetter =>
+                _vanilla.TryResolve<T>(k, out var rec) && rec.EditorID != null ? $"{rec.EditorID} ({k})" : k.ToString();
+
+            var packages = source.Packages.Select(p => Named<IPackageGetter>(p.FormKey)).ToList();
+            var defaultList = source.DefaultPackageList.IsNull ? "none" : Named<IFormListGetter>(source.DefaultPackageList.FormKey);
+            var scripts = source.VirtualMachineAdapter?.Scripts.Select(s => s.Name).ToList() ?? new List<string>();
+            // Said once for each of the game's actors, however many copies are made of it.
+            if (SourceDefaultList.TryAdd(spec.CopyFrom, (!source.DefaultPackageList.IsNull, source.UseTemplateActors.HasFlag(Npc.TemplateActorType.DefPackList))))
+                VanillaNotes.Add($"{spec.CopyFrom}: the game's actor has {packages.Count} package(s)" + (packages.Count == 0 ? "" : ": " + string.Join(", ", packages))
+                    + $"; default package list {defaultList}; script(s) {(scripts.Count == 0 ? "none" : string.Join(", ", scripts))}"
+                    + $"; takes from a template: {FlagList(source.UseTemplateActors)}");
+
+            npc = _mod.Npcs.DuplicateInAsNewRecord(source, spec.EditorId, key);
+            npc.EditorID = spec.EditorId;
+            // Plain text, so that nothing has to be looked up in the game's strings files when the plugin is written.
+            npc.Name = spec.Name;
+            npc.ShortName = null;
+            npc.Packages.Clear();
+            npc.VirtualMachineAdapter = null;
+            // Whatever is taken away from the record must not come back from the actor it is modelled on.
+            var dropped = Npc.TemplateActorType.AiPackages | Npc.TemplateActorType.Script;
+            if (!spec.KeepDefaultPackageList)
+            {
+                npc.DefaultPackageList.Clear();
+                dropped |= Npc.TemplateActorType.DefPackList;
+            }
+            npc.UseTemplateActors &= ~dropped;
+            // A record of the game's that the library cannot write back would
+            // stop the whole build when the plugin is written, long after this.
+            // So the copy is written and read on its own first, and left out if that fails.
+            TrialWrite(npc);
+            Track(npc);
+            MadeNpcs.Add(spec.EditorId);
+            var list = !spec.KeepDefaultPackageList ? "no default package list"
+                : npc.UseTemplateActors.HasFlag(Npc.TemplateActorType.DefPackList) ? "its default package list still taken from a template"
+                : npc.DefaultPackageList.IsNull ? "no default package list (the game's actor names none)"
+                : "its default package list kept";
+            VanillaNotes.Add($"{spec.EditorId}: made as a copy of {spec.CopyFrom} with no packages and no script, and {list}; named '{spec.Name}'; still from a template: {FlagList(npc.UseTemplateActors)}");
+            return null;
+        }
+        catch (Exception e)
+        {
+            // One actor that cannot be made is no reason to lose the rest of the build.
+            if (npc != null) _mod.Npcs.Remove(npc.FormKey);
+            VanillaNotes.Add($"NOTE {spec.EditorId}: could not be made from {spec.CopyFrom} ({e.GetType().Name}: {e.Message})");
+            return $"copying '{spec.CopyFrom}' failed: {e.GetType().Name}";
+        }
+    }
+
+    /// <summary>
+    /// Writes one actor into a throw-away plugin and reads it back. Throws if either fails.
+    /// </summary>
+    static void TrialWrite(Npc npc)
+    {
+        const string name = "TLM_TrialWrite.esp";
+        var scratch = new Fallout4Mod(ModKey.FromNameAndExtension(name), Fallout4Release.Fallout4);
+        scratch.Npcs.DuplicateInAsNewRecord(npc);
+        // The library writes a plugin only under its own name, so the file gets a folder of its own.
+        var folder = Path.Combine(Path.GetTempPath(), $"tlm-trial-write-{Guid.NewGuid():N}");
+        var path = Path.Combine(folder, name);
+        Directory.CreateDirectory(folder);
+        try
+        {
+            scratch.BeginWrite.ToPath(path).WithNoLoadOrder().WithExtraIncludedMasters(Fallout4Esm).Write();
+            using var back = Fallout4Mod.CreateFromBinaryOverlay(path, Fallout4Release.Fallout4);
+            var read = back.Npcs.SingleOrDefault() ?? throw new InvalidOperationException("the copy did not read back as one actor");
+            if (read.Packages.Count != 0 || read.VirtualMachineAdapter != null)
+                throw new InvalidOperationException("the copy read back with packages or scripts");
+        }
+        finally
+        {
+            try { Directory.Delete(folder, recursive: true); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+        }
+    }
+
+    static string FlagList<T>(T flags) where T : struct, Enum
+    {
+        var bits = Convert.ToUInt64(flags);
+        var names = Enum.GetValues<T>().Where(v => Convert.ToUInt64(v) is var bit && bit != 0 && (bits & bit) == bit).Select(v => v.ToString()).ToList();
+        return names.Count == 0 ? "nothing" : string.Join(", ", names);
+    }
+
+    /// <summary>
+    /// Says which of the game's own packages look, by their names, as if they
+    /// keep an actor in one place. Nothing in this build uses one: an actor of
+    /// the plugin's own has no packages at all. It is here so that, should
+    /// such an actor not stay where it is put, the next build can give it a
+    /// package of the game's without another run just to find out the names.
+    /// A name is a hint and no more; what a package does is not read.
+    /// </summary>
+    void NoteStayPackages()
+    {
+        if (_vanillaMod == null) return;
+        try
+        {
+            string[] hints = { "Stay", "Hold", "Stand", "Wait", "EditorLoc", "Sandbox" };
+            var all = 0;
+            var found = new List<string>();
+            foreach (var p in _vanillaMod.Packages)
+            {
+                all++;
+                var id = p.EditorID;
+                if (id == null || !id.StartsWith("Default", StringComparison.OrdinalIgnoreCase)) continue;
+                if (hints.Any(h => id.Contains(h, StringComparison.OrdinalIgnoreCase))) found.Add($"{id} ({p.FormKey})");
+            }
+            found.Sort(StringComparer.OrdinalIgnoreCase);
+            const int most = 40;
+            VanillaNotes.Add($"packages: the master has {all}; {found.Count} have a name that begins 'Default' and holds one of {string.Join(", ", hints)}"
+                + (found.Count == 0 ? "" : ": " + string.Join(", ", found.Take(most)) + (found.Count > most ? $", and {found.Count - most} more" : "")));
+        }
+        catch (Exception e)
+        {
+            VanillaNotes.Add($"NOTE packages: the master's packages could not be looked through ({e.GetType().Name}: {e.Message})");
+        }
     }
 
     // ------------------------------------------------- placed references
@@ -250,7 +403,18 @@ public sealed class Builder
             foreach (var p in group)
             {
                 FormKey baseKey;
-                if (p.VanillaKind == null) baseKey = Local(p.Base).FormKey;
+                if (p.VanillaKind == null)
+                {
+                    if (!_byId.TryGetValue(p.Base, out var own))
+                    {
+                        // A record of the plugin's own that this build could not make (it says why elsewhere).
+                        if (!Spec.Npcs.Any(n => n.EditorId == p.Base))
+                            throw new InvalidOperationException($"{p.EditorId}: the spec places '{p.Base}', which this plugin does not define");
+                        Pending.Add($"{p.EditorId}: not placed (its base '{p.Base}' was not made)");
+                        continue;
+                    }
+                    baseKey = own.FormKey;
+                }
                 else if (!TryVanilla(p.Base, p.VanillaKind, out baseKey))
                 {
                     Pending.Add($"{p.EditorId}: not placed (no {p.VanillaKind} '{p.Base}' in Fallout4.esm)");
@@ -266,7 +430,7 @@ public sealed class Builder
                 var flags = PersistentFlag | (p.InitiallyDisabled ? InitiallyDisabledFlag : 0u);
                 // An actor is placed with a record of its own kind, whether its base is the game's or this plugin's.
                 var isNpc = p.VanillaKind == null
-                    ? Local(p.Base) is INpcGetter
+                    ? _byId[p.Base] is INpcGetter
                     : string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
                 if (isNpc)
                 {

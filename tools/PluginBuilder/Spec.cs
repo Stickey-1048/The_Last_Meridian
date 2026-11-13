@@ -99,6 +99,19 @@ public sealed record MiscSpec(string EditorId, string Name, string? ModelFrom = 
 public sealed record ActivatorSpec(string EditorId);
 
 /// <summary>
+/// An actor of this plugin's own, made as a copy of one of the game's. The copy
+/// keeps what makes the actor look and fight as it does and loses what makes
+/// it go about its business: its packages, its default package list and its
+/// scripts, with the template flags that would bring those back. It is made
+/// when the plugin is built, from the owner's own copy of the game; nothing of
+/// it is in the repository.
+/// </summary>
+/// <param name="CopyFrom">EditorID of the game's actor it is a copy of.</param>
+/// <summary>An actor of the plugin's own, made as a copy of one of the game's without its packages and scripts.</summary>
+/// <param name="KeepDefaultPackageList">Keep the list of packages the game's actor falls back on (most actors of the game's name the same list); false leaves the actor with none at all.</param>
+public sealed record NpcSpec(string EditorId, string Name, string CopyFrom, bool KeepDefaultPackageList);
+
+/// <summary>
 /// A reference this plugin places in a cell of the game. Where it goes is given
 /// from the cell's arrival marker (the spot where the console command "coc"
 /// puts the player, and the way the player then faces), which the builder
@@ -176,6 +189,20 @@ public static class Spec
         new("TLM_ACTI_TrialTrigger"),
     };
 
+    public static readonly NpcSpec[] Npcs =
+    {
+        // Development only (the placed-content trial, scenario 11). The game's
+        // settler, placed and enabled, did not stay where it was put
+        // (2026-11-13). These are the same settler with nothing to do: no
+        // packages and no script. The first keeps the list of packages the
+        // game's settler falls back on, as an ordinary actor would; the second
+        // has not even that. Which of the two stays where it is put, if
+        // either, is what scenario 11 asks the game. The names are
+        // placeholders, not characters.
+        new("TLM_NPC_TrialPerson", "Second Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: true),
+        new("TLM_NPC_TrialPersonBare", "Third Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: false),
+    };
+
     // ------------------------------------------------- placed references
     // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
     // References in the game's own test room, which the plugin overrides for
@@ -220,6 +247,16 @@ public static class Spec
         // box, where the floor was open.)
         new("TLM_REF_TrialTriggerNoLayer", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 360, Right: -520, Up: 100,
             BoxHalfExtents: TrialBox),
+        // Scenario 11, people. Three more persons on the two spots known to be
+        // open floor (the player came down at height 0 on each on 2026-11-13;
+        // they are the middles of the first two boxes, on the floor): the two
+        // persons on bases of the plugin's own, and a second copy of the
+        // game's settler, to tell the spot from the actor. All start disabled,
+        // like the first, and scenario 11 enables them one at a time: the two
+        // of the plugin's own share a spot and are never there together.
+        new("TLM_REF_TrialPersonOwn", TrialCell, "TLM_NPC_TrialPerson", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
+        new("TLM_REF_TrialSettlerOnFloor", TrialCell, "WorkshopNPC", "Npc", Ahead: 600, Right: 200, Up: 0, InitiallyDisabled: true),
+        new("TLM_REF_TrialPersonBare", TrialCell, "TLM_NPC_TrialPersonBare", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
     };
 
     public static readonly BookSpec[] Books =
@@ -260,6 +297,9 @@ public static class Spec
         // Development only (the placed-content trial): its title is the name
         // the placed person is shown under. A placeholder, not a character.
         new("TLM_MSG_TrialPersonName", "Trial Settler", "", Box: false),
+        // Development only (scenario 11): what is shown when the person of the
+        // plugin's own is activated. Not a box: nobody is there to answer one.
+        new("TLM_MSG_TrialTalk", null, "The second trial settler has nothing to say yet.", Box: false),
     };
 
     // --------------------------------------------------------------- core
@@ -546,8 +586,9 @@ public static class Spec
     // object, and a stage for each of those scripts to set. It is started by
     // the test only. Every alias is Optional, so that one that stays empty is
     // reported by name and does not keep the quest from starting.
-    // Remove it, the records above marked "trial" and
-    // scripts/Source/User/TLM/PlacedTrial.psc before any release.
+    // Scenario 11 (TLM:PlacedPeople) uses the same quest for three persons.
+    // Remove it, the records above marked "trial",
+    // scripts/Source/User/TLM/PlacedTrial.psc and PlacedPeople.psc before any release.
     public static readonly QuestSpec Trial = new(
         "TLM_Trial", "The Last Meridian (placed-content trial)", "None", 30, StartGameEnabled: false,
         Stages: new StageSpec[]
@@ -556,6 +597,7 @@ public static class Spec
             new(11, Note: "The player entered the trigger made on the game's own empty trigger, with no layer"),
             new(12, Note: "The player entered the trigger of the plugin's own with no layer"),
             new(20, Note: "The player picked the object up"),
+            new(30, Note: "The player activated the person of the plugin's own"),
             new(100, CompleteQuest: true, Note: "Trial finished"),
         },
         Objectives: Array.Empty<ObjectiveSpec>(),
@@ -566,6 +608,11 @@ public static class Spec
             new("TriggerGameBase", Fill.Placed, Placed: "TLM_REF_TrialTriggerGameBase", Scripts: SetStageOnTrigger(11)),
             new("Object", Fill.Placed, Placed: "TLM_REF_TrialObject", Scripts: SetStageOnPickup(20)),
             new("TriggerNoLayer", Fill.Placed, Placed: "TLM_REF_TrialTriggerNoLayer", Scripts: SetStageOnTrigger(12)),
+            // Activating this person shows a line and sets a stage: the rough
+            // walk-through's stand-in for talking to somebody.
+            new("PersonOwn", Fill.Placed, AllowDisabled: true, Placed: "TLM_REF_TrialPersonOwn", Scripts: Examine("TLM_MSG_TrialTalk", 30)),
+            new("SettlerOnFloor", Fill.Placed, AllowDisabled: true, Placed: "TLM_REF_TrialSettlerOnFloor"),
+            new("PersonBare", Fill.Placed, AllowDisabled: true, Placed: "TLM_REF_TrialPersonBare"),
         },
         Script: new ScriptBind("TLM:PlacedTrial",
             new AliasProp("Alias_Person", "Person"),
@@ -574,7 +621,17 @@ public static class Spec
             new AliasProp("Alias_Object", "Object"),
             new AliasProp("Alias_TriggerNoLayer", "TriggerNoLayer"),
             new FormProp("TrialObject", "TLM_MISC_TrialObject"),
-            new VanillaProp("MarkerBase", "XMarker", "Static")));
+            new VanillaProp("MarkerBase", "XMarker", "Static")),
+        ExtraScripts: new[]
+        {
+            // Development only: self-test scenario 11.
+            new ScriptBind("TLM:PlacedPeople",
+                new AliasProp("Alias_Person", "Person"),
+                new AliasProp("Alias_PersonOwn", "PersonOwn"),
+                new AliasProp("Alias_PersonBare", "PersonBare"),
+                new AliasProp("Alias_SettlerOnFloor", "SettlerOnFloor"),
+                new VanillaProp("MarkerBase", "XMarker", "Static")),
+        });
 
     public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial };
 }

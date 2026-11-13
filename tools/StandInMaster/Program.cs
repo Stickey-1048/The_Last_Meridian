@@ -24,7 +24,9 @@
 //   plain-triggers   As default, but the master's own box triggers do not carry
 //                    their reach a second time (as the reference's bound).
 //                    The builder does as most of them do, so it must then
-//                    write none either.
+//                    write none either. Its settler is plainer too: it names
+//                    no default package list and takes nothing from a
+//                    template, so the builder's copies have none to keep.
 //   bare-room        The test room exists, but with no arrival marker; and the
 //                    master has no collision layers, no empty trigger base and
 //                    no triggers of its own. The builder must still place what
@@ -63,6 +65,33 @@ var cells = new List<Cell>();
 if (room)
 {
     var settler = mod.Npcs.AddNew("WorkshopNPC");
+    // Like the game's settler in the ways the builder cares about: it has
+    // things to go about (packages, a default package list, a script) and
+    // takes some of what it is from a template. A copy made by the builder
+    // has to come out without the first three, and still with its looks.
+    settler.Name = "Settler";
+    var sandbox = mod.Packages.AddNew("StandInSandbox");
+    var patrol = mod.Packages.AddNew("StandInPatrol");
+    // Two whose names read like the game's all-purpose packages, for the
+    // builder's list of packages that might keep somebody in one place.
+    mod.Packages.AddNew("DefaultStandInHoldPosition");
+    mod.Packages.AddNew("DefaultStandInSandboxNearSelf");
+    settler.Packages.Add(sandbox.ToLink<IPackageGetter>());
+    settler.Packages.Add(patrol.ToLink<IPackageGetter>());
+    settler.VirtualMachineAdapter = new VirtualMachineAdapter();
+    settler.VirtualMachineAdapter.Scripts.Add(new ScriptEntry { Name = "StandInWorkshopScript" });
+    if (variant == "plain-triggers")
+    {
+        // A plainer settler too: it names no default package list and takes
+        // nothing from a template, so a copy has none to keep.
+    }
+    else
+    {
+        var defaults = mod.FormLists.AddNew("StandInDefaultPackages");
+        settler.DefaultPackageList.SetTo(defaults);
+        settler.UseTemplateActors = Npc.TemplateActorType.Traits | Npc.TemplateActorType.AiPackages | Npc.TemplateActorType.Script
+            | Npc.TemplateActorType.Inventory | Npc.TemplateActorType.DefPackList;
+    }
     var marker = mod.Statics.AddNew("XMarker");
     fixtures = $" WorkshopNPC={settler.FormKey} XMarker={marker.FormKey}";
 

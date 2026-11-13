@@ -48,8 +48,12 @@ public static class Report
     /// <param name="OfThisPlugin">False: the cell belongs to a master, and the plugin only adds to it.</param>
     /// <param name="Name">The cell's name as this plugin carries it (it replaces the master's while the plugin is loaded).</param>
     public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed, string? Name = null);
+    /// <summary>An actor of this plugin's own: what it would go about its business with.</summary>
+    /// <param name="TemplateFlags">What the actor takes from the actor it is modelled on.</param>
+    public sealed record NpcInfo(string EditorId, string FormKey, string? Name, int Packages, bool HasDefaultPackageList,
+        List<string> Scripts, List<string> TemplateFlags);
     public sealed record PluginInfo(string File, List<string> Masters, float HeaderVersion, uint LowestFormId,
-        List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests, List<CellInfo> Cells);
+        List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests, List<CellInfo> Cells, List<NpcInfo> Npcs);
 
     public static PluginInfo Read(string path)
     {
@@ -76,6 +80,13 @@ public static class Report
         foreach (var m in mod.MiscItems) simple.Add(new("MiscItem", m.EditorID!, m.FormKey.ToString(), m.Name?.String, NullIfEmpty(m.Model?.File)));
         foreach (var b in mod.Books) simple.Add(new("Book", b.EditorID!, b.FormKey.ToString(), b.Name?.String, NullIfEmpty(b.Model?.File)));
         foreach (var a in mod.Activators) simple.Add(new("Activator", a.EditorID!, a.FormKey.ToString(), a.Name?.String, NullIfEmpty(a.Model?.File)));
+        var npcs = new List<NpcInfo>();
+        foreach (var n in mod.Npcs)
+        {
+            simple.Add(new("Npc", n.EditorID!, n.FormKey.ToString(), n.Name?.String));
+            npcs.Add(new(n.EditorID!, n.FormKey.ToString(), n.Name?.String, n.Packages.Count, !n.DefaultPackageList.IsNull,
+                n.VirtualMachineAdapter?.Scripts.Select(s => s.Name).ToList() ?? new(), FlagNames(n.UseTemplateActors)));
+        }
 
         var cells = new List<CellInfo>();
         foreach (var block in mod.Cells.Records)
@@ -167,7 +178,7 @@ public static class Report
             mod.ModHeader.MasterReferences.Select(m => m.Master.FileName.String).ToList(),
             mod.ModHeader.Stats.Version,
             ids.Keys.Where(k => k.ModKey == mod.ModKey).Select(k => k.ID).DefaultIfEmpty(0u).Min(),
-            simple, messages, quests, cells);
+            simple, messages, quests, cells, npcs);
     }
 
     static string? NullIfEmpty(string? s) => string.IsNullOrEmpty(s) ? null : s;
@@ -203,6 +214,9 @@ public static class Report
             sb.AppendLine($"{grp.Key} ({grp.Count()})");
             foreach (var r in grp) sb.AppendLine($"  {r.FormKey[..6]}  {r.EditorId}{(r.Name == null ? "" : $"  \"{r.Name}\"")}{(r.Model == null ? "" : $"  model: {r.Model}")}");
         }
+        foreach (var n in info.Npcs)
+            sb.AppendLine($"          {n.EditorId}: {n.Packages} package(s), {(n.HasDefaultPackageList ? "a" : "no")} default package list, " +
+                          $"script(s) {(n.Scripts.Count == 0 ? "none" : string.Join(", ", n.Scripts))}, from a template: {(n.TemplateFlags.Count == 0 ? "nothing" : string.Join(", ", n.TemplateFlags))}");
         sb.AppendLine($"Message ({info.Messages.Count})");
         foreach (var m in info.Messages)
         {

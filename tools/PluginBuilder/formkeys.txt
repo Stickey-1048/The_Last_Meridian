@@ -88,3 +88,15 @@ TLM_REF_TrialTriggerActorZone
 2091
 TLM_REF_TrialTriggerNoLayer
 2092
+TLM_NPC_TrialPerson
+2093
+TLM_MSG_TrialTalk
+2094
+TLM_REF_TrialPersonOwn
+2095
+TLM_REF_TrialSettlerOnFloor
+2096
+TLM_NPC_TrialPersonBare
+2097
+TLM_REF_TrialPersonBare
+2098

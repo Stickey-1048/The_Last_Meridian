@@ -100,6 +100,21 @@
     "source": "falloutck.uesp.net/wiki/Enable_-_ObjectReference"
    }
   ],
+  "EnableAI": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [
+     "bool abEnable = true",
+     "bool abPauseVoice = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/EnableAI_-_Actor"
+   }
+  ],
   "ForceRefTo": [
    {
     "global": false,
@@ -124,6 +139,31 @@
     "params": [],
     "returns": "Actor",
     "source": "falloutck.uesp.net/wiki/GetActorReference_-_ReferenceAlias"
+   }
+  ],
+  "GetCurrentPackage": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "Package",
+    "source": "falloutck.uesp.net/wiki/GetCurrentPackage_-_Actor"
+   }
+  ],
+  "GetCurrentRealTime": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "note": "The page's syntax line leaves out 'global'; its example calls Utility.GetCurrentRealTime(), as every function of the Utility script is called.",
+    "owner": "Utility",
+    "params": [],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/GetCurrentRealTime_-_Utility"
    }
   ],
   "GetDistance": [
@@ -236,6 +276,18 @@
     "params": [],
     "returns": "ObjectReference",
     "source": "falloutck.uesp.net/wiki/GetReference_-_ReferenceAlias"
+   }
+  ],
+  "GetSitState": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "int",
+    "source": "falloutck.uesp.net/wiki/GetSitState_-_Actor"
    }
   ],
   "GetStageDone": [
@@ -458,6 +510,30 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/MoveTo_-_ObjectReference"
+   }
+  ],
+  "MoveToMyEditorLocation": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/MoveToMyEditorLocation_-_ObjectReference"
+   }
+  ],
+  "MoveToNearestNavmeshLocation": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/MoveToNearestNavmeshLocation_-_ObjectReference"
    }
   ],
   "Notification": [
@@ -737,6 +813,22 @@
     "source": "falloutck.uesp.net/wiki/SetPlayerEnemy_-_Faction"
    }
   ],
+  "SetPosition": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 3,
+    "min_args": 3,
+    "owner": "ObjectReference",
+    "params": [
+     "float afX",
+     "float afY",
+     "float afZ"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/SetPosition_-_ObjectReference"
+   }
+  ],
   "SetProtected": [
    {
     "global": false,
@@ -749,6 +841,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/SetProtected_-_Actor"
+   }
+  ],
+  "SetRestrained": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [
+     "bool abRestrained = true"
+    ],
+    "returns": "bool",
+    "source": "falloutck.uesp.net/wiki/SetRestrained_-_Actor"
    }
   ],
   "SetStage": [
@@ -975,6 +1081,20 @@
     ],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/WaitMenuMode_-_Utility"
+   }
+  ],
+  "sqrt": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Math",
+    "params": [
+     "float afValue"
+    ],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/Sqrt_-_Math"
    }
   ]
  }

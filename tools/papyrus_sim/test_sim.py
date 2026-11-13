@@ -35,7 +35,7 @@ VANILLA = BUILD / "TheLastMeridian.vanilla.json"
 GAME_RUNS = json.loads((HERE / "game_runs.json").read_text())["runs"]
 
 # Scenarios that exist in the scripts as they are now.
-CURRENT_SCENARIOS = list(range(1, 11))
+CURRENT_SCENARIOS = list(range(1, 12))
 
 
 def need_build(test):

@@ -55,10 +55,11 @@ ids_before="$(git hash-object tools/PluginBuilder/formkeys.txt)"
 
 standin default
 # The bytes of the written file, without the library that wrote them: the
-# quests, and the references placed in the test room. With --self-test the
-# file is also damaged in a dozen ways, and each has to be noticed.
+# quests, the references placed in the test room, and the actors of the
+# plugin's own. With --self-test the file is also damaged in two dozen ways,
+# and each has to be noticed.
 if python3 tools/check_plugin_layout.py --self-test "$tmp/default/out/TheLastMeridian.esp" > "$tmp/layout.txt"; then
-  sed -n '2,3p' "$tmp/layout.txt"
+  sed -n '2,4p' "$tmp/layout.txt"
 else
   cat "$tmp/layout.txt"
   echo "FAILED: the plugin built against a master has the wrong layout"; exit 1
@@ -74,6 +75,13 @@ grep -q "^Cell QASmoke .* name: \"Stand-In Test Room\"$" "$(report default)" || 
 grep -q "this build writes it too, as most of them do" "$(report default)" || { echo "FAILED: the builder did not follow a master whose triggers carry their bound"; exit 1; }
 grep -q "TLM_MISC_TrialObject  \"Trial Object\"  model: " "$(report default)" || { echo "FAILED: the trial object did not borrow a world model from the master"; exit 1; }
 grep -q "alias  0 Person  (reference) \[Optional, AllowDisabled\]  fill: forced .*  shown as: TLM_MSG_TrialPersonName" "$(report default)" || { echo "FAILED: the Person alias does not point at the placed person"; exit 1; }
+# The people of scenario 11: actors of the plugin's own, made from the master's settler with nothing to go about.
+grep -q "WorkshopNPC: the game's actor has 2 package(s): StandInSandbox (.*), StandInPatrol (.*); default package list StandInDefaultPackages (.*); script(s) StandInWorkshopScript; takes from a template: Traits, AiPackages, Inventory, Script, DefPackList$" "$(report default)" || { echo "FAILED: what the master's settler goes about with was not reported"; exit 1; }
+grep -q "TLM_NPC_TrialPerson: made as a copy of WorkshopNPC with no packages and no script, and its default package list still taken from a template; named 'Second Trial Settler'; still from a template: Traits, Inventory, DefPackList$" "$(report default)" || { echo "FAILED: the person of the plugin's own was not made from the master's settler as specified"; exit 1; }
+grep -q "TLM_NPC_TrialPersonBare: made as a copy of WorkshopNPC with no packages and no script, and no default package list; named 'Third Trial Settler'; still from a template: Traits, Inventory$" "$(report default)" || { echo "FAILED: the person with no default package list was not made as specified"; exit 1; }
+grep -q "TLM_REF_TrialPersonOwn  PlacedNpc of TLM_NPC_TrialPerson  at (1800, -600, 64) turned (0, 0, 270)  \[Persistent, InitiallyDisabled\]  in the Persistent list" "$(report default)" || { echo "FAILED: the person of the plugin's own is not placed as an actor where specified"; exit 1; }
+grep -q "alias  5 PersonOwn  (reference) \[Optional, AllowDisabled\]  fill: forced " "$(report default)" || { echo "FAILED: the PersonOwn alias does not point at the placed person"; exit 1; }
+grep -q "packages: the master has 4; 2 have a name that begins 'Default' and holds one of .*: DefaultStandInHoldPosition (.*), DefaultStandInSandboxNearSelf (.*)$" "$(report default)" || { echo "FAILED: the master's stay-put packages were not listed"; exit 1; }
 grep -q "FixtureActorBase = " "$(report default)" || { echo "FAILED: the settler the self-test's stand-ins are made from was not found in the master"; exit 1; }
 grep -q "FixtureMarkerBase = " "$(report default)" || { echo "FAILED: the marker the self-test's stand-ins are made from was not found in the master"; exit 1; }
 # This build is the one the stand-in engine runs the scripts against (step 5).
@@ -99,6 +107,9 @@ standin weak-evidence
 grep -q "alias  0 Player  (reference) \[Optional\]" "$(report weak-evidence)" || { echo "FAILED: two quests were accepted as enough evidence for the player reference"; exit 1; }
 grep -q "^Cell " "$(report weak-evidence)" && { echo "FAILED: a cell record was written although the master has no test room"; exit 1; }
 grep -q "TLM_REF_TrialPerson: not placed (no cell 'QASmoke' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: a master without the test room was not reported"; exit 1; }
+# That master has no settler either: the actors made from it are left out, and so is whoever stands on them.
+grep -q "TLM_NPC_TrialPerson: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: an actor that could not be made was not reported"; exit 1; }
+grep -q "^Npc " "$(report weak-evidence)" && { echo "FAILED: an actor record was written although the master has no settler to copy"; exit 1; }
 
 # A master that keeps its text apart, in strings files, as the game's own
 # master does: the room's name has to come out of those. And the same master
@@ -116,6 +127,7 @@ grep -q "^Cell QASmoke .* name: none$" "$(report localized)" || { echo "FAILED: 
 # A master whose own box triggers carry no bound: the builder writes none either.
 standin plain-triggers
 python3 tools/check_plugin_layout.py "$tmp/plain-triggers/out/TheLastMeridian.esp" >/dev/null || { echo "FAILED: the plugin built against the master with plain triggers has the wrong layout"; exit 1; }
+grep -q "TLM_NPC_TrialPerson: made as a copy of WorkshopNPC with no packages and no script, and no default package list (the game's actor names none); named 'Second Trial Settler'; still from a template: nothing$" "$(report plain-triggers)" || { echo "FAILED: a settler with no default package list and no template was not copied as it is"; exit 1; }
 grep -q "this build does not write it, as most of them do not" "$(report plain-triggers)" || { echo "FAILED: the builder did not follow a master whose triggers carry no bound"; exit 1; }
 grep -q "TLM_REF_TrialTrigger  PlacedObject of TLM_ACTI_TrialTrigger  at (1800, -600, 164) .*  Box (150, 150, 150)  collision layer 12" "$(report plain-triggers)" || { echo "FAILED: a bound was written although the master's own triggers carry none"; exit 1; }
 

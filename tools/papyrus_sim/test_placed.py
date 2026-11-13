@@ -1,17 +1,21 @@
 """Tests of self-test scenario 10, the placed-content trial, and of the
 stand-in's rules for what a plugin places in a cell of the game.
 
-NOTHING HERE HAS BEEN SEEN IN THE GAME. Every other rule of the stand-in has
-at least one game run behind it. These do not: they come from the Creation
-Kit wiki (what a trigger is, what picking something up does, what the game's
-two default alias scripts do) and, where the wiki is silent, from the
-cautious reading, marked [assumed] in sim.py. So a pass here says three
-things agree with each other: the scenario's script, the plugin the builder
-writes, and those readings. It says nothing about the game. The first run of
-scenario 10 on the PC is what that is for; when it has been made, record it
-in game_runs.json and correct sim.py where the game differed.
+WHAT THE GAME HAS SHOWN. The rules were written from the Creation Kit wiki
+(what a trigger is, what picking something up does, what the game's two
+default alias scripts do) and, where the wiki is silent, from the cautious
+reading. The first run of scenario 10 in the game, on 2026-11-13, bore them
+out for the player: 17 of 17 (docs/design/VERIFY_LOG.md, the thirteenth run;
+sim.py says [seen] where that run showed a thing, and [assumed] where it did
+not). Two things it did not settle. The scenario as it is now differs from
+the one that ran: its two comparison triggers leave the collision layer out.
+And a placed person did not stay where it was put, which is what scenario 11
+and test_people.py are about.
 
-What the tests are for meanwhile:
+So a pass here still says only that three things agree with each other: the
+scenario's script, the plugin the builder writes, and the stand-in's rules.
+
+What the tests are for:
   - the scenario passes against the plugin as built, however the timing falls;
   - the scenario notices each thing it is there to notice: every test in
     WhatTheScenarioCatches breaks one thing in the plugin's description and
@@ -278,7 +282,7 @@ EndEvent
 
 
 class TheStandInsRulesForPlacedThings(unittest.TestCase):
-    """Each rule as sim.py states it. None of them has been seen in the game."""
+    """Each rule as sim.py states it; sim.py also says which of them the game has shown."""
 
     def session(self, change=None, listen_on=()):
         need_trial_build(self)
@@ -320,9 +324,11 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
         s = self.session()
         quest = s.quests["TLM_Trial"]
         self.assertFalse(quest.running)
-        self.assertEqual([a.ref for a in quest.aliases.values()], [None] * 5)
+        self.assertEqual([a.ref for a in quest.aliases.values()], [None] * len(quest.aliases))
         self.assertTrue(s.n_quest_start(quest, None))
-        self.assertEqual([a.ref for a in quest.aliases.values()], [s.placed[x] for x in (PERSON, TRIGGER, GAME_TRIGGER, OBJECT, PLAIN_TRIGGER)])
+        # the five of scenario 10 first, then the people of scenario 11 (test_people.py)
+        self.assertEqual([a.ref for a in quest.aliases.values()][:5], [s.placed[x] for x in (PERSON, TRIGGER, GAME_TRIGGER, OBJECT, PLAIN_TRIGGER)])
+        self.assertTrue(all(isinstance(a.ref, Actor) for a in list(quest.aliases.values())[5:]))
 
     def test_what_is_placed_is_where_and_how_the_plugin_says(self):
         s = self.session()

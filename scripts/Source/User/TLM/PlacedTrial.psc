@@ -39,7 +39,8 @@ seconds of the 45 a step was allowed). Those changes are NOT YET COMPILED.
 
 What that run showed besides: the settler, once enabled, did not stand where
 the plugin had put it (it was 489 units away a moment later). Why is not
-known; it is the next thing to find out.}
+known. Scenario 11 (TLM:PlacedPeople, on the same quest) is there to find
+out, and to see whether a person with nothing to go about stays.}
 
 Group Aliases
 	ReferenceAlias Property Alias_Person Auto Const Mandatory

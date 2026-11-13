@@ -52,14 +52,18 @@
     10 a person, a trigger and an object that the plugin itself places in the
        test room, and the quest aliases that point at them (the placed-content
        trial, docs\design\TLM_GRAYBOX_trial.md)
+    11 people the plugin places: whether one stays where it is put, and whether
+       activating it reaches a script (the same trial, part two). 10 and 11
+       use the same quest, which runs once: each needs a session of its own,
+       as every scenario gets here.
     101 and up   the rows of the two test matrices, generated from the logic
                  model. tools\matrix_cases.json lists them: which rows each
                  stands for and the events it plays.
 
   -Scenarios takes numbers, ranges and names, separated by commas:
-    all      1 to 10 and every matrix case (the default; over an hour at the
+    all      1 to 11 and every matrix case (the default; over an hour at the
              pace of 2026-11-13)
-    basic    1 to 10
+    basic    1 to 11
     matrix   every matrix case
     main     the matrix cases of the main quest (101 to 199)
     side     the matrix cases of the side quest (201 to 299)
@@ -155,12 +159,13 @@ if (Test-Path -LiteralPath $matrixFile) {
         $caseTitles[[int]$c.scenario] = "$(@($c.rows) -join ', '): $($c.title)"
     }
 }
-$basicNumbers = @(1..10)
+$basicNumbers = @(1..11)
 $basicTitles = @{
     1 = 'both quests by stages alone'; 2 = 'actors made at run time, in the aliases, killed'
     3 = 'distance events and the quest''s "the player has left" watch'; 4 = 'evaded'; 5 = 'saved after a fight'
     6 = 'missed'; 7 = 'betrayal on the road'; 8 = 'murder after saving'; 9 = 'the deal'
     10 = 'a person, a trigger and an object placed by the plugin (the placed-content trial)'
+    11 = 'people placed by the plugin: do they stay, can they be activated (the trial, part two)'
 }
 foreach ($k in $basicTitles.Keys) { $caseTitles[[int]$k] = $basicTitles[$k] }
 
@@ -343,7 +348,7 @@ function Read-ScenarioLogs([datetime]$since) {
             }
         }
         $r.Problems = @($problems)
-        # The placed-content trial (scenario 10) asks the game's own scripts on its aliases to
+        # The placed-content trial (scenarios 10 and 11) asks the game's own scripts on its aliases to
         # write what they do (their ShowTraces property). Whatever the script log says of the
         # trial's quest, by whomever, that is not already listed as a problem.
         # (Dated lines only: the lines of an error's stack begin with a tab and belong to the error.)
@@ -636,7 +641,7 @@ foreach ($r in $results) {
     } else {
         $out.Add("  errors and warnings in the game's script log that name this project: none")
     }
-    if ([int]$r.Scenario -eq 10 -or $r.Logs.TrialLines.Count) {
+    if ((10, 11) -contains [int]$r.Scenario -or $r.Logs.TrialLines.Count) {
         if ($r.Logs.TrialLines.Count) {
             $out.Add("  other lines in the game's script log that name the trial's quest ($($r.Logs.TrialLines.Count)$(if ($r.Logs.TrialLines.Count -gt 40) { ', first 40 shown' })):")
             foreach ($l in ($r.Logs.TrialLines | Select-Object -First 40)) { $out.Add("    $l") }

@@ -12,7 +12,8 @@ Results go to Documents\My Games\Fallout4\Logs\Script\User\TLM.0.log (Papyrus
 logging has to be on), to the Papyrus log, and to a message box.
 
 Scenarios: 1 here; 2 and 3 in TLM:FixtureProbe; 4 to 9 in TLM:WorldCases;
-10 in TLM:PlacedTrial, which is on a quest of its own (TLM_Trial);
+10 in TLM:PlacedTrial and 11 in TLM:PlacedPeople, which are on a quest of
+their own (TLM_Trial);
 101 and up in TLM:MatrixCases, which is generated from the logic model.
 A number after the function name picks one:   cqf TLM_Core RunSelfTest 4
 One fresh game session per scenario: the quests run once.
@@ -26,7 +27,9 @@ no OnStageSet event reached the quest scripts; that was a fault in the
 generated plugin.)
 Scenario 10 was added on 2026-11-13: the property TLM_Trial, its branch in
 RunSelfTest and its part of the "already started" test below compiled and
-ran that day (the thirteenth run: seven scenarios, 196 checks, 0 failed).}
+ran that day (the thirteenth run: seven scenarios, 196 checks, 0 failed).
+Scenario 11 was added after that run: its branch in RunSelfTest is NOT YET
+COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
@@ -149,7 +152,9 @@ Function RunSelfTest(int aiScenario = 0)
 	quest's aliases. 3: distance events. 4 to 9: the main quest played with a
 	caravan made at run time, one case for each way the encounter can end
 	(TLM:WorldCases). 10: a person, a trigger and an object that the plugin
-	itself places in the test room (TLM:PlacedTrial). 101 and up: the test
+	itself places in the test room (TLM:PlacedTrial). 11: whether a person the
+	plugin places stays where it is put and can be activated
+	(TLM:PlacedPeople). 101 and up: the test
 	matrix, generated from the logic model (TLM:MatrixCases, with
 	TLM:CaseDriver).}
 	If busy
@@ -223,6 +228,13 @@ Function RunSelfTest(int aiScenario = 0)
 			Fail("the placed-content trial script is not attached to its quest")
 		Else
 			placedTrial.Run(Self)
+		EndIf
+	ElseIf scenario == 11
+		TLM:PlacedPeople placedPeople = TLM_Trial as TLM:PlacedPeople
+		If !placedPeople
+			Fail("the placed-people script is not attached to the trial's quest")
+		Else
+			placedPeople.Run(Self)
 		EndIf
 	ElseIf scenario >= 100
 		TLM:MatrixCases matrixCases = (Self as Quest) as TLM:MatrixCases

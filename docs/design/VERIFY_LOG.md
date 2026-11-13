@@ -612,6 +612,32 @@ Changed after this run (checks pass; none of it compiled or run in the game):
 
 Still not done anywhere: opening the plugin in the Creation Kit, people who stay where they are placed, dialogue, saves and loads, anything in a place built for the purpose, any test of the quest as a player would meet it.
 
+### Prepared for the next run: people the plugin places, 2026-11-13
+
+Branch `feat/tlm-mq01-graybox`. **None of this has been compiled or run in the game.** The design, the reasons, how to read the result and how to take it out again are in [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two.
+
+The thirteenth run left one thing open: the game's settler, placed and enabled, did not stay where it was put. Scenario 11 asks the game whether a person does stay when it has nothing to go about, and whether activating such a person reaches a script:
+
+| What the plugin gains | |
+|---|---|
+| Two actors of its own, `TLM_NPC_TrialPerson` and `TLM_NPC_TrialPersonBare` | The builder makes each when the plugin is built, as a copy of the game's settler, and takes away its packages, its scripts and the template flags that would fetch either. The first keeps the settler's default package list; the second has none. The copy is a record, made on the PC from that PC's own master and present only in the built plugin, which is not in this repository |
+| Three more placed people in `QASmoke`, all initially disabled | One of each actor on a spot known to be open floor, and a second copy of the game's settler on the other such spot |
+| Stage 30 and three aliases on `TLM_Trial` | The alias of the first person carries the project's `TLM:MessageStageAlias`: activated by the player, it shows a line and sets stage 30 |
+| Scenario 11 (`TLM:PlacedPeople`) | 8 scored checks: the person of the plugin's own is there, starts disabled, can be enabled, **is within 64 units of its spot six seconds later**, and activating it sets stage 30 (from where the player stands, or failing that from close by). Reported for all four people, each enabled alone: where it is at once, after two seconds and after six, what package it runs, whether it sits or fights. Then experiments, which may not come back and so come last: what holds a person that did not stay, and where the navigation mesh is under each spot |
+
+What was found out on the way, without the game:
+
+| What | Found |
+|---|---|
+| A template can bring back what was taken away | An actor can take its packages, its scripts and its default package list from the actor it is modelled on, by flags in its own record. Emptying the copy's own lists is not enough: the flags for packages and scripts are cleared as well, and the one for the default package list is cleared where the list is dropped and kept where it is kept. The build output names the flags the game's settler has |
+| A person on a base of the plugin's own | Is written as a placed actor, not a placed object. The builder decided that by whether the base was looked up in the master as an actor, which a base of the plugin's own never is. Found by the builder's own read-back check on the first build |
+| One wiki page leaves out a word | *GetCurrentRealTime - Utility* gives the function without `global`. Its example, and every other function of that script, says it is one. Noted in `tools/papyrus_natives.json` |
+| The stand-in engine did not let a placed person move | It now moves a placed person that has something to go about by what the game showed (489 units, 13 up), as early as that can have happened (before `Enable` comes back), and leaves one with nothing to go about where it is. That the settler moved is seen, once; when it moved is assumed; that a person with no packages stays is the guess the scenario tests |
+
+Checks: `tools/run_checks.sh` passes. 64 scenarios pass on the stand-in engine, 1,586 checks (the 63 from before unchanged, at 1,578). 139 tests of the stand-in, 33 of them new. The written plugin's actors are read back through the library and from the bytes, where six kinds of deliberate damage to them are each caught, 26 in all. Six faults put into the builder's actor-making code are each refused by its own read-back check; twelve put into the scenario's script each make it score differently from the script as it is, in a setting where the fault matters. The Windows chain ran against the stand-in PC with scenarios 11, 10 and 2.
+
+**What that is worth.** That the script, the plugin and the stand-in agree. On the one question that matters, whether a person with no packages stays, the stand-in knows nothing: it says yes because it was told to. Nine functions are called here that this project has never compiled a call to (`GetCurrentPackage`, `GetSitState`, `SetRestrained`, `EnableAI`, `SetPosition`, `MoveToMyEditorLocation`, `MoveToNearestNavmeshLocation`, `Utility.GetCurrentRealTime`, `Math.sqrt`); all are on the wiki with their signatures, and a compile error would stop the run before the game starts. The real settler has never been copied by the library; if that fails the build says so and carries on without the two actors.
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
@@ -701,7 +727,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed**, and again in the eleventh run.
 3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done: all four cases.** 130, 131 and 132 on 2026-11-12 (the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path, on 2026-11-13 in the thirteenth run, with a death with nobody named as the killer: twice before something else had got there first (the fight rule on 2026-11-12, the death's announcement in the twelfth run). In the twelfth run the wait guard also acted in scenario 2, where nothing was arranged.
 3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). **Done 2026-11-13: 17 of 17**, for the trigger and the object without reservation. The person is there and can be enabled, but did not stay where it was placed.
-3g. A placed person who stays where the plugin puts it. Still to do.
+3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Written, not yet compiled or run.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).

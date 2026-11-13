@@ -58,6 +58,19 @@ DISTANCE_EVENT_DELAY = 0.1    # [assumed] number; [seen] within a second
 WITNESS_AFTER = 1.0
 TRIGGER_EVENT_DELAY = 0.1     # [assumed] number; [seen] that the stage is set within a second of the move
 CONTAINER_EVENT_DELAY = 0.1   # [assumed] number; [seen] that the stage is set within a second of the pick-up
+ACTIVATE_EVENT_DELAY = 0.1    # [assumed] number
+# A placed person that has something to go about does not stay where the
+# plugin put it. [seen] once, on 2026-11-13: the game's settler, placed at
+# (-2110, -1450, 0) and then enabled, stood at (-1773, -1096, 13) the next
+# time the script asked where it was, which was after Enable had come back
+# and its 3D was loaded; how long after is not recorded. Why it moved, and by
+# what way, is not known. The stand-in moves such a person by what was seen.
+# When is [assumed]: at the earliest it could have been, before Enable comes
+# back. That it does the same when a script puts the person back is
+# [assumed] too. (A test can make the walk take time, to see that a scenario
+# which looks more than once catches a slow one.)
+STRAY_AFTER = 0.0
+STRAY_BY = (337.0, 354.0, 13.0)
 FRAME = 1.0 / 60.0
 # How much of an actor counts for a trigger: from its feet this far up. [assumed]
 ACTOR_HEIGHT = 120.0
@@ -133,6 +146,10 @@ class ObjectReference:
         self.inside: set = set()                 # ids of the actors inside the box
         # Who carries it, once it has been picked up or put somewhere.
         self.container: Optional["ObjectReference"] = None
+        # Where the plugin placed it, and in which cell; None for a reference
+        # made while the game runs.
+        self.editor_pos: Optional[tuple] = None
+        self.editor_cell: Optional[Cell] = None
 
     def has_3d(self) -> bool:
         # [seen] a placed copy of an item with no model reports Is3DLoaded false
@@ -155,6 +172,11 @@ class Actor(ObjectReference):
         # From when it can witness what happens near it (see WITNESS_AFTER).
         # An actor the plugin places has been there since the room loaded.
         self.awake_from = 0.0
+        self.restrained = False
+        self.ai_on = True
+        # Counts up whenever the actor is enabled, disabled or put somewhere,
+        # so that a walk-off arranged before then does not happen after it.
+        self.stray_serial = 0
 
 
 class Alias:
@@ -215,9 +237,9 @@ NATIVE_TYPES = {
     "message": Message, "faction": Faction, "objectreference": ObjectReference, "actor": Actor,
     "alias": Alias, "referencealias": Alias, "cell": Cell,
     # base forms the scripts only pass around
-    "miscobject": Form, "book": Form, "actorbase": Form, "static": Form,
+    "miscobject": Form, "book": Form, "actorbase": Form, "static": Form, "package": Form,
 }
-GLOBAL_SCRIPTS = {"game", "debug", "utility"}
+GLOBAL_SCRIPTS = {"game", "debug", "utility", "math"}
 
 
 def unwrap(v):
@@ -369,6 +391,21 @@ class Session:
         # For a test: False makes Activate do nothing, as if the game did not
         # take it for picking the thing up.
         self.activate_picks_up = True
+        # For a test: whether a placed person walks off once enabled, by the
+        # EditorID of its reference. Without an entry the stand-in's own rule
+        # decides (_has_business). And how long the walk takes.
+        self.stray_override: Dict[str, bool] = {}
+        self.stray_after = STRAY_AFTER
+        # For a test: from how far the game performs an activation of a
+        # person. None: from anywhere, which is [assumed]; what was [seen] is
+        # an item picked up from 163 units.
+        self.activate_reach: Optional[float] = None
+        # What the plugin says of the actors of its own: how many packages, a
+        # default package list or none.
+        self.npc_info = {n["EditorId"]: n for n in self.plugin.get("Npcs", [])}
+        # What GetCurrentPackage answers for a person that has something to
+        # go about. The stand-in knows none of the game's packages by name.
+        self.some_package = Form("a package of the game's", "Package")
         # Where the player arrives in the cells the plugin places things in:
         # written by the builder beside the plugin's description.
         arrivals = Path(plugin_json).with_name("TheLastMeridian.arrivals.json")
@@ -387,7 +424,9 @@ class Session:
                 # An item of the plugin's without a model: [seen] Is3DLoaded
                 # false. One that borrows a model of the game's has one;
                 # whether the game then loads it has not been seen.
-                self.forms[eid] = Form(eid, rec["Type"], has_model=bool(rec.get("Model")))
+                # An actor of the plugin's own is a copy of one of the game's,
+                # looks included. [assumed] that the game then shows it.
+                self.forms[eid] = Form(eid, rec["Type"], has_model=bool(rec.get("Model")) or rec["Type"] == "Npc")
         for m in self.plugin["Messages"]:
             self.forms[m["EditorId"]] = Message(m["EditorId"], m["Box"], m["Buttons"])
         self.by_formkey: Dict[str, Any] = {}
@@ -430,10 +469,9 @@ class Session:
         """The references the plugin places in cells of the game (none in a
         plugin built without the game's master). [seen] on 2026-11-13: the game
         loads them where the plugin puts them, an initially disabled actor is
-        disabled, and an item with a borrowed model has its 3D. One thing the
-        stand-in does not do: [seen] the game's generic settler, placed and
-        then enabled, did not stay where it was placed (it stood 489 units
-        away a moment later). Here an actor stays where it is put."""
+        disabled, and an item with a borrowed model has its 3D. [seen] too:
+        the game's generic settler, placed and then enabled, did not stay
+        where it was placed (see STRAY_AFTER)."""
         for c in self.plugin.get("Cells", []):
             cell = self._cell(c["EditorId"] or c["FormKey"])
             for p in c["Placed"]:
@@ -445,6 +483,8 @@ class Session:
                 made.heading = p["Rotation"][2]
                 made.editor_id = p["EditorId"]
                 made.disabled = p["InitiallyDisabled"]
+                made.editor_pos = tuple(p["Position"])
+                made.editor_cell = cell
                 if p["Primitive"] == "Box":
                     made.box = tuple(p["Box"])
                     made.layer = p["CollisionLayer"]
@@ -1012,6 +1052,18 @@ class Session:
     def g_utility_wait(self, seconds):
         yield ("sleep", seconds)
 
+    def g_utility_getcurrentrealtime(self):
+        # [documented] "the number of real-world seconds that have elapsed
+        # since the game has launched". Here: the stand-in's own clock, which
+        # starts when the session does. Only differences mean anything.
+        return float(self.now)
+
+    # Math
+    def g_math_sqrt(self, value):
+        if value < 0:
+            raise SimError("Math.sqrt of %r" % value)
+        return math.sqrt(value)
+
     def g_utility_waitmenumode(self, seconds):
         yield ("sleep", seconds)
 
@@ -1270,6 +1322,50 @@ class Session:
         self.check_distances()
         self.check_triggers()
 
+    def _never_comes_back(self, ref):
+        # [seen] twice for MoveTo on a placed reference with no model. [assumed]
+        # for the other functions that put a reference somewhere and wait for it.
+        while True:
+            yield ("block",)
+
+    def n_objectreference_setposition(self, ref, context, x, y, z):
+        if not ref.has_3d():
+            yield from self._never_comes_back(ref)
+        ref.pos = (float(x), float(y), float(z))                # [documented]
+        if isinstance(ref, Actor) and not ref.disabled:
+            self._may_walk_off(ref)
+        self.check_distances()
+        self.check_triggers()
+
+    def n_objectreference_movetomyeditorlocation(self, ref, context):
+        if not ref.has_3d():
+            yield from self._never_comes_back(ref)
+        if ref.editor_pos is None:
+            return              # [assumed] a reference made while the game runs has no such place and stays
+        # [documented] "Moves this reference to its original editor location and orientation."
+        ref.pos = ref.editor_pos
+        ref.cell = ref.editor_cell
+        if isinstance(ref, Actor) and not ref.disabled:
+            self._may_walk_off(ref)             # [assumed] put back, it walks off again
+        self.check_distances()
+        self.check_triggers()
+
+    def n_objectreference_movetonearestnavmeshlocation(self, ref, context):
+        if not ref.has_3d():
+            yield from self._never_comes_back(ref)
+        # [documented] "Moves this reference to the nearest location that's on
+        # a Navmesh that an actor could reach by walking." The stand-in has no
+        # navigation mesh. [assumed]: the room's floor is one, level with the
+        # spot where the player arrives, so the reference comes straight down
+        # (or up) onto it.
+        floor = 0.0
+        for a in self.arrivals:
+            if ref.cell is not None and a["Cell"].lower() == ref.cell.editor_id.lower():
+                floor = float(a["Position"][2])
+        ref.pos = (ref.pos[0], ref.pos[1], floor)
+        self.check_distances()
+        self.check_triggers()
+
     def n_objectreference_getdistance(self, ref, context, other):
         other = unwrap(other)
         if other is None:
@@ -1280,16 +1376,64 @@ class Session:
     def _disable(self, ref):
         ref.disabled = True
         if isinstance(ref, Actor):
+            ref.stray_serial += 1
             self._stop_combat(ref)
         self.check_triggers()
+
+    # ---- placed people
+    def _has_business(self, actor: Actor) -> bool:
+        """Does this placed person have something to go about, so that it
+        walks off once it is enabled? [seen] once for the game's settler.
+        [assumed] for the rest, and it is what scenario 11 asks the game: a
+        person of the plugin's own with no packages stays, with or without a
+        default package list; one with packages would not."""
+        if actor.editor_pos is None or actor.is_player:
+            return False                         # only people the plugin places
+        if actor.editor_id in self.stray_override:
+            return self.stray_override[actor.editor_id]
+        if actor.base is None or actor.base.kind != "Npc":
+            return False
+        info = self.npc_info.get(actor.base.editor_id)
+        if info is None:
+            return True                          # an actor of the game's
+        # packages of its own, or those of the actor it is modelled on
+        return info["Packages"] > 0 or "AiPackages" in info["TemplateFlags"]
+
+    def _may_walk_off(self, actor: Actor):
+        """Arranges for a placed person to walk off, if it is one that would."""
+        actor.stray_serial += 1
+        serial = actor.stray_serial
+        if not self._has_business(actor):
+            return
+
+        def go():
+            still = (actor.stray_serial == serial and not actor.disabled and not actor.deleted and not actor.dead
+                     and not actor.restrained and actor.ai_on)      # [assumed] what holds a person
+            if still:
+                actor.pos = tuple(a + b for a, b in zip(actor.pos, STRAY_BY))
+                self.check_distances()
+                self.check_triggers()
+
+        def walk_off():
+            go()
+            return
+            yield
+
+        if self.stray_after <= 0:
+            go()
+        else:
+            self.later(self.stray_after, "%r walks off" % actor, walk_off, exact=True)
 
     def n_objectreference_disable(self, ref, context, fade=False):
         self._disable(ref)
 
     def n_objectreference_enable(self, ref, context, fade=False):
-        if ref.disabled and isinstance(ref, Actor):
+        was_disabled = ref.disabled
+        if was_disabled and isinstance(ref, Actor):
             ref.awake_from = self.now + WITNESS_AFTER       # [assumed]: as for one just made
         ref.disabled = False
+        if was_disabled and isinstance(ref, Actor):
+            self._may_walk_off(ref)
         self.check_triggers()
 
     def n_objectreference_getparentcell(self, ref, context):
@@ -1332,8 +1476,22 @@ class Session:
 
     def n_objectreference_activate(self, ref, context, activator, default_only=False):
         activator = unwrap(activator)
+        if isinstance(ref, Actor):
+            if truthy(default_only):
+                raise SimError("Activate on %r with default processing only is not modelled" % ref)
+            if ref.disabled or ref.deleted or ref.is_player:
+                return False                        # [assumed] nobody there to activate
+            if self.activate_reach is not None and math.dist(ref.pos, activator.pos) > self.activate_reach:
+                return False                        # only when a test says so
+            # [documented] Activate sends OnActivate to the scripts unless it
+            # is told to do default processing only, and an alias's scripts
+            # receive its reference's events. What the game's default
+            # processing does with a person who has nothing to say, and what
+            # Activate then returns, is [assumed]: nothing, and True.
+            self.ref_event(ref, "OnActivate", [activator], ACTIVATE_EVENT_DELAY)
+            return True
         if ref.base is None or ref.base.kind not in ("MiscItem", "Book"):
-            raise SimError("Activate on %r: only picking up an item is modelled" % ref)
+            raise SimError("Activate on %r: only picking up an item or activating a person is modelled" % ref)
         if not isinstance(activator, Actor):
             raise SimError("Activate on %r by %r: only an actor picking it up is modelled" % (ref, activator))
         if not self.activate_picks_up or ref.disabled or ref.deleted or ref.container is not None:
@@ -1442,6 +1600,32 @@ class Session:
             # "Stops all combat and alarms against this actor").
             actor.fights_player_until = self.now + DEATH_EVENT_DELAY
         self.actor_event(actor, "OnDeath", [killer], DEATH_EVENT_DELAY)
+
+    def n_actor_getcurrentpackage(self, actor, context):
+        # [documented] "the Package this actor is currently running". [assumed]
+        # what that is for each kind of placed person: one with something to
+        # go about runs a package, one with nothing runs none.
+        if actor.disabled or actor.dead or not actor.ai_on:
+            return None
+        return self.some_package if self._has_business(actor) else None
+
+    def n_actor_getsitstate(self, actor, context):
+        return 0                                    # [assumed] nobody sits: there is no furniture here
+
+    def n_actor_setrestrained(self, actor, context, restrained=True):
+        if actor.dead:
+            return False                            # [documented] "You cannot set/clear the restrained state on a dead actor."
+        was = actor.restrained
+        actor.restrained = truthy(restrained)
+        if was and not actor.restrained and not actor.disabled:
+            self._may_walk_off(actor)               # [assumed] let go, it walks off
+        return True
+
+    def n_actor_enableai(self, actor, context, enable=True, pause_voice=False):
+        was = actor.ai_on
+        actor.ai_on = truthy(enable)
+        if actor.ai_on and not was and not actor.disabled:
+            self._may_walk_off(actor)               # [assumed] as above
 
     def n_actor_isdead(self, actor, context):
         return actor.dead

@@ -40,8 +40,18 @@ What it asserts where the plugin places references in a cell of the game
     says. The description is read back through the library; this reads the
     bytes.
 
+What it asserts for every actor (NPC_) record of the plugin's own (none in a
+plugin built without the game's master file: they are copies of the game's):
+  - it has nothing to go about: no package (PKID) and no script (VMAD), and
+    its template flags (in ACBS) do not fetch either from the actor it is
+    modelled on. That is what the builder means such an actor to be; a
+    placed person with packages did not stay where it was put (2026-11-13);
+  - and, read beside the builder's description: the actors in the file are
+    the ones it lists, each with the default package list (DPLT) and the
+    template flags it says.
+
 The layout is the one in xEdit's record definitions for Fallout 4
-(wbDefinitionsFO4.pas, records QUST, CELL, REFR, ACHR, and the group types).
+(wbDefinitionsFO4.pas, records QUST, CELL, REFR, ACHR, NPC_, and the group types).
 It is a check of the file's shape. It does not prove what the game does with it.
 
 Usage:  check_plugin_layout.py <plugin.esp>     exit 0 if the layout is as expected
@@ -217,6 +227,73 @@ def placed_from_json(path):
                 p["BaseId"] = (len(masters) << 24 | own[base]) if base in own else None
             out[int(p["FormKey"].split(":")[0], 16)] = p
     return out
+
+
+# The bits of an actor's "use template actors" flags, a 16-bit number 14 bytes into ACBS.
+TEMPLATE_FLAGS = ["Traits", "Stats", "Factions", "SpellList", "AiData", "AiPackages", "ModelOrAnimation", "BaseData",
+                  "Inventory", "Script", "DefPackList", "AttackData", "Keywords"]
+ACBS_SIZE, ACBS_TEMPLATE_AT = 20, 14
+
+
+def npcs_from_json(path):
+    """EditorID -> what the builder's description says about each actor of the plugin's own, or None without the file."""
+    if not os.path.exists(path):
+        return None
+    data = json.load(open(path, encoding="utf-8-sig"))
+    return {n["EditorId"]: n for n in data.get("Npcs", [])}
+
+
+def check_npcs(buf, described=None):
+    """Returns (problems, number of actor records of the plugin's own)."""
+    problems = []
+    masters = master_count(buf)
+    seen = set()
+    for kind, off, size, formid, flags in records(buf, 0, len(buf)):
+        if kind != "NPC_":
+            continue
+        if formid >> 24 != masters:
+            problems.append(f"actor {formid:08X}: a record of a master's; this plugin changes none of the game's actors")
+            continue
+        data = buf[off:off + size]
+        if flags & 0x00040000:
+            data = zlib.decompress(data[4:])
+        subs = list(subrecords(data))
+        names = [d for t, d in subs if t == "EDID"]
+        edid = names[0].rstrip(b"\0").decode("latin1") if names else f"{formid:08X}"
+        seen.add(edid)
+        kinds = [t for t, _ in subs]
+        if "PKID" in kinds:
+            problems.append(f"actor {edid}: has {kinds.count('PKID')} package(s)")
+        if "VMAD" in kinds:
+            problems.append(f"actor {edid}: has scripts attached")
+        acbs = [d for t, d in subs if t == "ACBS"]
+        template = None
+        if len(acbs) != 1 or len(acbs[0]) != ACBS_SIZE:
+            problems.append(f"actor {edid}: its base data (ACBS) is {'missing' if not acbs else 'not %d bytes' % ACBS_SIZE}")
+        else:
+            bits = struct.unpack_from("<H", acbs[0], ACBS_TEMPLATE_AT)[0]
+            template = {name for i, name in enumerate(TEMPLATE_FLAGS) if bits >> i & 1}
+            if bits >> len(TEMPLATE_FLAGS):
+                problems.append(f"actor {edid}: template flags {bits:#06x} hold a bit this check has no name for")
+            for name in ("AiPackages", "Script"):
+                if name in template:
+                    problems.append(f"actor {edid}: takes {name} from the actor it is modelled on")
+        if described is None:
+            continue
+        want = described.get(edid)
+        if want is None:
+            problems.append(f"actor {edid}: in the file, and not in the builder's description")
+            continue
+        if want["Packages"] != 0 or want["Scripts"]:
+            problems.append(f"actor {edid}: the builder's description gives it {want['Packages']} package(s) and scripts {want['Scripts']}")
+        if ("DPLT" in kinds) != want["HasDefaultPackageList"]:
+            problems.append(f"actor {edid}: {'has a' if 'DPLT' in kinds else 'has no'} default package list; the builder's description says otherwise")
+        if template is not None and template != set(want["TemplateFlags"]):
+            problems.append(f"actor {edid}: template flags {sorted(template)}; the builder's description says {sorted(want['TemplateFlags'])}")
+    if described is not None:
+        for edid in sorted(set(described) - seen):
+            problems.append(f"actor {edid}: in the builder's description, and not in the file")
+    return problems, len(seen)
 
 
 def own_record_ids(buf, masters):
@@ -459,10 +536,53 @@ def cell_damage(buf):
     return out
 
 
-def self_test(buf, described=None, cells=0):
+def first_own_npc(buf, with_sub=None):
+    """(offset of the record, its size) for the first actor of the plugin's own (optionally one having a subrecord), or (-1, 0)."""
+    masters = master_count(buf)
+    for kind, off, size, formid, flags in records(buf, 0, len(buf)):
+        if kind == "NPC_" and formid >> 24 == masters and not flags & 0x00040000 and (with_sub is None or with_sub in buf[off:off + size]):
+            return off - 24, size
+    return -1, 0
+
+
+def npc_damage(buf):
+    """(name, damaged copy or None) for each kind of damage to the actors part. Sizes are never changed."""
+    out = []
+    r, size = first_own_npc(buf)
+    a = buf.find(b"ACBS", r + 24, r + 24 + size) if r >= 0 else -1
+    at = a + 6 + ACBS_TEMPLATE_AT
+    bits = struct.unpack_from("<H", buf, at)[0] if a >= 0 else 0
+    out.append(("an actor that takes its packages from a template", None if a < 0 else patch(buf, at, struct.pack("<H", bits | 0x20))))
+    out.append(("an actor that takes its scripts from a template", None if a < 0 else patch(buf, at, struct.pack("<H", bits | 0x200))))
+    out.append(("an actor with another template flag", None if a < 0 else patch(buf, at, struct.pack("<H", bits ^ 0x2))))
+    # A package: any subrecord that holds one FormID will do for the shape of it.
+    f = buf.find(b"RNAM\x04\x00", r + 24, r + 24 + size) if r >= 0 else -1
+    out.append(("an actor with a package", None if f < 0 else patch(buf, f, b"PKID")))
+    e = buf.find(b"EDID", r + 24, r + 24 + size) if r >= 0 else -1
+    out.append(("an actor under another name", None if e < 0 else patch(buf, e + 6, b"X")))
+    r, size = first_own_npc(buf, b"DPLT")
+    d = buf.find(b"DPLT", r + 24, r + 24 + size) if r >= 0 else -1
+    if d >= 0:      # a build against a master whose settler names no default package list has none to lose
+        out.append(("an actor without the default package list its description has", patch(buf, d, b"DPLX")))
+    return out
+
+
+def self_test(buf, described=None, cells=0, npcs=0, described_npcs=None):
     """Each kind of damage must produce a problem. Returns the list of damages that went unnoticed, and how many kinds were tried."""
     unnoticed = []
     tried = 0
+    if npcs:
+        for name, damaged in npc_damage(buf):
+            tried += 1
+            if damaged is None:
+                unnoticed.append(f"{name}: could not construct the damaged file")
+                continue
+            try:
+                problems, _ = check_npcs(damaged, described_npcs)
+            except Exception as exc:
+                problems = [str(exc)]
+            if not problems:
+                unnoticed.append(name)
     if cells:
         for name, damaged in cell_damage(buf):
             tried += 1
@@ -515,6 +635,9 @@ def main(argv):
     described = placed_from_json(os.path.splitext(args[0])[0] + ".json")
     cell_problems, cells, refs = check_cells(buf, described)
     problems += cell_problems
+    described_npcs = npcs_from_json(os.path.splitext(args[0])[0] + ".json")
+    npc_problems, npcs = check_npcs(buf, described_npcs)
+    problems += npc_problems
     if problems:
         print(f"PLUGIN LAYOUT CHECK FAILED ({len(problems)}):")
         for p in problems:
@@ -526,8 +649,13 @@ def main(argv):
         print(f"plugin layout: {refs} placed references under {cells} cell record(s) of the game; each is this plugin's own, filed and flagged as it should be, {beside}")
     else:
         print("plugin layout: no cell records (nothing is placed in the world by this build)")
+    if npcs:
+        beside = "and each is as the builder's description says" if described_npcs is not None else "(no description beside the plugin to compare with)"
+        print(f"plugin layout: {npcs} actor record(s) of the plugin's own; none has a package or a script, or takes either from a template, {beside}")
+    else:
+        print("plugin layout: no actor records (this build makes none)")
     if "--self-test" in argv:
-        unnoticed, tried = self_test(buf, described, cells)
+        unnoticed, tried = self_test(buf, described, cells, npcs, described_npcs)
         if unnoticed:
             print("LAYOUT SELF-TEST FAILED: damage that went unnoticed:")
             for u in unnoticed:

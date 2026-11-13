@@ -45,6 +45,30 @@ public static class SelfCheck
         foreach (var a in Spec.Activators)
             Expect(info.Records.Any(r => r.Type == "Activator" && r.EditorId == a.EditorId && r.Model == null), $"activator {a.EditorId} missing, or it has a model");
 
+        foreach (var n in Spec.Npcs)
+        {
+            var got = info.Npcs.FirstOrDefault(x => x.EditorId == n.EditorId);
+            if (!builder.MadeNpcs.Contains(n.EditorId))
+            {
+                Expect(got == null, $"actor {n.EditorId}: is in the plugin although the build did not make it");
+                continue;
+            }
+            if (got == null) { problems.Add($"actor {n.EditorId} missing"); continue; }
+            Expect(got.Name == n.Name, $"actor {n.EditorId}: named '{got.Name}', expected '{n.Name}'");
+            // What should make it stay where it is put: nothing to go about.
+            Expect(got.Packages == 0, $"actor {n.EditorId}: still has {got.Packages} package(s)");
+            // The default package list: as the game's actor has it (in its record or from a template), or not at all.
+            builder.SourceDefaultList.TryGetValue(n.CopyFrom, out var had);
+            var wantList = n.KeepDefaultPackageList && had.InRecord;
+            var wantFromTemplate = n.KeepDefaultPackageList && had.FromTemplate;
+            Expect(got.HasDefaultPackageList == wantList, $"actor {n.EditorId}: {(got.HasDefaultPackageList ? "has a" : "has no")} default package list, expected {(wantList ? "the one of " + n.CopyFrom : "none")}");
+            Expect(got.TemplateFlags.Contains("DefPackList") == wantFromTemplate, $"actor {n.EditorId}: {(wantFromTemplate ? "no longer takes" : "still takes")} its default package list from a template");
+            Expect(got.Scripts.Count == 0, $"actor {n.EditorId}: still has script(s) {string.Join(", ", got.Scripts)}");
+            foreach (var flag in new[] { "AiPackages", "Script" })
+                Expect(!got.TemplateFlags.Contains(flag), $"actor {n.EditorId}: still takes {flag} from a template");
+        }
+        Expect(info.Npcs.All(x => Spec.Npcs.Any(n => n.EditorId == x.EditorId)), "the plugin holds an actor the spec does not ask for");
+
         CheckPlaced(info, builder, Expect);
 
         foreach (var m in Spec.Messages)
@@ -189,7 +213,10 @@ public static class SelfCheck
             var got = cell?.Placed.FirstOrDefault(x => x.FormKey == key);
             if (got == null) { Expect(false, $"{p.EditorId}: not in cell {p.Cell} of the written plugin"); continue; }
             Expect(got.EditorId == p.EditorId, $"{p.EditorId}: EditorID read back as '{got.EditorId}'");
-            var isNpc = string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
+            // An actor is placed with a record of its own kind, whether its base is the game's or this plugin's.
+            var isNpc = p.VanillaKind == null
+                ? Spec.Npcs.Any(n => n.EditorId == p.Base)
+                : string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
             Expect(got.Kind == (isNpc ? "PlacedNpc" : "PlacedObject"), $"{p.EditorId}: is a {got.Kind}");
             var wantBase = p.VanillaKind == null
                 ? p.Base

@@ -33,7 +33,7 @@ Book (2)
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
 Activator (1)
   000824  TLM_ACTI_TrialTrigger
-Message (7)
+Message (8)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -49,6 +49,7 @@ Message (7)
           button 0: "Burn it"
           button 1: "Keep it"
   000826  TLM_MSG_TrialPersonName  [notification]  ""  title: "Trial Settler"
+  00082E  TLM_MSG_TrialTalk  [notification]  "The second trial settler has nothing to say yet."
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
   script TLM:Core
@@ -287,11 +288,17 @@ Quest TLM_Trial  000825  "The Last Meridian (placed-content trial)"  type=None p
            Alias_Object = alias 3 on TLM_Trial
            Alias_TriggerNoLayer = alias 4 on TLM_Trial
            TrialObject = TLM_MISC_TrialObject
-  structure: 5 of 5 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  script TLM:PlacedPeople
+           Alias_Person = alias 0 on TLM_Trial
+           Alias_PersonOwn = alias 5 on TLM_Trial
+           Alias_PersonBare = alias 7 on TLM_Trial
+           Alias_SettlerOnFloor = alias 6 on TLM_Trial
+  structure: 6 of 6 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
   stage   10  (The player entered the trigger)
   stage   11  (The player entered the trigger made on the game's own empty trigger, with no layer)
   stage   12  (The player entered the trigger of the plugin's own with no layer)
   stage   20  (The player picked the object up)
+  stage   30  (The player activated the person of the plugin's own)
   stage  100 [complete]  (Trial finished)
   alias  0 Person  (reference) [Optional, AllowDisabled]  shown as: TLM_MSG_TrialPersonName
   alias  1 Trigger  (reference) [Optional]
@@ -306,11 +313,19 @@ Quest TLM_Trial  000825  "The Last Meridian (placed-content trial)"  type=None p
   alias  4 TriggerNoLayer  (reference) [Optional]
            script DefaultAliasOnTriggerEnter
                     StageToSet = 12
+  alias  5 PersonOwn  (reference) [Optional, AllowDisabled]
+           script TLM:MessageStageAlias
+                    MessageToShow = TLM_MSG_TrialTalk
+                    StageAlways = 30
+  alias  6 SettlerOnFloor  (reference) [Optional, AllowDisabled]
+  alias  7 PersonBare  (reference) [Optional, AllowDisabled]
 
-Not wired yet (52):
+Not wired yet (61):
   - TLM_MISC_Dispatch: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
+  - TLM_NPC_TrialPerson: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_TrialPersonBare: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model yet
   - TLM_BOOK_MarshalLog: no world model yet
   - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is in Fallout4.esm)
@@ -318,6 +333,9 @@ Not wired yet (52):
   - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialObject: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTriggerNoLayer: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_TrialPersonOwn: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_TrialSettlerOnFloor: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_TrialPersonBare: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -355,8 +373,12 @@ Not wired yet (52):
   - TLM_SQ01 alias NoticeBoard: no reference yet (TLM_ACTI_NoticeBoard)
   - TLM_SQ01 alias Stove: no reference yet (Any stove or the wreck fire)
   - TLM_Trial script TLM:PlacedTrial.MarkerBase: needs 'XMarker' from Fallout4.esm
+  - TLM_Trial script TLM:PlacedPeople.MarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Trial alias Person: its reference TLM_REF_TrialPerson is not placed
   - TLM_Trial alias Trigger: its reference TLM_REF_TrialTrigger is not placed
   - TLM_Trial alias TriggerGameBase: its reference TLM_REF_TrialTriggerGameBase is not placed
   - TLM_Trial alias Object: its reference TLM_REF_TrialObject is not placed
   - TLM_Trial alias TriggerNoLayer: its reference TLM_REF_TrialTriggerNoLayer is not placed
+  - TLM_Trial alias PersonOwn: its reference TLM_REF_TrialPersonOwn is not placed
+  - TLM_Trial alias SettlerOnFloor: its reference TLM_REF_TrialSettlerOnFloor is not placed
+  - TLM_Trial alias PersonBare: its reference TLM_REF_TrialPersonBare is not placed

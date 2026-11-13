@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sim import run_scenario  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
-BASIC = list(range(1, 11))
+BASIC = list(range(1, 12))
 
 
 def matrix_numbers():
