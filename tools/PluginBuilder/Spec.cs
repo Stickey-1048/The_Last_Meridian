@@ -209,7 +209,9 @@ public static class Spec
         new("TLM_REF_TrialTriggerGameBase", TrialCell, "DefaultEmptyTrigger", "Activator", Ahead: 600, Right: 200, Up: 100,
             BoxHalfExtents: TrialBox, CollisionLayer: TriggerLayer),
         new("TLM_REF_TrialObject", TrialCell, "TLM_MISC_TrialObject", null, Ahead: 150, Right: -60, Up: 20),
-        new("TLM_REF_TrialTriggerActorZone", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 950, Right: 0, Up: 100,
+        // As far from the arrival point as the other two, so that the player
+        // is moved the same distance into each.
+        new("TLM_REF_TrialTriggerActorZone", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 200, Right: 600, Up: 100,
             BoxHalfExtents: TrialBox, CollisionLayer: ActorOnlyLayer),
     };
 

@@ -46,7 +46,8 @@ public static class Report
         bool Persistent, bool InitiallyDisabled, string Group, string? Primitive, float[]? Box, uint? CollisionLayer, float[]? Bound = null);
     /// <summary>A cell record in the plugin. For a cell of the game's it is this plugin's copy of the record.</summary>
     /// <param name="OfThisPlugin">False: the cell belongs to a master, and the plugin only adds to it.</param>
-    public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed);
+    /// <param name="Name">The cell's name as this plugin carries it (it replaces the master's while the plugin is loaded).</param>
+    public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed, string? Name = null);
     public sealed record PluginInfo(string File, List<string> Masters, float HeaderVersion, uint LowestFormId,
         List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests, List<CellInfo> Cells);
 
@@ -106,7 +107,8 @@ public static class Report
                                     break;
                             }
                         }
-                    cells.Add(new(cell.EditorID, cell.FormKey.ToString(), cell.FormKey.ModKey == mod.ModKey, block.BlockNumber, sub.BlockNumber, placed));
+                    cells.Add(new(cell.EditorID, cell.FormKey.ToString(), cell.FormKey.ModKey == mod.ModKey, block.BlockNumber, sub.BlockNumber, placed,
+                        NullIfEmpty(cell.Name?.String)));
                 }
 
         var messages = mod.Messages.Select(m => new MessageInfo(
@@ -228,7 +230,7 @@ public static class Report
         foreach (var c in info.Cells)
         {
             sb.AppendLine();
-            sb.AppendLine($"Cell {c.EditorId ?? "(no EditorID)"}  {c.FormKey}  {(c.OfThisPlugin ? "of this plugin" : "of the game: this plugin's copy of its record, with what the plugin adds")}  block {c.Block}, sub-block {c.SubBlock}");
+            sb.AppendLine($"Cell {c.EditorId ?? "(no EditorID)"}  {c.FormKey}  {(c.OfThisPlugin ? "of this plugin" : "of the game: this plugin's copy of its record, with what the plugin adds")}  block {c.Block}, sub-block {c.SubBlock}  name: {(c.Name == null ? "none" : "\"" + c.Name + "\"")}");
             foreach (var p in c.Placed)
             {
                 var flags = new List<string>();

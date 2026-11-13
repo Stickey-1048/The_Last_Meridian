@@ -170,6 +170,8 @@ public static class SelfCheck
                     $"cell {name} ({cell.FormKey}): filed under block {cell.Block}, sub-block {cell.SubBlock}; the master files it under {filed.Block} and {filed.SubBlock}");
             else
                 Expect(false, $"cell {name} ({cell.FormKey}): the builder did not find where the master files it");
+            builder.CellNames.TryGetValue(name, out var wantName);
+            Expect(cell.Name == wantName, $"cell {name}: its name in the plugin is '{cell.Name ?? "none"}', the builder read '{wantName ?? "none"}' from the master");
             foreach (var p in cell.Placed)
             {
                 // The game's own references in the cell stay in the master. A copy
@@ -218,6 +220,14 @@ public static class SelfCheck
             var have = Math.Sqrt(Sq(got.Position[0] - arrival.Position[0]) + Sq(got.Position[1] - arrival.Position[1]) + Sq(got.Position[2] - arrival.Position[2]));
             Expect(Math.Abs(want - have) < 0.5, $"{p.EditorId}: is {have:0.#} from the arrival point, expected {want:0.#}");
             Expect(Math.Abs(got.Position[2] - arrival.Position[2] - p.Up) < 0.01, $"{p.EditorId}: height above the arrival point differs");
+            // And the direction: how far ahead of the arrival point, along the way the player faces there
+            // (measured from north towards east), and how far to the right of that.
+            var (dx, dy) = (got.Position[0] - arrival.Position[0], got.Position[1] - arrival.Position[1]);
+            var (north, east) = (Math.Cos(arrival.Heading), Math.Sin(arrival.Heading));
+            var ahead = dx * east + dy * north;
+            var right = dx * north - dy * east;
+            Expect(Math.Abs(ahead - p.Ahead) < 0.5 && Math.Abs(right - p.Right) < 0.5,
+                $"{p.EditorId}: is {ahead:0.#} ahead of the arrival point and {right:0.#} to its right, expected {p.Ahead:0.#} and {p.Right:0.#}");
         }
     }
 }

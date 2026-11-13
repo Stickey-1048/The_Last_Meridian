@@ -16,6 +16,15 @@
 //                    the builder needs to place references in a cell of the
 //                    game. All of it is invented here; none of it is the
 //                    game's data, and the numbers are not the game's numbers.
+//   localized        As default, but the master keeps its text apart, in strings
+//                    files beside it, as the game's own master does. The test
+//                    room's name then has to be read from those files.
+//                    (run_checks.sh also builds against this master with the
+//                    strings files taken away.)
+//   plain-triggers   As default, but the master's own box triggers do not carry
+//                    their reach a second time (as the reference's bound).
+//                    The builder does as most of them do, so it must then
+//                    write none either.
 //   bare-room        The test room exists, but with no arrival marker; and the
 //                    master has no collision layers, no empty trigger base and
 //                    no triggers of its own. The builder must still place what
@@ -38,7 +47,8 @@ var variant = args.Length > 1 ? args[1] : "default";
 var mod = new Fallout4Mod(ModKey.FromNameAndExtension("Fallout4.esm"), Fallout4Release.Fallout4);
 FormKey Key(uint id) => new(mod.ModKey, id);
 
-var room = variant is "default" or "bare-room";
+var room = variant is "default" or "localized" or "plain-triggers" or "bare-room";
+if (variant == "localized") mod.UsingLocalization = true;
 var lowIds = !room;
 var caps = new MiscItem(lowIds ? Key(0xF) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Caps001", Name = "Bottlecap" };
 // An invented path, so that the builder has a world model to borrow.
@@ -59,6 +69,8 @@ if (room)
     // The test room. Something of the game's own lies in each of its two
     // lists: the builder's copy of the cell must not bring either along.
     var qaSmoke = new Cell(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "QASmoke" };
+    // The bare room has no name, as a cell may.
+    if (variant != "bare-room") qaSmoke.Name = "Stand-In Test Room";
     var clutter = mod.Statics.AddNew("StandInClutter");
     PlacedObject Put(IFormLinkGetter<IPlaceableObjectGetter> what, float x, float y, float z, float headingDegrees = 0)
     {
@@ -74,7 +86,7 @@ if (room)
     qaSmoke.Persistent.Add(Put(clutter.ToLink(), -300, 40, 0));
     cells.Add(qaSmoke);
 
-    if (variant == "default")
+    if (variant is "default" or "localized" or "plain-triggers")
     {
         // Two more things in far corners, so that the room is large enough to
         // hold what the builder places in it.
@@ -109,7 +121,7 @@ if (room)
                     Type = PlacedPrimitive.TypeEnum.Box,
                 };
                 // As the editor writes a box: its reach once more, as the reference's bound. One has none.
-                if (i != 4) trigger.BoundHalfExtents = new P3Float((64 + i) / 2f, 48, 64);
+                if (i != 4 && variant != "plain-triggers") trigger.BoundHalfExtents = new P3Float((64 + i) / 2f, 48, 64);
                 // Most on L_TRIGGER, some on L_ACTORZONE, one with none.
                 if (i < 3) trigger.CollisionLayer = 12;
                 else if (i == 3) trigger.CollisionLayer = 22;
@@ -151,6 +163,8 @@ switch (variant)
         }
         break;
     case "default":
+    case "localized":
+    case "plain-triggers":
     case "bare-room":
         placed = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "PlayerREF" };
         placed.Base.SetTo(player);

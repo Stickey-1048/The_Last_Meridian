@@ -10,7 +10,8 @@ writes a few of those into the game's own test room (QASmoke). This scenario
 finds out whether they work there:
 
   - the quest starts, and its aliases hold the references the plugin placed;
-  - the placed person is there, starts disabled, and can be enabled;
+  - the placed person is there, starts disabled, and can be enabled (done
+    last, so that nobody stands near the triggers while they are tried);
   - the placed object, which borrows the world model of one of the game's
     items, can be picked up, and the game's own script on its alias
     (DefaultAliasOnContainerChangedTo) then sets a stage;
@@ -21,6 +22,9 @@ finds out whether they work there:
     (if ours fails and that one works, the fault is in the activator this
     plugin makes); the other is on the collision layer L_ACTORZONE where the
     first is on L_TRIGGER (if ours fails and that one works, it is the layer).
+    The three are the same distance from where the scenario begins, and the
+    player is brought back there before each, so that each is entered the
+    same way.
 
 Lines that begin INFO are facts about the game, reported and not scored.
 
@@ -63,20 +67,25 @@ Function Run(TLM:SelfTest akTest)
 	Actor playerRef = Game.GetPlayer()
 	akTest.Note("trial: the player begins at " + Where(playerRef))
 
-	; ---- 1. The quest starts.
+	; ---- 1. The quest starts. (That it was not running before is not checked
+	; here: the self-test does not get this far if it was.)
 	akTest.Step("starting the trial quest")
-	akTest.CheckFalse("trial: the quest is running before the test has started it", IsRunning())
 	bool started = Start()
 	akTest.Note("trial: Start returned " + started)
 	akTest.CheckTrue("trial: the quest runs once it has been started", IsRunning())
 
-	; Where the scenario began, to come back to.
+	; Where the scenario began: the player is brought back here before each
+	; trigger, so that each is entered the same way, and at the end.
 	ObjectReference homeMarker = None
 	If MarkerBase
 		homeMarker = playerRef.PlaceAtMe(MarkerBase)
+	Else
+		akTest.Note("trial: no marker base was found when the plugin was built, so the player cannot be brought back between the triggers: each is entered from the one before")
 	EndIf
 
-	; ---- 2. The placed person.
+	; ---- 2. The placed person, as the plugin leaves it: disabled. It stays so
+	; until the triggers are done: an actor standing near a box could be
+	; counted among the things inside it.
 	akTest.Step("looking at the placed person")
 	ObjectReference personRef = Alias_Person.GetReference()
 	Actor placedPerson = Alias_Person.GetActorReference()
@@ -88,12 +97,6 @@ Function Run(TLM:SelfTest akTest)
 		; Which cell a disabled reference says it is in is not known, so that is
 		; reported here and scored once the person is enabled.
 		akTest.Note("trial: the placed person, still disabled, is at " + Where(placedPerson) + ", " + playerRef.GetDistance(placedPerson) + " from the player; in the player's cell = " + (placedPerson.GetParentCell() == playerRef.GetParentCell()))
-		akTest.Step("enabling the placed person")
-		placedPerson.Enable()
-		WaitFor3D(placedPerson)
-		akTest.CheckFalse("trial: the placed person is disabled after Enable", placedPerson.IsDisabled())
-		akTest.CheckTrue("trial: the placed person is in the cell the player is in", placedPerson.GetParentCell() == playerRef.GetParentCell())
-		akTest.Note("trial: the placed person once enabled: 3D loaded = " + placedPerson.Is3DLoaded() + ", at " + Where(placedPerson))
 	EndIf
 
 	; ---- 3. The placed object.
@@ -121,12 +124,13 @@ Function Run(TLM:SelfTest akTest)
 		EndIf
 	EndIf
 
-	; ---- 4. The placed trigger, and the two that each differ from it in one thing.
-	EnterTrigger(akTest, playerRef, Alias_Trigger, STAGE_TRIGGER, "the placed trigger", true)
-	EnterTrigger(akTest, playerRef, Alias_TriggerGameBase, STAGE_TRIGGER_GAME_BASE, "the trigger made on the game's own empty trigger", false)
-	EnterTrigger(akTest, playerRef, Alias_TriggerActorZone, STAGE_TRIGGER_ACTOR_ZONE, "the trigger on the layer L_ACTORZONE", false)
+	; ---- 4. The placed trigger, and the two that each differ from it in one
+	; thing. All three are the same distance from where the scenario began.
+	EnterTrigger(akTest, playerRef, homeMarker, Alias_Trigger, STAGE_TRIGGER, "the placed trigger", true)
+	EnterTrigger(akTest, playerRef, homeMarker, Alias_TriggerGameBase, STAGE_TRIGGER_GAME_BASE, "the trigger made on the game's own empty trigger", false)
+	EnterTrigger(akTest, playerRef, homeMarker, Alias_TriggerActorZone, STAGE_TRIGGER_ACTOR_ZONE, "the trigger on the layer L_ACTORZONE", false)
 
-	; ---- 5. Back to where the scenario began, and the quest's last stage.
+	; ---- 5. Back to where the scenario began.
 	If homeMarker
 		akTest.Step("moving the player back to where the scenario began")
 		playerRef.MoveTo(homeMarker)
@@ -134,15 +138,28 @@ Function Run(TLM:SelfTest akTest)
 		homeMarker.Disable()
 		homeMarker.Delete()
 	EndIf
+
+	; ---- 6. The placed person, enabled.
+	If placedPerson
+		akTest.Step("enabling the placed person")
+		placedPerson.Enable()
+		WaitFor3D(placedPerson)
+		akTest.CheckFalse("trial: the placed person is disabled after Enable", placedPerson.IsDisabled())
+		akTest.CheckTrue("trial: the placed person is in the cell the player is in", placedPerson.GetParentCell() == playerRef.GetParentCell())
+		akTest.Note("trial: the placed person once enabled: 3D loaded = " + placedPerson.Is3DLoaded() + ", at " + Where(placedPerson) + ", " + playerRef.GetDistance(placedPerson) + " from the player")
+	EndIf
+
+	; ---- 7. The quest's last stage.
 	akTest.Step("setting the trial quest's last stage")
 	SetStage(STAGE_DONE)
 	WaitForStage(STAGE_DONE)
 	akTest.CheckTrue("trial: the quest is completed by its last stage", IsCompleted())
 EndFunction
 
-Function EnterTrigger(TLM:SelfTest akTest, Actor akPlayer, ReferenceAlias akAlias, int aiStage, string asName, bool abScored)
-	{Moves the player into the middle of a placed trigger and waits for the
-	stage that the game's own script on the trigger's alias should set.}
+Function EnterTrigger(TLM:SelfTest akTest, Actor akPlayer, ObjectReference akHome, ReferenceAlias akAlias, int aiStage, string asName, bool abScored)
+	{Brings the player back to where the scenario began, moves the player into
+	the middle of a placed trigger, and waits for the stage that the game's own
+	script on the trigger's alias should set.}
 	akTest.Step("looking at " + asName)
 	ObjectReference triggerRef = akAlias.GetReference()
 	If abScored
@@ -154,15 +171,23 @@ Function EnterTrigger(TLM:SelfTest akTest, Actor akPlayer, ReferenceAlias akAlia
 		EndIf
 		Return
 	EndIf
+	If akHome
+		akTest.Step("moving the player back to where the scenario began, before " + asName)
+		akPlayer.MoveTo(akHome)
+	EndIf
 	bool before = GetStageDone(aiStage)
 	If abScored
 		akTest.CheckFalse("trial: stage " + aiStage + " is set before the player has entered " + asName, before)
 	EndIf
-	akTest.Note("trial: " + asName + " is at " + Where(triggerRef) + ", " + akPlayer.GetDistance(triggerRef) + " from the player; inside it before the move: " + triggerRef.GetTriggerObjectCount())
+	; How many things the trigger counts inside itself. It counts things of any
+	; kind its layer lets in, not only the player, so what matters is the change.
+	int insideBefore = triggerRef.GetTriggerObjectCount()
+	akTest.Note("trial: " + asName + " is at " + Where(triggerRef) + ", " + akPlayer.GetDistance(triggerRef) + " from the player; things inside it before the move: " + insideBefore)
 	akTest.Step("moving the player into " + asName)
 	akPlayer.MoveTo(triggerRef)
 	WaitForStage(aiStage)
-	akTest.Note("trial: after the move the player is at " + Where(akPlayer) + ", " + akPlayer.GetDistance(triggerRef) + " from the middle of " + asName + "; inside it: " + triggerRef.GetTriggerObjectCount())
+	int insideAfter = triggerRef.GetTriggerObjectCount()
+	akTest.Note("trial: after the move the player is at " + Where(akPlayer) + ", " + akPlayer.GetDistance(triggerRef) + " from the middle of " + asName + "; things inside it: " + insideAfter + ", which is " + (insideAfter - insideBefore) + " more than before")
 	If abScored
 		akTest.CheckTrue("trial: entering " + asName + " sets stage " + aiStage + " (the game's own script on the alias)", GetStageDone(aiStage))
 	Else

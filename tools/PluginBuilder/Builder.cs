@@ -55,6 +55,9 @@ public sealed class Builder
     /// <summary>True when this build gave its boxes a bound as well (it does as most of the game's own box triggers do).</summary>
     public bool WritesBoxBound { get; private set; }
 
+    /// <summary>The name each copied cell carries in this plugin, as read from the master (null: none could be read).</summary>
+    public Dictionary<string, string?> CellNames { get; } = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>Where the master files each cell this build placed something in: its block and sub-block.
     /// This plugin's copy of the cell's record has to be filed the same way.</summary>
     public Dictionary<string, (int Block, int SubBlock)> CellsFiled { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -229,6 +232,7 @@ public sealed class Builder
             // This plugin's copy of the cell's record. The game's own
             // references in the cell are not copied: they stay in the master.
             var cell = context.GetOrAddAsOverride(_mod);
+            CopyCellName(context.Record, cell, group.Key);
             // The library's copy leaves out what is in the cell (read from its
             // copy mask: references, navigation meshes and land are all off).
             // Should that ever differ, nothing of the game's may stay: a copy
@@ -260,7 +264,10 @@ public sealed class Builder
                     arrival.Position.Y + p.Ahead * cos - p.Right * sin,
                     arrival.Position.Z + p.Up);
                 var flags = PersistentFlag | (p.InitiallyDisabled ? InitiallyDisabledFlag : 0u);
-                var isNpc = string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
+                // An actor is placed with a record of its own kind, whether its base is the game's or this plugin's.
+                var isNpc = p.VanillaKind == null
+                    ? Local(p.Base) is INpcGetter
+                    : string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
                 if (isNpc)
                 {
                     var npc = new PlacedNpc(keys[p.EditorId], Fallout4Release.Fallout4) { EditorID = p.EditorId };
@@ -330,6 +337,36 @@ public sealed class Builder
                 VanillaNotes.Add($"{p.EditorId}: placed in {group.Key} at ({position.X:0.#}, {position.Y:0.#}, {position.Z:0.#}): {p.Ahead:0.#} ahead of the arrival point, {p.Right:0.#} to its right, {p.Up:0.#} up{within}");
             }
         }
+    }
+
+    /// <summary>
+    /// The name of a cell is text, and the game keeps its text apart from the
+    /// master, in strings files; the master holds a number for it. This
+    /// plugin holds its text itself, so the copy needs the name as text. It is
+    /// read here, once, and put into the copy as plain text, so that nothing
+    /// has to be looked up when the plugin is written. If the strings cannot
+    /// be read the copy has no name: the room is then nameless while this
+    /// plugin is loaded, and the build says so.
+    /// </summary>
+    void CopyCellName(ICellGetter source, ICell copy, string cellId)
+    {
+        var localized = _vanillaMod != null && _vanillaMod.ModHeader.Flags.HasFlag(Fallout4ModHeader.HeaderFlag.Localized);
+        string? name = null;
+        string? failure = null;
+        try { name = source.Name?.String; }
+        catch (Exception e) { failure = $"{e.GetType().Name}: {e.Message}"; }
+        if (string.IsNullOrEmpty(name)) name = null;
+        copy.Name = name;
+        CellNames[cellId] = name;
+        var how = localized ? "the master keeps its text in strings files" : "the master holds its text itself";
+        if (name != null)
+            VanillaNotes.Add($"{cellId}: its name is '{name}' ({how}); this plugin's copy of the cell carries it");
+        else if (failure != null)
+            VanillaNotes.Add($"NOTE {cellId}: its name could not be read ({failure}; {how}); this plugin's copy of the cell has none, so the room is nameless while the plugin is loaded");
+        else if (localized)
+            VanillaNotes.Add($"NOTE {cellId}: no name was read for it ({how}; either the cell has none or the strings were not found); this plugin's copy of the cell has none");
+        else
+            VanillaNotes.Add($"{cellId}: it has no name");
     }
 
     /// <summary>

@@ -446,8 +446,11 @@ class Session:
             if a["Cell"].lower() == START_CELL.lower():
                 self.player.pos = tuple(a["Position"])
                 self.player.heading = a["Heading"]
-        # Whoever is inside a trigger when the room loads is inside it: no
-        # script that could be told is listening yet.
+        # [assumed] Whoever is inside a trigger when the room loads is inside
+        # it, and nobody is told: no script that could be told is listening
+        # yet, and a quest that starts later with someone already inside is
+        # not told either. (The builder keeps the triggers clear of the spot
+        # where the player arrives, so that this never decides anything.)
         for trig in self.triggers:
             trig.inside = {a.id for a in self.actors if self._in_box(trig, a)}
 
@@ -581,7 +584,14 @@ class Session:
         """After anything has moved, appeared or gone: who has entered or left
         a trigger. [documented] "Event called when the object reference is a
         trigger volume and has been entered", and that actors set off a
-        trigger on the layer triggers are typically on. Not seen."""
+        trigger on the layer triggers are typically on.
+
+        [assumed], all of it, on what counts as entering: an actor moved
+        into the box by script (MoveTo) enters it, as one who walks in
+        would; so does an actor made inside it, or enabled inside it; and
+        enabling a trigger with someone inside is that someone entering.
+        The trial's scenario moves the player in by script, so its pass
+        here rests on the first of these. Nothing here has been seen."""
         for trig in self.triggers:
             now_inside = {a.id for a in self.actors if self._in_box(trig, a)}
             entered, left = now_inside - trig.inside, trig.inside - now_inside
@@ -1258,7 +1268,9 @@ class Session:
         self.check_triggers()
 
     def n_objectreference_getparentcell(self, ref, context):
-        return ref.cell                             # [documented] "the Cell the object is currently in"
+        # [documented] "the Cell the object is currently in". [assumed] the
+        # same for a reference that is disabled and has never been loaded.
+        return ref.cell
 
     def n_objectreference_getpositionx(self, ref, context):
         return float(ref.pos[0])
@@ -1274,6 +1286,10 @@ class Session:
             # [documented] "only works if this is actually a trigger and will error otherwise"
             self.papyrus_error("GetTriggerObjectCount on %r, which is not a trigger" % ref)
             return 0
+        # [documented] "the number of objects currently inside the trigger
+        # volume". The stand-in knows only of actors; in the game a trigger
+        # may count loose things of any kind its layer lets in, so the number
+        # there can be larger. What a script may rely on is the change.
         return len(ref.inside)
 
     def _into_container(self, ref: ObjectReference, container: Optional[ObjectReference]):

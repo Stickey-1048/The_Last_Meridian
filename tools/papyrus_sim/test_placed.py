@@ -32,7 +32,7 @@ SKELETON = ROOT / "build" / "TheLastMeridian.json"
 
 PERSON, TRIGGER, GAME_TRIGGER, OBJECT, ZONE_TRIGGER = ("TLM_REF_TrialPerson", "TLM_REF_TrialTrigger", "TLM_REF_TrialTriggerGameBase",
                                                        "TLM_REF_TrialObject", "TLM_REF_TrialTriggerActorZone")
-CHECKS = 18
+CHECKS = 17
 
 
 def changed_plugin(change):
@@ -96,7 +96,27 @@ class TheTrialAsBuilt(unittest.TestCase):
         got = summary(run_scenario(10, SCRIPTS, PLUGIN, VANILLA, NATIVES, until=600.0))
         x, y, z = arrival()["Position"]
         self.assertEqual(got["info"][1], "trial: the player begins at (%f, %f, %f)" % (x, y, z))
-        self.assertEqual(got["info"][-2], "trial: the player is back at (%f, %f, %f)" % (x, y, z))
+        self.assertIn("trial: the player is back at (%f, %f, %f)" % (x, y, z), got["info"])
+
+    def test_every_trigger_is_entered_the_same_way(self):
+        """From where the scenario began, over the same distance, with nobody else about: or a
+        difference between the three would say nothing about the one thing each differs in."""
+        need_trial_build(self)
+        s = run_scenario(10, SCRIPTS, PLUGIN, VANILLA, NATIVES, until=600.0)
+        got = summary(s)
+        before = [l for l in got["info"] if "things inside it before the move: " in l]
+        after = [l for l in got["info"] if l.startswith("trial: after the move the player is at")]
+        self.assertEqual((len(before), len(after)), (3, 3))
+        distances = {l.split(", ")[3].split(" from the player")[0] for l in before}
+        self.assertEqual(len(distances), 1, "the three triggers are not the same distance from where the player is moved from: %s" % distances)
+        for l in before:
+            self.assertTrue(l.endswith("things inside it before the move: 0"), l)
+        for l in after:
+            self.assertTrue(l.endswith("things inside it: 1, which is 1 more than before"), l)
+        # the person is enabled only after the last trigger
+        lines = s.user_logs["TLM"]
+        enabled = lines.index("STEP  enabling the placed person")
+        self.assertGreater(enabled, max(i for i, l in enumerate(lines) if l.startswith("STEP  moving the player into ")))
 
     def test_it_passes_however_the_timing_falls(self):
         need_trial_build(self)

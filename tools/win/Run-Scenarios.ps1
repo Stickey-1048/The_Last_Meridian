@@ -618,8 +618,10 @@ foreach ($r in $results) {
         if ($r.Logs.TrialLines.Count) {
             $out.Add("  other lines in the game's script log that name the trial's quest ($($r.Logs.TrialLines.Count)$(if ($r.Logs.TrialLines.Count -gt 40) { ', first 40 shown' })):")
             foreach ($l in ($r.Logs.TrialLines | Select-Object -First 40)) { $out.Add("    $l") }
-        } else {
+        } elseif ($r.Logs.HasScriptLog) {
             $out.Add("  other lines in the game's script log that name the trial's quest: none (the game's own scripts on its aliases wrote nothing there)")
+        } else {
+            $out.Add("  other lines in the game's script log that name the trial's quest: not known, there is no script log for this session")
         }
     }
     if ($r.Logs.OtherUserLogs.Count) {

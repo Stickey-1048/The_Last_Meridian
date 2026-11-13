@@ -44,8 +44,10 @@ The builder does not know the room. It reads from the game's master where the co
 | Person | 300 | 150 | 0 |
 | Trigger | 600 | 200 to the left | 100 |
 | Comparison trigger on the game's base | 600 | 200 | 100 |
-| Comparison trigger on `L_ACTORZONE` | 950 | 0 | 100 |
+| Comparison trigger on `L_ACTORZONE` | 200 | 600 | 100 |
 | Object | 150 | 60 to the left | 20 |
+
+The three triggers are the same distance from the arrival point (640 units), and the scenario brings the player back to where it began before each, so that each is entered the same way. A move by script over a longer distance may be handled differently by the game than a short one, and a difference between the three should say something about the one thing each differs in, not about how the player got there.
 
 Whether those spots are open floor is not known. It does not matter for the test, which moves the player by script and picks the object up by script; it matters for a person who walks in to look. The build output says where the arrival marker is, how far the room's own objects reach, where each thing went and whether that is within their reach seen from above; and the scenario reports where the player and each thing really are, so the two can be compared.
 
@@ -73,7 +75,7 @@ No objectives, no log text. Each stage has its one item, as every stage of this 
 | `Object` | `TLM_REF_TrialObject` | Optional | `DefaultAliasOnContainerChangedTo`, `StageToSet` = 20 |
 | `TriggerActorZone` | `TLM_REF_TrialTriggerActorZone` | Optional | `DefaultAliasOnTriggerEnter`, `StageToSet` = 12 |
 
-Every alias is Optional on purpose: an alias that stays empty in the game is then reported by name, and the quest still starts. `Person` needs Allow Disabled because its reference starts disabled.
+Every alias is Optional on purpose: an alias that stays empty in the game is then reported by name, and the quest still starts. `Person` has Allow Disabled because its reference starts disabled; whether the game needs the flag for a reference an alias is forced to is not documented (see below), and with it set the question does not arise.
 
 The two scripts on the aliases are the game's own. They are the same two the main quest's design relies on for the sealed dispatch, the ambush trigger and the town gate, where they have never yet had anything to act on.
 
@@ -85,24 +87,25 @@ The quest's own script, `TLM:PlacedTrial`, holds scenario 10 and nothing else.
 
 `cqf TLM_Core RunSelfTest 10`, or unattended as below. One fresh session, like every scenario.
 
-Scored, 18 checks:
+Scored, 17 checks, in this order:
 
-1. the quest is not running before, and runs once started;
-2. the `Person` alias holds a reference, it is an actor, it starts disabled, it is not dead, it is in the cell the player is in, and it is no longer disabled after `Enable`;
+1. the quest runs once started;
+2. the `Person` alias holds a reference, it is an actor, it starts disabled, and it is not dead;
 3. the `Object` alias holds a reference in the player's cell; the player has none of the item before; `Activate` by the player (which for an item means picking it up) leaves the player with one; and stage 20 is then set, not before;
 4. the `Trigger` alias holds a reference; stage 10 is not set before; moving the player into the middle of the trigger sets it;
-5. the quest is completed by its last stage.
+5. the person, enabled only now so that nobody stands near the triggers while they are tried, is no longer disabled and is in the cell the player is in;
+6. the quest is completed by its last stage.
 
 Reported, not scored (lines beginning INFO):
 
 - where the player begins, and where the person, the object and each trigger are, with their distances from the player;
 - whether the person's and the object's 3D is loaded;
 - what `Start` and `Activate` returned;
-- how many things each trigger counts inside itself before and after the move;
+- how many things each trigger counts inside itself before and after the move. A trigger counts things of any kind its layer lets in, and the room is full of loose items, so the number itself means little: what matters is whether it went up by one;
 - the two comparison triggers: whether entering each set its stage (11, 12). If ours fails and the one on the game's base works, the fault is in the activator the plugin makes; if the one on `L_ACTORZONE` works, it is the layer;
 - if picking the object up did not set stage 20, the reference is moved into the player's inventory by `AddItem` and the result reported, which tells a pick-up that failed from a script that did not hear it.
 
-At the end the player is moved back to where the scenario began.
+The player is brought back to where the scenario began before each trigger and after the last.
 
 **What it cannot check: the person's name.** The alias gives the reference a display name, but a script can only read a display name through a script extender (`GetDisplayName` is an F4SE function), and this project does not use one. A person has to look, and only once the unattended run has shown that the rest works:
 
@@ -160,8 +163,9 @@ Not documented anywhere I could find, and assumed:
 - [x] `Builder.cs`: model borrowing; the copy of the cell's record; the arrival marker; placing from it; the box, with its colour copied from one of the game's own box triggers when one is found; the collision layer by name; forced-reference aliases; alias display names. Ids for the placed references are given out with and without the master, so `formkeys.txt` never changes on the PC.
 - [x] The build output says what was found and where everything went, including a count of which collision layers the game's own box triggers use (a sample of a few hundred), for comparison if ours does not work.
 - [x] `Report.cs`, `SelfCheck.cs`: the written file is read back and compared with the spec, the references included; the cell's copy must be filed where the master files the cell and hold only this plugin's references.
-- [x] `tools/check_plugin_layout.py`: the same from the bytes, without the library, with ten kinds of deliberate damage that must each be caught.
-- [x] `tools/StandInMaster`: a stand-in test room, so that all of the above runs on Linux; and a bare room with nothing in it that the builder looks for.
+- [x] `tools/check_plugin_layout.py`: the same from the bytes, without the library, with sixteen kinds of deliberate damage that must each be caught.
+- [x] `tools/StandInMaster`: a stand-in test room, so that all of the above runs on Linux; the same with its text in strings files, as the game's master has it; one whose own triggers carry no bound; and a bare room with nothing in it that the builder looks for.
+- [x] The name of the room. The game keeps a cell's name apart from the master, in strings files; this plugin's copy of the cell needs it as text. The builder reads it once, puts it into the copy and says what it read. If the strings cannot be read the copy has no name, the build says so, and nothing stops.
 - [x] `TLM:PlacedTrial` and scenario 10 in `TLM:SelfTest`.
 - [x] `tools/papyrus_sim`: placed references, forced fills, triggers, picking up, and the game's two default alias scripts played from their documentation. `test_placed.py`.
 - [x] `tools/win/Run-Scenarios.ps1`: scenario 10 in `basic` and `all`; an error in the game's script log now counts for this project when the scripts it happened in are ours, even if its own line does not name us.
@@ -180,10 +184,14 @@ On Linux, all in `tools/run_checks.sh`:
 | Plugin built without a master | Nothing is placed, the aliases are empty and Optional, ids are still given out |
 | Plugin built against the stand-in room | Five references, where the arrival marker and its heading put them; read back through the library and again from the bytes; the id file unchanged |
 | Plugin built against a bare room | Placed from the origin; no collision layer; no comparison trigger; each said in the build output; the file still sound |
-| Deliberate damage to the written file (14 kinds, 10 of them to the cell and its references) | Each is caught by the byte check |
-| Scenario 10 on the stand-in engine | 18 passed, in the ordinary mode, with every call taking a frame, and shaken 25 ways |
+| Plugin built against a master with its text in strings files, with and without those files | The room's name is carried into the copy; without the files the copy has none and the build says so |
+| Plugin built against a master whose own triggers carry no bound | The builder writes none either |
+| Deliberate damage to the written file (20 kinds, 16 of them to the cell, its references and the aliases that point at them) | Each is caught by the byte check |
+| Seven faults put into the builder, one at a time | Each is caught by the builder's own read-back check, which is the one that runs on the PC |
+| Scenario 10 on the stand-in engine | 17 passed, in the ordinary mode, with every call taking a frame, and shaken 25 ways |
 | `test_placed.py`, 12 tests that each break one thing in the plugin or in how the game answers | The scenario fails on the check that is there for that thing, and still closes the game |
 | `test_placed.py`, 15 tests of the stand-in's new rules | The rules do what `sim.py` says |
+| Eight faults put into `TLM:PlacedTrial`, one at a time | Each makes scenario 10 fail on the stand-in engine |
 | The other 62 scenarios | Unchanged: 1,561 checks |
 | The Windows chain against the stand-in PC | Build, compile (a stand-in compiler), install, scenario 10, report |
 
@@ -197,24 +205,27 @@ git fetch origin; if ($LASTEXITCODE -eq 0) { git checkout feat/tlm-mq01-graybox;
 
 The first two steps move the folder onto this branch, once; each step runs only if the one before it worked (rehearsed against a scratch copy: a branch that is not there, a fetch that fails and a switch that git refuses each end with nothing run). After that the usual command is enough.
 
-About ten minutes. Scenario 10 runs first, so that a plugin the game cannot load shows at once. Scenario 1 says whether the two real quests still behave with the larger plugin. 2 and 129 to 132 are the short run that was already owed (the bystander experiment and the timer guard).
+About twelve minutes. Scenario 10 runs first, so that a plugin the game cannot load shows at once (the runner stops there if the first scenario never starts). Scenario 1 says whether the two real quests still behave with the larger plugin. 2 and 129 to 132 are the short run that was already owed (the bystander experiment and the timer guard).
 
 ### Reading the result
 
 | What comes back | What it means |
 |---|---|
 | The build stops in step 4 with an error | The builder met something in the real master it was not written for. Its message says what. Nothing was installed |
-| Scenario 10 "NOT STARTED", or the game closes at once | The game did not take the plugin, most likely the cell's copy or a reference. Scenario 1 never having failed this way before points the same way |
+| Scenario 10 "NOT STARTED" | No game appeared after Mod Organizer was started. That is about Mod Organizer or Steam, as on 2026-11-13, not about the plugin |
+| Scenario 10 "NO RESULT", with "the game ran, but the core quest never started" or "the game wrote no script log", and "STOPPED EARLY" under the table | The game started and never got as far as the test room with the plugin running: it closed, or sat at its menu until the runner closed it. Most likely it did not take the plugin, and the cell's copy or a reference is the first suspect, since this never happened before they were added |
+| Scenario 10 "UNFINISHED" | The scenario began and the game went away under it. The last STEP line in the report says what it was doing |
 | "the Person/Object/Trigger alias holds a reference" fails | The reference is not there, or the alias did not take it. The INFO lines of the others say which kind |
-| The person is not in the player's cell, or absurdly far | The cell's copy landed somewhere other than the room |
+| The person or the object is not in the player's cell, or absurdly far | The cell's copy landed somewhere other than the room |
 | Stage 20 not set, and the `AddItem` line says it then was | `Activate` did not pick the object up; the default script is fine |
 | Stage 20 not set either way | The default script did not act, or did not hear |
-| Stage 10 not set, things inside the trigger = 0 | The game does not see the player in the box: the box, its layer or the activator. Compare with the two comparison triggers and with the layers the build output counted |
-| Stage 10 not set, things inside = 1 | The trigger works; the default script did not act |
+| Stage 10 not set, and the trigger's count of things inside did not go up | The game does not see the player in the box: the box, its layer or the activator. Compare with the two comparison triggers and with the layers the build output counted |
+| Stage 10 not set, and the count went up by one | The trigger works; the default script did not act |
+| The count was already high before the move, or the player was within 150 of the trigger's middle before it | The player began inside the box, or loose things are in it. If the build placed from the origin (no arrival marker), move the boxes |
 | Stage 10 not set, stage 11 set | Our activator is the fault |
 | Stage 10 not set, stage 12 set | The layer is the fault: use `L_ACTORZONE` |
 | None of 10, 11, 12 set | Something the three share: the box itself, the default script, or that a move by script is not "entering" |
-| All 18 pass | Placed people, triggers and objects can be generated. The rough walk-through can be built this way |
+| All 17 pass | A placed trigger and a placed object can be generated and drive a quest, and a placed person can be found and switched on. Read the INFO line about the person's 3D before concluding that the person is really standing there: that is reported, not scored |
 
 ## Rollback
 

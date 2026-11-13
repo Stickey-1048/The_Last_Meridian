@@ -29,10 +29,16 @@ What it asserts where the plugin places references in a cell of the game
     reach is in the file a second time, as the reference's bound (XMBO), the
     two are the same three numbers (the format notes for the game before this
     one say the editor refuses a box where they differ);
+  - a base (NAME) is a record of a master the plugin names, or one of the
+    plugin's own that is in the file;
+  - a quest alias that is filled with a reference of this plugin (ALFR)
+    points at one that is under a cell in the file;
   - and, read beside the description the builder wrote (TheLastMeridian.json
-    in the same folder): position, the box's sizes as the file holds them, the
-    collision layer and the "initially disabled" flag are what it says. The
-    description is read back through the library; this reads the bytes.
+    in the same folder): which kind of reference it is, its name, its base,
+    position and rotation, the shape and sizes of its box as the file holds
+    them, the collision layer and the "initially disabled" flag are what it
+    says. The description is read back through the library; this reads the
+    bytes.
 
 The layout is the one in xEdit's record definitions for Fallout 4
 (wbDefinitionsFO4.pas, records QUST, CELL, REFR, ACHR, and the group types).
@@ -184,21 +190,45 @@ def master_count(buf):
     raise ValueError("the file does not begin with a TES4 record")
 
 
+SHAPES = {1: "Box", 2: "Sphere", 3: "Plane", 4: "Line", 5: "Ellipsoid"}
+KINDS = {"ACHR": "PlacedNpc", "REFR": "PlacedObject"}
+
+
 def placed_from_json(path):
-    """FormID -> what the builder's description says about each placed reference, or None without the file."""
+    """FormID -> what the builder's description says about each placed reference, or None without the file.
+    Each entry also gets "BaseId": the FormID its base should have in the file, with the plugin's own
+    records numbered after its masters (None if the description names a record it does not list)."""
     if not os.path.exists(path):
         return None
+    data = json.load(open(path, encoding="utf-8-sig"))
+    masters = [m.lower() for m in data.get("Masters", [])]
+    own = {}
+    for group in ("Records", "Messages", "Quests"):
+        for rec in data.get(group, []):
+            own[rec["EditorId"]] = int(rec["FormKey"].split(":")[0], 16)
     out = {}
-    for cell in json.load(open(path, encoding="utf-8-sig")).get("Cells", []):
+    for cell in data.get("Cells", []):
         for p in cell["Placed"]:
+            base = p["Base"]
+            if ":" in base:
+                number, _, file = base.partition(":")
+                p["BaseId"] = (masters.index(file.lower()) << 24 | int(number, 16)) if file.lower() in masters else None
+            else:
+                p["BaseId"] = (len(masters) << 24 | own[base]) if base in own else None
             out[int(p["FormKey"].split(":")[0], 16)] = p
     return out
+
+
+def own_record_ids(buf, masters):
+    """The FormIDs of every record in the file that is the plugin's own."""
+    return {formid for kind, _off, _size, formid, _flags in records(buf, 0, len(buf)) if kind != "TES4" and formid >> 24 == masters}
 
 
 def check_cells(buf, described=None):
     """Returns (problems, number of cell records, number of references under them)."""
     problems = []
     masters = master_count(buf)
+    own = own_record_ids(buf, masters)
     cells = refs = 0
     seen = set()
     for item in items(buf, 0, len(buf)):
@@ -259,8 +289,13 @@ def check_cells(buf, described=None):
                                 problems.append(f"{who}: flagged {'persistent' if flags & PERSISTENT else 'temporary'} "
                                                 f"but in the cell's {'persistent' if in_persistent else 'temporary'} group")
                             subs = dict(subrecords(data))
-                            if len(subs.get("NAME", b"")) != 4:
+                            base = struct.unpack("<I", subs["NAME"])[0] if len(subs.get("NAME", b"")) == 4 else None
+                            if base is None:
                                 problems.append(f"{who}: no base (NAME)")
+                            elif base >> 24 > masters:
+                                problems.append(f"{who}: its base {base:08X} belongs to a file the plugin does not name as a master")
+                            elif base >> 24 == masters and base not in own:
+                                problems.append(f"{who}: its base {base:08X} would be a record of this plugin, and the file has none with that id")
                             if len(subs.get("DATA", b"")) != 24:
                                 problems.append(f"{who}: position and rotation (DATA) are {len(subs.get('DATA', b''))} bytes, expected 24")
                                 continue
@@ -286,9 +321,22 @@ def check_cells(buf, described=None):
                             if want is None:
                                 problems.append(f"{who}: not in the builder's description of the plugin")
                                 continue
+                            if KINDS[kind] != want["Kind"]:
+                                problems.append(f"{who}: a {KINDS[kind]} in the file, a {want['Kind']} in the description")
+                            name = subs.get("EDID", b"").rstrip(b"\0").decode("latin1") or None
+                            if name != want["EditorId"]:
+                                problems.append(f"{who}: named {name} in the file, {want['EditorId']} in the description")
+                            if base is not None and base != want["BaseId"]:
+                                problems.append(f"{who}: its base is {base:08X} in the file, {want['Base']} in the description")
                             position = struct.unpack_from("<3f", subs["DATA"], 0)
                             if any(abs(a - b) > 0.001 for a, b in zip(position, want["Position"])):
                                 problems.append(f"{who}: at {position} in the file, {want['Position']} in the description")
+                            rotation = struct.unpack_from("<3f", subs["DATA"], 12)
+                            if any(abs(a - b) > 0.0001 for a, b in zip(rotation, want["Rotation"])):
+                                problems.append(f"{who}: turned {rotation} in the file, {want['Rotation']} in the description")
+                            shape = SHAPES.get(struct.unpack_from("<I", subs["XPRM"], 28)[0]) if len(subs.get("XPRM", b"")) == 32 else None
+                            if shape != want["Primitive"]:
+                                problems.append(f"{who}: its primitive is {shape} in the file, {want['Primitive']} in the description")
                             if bool(flags & INITIALLY_DISABLED) != want["InitiallyDisabled"]:
                                 problems.append(f"{who}: 'initially disabled' is {bool(flags & INITIALLY_DISABLED)} in the file, {want['InitiallyDisabled']} in the description")
                             if (box is None) != (want["Box"] is None) or (box and any(abs(a - b) > 0.001 for a, b in zip(box, want["Box"]))):
@@ -302,6 +350,16 @@ def check_cells(buf, described=None):
         for formid, want in described.items():
             if not any(s & 0xFFFFFF == formid for s in seen):
                 problems.append(f"{want['EditorId']}: in the builder's description, but not under any cell in the file")
+    # A quest alias filled with a reference of this plugin must point at one that is in the file.
+    for formid, subs in quest_records(buf):
+        edid = next((d.rstrip(b"\0").decode("latin1") for t, d in subs if t == "EDID"), f"{formid:08X}")
+        for t, d in subs:
+            if t == "ALFR" and len(d) == 4:
+                target = struct.unpack("<I", d)[0]
+                if target >> 24 == masters and target not in seen:
+                    problems.append(f"{edid}: an alias is filled with the reference {target:08X}, which is not under any cell in the file")
+                elif target >> 24 > masters:
+                    problems.append(f"{edid}: an alias is filled with the reference {target:08X}, of a file the plugin does not name as a master")
     return problems, cells, refs
 
 
@@ -367,6 +425,19 @@ def cell_damage(buf):
     out.append(("a reference in the persistent group without the persistent flag", None if r < 0 else patch(buf, r + 8, struct.pack("<I", flags & ~PERSISTENT))))
     out.append(("a reference that belongs to the master", None if r < 0 else patch(buf, r + 15, b"\x00")))
     out.append(("a reference whose 'initially disabled' flag was flipped", None if r < 0 else patch(buf, r + 8, struct.pack("<I", flags ^ INITIALLY_DISABLED))))
+    if r >= 0:
+        size = struct.unpack_from("<I", buf, r + 4)[0]
+        n = buf.find(b"NAME", r + 24, r + 24 + size)
+        out.append(("a reference whose base is of a file that is no master", None if n < 0 else patch(buf, n + 9, b"\x05")))
+        out.append(("a reference with another base", None if n < 0 else patch(buf, n + 6, struct.pack("<I", struct.unpack_from("<I", buf, n + 6)[0] ^ 1))))
+        e = buf.find(b"EDID", r + 24, r + 24 + size)
+        out.append(("a reference with another name", None if e < 0 else patch(buf, e + 6, b"X")))
+        d = buf.find(b"DATA", r + 24, r + 24 + size)
+        out.append(("a reference turned another way", None if d < 0 else patch(buf, d + 6 + 20, struct.pack("<f", struct.unpack_from("<f", buf, d + 6 + 20)[0] + 0.5))))
+    a = buf.find(b"ALFR\x04\x00")
+    while a >= 0 and buf[a + 9] == 0:           # skip aliases filled with a master's reference (the player)
+        a = buf.find(b"ALFR\x04\x00", a + 1)
+    out.append(("an alias filled with a reference that is not in the file", None if a < 0 else patch(buf, a + 6, struct.pack("<I", struct.unpack_from("<I", buf, a + 6)[0] + 0x400))))
     r = first_ref(buf, with_sub=b"XPRM")
     if r < 0:
         out.append(("a box of another size", None))
@@ -375,6 +446,7 @@ def cell_damage(buf):
         size = struct.unpack_from("<I", buf, r + 4)[0]
         x = buf.find(b"XPRM", r + 24, r + 24 + size)
         out.append(("a box of another size", patch(buf, x + 6, struct.pack("<f", struct.unpack_from("<f", buf, x + 6)[0] / 2))))
+        out.append(("a box turned into a sphere", patch(buf, x + 6 + 28, struct.pack("<I", 2))))
         b = buf.find(b"XMBO", r + 24, r + 24 + size)
         if b >= 0:      # a build that follows a master whose own triggers have no bound writes none
             out.append(("a box whose bound says another size", patch(buf, b + 6, struct.pack("<f", struct.unpack_from("<f", buf, b + 6)[0] + 1))))
