@@ -751,6 +751,25 @@ One line of the report was nonsense and is put right: the distance to the dispat
 
 Not yet done: the section played by a person. Nothing by eye, no box with buttons, no paper read, no fight fought.
 
+### The sixteenth run, 2026-11-14: the first section of Act I passes
+
+Commit `3b28aae`, run on the owner's PC by a coordinator acting for the owner, ending 10:47. The report's SHA-256 is `08F72C0AE4BB03B8C63101724086FB61B813AE6B687782724050030C60565E1F`. Build, compile of all 16 scripts and install passed. Scenarios 12, 11, 10, 2, unattended: **4 of 4 passed; 82 checks passed, 0 failed** (42, 8, 17, 15). The script log named no error of this project's in any session. What the run had changed was put back.
+
+**Scenario 12: 42 of 42**, in 76 seconds. The two things changed after the fifteenth run, now seen in the game:
+
+| Changed | The game's answer |
+|---|---|
+| The second Cutter moved to 560 ahead, 140 to the left | She stayed: nobody was more than 64 units from where they were placed |
+| The revolver looked up by the name the game uses inside | The build found `44` (`0CE97D`), which a player sees as **".44"** (not ".44 Pistol"), firing `Ammo44` (`09221C`). In the game `Activate` on it returned True and **stage 15 was set by that pick-up**: the line for the second way of getting it to the player is not in the report, so that way was never taken. The player then had six rounds |
+
+So a weapon the plugin places can be picked up, the game's own script on an alias filled by `ForceRefTo` hears it, and the project's script on the first section's own alias hears it too (the rounds).
+
+The rest as in the fifteenth run: all 26 references held, all 26 aliases of the two quests filled, the marshal dead, nobody in a fight at any of the three points, every spot on the navigation mesh, the road walked by its stages (main quest 10, 20, 15, 30, 31, 40, 50, 60, 100; side quest 5, 10, 13, 20, 14, 25, 41, 50, 100), the guard of amendment A24 acting once at the town gate. The distance to the dispatch now reads 407 units. The thirteen people were there together after 25.2 to 26.7 seconds (39 to 40 in the fifteenth run).
+
+**Scenarios 11, 10 and 2: 8, 17 and 15**, as before. `Enable` took 26.0 seconds for the first person of the plugin's own and 1.1 for the second. Four standing by at a killing: no fight, again.
+
+**What this is and is not.** It is the unattended check passing in the game: what the plugin places is there, in the right aliases, and the chapter can be walked by its stages. It is **not a playtest**: nobody has looked at it, no box with buttons has opened in the game, no paper has been read, no fight has been fought, and none of what people say has been seen on a screen. Scenario 12 picks things up by script; that a person can pick up the revolver or the dispatch by hand has not been seen either, though the same pick-up by script worked.
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
@@ -842,10 +861,10 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). **Done 2026-11-13: 17 of 17**, for the trigger and the object without reservation. The person is there and can be enabled, but did not stay where it was placed.
 3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Done 2026-11-13: 8 of 8.** A person with no packages stands exactly where it is placed, and activating it reached the project's script on its alias. Open: why `Enable` takes about 19 seconds for such a person.
 3h. A trigger with no collision layer. **Done 2026-11-13**: both comparison triggers of scenario 10 set their stages.
-3i. The first section of Act I as the plugin places it: thirteen people, the things, the boxes, put into the two quests' aliases and walked once by their stages (scenario 12, [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md)). **Ran 2026-11-14: 39 of 42.** Everything new worked but two things, both put right in the plugin since and not yet run again: a spot that was not open floor, and a revolver that could not be picked up.
+3i. The first section of Act I as the plugin places it: thirteen people, the things, the boxes, put into the two quests' aliases and walked once by their stages (scenario 12, [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md)). **Done 2026-11-14: 42 of 42** in the sixteenth run, after 39 of 42 in the fifteenth (a spot that was not open floor, and a revolver nobody can pick up; both put right).
 3j. The same played by a person (`tools\win\Play-Act1.ps1`): can everybody be seen and told apart, do the boxes open and their buttons do what they say, can the papers be read, does a fight stay between those it concerns. **Still to do.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
-5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do (the builder now looks for them by the name a player sees, ".44 Pistol", and says what it found).
+5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo **done 2026-11-14**: the weapon is `44` (`0CE97D`), which a player sees as ".44", and it fires `Ammo44` (`09221C`).
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).
 7. `Kill` on a Protected actor (**done 2026-11-12**); `Disable` on an aliased actor (**done 2026-11-12**).
 8. Message box with a hidden button: which index comes back.

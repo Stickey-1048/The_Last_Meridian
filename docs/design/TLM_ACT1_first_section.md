@@ -2,7 +2,7 @@
 
 Branch `feat/tlm-mq01-graybox`. Self-test scenario 12, and one command to play it by hand.
 
-**Status: compiled, and its unattended check ran in the game on 2026-11-14: 39 of 42** ([VERIFY_LOG.md](VERIFY_LOG.md), the fifteenth run). The people, the things, the boxes and the road by its stages all work there. Two things did not and have been changed since, not yet run again: one Cutter stood on a spot that is not open floor, and the revolver the build found was one nobody can pick up. **It has not been played by a person:** nothing has been seen by eye, no box has been answered, no paper read.
+**Status: compiled, and its unattended check passes in the game: 42 of 42 on 2026-11-14** ([VERIFY_LOG.md](VERIFY_LOG.md), the sixteenth run; 39 of 42 in the fifteenth, before a Cutter was moved off a spot that is not open floor and the revolver was looked up by the name the game uses inside). The people, the things, the boxes and the road by its stages all work there. **It has not been played by a person:** nothing has been seen by eye, no box has been answered, no paper read, no fight fought.
 
 What follows was written before that run, and is kept as written where it says what was not yet known.
 
@@ -94,7 +94,7 @@ Whether every one of these spots is open floor is not known: five places in the 
 |---|---|---|
 | `TLM_MISC_Dispatch` | The sealed rail dispatch. Picking it up sets stage 20 | Folder, Clipboard |
 | `TLM_BOOK_MarshalLog`, `TLM_BOOK_RailMaintLedger` | The journal and the ledger. Activated, the game opens them to be read | One of the game's notes (below) |
-| The game's own revolver | The marshal's. Picking it up sets stage 15, and the player then has six rounds for it | Itself: by the name ".44 Pistol"; else the record the game calls `44`; else a Pipe Revolver or a 10mm Pistol a player can have |
+| The game's own revolver | The marshal's. Picking it up sets stage 15, and the player then has six rounds for it | Itself: by the name ".44 Pistol"; else the record the game calls `44`; else a Pipe Revolver or a 10mm Pistol a player can have. In the game it is `44`, which a player sees as ".44" |
 | `TLM_ACTI_BrakeShoes`, `TLM_ACTI_DrawBar` | Examined, each shows its box and counts as evidence | Hubcap, Gears; Connecting Rod, Adjustable Wrench, Wrench |
 | `TLM_ACTI_NoticeBoard`, `TLM_ACTI_Stove` | Where the pages can be posted; where the ledger can be burned | Clipboard, Folder; Hot Plate, Cooking Pot |
 | `TLM_CONT_WagonCargo` | The wagon's cargo, with 40 caps in it. Emptied when the Cutters loot it | Wooden Crate, Crate, Steamer Trunk, Trunk, Suitcase, Toolbox |
@@ -251,7 +251,8 @@ Each of these is new to the game in this cut. Scenario 12 or the first play will
 - [x] `tools/papyrus_sim`: arrays, a box that is answered (for tests), `EnableNoWait`, `RandomInt`, a person pressing the button; `test_act1.py`.
 - [x] `tools/win`: scenario 12 in `basic` and `all`; `Play-Act1.ps1`, and the play run in `Run-Scenarios.ps1`.
 - [ ] An independent review. One was started on 2026-11-14 and was cut off before it reported; nothing came back from it. What stands in its place is the author's own second reading and the tests below.
-- [ ] Compile on the PC; build against the real master; run scenario 12; play it by hand.
+- [x] Compile on the PC; build against the real master; run scenario 12 (2026-11-14: 42 of 42).
+- [ ] Play it by hand.
 
 ## Tests
 
