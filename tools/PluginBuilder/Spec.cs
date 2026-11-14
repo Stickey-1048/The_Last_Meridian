@@ -496,7 +496,12 @@ public static class Spec
         },
         Objectives: new ObjectiveSpec[]
         {
-            new(10, "Find the marshal's dispatch case", "Marshal"),
+            // Says what to do as well as what to find (amendment A26, after the owner tried the section): it is the
+            // persistent journal objective, displayed at stage 10 and completed at stage 20, so the instruction is
+            // still in the quest's entry when the opening notice has gone. Whether it also shows on the HUD depends
+            // on the quest being tracked, which nothing here sets or checks. Its number, its target and the stages
+            // that display and complete it are as they were.
+            new(10, "Investigate the wreck: search the ground for the marshal's dispatch case", "Marshal"),
             new(20, "Take the dispatch to Sheriff Owen Pritchard in Mercy Crossing", "SheriffPritchard"),
         },
         Aliases: new AliasSpec[]

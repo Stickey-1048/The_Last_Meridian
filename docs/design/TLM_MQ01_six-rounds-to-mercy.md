@@ -171,7 +171,7 @@ Stage numbers are milestones. **Objectives, not stage order, direct the player**
 
 | ID | Text | Displayed at | Completed at | Target |
 |---|---|---|---|---|
-| O10 | Find the marshal's dispatch case | 10 | 20 | `Alias_Marshal` |
+| O10 | Investigate the wreck: search the ground for the marshal's dispatch case (v0.1: "Find the marshal's dispatch case"; amendment A26) | 10 | 20 | `Alias_Marshal` |
 | O20 | Take the dispatch to Sheriff Owen Pritchard in Mercy Crossing | 20 | 50 | `Alias_SheriffPritchard` |
 
 Two objectives only. The caravan encounter deliberately has **no objective**: it is emergent, which is what makes ignoring it a legitimate choice.
