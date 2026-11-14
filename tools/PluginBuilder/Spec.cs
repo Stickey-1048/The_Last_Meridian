@@ -497,7 +497,7 @@ public static class Spec
         Objectives: new ObjectiveSpec[]
         {
             // Says what to do as well as what to find (amendment A26, after the owner tried the section): it is the
-            // persistent journal objective, flagged as displayed from stage 10 to stage 20, so the instruction is
+            // persistent journal objective, displayed at stage 10 and completed at stage 20, so the instruction is
             // still in the quest's entry when the opening notice has gone. Whether it also shows on the HUD depends
             // on the quest being tracked, which nothing here sets or checks. Its number, its target and the stages
             // that display and complete it are as they were.
