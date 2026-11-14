@@ -19,14 +19,19 @@ Rules:
 - Nothing here is canon until the owner says so. A name or fact that a generator
   invented stays out of the plugin until it has been accepted.
 
-## 2026-11-14 generated pack (external staging)
-A ChatGPT-created ZIP has been prepared in the accompanying chat, to upload at this path after owner review. The GitHub text connector does not accept the large PNG set as a direct attachment, so the ZIP's binary and JSON contents are **NOT yet committed** to the branch. Do not assume that files are present merely because this README mentions them.
+## 2026-11-14 generated pack
 
-ZIP contents (all under `assets/incoming/act1/`):
-- `textures/`: 34 exact-dimension PNGs (11 lettered signs/notices and their 11 blanks, 2 paper textures, 3 seal experiments, 4 geometric emblem experiments, 3 maps).
-- `characters/casting_cards.json`: 22 alternate casting cards, 11 role IDs each with A and B. **No individual portrait PNGs yet**.
-- `text/act1_texts.json`: 69 import-ready texts: 12 town notices, 36 NPC remarks, 6 freight ledgers, 5 road/wreck letters, 10 shelf and crate labels.
-- `layout/road_plan.json`: 45 measured placements and trigger regions in a 260 m by 110 m schematic.
-- `PROVENANCE.md` and `REVIEW_REQUIRED.md` documenting generation, source art, canon risks and limitations.
+Made with ChatGPT and sent by the owner; in the repository since 2026-11-14. What each file is and where it came
+from is in [PROVENANCE.md](PROVENANCE.md); what ChatGPT itself says should be looked at before any of it is used is
+in [REVIEW_REQUIRED.md](REVIEW_REQUIRED.md).
 
-**Before using:** Owner reviews proposed names/positions, uploads extracted files via GitHub or their working copy, and asks Claude to validate each field against the plugin builder spec. Image imports remain untested. The road strip is a compressed walkthrough and does not establish literal journey time to the wreck. No game binaries or tested Papyrus scripts changed here.
+- `textures/`: 34 PNG files at the sizes their names give: signs and notices with their blanks, two papers, three
+  seals, four emblems, two maps and the road plan.
+- `characters/`: `casting_cards.json` (22 cards, options a and b for eleven roles) and ten portraits, one for option
+  a of ten of the roles. No portrait for the role `cutter`, none for an option b.
+- `text/act1_texts.json`: 69 texts.
+- `layout/road_plan.json`: 45 measured things on a strip of 260 by 110 metres, x growing westward from the east end.
+
+None of it is in the plugin, none is approved, and nothing in it is canon. The texts and the road plan are in the
+brief's format, not yet in the story format (`docs/design/STORY_INTAKE.md`); the pictures wait for a way to put a
+flat picture into the game, which has not been built.

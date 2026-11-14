@@ -1,0 +1,452 @@
+[
+  {
+    "id": "tellico_river",
+    "kind": "water",
+    "x": 0,
+    "y": 5,
+    "width": 260,
+    "depth": 15,
+    "facing_degrees": 0,
+    "note": "south bank; top-down generalized water polygon"
+  },
+  {
+    "id": "line14_track",
+    "kind": "track",
+    "x": 0,
+    "y": 28,
+    "width": 260,
+    "depth": 3,
+    "facing_degrees": 0,
+    "note": "runs west toward Iron Junction"
+  },
+  {
+    "id": "tellico_dirt_road",
+    "kind": "road",
+    "x": 38,
+    "y": 47,
+    "width": 220,
+    "depth": 8,
+    "facing_degrees": 0,
+    "note": "east-west; narrows at x 105-125"
+  },
+  {
+    "id": "derailed_locomotive",
+    "kind": "vehicle",
+    "x": 8,
+    "y": 29,
+    "width": 21,
+    "depth": 6,
+    "facing_degrees": 92,
+    "note": "on side; east section"
+  },
+  {
+    "id": "rail_car_1",
+    "kind": "vehicle",
+    "x": 25,
+    "y": 32,
+    "width": 18,
+    "depth": 4,
+    "facing_degrees": 95,
+    "note": "derailed"
+  },
+  {
+    "id": "rail_car_2",
+    "kind": "vehicle",
+    "x": 34,
+    "y": 27,
+    "width": 18,
+    "depth": 4,
+    "facing_degrees": 95,
+    "note": "derailed"
+  },
+  {
+    "id": "rail_car_3",
+    "kind": "vehicle",
+    "x": 43,
+    "y": 32,
+    "width": 18,
+    "depth": 4,
+    "facing_degrees": 95,
+    "note": "derailed"
+  },
+  {
+    "id": "rail_car_4",
+    "kind": "vehicle",
+    "x": 52,
+    "y": 27,
+    "width": 18,
+    "depth": 4,
+    "facing_degrees": 95,
+    "note": "derailed"
+  },
+  {
+    "id": "rail_car_5",
+    "kind": "vehicle",
+    "x": 61,
+    "y": 32,
+    "width": 18,
+    "depth": 4,
+    "facing_degrees": 95,
+    "note": "burnt"
+  },
+  {
+    "id": "cab_lockbox",
+    "kind": "prop",
+    "x": 10,
+    "y": 32,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "inside locomotive cab"
+  },
+  {
+    "id": "gantt_body",
+    "kind": "person_spot",
+    "x": 44,
+    "y": 37,
+    "width": 2,
+    "depth": 2,
+    "facing_degrees": 0,
+    "note": "rail marshal beside third car"
+  },
+  {
+    "id": "rock_rise",
+    "kind": "prop",
+    "x": 65,
+    "y": 63,
+    "width": 22,
+    "depth": 17,
+    "facing_degrees": 0,
+    "note": "boulders, laurel, low terrain rise"
+  },
+  {
+    "id": "rock_cut",
+    "kind": "prop",
+    "x": 111,
+    "y": 62,
+    "width": 20,
+    "depth": 14,
+    "facing_degrees": 0,
+    "note": "road narrows at x 90-130"
+  },
+  {
+    "id": "wagon",
+    "kind": "vehicle",
+    "x": 109,
+    "y": 49,
+    "width": 7,
+    "depth": 4,
+    "facing_degrees": 90,
+    "note": "Nell Fenwick wagon across the road"
+  },
+  {
+    "id": "brahmin_pair",
+    "kind": "vehicle",
+    "x": 103,
+    "y": 49,
+    "width": 6,
+    "depth": 4,
+    "facing_degrees": 90,
+    "note": "two harnessed brahmin"
+  },
+  {
+    "id": "ford_marker",
+    "kind": "prop",
+    "x": 149,
+    "y": 40,
+    "width": 1,
+    "depth": 2,
+    "facing_degrees": 0,
+    "note": "wood pole marking safe river ford"
+  },
+  {
+    "id": "split_rail_fence",
+    "kind": "prop",
+    "x": 157,
+    "y": 57,
+    "width": 27,
+    "depth": 2,
+    "facing_degrees": 0,
+    "note": "fence parallel to road"
+  },
+  {
+    "id": "town_gate_posts",
+    "kind": "prop",
+    "x": 180,
+    "y": 48,
+    "width": 2,
+    "depth": 9,
+    "facing_degrees": 0,
+    "note": "two posts and crossbar"
+  },
+  {
+    "id": "town_gate_lamp",
+    "kind": "prop",
+    "x": 180,
+    "y": 56,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "oil lantern"
+  },
+  {
+    "id": "town_gate_bench",
+    "kind": "prop",
+    "x": 185,
+    "y": 59,
+    "width": 3,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "shelter bench"
+  },
+  {
+    "id": "warden_office",
+    "kind": "building",
+    "x": 195,
+    "y": 72,
+    "width": 18,
+    "depth": 13,
+    "facing_degrees": 180,
+    "note": "north side of main street; yard behind"
+  },
+  {
+    "id": "warden_yard",
+    "kind": "prop",
+    "x": 194,
+    "y": 86,
+    "width": 22,
+    "depth": 12,
+    "facing_degrees": 0,
+    "note": "fenced rear yard"
+  },
+  {
+    "id": "clinic",
+    "kind": "building",
+    "x": 225,
+    "y": 74,
+    "width": 13,
+    "depth": 11,
+    "facing_degrees": 180,
+    "note": "north side, west of Warden Office"
+  },
+  {
+    "id": "trading_post",
+    "kind": "building",
+    "x": 194,
+    "y": 32,
+    "width": 22,
+    "depth": 13,
+    "facing_degrees": 0,
+    "note": "south side"
+  },
+  {
+    "id": "gunsmith_lean_to",
+    "kind": "building",
+    "x": 193,
+    "y": 27,
+    "width": 10,
+    "depth": 6,
+    "facing_degrees": 0,
+    "note": "on eastern end of trading post"
+  },
+  {
+    "id": "freight_shed",
+    "kind": "building",
+    "x": 228,
+    "y": 32,
+    "width": 20,
+    "depth": 12,
+    "facing_degrees": 0,
+    "note": "south side beside railway"
+  },
+  {
+    "id": "wagon_yard",
+    "kind": "prop",
+    "x": 230,
+    "y": 13,
+    "width": 21,
+    "depth": 15,
+    "facing_degrees": 0,
+    "note": "behind freight shed"
+  },
+  {
+    "id": "notice_board",
+    "kind": "prop",
+    "x": 255,
+    "y": 58,
+    "width": 3,
+    "depth": 1,
+    "facing_degrees": 180,
+    "note": "west end of street"
+  },
+  {
+    "id": "water_pump",
+    "kind": "prop",
+    "x": 251,
+    "y": 63,
+    "width": 2,
+    "depth": 2,
+    "facing_degrees": 0,
+    "note": "town well or pump"
+  },
+  {
+    "id": "npc_owen_pritchard",
+    "kind": "person_spot",
+    "x": 204,
+    "y": 64,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Owen Pritchard"
+  },
+  {
+    "id": "npc_ada_pike",
+    "kind": "person_spot",
+    "x": 199,
+    "y": 33,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Ada Pike"
+  },
+  {
+    "id": "npc_silas_vane",
+    "kind": "person_spot",
+    "x": 209,
+    "y": 47,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Silas Vane"
+  },
+  {
+    "id": "npc_miriam_keene",
+    "kind": "person_spot",
+    "x": 232,
+    "y": 65,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Miriam Keene"
+  },
+  {
+    "id": "npc_jonah_talbot",
+    "kind": "person_spot",
+    "x": 180,
+    "y": 57,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Jonah Talbot"
+  },
+  {
+    "id": "npc_corwin_haskell",
+    "kind": "person_spot",
+    "x": 235,
+    "y": 39,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Corwin Haskell"
+  },
+  {
+    "id": "npc_nell_fenwick",
+    "kind": "person_spot",
+    "x": 112,
+    "y": 56,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Nell Fenwick"
+  },
+  {
+    "id": "npc_abel_rudd",
+    "kind": "person_spot",
+    "x": 106,
+    "y": 53,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Abel Rudd"
+  },
+  {
+    "id": "npc_reese_dunmore",
+    "kind": "person_spot",
+    "x": 115,
+    "y": 59,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Reese Dunmore"
+  },
+  {
+    "id": "npc_tellico_cutter_1",
+    "kind": "person_spot",
+    "x": 123,
+    "y": 52,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Tellico Cutter 1"
+  },
+  {
+    "id": "npc_tellico_cutter_2",
+    "kind": "person_spot",
+    "x": 117,
+    "y": 45,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Tellico Cutter 2"
+  },
+  {
+    "id": "npc_tellico_cutter_3",
+    "kind": "person_spot",
+    "x": 108,
+    "y": 65,
+    "width": 1,
+    "depth": 1,
+    "facing_degrees": 0,
+    "note": "Tellico Cutter 3"
+  },
+  {
+    "id": "MQ01_start",
+    "kind": "trigger_area",
+    "x": 0,
+    "y": 20,
+    "width": 43,
+    "depth": 45,
+    "facing_degrees": 0,
+    "note": "initial wreck exploration volume"
+  },
+  {
+    "id": "MQ01_caravan",
+    "kind": "trigger_area",
+    "x": 93,
+    "y": 40,
+    "width": 41,
+    "depth": 34,
+    "facing_degrees": 0,
+    "note": "branching encounter trigger; must not force combat"
+  },
+  {
+    "id": "MQ01_town_entry",
+    "kind": "trigger_area",
+    "x": 176,
+    "y": 45,
+    "width": 14,
+    "depth": 17,
+    "facing_degrees": 0,
+    "note": "gate reached"
+  },
+  {
+    "id": "MQ01_sheriff_dialogue",
+    "kind": "trigger_area",
+    "x": 194,
+    "y": 70,
+    "width": 22,
+    "depth": 18,
+    "facing_degrees": 0,
+    "note": "inside or approaching office"
+  }
+]
