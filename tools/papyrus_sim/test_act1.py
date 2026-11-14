@@ -407,15 +407,22 @@ class TheSectionSetUpForAPerson(unittest.TestCase):
 class TheOpeningCue(unittest.TestCase):
     """What a player is told to do first (issue 3, task DEMO-ONBOARD-001).
 
-    The owner played the section on 2026-11-14 and found it unclear what to
-    do. The stages of that play, as reported, show the wreck's papers and both
-    clues found, the case reported in town, and the dispatch never taken. Two
-    texts were changed for it and nothing else: the notice that comes up when
-    everybody is there, and the main quest's first objective, which stays on
-    the screen. These tests hold the two texts to saying what to do, and hold
-    everything about them that was not to change: which objective it is, what
-    it points at, what shows it and what completes it, and that nothing is
-    picked up for the player.
+    The owner tried the section on 2026-11-14 and reported that it was
+    unclear what to do. The script log of that session recorded main-quest
+    stages 10, 40, 34 and side-quest stages 5, 12, 11, 10, 20, 13, 25, 14, 41,
+    50, 100, and no stage 20, which picking up the dispatch sets (the
+    runner's report, SHA-256 FE89CE4B...A3337F; docs/design/VERIFY_LOG.md).
+    Two texts were changed for it and nothing else: the notice that comes up
+    when everybody is there, and the main quest's first objective, which is
+    the persistent one. These tests hold the two texts to saying what to do,
+    and hold everything about them that was not to change: which objective it
+    is, what it points at, what displays it and what completes it, and that
+    nothing is picked up for the player.
+
+    "Displayed" here is the objective's flag, as Quest.SetObjectiveDisplayed
+    sets it: the objective is in the quest's journal entry. Whether it is on
+    the HUD depends on the quest being tracked, which the scripts do not set
+    and these tests do not model.
 
     They say nothing about whether a person now finds the dispatch. That is
     for a person to say.
@@ -448,7 +455,7 @@ class TheOpeningCue(unittest.TestCase):
         self.plain(text, 100)
 
     def test_the_notice_and_the_objective_ask_for_the_same_thing(self):
-        # The objective is what is left when the notice has gone: it must not ask for less.
+        # The objective is what is left in the journal when the notice has gone: it must not ask for less.
         for words in ("investigate", "wreck", "ground", "marshal's dispatch case"):
             self.assertIn(words, self.notice["Text"].lower())
             self.assertIn(words, self.objectives[10]["Text"].lower())
@@ -467,13 +474,13 @@ class TheOpeningCue(unittest.TestCase):
             for word in intake.NOT_IN_ACT_ONE:
                 self.assertFalse(intake.names(word, text), "%r in %r" % (word, text))
 
-    def test_the_objective_is_there_from_the_start_and_the_notice_when_everybody_is(self):
+    def test_the_objective_is_displayed_from_the_start_and_the_notice_comes_when_everybody_is_there(self):
         s = Session(SCRIPTS, PLUGIN, VANILLA, NATIVES)
         s.set_global("TLM_G_DevScenario", PLAY)
         s.enter_game()
         s.run(20.0)
         mq = s.quests["TLM_MQ01"]
-        self.assertTrue(mq.displayed.get(10), "the first objective is not on the screen while the section is being set up")
+        self.assertTrue(mq.displayed.get(10), "the first objective is not flagged as displayed while the section is being set up")
         self.assertTrue(s.placed[REF + "Pritchard"].disabled)
         self.assertNotIn(MSG + "Begin", s.messages_shown)
         s.run(60.0)
@@ -508,11 +515,12 @@ class TheOpeningCue(unittest.TestCase):
         self.assertTrue(mq.completed_objectives.get(20))
         self.assertTrue(mq.completed)
 
-    def test_the_owners_first_play(self):
-        # What the owner did on 2026-11-14, as far as the stages of that play tell it: both clues, the ledger,
-        # the journal, the town, Pike's book, the report to Pritchard. The dispatch and the revolver were never
-        # taken. The scripts then set the stages the game set, in that order; and the first objective is still
-        # on the screen at the end, which is why it has to say what to do.
+    def test_the_stages_of_the_owners_session(self):
+        # The stages the game's script log recorded in the owner's session of 2026-11-14, in their order. The
+        # actions below are an inference: the ones that, by the design, set those stages. Nobody watched the
+        # session, so this does not say the owner did them. It says that these actions give exactly those stages
+        # in the scripts, that no stage 20 comes of them, and that the first objective is then still flagged as
+        # displayed, which is why it has to say what to do.
         p = Person(self)
         mq, sq = p.s.quests["TLM_MQ01"], p.s.quests["TLM_SQ01"]
         p.press("DrawBar", boxes={"TLM_MSG_E2": [0]}, events=["examine_e2"])
@@ -522,8 +530,8 @@ class TheOpeningCue(unittest.TestCase):
         p.to_town()
         p.press("Pike", {"PikeBook": [0]}, ["pike_parts_book"])
         p.press("Pritchard", {"PritchardNoCaseAndMore": [3], "PritchardReported": [0]}, ["sq_report"])
-        self.assertEqual(mq.done, [10, 40, 34], "the main quest's stages, in the order of the owner's play")
-        self.assertEqual(sq.done, [5, 12, 11, 10, 20, 13, 25, 14, 41, 50, 100], "the side quest's stages, in the order of the owner's play")
+        self.assertEqual(mq.done, [10, 40, 34], "the main quest's stages, in the order the owner's session recorded")
+        self.assertEqual(sq.done, [5, 12, 11, 10, 20, 13, 25, 14, 41, 50, 100], "the side quest's stages, in the order the owner's session recorded")
         self.assertTrue(sq.completed)
         self.assertFalse(mq.completed)
         self.assertEqual(p.has("TLM_MISC_Dispatch"), 0)

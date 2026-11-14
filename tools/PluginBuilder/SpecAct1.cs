@@ -157,8 +157,8 @@ public static class Act1
     {
         // Said once, on the screen's edge, when the first section has been set up.
         // The first thing a player is told, when everybody is there: where to go and what to do there. After the
-        // owner's first play (2026-11-14, issue 3: "unclear what to do") it says to look about the ground, and
-        // what for. Provisional wording. The road and the town are told by the people and by the next objective.
+        // owner tried the section (2026-11-14, issue 3: "unclear what to do") it says to look about the ground,
+        // and what for. Provisional wording. The road and the town are told by the people and by the next objective.
         new("TLM_MSG_A1_Begin", null, "Look around the wreck to your left. Investigate the ground for the marshal's dispatch case and anything useful.", Box: false),
 
         // ---- Reese Dunmore, at the wagon (design 8.1). The button order is
