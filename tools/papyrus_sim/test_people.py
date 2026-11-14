@@ -33,7 +33,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from sim import FRAME, STRAY_BY, Actor, Session, run_scenario
+from sim import ENABLE_SECONDS, FRAME, PUT_BACK_STEP, STRAY_BY, Actor, Session, run_scenario, to_string
 from test_placed import SKELETON, alias, changed_plugin, errors, need_trial_build, placed, trial
 from test_sim import NATIVES, PLUGIN, SCRIPTS, VANILLA, need_build, summary
 
@@ -41,9 +41,10 @@ OWN, BARE, ON_FLOOR, SETTLER = ("TLM_REF_TrialPersonOwn", "TLM_REF_TrialPersonBa
 CHECKS = 8
 STRAY = math.dist((0.0, 0.0, 0.0), STRAY_BY)            # height included
 STRAY_FLAT = math.hypot(STRAY_BY[0], STRAY_BY[1])
+STEP = math.dist((0.0, 0.0, 0.0), PUT_BACK_STEP)       # how far a person put back has gone a second later
 
-STAYED = ("people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = yes, "
-          "the person with no default package list = yes, the game's settler on the same spot = no, the game's settler of scenario 10 = no")
+STAYED = ("people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = Yes, "
+          "the person with no default package list = Yes, the game's settler on the same spot = No, the game's settler of scenario 10 = No")
 WITHIN = "people: the person of the plugin's own is within 64 units of where it was placed, six seconds after it was enabled: expected true, was false"
 TALK = "people: activating the person sets stage 30 (TLM:MessageStageAlias on its alias): expected true, was false"
 GONE = "this experiment did not come back, and the scenario was ended here: "
@@ -269,9 +270,10 @@ class WhatTheScenarioCatches(unittest.TestCase):
         self.assertEqual(self.told(got, own, "at once"),
                          "people: the person of the plugin's own, at once (0.000000 s on the clock): at (2137.000000, -246.000000, 77.000000), "
                          "%f from where it was placed (%f seen from above, 13.000000 higher), 1088.601856 from the player; "
-                         "package = [Package <a package of the game's>], sit state = 0, in combat = False" % (STRAY, STRAY_FLAT))
-        self.assertIn("the person of the plugin's own = no,", [l for l in got["info"] if l.startswith("people: stayed within")][0])
-        for how, away in (("moved back to where it was placed", STRAY), ("restrained and moved back", 0.0), ("its AI off and moved back", 0.0)):
+                         "package = [Package < (00023331)>], sit state = 3, in combat = False" % (STRAY, STRAY_FLAT))
+        self.assertIn("the person of the plugin's own = No,", [l for l in got["info"] if l.startswith("people: stayed within")][0])
+        # put back, it takes a step; restrained, or with its AI off, it stays
+        for how, away in (("moved back to where it was placed", STEP), ("restrained and moved back", 0.0), ("its AI off and moved back", 0.0)):
             self.assertIn(" %f from where it was placed (" % away, self.told(got, own + ", " + how, "three seconds later"))
         # the person of the plugin's own comes first among the experiments, and its AI is tried only after the navigation mesh
         experiments = [x for x in got["steps"] if x.startswith("experiment: ")]
@@ -306,14 +308,14 @@ class WhatTheScenarioCatches(unittest.TestCase):
         """Reported, not scored: the run passes, and says which recipe held."""
         got = self.run_with(prepare=lambda s: s.stray_override.update({BARE: True}))
         self.assertEqual((got["failures"], got["passed"]), ([], CHECKS))
-        self.assertIn(STAYED.replace("the person with no default package list = yes", "the person with no default package list = no"), got["info"])
+        self.assertIn(STAYED.replace("the person with no default package list = Yes", "the person with no default package list = No"), got["info"])
         self.assertIn("experiment: moving the person with no default package list back to where the plugin placed it", got["steps"])
 
     def test_a_settler_that_stays_after_all(self):
         """Should the game's settler stay on that spot: reported, and nothing is tried on it."""
         got = self.run_with(prepare=lambda s: s.stray_override.update({ON_FLOOR: False}))
         self.assertEqual((got["failures"], got["passed"]), ([], CHECKS))
-        self.assertIn(STAYED.replace("the game's settler on the same spot = no", "the game's settler on the same spot = yes"), got["info"])
+        self.assertIn(STAYED.replace("the game's settler on the same spot = No", "the game's settler on the same spot = Yes"), got["info"])
         self.assertFalse([x for x in got["steps"] if "the game's settler on the same spot back" in x])
 
     def test_nobody_walks_off(self):
@@ -403,7 +405,7 @@ class WhatTheScenarioCatches(unittest.TestCase):
         self.assertEqual(got["failures"], ["people: the PersonOwn alias holds an actor: expected true, was false"])
         # the quest's last stage is still scored, the others are still looked at, and the line says who was not there
         self.assertEqual(got["passed"], 2)
-        self.assertIn(STAYED.replace("the person of the plugin's own = yes", "the person of the plugin's own = not there"), got["info"])
+        self.assertIn(STAYED.replace("the person of the plugin's own = Yes", "the person of the plugin's own = not there"), got["info"])
 
     def test_a_person_who_does_not_start_disabled(self):
         got = self.run_with(lambda d: placed(d, OWN).update(InitiallyDisabled=False))
@@ -424,9 +426,9 @@ class WhatTheScenarioCatches(unittest.TestCase):
         got = self.run_with(left_out)
         self.assertEqual((got["failures"], got["passed"]), ([], CHECKS))
         self.assertIn("people: the other aliases hold an actor: PersonBare = False, SettlerOnFloor = False, Person = True", got["info"])
-        self.assertIn("people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = yes, "
+        self.assertIn("people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = Yes, "
                       "the person with no default package list = not there, the game's settler on the same spot = not there, "
-                      "the game's settler of scenario 10 = no", got["info"])
+                      "the game's settler of scenario 10 = No", got["info"])
 
     def test_the_plugin_built_without_the_games_master(self):
         """Nothing is placed, so nobody can be found: said plainly, and the game still closes."""
@@ -469,6 +471,7 @@ class TheStandInsRulesForPlacedPeople(unittest.TestCase):
             (folder / p.name).write_text(p.read_text())
         (folder / "PersonListener.psc").write_text(PERSON_LISTENER)
         s = Session(folder, changed_plugin(with_listeners), VANILLA, NATIVES)
+        s.enable_seconds = {}           # one rule at a time: Enable comes back at once here
         s.enter_game()
         s.run(1.0)
         return s
@@ -504,6 +507,11 @@ class TheStandInsRulesForPlacedPeople(unittest.TestCase):
             self.assertEqual(person.pos, tuple(a + b for a, b in zip(person.editor_pos, STRAY_BY)))
             self.assertAlmostEqual(self.away(person), 488.93, places=1)
             self.assertIs(s.n_actor_getcurrentpackage(person, None), s.some_package)
+            # [seen]: it is sitting when the script first looks, and has stood up two seconds later
+            self.assertEqual(s.n_actor_getsitstate(person, None), 3)
+            s.run(s.now + 2.0)
+            self.assertEqual(s.n_actor_getsitstate(person, None), 0)
+            self.assertEqual(to_string(s.n_actor_getcurrentpackage(person, None)), "[Package < (00023331)>]")
 
     def test_a_person_of_the_plugins_own_stays(self):
         """[assumed], with or without a default package list: what scenario 11 asks the game."""
@@ -517,7 +525,9 @@ class TheStandInsRulesForPlacedPeople(unittest.TestCase):
             s.n_objectreference_enable(person, None)
             s.run(s.now + 10.0)
             self.assertEqual(person.pos, person.editor_pos)
-            self.assertIsNone(s.n_actor_getcurrentpackage(person, None))
+            # [seen]: it runs a package all the same, one the game gives it, and does not sit
+            self.assertIs(s.n_actor_getcurrentpackage(person, None), s.idle_package)
+            self.assertEqual(s.n_actor_getsitstate(person, None), 0)
             self.assertTrue(person.has_3d())
             s.n_objectreference_disable(person, None)
 
@@ -545,23 +555,50 @@ class TheStandInsRulesForPlacedPeople(unittest.TestCase):
         self.do(s, lambda: s.n_objectreference_movetomyeditorlocation(made, None))
         self.assertEqual(made.pos, s.player.pos)
 
-    def test_put_back_it_walks_off_again_unless_it_is_held(self):
+    def test_put_back_it_takes_a_step_unless_it_is_held(self):
+        """[seen]: put back, the settler is at its spot at once, with no
+        package and still "sitting", and some 30 units off three seconds
+        later; with its AI off it stays. Restrained: [seen] once that it
+        stays and once that it does not; the stand-in lets restraint hold."""
         s = self.session()
         person = s.placed[ON_FLOOR]
         s.n_objectreference_enable(person, None)
-        self.do(s, lambda: s.n_objectreference_movetomyeditorlocation(person, None))
-        self.assertAlmostEqual(self.away(person), 488.93, places=1)
-        self.assertTrue(s.n_actor_setrestrained(person, None, True))
-        self.do(s, lambda: s.n_objectreference_movetomyeditorlocation(person, None))
-        self.assertEqual(person.pos, person.editor_pos)
-        s.n_actor_setrestrained(person, None, False)
-        self.assertAlmostEqual(self.away(person), 488.93, places=1)
-        s.n_actor_enableai(person, None, False)
-        self.do(s, lambda: s.n_objectreference_movetomyeditorlocation(person, None))
+        self.do(s, lambda: s.n_objectreference_movetomyeditorlocation(person, None), wait=0.1)
         self.assertEqual(person.pos, person.editor_pos)
         self.assertIsNone(s.n_actor_getcurrentpackage(person, None))
+        self.assertEqual(s.n_actor_getsitstate(person, None), 3)
+        s.run(s.now + 3.0)
+        self.assertAlmostEqual(self.away(person), STEP, places=3)
+        self.assertIs(s.n_actor_getcurrentpackage(person, None), s.some_package)
+        self.assertTrue(s.n_actor_setrestrained(person, None, True))
+        self.do(s, lambda: s.n_objectreference_movetomyeditorlocation(person, None), wait=3.0)
+        self.assertEqual(person.pos, person.editor_pos)
+        s.n_actor_setrestrained(person, None, False)
+        s.run(s.now + 3.0)
+        self.assertAlmostEqual(self.away(person), STEP, places=3)
+        s.n_actor_enableai(person, None, False)
+        self.do(s, lambda: s.n_objectreference_movetomyeditorlocation(person, None), wait=3.0)
+        self.assertEqual(person.pos, person.editor_pos)
+        self.assertIsNone(s.n_actor_getcurrentpackage(person, None))
+        self.assertEqual(s.n_actor_getsitstate(person, None), 1)
         s.n_actor_enableai(person, None, True)
-        self.assertAlmostEqual(self.away(person), 488.93, places=1)
+        s.run(s.now + 3.0)
+        self.assertAlmostEqual(self.away(person), STEP, places=3)
+
+    def test_enable_takes_as_long_as_the_game_took(self):
+        """[seen]: about 19 seconds for a person of the plugin's own, about two for the game's settler."""
+        s = self.session()
+        s.enable_seconds = dict(ENABLE_SECONDS)
+        own, settler = s.placed[OWN], s.placed[SETTLER]
+        self.assertEqual(self.do(s, lambda: s.n_objectreference_enable(own, None), wait=18.0), "never came back")
+        self.assertTrue(own.disabled)
+        s.run(s.now + 2.0)
+        self.assertFalse(own.disabled)
+        self.assertEqual(self.do(s, lambda: s.n_objectreference_enable(settler, None), wait=1.0), "never came back")
+        s.run(s.now + 2.0)
+        self.assertFalse(settler.disabled)
+        # a second Enable of somebody already enabled comes back at once
+        self.assertIsNone(self.do(s, lambda: s.n_objectreference_enable(own, None), wait=0.1))
 
     def test_a_walk_arranged_before_the_person_was_disabled_does_not_happen_after(self):
         s = self.session()

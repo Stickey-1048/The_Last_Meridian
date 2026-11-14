@@ -188,6 +188,15 @@ public static class Spec
         new("TLM_ACTI_TrialTrigger"),
     };
 
+    /// <summary>
+    /// Records of the game's that a run in the game named only by their id,
+    /// and whose names the next build should say. Nothing is done with them.
+    /// </summary>
+    public static readonly (string Kind, uint Id, string Why)[] NameThese =
+    {
+        ("Package", 0x1FEFC1, "what a placed person with no package of its own was running in the game on 2026-11-13"),
+    };
+
     public static readonly NpcSpec[] Npcs =
     {
         // Development only (the placed-content trial, scenario 11). The game's

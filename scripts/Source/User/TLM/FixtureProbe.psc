@@ -25,9 +25,10 @@ actor nobody is talking to is "not in dialogue with the player" (amendment
 A25); and two reported lines about whether a kill by the player counts as a
 fight. Those compiled and ran on 2026-11-13: the check passed, and with
 nobody standing by the kill was no fight. The experiment with one Cutter
-standing by (part 3b) compiled and ran on 2026-11-13 as well: no fight, but
-the one standing by had been made in the same breath as the killing. It now
-waits three seconds first; that change is NOT YET COMPILED.}
+standing by (part 3b) compiled and ran on 2026-11-13 twice: no fight with one
+made in the same breath as the killing (the thirteenth run), and no fight
+with one who had stood there three seconds (the fourteenth). Part 4b, with
+four standing by, was added after that and is NOT YET COMPILED.}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory
@@ -169,13 +170,44 @@ Function Run(TLM:SelfTest akTest)
 	; ---- 4. The timer started at the top.
 	akTest.CheckTrue("probe: a timer on a quest script fires", timerFired)
 
+	; ---- 4b. Reported, not scored, and after everything that is. With one of
+	; the quest's people standing by, a kill by the player was no fight
+	; (2026-11-13, twice). On 2026-11-12, with seven of them standing by at a
+	; live ambush, it was. Is it the number? Four stand by here: two Cutters
+	; and both caravan hands.
+	akTest.Step("EXPERIMENT: one Cutter killed as the player while four of the quest's people stand by", 45.0, true)
+	Actor byCutter = SpawnActor(player)
+	Actor byDrover = SpawnActor(player)
+	Actor byMaster = SpawnActor(player)
+	Actor victim = SpawnActor(player)
+	If other && byCutter && byDrover && byMaster && victim
+		mq.Alias_CutterC.ForceRefTo(byCutter)
+		mq.Alias_CaravanDrover.ForceRefTo(byDrover)
+		mq.Alias_CaravanMaster.ForceRefTo(byMaster)
+		mq.Alias_CutterA.ForceRefTo(victim)
+		Utility.Wait(3.0)
+		victim.Kill(player)
+		akTest.Note("probe: player in combat straight after Kill(player) on a Cutter, four of the quest's people having stood by for three seconds = " + player.IsInCombat())
+		Utility.Wait(0.5)
+		akTest.Note("probe: half a second later: player in combat = " + player.IsInCombat() + "; in combat: the other Cutters = " + other.IsInCombat() + " and " + byCutter.IsInCombat() + ", the caravan hands = " + byDrover.IsInCombat() + " and " + byMaster.IsInCombat())
+		player.StopCombatAlarm()
+		Utility.Wait(2.0)
+		akTest.Note("probe: two seconds after StopCombatAlarm on the player: player in combat = " + player.IsInCombat())
+	Else
+		akTest.Note("probe: the actors for the experiment with four standing by could not be spawned")
+	EndIf
+
 	; ---- tidy up what was spawned
-	akTest.Step("removing what was spawned")
+	akTest.Step("removing what was spawned", 45.0, true)
 	RemoveSpawned(abel)
 	RemoveSpawned(lead)
 	RemoveSpawned(nell)
 	RemoveSpawned(one)
 	RemoveSpawned(other)
+	RemoveSpawned(byCutter)
+	RemoveSpawned(byDrover)
+	RemoveSpawned(byMaster)
+	RemoveSpawned(victim)
 EndFunction
 
 ; ------------------------------------------------------------- scenario 3

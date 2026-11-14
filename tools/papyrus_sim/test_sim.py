@@ -487,22 +487,25 @@ class RulesAboutActors(unittest.TestCase):
         a = self.actor("CutterLead")
         self.s.n_actor_kill(a, None, self.s.player)
         self.assertFalse(self.s.player_in_combat())
-        # Others standing by: a fight. [seen], indirectly, in the eleventh run
-        # (case 129): the evade timer's function, called straight after
-        # Kill(player), found the player in combat. [assumed]: until the death
-        # is announced and no longer; and that StopCombatAlarm ends it, as the
-        # wiki says it ends all combat.
+        # One of the quest's people standing by: no fight either. [seen] in the
+        # thirteenth run (made in the same breath) and the fourteenth (there
+        # for three seconds).
         b = self.actor("CutterA")
-        c = self.actor("CutterB")
-        # ... but not others made in the same breath: [seen] in the thirteenth
-        # run (scenario 2), with one other made an instant before the killing.
         x = self.actor("CutterC")
         self.s.n_actor_kill(x, None, self.s.player)
         self.assertFalse(self.s.player_in_combat())
-        self.s.run(self.s.now + 2.0)
+        self.s.run(self.s.now + 3.0)
+        y = self.actor("CutterC")
+        self.s.n_actor_kill(y, None, self.s.player)
         self.assertFalse(self.s.player_in_combat())
-        # Once they have been there a while, they count.
-        self.s.n_actor_kill(b, None, self.s.player)
+        # Several standing by: a fight. [seen], indirectly, in the eleventh run
+        # (case 129, seven standing by at a live ambush). What it was about
+        # that case is not known; the stand-in takes it to be the number, two
+        # or more. [assumed]: until the death is announced and no longer; and
+        # that StopCombatAlarm ends it, as the wiki says it ends all combat.
+        c = self.actor("CutterB")
+        z = self.actor("CutterC")
+        self.s.n_actor_kill(z, None, self.s.player)
         self.assertTrue(self.s.player_in_combat())
         self.s.run(self.s.now + 0.5)
         self.assertTrue(self.s.player_in_combat())
@@ -519,6 +522,13 @@ class RulesAboutActors(unittest.TestCase):
         self.assertTrue(e.dead)
         self.assertFalse(self.s.player_in_combat())
         self.assertFalse(c.dead)
+        # An actor nobody has put in an alias does not count, however many there are.
+        self.s.n_actor_kill(b, None, self.s.player)
+        self.s.run(self.s.now + 2.0)
+        loose = [self.s.n_objectreference_placeatme(self.s.player, None, c.base) for _ in range(3)]
+        self.assertEqual(len(loose), 3)
+        self.s.n_actor_kill(c, None, self.s.player)
+        self.assertFalse(self.s.player_in_combat())
 
     def test_moveto_on_a_reference_with_no_model_never_comes_back(self):
         # [seen] twice on 2026-11-12

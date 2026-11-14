@@ -465,25 +465,27 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
         self.assertEqual(s.n_objectreference_gettriggerobjectcount(s.placed[OBJECT], None), 0)
         self.assertEqual(len(errors(s)), 1)
 
-    def test_the_placed_person_is_a_bystander_only_once_enabled(self):
-        """Why the person starts disabled: [seen] a kill by the player is a
-        fight only while somebody else stands by."""
-        s, _quest = self.started()
+    def test_the_placed_person_is_no_bystander_while_disabled(self):
+        """Why the people start disabled: nobody new stands about in the other
+        scenarios. Enabled, the placed person is one of a running quest's
+        people; one such standing by does not make a kill by the player a
+        fight ([seen] twice), two do in the stand-in ([assumed])."""
+        s, quest = self.started()
+        s.enable_seconds = {}
         person = s.placed[PERSON]
         first = self.an_actor(s)
         s.n_actor_kill(first, None, s.player)
         self.assertFalse(s.player_in_combat())
         s.n_objectreference_enable(person, None)
-        # ... and has been there a moment: [seen] on 2026-11-13, one made in
-        # the same breath as a killing did not make it a fight.
         second = self.an_actor(s)
         s.n_actor_kill(second, None, s.player)
         self.assertFalse(s.player_in_combat())
-        s.run(s.now + 2.0)
-        third = self.an_actor(s)
-        s.n_actor_kill(third, None, s.player)
+        another = self.an_actor(s)
+        # the second of the quest's people: one of the other placed persons, enabled
+        others = [a.ref for a in quest.aliases.values() if isinstance(a.ref, Actor) and a.ref is not person]
+        s.n_objectreference_enable(others[0], None)
+        s.n_actor_kill(another, None, s.player)
         self.assertTrue(s.player_in_combat())
-
 
 if __name__ == "__main__":
     unittest.main()

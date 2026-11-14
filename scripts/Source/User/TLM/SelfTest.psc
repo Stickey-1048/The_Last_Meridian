@@ -28,8 +28,8 @@ generated plugin.)
 Scenario 10 was added on 2026-11-13: the property TLM_Trial, its branch in
 RunSelfTest and its part of the "already started" test below compiled and
 ran that day (the thirteenth run: seven scenarios, 196 checks, 0 failed).
-Scenario 11 was added after that run: its branch in RunSelfTest is NOT YET
-COMPILED.}
+Scenario 11 was added after that run, and compiled and ran on 2026-11-13 as
+well (the fourteenth run: three scenarios, 40 checks, 0 failed).}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

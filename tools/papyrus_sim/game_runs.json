@@ -1792,6 +1792,134 @@
           "stand_in_mode": "calls take a frame"
         }
       }
+    },
+    {
+      "name": "fourteenth run, 2026-11-13: people the plugin places; a person with no packages stays where it is put and can be activated",
+      "commit": "053464e",
+      "how": "unattended",
+      "not_replayed": {
+        "11": {
+          "info": "These lines are places and times in the game's own test room: where the plugin's people were placed, the seats the game's settler was put on and walked between, how long Enable took, how far a wait ran short of the clock. The stand-in is given an invented room at other coordinates, knows no seats, and has one clock. It also printed 'yes' and 'no' where the game, which keeps one spelling of a string whatever its letter case, printed 'Yes' and 'No'. The scored checks, the stages and the way the session ended are compared as usual."
+        },
+        "10": {
+          "info": "These lines are places in the game's own test room, as in the thirteenth run. The scored checks, the stages and the way the session ended are compared as usual."
+        }
+      },
+      "scenarios": {
+        "11": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "people: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "people: Start returned True",
+            "people: the other aliases hold an actor: PersonBare = True, SettlerOnFloor = True, Person = True",
+            "people: the person of the plugin's own was placed at (-2074.842773, -1909.685303, 0.000000), 632.455444 from the player",
+            "people: the person with no default package list was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler on the same spot was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler of scenario 10 was placed at (-2110.197998, -1450.065918, 0.000000); disabled = True",
+            "people: the person of the plugin's own: Enable took 18.433002 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person of the plugin's own, at once (0.181000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, two seconds later (2.000000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, six seconds later (5.499001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the first try: Activate on the person from 632.455444 away returned True; stage 30 set = True",
+            "people: the person of the plugin's own, after it was activated (6.067001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list: Enable took 19.972000 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person with no default package list, at once (0.175003 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, two seconds later (2.026001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, six seconds later (5.493004 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot: Enable took 2.432999 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler on the same spot, at once (0.133003 s on the clock): at (-2022.251953, -1121.817139, 0.000000), 789.621460 from where it was placed (789.621460 seen from above, 0.000000 higher), 319.970612 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, two seconds later (1.965004 s on the clock): at (-1997.380737, -1126.086548, 0.000000), 787.418152 from where it was placed (787.418152 seen from above, 0.000000 higher), 295.465088 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot, six seconds later (5.431999 s on the clock): at (-1661.843506, -1138.659058, 0.000000), 874.671326 from where it was placed (874.671326 seen from above, 0.000000 higher), 246.139175 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10: Enable took 2.067993 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, at once (0.166000 s on the clock): at (-2581.111572, -1112.986572, 0.000000), 579.121826 from where it was placed (579.121826 seen from above, 0.000000 higher), 822.231262 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, two seconds later (1.998001 s on the clock): at (-2566.503906, -1120.063721, -0.000004), 563.130981 from where it was placed (563.130981 seen from above, -0.000004 higher), 800.993774 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, six seconds later (5.465004 s on the clock): at (-2248.767334, -1128.073608, 0.000000), 350.543152 from where it was placed (350.543152 seen from above, 0.000000 higher), 505.207245 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = Yes, the person with no default package list = Yes, the game's settler on the same spot = No, the game's settler of scenario 10 = No",
+            "people: the game's settler on the same spot, moved back to where it was placed, at once (0.102005 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, moved back to where it was placed, three seconds later (2.764000 s on the clock): at (-2093.972656, -1892.437256, 0.000000), 25.757475 from where it was placed (25.757475 seen from above, 0.000000 higher), 621.079590 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: SetRestrained on the game's settler on the same spot returned True",
+            "people: the game's settler on the same spot, restrained and moved back, at once (0.066002 s on the clock): at (-2073.052979, -1907.470825, 0.000000), 2.847328 from where it was placed (2.847328 seen from above, 0.000000 higher), 624.824158 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot, restrained and moved back, three seconds later (2.701004 s on the clock): at (-2028.001709, -1862.843872, 0.000000), 66.243530 from where it was placed (66.243530 seen from above, 0.000000 higher), 569.996277 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, at once (0.065994 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, three seconds later (2.730995 s on the clock): at (-2145.780029, -1464.296021, 0.000000), 38.322014 from where it was placed (38.322014 seen from above, 0.000000 higher), 373.672913 from the player; package = [Package < (00023331)>], sit state = 4, in combat = False",
+            "people: SetRestrained on the game's settler of scenario 10 returned True",
+            "people: the game's settler of scenario 10, restrained and moved back, at once (0.065994 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = [Package < (00023331)>], sit state = 4, in combat = False",
+            "people: the game's settler of scenario 10, restrained and moved back, three seconds later (2.731995 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the marker set down where the game's settler of scenario 10 was placed says it is at (-2110.197998, -1450.065918, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the marker set down where the person of the plugin's own was placed says it is at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the game's settler on the same spot, its AI off and moved back, at once (0.072998 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler on the same spot, its AI off and moved back, three seconds later (2.707001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, at once (0.057007 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, three seconds later (2.690002 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the player now stands at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the game's settler of scenario 10, with the player standing elsewhere: Enable took 1.474998 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, at once (0.126999 s on the clock): at (-2263.749023, -1113.193848, -0.000061), 370.217102 from where it was placed (370.217102 seen from above, -0.000061 higher), 818.586731 from the player; package = [Package < (00023331)>], sit state = 4, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, two seconds later (1.958000 s on the clock): at (-2248.781982, -1120.147827, 0.000000), 357.842804 from where it was placed (357.842804 seen from above, 0.000000 higher), 808.470337 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, six seconds later (5.425003 s on the clock): at (-2371.781738, -1119.579590, -0.000000), 421.482239 from where it was placed (421.482239 seen from above, -0.000000 higher), 846.286804 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ]
+        },
+        "10": {
+          "passed": 17,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "trial: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: Start returned True",
+            "trial: the placed person, still disabled, is at (-2110.197998, -1450.065918, 0.000000), 335.410126 from the player; in the player's cell = True",
+            "trial: the placed object is at (-1855.639648, -1492.492432, 20.000000), 162.788223 from the player; 3D loaded = True",
+            "trial: Activate on the placed object returned True",
+            "trial: the placed trigger is at (-2074.842773, -1909.685303, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2074.842773, -1909.685303, 0.000000), 100.000000 from the middle of the placed trigger; things inside it: 1, which is 1 more than before",
+            "trial: the trigger made on the game's own empty trigger, with no layer is at (-2357.685547, -1626.842529, 100.000000), 640.312439 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2357.685547, -1626.842529, 0.000000), 100.000000 from the middle of the trigger made on the game's own empty trigger, with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger made on the game's own empty trigger, with no layer: stage 11 set = True (it was False before)",
+            "trial: the trigger of the plugin's own with no layer is at (-1678.863037, -1966.253906, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-1678.863159, -1966.253906, 0.000000), 100.000000 from the middle of the trigger of the plugin's own with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger of the plugin's own with no layer: stage 12 set = True (it was False before)",
+            "trial: the player is back at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: the placed person once enabled: 3D loaded = True, at (-2581.111572, -1112.986572, 0.000000), 822.231262 from the player",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ]
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "probe: player in combat straight after Kill(player) on a Cutter, another having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = False",
+            "probe: two seconds later: player in combat = False, the one standing by in combat = False",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        }
+      }
     }
   ]
 }

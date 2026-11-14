@@ -44,9 +44,15 @@ hold something are used only after it.
 
 Lines that begin INFO are facts about the game, reported and not scored.
 
-NOT YET COMPILED and NOT YET RUN IN THE GAME. On the stand-in engine
-(tools/papyrus_sim) it runs to the end; what the stand-in does with a placed
-person is partly a guess, and is marked so there.}
+COMPILES. RAN IN THE GAME on 2026-11-13, unattended: 8 of 8, and every
+experiment came back (docs/design/VERIFY_LOG.md, the fourteenth run). What
+it showed: a person with no packages stands exactly where the plugin put it
+and can be activated; the game's settler is put on a seat of the room the
+moment it is enabled, by its sandbox package, and walks on from there; both
+spots are on the navigation mesh. Enable took 18 and 20 seconds to come back
+for the two persons of the plugin's own, and two for the settlers.
+Changed since that run and NOT YET COMPILED: the steps that enable somebody
+are given 150 seconds, and "Yes"/"No" are written as the game printed them.}
 
 Group Aliases
 	ReferenceAlias Property Alias_Person Auto Const Mandatory
@@ -313,7 +319,9 @@ float Function Watch(TLM:SelfTest akTest, Actor akWho, string asName, float afX,
 	and six seconds later. Returns how far it then is from where the plugin
 	placed it. abAfterScoring: the steps are ones the watchdog reports as a
 	fact, not as a failure.}
-	akTest.Step("enabling " + asName, 45.0, abAfterScoring)
+	; Enable took 18 and 20 seconds for the persons of the plugin's own on
+	; 2026-11-13: it gets the time a move gets.
+	akTest.Step("enabling " + asName, MOVE_SECONDS, abAfterScoring)
 	float before = Utility.GetCurrentRealTime()
 	akWho.Enable()
 	clockFrom = Utility.GetCurrentRealTime()
@@ -342,7 +350,7 @@ EndFunction
 Function PutBack(TLM:SelfTest akTest, Actor akWho, string asName, float afX, float afY, float afZ)
 	{For a person that did not stay where it was placed: is it kept there
 	once moved back, and when restrained and moved back?}
-	akTest.Step("enabling " + asName + " again", 45.0, true)
+	akTest.Step("enabling " + asName + " again", MOVE_SECONDS, true)
 	akWho.Enable()
 
 	akTest.Step("experiment: moving " + asName + " back to where the plugin placed it", MOVE_SECONDS, true)
@@ -369,7 +377,7 @@ EndFunction
 Function WithoutAI(TLM:SelfTest akTest, Actor akWho, string asName, float afX, float afY, float afZ)
 	{For a person that did not stay where it was placed: is it kept there
 	with its AI off?}
-	akTest.Step("enabling " + asName + " again", 45.0, true)
+	akTest.Step("enabling " + asName + " again", MOVE_SECONDS, true)
 	akWho.Enable()
 
 	akTest.Step("experiment: turning the AI of " + asName + " off and moving it back", MOVE_SECONDS, true)
@@ -431,10 +439,13 @@ string Function Where(ObjectReference akRef)
 EndFunction
 
 string Function YesNo(bool abValue)
+	{Written with capitals because that is how the game printed them: it keeps
+	one spelling of a string whatever its letter case, and it had "Yes" and
+	"No" already (seen on 2026-11-13, where "yes" came out as "Yes").}
 	If abValue
-		Return "yes"
+		Return "Yes"
 	EndIf
-	Return "no"
+	Return "No"
 EndFunction
 
 Function WaitForStage(int aiStage)

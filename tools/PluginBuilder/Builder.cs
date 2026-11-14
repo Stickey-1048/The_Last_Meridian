@@ -124,6 +124,7 @@ public sealed class Builder
             if (whyNot != null) Pending.Add($"{n.EditorId}: not made ({whyNot})");
         }
         if (Spec.Npcs.Length > 0) NoteStayPackages();
+        NameWhatARunNamedById();
 
         foreach (var b in Spec.Books)
         {
@@ -369,6 +370,31 @@ public sealed class Builder
         var bits = Convert.ToUInt64(flags);
         var names = Enum.GetValues<T>().Where(v => Convert.ToUInt64(v) is var bit && bit != 0 && (bits & bit) == bit).Select(v => v.ToString()).ToList();
         return names.Count == 0 ? "nothing" : string.Join(", ", names);
+    }
+
+    /// <summary>Says the names of records that a run in the game gave only as ids (Spec.NameThese).</summary>
+    void NameWhatARunNamedById()
+    {
+        if (_vanilla == null) return;
+        foreach (var (kind, id, why) in Spec.NameThese)
+        {
+            var key = new FormKey(Fallout4Esm, id);
+            try
+            {
+                string? name = kind switch
+                {
+                    "Package" => _vanilla.TryResolve<IPackageGetter>(key, out var p) ? p.EditorID ?? "(no name)" : null,
+                    _ => throw new InvalidOperationException($"this builder cannot look up a {kind} by id"),
+                };
+                VanillaNotes.Add(name == null
+                    ? $"{key}: no {kind} of that id in the master ({why})"
+                    : $"{key}: the {kind} {name} ({why})");
+            }
+            catch (Exception e)
+            {
+                VanillaNotes.Add($"NOTE {key}: could not be looked up ({e.GetType().Name}: {e.Message})");
+            }
+        }
     }
 
     /// <summary>

@@ -2,11 +2,11 @@
 
 Phase 2, first step. Branch `feat/tlm-mq01-graybox`. Self-test scenarios 10 and 11.
 
-**Status. Part one (scenario 10: a person, a trigger and an object) ran in the game on 2026-11-13 and passed.** With nobody at the keyboard: 17 of 17 checks, and both comparison triggers set their stages ([VERIFY_LOG.md](VERIFY_LOG.md), the thirteenth run). What the game showed is in [What the first run showed](#what-the-first-run-showed). Two things were changed afterwards and have **not** been compiled or run: the comparison triggers now leave the collision layer out, and the steps that move the player are allowed more time.
+**Status: both parts have run in the game and passed.** Part one (scenario 10: a person, a trigger and an object): 17 of 17 on 2026-11-13, twice, the second time with comparison triggers that name no collision layer ([VERIFY_LOG.md](VERIFY_LOG.md), the thirteenth and fourteenth runs). Part two (scenario 11: people who stay where they are put): 8 of 8 on 2026-11-13, in the fourteenth run. What the game showed is in [What the first run showed](#what-the-first-run-showed) and [What the second run showed](#what-the-second-run-showed).
 
-**Part two (scenario 11: people who stay where they are put) is written and has not been compiled or run.** It is in [Part two: people](#part-two-people-scenario-11).
+**The trial has answered what it was for.** Triggers, objects and people written into the plugin by the builder work in the game: a trigger needs nothing but its box, an object can borrow a model of the game's, and a person with no packages stands exactly where it is placed and can be activated. Small changes made after the last run (time limits, two words, one more experiment) are not compiled.
 
-Not done at all: a look at the plugin in the Creation Kit, and a look at the settler's name by eye.
+Not done at all: a look at the plugin in the Creation Kit, and a look at anything by eye.
 
 ## What it is for
 
@@ -264,7 +264,7 @@ What it also showed, which matters for what is built next:
 
 ## Part two: people (scenario 11)
 
-**Status: written; not compiled, not run in the game.** Everything below about what the game does with a placed person is a question, not a finding.
+**Status: ran in the game on 2026-11-13 and passed, 8 of 8.** This part is kept as it was written before the run, so that what was asked can be read beside what came back: [What the second run showed](#what-the-second-run-showed).
 
 ### What it asks
 
@@ -374,9 +374,10 @@ Not documented anywhere I could find, and assumed:
 - [x] `tools/papyrus_sim`: activating a person; a placed person that walks off, as the game's settler did; the nine functions new to the project; for tests, calls that take long or never come back. `test_people.py`.
 - [x] `tools/win/Run-Scenarios.ps1`: scenario 11 in `basic` and `all`; a scenario may now take fifteen minutes before the runner ends it.
 - [x] An independent review before the first run, and what it found acted on (below).
-- [ ] **Compile on the PC.** `PlacedPeople.psc` and the changed `SelfTest.psc`, `PlacedTrial.psc` and `FixtureProbe.psc` have not been compiled. Nine functions are called for the first time.
-- [ ] **Build against the real `Fallout4.esm`.** The real settler has never been copied. If it cannot be, the build says why and carries on without the two actors.
-- [ ] **Run scenario 11 in the game.**
+- [x] **Compile on the PC.** Done 2026-11-13: everything compiled, the nine functions included.
+- [x] **Build against the real `Fallout4.esm`.** Done 2026-11-13: the settler was copied twice and the plugin read back as specified.
+- [x] **Run scenario 11 in the game.** Done 2026-11-13: 8 of 8, and every experiment came back.
+- [ ] Find out why `Enable` takes about 19 seconds to come back for a person of the plugin's own.
 
 **What the review changed.** It found nothing that would stop the compile or the build. It found that two of the eight checks were written only after steps that had nothing to do with them, so that a hang in one of those would have cost a check that had in fact passed; they are now written first. The check that a person stayed measured from above only; a person dropped through the floor would have passed. It now counts height. The comparison settler stood on another spot than the plugin's own people, so "it is the actor, not the spot" would have compared two spots; it now stands on theirs. The copy cleared the template flags for packages and scripts and left the template actors named for them; both are cleared now, and checked. Steps that move something were given 30 seconds, less than one move is known to have taken. And several sentences here claimed more than was true, among them that the new functions are called only by experiments.
 
@@ -439,8 +440,21 @@ Scenario 10 is run again for its two comparison triggers, which now name no coll
 
 As for part one, and in the repository: delete `Npcs` and the entries marked "scenario 11" in `Spec.cs` (three placed references, `TLM_MSG_TrialTalk`, stage 30, the three aliases, the `TLM:PlacedPeople` binding), `scripts/Source/User/TLM/PlacedPeople.psc`, scenario 11's branch in `SelfTest.psc`, scenario 11 in the runner and the stand-in's lists, and `tools/papyrus_sim/test_people.py`. The builder's code for making an actor can stay: with nothing in `Spec.Npcs` it does nothing. Ids 2093 to 2098 in `tools/PluginBuilder/formkeys.txt` stay given out.
 
+## What the second run showed
+
+The fourteenth run, 2026-11-13, commit `053464e`; the whole record is in [VERIFY_LOG.md](VERIFY_LOG.md).
+
+| What | Seen | So |
+|---|---|---|
+| A person with no packages and no script | Stood on its spot to the last digit, at once and six seconds later | **This is how the walk-through's people are made** |
+| Activating that person | Reached `TLM:MessageStageAlias` on its alias, from 632 units off, within the second | **This is how they are "spoken to"** until there is dialogue |
+| The game's settler | Is put on a seat of the room the moment it is enabled, by its one package, a sandbox; then stands up and walks on | The settler was the wrong actor, not the room or the spot. Both spots are on the navigation mesh |
+| A trigger with no collision layer | Set its stage, on the game's activator and on the plugin's | Triggers are written with a box and nothing else |
+| `Enable` on a person of the plugin's own | 18 and 20 seconds to come back; 2 for the settler | Open. People who are there from the start are not affected; people switched on mid-play would appear late |
+| No default package list | The game's settler has none, so both of the plugin's persons had none, and both stayed | The question of the second person did not arise |
+
 ## What comes next
 
-Triggers and objects written by the builder can drive a quest. That is two of the three things a rough walk-through of *Six Rounds to Mercy* is made of. The third is people who stand where they are put, can be told apart, and can be "talked to" (in the rough version: activated, with a message for the conversation). Part two asks the game about that, and nothing is laid out before it has answered.
+Triggers, objects and people written by the builder can drive a quest. That is everything a rough walk-through of *Six Rounds to Mercy* is made of, and the owner has asked for larger steps and for Act I's content to be built out. The next step is therefore not another trial but the first section itself: [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md).
 
-After that comes the first real design decision of phase 2, and it is the owner's: **where the walk-through stands.** The game's test room again, which is known to load and has a floor, light and paths for people to walk, but is full of the game's own things; or a cell of the project's own, built from a handful of the game's floor and wall pieces, which is what a player could actually walk through but needs a floor, light and, for people to move in it, a navigation mesh, none of which the builder has ever written.
+**Where it stands.** In the note above this was left as the owner's decision: the game's test room, or a room of the project's own. With larger steps asked for, both are taken at once. The first section is laid out in the test room, small, on the patch of floor that is known to be open, so that it can be walked through straight away. A room of the project's own (a floor, light, an arrival point) is tried beside it, and when that works the layout moves over unchanged, because everything is placed from an arrival point and not from the room. The owner can overrule this.

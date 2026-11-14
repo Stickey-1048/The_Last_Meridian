@@ -50,27 +50,43 @@ class _Return(Exception):
 DEATH_EVENT_DELAY = 0.7
 COMBAT_EVENT_DELAY = 0.3      # [assumed] number; [seen] that the event arrives
 DISTANCE_EVENT_DELAY = 0.1    # [assumed] number; [seen] within a second
-# How long an actor has to have been there before it can witness anything.
-# [seen] on 2026-11-13 (scenario 2): an actor made in the same breath as a
-# killing by the player did not make that killing a fight, and was not in
-# combat two seconds later. [seen], indirectly, on 2026-11-12 (case 129):
-# actors made some seconds before did. The number between is [assumed].
-WITNESS_AFTER = 1.0
 TRIGGER_EVENT_DELAY = 0.1     # [assumed] number; [seen] that the stage is set within a second of the move
 CONTAINER_EVENT_DELAY = 0.1   # [assumed] number; [seen] that the stage is set within a second of the pick-up
 ACTIVATE_EVENT_DELAY = 0.1    # [assumed] number
 # A placed person that has something to go about does not stay where the
-# plugin put it. [seen] once, on 2026-11-13: the game's settler, placed at
-# (-2110, -1450, 0) and then enabled, stood at (-1773, -1096, 13) the next
-# time the script asked where it was, which was after Enable had come back
-# and its 3D was loaded; how long after is not recorded. Why it moved, and by
-# what way, is not known. The stand-in moves such a person by what was seen.
-# When is [assumed]: at the earliest it could have been, before Enable comes
-# back. That it does the same when a script puts the person back is
-# [assumed] too. (A test can make the walk take time, to see that a scenario
-# which looks more than once catches a slow one.)
+# plugin put it. [seen] five times on 2026-11-13 for the game's settler,
+# whose one package is a sandbox (DefaultSandboxExteriorEditorLocation,
+# 023331): a tenth of a second after Enable came back it was sitting on a
+# seat of the room, 370 to 790 units from where it had been placed (sit state
+# 3 or 4); two seconds later it had stood up, and after six it had walked
+# some 300 units further. A place in the room, not a place near the player:
+# with the player set down elsewhere it went to the same row of seats. The
+# stand-in knows no seats. It moves such a person by one of the offsets seen
+# (the first: 489 units), before Enable comes back, and leaves it there; it
+# does not walk it on. (A test can make the move take time, or go elsewhere,
+# to see that a scenario which looks more than once catches a slow walk.)
 STRAY_AFTER = 0.0
 STRAY_BY = (337.0, 354.0, 13.0)
+# Put back where it was placed (MoveToMyEditorLocation), such a person is
+# there at once, with no package and still "sitting"; three seconds later it
+# runs its package again and is 26 to 38 units off. [seen] twice. The
+# stand-in has it take one step of that size a second after it is put back.
+PUT_BACK_WALK_AFTER = 1.0
+PUT_BACK_STEP = (-27.0, 2.0, 0.0)
+# How long such a person is "sitting" (sit state 3) after it has been put on
+# its seat or put back. [seen] 3 or 4 at a tenth of a second, 0 at two
+# seconds; the second between is [assumed].
+SIT_SECONDS = 1.0
+# How long Enable takes to come back for a person the plugin places. [seen]
+# on 2026-11-13: 18.4 and 20.0 seconds for the two actors of the plugin's
+# own, the first time each was enabled; 2.4, 2.1 and 1.5 seconds for the
+# game's settler (and once about ten). Why the plugin's own take so long is
+# not known.
+ENABLE_SECONDS = {"own": 19.0, "game": 2.0}
+# The ids the game printed for the packages: the settler's sandbox, and what
+# a person with no package of its own was running. [seen]
+SETTLER_PACKAGE = "00023331"
+NO_PACKAGE_PACKAGE = "001FEFC1"
 FRAME = 1.0 / 60.0
 # How much of an actor counts for a trigger: from its feet this far up. [assumed]
 ACTOR_HEIGHT = 120.0
@@ -169,11 +185,12 @@ class Actor(ObjectReference):
         self.combat_target: Optional["Actor"] = None
         # Killed by the player: counts as fighting the player until then.
         self.fights_player_until = -1.0
-        # From when it can witness what happens near it (see WITNESS_AFTER).
-        # An actor the plugin places has been there since the room loaded.
-        self.awake_from = 0.0
         self.restrained = False
         self.ai_on = True
+        # When it was last put on its seat or put back: it "sits" and, put
+        # back, has no package for a moment after.
+        self.sat_at = -100.0
+        self.put_back_at = -100.0
         # Counts up whenever the actor is enabled, disabled or put somewhere,
         # so that a walk-off arranged before then does not happen after it.
         self.stray_serial = 0
@@ -397,6 +414,9 @@ class Session:
         self.stray_override: Dict[str, bool] = {}
         self.stray_after = STRAY_AFTER
         self.stray_by = STRAY_BY
+        # How long Enable takes for a placed person ({} for none: a test of
+        # one rule at a time has no use for the wait).
+        self.enable_seconds = dict(ENABLE_SECONDS)
         # For a test: from how far the game performs an activation of a
         # person. None: from anywhere, which is [assumed]; what was [seen] is
         # an item picked up from 163 units. And how long the scripts wait to
@@ -415,9 +435,11 @@ class Session:
         # What the plugin says of the actors of its own: how many packages, a
         # default package list or none.
         self.npc_info = {n["EditorId"]: n for n in self.plugin.get("Npcs", [])}
-        # What GetCurrentPackage answers for a person that has something to
-        # go about. The stand-in knows none of the game's packages by name.
-        self.some_package = Form("a package of the game's", "Package")
+        # What GetCurrentPackage answers: the settler's sandbox, and what a
+        # person with no package of its own runs. A script can only print
+        # them, and the game prints "[Package < (id)>]".
+        self.some_package = Form(" (%s)" % SETTLER_PACKAGE, "Package")
+        self.idle_package = Form(" (%s)" % NO_PACKAGE_PACKAGE, "Package")
         # Where the player arrives in the cells the plugin places things in:
         # written by the builder beside the plugin's description.
         arrivals = Path(plugin_json).with_name("TheLastMeridian.arrivals.json")
@@ -1068,6 +1090,10 @@ class Session:
         # [documented] "the number of real-world seconds that have elapsed
         # since the game has launched". Here: the stand-in's own clock, which
         # starts when the session does. Only differences mean anything.
+        # [seen] on 2026-11-13: in the game the two clocks do not agree. A
+        # Utility.Wait(2.0) took 1.82 to 1.85 seconds by this one and a
+        # Wait(4.0) 3.47 to 3.50: waits ran about an eighth short. The
+        # stand-in has one clock, so here a wait takes what it says.
         return float(self.now)
 
     # Math
@@ -1311,7 +1337,6 @@ class Session:
             return None
         if form.kind == "Npc":
             made = Actor(form, ref.pos)             # [seen] a settler made this way stands, fights and dies
-            made.awake_from = self.now + WITNESS_AFTER
             self.actors.append(made)
         else:
             made = ObjectReference(form, ref.pos)   # [seen] a marker and an item
@@ -1364,9 +1389,10 @@ class Session:
         yield from self._slowly("setposition", ref)
         if not ref.has_3d():
             yield from self._never_comes_back(ref)
-        ref.pos = (float(x), float(y), float(z))                # [documented]
+        # [documented], and [seen] on 2026-11-13 for a marker and for the player.
+        ref.pos = (float(x), float(y), float(z))
         if isinstance(ref, Actor) and not ref.disabled:
-            self._may_walk_off(ref)
+            self._may_walk_off(ref, put_back=True)
         self.check_distances()
         self.check_triggers()
 
@@ -1376,11 +1402,13 @@ class Session:
             yield from self._never_comes_back(ref)
         if ref.editor_pos is None:
             return              # [assumed] a reference made while the game runs has no such place and stays
-        # [documented] "Moves this reference to its original editor location and orientation."
+        # [documented] "Moves this reference to its original editor location
+        # and orientation." [seen] on 2026-11-13 for the game's settler: it
+        # was there, to the last digit, a tenth of a second later.
         ref.pos = ref.editor_pos
         ref.cell = ref.editor_cell
         if isinstance(ref, Actor) and not ref.disabled:
-            self._may_walk_off(ref)             # [assumed] put back, it walks off again
+            self._may_walk_off(ref, put_back=True)
         self.check_distances()
         self.check_triggers()
 
@@ -1390,9 +1418,11 @@ class Session:
             yield from self._never_comes_back(ref)
         # [documented] "Moves this reference to the nearest location that's on
         # a Navmesh that an actor could reach by walking." The stand-in has no
-        # navigation mesh. [assumed]: the room's floor is one, level with the
-        # spot where the player arrives, so the reference comes straight down
-        # (or up) onto it.
+        # navigation mesh: it takes the room's floor to be one, level with
+        # the spot where the player arrives, so the reference comes straight
+        # down (or up) onto it. [seen] on 2026-11-13 at two spots of the
+        # game's test room: a marker 150 above the floor came straight down
+        # onto it, and one on the floor stayed where it was.
         floor = 0.0
         for a in self.arrivals:
             if ref.cell is not None and a["Cell"].lower() == ref.cell.editor_id.lower():
@@ -1434,18 +1464,29 @@ class Session:
         # packages of its own, or those of the actor it is modelled on
         return info["Packages"] > 0 or "AiPackages" in info["TemplateFlags"]
 
-    def _may_walk_off(self, actor: Actor):
-        """Arranges for a placed person to walk off, if it is one that would."""
+    def _may_walk_off(self, actor: Actor, put_back: bool = False):
+        """Arranges for a placed person to leave its spot, if it is one that
+        would: at once to a seat when it is enabled, by a step a second
+        later when a script has put it back or let it go."""
         actor.stray_serial += 1
         serial = actor.stray_serial
         if not self._has_business(actor):
             return
+        by = PUT_BACK_STEP if put_back else self.stray_by
+        after = PUT_BACK_WALK_AFTER if put_back else self.stray_after
+        if put_back:
+            actor.put_back_at = self.now
+        actor.sat_at = self.now
 
         def go():
             still = (actor.stray_serial == serial and not actor.disabled and not actor.deleted and not actor.dead
-                     and not actor.restrained and actor.ai_on)      # [assumed] what holds a person
+                     and not actor.restrained and actor.ai_on)
+            # What holds a person: [seen] twice that one with its AI off
+            # stays. Restrained: [seen] once that it stays, and once that a
+            # settler already walking went on (66 units in three seconds);
+            # the stand-in lets restraint hold.
             if still:
-                actor.pos = tuple(a + b for a, b in zip(actor.pos, self.stray_by))
+                actor.pos = tuple(a + b for a, b in zip(actor.pos, by))
                 self.check_distances()
                 self.check_triggers()
 
@@ -1454,27 +1495,30 @@ class Session:
             return
             yield
 
-        if self.stray_after <= 0:
+        if after <= 0:
             go()
         else:
-            self.later(self.stray_after, "%r walks off" % actor, walk_off, exact=True)
+            self.later(after, "%r walks off" % actor, walk_off, exact=True)
 
     def n_objectreference_disable(self, ref, context, fade=False):
         self._disable(ref)
 
     def n_objectreference_enable(self, ref, context, fade=False):
-        if ("enable", self._whom(ref)) in self.slow_calls:
-            return self._enable_slowly(ref)
+        takes = 0.0
+        if ref.disabled and isinstance(ref, Actor) and ref.editor_pos is not None and ref.base is not None:
+            takes = self.enable_seconds.get("own" if ref.base.editor_id in self.npc_info else "game", 0.0)
+        if ("enable", self._whom(ref)) in self.slow_calls or takes > 0:
+            return self._enable_slowly(ref, takes)
         self._enable(ref)
 
-    def _enable_slowly(self, ref):
+    def _enable_slowly(self, ref, takes=0.0):
         yield from self._slowly("enable", ref)
+        if takes > 0:
+            yield ("sleep", takes)                  # [seen] see ENABLE_SECONDS
         self._enable(ref)
 
     def _enable(self, ref):
         was_disabled = ref.disabled
-        if was_disabled and isinstance(ref, Actor):
-            ref.awake_from = self.now + WITNESS_AFTER       # [assumed]: as for one just made
         ref.disabled = False
         if was_disabled and isinstance(ref, Actor):
             self._may_walk_off(ref)
@@ -1529,9 +1573,10 @@ class Session:
                 return False                        # only when a test says so
             # [documented] Activate sends OnActivate to the scripts unless it
             # is told to do default processing only, and an alias's scripts
-            # receive its reference's events. What the game's default
-            # processing does with a person who has nothing to say, and what
-            # Activate then returns, is [assumed]: nothing, and True.
+            # receive its reference's events. [seen] on 2026-11-13 for a
+            # placed person of the plugin's own, activated by the player from
+            # 632 units off: Activate returned True, and the project's script
+            # on the person's alias had set its stage within the second.
             self.ref_event(ref, "OnActivate", [activator], self.activate_event_delay)
             return True
         if ref.base is None or ref.base.kind not in ("MiscItem", "Book"):
@@ -1626,35 +1671,61 @@ class Session:
                 self._stop_combat(other)
         bystanders = [a for a in self.actors
                       if a is not actor and not a.is_player and not a.dead and not a.disabled
-                      and a.awake_from <= self.now + 1e-9]
-        if killer is not None and killer.is_player and bystanders:
-            # With others standing by: [seen], indirectly, in the eleventh run
-            # (case 129): the evade timer's function, called straight after
-            # Kill(player) on the Cutter lead, found the player in combat; no
-            # other path through the script gives what that case gave. With
-            # nobody else alive: [seen] in the twelfth run (scenario 2), the
-            # player is NOT in combat straight after such a kill. With one
-            # other who had been made in the same breath: [seen] in the
-            # thirteenth run (scenario 2), not in combat either, and the other
-            # not in combat two seconds later; so a bystander counts only
-            # once it has been there a while (WITNESS_AFTER). [assumed]
-            # that it lasts until the death is announced and no longer (two
-            # seconds later the player was out of combat: scenario 5), and
-            # that StopCombatAlarm ends it like any other fight ([documented]
-            # "Stops all combat and alarms against this actor").
+                      and self.aliases_holding(a)]
+        if killer is not None and killer.is_player and len(bystanders) >= 2:
+            # When is a killing by the player a fight? Four things are [seen]:
+            #  - nobody else alive (twelfth run, scenario 2): no fight;
+            #  - one other of the quest's people, put into its alias in the
+            #    same breath (thirteenth run): no fight;
+            #  - one other of the quest's people who had stood there three
+            #    seconds (fourteenth run): no fight, and the other not in
+            #    combat two seconds later;
+            #  - indirectly, case 129 in the eleventh run: the evade timer's
+            #    function, called straight after Kill(player) on the Cutter
+            #    lead at a live ambush with seven of the quest's people
+            #    standing by, found the player in combat. No other path
+            #    through the script gives what that case gave: cases 130 and
+            #    131 of the same run show that the death is announced later
+            #    than the next call.
+            # What made the fourth a fight is NOT KNOWN: the number standing
+            # by, who they were, or the ambush being live. The stand-in takes
+            # the number, because it is the one of the three it can see: a
+            # fight when two or more of a running quest's people stand by.
+            # [assumed], and it has been wrong about this four times.
+            # Scenario 2 now asks the game with four standing by.
+            # [assumed] too that it lasts until the death is announced and no
+            # longer (two seconds later the player was out of combat:
+            # scenario 5), and that StopCombatAlarm ends it like any other
+            # fight ([documented] "Stops all combat and alarms against this
+            # actor").
             actor.fights_player_until = self.now + DEATH_EVENT_DELAY
         self.actor_event(actor, "OnDeath", [killer], DEATH_EVENT_DELAY)
 
     def n_actor_getcurrentpackage(self, actor, context):
-        # [documented] "the Package this actor is currently running". [assumed]
-        # what that is for each kind of placed person: one with something to
-        # go about runs a package, one with nothing runs none.
+        # [documented] "the Package this actor is currently running". [seen]
+        # on 2026-11-13: the game's settler runs its sandbox; a placed person
+        # with no package of its own runs one all the same (001FEFC1, the
+        # same for both of the plugin's actors); with its AI off a person
+        # runs none; and put back by a script it runs none at first.
         if actor.disabled or actor.dead or not actor.ai_on:
             return None
-        return self.some_package if self._has_business(actor) else None
+        if self._has_business(actor):
+            return None if self.now - actor.put_back_at < PUT_BACK_WALK_AFTER else self.some_package
+        if actor.editor_pos is not None and not actor.is_player:
+            return self.idle_package
+        return None                                 # [assumed] for an actor made while the game runs: never asked
 
     def n_actor_getsitstate(self, actor, context):
-        return 0                                    # [assumed] nobody sits: there is no furniture here
+        # [documented] 0 not sitting, 1 wants to sit, 2 sitting down, 3
+        # sitting, 4 sitting and wants to stand. [seen] on 2026-11-13: the
+        # settler 3 or 4 at once after Enable and 3 at once after being put
+        # back, 0 from two seconds on; 1 with its AI off; a person with no
+        # package 0 throughout.
+        if actor.disabled or actor.dead or not self._has_business(actor):
+            return 0
+        if not actor.ai_on:
+            return 1
+        return 3 if self.now - actor.sat_at < SIT_SECONDS else 0
 
     def n_actor_setrestrained(self, actor, context, restrained=True):
         if actor.dead:
@@ -1662,14 +1733,14 @@ class Session:
         was = actor.restrained
         actor.restrained = truthy(restrained)
         if was and not actor.restrained and not actor.disabled:
-            self._may_walk_off(actor)               # [assumed] let go, it walks off
+            self._may_walk_off(actor, put_back=True)    # [assumed] let go, it walks on
         return True
 
     def n_actor_enableai(self, actor, context, enable=True, pause_voice=False):
         was = actor.ai_on
         actor.ai_on = truthy(enable)
         if actor.ai_on and not was and not actor.disabled:
-            self._may_walk_off(actor)               # [assumed] as above
+            self._may_walk_off(actor, put_back=True)    # [assumed] as above
 
     def n_actor_isdead(self, actor, context):
         return actor.dead

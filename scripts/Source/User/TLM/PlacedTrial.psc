@@ -29,18 +29,18 @@ What it cannot check: the name the placed person is shown under. The plugin
 gives the alias a display name, but a script can only read it with a script
 extender, which this project does not use. A person has to look.
 
-COMPILES. RAN IN THE GAME on 2026-11-13, unattended: 17 of 17, and both
-comparison triggers set their stages (docs/design/VERIFY_LOG.md, the
-thirteenth run). The comparisons were then a box on the game's own empty
-trigger and a box on the layer L_ACTORZONE. Since that run they have been
-changed to leave the collision layer out, as the game's own triggers do, and
-the steps that move the player were given more time (one move took 38
-seconds of the 45 a step was allowed). Those changes are NOT YET COMPILED.
+COMPILES. RAN IN THE GAME on 2026-11-13, unattended, twice: 17 of 17 both
+times (docs/design/VERIFY_LOG.md, the thirteenth and fourteenth runs). In the
+first run the comparisons were a box on the game's own empty trigger and a
+box on the layer L_ACTORZONE. In the second they named no collision layer at
+all, as the game's own triggers do, one on the game's activator and one on
+the plugin's: both set their stages. A trigger needs nothing but its box.
 
-What that run showed besides: the settler, once enabled, did not stand where
-the plugin had put it (it was 489 units away a moment later). Why is not
-known. Scenario 11 (TLM:PlacedPeople, on the same quest) is there to find
-out, and to see whether a person with nothing to go about stays.}
+What the runs showed besides: the settler, once enabled, does not stand where
+the plugin put it. Scenario 11 (TLM:PlacedPeople, on the same quest) found
+out why: its sandbox package puts it on a seat of the room at once.
+Changed since the second run and NOT YET COMPILED: the step that enables the
+person is given 150 seconds.}
 
 Group Aliases
 	ReferenceAlias Property Alias_Person Auto Const Mandatory
@@ -149,7 +149,7 @@ Function Run(TLM:SelfTest akTest)
 
 	; ---- 6. The placed person, enabled.
 	If placedPerson
-		akTest.Step("enabling the placed person")
+		akTest.Step("enabling the placed person", MOVE_SECONDS)
 		placedPerson.Enable()
 		WaitFor3D(placedPerson)
 		akTest.CheckFalse("trial: the placed person is disabled after Enable", placedPerson.IsDisabled())

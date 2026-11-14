@@ -643,6 +643,62 @@ An independent review read the change before the first run. It found nothing tha
 
 **What that is worth.** That the script, the plugin and the stand-in agree. On the one question that matters, whether a person with no packages stays, the stand-in knows nothing: it says yes because it was told to. Nine functions are called here that this project has never compiled a call to (`GetCurrentPackage`, `GetSitState`, `SetRestrained`, `EnableAI`, `SetPosition`, `MoveToMyEditorLocation`, `MoveToNearestNavmeshLocation`, `Utility.GetCurrentRealTime`, `Math.sqrt`); all are on the wiki with their signatures, and a compile error would stop the run before the game starts. The real settler has never been copied by the library; if that fails the build says so and carries on without the two actors.
 
+### The fourteenth run, 2026-11-13: a placed person who stays, and can be spoken to
+
+`tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 11,10,2`, commit `053464e`, 18:27 to 18:32, 264 seconds, nobody at the keyboard. **3 of 3 passed, 40 checks, 0 failed.**
+
+| Scenario | Checks | Seconds | |
+|---|---|---|---|
+| 11, people the plugin places | 8 of 8 | 163 | First run. Every experiment came back |
+| 10, the placed-content trial | 17 of 17 | 67 | Second run, with the two comparison triggers naming no collision layer |
+| 2, actors made at run time | 15 of 15 | 34 | With the bystander made three seconds before the killing |
+
+Everything compiled, on its first compile: `PlacedPeople.psc`, the changed `SelfTest.psc`, `PlacedTrial.psc` and `FixtureProbe.psc`, and with them nine functions the project had never called. The builder copied the game's settler twice without complaint, and the plugin read back as specified.
+
+**The two things the run was for:**
+
+| Asked | Seen |
+|---|---|
+| Does a person on a base of the plugin's own, with no packages and no script, stay where it is placed? | **Yes.** At once, two seconds later and six seconds later it stood on its spot to the last digit the game prints: 0.000000 away, 0.000000 higher. So did the second such person. Not sitting, not fighting |
+| Does activating that person reach a script on its alias? | **Yes.** `Activate` by the player, from 632 units off, returned True, and `TLM:MessageStageAlias` on the person's alias had set stage 30 within the second. It is that script's first run in the game. No second try was needed |
+
+**Why the settler moved**, which is what the rest of the scenario was for:
+
+| Seen | So |
+|---|---|
+| The game's settler has one package, `DefaultSandboxExteriorEditorLocation` (`023331`), no default package list, and the script `workshopnpcscript`. It takes its looks, stats, inventory and keywords from the leveled list `LCharWorkshopNPC` | (From the build.) A sandbox package sends an actor to things it can use near where it belongs |
+| A tenth of a second after `Enable` came back, each settler was **sitting** (sit state 3) on a seat of the room, 790 and 579 units from where it had been placed. Two seconds later it had stood up; after six it had walked some 300 units further along the same row | It does not walk off: the game puts it straight onto the seat its package chose. That is the 489 units of the thirteenth run |
+| The settler on the spot of the plugin's own people went as far as the one on its old spot | It is the actor, not the spot |
+| A marker set down on each spot stayed there when asked for the nearest place on the navigation mesh, and one set down 150 units above came straight down onto it | Both spots are on the mesh. The mesh is not the reason either |
+| With the player set down 630 units away, the settler went to the same row of seats, 819 units from the player | A place in the room, not a place near the player |
+| Moved back to where it was placed, the settler was there at once, with no package and still "sitting"; three seconds later it ran its package again and was 26 and 38 units off | Putting it back does not hold it |
+| Restrained and moved back: one settler stayed; the other, which had been walking, was 66 units off three seconds later | Restraint is not a way to hold a person |
+| With its AI off and moved back, each settler stayed exactly (package none, sit state 1) | That holds, and freezes the person |
+
+**What it also showed:**
+
+| What | Seen | So |
+|---|---|---|
+| A person with no package of its own | Runs a package all the same: `001FEFC1`, the same for both persons. The game gives it one | The next build looks the id up and says its name |
+| `Enable` on a person of the plugin's own | Took **18.4 and 20.0 seconds** to come back, where the game's settler took 2.4, 2.1 and 1.5 (and once about ten) | Not explained. A person switched on in the middle of play would appear late. It may be that the game has to make something for an actor record it has never seen; that is a guess. Steps that enable somebody now get 150 seconds |
+| A trigger with no collision layer | Both comparison triggers set their stages: on the game's own empty trigger and on the plugin's activator | **A trigger needs nothing but its box.** The walk-through's triggers will be written as the game writes its own |
+| The floor | The player came down at height 0 at a third spot (360 ahead, 520 to the left of the arrival point) | Three spots of open floor are known. The seats the settlers used lie in a row along y = -1113 to -1139, between x = -2581 and -1662 |
+| A scripted move of the player | One took 29 seconds again | As before: fine for a test, nothing for a player to wait on |
+| A kill by the player with one of the quest's people standing by for three seconds | No fight: the player not in combat straight after, half a second later or two seconds later; the bystander never | See below |
+| `Utility.Wait` and the clock | A wait of 2 seconds took 1.82 to 1.85 by `Utility.GetCurrentRealTime`, one of 4 took 3.47 to 3.50, and the times on the log's lines agree | In that session waits ran about an eighth short. Anything timed for a player (the 90 seconds of the evade timer) cannot be taken as wall-clock seconds. Why is not known; the game is known to run fast at high frame rates |
+| Letter case | The script wrote "yes" and "no"; the log says "Yes" and "No" | The game keeps one spelling of a string whatever its letter case. Never compare or rely on the case of a string a script made |
+| The settler of scenario 10, enabled at the end of that scenario | Stood at (-2581.1, -1113.0, 0), the seat it took in scenario 11 | The same choice from the same place, in two sessions |
+
+**The stand-in engine against the game.** All three scenarios scored as it predicted: 8, 17 and 15. What it reports without scoring it had wrong or did not know, and has been corrected from this run:
+
+- **A kill by the player with a bystander.** It said a fight; the game said none. That is the fourth time it has been wrong about when a kill is a fight. What is now seen: nobody standing by, no fight; one of the quest's people standing by, made in the same breath or three seconds before, no fight. And once, indirectly, a fight: case 129 of the eleventh run, with seven stand-ins about at a live ambush. What made that one a fight is not known. The stand-in now takes it to be the number (two or more of a running quest's people), which is a guess, and scenario 2 has a new experiment that asks the game with four standing by.
+- **How long `Enable` takes**: nothing, it had said. It now takes 19 seconds for a person of the plugin's own and 2 for the game's settler.
+- **Where the settler goes**: one offset, and there it stayed. It is still one offset (the stand-in knows no seats), but the person is now "sitting" at first, and put back it is at its spot at once and takes a step a second later.
+- **What a person with no packages runs**: none, it had said. It now answers with the package the game named.
+- **"yes" and "no"**: the script now writes them as the game printed them.
+
+Still not done anywhere: opening the plugin in the Creation Kit, a look at anything by eye, dialogue, saves and loads, anything in a place built for the purpose, any test of the quest as a player would meet it.
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
@@ -674,7 +730,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 | `GetDisplayName` | Not usable | A script-extender (F4SE) function. The project uses no script extender, so the name an alias gives its reference cannot be read by a script. |
 | `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. How long "finishes dying" takes is not fixed: about a second on 2026-11-12, well under a second on 2026-11-13 (two kills and both announcements within one second). |
 | `OnPlayerLoadGame` | Documented | Sent only to the player actor; fires "for the first time on the next load". An alias pointing at the player should receive it, since aliases get their reference's events. *That last step needs the game.* |
-| The player "in combat" after `Kill(player)` | Seen in the game, in part | Not on the wiki. With nobody else alive: not in combat, straight after the kill and after the death was announced (2026-11-13, scenario 2). With others standing by: only inferred. In the eleventh run (2026-11-12, case 129) the evade timer's function, called straight after `Kill` with the player named as killer, did not resolve the ambush and wrote no guard line; with five other actors alive it can only have found the player in combat. Two seconds after such a kill the player is out of combat (scenario 5). Asked outright in scenario 2 in the thirteenth run (2026-11-13), with one actor standing by: not in combat. But that actor had been made in the same breath as the killing, and one that was not there to see cannot be a witness. *Needs the game:* the same with the bystander made three seconds before, and whether `StopCombatAlarm` ends the fight if there is one. |
+| The player "in combat" after `Kill(player)` | Seen in the game, in part | Not on the wiki. With nobody else alive: not in combat, straight after the kill and after the death was announced (2026-11-13, scenario 2). With others standing by: only inferred. In the eleventh run (2026-11-12, case 129) the evade timer's function, called straight after `Kill` with the player named as killer, did not resolve the ambush and wrote no guard line; with five other actors alive it can only have found the player in combat. Two seconds after such a kill the player is out of combat (scenario 5). Asked outright in scenario 2 in the thirteenth run (2026-11-13), with one actor standing by: not in combat. But that actor had been made in the same breath as the killing, and one that was not there to see cannot be a witness. Asked again in the fourteenth run (2026-11-13) with the bystander, one of the quest's people, made three seconds before: still not in combat, then or two seconds later, and the bystander never. So one of the quest's people standing by does not make a kill a fight, and what did in case 129 (the number of them, who they were, or the ambush being live) is not known. *Needs the game:* the same with four standing by (scenario 2, part 4b), and whether `StopCombatAlarm` ends the fight if there is one. |
 | `OnCombatStateChanged` | Seen in the game, not dependable | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. On 2026-11-12, in three runs, an alias script received it, with the player as target, when `StartCombat(player)` was called on its actor. On 2026-11-13 the stage that event sets had not been set eight seconds after `StartCombat`, though the actor and the player were both in combat (scenario 5). Nothing in the quest may depend on it alone. |
 | `IsInDialogueWithPlayer` | Documented | `bool Function IsInDialogueWithPlayer() native`, a member of ObjectReference: "Is this actor or talking activator currently talking to the player?" Used by A25 on the Cutter lead's actor. **Seen in the game for the answer "no"** (2026-11-13): false for an actor nobody is talking to, in scenario 2 and in every case where the timer runs out. *Still needs the game:* that it answers "yes" for the whole of a conversation, which cannot be seen until there is one. |
 | `OnHit` | Documented | Needs `RegisterForHitEvent` first and fires once per registration. The scripts use `OnCombatStateChanged` instead. |
@@ -732,7 +788,8 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed**, and again in the eleventh run.
 3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done: all four cases.** 130, 131 and 132 on 2026-11-12 (the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path, on 2026-11-13 in the thirteenth run, with a death with nobody named as the killer: twice before something else had got there first (the fight rule on 2026-11-12, the death's announcement in the twelfth run). In the twelfth run the wait guard also acted in scenario 2, where nothing was arranged.
 3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). **Done 2026-11-13: 17 of 17**, for the trigger and the object without reservation. The person is there and can be enabled, but did not stay where it was placed.
-3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Written, not yet compiled or run.**
+3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Done 2026-11-13: 8 of 8.** A person with no packages stands exactly where it is placed, and activating it reached the project's script on its alias. Open: why `Enable` takes about 19 seconds for such a person.
+3h. A trigger with no collision layer. **Done 2026-11-13**: both comparison triggers of scenario 10 set their stages.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).
