@@ -1920,6 +1920,72 @@
           ]
         }
       }
+    },
+    {
+      "name": "fifteenth run, 2026-11-14: the first section of Act I in the game for the first time; four standing by at a killing",
+      "commit": "2675a33",
+      "how": "unattended",
+      "not_replayed": {
+        "12": {
+          "passed": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md.",
+          "failed": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md.",
+          "first_failure": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md.",
+          "main_stage_events": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md."
+        }
+      },
+      "scenarios": {
+        "12": {
+          "passed": 39,
+          "failed": 3,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 9,
+          "first_failure": "act1: how many of the living are more than 64 units from where they were placed, six seconds on = 1, expected 0"
+        },
+        "11": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0
+        },
+        "10": {
+          "passed": 17,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "probe: player in combat straight after Kill(player) on a Cutter, another having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = False",
+            "probe: two seconds later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat straight after Kill(player) on a Cutter, four of the quest's people having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False; in combat: the other Cutters = False and False, the caravan hands = False and False",
+            "probe: two seconds after StopCombatAlarm on the player: player in combat = False",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        }
+      }
     }
   ]
 }

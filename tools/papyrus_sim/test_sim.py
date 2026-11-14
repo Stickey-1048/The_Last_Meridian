@@ -498,12 +498,23 @@ class RulesAboutActors(unittest.TestCase):
         y = self.actor("CutterC")
         self.s.n_actor_kill(y, None, self.s.player)
         self.assertFalse(self.s.player_in_combat())
-        # Several standing by: a fight. [seen], indirectly, in the eleventh run
-        # (case 129, seven standing by at a live ambush). What it was about
-        # that case is not known; the stand-in takes it to be the number, two
-        # or more. [assumed]: until the death is announced and no longer; and
-        # that StopCombatAlarm ends it, as the wiki says it ends all combat.
+        # Four standing by: still no fight. [seen] in the fifteenth run
+        # (scenario 2: two Cutters and the two caravan hands, there for three
+        # seconds).
         c = self.actor("CutterB")
+        e = self.actor("CaravanMaster")
+        f = self.actor("CaravanDrover")
+        w = self.actor("CutterC")
+        self.s.n_actor_kill(w, None, self.s.player)
+        self.assertFalse(self.s.player_in_combat())
+        # More standing by: a fight. [seen], indirectly, in the eleventh run
+        # (case 129, seven standing by at a live ambush). What it was about
+        # that case is not known; the stand-in takes it to be the number,
+        # five or more of the game's own actors, which is the least that
+        # fits everything seen. [assumed]: until the death is announced and
+        # no longer; and that StopCombatAlarm ends it, as the wiki says it
+        # ends all combat.
+        g = self.actor("CutterLead")
         z = self.actor("CutterC")
         self.s.n_actor_kill(z, None, self.s.player)
         self.assertTrue(self.s.player_in_combat())

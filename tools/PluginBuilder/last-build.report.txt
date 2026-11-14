@@ -696,7 +696,7 @@ Not wired yet (136):
   - TLM_A1 script TLM:Act1Walk.Caps: needs 'Caps001' from Fallout4.esm
   - TLM_A1 script TLM:Act1Walk.MarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_A1 script TLM:Act1Walk.PipBoy: needs 'Pipboy' from Fallout4.esm
-  - TLM_A1 script TLM:Act1Walk.RevolverRounds: needs what a weapon named '.44 Pistol' or 'Pipe Revolver' or '10mm Pistol' fires, from Fallout4.esm
+  - TLM_A1 script TLM:Act1Walk.RevolverRounds: needs what a weapon named '.44 Pistol' or 'id:44' or '.44' or '.44 Revolver' or 'Pipe Revolver' or '10mm Pistol' fires, from Fallout4.esm
   - TLM_A1 alias Marshal: its reference TLM_REF_A1_Marshal is not placed
   - TLM_A1 alias Dispatch: its reference TLM_REF_A1_Dispatch is not placed
   - TLM_A1 alias Revolver: its reference TLM_REF_A1_Revolver is not placed

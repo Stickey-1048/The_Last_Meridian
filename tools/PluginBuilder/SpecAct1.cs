@@ -81,7 +81,10 @@ public static class Act1
     public static readonly string[] DispatchLooksLike = { "Folder", "Clipboard" };
 
     /// <summary>The marshal's revolver: the game's own, by the name a player sees.</summary>
-    public static readonly string[] RevolverNames = { ".44 Pistol", "Pipe Revolver", "10mm Pistol" };
+    // Seen on 2026-11-14: the game has no weapon a player sees as ".44 Pistol" under that exact name, and the
+    // first "Pipe Revolver" is a companion's that cannot be picked up. So: the name, then the record the game
+    // itself calls 44, then two more spellings, then weapons a player can at least have.
+    public static readonly string[] RevolverNames = { ".44 Pistol", "id:44", ".44", ".44 Revolver", "Pipe Revolver", "10mm Pistol" };
     public const int RevolverRounds = 6;
 
     // ------------------------------------------------- where things stand
@@ -113,7 +116,9 @@ public static class Act1
         Own("Abel", "TLM_NPC_CARAVAN_DROVER", 640, -320),
         Own("Dunmore", "TLM_NPC_CUTTER_LEAD", 480, -180),
         Own("Cutter1", "TLM_NPC_CUTTER_01", 520, -80),
-        Own("Cutter2", "TLM_NPC_CUTTER_02", 420, -60),
+        // Not at 420 ahead, 60 to the left: something of the room's stands there, and on 2026-11-14 the game
+        // set her down on top of it, 43 units up and 50 to the side. Here she is among three who stayed.
+        Own("Cutter2", "TLM_NPC_CUTTER_02", 560, -140),
         Own("Cutter3", "TLM_NPC_CUTTER_03", 560, -260),
         // The town.
         new("TLM_REF_A1_TownGate", Cell, "TLM_TRIG_TownGate", null, 300, 150, 100, InitiallyDisabled: true, BoxHalfExtents: Box),

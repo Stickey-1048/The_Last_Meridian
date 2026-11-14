@@ -2,7 +2,11 @@
 
 Branch `feat/tlm-mq01-graybox`. Self-test scenario 12, and one command to play it by hand.
 
-**Status: built and checked on the stand-in engine. Nothing here has been compiled by the Papyrus compiler or run in the game.** The pieces it is made of have each run in the game (placed people who stay, activation that reaches a script, triggers, objects that are picked up: [VERIFY_LOG.md](VERIFY_LOG.md), the thirteenth and fourteenth runs). This is the first time they are put together, and the first thing in the project a person is meant to play. What is new to the game in it is listed under [What the game has not been asked yet](#what-the-game-has-not-been-asked-yet).
+**Status: compiled, and its unattended check ran in the game on 2026-11-14: 39 of 42** ([VERIFY_LOG.md](VERIFY_LOG.md), the fifteenth run). The people, the things, the boxes and the road by its stages all work there. Two things did not and have been changed since, not yet run again: one Cutter stood on a spot that is not open floor, and the revolver the build found was one nobody can pick up. **It has not been played by a person:** nothing has been seen by eye, no box has been answered, no paper read.
+
+What follows was written before that run, and is kept as written where it says what was not yet known.
+
+Before the run: built and checked on the stand-in engine; nothing compiled by the Papyrus compiler or run in the game. The pieces it is made of have each run in the game (placed people who stay, activation that reaches a script, triggers, objects that are picked up: [VERIFY_LOG.md](VERIFY_LOG.md), the thirteenth and fourteenth runs). This is the first time they are put together, and the first thing in the project a person is meant to play. What is new to the game in it is listed under [What the game has not been asked yet](#what-the-game-has-not-been-asked-yet).
 
 ## What it is
 
@@ -69,7 +73,7 @@ Placed from the test room's arrival point, as in the trial: so many units ahead,
 | Nell Fenwick | `TLM_REF_A1_Nell` | 600 | -200 | 0 |
 | Abel Rudd | `TLM_REF_A1_Abel` | 640 | -320 | 0 |
 | Reese Dunmore | `TLM_REF_A1_Dunmore` | 480 | -180 | 0 |
-| Three Cutters | `TLM_REF_A1_Cutter1` to `3` | 520, 420, 560 | -80, -60, -260 | 0 |
+| Three Cutters | `TLM_REF_A1_Cutter1` to `3` | 520, 560, 560 | -80, -140, -260 | 0 |
 | **The town** | | | | |
 | The town gate (a box, 100 each way) | `TLM_REF_A1_TownGate` | 300 | 150 | 100 |
 | Jonah Talbot | `TLM_REF_A1_Talbot` | 380 | 260 | 0 |
@@ -90,7 +94,7 @@ Whether every one of these spots is open floor is not known: five places in the 
 |---|---|---|
 | `TLM_MISC_Dispatch` | The sealed rail dispatch. Picking it up sets stage 20 | Folder, Clipboard |
 | `TLM_BOOK_MarshalLog`, `TLM_BOOK_RailMaintLedger` | The journal and the ledger. Activated, the game opens them to be read | One of the game's notes (below) |
-| The game's own revolver | The marshal's. Picking it up sets stage 15, and the player then has six rounds for it | Itself: .44 Pistol, Pipe Revolver, 10mm Pistol |
+| The game's own revolver | The marshal's. Picking it up sets stage 15, and the player then has six rounds for it | Itself: by the name ".44 Pistol"; else the record the game calls `44`; else a Pipe Revolver or a 10mm Pistol a player can have |
 | `TLM_ACTI_BrakeShoes`, `TLM_ACTI_DrawBar` | Examined, each shows its box and counts as evidence | Hubcap, Gears; Connecting Rod, Adjustable Wrench, Wrench |
 | `TLM_ACTI_NoticeBoard`, `TLM_ACTI_Stove` | Where the pages can be posted; where the ledger can be burned | Clipboard, Folder; Hot Plate, Cooking Pot |
 | `TLM_CONT_WagonCargo` | The wagon's cargo, with 40 caps in it. Emptied when the Cutters loot it | Wooden Crate, Crate, Steamer Trunk, Trunk, Suitcase, Toolbox |

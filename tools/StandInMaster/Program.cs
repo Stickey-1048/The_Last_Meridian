@@ -195,8 +195,15 @@ if (room)
     // is to look like one of those falls back on the bottle cap.)
     var rounds = mod.Ammunitions.AddNew("StandInAmmo44");
     rounds.Name = ".44 Round";
-    var revolver = mod.Weapons.AddNew("StandIn44");
-    revolver.Name = ".44 Pistol";
+    // As on the game PC on 2026-11-14: a companion's revolver that nobody can pick up comes first under a name
+    // a player sees, and the revolver that is wanted is not under the name it was first asked for. The builder
+    // must pass the first over and find the second by the name the game uses inside.
+    var companions = mod.Weapons.AddNew("CompStandInPipeRevolver");
+    companions.Name = "Pipe Revolver";
+    companions.Model = new Model { File = @"StandIn\CompanionRevolver.nif" };
+    companions.Flags |= Weapon.Flag.NotPlayable;
+    var revolver = mod.Weapons.AddNew("44");
+    revolver.Name = ".44 Something Else";
     revolver.Model = new Model { File = @"StandIn\Revolver.nif" };
     revolver.Ammo.SetTo(rounds);
     var crate = mod.Containers.AddNew("StandInCrate");

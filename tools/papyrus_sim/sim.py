@@ -1615,9 +1615,13 @@ class Session:
 
     def n_objectreference_enablenowait(self, ref, context, fade=False):
         # [documented] "This function will return immediately and not wait
-        # for the object to be enabled". [assumed] that the reference is then
-        # there after as long as Enable would have taken, and that several
-        # asked for at once come in side by side: not seen.
+        # for the object to be enabled". [seen] on 2026-11-14: thirteen
+        # people of the plugin's own, asked for one after another without
+        # waiting, were all there together 39 seconds later (the first at
+        # 39.35, the last at 39.96). So they come in side by side, and the
+        # stand-in has each take what Enable takes. How long that is in the
+        # game is not steady: 18, 20 and 30 seconds for one person, and once
+        # under three.
         takes = 0.0
         if ref.disabled and isinstance(ref, Actor) and ref.editor_pos is not None and ref.base is not None:
             takes = self.enable_seconds.get("own" if ref.base.editor_id in self.npc_info else "game", 0.0)
@@ -1798,30 +1802,36 @@ class Session:
         for other in self.actors:
             if other.combat_target is actor:
                 self._stop_combat(other)
+        # Who stands by: the living people of running quests who are the game's
+        # own actors. Not the plugin's own (copies with no packages, in
+        # factions of the plugin's): twelve of those stood by on 2026-11-14.
         bystanders = [a for a in self.actors
                       if a is not actor and not a.is_player and not a.dead and not a.disabled
-                      and self.aliases_holding(a)]
-        if killer is not None and killer.is_player and len(bystanders) >= 2:
-            # When is a killing by the player a fight? Four things are [seen]:
+                      and self.aliases_holding(a)
+                      and not (a.base is not None and a.base.editor_id in self.npc_info)]
+        if killer is not None and killer.is_player and len(bystanders) >= 5:
+            # When is a killing by the player a fight? What is [seen]:
             #  - nobody else alive (twelfth run, scenario 2): no fight;
             #  - one other of the quest's people, put into its alias in the
             #    same breath (thirteenth run): no fight;
-            #  - one other of the quest's people who had stood there three
-            #    seconds (fourteenth run): no fight, and the other not in
-            #    combat two seconds later;
+            #  - one other who had stood there three seconds (fourteenth and
+            #    fifteenth runs): no fight;
+            #  - four of the game's settlers, in the quest's aliases, who had
+            #    stood there three seconds (fifteenth run, scenario 2): no
+            #    fight, and none of the four in combat half a second later;
+            #  - twelve people of the plugin's own at a live ambush, three of
+            #    them of the dead man's faction (fifteenth run, scenario 12):
+            #    no fight, then or at the town gate;
             #  - indirectly, case 129 in the eleventh run: the evade timer's
             #    function, called straight after Kill(player) on the Cutter
-            #    lead at a live ambush with seven of the quest's people
+            #    lead at a live ambush with seven of the game's settlers
             #    standing by, found the player in combat. No other path
-            #    through the script gives what that case gave: cases 130 and
-            #    131 of the same run show that the death is announced later
-            #    than the next call.
-            # What made the fourth a fight is NOT KNOWN: the number standing
-            # by, who they were, or the ambush being live. The stand-in takes
-            # the number, because it is the one of the three it can see: a
-            # fight when two or more of a running quest's people stand by.
-            # [assumed], and it has been wrong about this four times.
-            # Scenario 2 now asks the game with four standing by.
+            #    through the script gives what that case gave.
+            # What made that one a fight is NOT KNOWN. The stand-in keeps a
+            # rule that gives all six: a fight when five or more of the
+            # game's own actors stand by. [assumed], and it has been wrong
+            # about this five times; it is kept only so that the eleventh
+            # run replays as the game gave it.
             # [assumed] too that it lasts until the death is announced and no
             # longer (two seconds later the player was out of combat:
             # scenario 5), and that StopCombatAlarm ends it like any other

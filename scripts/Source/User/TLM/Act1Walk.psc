@@ -788,9 +788,11 @@ Function Audit(TLM:SelfTest akTest)
 	ObjectReference dispatch = Alias_Dispatch.GetReference()
 	If dispatch
 		akTest.Step("having the player pick the dispatch up")
+		; Asked before it is picked up: something in a pocket is nowhere.
+		float dispatchAway = playerRef.GetDistance(dispatch)
 		bool took = dispatch.Activate(playerRef)
 		WaitForStage(TLM_MQ01, 20)
-		akTest.Note("act1: Activate on the dispatch from " + playerRef.GetDistance(dispatch) + " away returned " + took + "; the player has " + playerRef.GetItemCount(DispatchItem) + ", stage 20 set = " + TLM_MQ01.GetStageDone(20))
+		akTest.Note("act1: Activate on the dispatch from " + dispatchAway + " away returned " + took + "; the player has " + playerRef.GetItemCount(DispatchItem) + ", stage 20 set = " + TLM_MQ01.GetStageDone(20))
 		If !TLM_MQ01.GetStageDone(20)
 			; Another way for it to reach the player, to tell a pick-up that
 			; failed from a script that did not hear one.
@@ -817,7 +819,15 @@ Function Audit(TLM:SelfTest akTest)
 		akTest.Step("having the player pick the revolver up")
 		bool tookRevolver = revolver.Activate(playerRef)
 		WaitForStage(TLM_MQ01, 15)
-		akTest.Note("act1: Activate on the revolver returned " + tookRevolver)
+		akTest.Note("act1: Activate on the revolver returned " + tookRevolver + "; stage 15 set = " + TLM_MQ01.GetStageDone(15))
+		If !TLM_MQ01.GetStageDone(15)
+			; As for the dispatch: another way for it to reach the player, to
+			; tell a pick-up that failed from a script that did not hear one.
+			akTest.Step("moving the revolver into the player's inventory by script")
+			playerRef.AddItem(revolver)
+			WaitForStage(TLM_MQ01, 15)
+			akTest.Note("act1: after AddItem of the revolver: stage 15 set = " + TLM_MQ01.GetStageDone(15))
+		EndIf
 		akTest.CheckTrue("act1: the revolver, picked up, sets stage 15 of the main quest", TLM_MQ01.GetStageDone(15))
 		Utility.Wait(1.0)
 		If RevolverRounds

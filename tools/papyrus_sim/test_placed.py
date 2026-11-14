@@ -468,8 +468,9 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
     def test_the_placed_person_is_no_bystander_while_disabled(self):
         """Why the people start disabled: nobody new stands about in the other
         scenarios. Enabled, the placed person is one of a running quest's
-        people; one such standing by does not make a kill by the player a
-        fight ([seen] twice), two do in the stand-in ([assumed])."""
+        people. One such standing by does not make a kill by the player a
+        fight ([seen] three times), and neither do the people of the
+        plugin's own, however many ([seen] on 2026-11-14 with twelve)."""
         s, quest = self.started()
         s.enable_seconds = {}
         person = s.placed[PERSON]
@@ -481,11 +482,13 @@ class TheStandInsRulesForPlacedThings(unittest.TestCase):
         s.n_actor_kill(second, None, s.player)
         self.assertFalse(s.player_in_combat())
         another = self.an_actor(s)
-        # the second of the quest's people: one of the other placed persons, enabled
+        # the rest of the quest's people, enabled: two of the plugin's own and one more settler
         others = [a.ref for a in quest.aliases.values() if isinstance(a.ref, Actor) and a.ref is not person]
-        s.n_objectreference_enable(others[0], None)
+        self.assertEqual(len(others), 3)
+        for other in others:
+            s.n_objectreference_enable(other, None)
         s.n_actor_kill(another, None, s.player)
-        self.assertTrue(s.player_in_combat())
+        self.assertFalse(s.player_in_combat())
 
 if __name__ == "__main__":
     unittest.main()

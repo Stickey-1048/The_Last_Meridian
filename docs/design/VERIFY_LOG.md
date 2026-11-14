@@ -720,6 +720,37 @@ What was checked on this side (none of it a compile or a game test): the build a
 
 Scenarios 11, 10 and 2 go along because their scripts changed after the fourteenth run (longer time limits; the experiment with four standing by at a killing, which has not run yet).
 
+### The fifteenth run, 2026-11-14: the first section of Act I in the game
+
+Commit `2675a33`. Scenarios 12, 11, 10, 2, unattended: **3 of 4 passed; 79 checks passed, 3 failed**, all three in scenario 12. Everything compiled, the two new scripts included, and the script log named no error of this project's in any of the four sessions.
+
+**Scenario 12: 39 of 42.** What the game showed for the first time, all as hoped:
+
+| Asked | The game's answer |
+|---|---|
+| Script properties that are lists of aliases (some of another quest) and lists of text; arrays made by a script | Work: the quest held all 26 references, and all 26 aliases of the two real quests held what was put into them |
+| `ForceRefTo` for a thing, and the game's own alias scripts on an alias filled that way | Work: the dispatch set stage 20, the ledger and journal the side quest's 10 and 13, the two boxes stages 30 and 40 |
+| A placed actor that starts dead, held by an alias | The marshal was dead when the section was set up |
+| `EnableNoWait` for thirteen people | All there together, 39.4 to 40.0 seconds after being asked for: side by side, not one after another |
+| The copies' looks, factions and temper | Twelve of thirteen stood exactly where they were placed. Nobody was in a fight: not when everybody was there, not after the player killed the Cutter lead with twelve standing by (three of them of his faction), not at the town gate |
+| The navigation mesh at each person's spot | Every spot is on it (the four furthest into the town a fraction of a unit above the floor) |
+| The road walked by its stages | Main quest 10, 20, 30, 31, 40, 50, 60, 100; side quest 5, 10, 13, 20, 14, 25, 41, 50, 100. The guard of amendment A24 acted once at the town gate ("waited 1 tenths of a second") |
+
+The three that failed, and what was done:
+
+1. **The second Cutter was 66 units from her spot**, 43 up and 50 to the side: something of the room's stands at 420 ahead, 60 to the left, and the game set her down on it. Moved to 560 ahead, 140 to the left, among three who stayed.
+2. **The revolver did not set stage 15**, and 3. **no rounds were given.** The game has no weapon a player sees under the exact name ".44 Pistol". The build went on to the next name and took the first of two "Pipe Revolver"s, which is a companion's (`CompValentinePipeRevolver`, firing `CompanionAmmo45Caliber`): `Activate` returned True and nothing was picked up. The builder now passes over weapons a player cannot have, looks for the record the game itself calls `44` when the name finds nothing, and lists the names near the one it was asked for. The scenario now also tries the second way of getting the revolver to the player, as it does for the dispatch.
+
+What the build found by the names a player sees: Folder, Hubcap, Connecting Rod, Clipboard, Hot Plate and Wooden Crate, each at the first try. The settler's list offers 44 settlers, 22 men and 22 women, so everybody has a face of their own. The papers take after `DN074_QuannapowittFlyer` (`Props\Note_LowPoly.nif`, the model of 117 of the game's 327 books). `Pipboy` is there. The package a person with none of its own runs is the game's `DefaultPackage`.
+
+One line of the report was nonsense and is put right: the distance to the dispatch was asked after it had been picked up.
+
+**Scenario 2: 15 of 15, and the experiment with four standing by.** A kill by the player with four of the game's settlers in the quest's aliases, there for three seconds: no fight, and none of the four in combat half a second later. With scenario 12 that makes five times the stand-in's rule about killings was wrong. What made case 129 of the eleventh run a fight is still not known; the stand-in now keeps the least rule that fits everything seen (five or more of the game's own actors standing by) and says it is kept only so that the eleventh run replays.
+
+**Scenarios 11 and 10: 8 of 8 and 17 of 17**, as before. `Enable` took 30.2 seconds for the first person of the plugin's own this time and 2.8 for the second (18.4 and 20.0 on 2026-11-13): it is not steady, and not explained.
+
+Not yet done: the section played by a person. Nothing by eye, no box with buttons, no paper read, no fight fought.
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
@@ -811,7 +842,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). **Done 2026-11-13: 17 of 17**, for the trigger and the object without reservation. The person is there and can be enabled, but did not stay where it was placed.
 3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Done 2026-11-13: 8 of 8.** A person with no packages stands exactly where it is placed, and activating it reached the project's script on its alias. Open: why `Enable` takes about 19 seconds for such a person.
 3h. A trigger with no collision layer. **Done 2026-11-13**: both comparison triggers of scenario 10 set their stages.
-3i. The first section of Act I as the plugin places it: thirteen people, the things, the boxes, put into the two quests' aliases and walked once by their stages (scenario 12, [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md)). **Still to do.**
+3i. The first section of Act I as the plugin places it: thirteen people, the things, the boxes, put into the two quests' aliases and walked once by their stages (scenario 12, [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md)). **Ran 2026-11-14: 39 of 42.** Everything new worked but two things, both put right in the plugin since and not yet run again: a spot that was not open floor, and a revolver that could not be picked up.
 3j. The same played by a person (`tools\win\Play-Act1.ps1`): can everybody be seen and told apart, do the boxes open and their buttons do what they say, can the papers be read, does a fight stay between those it concerns. **Still to do.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do (the builder now looks for them by the name a player sees, ".44 Pistol", and says what it found).

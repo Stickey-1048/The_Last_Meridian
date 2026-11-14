@@ -686,7 +686,14 @@ public sealed class Builder
                     foreach (var r in _vanillaMod.MiscItems) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
                     break;
                 case "Weapon":
-                    foreach (var r in _vanillaMod.Weapons) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
+                    // Not the weapons a player cannot have. Seen on 2026-11-14: the first of the game's two
+                    // "Pipe Revolver"s is a companion's (CompValentinePipeRevolver); placed in the room it
+                    // could not be picked up, and what it fires is a companion's ammunition.
+                    foreach (var r in _vanillaMod.Weapons)
+                    {
+                        if (r.Flags.HasFlag(Weapon.Flag.NotPlayable) || (r.EditorID ?? "").StartsWith("Comp", StringComparison.OrdinalIgnoreCase)) continue;
+                        Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
+                    }
                     break;
                 case "Container":
                     foreach (var r in _vanillaMod.Containers) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
@@ -719,12 +726,31 @@ public sealed class Builder
         var index = NamesOf(kind);
         foreach (var name in names)
         {
+            // "id:44" asks for the record the game itself calls 44, where that name is known.
+            if (name.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
+            {
+                var id = name[3..];
+                if (!TryVanilla(id, kind, out var byId)) continue;
+                var known = index.Values.SelectMany(x => x).FirstOrDefault(x => x.Key == byId);
+                if (needsModel && string.IsNullOrEmpty(known?.ModelFile))
+                {
+                    VanillaNotes.Add($"{forWhat}: the {kind} '{id}' is there, and cannot be used here (no name a player sees, no world model, or not for a player)");
+                    continue;
+                }
+                key = byId; modelFile = known?.ModelFile; bounds = known?.Bounds;
+                found = $"'{id}', by the name the game uses inside";
+                VanillaNotes.Add($"{forWhat}: '{id}' -> {byId} ({kind}; found by the name the game uses inside, after the names a player sees found nothing)");
+                // And what a player does see it as, for the next time it is asked for.
+                NoteNear(kind, new[] { names[0] }, forWhat);
+                return true;
+            }
             if (!index.TryGetValue(name, out var list)) continue;
             var fit = needsModel ? list.Where(x => !string.IsNullOrEmpty(x.ModelFile)).ToList() : list;
             if (fit.Count == 0) continue;
             var pick = fit[0];
             key = pick.Key; modelFile = pick.ModelFile; bounds = pick.Bounds;
             found = $"'{name}' ({pick.EditorId ?? "no EditorID"})";
+            if (!string.Equals(name, names[0], StringComparison.OrdinalIgnoreCase)) NoteNear(kind, new[] { names[0] }, forWhat);
             VanillaNotes.Add($"{forWhat}: '{name}' -> {pick.Key} ({kind} {pick.EditorId ?? "with no EditorID"}; found by the name a player sees"
                 + (fit.Count > 1 ? $", the first of {fit.Count} so named)" : ")"));
             var keyText = pick.Key.ToString();
@@ -732,7 +758,29 @@ public sealed class Builder
             return true;
         }
         VanillaNotes.Add($"{forWhat}: no {kind} in Fallout4.esm{(needsModel ? " with a world model" : "")} is named {string.Join(" or ", names.Select(n => $"'{n}'"))}");
+        NoteNear(kind, names, forWhat);
         return false;
+    }
+
+    /// <summary>
+    /// When a name was not found: the names that share a word with what was asked for, so that the next build
+    /// can ask for the right one without another run to find out. Said once for each kind and wish.
+    /// </summary>
+    void NoteNear(string kind, string[] names, string forWhat)
+    {
+        try
+        {
+            var words = names.Where(n => !n.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
+                .SelectMany(n => n.Split(' ', '.', '-', ',')).Where(w => w.Length >= 2).Select(w => w.ToLowerInvariant()).Distinct().ToList();
+            var near = NamesOf(kind).Where(kv => words.Any(w => kv.Key.ToLowerInvariant().Contains(w)))
+                .OrderBy(kv => kv.Key, StringComparer.OrdinalIgnoreCase).Take(30)
+                .Select(kv => $"'{kv.Key}' ({string.Join(", ", kv.Value.Take(3).Select(x => x.EditorId ?? x.Key.ToString()))})").ToList();
+            VanillaNotes.Add($"{forWhat}: names of the master's {kind} records that share a word with those: {(near.Count == 0 ? "none" : string.Join("; ", near))}");
+        }
+        catch (Exception e)
+        {
+            VanillaNotes.Add($"NOTE {forWhat}: the names near those could not be listed ({e.GetType().Name}: {e.Message})");
+        }
     }
 
     /// <summary>A world model to borrow: the path of the file and the box around it.</summary>
