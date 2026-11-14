@@ -1,0 +1,15 @@
+{
+ "format": "tlm-documents-1",
+ "documents": [
+  {
+   "id": "marshal_journal",
+   "kind": "note",
+   "title": "Rail Marshal's Journal",
+   "found": "On the dead marshal, at the wreck",
+   "text": "Greenwater. Ostrander took ill on the 9th. By the 14th he was gone. I carried the line's word to the yard the same week. Last I saw, no one had been sent in his place.\n\nOdd, then, that every car I rode on this trip came up on the list as 'signed clean'.\n\nPritchard will want to see this in person.",
+   "sources": [
+    "R1"
+   ]
+  }
+ ]
+}

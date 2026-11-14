@@ -10,6 +10,7 @@ What to make, at which sizes and under which names is in
 | `characters/` | Reference portraits and `casting_cards.json` |
 | `text/` | `act1_texts.json` |
 | `layout/` | `road_plan.json` |
+| `story/` | Characters, quests, talk and papers to read, in the format of [docs/design/STORY_INTAKE.md](../../../docs/design/STORY_INTAKE.md). What to ask for is in [docs/design/ACT1_chatgpt_story_prompt.md](../../../docs/design/ACT1_chatgpt_story_prompt.md) |
 
 Rules:
 

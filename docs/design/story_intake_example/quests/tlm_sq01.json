@@ -1,0 +1,199 @@
+{
+ "format": "tlm-quest-1",
+ "key": "sq01",
+ "id": "TLM_SQ01",
+ "title": "Signed Clean",
+ "chapter": 1,
+ "kind": "side",
+ "premise": "The wrecked train's maintenance ledger says its brakes and couplers were inspected and sound. The wreck says otherwise, and the inspector who signed was dead before the dates he signed for.",
+ "draws_on": [
+  "R1"
+ ],
+ "reads": [
+  "mq01 done 10"
+ ],
+ "cast": [
+  "pritchard",
+  "pike",
+  "vane",
+  "haskell",
+  "gantt"
+ ],
+ "places": [
+  {
+   "id": "wreck",
+   "name": "The wreck on the Tellico road",
+   "what": "Where the ledger, the journal, the brake shoes and the draw-bar are"
+  },
+  {
+   "id": "mercy_crossing",
+   "name": "Mercy Crossing",
+   "what": "Pike, Vane, Pritchard, the notice board, the stove"
+  }
+ ],
+ "stages": [
+  {
+   "n": 5,
+   "set_by": "The main quest starts",
+   "log": null
+  },
+  {
+   "n": 10,
+   "set_by": "The player has the maintenance ledger",
+   "log": "The train's maintenance ledger says the brakes and couplers were inspected and sound."
+  },
+  {
+   "n": 11,
+   "set_by": "The player examines the brake shoes",
+   "log": null
+  },
+  {
+   "n": 12,
+   "set_by": "The player examines the draw-bar",
+   "log": null
+  },
+  {
+   "n": 13,
+   "set_by": "The player has the marshal's journal",
+   "log": null
+  },
+  {
+   "n": 14,
+   "set_by": "The player looks at Ada Pike's parts book",
+   "log": null
+  },
+  {
+   "n": 20,
+   "set_by": "The ledger and one piece of evidence (the quest's script)",
+   "log": "The ledger and the wreck don't agree."
+  },
+  {
+   "n": 25,
+   "set_by": "Evidence level 2 (the quest's script)",
+   "log": "Whoever kept this ledger wrote down work that was never done."
+  },
+  {
+   "n": 41,
+   "set_by": "Reported to Pritchard",
+   "log": null
+  },
+  {
+   "n": 42,
+   "set_by": "Posted on the notice board, no name",
+   "log": null
+  },
+  {
+   "n": 43,
+   "set_by": "Posted, the Yard Office named",
+   "log": null
+  },
+  {
+   "n": 44,
+   "set_by": "Posted, Corwin Haskell named",
+   "log": null
+  },
+  {
+   "n": 45,
+   "set_by": "Sold to Silas Vane",
+   "log": null
+  },
+  {
+   "n": 46,
+   "set_by": "Burned in the stove",
+   "log": null
+  },
+  {
+   "n": 50,
+   "set_by": "Any of 41 to 46 (the quest's script)",
+   "log": null
+  },
+  {
+   "n": 100,
+   "set_by": "Stage 50 (the quest's script)",
+   "log": null,
+   "completes": true
+  }
+ ],
+ "objectives": [
+  {
+   "n": 10,
+   "text": "Compare the ledger to the wreck"
+  },
+  {
+   "n": 20,
+   "text": "Decide what to do with the evidence"
+  }
+ ],
+ "choices": [
+  {
+   "at": 20,
+   "options": [
+    {
+     "label": "Report it to Pritchard",
+     "sets": 41,
+     "now": "He takes copies and sends word up the line",
+     "later": "The Iron Junction yard has been warned"
+    },
+    {
+     "label": "Post the pages",
+     "sets": 42,
+     "now": "The town reads them; nobody is accused",
+     "later": "The matter is public and nobody owns it"
+    },
+    {
+     "label": "Sell it to Silas Vane",
+     "sets": 45,
+     "now": "Caps; the evidence is gone",
+     "later": "Vane holds the ledger"
+    },
+    {
+     "label": "Burn it",
+     "sets": 46,
+     "now": "The ledger is gone",
+     "later": "Nothing was ever found"
+    }
+   ]
+  }
+ ],
+ "evidence": [
+  {
+   "id": "ledger",
+   "kind": "ledger",
+   "found": "In the wreck",
+   "sets": 10
+  },
+  {
+   "id": "brake_shoes",
+   "kind": "object",
+   "found": "By the wreck",
+   "sets": 11
+  },
+  {
+   "id": "draw_bar",
+   "kind": "object",
+   "found": "By the wreck",
+   "sets": 12
+  },
+  {
+   "id": "journal",
+   "kind": "note",
+   "found": "On the marshal",
+   "sets": 13
+  },
+  {
+   "id": "parts_book",
+   "kind": "object",
+   "found": "Ada Pike shows it",
+   "sets": 14
+  }
+ ],
+ "ways_through": [
+  "Take the ledger and any one piece of evidence, then decide",
+  "Never touch it: the side quest stays hidden and the main quest is not held up"
+ ],
+ "cannot_break": "Evidence counts in any order, before or after the ledger. One outcome, ever. If Haskell is dead the pages go up with no name.",
+ "new_flags": [],
+ "open_questions": [
+  "The full design is docs/design/TLM_SQ01_signed-clean.md; this file only shows the format."
+ ]
+}

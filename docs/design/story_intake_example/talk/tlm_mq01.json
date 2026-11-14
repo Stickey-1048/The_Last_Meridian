@@ -1,0 +1,153 @@
+{
+ "format": "tlm-talk-1",
+ "quest": "TLM_MQ01",
+ "note": "Nine of the rough cut's lines, as an example of the format. All of them, with when each is said, are in docs/design/TLM_ACT1_first_section.md.",
+ "lines": [
+  {
+   "id": "dunmore_hold",
+   "speaker": "dunmore",
+   "status": "design",
+   "priority": 10,
+   "when": [
+    "outcome is none",
+    "mq01 notdone 37"
+   ],
+   "text": "Keep walking. Or stay and pick up a share.",
+   "buttons": [
+    {
+     "label": "Pritchard hangs road-takers. Leave.",
+     "check": "speech",
+     "pass": {
+      "do": [
+       "mq01 set 31"
+      ],
+      "then": "dunmore_breaks"
+     },
+     "fail": {
+      "do": [
+       "mq01 set 37"
+      ],
+      "then": "dunmore_turns"
+     }
+    },
+    {
+     "label": "Let them go.",
+     "do": [
+      "mq01 set 37"
+     ],
+     "then": "dunmore_turns"
+    },
+    {
+     "label": "What kind of share?",
+     "then": "dunmore_share"
+    },
+    {
+     "label": "Not my business."
+    }
+   ]
+  },
+  {
+   "id": "dunmore_share",
+   "speaker": "dunmore",
+   "status": "design",
+   "when": [],
+   "text": "Half the cargo. The drover won't be a problem.",
+   "buttons": [
+    {
+     "label": "Done.",
+     "do": [
+      "mq01 set 33",
+      "give caps 20"
+     ],
+     "then": "dunmore_deal"
+    },
+    {
+     "label": "No.",
+     "do": [
+      "mq01 set 37"
+     ],
+     "then": "dunmore_turns"
+    }
+   ]
+  },
+  {
+   "id": "dunmore_breaks",
+   "speaker": "dunmore",
+   "status": "new",
+   "when": [],
+   "text": "Not for one wagon. We're gone."
+  },
+  {
+   "id": "dunmore_turns",
+   "speaker": "dunmore",
+   "status": "new",
+   "when": [],
+   "text": "Then you're in the way."
+  },
+  {
+   "id": "dunmore_deal",
+   "speaker": "dunmore",
+   "status": "new",
+   "when": [],
+   "text": "Smart. Stand clear."
+  },
+  {
+   "id": "dunmore_after",
+   "speaker": "dunmore",
+   "status": "new",
+   "when": [
+    "outcome isnot none"
+   ],
+   "text": "We're done here. Walk on."
+  },
+  {
+   "id": "nell_silent",
+   "speaker": "nell",
+   "kind": "aside",
+   "status": "design",
+   "when": [
+    "outcome is exploited"
+   ],
+   "text": "Nell Fenwick looks through you and says nothing."
+  },
+  {
+   "id": "pritchard_case",
+   "speaker": "pritchard",
+   "status": "design",
+   "priority": 10,
+   "when": [
+    "mq01 done 20",
+    "mq01 notdone 50",
+    "evidence >= 1",
+    "sq01 done 20",
+    "ledger is none"
+   ],
+   "text": "Off the Tellico wreck. That's Tobias Gantt's case you're carrying.",
+   "buttons": [
+    {
+     "label": "Hand over the dispatch",
+     "do": [
+      "mq01 set 50"
+     ]
+    },
+    {
+     "label": "Not yet."
+    },
+    {
+     "label": "There's something else from that train.",
+     "do": [
+      "sq01 set 41"
+     ],
+     "then": "pritchard_reported"
+    }
+   ]
+  },
+  {
+   "id": "pritchard_reported",
+   "speaker": "pritchard",
+   "status": "new",
+   "when": [],
+   "text": "Show me. I'll take copies and send word up the line."
+  }
+ ]
+}

@@ -35,6 +35,13 @@ echo "== 3/5 consistency =="
 # the committed files must be what the generator writes now.
 python3 tools/gen_matrix_cases.py --check
 python3 tools/check_consistency.py
+# The format that writing from outside arrives in (docs/design/STORY_INTAKE.md): its worked example has to fit it,
+# and the check has to notice a folder that does not. Whatever has arrived so far is checked too, and reported:
+# that it does not fit yet is for its writer to put right, not a fault of the build.
+python3 tools/check_story_intake.py --self-test docs/design/story_intake_example | grep -v "left blank"
+if ls assets/incoming/act1/story/*.json assets/incoming/act1/story/*/*.json >/dev/null 2>&1; then
+  python3 tools/check_story_intake.py --strict assets/incoming/act1/story | head -12 || true
+fi
 
 echo "== 4/5 plugin build against a stand-in master =="
 # A tiny generated file standing in for Fallout4.esm, holding only what the
