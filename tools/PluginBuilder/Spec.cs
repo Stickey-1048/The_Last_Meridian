@@ -33,8 +33,16 @@ public sealed record IntListProp(string Name, params int[] Values) : Prop(Name);
 public sealed record BoolProp(string Name, bool Value) : Prop(Name);
 // A record in this plugin, by EditorID.
 public sealed record FormProp(string Name, string EditorId) : Prop(Name);
-// An alias on the owning quest, by alias name.
-public sealed record AliasProp(string Name, string Alias) : Prop(Name);
+// An alias, by alias name: on the owning quest, or on the quest named.
+public sealed record AliasProp(string Name, string Alias, string? Quest = null) : Prop(Name);
+// A list of aliases, each given as (quest, alias name).
+public sealed record AliasListProp(string Name, params (string Quest, string Alias)[] Items) : Prop(Name);
+public sealed record StringListProp(string Name, params string[] Values) : Prop(Name);
+// A record in Fallout4.esm found by the name a player sees, the first of the names that is there.
+// Skipped (and reported) if none is, or in skeleton mode.
+public sealed record VanillaNamedProp(string Name, string Kind, params string[] Names) : Prop(Name);
+// The ammunition of a weapon in Fallout4.esm that is found by the name a player sees.
+public sealed record AmmoOfWeaponNamedProp(string Name, params string[] WeaponNames) : Prop(Name);
 // A record in Fallout4.esm, by EditorID. Skipped (and reported) in skeleton mode.
 // Kind names the record type to look in (see Builder.TypedLookups); null tries them all.
 public sealed record VanillaProp(string Name, string EditorId, string? Kind = null) : Prop(Name);
@@ -89,14 +97,30 @@ public sealed record GlobalEquals(string Global, float Value) : Cond;
 
 public sealed record MessageSpec(string EditorId, string? Title, string Text, bool Box, params ButtonSpec[] Buttons);
 
-public sealed record BookSpec(string EditorId, string Name, string Text);
+/// <param name="LooksLikeANote">Borrow the world model of one of the game's own notes, so that the book can lie in the world.</param>
+public sealed record BookSpec(string EditorId, string Name, string Text, bool LooksLikeANote = false);
 
 /// <param name="ModelFrom">EditorID of an item in Fallout4.esm whose world model and bounds this item borrows.
 /// Only the path is copied, into the plugin as built; no file of the game's is. Null: no world model.</param>
-public sealed record MiscSpec(string EditorId, string Name, string? ModelFrom = null);
+/// <param name="LooksLike">Names a player sees, in order of preference, of items in Fallout4.esm whose world model
+/// this item borrows; if none is there it borrows the bottle cap's.</param>
+public sealed record MiscSpec(string EditorId, string Name, string? ModelFrom = null, string[]? LooksLike = null);
 
-// An activator with no model. Placed with a box around it, it is a trigger.
-public sealed record ActivatorSpec(string EditorId);
+// An activator. With no model and placed with a box around it, it is a
+// trigger. With a name and a borrowed model (LooksLike, as for MiscSpec) it
+// is something a player can point at and activate.
+public sealed record ActivatorSpec(string EditorId, string? Name = null, string[]? LooksLike = null, string? ActivateText = null);
+
+/// <summary>A container with a borrowed model (the names a player sees of containers in Fallout4.esm, in order
+/// of preference) holding so many of one of the game's items.</summary>
+public sealed record ContainerSpec(string EditorId, string Name, string[] LooksLike, string HoldsVanillaItem, int Count);
+
+/// <summary>Named so that the reports can say which of the game's things a look was borrowed from.</summary>
+public static class Looks
+{
+    /// <summary>What a thing borrows its look from when none of the names it asks for is in the master.</summary>
+    public const string LastResort = "Caps001";
+}
 
 /// <summary>
 /// An actor of this plugin's own, made as a copy of one of the game's. The copy
@@ -108,7 +132,14 @@ public sealed record ActivatorSpec(string EditorId);
 /// </summary>
 /// <param name="CopyFrom">EditorID of the game's actor it is a copy of.</param>
 /// <param name="KeepDefaultPackageList">Keep the default package list as the game's actor has it, in its record or from a template; false leaves the copy with none at all. (How many of the game's actors name such a list, the build output counts.)</param>
-public sealed record NpcSpec(string EditorId, string Name, string CopyFrom, bool KeepDefaultPackageList);
+/// <param name="Sex">"male" or "female": the copy takes its looks from one of the actors of that sex that the
+/// game's actor draws its own looks from, always the same one. Null: looks are drawn as the game's actor draws them.</param>
+/// <param name="Faction">EditorID of a faction of this plugin: the copy belongs to it and to none of the factions
+/// the game's actor is in. Null: the factions stay as they are.</param>
+/// <param name="StandsBy">The copy starts no fight and joins none: only a script, or being attacked, makes it
+/// fight. With <paramref name="HelpsItsOwn"/> it does join a fight one of its own faction is in.</param>
+public sealed record NpcSpec(string EditorId, string Name, string CopyFrom, bool KeepDefaultPackageList, string? Sex = null,
+    string? Faction = null, bool StandsBy = false, bool HelpsItsOwn = false);
 
 /// <summary>
 /// A reference this plugin places in a cell of the game. Where it goes is given
@@ -129,7 +160,12 @@ public sealed record PlacedSpec(
     float Ahead, float Right, float Up,
     bool InitiallyDisabled = false,
     float[]? BoxHalfExtents = null,
-    string? CollisionLayer = null);
+    string? CollisionLayer = null,
+    // For an actor: it is dead when the cell loads.
+    bool StartsDead = false,
+    // For a record of the game's that is found by the name a player sees (VanillaKind says where to look):
+    // those names, in order of preference. Base is then only what the reports call it.
+    string[]? BaseNames = null);
 
 public static class Spec
 {
@@ -174,7 +210,8 @@ public static class Spec
 
     public static readonly MiscSpec[] MiscItems =
     {
-        new("TLM_MISC_Dispatch", "Sealed Rail Dispatch"),
+        // It lies beside the marshal in the first section's rough cut, so it needs a look.
+        new("TLM_MISC_Dispatch", "Sealed Rail Dispatch", LooksLike: Act1.DispatchLooksLike),
         // Kept without a world model on purpose: self-test scenario 3 ends with
         // an experiment on what the game does with a placed item that has none.
         new("TLM_MISC_TornTransitPass", "Torn Transit Pass"),
@@ -182,11 +219,13 @@ public static class Spec
         new("TLM_MISC_TrialObject", "Trial Object", ModelFrom: "Caps001"),
     };
 
-    public static readonly ActivatorSpec[] Activators =
+    public static readonly ActivatorSpec[] Activators = new ActivatorSpec[]
     {
         // Development only (the placed-content trial).
         new("TLM_ACTI_TrialTrigger"),
-    };
+    }.Concat(Act1.Activators).ToArray();
+
+    public static readonly ContainerSpec[] Containers = Act1.Containers;
 
     /// <summary>
     /// Records of the game's that a run in the game named only by their id,
@@ -197,7 +236,7 @@ public static class Spec
         ("Package", 0x1FEFC1, "what a placed person with no package of its own was running in the game on 2026-11-13"),
     };
 
-    public static readonly NpcSpec[] Npcs =
+    public static readonly NpcSpec[] Npcs = new NpcSpec[]
     {
         // Development only (the placed-content trial, scenario 11). The game's
         // settler, placed and enabled, did not stay where it was put
@@ -209,7 +248,7 @@ public static class Spec
         // placeholders, not characters.
         new("TLM_NPC_TrialPerson", "Second Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: true),
         new("TLM_NPC_TrialPersonBare", "Third Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: false),
-    };
+    }.Concat(Act1.Npcs).ToArray();
 
     // ------------------------------------------------- placed references
     // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
@@ -240,7 +279,7 @@ public static class Spec
 
     static readonly float[] TrialBox = { TrialTriggerHalf, TrialTriggerHalf, TrialTriggerHalf };
 
-    public static readonly PlacedSpec[] Placed =
+    public static readonly PlacedSpec[] Placed = new PlacedSpec[]
     {
         new("TLM_REF_TrialPerson", TrialCell, "WorkshopNPC", "Npc", Ahead: 300, Right: 150, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialTrigger", TrialCell, "TLM_ACTI_TrialTrigger", null, Ahead: 600, Right: -200, Up: 100,
@@ -266,8 +305,10 @@ public static class Spec
         new("TLM_REF_TrialPersonOwn", TrialCell, "TLM_NPC_TrialPerson", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialSettlerOnFloor", TrialCell, "WorkshopNPC", "Npc", Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialPersonBare", TrialCell, "TLM_NPC_TrialPersonBare", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
-    };
+    }.Concat(Act1.Placed).ToArray();
 
+    // Both take after one of the game's notes, so that they can lie in the
+    // world and be read there (the first section's rough cut places them).
     public static readonly BookSpec[] Books =
     {
         new("TLM_BOOK_RailMaintLedger", "Maintenance Ledger, Line 14",
@@ -276,16 +317,16 @@ public static class Spec
             " 41    Brake shoes, car 3   Renewed    Good    R. Ostrander\n" +
             " 42    Draw-bar, car 3      Inspected  Sound   R. Ostrander\n" +
             " 43    Brake shoes, car 5   Renewed    Good    R. Ostrander\n" +
-            " 44    Journal box, car 5   Inspected  Sound   R. Ostrander\n"),
+            " 44    Journal box, car 5   Inspected  Sound   R. Ostrander\n", LooksLikeANote: true),
         new("TLM_BOOK_MarshalLog", "Rail Marshal's Journal",
             "Greenwater. Ostrander took ill on the 9th. By the 14th he was gone. I carried " +
             "the line's word to the yard the same week. Last I saw, no one had been sent in his place.\n\n" +
             "Odd, then, that every car I rode on this trip came up on the list as \"signed clean\".\n\n" +
-            "Pritchard will want to see this in person."),
+            "Pritchard will want to see this in person.", LooksLikeANote: true),
     };
 
     // ----------------------------------------------------------- messages
-    public static readonly MessageSpec[] Messages =
+    public static readonly MessageSpec[] Messages = new MessageSpec[]
     {
         new("TLM_MSG_Tut_Wake", null, "Search the wreck. Take what you can carry.", Box: false),
         new("TLM_MSG_Tut_SixRounds", null, "Six rounds in the cylinder. Count them.", Box: false),
@@ -309,7 +350,7 @@ public static class Spec
         // Development only (scenario 11): what is shown when the person of the
         // plugin's own is activated. Not a box: nobody is there to answer one.
         new("TLM_MSG_TrialTalk", null, "The second trial settler has nothing to say yet.", Box: false),
-    };
+    }.Concat(Act1.Messages).ToArray();
 
     // --------------------------------------------------------------- core
     public static readonly QuestSpec Core = new(
@@ -320,7 +361,10 @@ public static class Spec
         Script: new ScriptBind("TLM:Core",
             new FormProp("TLM_G_DataVersion", "TLM_G_DataVersion"),
             new FormProp("TLM_MQ01", "TLM_MQ01"),
-            new FormProp("TLM_G_DevScenario", "TLM_G_DevScenario")),
+            new FormProp("TLM_G_DevScenario", "TLM_G_DevScenario"),
+            // Development only: the first section's rough cut, which TLM:Core
+            // sets up for a person to play when the runner asks for it.
+            new FormProp("TLM_A1", Act1.QuestId)),
         // Development only: the in-game self-test (console: cqf TLM_Core RunSelfTest).
         // Remove this binding, and scripts/Source/User/TLM/SelfTest.psc, before any release.
         ExtraScripts: new[]
@@ -346,7 +390,8 @@ public static class Spec
                 new FormProp("TLM_G_SQ01_YardAlerted", "TLM_G_SQ01_YardAlerted"),
                 new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
                 new FormProp("TornTransitPass", "TLM_MISC_TornTransitPass"),
-                new FormProp("TLM_Trial", "TLM_Trial")),
+                new FormProp("TLM_Trial", "TLM_Trial"),
+                new FormProp("TLM_A1", Act1.QuestId)),
             // Development only: self-test scenarios 2 and 3. Finds out in the
             // game whether actors and markers can be made at run time and put
             // into the quest's aliases, so that the test matrix can be run
@@ -642,5 +687,5 @@ public static class Spec
                 new VanillaProp("MarkerBase", "XMarker", "Static")),
         });
 
-    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial };
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest };
 }

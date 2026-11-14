@@ -14,7 +14,15 @@
 //                    with an arrival marker, a few collision layers, an empty
 //                    trigger base and some box triggers in other rooms: what
 //                    the builder needs to place references in a cell of the
-//                    game. All of it is invented here; none of it is the
+//                    game. And what the first section's rough cut looks
+//                    up: a list of settlers for a copy to take its looks
+//                    from (three men, three women, one of no one sex; some
+//                    plain, some who take their own looks from elsewhere),
+//                    things with the names a player sees (two of them share
+//                    a name, one has no model, one is missing altogether), a
+//                    revolver and what it fires, a crate, a few notes, and
+//                    the thing on the player's arm.
+//                    All of it is invented here; none of it is the
 //                    game's data, and the numbers are not the game's numbers.
 //   localized        As default, but the master keeps its text apart, in strings
 //                    files beside it, as the game's own master does. The test
@@ -113,7 +121,116 @@ if (room)
         settler.Voice.SetTo(mod.VoiceTypes.AddNew("StandInSettlerVoice"));
         // And its record is compressed, as large records of the game's are.
         settler.IsCompressed = true;
+
+        // Whom the list offers. A copy that is to be a man or a woman is
+        // pointed at one of these, so the builder has to tell which is which:
+        // by the actor's own flag, by the actor it takes its looks from, or,
+        // where those come from a list again, by whether everybody in that
+        // list is of one sex.
+        Npc Settler(string id, bool female, IFormLinkGetter<INpcSpawnGetter>? looksFrom = null)
+        {
+            var one = mod.Npcs.AddNew(id);
+            if (female) one.Flags |= Npc.Flag.Female;
+            if (looksFrom != null)
+            {
+                one.UseTemplateActors = Npc.TemplateActorType.Traits;
+                one.TemplateActors = new TemplateActors();
+                one.TemplateActors.TraitTemplate.SetTo(looksFrom.FormKey);
+            }
+            return one;
+        }
+        void Offer(LeveledNpc list, IFormLinkGetter<INpcSpawnGetter> who)
+        {
+            list.Entries ??= new ExtendedList<LeveledNpcEntry>();
+            list.Entries.Add(new LeveledNpcEntry { Data = new LeveledNpcEntryData { Reference = new FormLink<INpcSpawnGetter>(who.FormKey), Level = 1, Count = 1 } });
+        }
+        // Put in out of order: the builder goes by the ids.
+        var woman1 = Settler("StandInSettlerFemale01", female: true);
+        var man1 = Settler("StandInSettlerMale01", female: false);
+        // His own flag says nothing: his looks are another man's.
+        var faceOfMan2 = Settler("StandInFaceMale02", female: false);
+        var man2 = Settler("StandInSettlerMale02", female: true, looksFrom: faceOfMan2.ToLink<INpcSpawnGetter>());
+        var more = mod.LeveledNpcs.AddNew("StandInLCharSettlerMore");
+        Offer(more, Settler("StandInSettlerFemale02", female: true).ToLink<INpcSpawnGetter>());
+        Offer(more, Settler("StandInSettlerMale03", female: false).ToLink<INpcSpawnGetter>());
+        // Looks drawn again from a list: of both sexes for the one, of women only for the other.
+        var anyFace = mod.LeveledNpcs.AddNew("StandInLCharFaces");
+        Offer(anyFace, Settler("StandInFaceMale", female: false).ToLink<INpcSpawnGetter>());
+        Offer(anyFace, Settler("StandInFaceFemale", female: true).ToLink<INpcSpawnGetter>());
+        var womensFaces = mod.LeveledNpcs.AddNew("StandInLCharFacesFemale");
+        Offer(womensFaces, Settler("StandInFaceFemaleA", female: true).ToLink<INpcSpawnGetter>());
+        Offer(womensFaces, Settler("StandInFaceFemaleB", female: true).ToLink<INpcSpawnGetter>());
+        var either = Settler("StandInSettlerAnyFace", female: false, looksFrom: anyFace.ToLink<INpcSpawnGetter>());
+        var woman3 = Settler("StandInSettlerWomanAnyFace", female: false, looksFrom: womensFaces.ToLink<INpcSpawnGetter>());
+        Offer(looks, man2.ToLink<INpcSpawnGetter>());
+        Offer(looks, more.ToLink<INpcSpawnGetter>());
+        Offer(looks, woman1.ToLink<INpcSpawnGetter>());
+        Offer(looks, either.ToLink<INpcSpawnGetter>());
+        Offer(looks, man1.ToLink<INpcSpawnGetter>());
+        Offer(looks, woman3.ToLink<INpcSpawnGetter>());
+        // And the list names itself, as a careless list might: the builder must not go round for ever.
+        Offer(more, looks.ToLink<INpcSpawnGetter>());
     }
+
+    // Things with the names a player sees. The paths are invented.
+    MiscItem Thing(string id, string name, string? model)
+    {
+        var thing = mod.MiscItems.AddNew(id);
+        thing.Name = name;
+        if (model != null)
+        {
+            thing.Model = new Model { File = model };
+            thing.ObjectBounds = new ObjectBounds { First = new P3Int16(-8, -8, 0), Second = new P3Int16(8, 8, 4) };
+        }
+        return thing;
+    }
+    Thing("StandInFolder", "Folder", @"StandIn\Folder.nif");
+    // Two things with one name: the builder takes the one with the lower id.
+    Thing("StandInHubcapFirst", "Hubcap", @"StandIn\HubcapFirst.nif");
+    Thing("StandInHubcapSecond", "Hubcap", @"StandIn\HubcapSecond.nif");
+    Thing("StandInHotPlate", "Hot Plate", @"StandIn\HotPlate.nif");
+    // Named, and nothing to look like: the builder has to go on to the next name.
+    Thing("StandInClipboard", "Clipboard", null);
+    // (Nothing here is called Connecting Rod, Adjustable Wrench or Wrench: what
+    // is to look like one of those falls back on the bottle cap.)
+    var rounds = mod.Ammunitions.AddNew("StandInAmmo44");
+    rounds.Name = ".44 Round";
+    var revolver = mod.Weapons.AddNew("StandIn44");
+    revolver.Name = ".44 Pistol";
+    revolver.Model = new Model { File = @"StandIn\Revolver.nif" };
+    revolver.Ammo.SetTo(rounds);
+    var crate = mod.Containers.AddNew("StandInCrate");
+    crate.Name = "Wooden Crate";
+    crate.Model = new Model { File = @"StandIn\Crate.nif" };
+    crate.ObjectBounds = new ObjectBounds { First = new P3Int16(-30, -20, 0), Second = new P3Int16(30, 20, 25) };
+    // Books: three lie in the world as one model (the notes), one as another,
+    // one as nothing. Of the notes the first does something when read, which
+    // the plugin's papers must not take after.
+    var paper = mod.Statics.AddNew("StandInNotePaper");
+    Book Paper(string id, string? model, bool scripted = false)
+    {
+        var book = mod.Books.AddNew(id);
+        book.Name = id;
+        if (model != null)
+        {
+            book.Model = new Model { File = model };
+            book.ObjectBounds = new ObjectBounds { First = new P3Int16(-5, -7, 0), Second = new P3Int16(5, 7, 1) };
+            book.InventoryArt.SetTo(paper);
+        }
+        if (scripted)
+        {
+            book.VirtualMachineAdapter = new VirtualMachineAdapter();
+            book.VirtualMachineAdapter.Scripts.Add(new ScriptEntry { Name = "StandInNoteScript" });
+        }
+        return book;
+    }
+    Paper("StandInNoteScripted", @"StandIn\Note.nif", scripted: true);
+    Paper("StandInNotePlain", @"StandIn\Note.nif");
+    Paper("StandInNoteOther", @"StandIn\Note.nif");
+    Paper("StandInMagazine", @"StandIn\Magazine.nif");
+    Paper("StandInBookNoModel", null);
+    mod.Armors.AddNew("Pipboy");
+
     var marker = mod.Statics.AddNew("XMarker");
     fixtures = $" WorkshopNPC={settler.FormKey} XMarker={marker.FormKey}";
 

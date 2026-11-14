@@ -54,6 +54,12 @@ public sealed class Builder
     /// <summary>For each of the game's actors a copy was made of: does its record name a default package list, does it take one from a template, and does it name a template actor for it?</summary>
     public Dictionary<string, (bool InRecord, bool FromTemplate, bool TemplateActor)> SourceDefaultList { get; } = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>For each actor of this plugin's own that was given the looks of one of the game's actors: that actor.</summary>
+    public Dictionary<string, string> LooksFrom { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>For each placed reference whose base is a record of the game's: that record.</summary>
+    public Dictionary<string, string> PlacedGameBase { get; } = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>The collision layer each placed trigger was given: the index the master has for the layer the spec names.</summary>
     public Dictionary<string, uint> PlacedLayers { get; } = new(StringComparer.OrdinalIgnoreCase);
 
@@ -101,7 +107,17 @@ public sealed class Builder
             var item = _mod.MiscItems.AddNew(m.EditorId);
             item.Name = m.Name;
             Track(item);
-            if (m.ModelFrom == null)
+            if (m.LooksLike != null)
+            {
+                if (TryFindLook("MiscItem", m.LooksLike, m.EditorId, out var look))
+                {
+                    item.Model = new Model { File = look.File };
+                    if (look.Bounds != null) item.ObjectBounds = look.Bounds.DeepCopy();
+                }
+                else
+                    Pending.Add($"{m.EditorId}: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)");
+            }
+            else if (m.ModelFrom == null)
                 Pending.Add($"{m.EditorId}: no world model yet (it exists only in inventories until one is assigned)");
             else if (!TryBorrowModel(item, m.ModelFrom))
                 Pending.Add($"{m.EditorId}: no world model (it borrows the one of '{m.ModelFrom}', which needs Fallout4.esm)");
@@ -113,6 +129,40 @@ public sealed class Builder
             // bounds are written (all zero), as on every record that can be placed.
             var activator = _mod.Activators.AddNew(a.EditorId);
             Track(activator);
+            // With a name and a look it is something to point at and use.
+            if (a.Name != null) activator.Name = a.Name;
+            if (a.ActivateText != null) activator.ActivateTextOverride = a.ActivateText;
+            if (a.LooksLike != null)
+            {
+                if (TryFindLook("MiscItem", a.LooksLike, a.EditorId, out var look))
+                {
+                    activator.Model = new Model { File = look.File };
+                    if (look.Bounds != null) activator.ObjectBounds = look.Bounds.DeepCopy();
+                }
+                else
+                    Pending.Add($"{a.EditorId}: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)");
+            }
+        }
+
+        foreach (var c in Spec.Containers)
+        {
+            var container = _mod.Containers.AddNew(c.EditorId);
+            container.Name = c.Name;
+            Track(container);
+            if (TryFindLook("Container", c.LooksLike, c.EditorId, out var look))
+            {
+                container.Model = new Model { File = look.File };
+                if (look.Bounds != null) container.ObjectBounds = look.Bounds.DeepCopy();
+            }
+            else
+                Pending.Add($"{c.EditorId}: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)");
+            if (TryVanilla(c.HoldsVanillaItem, "MiscItem", out var heldKey))
+            {
+                container.Items ??= new ExtendedList<ContainerEntry>();
+                container.Items.Add(new ContainerEntry { Item = new ContainerItem { Item = new FormLink<IItemGetter>(heldKey), Count = c.Count } });
+            }
+            else
+                Pending.Add($"{c.EditorId}: empty (it holds '{c.HoldsVanillaItem}', which needs Fallout4.esm)");
         }
 
         foreach (var n in Spec.Npcs)
@@ -120,6 +170,10 @@ public sealed class Builder
             // The id is given out whether or not the actor can be made, so that
             // the tracked id file comes out the same with and without Fallout4.esm.
             var key = _mod.GetNextFormKey(n.EditorId);
+            if (n.Sex is not (null or "male" or "female"))
+                throw new InvalidOperationException($"{n.EditorId}: Sex is '{n.Sex}'; it is male, female, or left out");
+            if (n.Faction != null && Local(n.Faction) is not IFactionGetter)
+                throw new InvalidOperationException($"{n.EditorId}: '{n.Faction}' is not a faction of this plugin");
             var whyNot = TryMakeNpc(n, key);
             if (whyNot != null) Pending.Add($"{n.EditorId}: not made ({whyNot})");
         }
@@ -132,7 +186,26 @@ public sealed class Builder
             book.Name = b.Name;
             book.BookText = b.Text;
             Track(book);
-            Pending.Add($"{b.EditorId}: no world model yet");
+            if (!b.LooksLikeANote)
+                Pending.Add($"{b.EditorId}: no world model yet");
+            else if (FindNote() is { } note)
+            {
+                // What lets it lie in the world and be read there: the model,
+                // the picture it is read on, and its sounds. All of it is
+                // named, none of it copied.
+                book.Model = new Model { File = note.Model!.File };
+                book.ObjectBounds = note.ObjectBounds.DeepCopy();
+                book.InventoryArt.SetTo(note.InventoryArt.FormKeyNullable);
+                book.PickUpSound.SetTo(note.PickUpSound.FormKeyNullable);
+                book.PutDownSound.SetTo(note.PutDownSound.FormKeyNullable);
+                book.PreviewTransform.SetTo(note.PreviewTransform.FormKeyNullable);
+                book.TextOffsetX = note.TextOffsetX;
+                book.TextOffsetY = note.TextOffsetY;
+                BorrowedModels[b.EditorId] = note.Model.File;
+                VanillaNotes.Add($"{b.EditorId}: lies in the world and is read as the game's {note.EditorID ?? note.FormKey.ToString()} is: model '{note.Model.File}', read on {(note.InventoryArt.IsNull ? "nothing" : note.InventoryArt.FormKey.ToString())}");
+            }
+            else
+                Pending.Add($"{b.EditorId}: no world model (it takes after one of the game's notes, which needs Fallout4.esm)");
         }
 
         // Quests are created before messages and scripts are bound, because
@@ -223,6 +296,36 @@ public sealed class Builder
                 npc.TemplateActors?.DefPackListTemplate.Clear();
             }
             npc.UseTemplateActors &= ~dropped;
+            var more = "";
+            if (spec.Faction != null)
+            {
+                // Its own people and nobody else's: what the game's actor
+                // belongs to decides who takes its side in a fight, and whose
+                // law a blow against it breaks.
+                var faction = Local(spec.Faction);
+                var had = npc.Factions.Count;
+                npc.Factions.Clear();
+                npc.Factions.Add(new RankPlacement { Faction = new FormLink<IFactionGetter>(faction.FormKey), Rank = 0 });
+                npc.CrimeFaction.Clear();
+                npc.UseTemplateActors &= ~Npc.TemplateActorType.Factions;
+                npc.TemplateActors?.FactionsTemplate.Clear();
+                more += $"; in {spec.Faction} and in none of the game's {had} faction(s)";
+            }
+            if (spec.StandsBy)
+            {
+                npc.Aggression = Npc.AggressionType.Unaggressive;
+                npc.Assistance = spec.HelpsItsOwn ? Npc.AssistanceType.HelpsAllies : Npc.AssistanceType.HelpsNobody;
+                npc.Confidence = Npc.ConfidenceType.Foolhardy;
+                npc.UseTemplateActors &= ~Npc.TemplateActorType.AiData;
+                npc.TemplateActors?.AiDataTemplate.Clear();
+                more += $"; starts no fight, {(spec.HelpsItsOwn ? "joins one of its own faction's" : "joins none")}, and does not run from one";
+            }
+            if (spec.Sex != null)
+            {
+                // The looks are worth having, not worth losing the actor for.
+                try { more += FixLooks(npc, source, spec); }
+                catch (Exception e) { more += $"; NOTE: its looks could not be fixed ({e.GetType().Name}: {e.Message}), so they are drawn as the game draws them"; }
+            }
             // A record of the game's that the library cannot write back would
             // stop the whole build when the plugin is written, long after this.
             // So the copy is written and read on its own first, and left out if that fails.
@@ -234,7 +337,7 @@ public sealed class Builder
                 : npc.UseTemplateActors.HasFlag(Npc.TemplateActorType.DefPackList) ? "its default package list still taken from a template"
                 : npc.DefaultPackageList.IsNull ? "no default package list (the game's actor names none)"
                 : "its default package list kept";
-            VanillaNotes.Add($"{spec.EditorId}: made as a copy of {spec.CopyFrom} with no packages and no script, and {list}; named '{spec.Name}'; still from a template: {FlagList(npc.UseTemplateActors)}; template actors still named for: {LinkList(npc.TemplateActors)}");
+            VanillaNotes.Add($"{spec.EditorId}: made as a copy of {spec.CopyFrom} with no packages and no script, and {list}; named '{spec.Name}'; still from a template: {FlagList(npc.UseTemplateActors)}; template actors still named for: {LinkList(npc.TemplateActors)}{more}");
             return null;
         }
         catch (Exception e)
@@ -431,6 +534,282 @@ public sealed class Builder
         }
     }
 
+    // ------------------------------------------------------ an actor's looks
+
+    readonly Dictionary<string, (FormKey From, List<(FormKey Key, string Id, bool? Female)> Offered)> _looksOffered = new(StringComparer.OrdinalIgnoreCase);
+    readonly Dictionary<(string Source, bool Female), int> _looksGiven = new();
+
+    /// <summary>
+    /// Gives a copy the looks of one particular actor of the sex the spec asks
+    /// for. The game's actor draws its looks (and whatever else it takes from
+    /// the same place) from a list of actors, one of them at random for every
+    /// person placed; the copy is pointed at one actor of that list, so that
+    /// a named person is the same person every time. Which one: the actors of
+    /// the right sex in the order of their ids, the first copy the first of
+    /// them, the second the second, and round again when they run out.
+    ///
+    /// UNTESTED in the game and in the Creation Kit until docs/design/VERIFY_LOG.md says otherwise.
+    /// </summary>
+    /// <returns>What to add to the build's line about the actor.</returns>
+    string FixLooks(Npc npc, INpcGetter source, NpcSpec spec)
+    {
+        var female = spec.Sex == "female";
+        if (!source.UseTemplateActors.HasFlag(Npc.TemplateActorType.Traits))
+            return $"; NOTE: {spec.CopyFrom} draws its looks from nowhere, so the copy looks as it does, whatever the spec asks for";
+        if (!_looksOffered.TryGetValue(spec.CopyFrom, out var known))
+        {
+            var from = source.TemplateActors != null && !source.TemplateActors.TraitTemplate.IsNull
+                ? source.TemplateActors.TraitTemplate.FormKey
+                : source.DefaultTemplate.FormKey;
+            known = (from, LooksOffered(from));
+            _looksOffered[spec.CopyFrom] = known;
+            var o = known.Offered;
+            string Sex(bool? f) => f == null ? "of no one sex" : f.Value ? "female" : "male";
+            VanillaNotes.Add($"{spec.CopyFrom}: its looks are drawn from {NameOfSpawn(from)}, which offers {o.Count} actor(s): {o.Count(x => x.Female == false)} male, {o.Count(x => x.Female == true)} female, {o.Count(x => x.Female == null)} of no one sex"
+                + (o.Count == 0 ? "" : ": " + string.Join(", ", o.Take(40).Select(x => $"{x.Id} ({Sex(x.Female)})")) + (o.Count > 40 ? $", and {o.Count - 40} more" : "")));
+        }
+        var fit = known.Offered.Where(x => x.Female == female).ToList();
+        if (fit.Count == 0)
+            return $"; NOTE: none of the actors {spec.CopyFrom} draws its looks from is known to be {spec.Sex}, so its looks are drawn as the game draws them";
+        var nth = _looksGiven.GetValueOrDefault((spec.CopyFrom, female));
+        _looksGiven[(spec.CopyFrom, female)] = nth + 1;
+        var pick = fit[nth % fit.Count];
+        // Whatever the game's actor takes from that list, the copy takes from
+        // the one actor: nothing about a named person is left to chance.
+        npc.TemplateActors ??= new TemplateActors();
+        var t = npc.TemplateActors;
+        foreach (var link in new[] { t.TraitTemplate, t.StatsTemplate, t.FactionsTemplate, t.SpellListTemplate, t.AiDataTemplate, t.AiPackagesTemplate,
+                     t.ModelOrAnimationTemplate, t.BaseDataTemplate, t.InventoryTemplate, t.ScriptTemplate, t.DefPackListTemplate, t.AttackDataTemplate, t.KeywordsTemplate })
+            if (link.FormKey == known.From) link.SetTo(pick.Key);
+        t.TraitTemplate.SetTo(pick.Key);
+        if (npc.DefaultTemplate.FormKey == known.From) npc.DefaultTemplate.SetTo(pick.Key);
+        LooksFrom[spec.EditorId] = pick.Key.ToString();
+        return $"; looks: those of {pick.Id} ({pick.Key}), {spec.Sex}, number {nth % fit.Count + 1} of {fit.Count}"
+            + (nth >= fit.Count ? " (used before: there are more people than faces)" : "");
+    }
+
+    string NameOfSpawn(FormKey key) =>
+        key.IsNull ? "nobody" : _vanilla!.TryResolve<INpcSpawnGetter>(key, out var rec) && rec.EditorID != null ? $"{rec.EditorID} ({key})" : key.ToString();
+
+    /// <summary>The actors a list of actors offers, lists within lists followed, with the sex of each where it has one.</summary>
+    List<(FormKey Key, string Id, bool? Female)> LooksOffered(FormKey from)
+    {
+        var offered = new List<(FormKey Key, string Id, bool? Female)>();
+        var seen = new HashSet<FormKey>();
+        void Walk(FormKey key, int depth)
+        {
+            if (key.IsNull || depth > 8 || offered.Count >= 400 || !seen.Add(key)) return;
+            if (_vanilla!.TryResolve<ILeveledNpcGetter>(key, out var list))
+            {
+                foreach (var entry in list.Entries ?? Array.Empty<ILeveledNpcEntryGetter>())
+                    if (entry.Data != null) Walk(entry.Data.Reference.FormKey, depth + 1);
+            }
+            else if (_vanilla.TryResolve<INpcGetter>(key, out var actor))
+                offered.Add((key, actor.EditorID ?? key.ToString(), SexOf(key, 0)));
+        }
+        Walk(from, 0);
+        offered.Sort((a, b) => a.Key.ID.CompareTo(b.Key.ID));
+        return offered;
+    }
+
+    /// <summary>
+    /// The sex an actor ends up with: its own, or that of the actor it takes
+    /// its looks from, however far that goes. A list of actors has a sex if
+    /// everybody in it has the same one. Null: none can be said.
+    /// </summary>
+    bool? SexOf(FormKey key, int depth)
+    {
+        if (key.IsNull || depth > 8) return null;
+        if (_vanilla!.TryResolve<ILeveledNpcGetter>(key, out var list))
+        {
+            bool? all = null;
+            foreach (var entry in list.Entries ?? Array.Empty<ILeveledNpcEntryGetter>())
+            {
+                if (entry.Data == null) continue;
+                var one = SexOf(entry.Data.Reference.FormKey, depth + 1);
+                if (one == null || (all != null && all != one)) return null;
+                all = one;
+            }
+            return all;
+        }
+        if (!_vanilla.TryResolve<INpcGetter>(key, out var actor)) return null;
+        if (!actor.UseTemplateActors.HasFlag(Npc.TemplateActorType.Traits)) return actor.Flags.HasFlag(Npc.Flag.Female);
+        var from = actor.TemplateActors != null && !actor.TemplateActors.TraitTemplate.IsNull
+            ? actor.TemplateActors.TraitTemplate.FormKey
+            : actor.DefaultTemplate.FormKey;
+        return from.IsNull ? actor.Flags.HasFlag(Npc.Flag.Female) : SexOf(from, depth + 1);
+    }
+
+    // ------------------------------------ things found by the name a player sees
+    // The names the game uses inside for its things are not known here, and a
+    // guess that misses costs a run on the game PC. The names a player sees
+    // are known: they are on the screen. So some things are looked up by
+    // those. A localized master keeps them in its strings files; without
+    // those files nothing is found, and what was to borrow a look falls back
+    // on the bottle cap's.
+
+    /// <summary>A record of the game's as the lookups by name see it.</summary>
+    sealed record Named(FormKey Key, string? EditorId, string? ModelFile, IObjectBoundsGetter? Bounds);
+
+    readonly Dictionary<string, Dictionary<string, List<Named>>> _byName = new(StringComparer.OrdinalIgnoreCase);
+
+    Dictionary<string, List<Named>> NamesOf(string kind)
+    {
+        if (_byName.TryGetValue(kind, out var have)) return have;
+        var index = new Dictionary<string, List<Named>>(StringComparer.OrdinalIgnoreCase);
+        _byName[kind] = index;
+        if (_vanillaMod == null) return index;
+        var all = 0; var named = 0; var failed = 0;
+        string? firstFailure = null;
+        void Add(FormKey key, string? editorId, Func<string?> name, Func<string?> model, Func<IObjectBoundsGetter?> bounds)
+        {
+            all++;
+            try
+            {
+                var text = name();
+                if (string.IsNullOrWhiteSpace(text)) return;
+                named++;
+                if (!index.TryGetValue(text, out var list)) index[text] = list = new List<Named>();
+                list.Add(new Named(key, editorId, model(), bounds()));
+            }
+            catch (Exception e)
+            {
+                failed++;
+                firstFailure ??= $"{e.GetType().Name}: {e.Message}";
+            }
+        }
+        try
+        {
+            switch (kind)
+            {
+                case "MiscItem":
+                    foreach (var r in _vanillaMod.MiscItems) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
+                    break;
+                case "Weapon":
+                    foreach (var r in _vanillaMod.Weapons) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
+                    break;
+                case "Container":
+                    foreach (var r in _vanillaMod.Containers) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Spec asks for a {kind} by the name a player sees, which the builder cannot look up");
+            }
+        }
+        catch (InvalidOperationException) { throw; }
+        catch (Exception e)
+        {
+            failed++;
+            firstFailure ??= $"{e.GetType().Name}: {e.Message}";
+        }
+        foreach (var list in index.Values) list.Sort((a, b) => a.Key.ID.CompareTo(b.Key.ID));
+        VanillaNotes.Add($"the names a player sees: {named} of the master's {all} {kind} record(s) have one"
+            + (failed == 0 ? "" : $"; NOTE: {failed} could not be read ({firstFailure})"));
+        return index;
+    }
+
+    /// <summary>
+    /// Finds a record of the game's by the name a player sees: the first of
+    /// the names that is there and, of several records so named, the one with
+    /// the lowest id.
+    /// </summary>
+    bool TryVanillaNamed(string kind, string[] names, string forWhat, bool needsModel, out FormKey key, out string? modelFile, out IObjectBoundsGetter? bounds, out string found)
+    {
+        key = FormKey.Null; modelFile = null; bounds = null; found = "";
+        if (_vanilla == null) return false;
+        var index = NamesOf(kind);
+        foreach (var name in names)
+        {
+            if (!index.TryGetValue(name, out var list)) continue;
+            var fit = needsModel ? list.Where(x => !string.IsNullOrEmpty(x.ModelFile)).ToList() : list;
+            if (fit.Count == 0) continue;
+            var pick = fit[0];
+            key = pick.Key; modelFile = pick.ModelFile; bounds = pick.Bounds;
+            found = $"'{name}' ({pick.EditorId ?? "no EditorID"})";
+            VanillaNotes.Add($"{forWhat}: '{name}' -> {pick.Key} ({kind} {pick.EditorId ?? "with no EditorID"}; found by the name a player sees"
+                + (fit.Count > 1 ? $", the first of {fit.Count} so named)" : ")"));
+            var keyText = pick.Key.ToString();
+            if (!VanillaFound.Any(v => v.FormKey == keyText)) VanillaFound.Add(new(pick.EditorId ?? name, keyText, kind));
+            return true;
+        }
+        VanillaNotes.Add($"{forWhat}: no {kind} in Fallout4.esm{(needsModel ? " with a world model" : "")} is named {string.Join(" or ", names.Select(n => $"'{n}'"))}");
+        return false;
+    }
+
+    /// <summary>A world model to borrow: the path of the file and the box around it.</summary>
+    sealed record Look(string File, IObjectBoundsGetter? Bounds);
+
+    /// <summary>
+    /// Finds a look for a thing of this plugin's: that of the first of the
+    /// game's things, by the names a player sees, that is there; or, when
+    /// none is, the bottle cap's. Only the path is taken, never the file.
+    /// </summary>
+    bool TryFindLook(string kind, string[] names, string forWhat, out Look look)
+    {
+        look = null!;
+        if (_vanilla == null) return false;
+        string from;
+        if (TryVanillaNamed(kind, names, forWhat, needsModel: true, out _, out var file, out var bounds, out var found))
+        {
+            look = new Look(file!, bounds);
+            from = found;
+        }
+        else if (TryVanilla(Looks.LastResort, "MiscItem", out var lastKey) && _vanilla.TryResolve<IMiscItemGetter>(lastKey, out var last)
+                 && !string.IsNullOrEmpty(last.Model?.File))
+        {
+            look = new Look(last.Model!.File, last.ObjectBounds);
+            from = Looks.LastResort + ", for want of anything better";
+            VanillaNotes.Add($"NOTE {forWhat}: none of the things it was to look like was found, so it looks like {Looks.LastResort}");
+        }
+        else
+            return false;
+        BorrowedModels[forWhat] = look.File;
+        VanillaNotes.Add($"{forWhat}: world model borrowed from {from}: '{look.File}'");
+        return true;
+    }
+
+    IBookGetter? _note;
+    bool _noteSought;
+
+    /// <summary>
+    /// One of the game's notes for the plugin's papers to take after. Which
+    /// record a note is, is not known here; what is known is that the game
+    /// has many of them and that they share a few models. So: the model that
+    /// most of the game's books lie in the world as, and of the books that
+    /// use it a plain one (no script), the one with the lowest id.
+    /// </summary>
+    IBookGetter? FindNote()
+    {
+        if (_noteSought) return _note;
+        _noteSought = true;
+        if (_vanillaMod == null) return null;
+        try
+        {
+            var byModel = new Dictionary<string, List<IBookGetter>>(StringComparer.OrdinalIgnoreCase);
+            var all = 0;
+            foreach (var b in _vanillaMod.Books)
+            {
+                all++;
+                var file = b.Model?.File;
+                if (string.IsNullOrEmpty(file)) continue;
+                if (!byModel.TryGetValue(file, out var list)) byModel[file] = list = new List<IBookGetter>();
+                list.Add(b);
+            }
+            if (byModel.Count == 0)
+            {
+                VanillaNotes.Add($"notes: none of the master's {all} book(s) has a world model to borrow");
+                return null;
+            }
+            var most = byModel.OrderByDescending(kv => kv.Value.Count).ThenBy(kv => kv.Key, StringComparer.OrdinalIgnoreCase).First();
+            _note = most.Value.OrderBy(b => b.VirtualMachineAdapter == null ? 0 : 1).ThenBy(b => b.FormKey.ID).First();
+            VanillaNotes.Add($"notes: {most.Value.Count} of the master's {all} book(s) lie in the world as '{most.Key}', more than as any other model; the plugin's papers take after {_note.EditorID ?? "one with no EditorID"} ({_note.FormKey})");
+        }
+        catch (Exception e)
+        {
+            VanillaNotes.Add($"NOTE notes: the master's books could not be looked through ({e.GetType().Name}: {e.Message})");
+        }
+        return _note;
+    }
+
     // ------------------------------------------------- placed references
 
     /// <summary>
@@ -467,6 +846,7 @@ public sealed class Builder
             : null;
     }
 
+    const uint StartsDeadFlag = 0x200;
     const uint PersistentFlag = 0x400;
     const uint InitiallyDisabledFlag = 0x800;
 
@@ -539,11 +919,20 @@ public sealed class Builder
                     }
                     baseKey = own.FormKey;
                 }
+                else if (p.BaseNames != null)
+                {
+                    if (!TryVanillaNamed(p.VanillaKind, p.BaseNames, p.EditorId, needsModel: true, out baseKey, out _, out _, out _))
+                    {
+                        Pending.Add($"{p.EditorId}: not placed (no {p.VanillaKind} of that name in Fallout4.esm)");
+                        continue;
+                    }
+                }
                 else if (!TryVanilla(p.Base, p.VanillaKind, out baseKey))
                 {
                     Pending.Add($"{p.EditorId}: not placed (no {p.VanillaKind} '{p.Base}' in Fallout4.esm)");
                     continue;
                 }
+                if (p.VanillaKind != null) PlacedGameBase[p.EditorId] = baseKey.ToString();
 
                 var (sin, cos) = (MathF.Sin(arrival.Heading), MathF.Cos(arrival.Heading));
                 // Heading is measured from north (+Y) towards east (+X): ahead is (sin, cos), right is (cos, -sin).
@@ -556,6 +945,11 @@ public sealed class Builder
                 var isNpc = p.VanillaKind == null
                     ? _byId[p.Base] is INpcGetter
                     : string.Equals(p.VanillaKind, "Npc", StringComparison.OrdinalIgnoreCase);
+                if (p.StartsDead)
+                {
+                    if (!isNpc) throw new InvalidOperationException($"{p.EditorId}: only an actor can start dead");
+                    flags |= StartsDeadFlag;
+                }
                 if (isNpc)
                 {
                     var npc = new PlacedNpc(keys[p.EditorId], Fallout4Release.Fallout4) { EditorID = p.EditorId };
@@ -1032,6 +1426,15 @@ public sealed class Builder
         if (adapter.Scripts.Count > 0 || adapter.Aliases.Count > 0) quest.VirtualMachineAdapter = adapter;
     }
 
+    /// <summary>The number of an alias on one of this plugin's quests, by the names the spec gives them.</summary>
+    static int AliasIndex(string questId, string alias)
+    {
+        var quest = Spec.Quests.FirstOrDefault(q => string.Equals(q.EditorId, questId, StringComparison.OrdinalIgnoreCase))
+                    ?? throw new InvalidOperationException($"Spec refers to an alias of '{questId}', which is not a quest of this plugin");
+        var index = Array.FindIndex(quest.Aliases, a => string.Equals(a.Name, alias, StringComparison.OrdinalIgnoreCase));
+        return index >= 0 ? index : throw new InvalidOperationException($"{questId}: no alias named '{alias}'");
+    }
+
     ScriptEntry ToScript(ScriptBind bind, Quest quest, QuestSpec spec, Func<string, int> aliasId)
     {
         var entry = new ScriptEntry { Name = bind.Script };
@@ -1064,9 +1467,57 @@ public sealed class Builder
                     {
                         Name = ap.Name,
                         Flags = ScriptProperty.Flag.Edited,
-                        Object = quest.ToLink<IFallout4MajorRecordGetter>(),
-                        Alias = checked((short)aliasId(ap.Alias)),
+                        Object = ap.Quest == null ? quest.ToLink<IFallout4MajorRecordGetter>() : Local(ap.Quest).ToLink<IFallout4MajorRecordGetter>(),
+                        Alias = checked((short)(ap.Quest == null ? aliasId(ap.Alias) : AliasIndex(ap.Quest, ap.Alias))),
                     });
+                    break;
+                case AliasListProp alp:
+                    var aliases = new ScriptObjectListProperty { Name = alp.Name, Flags = ScriptProperty.Flag.Edited };
+                    foreach (var (ofQuest, alias) in alp.Items)
+                        aliases.Objects.Add(new ScriptObjectProperty
+                        {
+                            Object = Local(ofQuest).ToLink<IFallout4MajorRecordGetter>(),
+                            Alias = checked((short)AliasIndex(ofQuest, alias)),
+                        });
+                    entry.Properties.Add(aliases);
+                    break;
+                case StringListProp slp:
+                    var strings = new ScriptStringListProperty { Name = slp.Name, Flags = ScriptProperty.Flag.Edited };
+                    strings.Data.AddRange(slp.Values);
+                    entry.Properties.Add(strings);
+                    break;
+                case VanillaNamedProp vnp:
+                    if (TryVanillaNamed(vnp.Kind, vnp.Names, $"{spec.EditorId} script {bind.Script}.{vnp.Name}", needsModel: false, out var namedKey, out _, out _, out _))
+                        entry.Properties.Add(new ScriptObjectProperty
+                        {
+                            Name = vnp.Name,
+                            Flags = ScriptProperty.Flag.Edited,
+                            Object = new FormLink<IFallout4MajorRecordGetter>(namedKey),
+                            Alias = -1,
+                        });
+                    else
+                        Pending.Add($"{spec.EditorId} script {bind.Script}.{vnp.Name}: needs a {vnp.Kind} named {string.Join(" or ", vnp.Names.Select(n => $"'{n}'"))} from Fallout4.esm");
+                    break;
+                case AmmoOfWeaponNamedProp awp:
+                    var what = $"{spec.EditorId} script {bind.Script}.{awp.Name}";
+                    if (TryVanillaNamed("Weapon", awp.WeaponNames, what, needsModel: false, out var weaponKey, out _, out _, out _)
+                        && _vanilla!.TryResolve<IWeaponGetter>(weaponKey, out var weapon) && !weapon.Ammo.IsNull)
+                    {
+                        var ammoKey = weapon.Ammo.FormKey;
+                        var ammoId = _vanilla.TryResolve<IAmmunitionGetter>(ammoKey, out var ammo) ? ammo.EditorID : null;
+                        VanillaNotes.Add($"{what}: what that weapon fires -> {ammoKey} (Ammunition {ammoId ?? "with no EditorID"})");
+                        var ammoText = ammoKey.ToString();
+                        if (!VanillaFound.Any(v => v.FormKey == ammoText)) VanillaFound.Add(new(ammoId ?? "Ammunition", ammoText, "Ammunition"));
+                        entry.Properties.Add(new ScriptObjectProperty
+                        {
+                            Name = awp.Name,
+                            Flags = ScriptProperty.Flag.Edited,
+                            Object = new FormLink<IFallout4MajorRecordGetter>(ammoKey),
+                            Alias = -1,
+                        });
+                    }
+                    else
+                        Pending.Add($"{what}: needs what a weapon named {string.Join(" or ", awp.WeaponNames.Select(n => $"'{n}'"))} fires, from Fallout4.esm");
                     break;
                 case VanillaProp vp:
                     if (TryVanilla(vp.EditorId, vp.Kind, out var key))

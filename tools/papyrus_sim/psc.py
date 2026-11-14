@@ -2,7 +2,8 @@
 
 Only the part of the language this project's scripts use is understood:
 script header, properties (Auto), groups, script variables, functions and
-events, If / While / Return, assignment, calls, casts, arrays by index. A
+events, If / While / Return, assignment, calls, casts, arrays by index and
+arrays made with "new". A
 construct outside that part stops the parse with the file and line, so a
 script cannot slip through half-read.
 
@@ -545,7 +546,12 @@ class Parser:
             elif t.low == "none":
                 node = ("lit", None, t.line)
             elif t.low == "new":
-                self.err("'new' is not understood here", t)
+                # new float[10], new Actor[count]: an array of that many defaults
+                element = self.expect_id()
+                self.expect_op("[")
+                size = self.parse_expr()
+                self.expect_op("]")
+                return ("new", element.text, size, t.line)
             elif self.is_op("("):
                 self.next()
                 node = ("call", None, t.text, self.parse_args(), t.line)

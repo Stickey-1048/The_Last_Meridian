@@ -13,7 +13,16 @@ GlobalVariable Property TLM_G_DevScenario Auto Const
 of the plugin. When it is not 0, the self-test runs that scenario by itself a
 few seconds after this quest starts, and then closes the game.}
 
+Quest Property TLM_A1 Auto Const
+{Development only: the quest of the first section's rough cut. With the
+scenario number 900 in the plugin, TLM:Act1Walk on that quest sets the
+section up for a person to play, and the game stays open
+(tools\win\Play-Act1.ps1). NOT COMPILED, NOT RUN in this form.}
+
 int DATA_VERSION = 1 Const
+; Development only: the scenario number that means "set the first section up
+; and leave the game to a person".
+int SCENARIO_PLAY_ACT1 = 900 Const
 
 ; Development only: a few seconds after the quest starts, a line appears in the
 ; top-left corner of the screen. Seeing it means the plugin is loaded and this
@@ -33,7 +42,12 @@ Event OnTimer(int aiTimerID)
 		Debug.Notification("The Last Meridian test build is loaded.")
 		If TLM_G_DevScenario
 			int scenario = TLM_G_DevScenario.GetValueInt()
-			If scenario > 0
+			If scenario == SCENARIO_PLAY_ACT1
+				TLM:Act1Walk walk = TLM_A1 as TLM:Act1Walk
+				If walk
+					walk.Begin()
+				EndIf
+			ElseIf scenario > 0
 				TLM:SelfTest test = (Self as Quest) as TLM:SelfTest
 				If test
 					test.RunUnattended(scenario)

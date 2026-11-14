@@ -90,6 +90,10 @@ NO_PACKAGE_PACKAGE = "001FEFC1"
 FRAME = 1.0 / 60.0
 # How much of an actor counts for a trigger: from its feet this far up. [assumed]
 ACTOR_HEIGHT = 120.0
+# How many elements an array made with "new" may have. [documented] "Arrays
+# can be any size, up to 128 elements. Attempting to create an array larger
+# then that will fail."
+MAX_NEW_ARRAY = 128
 # The room the runner sends the game to (coc qasmoke). [seen]
 START_CELL = "QASmoke"
 # The game's own scripts that the plugin attaches to aliases by name. The
@@ -187,6 +191,7 @@ class Actor(ObjectReference):
         self.fights_player_until = -1.0
         self.restrained = False
         self.ai_on = True
+        self.equipped: set = set()
         # When it was last put on its seat or put back: it "sits" and, put
         # back, has no package for a moment after.
         self.sat_at = -100.0
@@ -393,6 +398,20 @@ class Session:
         self.notifications: List[str] = []
         self.message_boxes: List[str] = []
         self.messages_shown: List[str] = []
+        # A message box waits for somebody to press a button. In a scenario
+        # nobody is there, and a box that opens stops the session: in the
+        # game it would stop the run, because neither a script's wait nor a
+        # timer counts time while a menu is open ([documented]). A test that
+        # plays a person puts that person's answers here: for each message,
+        # by EditorID, the buttons to press, in order.
+        self.answers: Dict[str, List[int]] = {}
+        self.boxes_answered: List[tuple] = []          # (message, button)
+        # For a test: something to do while a box is open (it is given the message's EditorID).
+        self.on_box = None
+        # For a test: placed references that EnableNoWait never brings, by EditorID.
+        self.never_arrives: set = set()
+        # What Utility.RandomInt gives. None: the lowest number it may give.
+        self.random_int: Optional[int] = None
         self.god_mode = False
         self.ended = None                             # 'quit' | 'idle' | 'timeout'
         self.unknown_scripts = set()
@@ -448,6 +467,12 @@ class Session:
 
     # ---- building the world from the plugin's description
     def _build(self):
+        # What the plugin's containers hold: "40 of <record>" in its description.
+        self.holds: Dict[str, List[tuple]] = {}
+        for rec in self.plugin["Records"]:
+            for line in rec.get("Holds") or []:
+                count, _, what = line.partition(" of ")
+                self.holds.setdefault(rec["EditorId"], []).append((int(count), what))
         for rec in self.plugin["Records"]:
             eid = rec["EditorId"]
             if rec["Type"] == "Global":
@@ -517,6 +542,13 @@ class Session:
                 made.heading = p["Rotation"][2]
                 made.editor_id = p["EditorId"]
                 made.disabled = p["InitiallyDisabled"]
+                if p.get("StartsDead"):
+                    # [assumed] The record's flag is the one the editor sets
+                    # for "Starts Dead"; whether the game honours it on a
+                    # reference this plugin places has not been seen.
+                    made.dead = True
+                for count, what in self.holds.get(getattr(base, "editor_id", None), []):
+                    made.inventory[self._target(what)] = count
                 made.editor_pos = tuple(p["Position"])
                 made.editor_cell = cell
                 if p["Primitive"] == "Box":
@@ -568,8 +600,11 @@ class Session:
                     inst.props[low] = self.quests[p["Target"]].aliases[p["Alias"]]
                 else:
                     inst.props[low] = self._target(p["Target"])
-            elif p["Kind"] == "int[]":
+            elif p["Kind"] in ("int[]", "string[]"):
                 inst.props[low] = list(p["Value"])
+            elif p["Kind"] == "object[]":
+                inst.props[low] = [self.quests[o["Target"]].aliases[o["Alias"]] if o["Alias"] is not None else self._target(o["Target"])
+                                   for o in p["Value"]]
             else:
                 inst.props[low] = p["Value"]
         for low, prop in script.properties.items():
@@ -878,6 +913,14 @@ class Session:
                 inst.props[low] = coerce(value, prop.type)
                 return
             raise SimError("%s line %d: %s is not declared" % (inst.script.name, line, target[1]))
+        if target[0] == "index":
+            arr = yield from self.ev(target[1], frame)
+            idx = yield from self.ev(target[2], frame)
+            if not isinstance(arr, list) or not 0 <= idx < len(arr):
+                self.papyrus_error("Array index %r is out of range" % (idx,), inst, line)
+                return
+            arr[idx] = self._keep_type(arr[idx], value)
+            return
         raise SimError("%s line %d: this kind of assignment is not understood here" % (inst.script.name, line))
         yield  # pragma: no cover  (keeps this a generator)
 
@@ -930,6 +973,13 @@ class Session:
             return arr[idx]
         if kind == "call":
             return (yield from self.call_node(node, frame))
+        if kind == "new":
+            size = yield from self.ev(node[2], frame)
+            if not isinstance(size, int) or isinstance(size, bool) or not 0 < size <= MAX_NEW_ARRAY:
+                # [documented] up to 128 elements; a larger one "will fail".
+                # What the game makes of a size of nothing has not been seen.
+                raise SimError("%s line %d: an array of %r elements" % (inst.script.name, node[3], size))
+            return [default_for(node[1]) for _ in range(size)]
         raise SimError("expression %r" % kind)
 
     def binary(self, op, left, right, frame, line):
@@ -990,6 +1040,8 @@ class Session:
         low = name.lower()
         if isinstance(obj, list) and low == "length":
             return len(obj)
+        if obj is None and low == "length":
+            return 0                                # [documented] an array that was never made "has a length of 0, and is equal to None"
         if isinstance(obj, Instance):
             if low in obj.props:
                 return obj.props[low]
@@ -1096,6 +1148,16 @@ class Session:
         # stand-in has one clock, so here a wait takes what it says.
         return float(self.now)
 
+    def g_utility_randomint(self, low=0, high=100):
+        # [documented] "a random integer between the minimum and maximum
+        # values (inclusive)". Here: what a test says, or else the lowest, so
+        # that a session comes out the same every time.
+        if self.random_int is None:
+            return int(low)
+        if not low <= self.random_int <= high:
+            raise SimError("a test asked Utility.RandomInt(%r, %r) for %r" % (low, high, self.random_int))
+        return int(self.random_int)
+
     # Math
     def g_math_sqrt(self, value):
         if value < 0:
@@ -1153,6 +1215,8 @@ class Session:
                     # empty. [seen] on 2026-11-13 only the other half: with
                     # the flag, an alias takes a reference that is disabled.
                     ref = None
+                if isinstance(ref, Actor) and ref.dead and "AllowDead" not in alias.flags:
+                    ref = None                      # [assumed] in the same cautious way
                 alias.ref = ref if isinstance(ref, ObjectReference) else None
         for inst in quest.scripts:
             self.send_event(inst, "OnQuestInit", [])
@@ -1290,8 +1354,46 @@ class Session:
     def n_message_show(self, m, context, *floats):
         self.messages_shown.append(m.editor_id)
         if m.box:
-            raise SimError("the message box %s opened and nobody is there to answer it" % m.editor_id)
+            waiting = self.answers.get(m.editor_id)
+            if not waiting:
+                raise SimError("the message box %s opened and nobody is there to answer it" % m.editor_id)
+            button = waiting.pop(0)
+            if not 0 <= button < len(m.buttons):
+                raise SimError("a test pressed button %r of %s, which has %d" % (button, m.editor_id, len(m.buttons)))
+            if not self._button_shown(m, button):
+                raise SimError("a test pressed button %r of %s, which is not shown as things stand" % (button, m.editor_id))
+            # [documented] "returns the button the user hit". [assumed] that
+            # this is the button's place in the message as the plugin has it,
+            # also when a button before it is hidden by its condition: the
+            # notice board's script counts on that.
+            self.boxes_answered.append((m.editor_id, button))
+            if self.on_box:
+                self.on_box(m.editor_id)
+            # A box is open for a moment at the least: other script threads
+            # get their turn before the answer is back. [assumed]
+            return self._after_a_frame(button)
         return -1                                   # [documented] not a box: returns -1 at once
+
+    def _after_a_frame(self, value):
+        yield ("sleep", FRAME)
+        return value
+
+    def _button_shown(self, m, index: int) -> bool:
+        """A button's conditions, as the builder describes them: a global
+        compared with a number, or a stage of a quest being done. [documented]
+        a button is shown when all its conditions hold."""
+        compare = {"EqualTo": lambda a, b: a == b, "GreaterThanOrEqualTo": lambda a, b: a >= b}
+        for text in m.buttons[index].get("Conditions") or []:
+            words = text.split()
+            if words[0] == "GetGlobalValue" and len(words) == 4 and words[2] in compare:
+                held = compare[words[2]](self.forms[words[1]].value, float(words[3]))
+            elif words[0] == "GetStageDone" and len(words) == 5 and words[3] in compare:
+                held = compare[words[3]](1.0 if int(words[2]) in self.quests[words[1]].done else 0.0, float(words[4]))
+            else:
+                raise SimError("%s: the stand-in does not understand the condition %r" % (m.editor_id, text))
+            if not held:
+                return False
+        return True
 
     # Faction
     def n_faction_setplayerenemy(self, f, context, enemy=True):
@@ -1511,6 +1613,27 @@ class Session:
             return self._enable_slowly(ref, takes)
         self._enable(ref)
 
+    def n_objectreference_enablenowait(self, ref, context, fade=False):
+        # [documented] "This function will return immediately and not wait
+        # for the object to be enabled". [assumed] that the reference is then
+        # there after as long as Enable would have taken, and that several
+        # asked for at once come in side by side: not seen.
+        takes = 0.0
+        if ref.disabled and isinstance(ref, Actor) and ref.editor_pos is not None and ref.base is not None:
+            takes = self.enable_seconds.get("own" if ref.base.editor_id in self.npc_info else "game", 0.0)
+        if self._whom(ref) in self.never_arrives:
+            return                                  # only when a test says so
+        if takes <= 0:
+            self._enable(ref)
+            return
+
+        def arrive():
+            self._enable(ref)
+            return
+            yield
+
+        self.later(takes, "%r is switched on" % ref, arrive, exact=True)
+
     def _enable_slowly(self, ref, takes=0.0):
         yield from self._slowly("enable", ref)
         if takes > 0:
@@ -1579,7 +1702,13 @@ class Session:
             # on the person's alias had set its stage within the second.
             self.ref_event(ref, "OnActivate", [activator], self.activate_event_delay)
             return True
-        if ref.base is None or ref.base.kind not in ("MiscItem", "Book"):
+        if ref.base is not None and ref.base.kind == "Book":
+            # [documented] OnRead: "received when the player activates a book
+            # object in the world ... it is sent when the book UI opens a
+            # book". A book that a script activates opens, and nobody is
+            # there to close it. A person does it with press_activate.
+            raise SimError("Activate on %r: a book opens to be read, and nobody is there to close it" % ref)
+        if ref.base is None or ref.base.kind not in ("MiscItem", "Weapon"):
             raise SimError("Activate on %r: only picking up an item or activating a person is modelled" % ref)
         if not isinstance(activator, Actor):
             raise SimError("Activate on %r by %r: only an actor picking it up is modelled" % (ref, activator))
@@ -1742,6 +1871,15 @@ class Session:
         if actor.ai_on and not was and not actor.disabled:
             self._may_walk_off(actor, put_back=True)    # [assumed] as above
 
+    def n_actor_equipitem(self, actor, context, form, prevent_removal=False, silent=False):
+        # [documented] "Forces this actor to equip the specified item". The
+        # stand-in only notes it.
+        form = unwrap(form)
+        if form is None:
+            self.papyrus_error("EquipItem: the item is None")
+            return
+        actor.equipped.add(form)
+
     def n_actor_isdead(self, actor, context):
         return actor.dead
 
@@ -1791,6 +1929,43 @@ class Session:
 
     def get_global(self, editor_id: str) -> int:
         return int(self.forms[editor_id].value)
+
+    def press_activate(self, editor_id: str):
+        """A person looks at something the plugin places and presses the
+        button. [assumed] throughout: by hand nothing of this has been seen;
+        by script, activating a placed person reached the script on its
+        alias, and activating a placed item picked it up.
+          a living person, an activator, a container: the scripts on its
+            aliases hear OnActivate;
+          a dead person: its pockets open, and no script of this project's hears;
+          an item, a weapon, a book: it goes to the player (a book opens to
+            be read first, and the person closes it), and the scripts hear
+            both."""
+        ref = self.placed[editor_id]
+        if ref.disabled or ref.deleted or ref.container is not None:
+            raise SimError("%s is not there to be activated" % editor_id)
+        if isinstance(ref, Actor):
+            if not ref.dead:
+                self.ref_event(ref, "OnActivate", [self.player], self.activate_event_delay)
+            return
+        kind = ref.base.kind if ref.base is not None else None
+        self.ref_event(ref, "OnActivate", [self.player], self.activate_event_delay)
+        if kind in ("MiscItem", "Weapon", "Book"):
+            self._into_container(ref, self.player)
+
+    def walk_to(self, editor_id: str):
+        """A person walks the player to something the plugin places. The
+        stand-in sets the player down there: on the floor under a box, a step
+        short of anything else."""
+        ref = self.placed[editor_id]
+        floor = self.player.pos[2]
+        if ref.box is not None:
+            self.player.pos = (ref.pos[0], ref.pos[1], floor)
+        else:
+            self.player.pos = (ref.pos[0] - 50.0, ref.pos[1], floor)
+        self.player.cell = ref.cell
+        self.check_distances()
+        self.check_triggers()
 
     def enter_game(self):
         """Main menu, then the test room: quests flagged to start with the game start."""

@@ -171,6 +171,8 @@ def check(buf):
 GROUP_TOP, GROUP_CELL_BLOCK, GROUP_CELL_SUBBLOCK = 0, 2, 3
 GROUP_CELL_CHILDREN, GROUP_CELL_PERSISTENT, GROUP_CELL_TEMPORARY = 6, 8, 9
 PERSISTENT, INITIALLY_DISABLED, COMPRESSED = 0x400, 0x800, 0x00040000
+# On a placed actor: it is dead when the cell loads.
+STARTS_DEAD = 0x200
 
 
 def items(buf, start, end):
@@ -245,8 +247,23 @@ def npcs_from_json(path):
     return {n["EditorId"]: n for n in data.get("Npcs", [])}
 
 
-def check_npcs(buf, described=None):
-    """Returns (problems, number of actor records of the plugin's own)."""
+def own_ids_from_json(path):
+    """EditorID -> the number of each record of the plugin's own, or None without the file."""
+    if not os.path.exists(path):
+        return None
+    data = json.load(open(path, encoding="utf-8-sig"))
+    return {rec["EditorId"]: int(rec["FormKey"].split(":")[0], 16)
+            for group in ("Records", "Messages", "Quests") for rec in data.get(group, [])}
+
+
+AGGRESSION = {0: "Unaggressive", 1: "Aggressive", 2: "VeryAggressive", 3: "Frenzied"}
+CONFIDENCE = {0: "Cowardly", 1: "Cautious", 2: "Average", 3: "Brave", 4: "Foolhardy"}
+ASSISTANCE = {0: "HelpsNobody", 1: "HelpsAllies", 2: "HelpsFriendsAndAllies"}
+
+
+def check_npcs(buf, described=None, own_ids=None):
+    """Returns (problems, number of actor records of the plugin's own).
+    own_ids: EditorID -> the number of each record of the plugin's own, from the builder's description."""
     problems = []
     masters = master_count(buf)
     seen = set()
@@ -308,6 +325,35 @@ def check_npcs(buf, described=None):
             problems.append(f"actor {edid}: template flags {sorted(template)}; the builder's description says {sorted(want['TemplateFlags'])}")
         if links is not None and links != set(want["TemplateLinks"]):
             problems.append(f"actor {edid}: template actors named for {sorted(links)}; the builder's description says {sorted(want['TemplateLinks'])}")
+        # Whose looks it takes: the first of the thirteen ids.
+        looks = want.get("LooksFrom")
+        if looks and links is not None:
+            number, _, _file = looks.partition(":")
+            have = struct.unpack_from("<I", tpta[0], 0)[0] if tpta else 0
+            if have != int(number, 16):
+                problems.append(f"actor {edid}: takes its looks from {have:08X}; the builder's description says {looks}")
+        # The factions it is in: an id and a rank each. One of this plugin's has the plugin's own number in front.
+        if want.get("Factions") is not None:
+            mine = [struct.unpack_from("<I", d, 0)[0] for t, d in subs if t == "SNAM" and len(d) >= 4]
+            if len(mine) != len(want["Factions"]):
+                problems.append(f"actor {edid}: is in {len(mine)} faction(s); the builder's description lists {len(want['Factions'])}")
+            else:
+                for have, name in zip(mine, want["Factions"]):
+                    if ":" in name:
+                        ok = have == int(name.partition(":")[0], 16)
+                    else:
+                        ok = have >> 24 == masters and (own_ids is None or own_ids.get(name) == have & 0xFFFFFF)
+                    if not ok:
+                        problems.append(f"actor {edid}: is in faction {have:08X}; the builder's description says {name}")
+        # Its temper: whether it starts a fight, whether it runs from one, whose fights it joins.
+        if want.get("Temper"):
+            aidt = [d for t, d in subs if t == "AIDT"]
+            if len(aidt) != 1 or len(aidt[0]) < 6:
+                problems.append(f"actor {edid}: its AI data (AIDT) is missing or short")
+            else:
+                have = f"{AGGRESSION.get(aidt[0][0], aidt[0][0])}, {ASSISTANCE.get(aidt[0][5], aidt[0][5])}, {CONFIDENCE.get(aidt[0][1], aidt[0][1])}"
+                if have != want["Temper"]:
+                    problems.append(f"actor {edid}: its temper is '{have}'; the builder's description says '{want['Temper']}'")
     if described is not None:
         for edid in sorted(set(described) - seen):
             problems.append(f"actor {edid}: in the builder's description, and not in the file")
@@ -434,6 +480,8 @@ def check_cells(buf, described=None):
                                 problems.append(f"{who}: its primitive is {shape} in the file, {want['Primitive']} in the description")
                             if bool(flags & INITIALLY_DISABLED) != want["InitiallyDisabled"]:
                                 problems.append(f"{who}: 'initially disabled' is {bool(flags & INITIALLY_DISABLED)} in the file, {want['InitiallyDisabled']} in the description")
+                            if want["Kind"] == "PlacedNpc" and bool(flags & STARTS_DEAD) != bool(want.get("StartsDead")):
+                                problems.append(f"{who}: 'starts dead' is {bool(flags & STARTS_DEAD)} in the file, {bool(want.get('StartsDead'))} in the description")
                             if (box is None) != (want["Box"] is None) or (box and any(abs(a - b) > 0.001 for a, b in zip(box, want["Box"]))):
                                 problems.append(f"{who}: the box is {box} in the file, {want['Box']} in the description")
                             if ("XMBO" in subs) != (want.get("Bound") is not None):
@@ -520,6 +568,10 @@ def cell_damage(buf):
     out.append(("a reference in the persistent group without the persistent flag", None if r < 0 else patch(buf, r + 8, struct.pack("<I", flags & ~PERSISTENT))))
     out.append(("a reference that belongs to the master", None if r < 0 else patch(buf, r + 15, b"\x00")))
     out.append(("a reference whose 'initially disabled' flag was flipped", None if r < 0 else patch(buf, r + 8, struct.pack("<I", flags ^ INITIALLY_DISABLED))))
+    actor = first_ref(buf, kind=b"ACHR")
+    if actor >= 0:
+        actor_flags = struct.unpack_from("<I", buf, actor + 8)[0]
+        out.append(("a placed actor whose 'starts dead' flag was flipped", patch(buf, actor + 8, struct.pack("<I", actor_flags ^ STARTS_DEAD))))
     if r >= 0:
         size = struct.unpack_from("<I", buf, r + 4)[0]
         n = buf.find(b"NAME", r + 24, r + 24 + size)
@@ -584,6 +636,14 @@ def npc_damage(buf):
         out.append(("an actor that names a template actor for its packages", patch(buf, tp + 6 + 4 * 5, struct.pack("<I", 0x800))))
         out.append(("an actor that names a template actor for its scripts", patch(buf, tp + 6 + 4 * 9, struct.pack("<I", 0x800))))
         out.append(("an actor that names another template actor than its description says", patch(buf, tp + 6 + 4 * 1, struct.pack("<I", 0x800))))
+        out.append(("an actor that takes its looks from somebody else", patch(buf, tp + 6, struct.pack("<I", struct.unpack_from("<I", buf, tp + 6)[0] + 1))))
+    sn = buf.find(b"SNAM", r + 24, r + 24 + size) if r >= 0 else -1
+    if sn >= 0:
+        out.append(("an actor in another faction", patch(buf, sn + 6, struct.pack("<I", struct.unpack_from("<I", buf, sn + 6)[0] + 1))))
+    ai = buf.find(b"AIDT", r + 24, r + 24 + size) if r >= 0 else -1
+    if ai >= 0:
+        out.append(("an actor that starts fights", patch(buf, ai + 6, bytes([buf[ai + 6] ^ 1]))))
+        out.append(("an actor that joins other people's fights", patch(buf, ai + 6 + 5, bytes([buf[ai + 6 + 5] ^ 2]))))
     out.append(("an actor whose record says it is compressed", None if r < 0 else patch(buf, r + 8, struct.pack("<I", struct.unpack_from("<I", buf, r + 8)[0] | 0x00040000))))
     r, size = first_own_npc(buf, b"DPLT")
     d = buf.find(b"DPLT", r + 24, r + 24 + size) if r >= 0 else -1
@@ -592,7 +652,7 @@ def npc_damage(buf):
     return out
 
 
-def self_test(buf, described=None, cells=0, npcs=0, described_npcs=None):
+def self_test(buf, described=None, cells=0, npcs=0, described_npcs=None, own_ids=None):
     """Each kind of damage must produce a problem. Returns the list of damages that went unnoticed, and how many kinds were tried."""
     unnoticed = []
     tried = 0
@@ -603,7 +663,7 @@ def self_test(buf, described=None, cells=0, npcs=0, described_npcs=None):
                 unnoticed.append(f"{name}: could not construct the damaged file")
                 continue
             try:
-                problems, _ = check_npcs(damaged, described_npcs)
+                problems, _ = check_npcs(damaged, described_npcs, own_ids)
             except Exception as exc:
                 problems = [str(exc)]
             if not problems:
@@ -661,7 +721,8 @@ def main(argv):
     cell_problems, cells, refs = check_cells(buf, described)
     problems += cell_problems
     described_npcs = npcs_from_json(os.path.splitext(args[0])[0] + ".json")
-    npc_problems, npcs = check_npcs(buf, described_npcs)
+    own_ids = own_ids_from_json(os.path.splitext(args[0])[0] + ".json")
+    npc_problems, npcs = check_npcs(buf, described_npcs, own_ids)
     problems += npc_problems
     if problems:
         print(f"PLUGIN LAYOUT CHECK FAILED ({len(problems)}):")
@@ -680,7 +741,7 @@ def main(argv):
     else:
         print("plugin layout: no actor records (this build makes none)")
     if "--self-test" in argv:
-        unnoticed, tried = self_test(buf, described, cells, npcs, described_npcs)
+        unnoticed, tried = self_test(buf, described, cells, npcs, described_npcs, own_ids)
         if unnoticed:
             print("LAYOUT SELF-TEST FAILED: damage that went unnoticed:")
             for u in unnoticed:

@@ -63,7 +63,7 @@
   -Scenarios takes numbers, ranges and names, separated by commas:
     all      1 to 11 and every matrix case (the default; over an hour at the
              pace of 2026-11-13)
-    basic    1 to 11
+    basic    1 to 12
     matrix   every matrix case
     main     the matrix cases of the main quest (101 to 199)
     side     the matrix cases of the side quest (201 to 299)
@@ -161,13 +161,18 @@ if (Test-Path -LiteralPath $matrixFile) {
         $caseTitles[[int]$c.scenario] = "$(@($c.rows) -join ', '): $($c.title)"
     }
 }
-$basicNumbers = @(1..11)
+$basicNumbers = @(1..12)
+# Not a scenario: with this number the game sets the first section of Act I up for a person and
+# stays open. Nothing is scored, and nothing here ends the game: the person does.
+$playNumber = 900
 $basicTitles = @{
     1 = 'both quests by stages alone'; 2 = 'actors made at run time, in the aliases, killed'
     3 = 'distance events and the quest''s "the player has left" watch'; 4 = 'evaded'; 5 = 'saved after a fight'
     6 = 'missed'; 7 = 'betrayal on the road'; 8 = 'murder after saving'; 9 = 'the deal'
     10 = 'a person, a trigger and an object placed by the plugin (the placed-content trial)'
     11 = 'people placed by the plugin: do they stay, can they be activated (the trial, part two)'
+    12 = 'Act I, first section: what the plugin places, checked, and one road walked by its stages'
+    900 = 'Act I, first section, set up for a person to play (nothing is scored)'
 }
 foreach ($k in $basicTitles.Keys) { $caseTitles[[int]$k] = $basicTitles[$k] }
 
@@ -292,7 +297,8 @@ function Read-ScenarioLogs([datetime]$since) {
         HasUserLog = $false; Header = $null; ResultLine = $null; Passed = 0; FailLines = @(); InfoLines = @(); Aborted = $false
         LastStep = $null; LastLine = $null; TimingNotes = @()
         HasScriptLog = $false; CoreStarted = $false; Problems = @(); MqEvents = 0; SqEvents = 0; ScriptLogLines = 0; GuardLines = @()
-        TrialLines = @(); OtherUserLogs = @(); SlowSteps = @()
+        TrialLines = @(); OtherUserLogs = @(); SlowSteps = @(); Act1Lines = @(); Act1SetUp = $false
+        MqStages = @(); SqStages = @()
     }
     if ((Test-Path -LiteralPath $userLog) -and ((Get-Item -LiteralPath $userLog).LastWriteTime -ge $since)) {
         $lines = @(Get-Content -LiteralPath $userLog)
@@ -355,6 +361,12 @@ function Read-ScenarioLogs([datetime]$since) {
         # trial's quest, by whomever, that is not already listed as a problem.
         # (Dated lines only: the lines of an error's stack begin with a tab and belong to the error.)
         $r.TrialLines = @($lines | Where-Object { $_ -match '^\[' -and $_ -match 'TLM_Trial' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
+        # The first section's quest (scenario 12, and the section played by hand) likewise.
+        $r.Act1Lines = @($lines | Where-Object { $_ -match '^\[' -and $_ -match 'TLM_A1' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
+        $r.Act1SetUp = [bool](@($lines | Where-Object { $_ -match 'TLM_A1: the first section is set up' }).Count)
+        # The stages of the two quests in the order they were set: what a person who played did.
+        $r.MqStages = @($lines | ForEach-Object { if ($_ -match 'TLM_MQ01: stage (\d+) item') { $Matches[1] } })
+        $r.SqStages = @($lines | ForEach-Object { if ($_ -match 'TLM_SQ01: stage (\d+) item') { $Matches[1] } })
         $r.MqEvents = @($lines | Where-Object { $_ -match 'TLM_MQ01: stage \d+ item' }).Count
         $r.SqEvents = @($lines | Where-Object { $_ -match 'TLM_SQ01: stage \d+ item' }).Count
         # The main quest writes a line, beginning with the amendment's number, when a rule about
@@ -492,17 +504,32 @@ try {
                 $stoppedEarly = 'The wrong copy of the game started.'
                 break
             }
-            Write-Host 'Do not touch the keyboard or mouse in the game: it enters the test room, runs the scenario and closes by itself.'
+            if ($n -ne $playNumber) {
+                Write-Host 'Do not touch the keyboard or mouse in the game: it enters the test room, runs the scenario and closes by itself.'
+            }
+        }
+        if ($n -eq $playNumber) {
+            Write-Host ''
+            Write-Host 'THE GAME IS YOURS. It enters the test room by itself. Wait there: a line appears in the top-left corner,'
+            Write-Host 'and the people of the first section appear over the next minute or so. Then play: the wreck is to your left,'
+            Write-Host 'the road ahead, Mercy Crossing to your right. Quit the game from its own menu when you have seen enough.'
+            Write-Host 'This window waits for that, however long it takes.'
         }
 
-        # wait for the game to close itself
-        $deadline = (Get-Date).AddSeconds($ScenarioTimeoutSeconds)
+        # wait for the game to close itself (or, when a person plays, to be closed)
+        $playing = ($n -eq $playNumber)
+        $deadline = if ($playing) { [datetime]::MaxValue } else { (Get-Date).AddSeconds($ScenarioTimeoutSeconds) }
+        $noteEvery = if ($playing) { 300 } else { 30 }
         $lastNote = Get-Date
         while (@(Get-RunningGame).Count -and (Get-Date) -lt $deadline) {
-            if (((Get-Date) - $lastNote).TotalSeconds -ge 30) { Write-Host "  ... scenario $n running for $([int]((Get-Date) - $since).TotalSeconds) seconds"; $lastNote = Get-Date }
+            if (((Get-Date) - $lastNote).TotalSeconds -ge $noteEvery) {
+                if ($playing) { Write-Host "  ... the game has been open for $([int](((Get-Date) - $since).TotalMinutes)) minutes; this window is waiting for it to be closed" }
+                else { Write-Host "  ... scenario $n running for $([int]((Get-Date) - $since).TotalSeconds) seconds" }
+                $lastNote = Get-Date
+            }
             Start-Sleep -Seconds 1
         }
-        $closedBy = 'the game closed itself'
+        $closedBy = if ($playing) { 'the game was closed' } else { 'the game closed itself' }
         $timedOut = $false
         if (@(Get-RunningGame).Count) {
             $timedOut = $true
@@ -515,7 +542,13 @@ try {
         $seconds = [int]((Get-Date) - $since).TotalSeconds
         $status = 'NO RESULT'
         $note = $closedBy
-        if ($logs.ResultLine) {
+        if ($playing) {
+            # Nothing is scored. What can be said: whether the section was set up.
+            if ($logs.Act1SetUp) { $status = 'PLAYED' }
+            elseif ($logs.CoreStarted) { $status = 'NOT SET UP'; $note = "the game entered the test room and the core quest started, but the script log has no line saying the first section was set up; $closedBy" }
+            elseif ($logs.HasScriptLog) { $status = 'NOT SET UP'; $note = "the game ran, but the core quest never started: the game did not enter the test room by itself; $closedBy" }
+            else { $status = 'NOT SET UP'; $note = "the game wrote no script log for this session; $closedBy" }
+        } elseif ($logs.ResultLine) {
             $status = if ($logs.FailLines.Count -eq 0) { 'PASSED' } else { 'FAILED' }
         } elseif ($logs.Aborted) {
             $status = 'REFUSED'
@@ -533,7 +566,7 @@ try {
         $results.Add([pscustomobject]@{ Scenario = $n; Status = $status; Seconds = $seconds; Logs = $logs; Note = $note })
         Write-Host "  scenario ${n}: $status  ($($logs.Passed) passed, $($logs.FailLines.Count) failed, $seconds seconds; $note)"
 
-        if ($first -and -not $logs.HasUserLog) {
+        if ($first -and -not $playing -and -not $logs.HasUserLog) {
             # The chain (enter by itself, start by itself) does not work: no point in repeating it.
             $stoppedEarly = "Scenario ${n} did not start by itself, so the remaining scenarios were not run."
             break
@@ -590,14 +623,14 @@ $out.Add('')
 $out.Add('== Scenarios ==')
 $totalPassed = 0; $totalFailed = 0
 foreach ($r in $results) { if ($r.Logs) { $totalPassed += $r.Logs.Passed; $totalFailed += $r.Logs.FailLines.Count } }
-$okCount = @($results | Where-Object { $_.Status -eq 'PASSED' }).Count
+$okCount = @($results | Where-Object { $_.Status -eq 'PASSED' -or $_.Status -eq 'PLAYED' }).Count
 $out.Add("  $($results.Count) of $($list.Count) run: $okCount passed, $($results.Count - $okCount) did not. Checks: $totalPassed passed, $totalFailed failed.")
 $out.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f '#', 'result', 'passed', 'failed', 'seconds', 'what it is'))
 foreach ($r in $results) {
     $p = if ($r.Logs) { $r.Logs.Passed } else { 0 }
     $f = if ($r.Logs) { $r.Logs.FailLines.Count } else { 0 }
     $what = if ($caseTitles.ContainsKey([int]$r.Scenario)) { $caseTitles[[int]$r.Scenario] } else { '' }
-    if ($r.Note -ne 'the game closed itself') { $what = "$what  [$($r.Note)]" }
+    if ($r.Note -ne 'the game closed itself' -and $r.Note -ne 'the game was closed') { $what = "$what  [$($r.Note)]" }
     $out.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f $r.Scenario, $r.Status, $p, $f, $r.Seconds, $what))
 }
 $notRun = @($list | Where-Object { $n = $_; -not @($results | Where-Object { $_.Scenario -eq $n }).Count })
@@ -653,6 +686,17 @@ foreach ($r in $results) {
             $out.Add("  other lines in the game's script log that name the trial's quest: not known, there is no script log for this session")
         }
     }
+    if ((12, $playNumber) -contains [int]$r.Scenario -or $r.Logs.Act1Lines.Count) {
+        $out.Add("  stages set, in order: main quest $(if ($r.Logs.MqStages.Count) { $r.Logs.MqStages -join ', ' } else { 'none' }); side quest $(if ($r.Logs.SqStages.Count) { $r.Logs.SqStages -join ', ' } else { 'none' })")
+        if ($r.Logs.Act1Lines.Count) {
+            $out.Add("  other lines in the game's script log that name the first section's quest ($($r.Logs.Act1Lines.Count)$(if ($r.Logs.Act1Lines.Count -gt 60) { ', first 60 shown' })):")
+            foreach ($l in ($r.Logs.Act1Lines | Select-Object -First 60)) { $out.Add("    $l") }
+        } elseif ($r.Logs.HasScriptLog) {
+            $out.Add("  other lines in the game's script log that name the first section's quest: none")
+        } else {
+            $out.Add("  other lines in the game's script log that name the first section's quest: not known, there is no script log for this session")
+        }
+    }
     if ($r.Logs.OtherUserLogs.Count) {
         $out.Add('  other logs written by scripts in this session:')
         foreach ($l in $r.Logs.OtherUserLogs) { $out.Add("    $l") }
@@ -684,5 +728,5 @@ if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyConti
 }
 if ($copied) { Write-Host 'It is also on your clipboard. Click in the chat and press Ctrl+V to send it.' }
 
-$bad = @($results | Where-Object { $_.Status -ne 'PASSED' }).Count
+$bad = @($results | Where-Object { $_.Status -ne 'PASSED' -and $_.Status -ne 'PLAYED' }).Count
 if ($bad -or $stoppedEarly -or $results.Count -lt $list.Count) { exit 1 }

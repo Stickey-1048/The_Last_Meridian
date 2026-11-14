@@ -82,17 +82,45 @@ grep -q "WorkshopNPC: other package lists, which a copy keeps: combat = StandInC
 grep -q "WorkshopNPC: script(s): StandInWorkshopScript$" "$(report default)" || { echo "FAILED: the settler's scripts were not reported"; exit 1; }
 grep -q "WorkshopNPC: takes from a template: Traits, AiPackages, Inventory, Script, DefPackList; template actors named: Traits from StandInLCharSettler (.*), AiPackages from .*, Inventory from .*, Script from .*, DefPackList from .*; default template StandInLCharSettler (.*)$" "$(report default)" || { echo "FAILED: what the settler takes from a template, and from whom, was not reported"; exit 1; }
 grep -q "WorkshopNPC: who it is: factions StandInSettlerFaction (.*); keywords StandInActorTypeSettler (.*); voice StandInSettlerVoice (.*); its record is compressed$" "$(report default)" || { echo "FAILED: who the settler is was not reported"; exit 1; }
-grep -q "WorkshopNPC: the master's actors and their default package lists: 1 of 3 name one in their own record; different lists: 1; the commonest: StandInDefaultPackages (.*) (1)$" "$(report default)" || { echo "FAILED: the master's default package lists were not counted"; exit 1; }
+grep -q "WorkshopNPC: the master's actors and their default package lists: 1 of 15 name one in their own record; different lists: 1; the commonest: StandInDefaultPackages (.*) (1)$" "$(report default)" || { echo "FAILED: the master's default package lists were not counted"; exit 1; }
 # The copies: no packages, no script, neither fetched by a template flag nor by a template actor named for it; and plain records, though the master's is compressed.
 grep -q "TLM_NPC_TrialPerson: made as a copy of WorkshopNPC with no packages and no script, and its default package list still taken from a template; named 'Second Trial Settler'; still from a template: Traits, Inventory, DefPackList; template actors still named for: Traits, Inventory, DefPackList$" "$(report default)" || { echo "FAILED: the person of the plugin's own was not made from the master's settler as specified"; exit 1; }
 grep -q "TLM_NPC_TrialPersonBare: made as a copy of WorkshopNPC with no packages and no script, and no default package list; named 'Third Trial Settler'; still from a template: Traits, Inventory; template actors still named for: Traits, Inventory$" "$(report default)" || { echo "FAILED: the person with no default package list was not made as specified"; exit 1; }
-grep -q "TLM_NPC_TrialPerson: 0 package(s), a default package list, script(s) none, from a template: Traits, Inventory, DefPackList, template actors named for: Traits, Inventory, DefPackList$" "$(report default)" || { echo "FAILED: the person of the plugin's own does not read back as made (or reads back compressed)"; exit 1; }
+grep -q "TLM_NPC_TrialPerson: 0 package(s), a default package list, script(s) none, from a template: Traits, Inventory, DefPackList, template actors named for: Traits, Inventory, DefPackList; looks from .*; factions: .*; temper: Unaggressive, HelpsNobody, Cowardly$" "$(report default)" || { echo "FAILED: the person of the plugin's own does not read back as made (or reads back compressed)"; exit 1; }
 grep -q "TLM_REF_TrialSettlerOnFloor  PlacedNpc of .* at (1800, -600, 64) " "$(report default)" || { echo "FAILED: the second settler is not on the spot of the plugin's own people"; exit 1; }
 grep -q "TLM_REF_TrialPersonOwn  PlacedNpc of TLM_NPC_TrialPerson  at (1800, -600, 64) turned (0, 0, 270)  \[Persistent, InitiallyDisabled\]  in the Persistent list" "$(report default)" || { echo "FAILED: the person of the plugin's own is not placed as an actor where specified"; exit 1; }
 grep -q "alias  5 PersonOwn  (reference) \[Optional, AllowDisabled\]  fill: forced " "$(report default)" || { echo "FAILED: the PersonOwn alias does not point at the placed person"; exit 1; }
 grep -q "packages: the master has 4; 2 have a name that begins 'Default' and holds one of .*: DefaultStandInHoldPosition (.*), DefaultStandInSandboxNearSelf (.*)$" "$(report default)" || { echo "FAILED: the master's stay-put packages were not listed"; exit 1; }
 grep -q "FixtureActorBase = " "$(report default)" || { echo "FAILED: the settler the self-test's stand-ins are made from was not found in the master"; exit 1; }
 grep -q "FixtureMarkerBase = " "$(report default)" || { echo "FAILED: the marker the self-test's stand-ins are made from was not found in the master"; exit 1; }
+# The first section of Act I (docs/design/TLM_ACT1_first_section.md): thirteen people, each with the looks of one of
+# the settlers the master's own list offers and of the sex the spec gives; things that look like the master's own
+# things, found by the names a player sees; a dead marshal; a revolver; a crate; two papers.
+expect() {  # pattern, what failed
+  grep -q -- "$1" "$(report default)" || { echo "FAILED: $2"; exit 1; }
+}
+expect "WorkshopNPC: its looks are drawn from StandInLCharSettler (.*), which offers 7 actor(s): 3 male, 3 female, 1 of no one sex: StandInSettlerFemale01 (female), StandInSettlerMale01 (male), StandInSettlerMale02 (male), StandInSettlerFemale02 (female), StandInSettlerMale03 (male), StandInSettlerAnyFace (of no one sex), StandInSettlerWomanAnyFace (female)$" "the settlers a copy can take its looks from were not found, or their sexes not told (by the flag, by the actor they take their looks from, by a list all of one sex)"
+expect "TLM_NPC_SHERIFF_MERCY: made as a copy of WorkshopNPC with no packages and no script, and no default package list; named 'Owen Pritchard'; still from a template: Traits, Inventory; template actors still named for: Traits, Inventory; in TLM_Fac_MercyCrossing and in none of the game's 1 faction(s); starts no fight, joins none, and does not run from one; looks: those of StandInSettlerMale01 (.*), male, number 1 of 3$" "the sheriff was not made as specified"
+expect "TLM_NPC_GUNSMITH_MERCY: .*; looks: those of StandInSettlerFemale01 (.*), female, number 1 of 3$" "the first woman did not get the first woman's looks"
+expect "TLM_NPC_MERCHANT_MERCY: .*; looks: those of StandInSettlerMale02 (.*), male, number 2 of 3$" "the second man did not get the looks of the settler who takes his own from another man"
+expect "TLM_NPC_CARAVAN_MASTER: .*; looks: those of StandInSettlerWomanAnyFace (.*), female, number 3 of 3$" "a settler whose looks come from a list of women only was not taken for a woman"
+expect "TLM_NPC_FREIGHT_MERCY: .*; looks: those of StandInSettlerMale01 (.*), male, number 1 of 3 (used before: there are more people than faces)$" "a face used a second time was not said to be"
+expect "TLM_NPC_CUTTER_LEAD: .*; in TLM_Fac_Cutters and in none of the game's 1 faction(s); starts no fight, joins one of its own faction's, and does not run from one; looks: " "the Cutter lead was not made as specified"
+expect "TLM_NPC_CUTTER_LEAD: 0 package(s), no default package list, script(s) none, from a template: Traits, Inventory, template actors named for: Traits, Inventory; looks from .*; factions: TLM_Fac_Cutters; temper: Unaggressive, HelpsAllies, Foolhardy$" "the Cutter lead does not read back as made"
+expect "TLM_MISC_Dispatch: world model borrowed from 'Folder' (StandInFolder): 'StandIn.Folder.nif'$" "the dispatch did not borrow the look of the thing a player sees as Folder"
+expect "TLM_ACTI_BrakeShoes: 'Hubcap' -> .* (MiscItem StandInHubcapFirst; found by the name a player sees, the first of 2 so named)$" "of two things with one name the one with the lower id was not taken"
+expect "TLM_ACTI_NoticeBoard: world model borrowed from 'Folder' (StandInFolder): " "a thing with the right name and no model was not passed over for the next name"
+expect "NOTE TLM_ACTI_DrawBar: none of the things it was to look like was found, so it looks like Caps001$" "a thing none of whose looks is in the master did not fall back on the bottle cap"
+expect "notes: 3 of the master's 5 book(s) lie in the world as 'StandIn.Note.nif', more than as any other model; the plugin's papers take after StandInNotePlain (.*)$" "the note for the plugin's papers to take after was not chosen as described (the commonest model, and not the note with a script)"
+expect "TLM_BOOK_RailMaintLedger  \"Maintenance Ledger, Line 14\"  model: StandIn.Note.nif$" "the ledger has no world model"
+expect "TLM_CONT_WagonCargo  \"Fenwick's Cargo\"  model: StandIn.Crate.nif  holds: 40 of " "the wagon's cargo is not a crate with caps in it"
+expect "TLM_REF_A1_Revolver: '.44 Pistol' -> .* (Weapon StandIn44; found by the name a player sees)$" "the marshal's revolver was not found by its name"
+expect "TLM_A1 script TLM:Act1Walk.RevolverRounds: what that weapon fires -> .* (Ammunition StandInAmmo44)$" "what the revolver fires was not found"
+expect "TLM_REF_A1_Marshal  PlacedNpc of TLM_NPC_MARSHAL_DEAD  at (1430, -380, 64) turned (0, 0, 270)  \[Persistent, InitiallyDisabled, StartsDead\]  in the Persistent list" "the marshal is not placed dead where specified"
+expect "TLM_REF_A1_AmbushSight  PlacedObject of TLM_TRIG_AmbushSight  at (1500, -650, 164) .*  Box (100, 100, 100)  bound (100, 100, 100)$" "the box the ambush is seen from is not as specified"
+expect "alias 12 Dunmore  (reference) \[Optional, AllowDisabled\]  fill: forced " "the first section's quest does not hold the Cutter lead"
+expect "           CastInto = \[alias 1 on TLM_MQ01, alias 2 on TLM_SQ01, alias 2 on TLM_MQ01, " "the list of the real quests' aliases to put things into was not written as a list of aliases"
+expect "           PipBoy = " "the thing on the player's arm was not found in the master"
 # This build is the one the stand-in engine runs the scripts against (step 5).
 mkdir -p build/sim
 cp "$tmp/default/out/TheLastMeridian.json" "$tmp/default/out/TheLastMeridian.vanilla.json" "$tmp/default/out/TheLastMeridian.arrivals.json" build/sim/
@@ -119,6 +147,7 @@ grep -q "TLM_REF_TrialPerson: not placed (no cell 'QASmoke' in Fallout4.esm)" "$
 # That master has no settler either: the actors made from it are left out, and so is whoever stands on them.
 grep -q "TLM_NPC_TrialPerson: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: an actor that could not be made was not reported"; exit 1; }
 grep -q "^Npc " "$(report weak-evidence)" && { echo "FAILED: an actor record was written although the master has no settler to copy"; exit 1; }
+grep -q "TLM_NPC_SHERIFF_MERCY: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: a person of the first section who could not be made was not reported"; exit 1; }
 
 # A master that keeps its text apart, in strings files, as the game's own
 # master does: the room's name has to come out of those. And the same master
@@ -132,11 +161,16 @@ dotnet run --project tools/PluginBuilder -- --out "$tmp/localized/out" --fallout
 python3 tools/check_plugin_layout.py "$tmp/localized/out/TheLastMeridian.esp" >/dev/null || { echo "FAILED: the plugin built without the master's strings files has the wrong layout"; exit 1; }
 grep -q "NOTE QASmoke: no name was read for it (the master keeps its text in strings files; either the cell has none or the strings were not found)" "$(report localized)" || { echo "FAILED: a cell name that could not be read was not reported"; exit 1; }
 grep -q "^Cell QASmoke .* name: none$" "$(report localized)" || { echo "FAILED: the cell's copy has a name although none could be read"; exit 1; }
+# Without the strings files no thing has a name a player sees: what was to look like one falls back on the bottle
+# cap, and what was to be one (the revolver) is left out and said to be.
+grep -q "NOTE TLM_MISC_Dispatch: none of the things it was to look like was found, so it looks like Caps001$" "$(report localized)" || { echo "FAILED: without the master's strings files the dispatch did not fall back on the bottle cap's look"; exit 1; }
+grep -q "TLM_REF_A1_Revolver: not placed (no Weapon of that name in Fallout4.esm)" "$(report localized)" || { echo "FAILED: without the master's strings files the revolver was not reported as left out"; exit 1; }
 
 # A master whose own box triggers carry no bound: the builder writes none either.
 standin plain-triggers
 python3 tools/check_plugin_layout.py "$tmp/plain-triggers/out/TheLastMeridian.esp" >/dev/null || { echo "FAILED: the plugin built against the master with plain triggers has the wrong layout"; exit 1; }
 grep -q "TLM_NPC_TrialPerson: made as a copy of WorkshopNPC with no packages and no script, and no default package list (the game's actor names none); named 'Second Trial Settler'; still from a template: nothing; template actors still named for: nothing$" "$(report plain-triggers)" || { echo "FAILED: a settler with no default package list and no template was not copied as it is"; exit 1; }
+grep -q "TLM_NPC_SHERIFF_MERCY: .*; NOTE: WorkshopNPC draws its looks from nowhere, so the copy looks as it does, whatever the spec asks for$" "$(report plain-triggers)" || { echo "FAILED: a settler that draws its looks from nowhere was not reported"; exit 1; }
 grep -q "this build does not write it, as most of them do not" "$(report plain-triggers)" || { echo "FAILED: the builder did not follow a master whose triggers carry no bound"; exit 1; }
 grep -q "TLM_REF_TrialTrigger  PlacedObject of TLM_ACTI_TrialTrigger  at (1800, -600, 164) .*  Box (150, 150, 150)  collision layer 12" "$(report plain-triggers)" || { echo "FAILED: a bound was written although the master's own triggers carry none"; exit 1; }
 

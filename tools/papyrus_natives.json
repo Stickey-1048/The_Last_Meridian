@@ -115,6 +115,36 @@
     "source": "falloutck.uesp.net/wiki/EnableAI_-_Actor"
    }
   ],
+  "EnableNoWait": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "bool abFadeIn = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/EnableNoWait_-_ObjectReference"
+   }
+  ],
+  "EquipItem": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 3,
+    "min_args": 1,
+    "owner": "Actor",
+    "params": [
+     "Form akItem",
+     "bool abPreventRemoval = false",
+     "bool abSilent = false"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/EquipItem_-_Actor"
+   }
+  ],
   "ForceRefTo": [
    {
     "global": false,
@@ -579,6 +609,21 @@
     "source": "falloutck.uesp.net/wiki/OnCombatStateChanged_-_Actor"
    }
   ],
+  "OnContainerChanged": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "ObjectReference",
+    "params": [
+     "ObjectReference akNewContainer",
+     "ObjectReference akOldContainer"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnContainerChanged_-_ObjectReference"
+   }
+  ],
   "OnDeath": [
    {
     "global": false,
@@ -704,6 +749,21 @@
     "params": [],
     "returns": "",
     "source": "falloutck.uesp.net/wiki/QuitGame_-_Debug"
+   }
+  ],
+  "RandomInt": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 0,
+    "owner": "Utility",
+    "params": [
+     "int aiMin = 0",
+     "int aiMax = 100"
+    ],
+    "returns": "int",
+    "source": "falloutck.uesp.net/wiki/RandomInt_-_Utility"
    }
   ],
   "RegisterForDistanceGreaterThanEvent": [

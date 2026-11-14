@@ -13,7 +13,8 @@ logging has to be on), to the Papyrus log, and to a message box.
 
 Scenarios: 1 here; 2 and 3 in TLM:FixtureProbe; 4 to 9 in TLM:WorldCases;
 10 in TLM:PlacedTrial and 11 in TLM:PlacedPeople, which are on a quest of
-their own (TLM_Trial);
+their own (TLM_Trial); 12 in TLM:Act1Walk, on the quest of the first
+section's rough cut (TLM_A1);
 101 and up in TLM:MatrixCases, which is generated from the logic model.
 A number after the function name picks one:   cqf TLM_Core RunSelfTest 4
 One fresh game session per scenario: the quests run once.
@@ -29,13 +30,17 @@ Scenario 10 was added on 2026-11-13: the property TLM_Trial, its branch in
 RunSelfTest and its part of the "already started" test below compiled and
 ran that day (the thirteenth run: seven scenarios, 196 checks, 0 failed).
 Scenario 11 was added after that run, and compiled and ran on 2026-11-13 as
-well (the fourteenth run: three scenarios, 40 checks, 0 failed).}
+well (the fourteenth run: three scenarios, 40 checks, 0 failed).
+Scenario 12 was added after that run: the property TLM_A1, its branch in
+RunSelfTest and its part of the "already started" test are NOT YET COMPILED.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
 	Quest Property TLM_SQ01 Auto Const Mandatory
 	Quest Property TLM_Trial Auto Const Mandatory
 	{Development only: the quest of the placed-content trial, scenario 10.}
+	Quest Property TLM_A1 Auto Const Mandatory
+	{Development only: the quest of the first section's rough cut, scenario 12.}
 EndGroup
 
 Group Globals
@@ -154,7 +159,8 @@ Function RunSelfTest(int aiScenario = 0)
 	(TLM:WorldCases). 10: a person, a trigger and an object that the plugin
 	itself places in the test room (TLM:PlacedTrial). 11: whether a person the
 	plugin places stays where it is put and can be activated
-	(TLM:PlacedPeople). 101 and up: the test
+	(TLM:PlacedPeople). 12: the first section of Act I as the plugin places it,
+	checked and walked once by its stages (TLM:Act1Walk). 101 and up: the test
 	matrix, generated from the logic model (TLM:MatrixCases, with
 	TLM:CaseDriver).}
 	If busy
@@ -181,7 +187,7 @@ Function RunSelfTest(int aiScenario = 0)
 		Log("INFO  unattended run: the game closes itself when the scenario has finished")
 	EndIf
 
-	If TLM_MQ01.GetStageDone(10) || TLM_SQ01.GetStageDone(10) || TLM_Trial.IsRunning()
+	If TLM_MQ01.GetStageDone(10) || TLM_SQ01.GetStageDone(10) || TLM_Trial.IsRunning() || TLM_A1.IsRunning()
 		Log("ABORTED: the quests were already started in this session.")
 		Log("Quit to the main menu, start a fresh session, and run the test once.")
 		If !unattended
@@ -235,6 +241,13 @@ Function RunSelfTest(int aiScenario = 0)
 			Fail("the placed-people script is not attached to the trial's quest")
 		Else
 			placedPeople.Run(Self)
+		EndIf
+	ElseIf scenario == 12
+		TLM:Act1Walk act1Walk = TLM_A1 as TLM:Act1Walk
+		If !act1Walk
+			Fail("the first section's script is not attached to its quest")
+		Else
+			act1Walk.Audit(Self)
 		EndIf
 	ElseIf scenario >= 100
 		TLM:MatrixCases matrixCases = (Self as Quest) as TLM:MatrixCases

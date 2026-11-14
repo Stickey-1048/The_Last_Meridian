@@ -689,7 +689,7 @@ class TheStandInsRulesForPlacedPeople(unittest.TestCase):
     def test_moving_something_with_no_model_never_comes_back(self):
         """[seen] for MoveTo; [assumed] for the three functions that are new here."""
         s = self.session()
-        thing = s.n_objectreference_placeatme(s.player, None, s.forms["TLM_MISC_Dispatch"])
+        thing = s.n_objectreference_placeatme(s.player, None, s.forms["TLM_MISC_TornTransitPass"])
         self.assertFalse(thing.has_3d())
         for call in (lambda: s.n_objectreference_setposition(thing, None, 1.0, 2.0, 3.0),
                      lambda: s.n_objectreference_movetomyeditorlocation(thing, None),

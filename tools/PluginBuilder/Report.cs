@@ -14,7 +14,9 @@ namespace Tlm.PluginBuilder;
 /// </summary>
 public static class Report
 {
+    /// <param name="Value">For "object[]": a list of {Target, Alias}. For "string[]" and "int[]": the values.</param>
     public sealed record PropInfo(string Name, string Kind, string? Target, int? Alias, object? Value);
+    public sealed record ObjectInfo(string Target, int? Alias);
     public sealed record ScriptInfo(string Name, List<PropInfo> Props);
     /// <param name="DisplayName">The message whose title the alias's reference is shown under, if any.</param>
     public sealed record AliasInfo(int Id, string Name, string Kind, List<string> Flags, string? Fill, List<ScriptInfo> Scripts, string? DisplayName = null);
@@ -28,7 +30,8 @@ public static class Report
     public sealed record ButtonInfo(string Text, List<string> Conditions);
     public sealed record MessageInfo(string EditorId, string FormKey, string? Title, string? Text, bool Box, List<ButtonInfo> Buttons);
     /// <param name="Model">Path of the world model, for the kinds of record that can lie in the world. Null: none.</param>
-    public sealed record SimpleInfo(string Type, string EditorId, string FormKey, string? Name, string? Model = null);
+    /// <param name="Holds">For a container: what is in it.</param>
+    public sealed record SimpleInfo(string Type, string EditorId, string FormKey, string? Name, string? Model = null, List<string>? Holds = null);
     /// <summary>A record of the game's own that the plugin points at.</summary>
     public sealed record VanillaInfo(string EditorId, string FormKey, string Kind);
     /// <summary>Where the player arrives in a cell of the game this plugin places things in. Not in the plugin file:
@@ -42,8 +45,10 @@ public static class Report
     /// <param name="Box">How far the box reaches from its middle on each axis (half its size), when the reference has a box: the numbers the file holds.</param>
     /// <param name="CollisionLayer">Index of the collision layer, when one is given.</param>
     /// <param name="Bound">The reference's bound, when it has one: for a box, the same reach again.</param>
+    /// <param name="StartsDead">For an actor: it is dead when the cell loads.</param>
     public sealed record PlacedInfo(string? EditorId, string FormKey, string Kind, string Base, float[] Position, float[] Rotation,
-        bool Persistent, bool InitiallyDisabled, string Group, string? Primitive, float[]? Box, uint? CollisionLayer, float[]? Bound = null);
+        bool Persistent, bool InitiallyDisabled, string Group, string? Primitive, float[]? Box, uint? CollisionLayer, float[]? Bound = null,
+        bool StartsDead = false);
     /// <summary>A cell record in the plugin. For a cell of the game's it is this plugin's copy of the record.</summary>
     /// <param name="OfThisPlugin">False: the cell belongs to a master, and the plugin only adds to it.</param>
     /// <param name="Name">The cell's name as this plugin carries it (it replaces the master's while the plugin is loaded).</param>
@@ -51,8 +56,12 @@ public static class Report
     /// <summary>An actor of this plugin's own: what it would go about its business with.</summary>
     /// <param name="TemplateFlags">What the actor takes from the actor it is modelled on.</param>
     /// <param name="TemplateLinks">For which of those things it names an actor to take it from.</param>
+    /// <param name="LooksFrom">The actor it takes its looks from, when it names one.</param>
+    /// <param name="Factions">The factions it is in: EditorIDs for this plugin's, ids for the game's.</param>
+    /// <param name="Temper">Whether it starts a fight, whose fights it joins, and whether it runs from one.</param>
     public sealed record NpcInfo(string EditorId, string FormKey, string? Name, int Packages, bool HasDefaultPackageList,
-        List<string> Scripts, List<string> TemplateFlags, List<string> TemplateLinks, bool Compressed);
+        List<string> Scripts, List<string> TemplateFlags, List<string> TemplateLinks, bool Compressed,
+        string? LooksFrom = null, List<string>? Factions = null, string? Temper = null);
     public sealed record PluginInfo(string File, List<string> Masters, float HeaderVersion, uint LowestFormId,
         List<SimpleInfo> Records, List<MessageInfo> Messages, List<QuestInfo> Quests, List<CellInfo> Cells, List<NpcInfo> Npcs);
 
@@ -72,6 +81,10 @@ public static class Report
             IScriptBoolPropertyGetter b => new PropInfo(p.Name, "bool", null, null, b.Data),
             IScriptFloatPropertyGetter f => new PropInfo(p.Name, "float", null, null, f.Data),
             IScriptIntListPropertyGetter l => new PropInfo(p.Name, "int[]", null, null, l.Data.ToArray()),
+            IScriptObjectListPropertyGetter ol => new PropInfo(p.Name, "object[]", null, null,
+                ol.Objects.Select(x => new ObjectInfo(Target(x.Object.FormKey), x.Alias < 0 ? null : x.Alias)).ToArray()),
+            IScriptStringListPropertyGetter sl => new PropInfo(p.Name, "string[]", null, null, sl.Data.ToArray()),
+            IScriptStringPropertyGetter s1 => new PropInfo(p.Name, "string", null, null, s1.Data),
             _ => new PropInfo(p.Name, p.GetType().Name, null, null, null),
         }).ToList());
 
@@ -81,13 +94,19 @@ public static class Report
         foreach (var m in mod.MiscItems) simple.Add(new("MiscItem", m.EditorID!, m.FormKey.ToString(), m.Name?.String, NullIfEmpty(m.Model?.File)));
         foreach (var b in mod.Books) simple.Add(new("Book", b.EditorID!, b.FormKey.ToString(), b.Name?.String, NullIfEmpty(b.Model?.File)));
         foreach (var a in mod.Activators) simple.Add(new("Activator", a.EditorID!, a.FormKey.ToString(), a.Name?.String, NullIfEmpty(a.Model?.File)));
+        foreach (var c in mod.Containers)
+            simple.Add(new("Container", c.EditorID!, c.FormKey.ToString(), c.Name?.String, NullIfEmpty(c.Model?.File),
+                (c.Items ?? Enumerable.Empty<IContainerEntryGetter>()).Select(i => $"{i.Item.Count} of {Target(i.Item.Item.FormKey)}").ToList()));
         var npcs = new List<NpcInfo>();
         foreach (var n in mod.Npcs)
         {
             simple.Add(new("Npc", n.EditorID!, n.FormKey.ToString(), n.Name?.String));
             npcs.Add(new(n.EditorID!, n.FormKey.ToString(), n.Name?.String, n.Packages.Count, !n.DefaultPackageList.IsNull,
                 n.VirtualMachineAdapter?.Scripts.Select(s => s.Name).ToList() ?? new(), FlagNames(n.UseTemplateActors),
-                Builder.LinkNames(n.TemplateActors), n.IsCompressed));
+                Builder.LinkNames(n.TemplateActors), n.IsCompressed,
+                n.TemplateActors == null || n.TemplateActors.TraitTemplate.IsNull ? null : n.TemplateActors.TraitTemplate.FormKey.ToString(),
+                n.Factions.Select(f => Target(f.Faction.FormKey)).ToList(),
+                $"{n.Aggression}, {n.Assistance}, {n.Confidence}"));
         }
 
         var cells = new List<CellInfo>();
@@ -105,7 +124,7 @@ public static class Report
                             {
                                 case IPlacedNpcGetter n:
                                     placed.Add(new(n.EditorID, n.FormKey.ToString(), "PlacedNpc", Target(n.Base.FormKey), V(n.Position), V(n.Rotation),
-                                        (flags & 0x400) != 0, (flags & 0x800) != 0, name, null, null, null));
+                                        (flags & 0x400) != 0, (flags & 0x800) != 0, name, null, null, null, StartsDead: (flags & 0x200) != 0));
                                     break;
                                 case IPlacedObjectGetter o:
                                     placed.Add(new(o.EditorID, o.FormKey.ToString(), "PlacedObject", Target(o.Base.FormKey), V(o.Position), V(o.Rotation),
@@ -214,12 +233,13 @@ public static class Report
         foreach (var grp in info.Records.GroupBy(r => r.Type))
         {
             sb.AppendLine($"{grp.Key} ({grp.Count()})");
-            foreach (var r in grp) sb.AppendLine($"  {r.FormKey[..6]}  {r.EditorId}{(r.Name == null ? "" : $"  \"{r.Name}\"")}{(r.Model == null ? "" : $"  model: {r.Model}")}");
+            foreach (var r in grp) sb.AppendLine($"  {r.FormKey[..6]}  {r.EditorId}{(r.Name == null ? "" : $"  \"{r.Name}\"")}{(r.Model == null ? "" : $"  model: {r.Model}")}{(r.Holds == null || r.Holds.Count == 0 ? "" : $"  holds: {string.Join(", ", r.Holds)}")}");
         }
         foreach (var n in info.Npcs)
             sb.AppendLine($"          {n.EditorId}: {n.Packages} package(s), {(n.HasDefaultPackageList ? "a" : "no")} default package list, " +
                           $"script(s) {(n.Scripts.Count == 0 ? "none" : string.Join(", ", n.Scripts))}, from a template: {(n.TemplateFlags.Count == 0 ? "nothing" : string.Join(", ", n.TemplateFlags))}, " +
-                          $"template actors named for: {(n.TemplateLinks.Count == 0 ? "nothing" : string.Join(", ", n.TemplateLinks))}{(n.Compressed ? ", compressed" : "")}");
+                          $"template actors named for: {(n.TemplateLinks.Count == 0 ? "nothing" : string.Join(", ", n.TemplateLinks))}{(n.Compressed ? ", compressed" : "")}" +
+                          $"{(n.LooksFrom == null ? "" : $"; looks from {n.LooksFrom}")}; factions: {(n.Factions == null || n.Factions.Count == 0 ? "none" : string.Join(", ", n.Factions))}; temper: {n.Temper}");
         sb.AppendLine($"Message ({info.Messages.Count})");
         foreach (var m in info.Messages)
         {
@@ -253,6 +273,7 @@ public static class Report
                 var flags = new List<string>();
                 if (p.Persistent) flags.Add("Persistent");
                 if (p.InitiallyDisabled) flags.Add("InitiallyDisabled");
+                if (p.StartsDead) flags.Add("StartsDead");
                 string Vec(float[] v) => "(" + string.Join(", ", v.Select(x => x.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))) + ")";
                 sb.AppendLine($"  {p.FormKey[..6]}  {p.EditorId ?? "(no EditorID)"}  {p.Kind} of {p.Base}  at {Vec(p.Position)} turned {Vec(p.Rotation.Select(r => r * 180 / MathF.PI).ToArray())}  [{string.Join(", ", flags)}]  in the {p.Group} list"
                     + (p.Primitive == null ? "" : $"  {p.Primitive} {Vec(p.Box!)}")
@@ -285,6 +306,8 @@ public static class Report
             {
                 "object" => p.Alias.HasValue ? $"alias {p.Alias} on {p.Target}" : p.Target,
                 "int[]" => "[" + string.Join(", ", ((IEnumerable<int>)p.Value!)) + "]",
+                "string[]" => "[" + string.Join(", ", ((IEnumerable<string>)p.Value!).Select(s => "\"" + s + "\"")) + "]",
+                "object[]" => "[" + string.Join(", ", ((IEnumerable<ObjectInfo>)p.Value!).Select(o => o.Alias.HasValue ? $"alias {o.Alias} on {o.Target}" : o.Target)) + "]",
                 _ => Convert.ToString(p.Value),
             };
             sb.AppendLine($"{new string(' ', indent.Length + 2)}{p.Name} = {v}");

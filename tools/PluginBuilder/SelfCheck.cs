@@ -33,17 +33,41 @@ public static class SelfCheck
         foreach (var f in Spec.Factions)
             Expect(info.Records.Any(r => r.Type == "Faction" && r.EditorId == f), $"faction {f} missing");
         foreach (var b in Spec.Books)
-            Expect(info.Records.Any(r => r.Type == "Book" && r.EditorId == b.EditorId && r.Name == b.Name), $"book {b.EditorId} missing or misnamed");
+        {
+            var got = info.Records.FirstOrDefault(r => r.Type == "Book" && r.EditorId == b.EditorId && r.Name == b.Name);
+            if (got == null) { problems.Add($"book {b.EditorId} missing or misnamed"); continue; }
+            builder.BorrowedModels.TryGetValue(b.EditorId, out var model);
+            Expect(got.Model == model, $"book {b.EditorId}: world model is '{got.Model ?? "none"}', expected '{model ?? "none"}'");
+            Expect(b.LooksLikeANote || got.Model == null, $"book {b.EditorId}: has a world model the spec does not ask for");
+        }
         foreach (var m in Spec.MiscItems)
         {
             var got = info.Records.FirstOrDefault(r => r.Type == "MiscItem" && r.EditorId == m.EditorId && r.Name == m.Name);
             if (got == null) { problems.Add($"misc item {m.EditorId} missing or misnamed"); continue; }
             builder.BorrowedModels.TryGetValue(m.EditorId, out var model);
             Expect(got.Model == model, $"misc item {m.EditorId}: world model is '{got.Model ?? "none"}', expected '{model ?? "none"}'");
-            Expect(m.ModelFrom != null || got.Model == null, $"misc item {m.EditorId}: has a world model the spec does not ask for");
+            Expect(m.ModelFrom != null || m.LooksLike != null || got.Model == null, $"misc item {m.EditorId}: has a world model the spec does not ask for");
         }
         foreach (var a in Spec.Activators)
-            Expect(info.Records.Any(r => r.Type == "Activator" && r.EditorId == a.EditorId && r.Model == null), $"activator {a.EditorId} missing, or it has a model");
+        {
+            var got = info.Records.FirstOrDefault(r => r.Type == "Activator" && r.EditorId == a.EditorId);
+            if (got == null) { problems.Add($"activator {a.EditorId} missing"); continue; }
+            builder.BorrowedModels.TryGetValue(a.EditorId, out var model);
+            Expect(got.Model == model, $"activator {a.EditorId}: world model is '{got.Model ?? "none"}', expected '{model ?? "none"}'");
+            // One with no look is a trigger: it must have no model at all.
+            Expect(a.LooksLike != null || got.Model == null, $"activator {a.EditorId}: has a world model the spec does not ask for");
+            Expect(got.Name == a.Name, $"activator {a.EditorId}: named '{got.Name ?? "nothing"}', expected '{a.Name ?? "nothing"}'");
+        }
+        foreach (var c in Spec.Containers)
+        {
+            var got = info.Records.FirstOrDefault(r => r.Type == "Container" && r.EditorId == c.EditorId && r.Name == c.Name);
+            if (got == null) { problems.Add($"container {c.EditorId} missing or misnamed"); continue; }
+            builder.BorrowedModels.TryGetValue(c.EditorId, out var model);
+            Expect(got.Model == model, $"container {c.EditorId}: world model is '{got.Model ?? "none"}', expected '{model ?? "none"}'");
+            var held = builder.VanillaFound.FirstOrDefault(v => string.Equals(v.EditorId, c.HoldsVanillaItem, StringComparison.OrdinalIgnoreCase))?.FormKey;
+            var want = held == null ? new List<string>() : new List<string> { $"{c.Count} of {held}" };
+            Expect((got.Holds ?? new()).SequenceEqual(want), $"container {c.EditorId}: holds [{string.Join(", ", got.Holds ?? new())}], expected [{string.Join(", ", want)}]");
+        }
 
         foreach (var n in Spec.Npcs)
         {
@@ -73,7 +97,30 @@ public static class SelfCheck
                 // The flag gone and the actor still named for it: which of the two the game goes by is not known.
                 Expect(!got.TemplateLinks.Contains(flag), $"actor {n.EditorId}: still names a template actor for {flag}");
             }
+            // Whose looks: the actor the build chose, if it could choose one.
+            if (builder.LooksFrom.TryGetValue(n.EditorId, out var looks))
+            {
+                Expect(n.Sex != null, $"actor {n.EditorId}: was given looks the spec does not ask for");
+                Expect(got.LooksFrom == looks, $"actor {n.EditorId}: takes its looks from {got.LooksFrom ?? "nobody"}, expected {looks}");
+                Expect(got.TemplateFlags.Contains("Traits"), $"actor {n.EditorId}: names an actor for its looks and does not take them from it");
+            }
+            if (n.Faction != null)
+            {
+                Expect((got.Factions ?? new()).SequenceEqual(new[] { n.Faction }), $"actor {n.EditorId}: is in [{string.Join(", ", got.Factions ?? new())}], expected only {n.Faction}");
+                Expect(!got.TemplateFlags.Contains("Factions") && !got.TemplateLinks.Contains("Factions"), $"actor {n.EditorId}: still takes its factions from a template");
+            }
+            if (n.StandsBy)
+            {
+                var want = $"Unaggressive, {(n.HelpsItsOwn ? "HelpsAllies" : "HelpsNobody")}, Foolhardy";
+                Expect(got.Temper == want, $"actor {n.EditorId}: its temper is '{got.Temper}', expected '{want}'");
+                Expect(!got.TemplateFlags.Contains("AiData") && !got.TemplateLinks.Contains("AiData"), $"actor {n.EditorId}: still takes its temper from a template");
+            }
         }
+        // Two people with one face would be told apart only by their names.
+        var faces = builder.LooksFrom.GroupBy(kv => kv.Value).Where(g => g.Count() > 1).Select(g => string.Join(" and ", g.Select(kv => kv.Key))).ToList();
+        foreach (var same in faces)
+            if (!builder.VanillaNotes.Any(x => x.Contains("used before: there are more people than faces")))
+                problems.Add($"{same} were given the same looks, and the build did not say why");
         Expect(info.Npcs.All(x => Spec.Npcs.Any(n => n.EditorId == x.EditorId)), "the plugin holds an actor the spec does not ask for");
 
         CheckPlaced(info, builder, Expect);
@@ -139,6 +186,9 @@ public static class SelfCheck
                 Expect(ga.Flags.Contains("AllowDisabled") == a.AllowDisabled, $"{q.EditorId} alias {a.Name}: Allow Disabled differs");
                 Expect(!(a.Essential && a.Protected), $"{q.EditorId} alias {a.Name}: Essential and Protected are mutually exclusive");
                 Expect(ga.Scripts.Select(s => s.Name).SequenceEqual(a.Scripts.Select(s => s.Script)), $"{q.EditorId} alias {a.Name}: scripts differ");
+                foreach (var bind in a.Scripts)
+                    if (ga.Scripts.FirstOrDefault(s => s.Name == bind.Script) is { } gs)
+                        CheckProps($"{q.EditorId} alias {a.Name}", q, bind, gs, problems);
                 if (a.Fill == Fill.CreateIn)
                     Expect(ga.Fill != null && ga.Fill.StartsWith($"create {a.CreateItem} In alias {Array.FindIndex(q.Aliases, x => x.Name == a.CreateInAlias)}"),
                         $"{q.EditorId} alias {a.Name}: create-in fill differs ({ga.Fill})");
@@ -160,22 +210,47 @@ public static class SelfCheck
             {
                 var gs = got.Scripts.FirstOrDefault(s => s.Name == bind.Script);
                 if (gs == null) { problems.Add($"{q.EditorId}: script {bind.Script} not attached"); continue; }
-                foreach (var p in bind.Props)
-                {
-                    if (p is VanillaProp) continue;   // absent in skeleton mode by design
-                    var gp = gs.Props.FirstOrDefault(x => x.Name == p.Name);
-                    if (gp == null) { problems.Add($"{q.EditorId}: property {p.Name} not written"); continue; }
-                    switch (p)
-                    {
-                        case FormProp fp: Expect(gp.Target == fp.EditorId && gp.Alias == null, $"{q.EditorId}.{p.Name}: points at {gp.Target}"); break;
-                        case AliasProp ap:
-                            Expect(gp.Target == q.EditorId && gp.Alias == Array.FindIndex(q.Aliases, a => a.Name == ap.Alias), $"{q.EditorId}.{p.Name}: wrong alias");
-                            break;
-                    }
-                }
+                CheckProps(q.EditorId, q, bind, gs, problems);
             }
         }
         return problems;
+    }
+
+    /// <summary>The properties of one attached script, as read back, against what the spec gives it.</summary>
+    static void CheckProps(string where, QuestSpec q, ScriptBind bind, Report.ScriptInfo gs, List<string> problems)
+    {
+        void Expect(bool ok, string message) { if (!ok) problems.Add(message); }
+        int AliasOf(string? questId, string alias) =>
+            Array.FindIndex((questId == null ? q : Spec.Quests.First(x => x.EditorId == questId)).Aliases, a => a.Name == alias);
+        var names = bind.Props.Select(p => p.Name).ToList();
+        Expect(names.Distinct(StringComparer.OrdinalIgnoreCase).Count() == names.Count, $"{where} script {bind.Script}: a property is given twice");
+        foreach (var p in bind.Props)
+        {
+            // Absent without the game's master, by design.
+            if (p is VanillaProp or VanillaNamedProp or AmmoOfWeaponNamedProp) continue;
+            var gp = gs.Props.FirstOrDefault(x => x.Name == p.Name);
+            if (gp == null) { problems.Add($"{where}: property {p.Name} not written"); continue; }
+            switch (p)
+            {
+                case FormProp fp: Expect(gp.Target == fp.EditorId && gp.Alias == null, $"{where}.{p.Name}: points at {gp.Target}"); break;
+                case AliasProp ap:
+                    Expect(gp.Target == (ap.Quest ?? q.EditorId) && gp.Alias == AliasOf(ap.Quest, ap.Alias), $"{where}.{p.Name}: wrong alias");
+                    break;
+                case IntProp ip: Expect(gp.Kind == "int" && Equals(gp.Value, ip.Value), $"{where}.{p.Name}: is {gp.Value}, expected {ip.Value}"); break;
+                case BoolProp bp: Expect(gp.Kind == "bool" && Equals(gp.Value, bp.Value), $"{where}.{p.Name}: is {gp.Value}, expected {bp.Value}"); break;
+                case IntListProp lp:
+                    Expect(gp.Kind == "int[]" && ((IEnumerable<int>)gp.Value!).SequenceEqual(lp.Values), $"{where}.{p.Name}: the numbers differ");
+                    break;
+                case StringListProp sp:
+                    Expect(gp.Kind == "string[]" && ((IEnumerable<string>)gp.Value!).SequenceEqual(sp.Values), $"{where}.{p.Name}: the texts differ");
+                    break;
+                case AliasListProp alp:
+                    var want = alp.Items.Select(i => new Report.ObjectInfo(i.Quest, AliasOf(i.Quest, i.Alias))).ToList();
+                    Expect(gp.Kind == "object[]" && ((IEnumerable<Report.ObjectInfo>)gp.Value!).SequenceEqual(want), $"{where}.{p.Name}: the aliases differ");
+                    Expect(want.All(w => w.Alias >= 0), $"{where}.{p.Name}: names an alias its quest does not have");
+                    break;
+            }
+        }
     }
 
     /// <summary>
@@ -227,13 +302,18 @@ public static class SelfCheck
             Expect(got.Kind == (isNpc ? "PlacedNpc" : "PlacedObject"), $"{p.EditorId}: is a {got.Kind}");
             var wantBase = p.VanillaKind == null
                 ? p.Base
-                : builder.VanillaFound.FirstOrDefault(v => string.Equals(v.EditorId, p.Base, StringComparison.OrdinalIgnoreCase)
-                                                           && string.Equals(v.Kind, p.VanillaKind, StringComparison.OrdinalIgnoreCase))?.FormKey;
+                : p.BaseNames != null
+                    // Found by the name a player sees: whichever of the game's records the build settled on.
+                    ? builder.PlacedGameBase.GetValueOrDefault(p.EditorId)
+                    : builder.VanillaFound.FirstOrDefault(v => string.Equals(v.EditorId, p.Base, StringComparison.OrdinalIgnoreCase)
+                                                               && string.Equals(v.Kind, p.VanillaKind, StringComparison.OrdinalIgnoreCase))?.FormKey;
             Expect(wantBase != null && got.Base == wantBase, $"{p.EditorId}: places {got.Base}, expected {wantBase ?? p.Base}");
             // A reference a quest alias points at has to be persistent, in both senses the file has.
             Expect(got.Persistent, $"{p.EditorId}: the Persistent flag is not set");
             Expect(got.Group == "Persistent", $"{p.EditorId}: is in the cell's {got.Group} list");
             Expect(got.InitiallyDisabled == p.InitiallyDisabled, $"{p.EditorId}: Initially Disabled differs");
+            Expect(got.StartsDead == p.StartsDead, $"{p.EditorId}: Starts Dead differs");
+            Expect(!p.StartsDead || isNpc, $"{p.EditorId}: only an actor can start dead");
             if (p.BoxHalfExtents == null)
                 Expect(got.Primitive == null && got.CollisionLayer == null && got.Bound == null, $"{p.EditorId}: has a primitive, a bound or a collision layer the spec does not ask for");
             else

@@ -699,6 +699,27 @@ Everything compiled, on its first compile: `PlacedPeople.psc`, the changed `Self
 
 Still not done anywhere: opening the plugin in the Creation Kit, a look at anything by eye, dialogue, saves and loads, anything in a place built for the purpose, any test of the quest as a player would meet it.
 
+### Prepared for the next run: Act I, first section, 2026-11-14
+
+Not a result: what has been built since the fourteenth run and has **not been compiled and not run in the game**. The design is [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md).
+
+What it is: the first chapter and its side matter as something a person can walk through, in the game's test room. Thirteen named people (copies of the settler with nothing to go about, each pointed at one settler of the game's own list for its looks, each in a faction of the plugin's own, none of whom starts a fight), the dispatch, the revolver, the two papers, the two pieces of evidence, the wagon's cargo, the notice board, the stove, two boxes and two markers. A development quest (`TLM_A1`) holds them and puts each into the alias of the two real quests that is meant for it. What people say is shown as boxes whose buttons set the quests' stages. The two quests' rules and records are unchanged.
+
+Two ways to run it:
+
+| | Command | What comes back |
+|---|---|---|
+| Scenario 12, nobody at the keyboard | `powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 12,11,10,2` | 42 checks for scenario 12, and its INFO lines: how long each person took to appear, whether anybody strayed, whether the player was in a fight after the killing, what the navigation mesh says of each spot |
+| Played by hand | `powershell -ExecutionPolicy Bypass -File tools\win\Play-Act1.ps1` | Nothing scored. The stages set, in order, and what the script log says of the section. And what a person saw |
+
+Scenario 12 first: it says whether the scripts compile, whether the plugin's new records load, and whether everybody is there. If it does not pass there is little point in playing.
+
+New here and so never seen in the game: see "What the game has not been asked yet" in the design. In short: script properties that are lists; arrays made by a script; `EnableNoWait`, `RandomInt`, `EquipItem`; `ForceRefTo` for things; a placed actor that starts dead; the copies' looks, factions and temper; a placed book, weapon and container; activators with an item's model; a message box with buttons; and every record found by the name a player sees.
+
+What was checked on this side (none of it a compile or a game test): the build against eight stand-in masters with its read-back and its byte check (35 kinds of deliberate damage caught); scenario 12 on the stand-in engine, 42 of 42, with eight faults put in on purpose; every road through the chapter played by its buttons, 31 roads, compared with the logic model after every step; six faults put into the talk on purpose; the Windows scripts on a stand-in PC for both commands. An independent review was started and was cut off before it reported: it is still owed.
+
+Scenarios 11, 10 and 2 go along because their scripts changed after the fourteenth run (longer time limits; the experiment with four standing by at a killing, which has not run yet).
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
@@ -790,8 +811,10 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). **Done 2026-11-13: 17 of 17**, for the trigger and the object without reservation. The person is there and can be enabled, but did not stay where it was placed.
 3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Done 2026-11-13: 8 of 8.** A person with no packages stands exactly where it is placed, and activating it reached the project's script on its alias. Open: why `Enable` takes about 19 seconds for such a person.
 3h. A trigger with no collision layer. **Done 2026-11-13**: both comparison triggers of scenario 10 set their stages.
+3i. The first section of Act I as the plugin places it: thirteen people, the things, the boxes, put into the two quests' aliases and walked once by their stages (scenario 12, [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md)). **Still to do.**
+3j. The same played by a person (`tools\win\Play-Act1.ps1`): can everybody be seen and told apart, do the boxes open and their buttons do what they say, can the papers be read, does a fight stay between those it concerns. **Still to do.**
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
-5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do.
+5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo still to do (the builder now looks for them by the name a player sees, ".44 Pistol", and says what it found).
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).
 7. `Kill` on a Protected actor (**done 2026-11-12**); `Disable` on an aliased actor (**done 2026-11-12**).
 8. Message box with a hidden button: which index comes back.
