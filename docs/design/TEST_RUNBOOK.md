@@ -170,7 +170,7 @@ Before any of this goes to the PC it can be rehearsed without the game: `python3
 powershell -ExecutionPolicy Bypass -File tools\win\Play-Act1.ps1
 ```
 
-One command: it updates the folder, compiles, builds, installs, starts the game in the test profile and has it enter the test room. Then the game is yours, and this is not a test with a score. **Not yet run on the PC.** To have the check run first and the game open for you straight after, in one go: `powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 12,900`.
+One command: it updates the folder, compiles, builds, installs, starts the game in the test profile and has it enter the test room. Then the game is yours, and this is not a test with a score: the report says `SET UP` or `NOT SET UP` for the session, on a line of its own apart from any scored scenario, and a set-up is never counted as a pass. **This command has not yet run on the PC**; the runner behind it, started with the number 900 on a build already installed, has, once, on 2026-11-14: the section was set up and nobody played ([VERIFY_LOG.md](VERIFY_LOG.md)). To have the check run first and the game open for you straight after, in one go: `powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 12,900`.
 
 What happens: a few seconds after the room appears, the section is set up. The people take a while to appear: on 2026-11-14 all thirteen were there together 26 to 40 seconds after being asked for. When the line **"Act I, first section. The wreck is to your left, the road ahead, Mercy Crossing to your right."** shows at the edge of the screen, everybody is there and the road is open. Wait for it before walking anywhere.
 

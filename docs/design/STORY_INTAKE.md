@@ -29,7 +29,8 @@ Never edit `CANON.md`, anything under `docs/` or any script. A proposal to chang
 - Plain ASCII: straight quotes and apostrophes, three dots for an ellipsis, a hyphen for a dash, no accents.
 - No percent sign, and no double quote inside a spoken line (the speaker's words are put in quotes by the builder).
 - A spoken line: at most 240 characters. A button: at most 48. An objective: 100. A document: 1,500, with line breaks.
-- In Act I nobody knows of the Deep, MERIDIAN, the Riders, the Charter, the Open Ledger or a vault. A line that uses one of those words is refused.
+- In Act I nobody knows of the Deep, MERIDIAN, the Riders, the Charter, the Open Ledger or a vault. A line that uses one of those words is refused: in a quest's log, an objective, a choice, a line of talk, a button, a paper. A word counts in every form of it: as it stands, in the plural, as an owner (*the Rider*, *the Riders*, *the Rider's*), in capitals or not. Longer words that only begin the same (*deeper*, *deeply*, *vaulted*) are other words.
+- **One exception, and a narrow one.** The canon ends Act I with the player recovering proof of having been a Meridian Rider and Mara Vale saying that the player's family came from the Deep ([three-act-story.md](../three-act-story.md), "05 The Fifth Rider"; [child-of-the-deep.md](../child-of-the-deep.md), quest beats). So the words *Deep*, *Meridian* and *Rider*, and no others, may be used by that chapter's own quest and by the talk file that belongs to it, and only when the quest file is unmistakably that quest: `"key": "mq05"`, `"id": "TLM_MQ05"`, `"chapter": 5`, and no second file with that key. Under any other key, id or chapter the words are refused as everywhere else; so are they in `talk/town.json` and in every paper, whatever chapter it is found in; and the Charter, the Open Ledger and a vault stay unsaid in all of Act I, the last chapter included. This says what the check lets through. It does not say that chapter may be written yet: the choices in child-of-the-deep.md are the owner's and are not settled.
 - The player's part is a button: a few words, never a speech, never a statement of belief. At most four buttons to a box.
 
 ## RESEARCH.md
@@ -100,7 +101,8 @@ Kind is `REAL` (the world as it is or was), `FALLOUT` (something the Fallout gam
 }
 ```
 
-- `key` is a short lower-case word; conditions and effects elsewhere use it (`mq02a done 30`).
+- `key` is a short lower-case word; conditions and effects elsewhere use it (`mq02a done 30`). **One file for each key**: a second file with a key that is already used, whether by a quest the plugin has or by a new one, is refused.
+- `id` is the quest's record name: `TLM_` and the key in capitals (`mq02a` is `TLM_MQ02A`). For the two quests the plugin has it is `TLM_MQ01` and `TLM_SQ01`. A file whose key and id do not belong together is refused, and so is a new quest under the id of another.
 - **A stage is a fact that has become true**, numbered 1 to 999. `set_by` says what in the world makes it true: something picked up, a place entered, somebody dead, a button. Exactly one stage completes the quest.
 - **A choice** has two to four options. Each says what it changes `now` and what it changes `later`. A choice is shown by what follows from it, never by what the player says about it.
 - `ways_through`: at least two, and one of them needs nothing optional. No quest may be a dead end, and no side quest may stand in the way of a main one.
@@ -132,7 +134,8 @@ Kind is `REAL` (the world as it is or was), `FALLOUT` (something the Fallout gam
 }
 ```
 
-- A person who is spoken to says **the line with the highest `priority` among those whose `when` all hold**. Give each person a line with an empty `when` and priority 0, so that there is always something to say.
+- `quest` is the `id` of the quest the talk belongs to: one of the plugin's (`TLM_MQ01`, `TLM_SQ01`) or one that a file under `quests/` in the same folder declares. A talk file about a quest nothing declares is refused. In `talk/town.json`, which belongs to no quest, it is `null`.
+- A person who is spoken to says **the line with the highest `priority` among those whose `when` all hold**. Give each person a line with an empty `when` and priority 0, so that there is always something to say. `priority` is a whole number from 0 to 1000; left out, it is 0. Anything else (a word, a number in quotes, a fraction, a negative number) is refused, because it cannot be compared.
 - `kind`: `talk` (the default: a box) or `aside` (a line at the edge of the screen; no buttons).
 - `status`: `design` if the line is already in the designs, `new` otherwise.
 - A line with no buttons gets one, "Continue". A button may `do` things, lead on to another line (`then`), both, or neither (the box closes).

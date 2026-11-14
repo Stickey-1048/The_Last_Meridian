@@ -2,8 +2,10 @@
 #
 # Almost everything in this module only READS the machine. The exceptions are
 # Write-RawLines, Set-IniValue and New-TlmDevProfile, which write files inside
-# this project's own Mod Organizer test profile, and Set-PluginGlobal, which
-# changes four bytes of this project's own installed plugin. Nothing here
+# this project's own Mod Organizer test profile, Set-PluginGlobal, which
+# changes four bytes of this project's own installed plugin, and
+# Restore-ScenarioRunState, which uses those to put back what a scenario run
+# changed and removes that run's own note in the build folder. Nothing here
 # changes a game folder, the registry, saves, the shared load order or an
 # existing profile, and nothing here starts or stops a program.
 #
@@ -1098,6 +1100,344 @@ function Find-BaseScriptSource {
     return $null
 }
 
+# ------------------------------------------------------------------ scenario runs: what the game wrote, and what it amounts to
+# Used by Run-Scenarios.ps1. They read two log files and count; they start nothing and change
+# nothing, so tools/win/tests/Test-ScenarioReport.ps1 can run them against stand-in logs.
+
+function Read-ScenarioSessionLogs {
+    <#
+      What the game wrote for the session that began at $Since: the self-test's own log
+      (Logs\Script\User\TLM.0.log) and the game's script log (Logs\Script\Papyrus.0.log).
+      A file last written before $Since belongs to an earlier session and is not read.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$UserLog,
+        [Parameter(Mandatory)][string]$PapyrusLog,
+        [Parameter(Mandatory)][datetime]$Since
+    )
+    # What the game wrote for the session that began at $since.
+    $r = [ordered]@{
+        HasUserLog = $false; Header = $null; ResultLine = $null; Passed = 0; FailLines = @(); InfoLines = @(); Aborted = $false
+        LastStep = $null; LastLine = $null; TimingNotes = @()
+        HasScriptLog = $false; CoreStarted = $false; Problems = @(); MqEvents = 0; SqEvents = 0; ScriptLogLines = 0; GuardLines = @()
+        TrialLines = @(); OtherUserLogs = @(); SlowSteps = @(); Act1Lines = @(); Act1SetUp = $false
+        MqStages = @(); SqStages = @()
+    }
+    if ((Test-Path -LiteralPath $userLog) -and ((Get-Item -LiteralPath $userLog).LastWriteTime -ge $since)) {
+        $lines = @(Get-Content -LiteralPath $userLog)
+        $r.HasUserLog = $true
+        $r.Header = @($lines | Where-Object { $_ -match '==== The Last Meridian self-test: scenario' }) | Select-Object -Last 1
+        $r.ResultLine = @($lines | Where-Object { $_ -match '==== RESULT:' }) | Select-Object -Last 1
+        $r.Passed = @($lines | Where-Object { $_ -match '\]\s*PASS\s' }).Count
+        $r.FailLines = @($lines | Where-Object { $_ -match '\]\s*FAIL\s' })
+        $r.InfoLines = @($lines | Where-Object { $_ -match '\]\s*INFO\s' })
+        $r.Aborted = [bool](@($lines | Where-Object { $_ -match 'ABORTED' }).Count)
+        # Where a scenario that did not finish had got to.
+        $r.LastStep = @($lines | Where-Object { $_ -match '\]\s*STEP\s' }) | Select-Object -Last 1
+        $r.LastLine = @($lines | Where-Object { "$_".Trim() -ne '' }) | Select-Object -Last 1
+        # What a matrix case reports about one of its steps ("C132 #4 ...: ..."): whether two
+        # things did overlap in this session, and the like. These lines are about timing, and
+        # a case that passed shows nothing else of itself in the report.
+        $r.TimingNotes = @($lines | Where-Object { $_ -match '\]\s*INFO\s+C\d+ #\d+ ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*INFO\s*', '') })
+        # How long each named step took, by the game's own clock on the lines: from a STEP line to
+        # the next STEP line or the RESULT line. The log's clock has whole seconds. A step of ten
+        # seconds or more is listed: on 2026-11-13 one move of the player took 38 seconds, which
+        # showed only as a gap between two other lines.
+        $stepName = $null; $stepAt = $null
+        foreach ($line in $lines) {
+            if ($line -notmatch '^\[(\d\d/\d\d/\d\d\d\d - \d\d:\d\d:\d\d[AP]M)\]\s*(.*)$') { continue }
+            $rest = $Matches[2]
+            $at = $null
+            try { $at = [datetime]::ParseExact($Matches[1], 'MM/dd/yyyy - hh:mm:sstt', [System.Globalization.CultureInfo]::InvariantCulture) } catch { continue }
+            if ($rest -match '^(STEP\s|==== RESULT)') {
+                if ($stepName -and $stepAt) {
+                    $took = [int]($at - $stepAt).TotalSeconds
+                    if ($took -ge 10) { $r.SlowSteps += "$took seconds: $stepName" }
+                }
+                $stepName = if ($rest -match '^STEP\s+(.*)$') { $Matches[1] } else { $null }
+                $stepAt = $at
+            }
+        }
+    }
+    if ((Test-Path -LiteralPath $papyrusLog) -and ((Get-Item -LiteralPath $papyrusLog).LastWriteTime -ge $since)) {
+        $lines = @(Get-Content -LiteralPath $papyrusLog)
+        $r.HasScriptLog = $true
+        $r.ScriptLogLines = $lines.Count
+        $r.CoreStarted = [bool](@($lines | Where-Object { $_ -match 'TLM_Core: started' }).Count)
+        # Errors and warnings that name this project. An error raised inside a call often does
+        # not: the game writes what went wrong on one line and the scripts it went wrong in on
+        # the lines after it ("stack:" and one line per script). Such a line counts when one of
+        # those next lines names the project, and is shown with it.
+        $problems = New-Object System.Collections.Generic.List[string]
+        for ($i = 0; $i -lt $lines.Count; $i++) {
+            $line = $lines[$i]
+            if ($line -notmatch '(?i)\b(error|warning):' -or $line -match 'TLM_SelfTest:') { continue }
+            if ($line -match 'TLM') { $problems.Add($line); continue }
+            for ($j = $i + 1; $j -lt $lines.Count -and $j -le $i + 6; $j++) {
+                if ($lines[$j] -match '^\[') { break }          # the next dated line: the stack has ended
+                if ($lines[$j] -match 'TLM') { $problems.Add("$line  <- $($lines[$j].Trim())"); break }
+            }
+        }
+        $r.Problems = @($problems)
+        # The placed-content trial (scenarios 10 and 11) has scripts on its aliases that are not
+        # this project's: the game's own, in scenario 10. Whatever the script log says of the
+        # trial's quest, by whomever, that is not already listed as a problem.
+        # (Dated lines only: the lines of an error's stack begin with a tab and belong to the error.)
+        $r.TrialLines = @($lines | Where-Object { $_ -match '^\[' -and $_ -match 'TLM_Trial' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
+        # The first section's quest (scenario 12, and the section played by hand) likewise.
+        $r.Act1Lines = @($lines | Where-Object { $_ -match '^\[' -and $_ -match 'TLM_A1' -and $_ -notmatch 'TLM_SelfTest:' -and ($problems -notcontains $_) })
+        $r.Act1SetUp = [bool](@($lines | Where-Object { $_ -match 'TLM_A1: the first section is set up' }).Count)
+        # The stages of the two quests in the order they were set: what a person who played did.
+        $r.MqStages = @($lines | ForEach-Object { if ($_ -match 'TLM_MQ01: stage (\d+) item') { $Matches[1] } })
+        $r.SqStages = @($lines | ForEach-Object { if ($_ -match 'TLM_SQ01: stage (\d+) item') { $Matches[1] } })
+        $r.MqEvents = @($lines | Where-Object { $_ -match 'TLM_MQ01: stage \d+ item' }).Count
+        $r.SqEvents = @($lines | Where-Object { $_ -match 'TLM_SQ01: stage \d+ item' }).Count
+        # The main quest writes a line, beginning with the amendment's number, when a rule about
+        # timing decides something: the evade timer held back by a fight (A2) or by the
+        # conversation with the Cutter lead (A25), and the guards against late deaths and
+        # overlapping handlers (A24). Without these a pass does not say which rule acted, or
+        # whether the game's timing ever asked one to.
+        $r.GuardLines = @($lines | Where-Object { $_ -match 'TLM_MQ01: A\d+ ' } | ForEach-Object { ($_ -replace '^\[[^\]]*\]\s*', '') })
+    }
+    # Other logs scripts wrote in this session: the game's own scripts may keep one of their own.
+    $userFolder = Split-Path -Parent $userLog
+    if (Test-Path -LiteralPath $userFolder) {
+        foreach ($f in @(Get-ChildItem -LiteralPath $userFolder -Filter '*.log' -File | Where-Object { $_.FullName -ne $userLog -and $_.LastWriteTime -ge $since })) {
+            $other = @(Get-Content -LiteralPath $f.FullName)
+            $named = @($other | Where-Object { $_ -match 'TLM' })
+            $r.OtherUserLogs += "$($f.Name): $($other.Count) lines, $($named.Count) naming this project"
+            foreach ($l in ($named | Select-Object -First 20)) { $r.OtherUserLogs += "    $l" }
+        }
+    }
+    return [pscustomobject]$r
+}
+
+function Get-ScenarioSessionStatus {
+    <#
+      One word for a session, from what its logs hold, and a note.
+
+      A scored scenario: PASSED or FAILED when the self-test wrote its RESULT line and the game
+      then closed by itself; TIMED OUT when it wrote that line and this script had to close the
+      game all the same; otherwise REFUSED, UNFINISHED or NO RESULT. Only PASSED is a pass.
+
+      A play session (the first section of Act I set up for a person): SET UP or NOT SET UP,
+      and nothing else. SET UP means only that the game's script log has the line saying the
+      section was set up. It is not a pass: nothing is checked in a play session, and the word
+      says nothing about whether anybody played.
+    #>
+    param(
+        [Parameter(Mandatory)]$Logs,
+        [bool]$Playing,
+        [string]$ClosedBy,
+        # The scenario's time ran out and this script closed the game.
+        [bool]$TimedOut
+    )
+    $status = 'NO RESULT'
+    $note = $ClosedBy
+    if ($Playing) {
+        if ($Logs.Act1SetUp) { $status = 'SET UP' }
+        elseif ($Logs.CoreStarted) { $status = 'NOT SET UP'; $note = "the game entered the test room and the core quest started, but the script log has no line saying the first section was set up; $ClosedBy" }
+        elseif ($Logs.HasScriptLog) { $status = 'NOT SET UP'; $note = "the game ran, but the core quest never started: the game did not enter the test room by itself; $ClosedBy" }
+        else { $status = 'NOT SET UP'; $note = "the game wrote no script log for this session; $ClosedBy" }
+    } elseif ($Logs.ResultLine -and $TimedOut) {
+        # The self-test finished and said so, and then the game did not close: something after the
+        # RESULT line (the clean-up, the quit) never came back. The checks stand as they were
+        # written, but a session this script had to end is not a pass.
+        $status = 'TIMED OUT'
+        $note = "the self-test wrote its RESULT line, but the game did not close by itself; $ClosedBy"
+    } elseif ($Logs.ResultLine) {
+        $status = if (@($Logs.FailLines).Count -eq 0) { 'PASSED' } else { 'FAILED' }
+    } elseif ($Logs.Aborted) {
+        $status = 'REFUSED'
+        $note = "the self-test refused to run (the quests were already started); $ClosedBy"
+    } elseif ($Logs.HasUserLog) {
+        $status = 'UNFINISHED'
+        $note = "the scenario started but wrote no RESULT line; $ClosedBy"
+    } elseif ($Logs.CoreStarted) {
+        $note = "the game entered a session and the core quest started, but the scenario did not start; $ClosedBy"
+    } elseif ($Logs.HasScriptLog) {
+        $note = "the game ran, but the core quest never started: the game did not enter the test room by itself; $ClosedBy"
+    } else {
+        $note = "the game wrote no script log for this session; $ClosedBy"
+    }
+    return [pscustomobject]@{ Status = $status; Note = $note }
+}
+
+function Get-ScenarioRunSummary {
+    <#
+      The totals of a run, and the lines of its table.
+
+      Scored scenarios and play sessions are counted apart. A play session has no checks and
+      cannot pass: it is never in "passed", and whatever a log of that session holds is not
+      added to the checks. The run as a whole is in order (ExitCode 0) when the results are
+      exactly the scenarios asked for, each once (none missing, none twice, none that nobody
+      asked for), every scored one passed, every play session was set up, and what the run
+      changed was put back (see Restore-ScenarioRunState).
+
+      $Results: one object per session that was started, with Scenario, Status, Seconds, Note
+      and Logs (which may be $null when the game never started).
+    #>
+    param(
+        [object[]]$Results = @(),
+        [Parameter(Mandatory)][int[]]$Requested,
+        [Parameter(Mandatory)][int]$PlayNumber,
+        [hashtable]$Titles = @{},
+        [string]$StoppedEarly,
+        # Something the run changed could not be put back, or the installed plugin is not the build.
+        [bool]$RestoreFailed
+    )
+    $all = @($Results | Where-Object { $null -ne $_ })
+    $scored = @($all | Where-Object { [int]$_.Scenario -ne $PlayNumber })
+    $play = @($all | Where-Object { [int]$_.Scenario -eq $PlayNumber })
+    $scoredAsked = @($Requested | Where-Object { $_ -ne $PlayNumber }).Count
+    $playAsked = @($Requested | Where-Object { $_ -eq $PlayNumber }).Count
+    $scoredPassed = @($scored | Where-Object { $_.Status -eq 'PASSED' }).Count
+    $playSetUp = @($play | Where-Object { $_.Status -eq 'SET UP' }).Count
+    $checksPassed = 0; $checksFailed = 0
+    foreach ($r in $scored) { if ($r.Logs) { $checksPassed += [int]$r.Logs.Passed; $checksFailed += @($r.Logs.FailLines).Count } }
+    $notRun = @($Requested | Where-Object { $n = $_; -not @($all | Where-Object { [int]$_.Scenario -eq $n }).Count })
+    # A run is the scenarios asked for, each once. A number that has two results, or a result for a number
+    # nobody asked for, means the list of results is not what it is taken to be, and the right number of
+    # results could then hide a scenario that never ran. The runner's loop gives neither; this does not
+    # rely on that.
+    $twice = @($all | Group-Object { [int]$_.Scenario } | Where-Object { $_.Count -gt 1 } | ForEach-Object { [int]$_.Name } | Sort-Object)
+    $notAsked = @($all | ForEach-Object { [int]$_.Scenario } | Where-Object { @($Requested) -notcontains $_ } | Sort-Object -Unique)
+    $askedTwice = @($Requested | Group-Object | Where-Object { $_.Count -gt 1 } | ForEach-Object { [int]$_.Name } | Sort-Object)
+
+    $lines = New-Object System.Collections.Generic.List[string]
+    if ($scoredAsked) {
+        $lines.Add("  Scored scenarios: $($scored.Count) of $scoredAsked run: $scoredPassed passed, $($scored.Count - $scoredPassed) did not. Checks: $checksPassed passed, $checksFailed failed.")
+    } else {
+        $lines.Add('  Scored scenarios: none were asked for. Checks: 0 passed, 0 failed. Nothing was scored in this run.')
+    }
+    if ($playAsked) {
+        $lines.Add("  Play sessions, in which nothing is scored: $($play.Count) of $playAsked started: $playSetUp set up, $($play.Count - $playSetUp) not set up. A set-up is not a pass.")
+    }
+    $lines.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f '#', 'result', 'passed', 'failed', 'seconds', 'what it is'))
+    $rows = New-Object System.Collections.Generic.List[object]
+    foreach ($r in $all) {
+        $isPlay = ([int]$r.Scenario -eq $PlayNumber)
+        $p = '-'; $f = '-'
+        if (-not $isPlay) {
+            $p = if ($r.Logs) { [int]$r.Logs.Passed } else { 0 }
+            $f = if ($r.Logs) { @($r.Logs.FailLines).Count } else { 0 }
+        }
+        $what = if ($Titles.ContainsKey([int]$r.Scenario)) { $Titles[[int]$r.Scenario] } else { '' }
+        if ($r.Note -ne 'the game closed itself' -and $r.Note -ne 'the game was closed') { $what = "$what  [$($r.Note)]" }
+        $lines.Add(('  {0,3}  {1,-11} {2,6} {3,6} {4,7}  {5}' -f $r.Scenario, $r.Status, $p, $f, $r.Seconds, $what))
+        $title = if ($isPlay) { "== Play session $($r.Scenario): $($r.Status) (nothing is scored) ==" } else { "== Scenario $($r.Scenario): $($r.Status) ==" }
+        $rows.Add([pscustomobject]@{ Scenario = [int]$r.Scenario; Status = $r.Status; IsPlay = $isPlay; SectionTitle = $title })
+    }
+    if ($notRun.Count) { $lines.Add("  not run: $($notRun -join ', ')") }
+    if ($twice.Count) { $lines.Add("  MORE THAN ONE RESULT for: $($twice -join ', '). Each scenario is run once; the run is not in order.") }
+    if ($notAsked.Count) { $lines.Add("  A RESULT NOBODY ASKED FOR: $($notAsked -join ', '). The run is not in order.") }
+    if ($askedTwice.Count) { $lines.Add("  ASKED FOR TWICE: $($askedTwice -join ', '). Each scenario is run once; the run is not in order.") }
+    if ($RestoreFailed) {
+        $lines.Add('  THE RUN IS NOT IN ORDER, whatever the scenarios did: not everything it changed was put back, or the')
+        $lines.Add('  installed plugin is not the build. See "Put back after the run" below.')
+    }
+
+    # Exactly what was asked for, each once, and each as it should be.
+    $asAsked = (-not $notRun.Count) -and (-not $twice.Count) -and (-not $notAsked.Count) -and (-not $askedTwice.Count)
+    $inOrder = (-not $RestoreFailed) -and (-not $StoppedEarly) -and $asAsked -and ($scoredPassed -eq $scored.Count) -and ($playSetUp -eq $play.Count)
+    return [pscustomobject]@{
+        ScoredAsked = $scoredAsked; ScoredRun = $scored.Count; ScoredPassed = $scoredPassed; ScoredNotPassed = $scored.Count - $scoredPassed
+        ChecksPassed = $checksPassed; ChecksFailed = $checksFailed
+        PlayAsked = $playAsked; PlayStarted = $play.Count; PlaySetUp = $playSetUp; PlayNotSetUp = $play.Count - $playSetUp
+        NotRun = $notRun; MoreThanOnce = $twice; NotAskedFor = $notAsked; AskedTwice = $askedTwice
+        Lines = $lines.ToArray(); Rows = $rows.ToArray(); RestoreFailed = [bool]$RestoreFailed
+        ExitCode = $(if ($inOrder) { 0 } else { 1 })
+    }
+}
+
+function Restore-ScenarioRunState {
+    <#
+      Puts back what a scenario run changed, and says whether it all went back.
+
+      WRITES: the scenario number in this project's own installed plugin (four bytes), and two
+      settings in the test profile's fallout4custom.ini. It removes the run's own note of how
+      things were (build\scenario-run.unfinished.json), and only when everything is back.
+
+      Each thing is read back after it is written. Failed is true when anything could not be
+      written, reads back as something else, or when the installed plugin is then not the same
+      file as the build. The note of how things were is kept in that case, so that the next
+      run can try again, and the caller has to end as failed whatever the scenarios did: a run
+      that leaves the start-up command or a scenario number behind changes what the next
+      session of the game does.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$InstalledPlugin,
+        [Parameter(Mandatory)][string]$GlobalName,
+        [Parameter(Mandatory)][single]$ValueAtStart,
+        [Parameter(Mandatory)][string]$CustomIni,
+        $AlwaysActiveBefore,
+        [string]$BuiltPlugin,
+        [string]$UnfinishedPath,
+        $Unfinished,
+        [bool]$CutOffWithoutNote
+    )
+    $notes = New-Object System.Collections.Generic.List[string]
+    $notTheBuild = $false
+    try {
+        [void](Set-PluginGlobal -Path $InstalledPlugin -EditorId $GlobalName -Value $ValueAtStart)
+        $now = Get-PluginGlobal -Path $InstalledPlugin -EditorId $GlobalName
+        if ($now -ne $ValueAtStart) { throw "it reads back as $now, not $ValueAtStart" }
+        $notes.Add("Scenario number in the installed plugin: back to $now")
+    } catch {
+        $notes.Add("COULD NOT restore the scenario number in the installed plugin: $($_.Exception.Message). Run the install again to replace it.")
+    }
+    try {
+        Set-IniValue $CustomIni 'General' 'sStartingConsoleCommand' ''
+        $now = "$(Get-IniValue $CustomIni 'General' 'sStartingConsoleCommand')"
+        if ($now.Trim() -ne '') { throw "it still reads '$now'" }
+        $notes.Add("Start-up console command in the test profile: emptied (now '$now')")
+    } catch {
+        $notes.Add("COULD NOT empty the start-up console command in ${CustomIni}: $($_.Exception.Message)")
+    }
+    try {
+        # 0 is the game's own default, so "not set before" and 0 mean the same.
+        $back = if ($null -eq $AlwaysActiveBefore -or "$AlwaysActiveBefore" -eq '') { '0' } else { "$AlwaysActiveBefore" }
+        Set-IniValue $CustomIni 'General' 'bAlwaysActive' $back
+        $now = "$(Get-IniValue $CustomIni 'General' 'bAlwaysActive')"
+        if ($now -ne $back) { throw "it reads '$now', not '$back'" }
+        $notes.Add("Keep-running-without-focus setting in the test profile: back to $now")
+    } catch {
+        $notes.Add("COULD NOT restore bAlwaysActive in ${CustomIni}: $($_.Exception.Message)")
+    }
+    if ($BuiltPlugin -and (Test-Path -LiteralPath $BuiltPlugin)) {
+        try {
+            $same = (Get-FileHash -LiteralPath $BuiltPlugin).Hash -eq (Get-FileHash -LiteralPath $InstalledPlugin).Hash
+            if ($same) {
+                $notes.Add('Installed plugin identical to the build again: yes')
+            } else {
+                $notTheBuild = $true
+                $notes.Add('Installed plugin identical to the build again: NO. What the game was given is not the build, or it was changed during the run. Run the install again to replace it.')
+            }
+        } catch {
+            $notes.Add("COULD NOT compare the installed plugin with the build: $($_.Exception.Message). Run the install again to replace it.")
+        }
+    }
+    # One rule for all of it: a line that begins COULD NOT, or a plugin that is not the build.
+    $failed = [bool](@($notes | Where-Object { $_ -match '^COULD NOT' }).Count) -or $notTheBuild
+    # The note about how things were goes only when all of it has been put back.
+    if (-not $failed) {
+        try { if ($UnfinishedPath -and (Test-Path -LiteralPath $UnfinishedPath)) { Remove-Item -LiteralPath $UnfinishedPath -Force } } catch { }
+        if ($Unfinished) {
+            $began = if ($Unfinished.PSObject.Properties.Name -contains 'Began') { "$($Unfinished.Began)" } else { 'at a time it did not note' }
+            $notes.Add("What the earlier, unfinished run had changed (it began $began): put back with the above")
+        }
+        if ($CutOffWithoutNote) { $notes.Add("What an earlier, unfinished run had changed: the game's own defaults were put back, as above") }
+    } else {
+        if (@($notes | Where-Object { $_ -match '^COULD NOT' }).Count) {
+            $notes.Add('NOT EVERYTHING WAS PUT BACK, so this run ends as failed whatever the scenarios did.')
+        } else {
+            $notes.Add('THE INSTALLED PLUGIN IS NOT THE BUILD, so this run ends as failed whatever the scenarios did: what the game ran is not what is in the build folder.')
+        }
+        $notes.Add('The note of how things were is kept (build\scenario-run.unfinished.json), and the next run will try again.')
+    }
+    return [pscustomobject]@{ Notes = $notes.ToArray(); Failed = $failed }
+}
+
 Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Get-Fallout4UserState,
     Select-DevInstall, Get-SteamLibraryRoots, Get-IniValue, Get-ExeVersion, Get-GameGeneration,
     Get-ModOrganizerInfo, Find-BaseScriptSource, ConvertFrom-MoValue, Invoke-Native, Get-SteamAppState,
@@ -1106,4 +1446,5 @@ Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Ge
     Test-FalloutLondonFolder, Test-SamePath, Get-BethesdaInstalledPath, Get-RunningGame, Get-ProcessFacts,
     Get-RegistryValueSafe, Wait-GameAndManagerClosed, Find-Bytes, Get-PluginGlobalOffset, Get-PluginGlobal, Set-PluginGlobal,
     Get-SteamFileManagerLooksFor, Test-SteamRunning, Get-SteamExePath, Confirm-SteamForManager, Get-MainWindowTitle,
-    Get-ProgramsOfInterest, Close-ManagerStartedSince
+    Get-ProgramsOfInterest, Close-ManagerStartedSince,
+    Read-ScenarioSessionLogs, Get-ScenarioSessionStatus, Get-ScenarioRunSummary, Restore-ScenarioRunState
