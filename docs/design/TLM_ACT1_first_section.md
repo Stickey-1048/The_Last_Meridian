@@ -199,7 +199,7 @@ The quest's clock is the design's: once the ambush is live, ninety seconds witho
 
 1. the development quest starts and holds every placed reference (the revolver aside: the chapter allows there to be none);
 2. each of the 26 aliases of the two real quests holds the reference put into it;
-3. everybody is there within five minutes of being switched on, the marshal dead and the others alive;
+3. everybody is there within seven minutes of being switched on (one such person took 19 seconds; whether thirteen come side by side or one after another is not known), the marshal dead and the others alive;
 4. six seconds later every living person stands within 64 units of where it was placed;
 5. the dispatch, picked up, sets stage 20; the ledger and the journal, moved into the player's inventory, set the side quest's 10 and 13 (they are moved by script: activating a book opens it to be read); the revolver, picked up, sets 15, and the player has six rounds or more;
 6. the player, moved into the place the ambush is seen from, sets stage 30;

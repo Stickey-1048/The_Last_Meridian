@@ -154,7 +154,7 @@ class WhatTheAuditCatches(unittest.TestCase):
         s = self.run_with(prepare=lambda s: s.never_arrives.add(REF + "Talbot"))
         self.assert_fails_on(s, "not there once everything has been switched on", "still switched off")
         self.assertTrue(any("Jonah Talbot was not there after" in l for l in s.user_logs["TLM"]))
-        # It waited its five minutes and no longer, and the watchdog did not have to end it.
+        # It waited its seven minutes and no longer, and the watchdog did not have to end it.
         self.assertTrue(summary(s)["ends_by_itself"])
         self.assertFalse(any("did not come back" in l for l in s.user_logs["TLM"]))
 

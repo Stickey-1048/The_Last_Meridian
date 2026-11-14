@@ -181,9 +181,11 @@ float STAY_WITHIN = 64.0 Const
 ; How long the people may take to appear, and how long the step that waits for
 ; them may take before the self-test's watchdog ends the scenario. On
 ; 2026-11-13 Enable took 18 and 20 seconds to come back for a person of the
-; plugin's own; here there are thirteen.
-float PEOPLE_SECONDS = 300.0 Const
-float PEOPLE_STEP_SECONDS = 400.0 Const
+; plugin's own; here there are thirteen, and whether the game brings them
+; in side by side or one after another is not known: thirteen times twenty
+; seconds is four and a half minutes, so they are given seven.
+float PEOPLE_SECONDS = 420.0 Const
+float PEOPLE_STEP_SECONDS = 520.0 Const
 ; How long a step that moves the player may take (one took 38 seconds).
 float MOVE_SECONDS = 150.0 Const
 ; How far above a spot the navigation mesh is asked about it.
