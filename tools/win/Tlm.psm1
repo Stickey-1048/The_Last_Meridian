@@ -1269,9 +1269,10 @@ function Get-ScenarioRunSummary {
 
       Scored scenarios and play sessions are counted apart. A play session has no checks and
       cannot pass: it is never in "passed", and whatever a log of that session holds is not
-      added to the checks. The run as a whole is in order (ExitCode 0) when every scenario
-      asked for was run, every scored one passed, every play session was set up, and what the
-      run changed was put back (see Restore-ScenarioRunState).
+      added to the checks. The run as a whole is in order (ExitCode 0) when the results are
+      exactly the scenarios asked for, each once (none missing, none twice, none that nobody
+      asked for), every scored one passed, every play session was set up, and what the run
+      changed was put back (see Restore-ScenarioRunState).
 
       $Results: one object per session that was started, with Scenario, Status, Seconds, Note
       and Logs (which may be $null when the game never started).
@@ -1295,6 +1296,13 @@ function Get-ScenarioRunSummary {
     $checksPassed = 0; $checksFailed = 0
     foreach ($r in $scored) { if ($r.Logs) { $checksPassed += [int]$r.Logs.Passed; $checksFailed += @($r.Logs.FailLines).Count } }
     $notRun = @($Requested | Where-Object { $n = $_; -not @($all | Where-Object { [int]$_.Scenario -eq $n }).Count })
+    # A run is the scenarios asked for, each once. A number that has two results, or a result for a number
+    # nobody asked for, means the list of results is not what it is taken to be, and the right number of
+    # results could then hide a scenario that never ran. The runner's loop gives neither; this does not
+    # rely on that.
+    $twice = @($all | Group-Object { [int]$_.Scenario } | Where-Object { $_.Count -gt 1 } | ForEach-Object { [int]$_.Name } | Sort-Object)
+    $notAsked = @($all | ForEach-Object { [int]$_.Scenario } | Where-Object { @($Requested) -notcontains $_ } | Sort-Object -Unique)
+    $askedTwice = @($Requested | Group-Object | Where-Object { $_.Count -gt 1 } | ForEach-Object { [int]$_.Name } | Sort-Object)
 
     $lines = New-Object System.Collections.Generic.List[string]
     if ($scoredAsked) {
@@ -1321,17 +1329,23 @@ function Get-ScenarioRunSummary {
         $rows.Add([pscustomobject]@{ Scenario = [int]$r.Scenario; Status = $r.Status; IsPlay = $isPlay; SectionTitle = $title })
     }
     if ($notRun.Count) { $lines.Add("  not run: $($notRun -join ', ')") }
+    if ($twice.Count) { $lines.Add("  MORE THAN ONE RESULT for: $($twice -join ', '). Each scenario is run once; the run is not in order.") }
+    if ($notAsked.Count) { $lines.Add("  A RESULT NOBODY ASKED FOR: $($notAsked -join ', '). The run is not in order.") }
+    if ($askedTwice.Count) { $lines.Add("  ASKED FOR TWICE: $($askedTwice -join ', '). Each scenario is run once; the run is not in order.") }
     if ($RestoreFailed) {
         $lines.Add('  THE RUN IS NOT IN ORDER, whatever the scenarios did: not everything it changed was put back, or the')
         $lines.Add('  installed plugin is not the build. See "Put back after the run" below.')
     }
 
-    $inOrder = (-not $RestoreFailed) -and (-not $StoppedEarly) -and ($all.Count -ge @($Requested).Count) -and ($scoredPassed -eq $scored.Count) -and ($playSetUp -eq $play.Count)
+    # Exactly what was asked for, each once, and each as it should be.
+    $asAsked = (-not $notRun.Count) -and (-not $twice.Count) -and (-not $notAsked.Count) -and (-not $askedTwice.Count)
+    $inOrder = (-not $RestoreFailed) -and (-not $StoppedEarly) -and $asAsked -and ($scoredPassed -eq $scored.Count) -and ($playSetUp -eq $play.Count)
     return [pscustomobject]@{
         ScoredAsked = $scoredAsked; ScoredRun = $scored.Count; ScoredPassed = $scoredPassed; ScoredNotPassed = $scored.Count - $scoredPassed
         ChecksPassed = $checksPassed; ChecksFailed = $checksFailed
         PlayAsked = $playAsked; PlayStarted = $play.Count; PlaySetUp = $playSetUp; PlayNotSetUp = $play.Count - $playSetUp
-        NotRun = $notRun; Lines = $lines.ToArray(); Rows = $rows.ToArray(); RestoreFailed = [bool]$RestoreFailed
+        NotRun = $notRun; MoreThanOnce = $twice; NotAskedFor = $notAsked; AskedTwice = $askedTwice
+        Lines = $lines.ToArray(); Rows = $rows.ToArray(); RestoreFailed = [bool]$RestoreFailed
         ExitCode = $(if ($inOrder) { 0 } else { 1 })
     }
 }

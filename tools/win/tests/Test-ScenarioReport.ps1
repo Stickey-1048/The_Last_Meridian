@@ -33,8 +33,12 @@
   It reads and writes nothing outside its own temporary folder. It starts no
   program. It works under Windows PowerShell 5.1 and PowerShell 7.
 
-  Status: passes on Linux PowerShell 7.4. NOT YET RUN under Windows
-  PowerShell 5.1, which is what the PC uses; it can be, without the game.
+  Status: passes on Linux PowerShell 7.4. Under Windows PowerShell 5.1,
+  which is what the PC uses, its first 81 checks passed there on 2026-11-14
+  (version 5.1.26100.9818, in a checkout of its own, no game started). The
+  checks added since (a forced close after RESULT, the putting back, results
+  being exactly what was asked for) HAVE NOT YET RUN under 5.1; they can,
+  without the game.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\tests\Test-ScenarioReport.ps1
@@ -227,6 +231,36 @@ try {
     Check 'a play session in which the wrong game started is not a set-up' ($s.PlayStarted -eq 1 -and $s.PlaySetUp -eq 0 -and $s.PlayNotSetUp -eq 1 -and $s.ExitCode -eq 1)
     $s = Summarize @() @(900) 'nothing ran'
     Check 'a run in which nothing was started' ($s.PlayStarted -eq 0 -and $s.ScoredRun -eq 0 -and $s.ExitCode -eq 1 -and ((Text $s) -match 'not run: 900'))
+
+    # ------------------------------------------------------------ 5b. the results are exactly what was asked for
+    Write-Host '5b. the right number of results does not stand in for the right results'
+    $elevenB = New-Session -Scenario 11 -ScriptLog $scoredLog -SelfTestLog (Lines-PassedScenario 11 8)
+    # two results for 12 and none for 11: as many results as were asked for, and all passed
+    $s = Summarize @($twelve, $twelve) @(12, 11) $null
+    Check 'a scenario with two results does not hide one that never ran' ($s.ExitCode -eq 1 -and ($s.NotRun -join ',') -eq '11' -and ($s.MoreThanOnce -join ',') -eq '12')
+    Check 'the totals name both' ((Text $s) -match '(?m)^\s+not run: 11$' -and (Text $s) -match 'MORE THAN ONE RESULT for: 12')
+    # a result for a scenario nobody asked for, in place of one that was
+    $thirteen = [pscustomobject]@{ Scenario = 13; Status = 'PASSED'; Seconds = 30; Logs = $twelve.Logs; Note = 'the game closed itself' }
+    $s = Summarize @($twelve, $thirteen) @(12, 11) $null
+    Check 'a result nobody asked for does not hide one that never ran' ($s.ExitCode -eq 1 -and ($s.NotRun -join ',') -eq '11' -and ($s.NotAskedFor -join ',') -eq '13')
+    Check 'the totals name it' ((Text $s) -match 'A RESULT NOBODY ASKED FOR: 13')
+    # everything asked for is there and passed, and one is there twice
+    $s = Summarize @($twelve, $elevenB, $elevenB) @(12, 11) $null
+    Check 'a scenario with two results is not in order even when nothing is missing' ($s.ExitCode -eq 1 -and -not $s.NotRun.Count -and ($s.MoreThanOnce -join ',') -eq '11')
+    # everything asked for is there and passed, and there is one more
+    $s = Summarize @($twelve, $elevenB, $thirteen) @(12, 11) $null
+    Check 'a result too many is not in order even when nothing is missing' ($s.ExitCode -eq 1 -and -not $s.NotRun.Count -and ($s.NotAskedFor -join ',') -eq '13')
+    # the same for play sessions
+    $s = Summarize @($play, $play) @(12, 900) $null
+    Check 'two set-ups do not hide a scored scenario that never ran' ($s.ExitCode -eq 1 -and ($s.NotRun -join ',') -eq '12' -and ($s.MoreThanOnce -join ',') -eq '900')
+    # a list that asks for a scenario twice
+    $s = Summarize @($twelve, $elevenB) @(12, 11, 11) $null
+    Check 'a scenario asked for twice is not in order' ($s.ExitCode -eq 1 -and ($s.AskedTwice -join ',') -eq '11')
+    # and the plain case still is
+    $s = Summarize @($twelve, $elevenB) @(12, 11) $null
+    Check 'exactly what was asked for, each once and passed, is in order' ($s.ExitCode -eq 0 -and -not $s.NotRun.Count -and -not $s.MoreThanOnce.Count -and -not $s.NotAskedFor.Count -and -not $s.AskedTwice.Count)
+    $s = Summarize @($elevenB, $twelve) @(12, 11) $null
+    Check 'in whatever order they ran' ($s.ExitCode -eq 0)
 
     # ------------------------------------------------------------ 6. an ordinary run, as before
     Write-Host '6. scored scenarios only'
