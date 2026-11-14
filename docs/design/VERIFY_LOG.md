@@ -798,6 +798,27 @@ It is the first run of everything since the twelfth (62 scenarios, commit `11b92
 
 **What this is and is not.** It is the scripted rules behaving in the game as predicted, in every scenario there is, on one commit. It is **not a playtest**, by a person or by an agent: nobody has looked at the first section, no box has opened in the game, no paper has been read, nothing has been picked up by hand, no fight has been fought. Scenario 900, which sets the section up for somebody to play, has never been started.
 
+### The first section set up for play, watched by an agent, 2026-11-14
+
+Not a scenario run and not a playtest. After the seventeenth run the coordinator started play mode (number 900) once, on the build already installed from `3b28aae`, with no pull and no rebuild, and had an agent that can see the screen watch it. Recorded here as the coordinator reported it; the runner's report and the screenshots are kept by the coordinator and were not seen by whoever wrote this entry. It is not in `tools/papyrus_sim/game_runs.json`, which holds scored runs taken from a report in hand.
+
+| What | As reported |
+|---|---|
+| When | 11:43:57 to 11:45:43, 106 seconds |
+| Set-up, from the script log | Began 11:44:19, complete 11:44:57: 38 seconds. Aliases left empty: 0. People not there: 0. Main quest at stage 10, side quest at stage 5 |
+| On the screen | The main quest's start, "Six Rounds to Mercy", and its first objective, "Find the marshal's dispatch case". People standing in the test room |
+| Also on the screen | A large globe that belongs to the room stands near where the player arrives and hides much of the first view. Several black and yellow patches in the picture; what causes them is not established |
+| Keys and clicks sent by the agent | The console key, Escape and a click to give the window focus produced nothing that could be seen. Alt+F4 closed the game |
+| Afterwards | The settings changed for the session were put back; the installed plugin was identical to the build |
+
+**What it shows.** `TLM:Core`'s branch for 900 and `TLM:Act1Walk.Begin` run in the game: the section sets itself up for a player, complete, in 38 seconds, and the quest announces itself. Until now `Begin` had run only in the stand-in engine.
+
+**What it does not show.** Anything a player does. No key reached the game, so nobody walked, spoke to anybody, opened or answered a box, picked anything up, read a paper, made a choice or fought. No line of what people say has been on a screen. Whether the Pip-Boy was on the player's arm and whether the opening notice appeared was not looked at. It is an agent's look at the set-up, **not a person playing**, and item 3j below is still to do.
+
+**The runner's wording is wrong for this.** For play mode it writes `PLAYED` and counts the session into "1 of 1 run: 1 passed", with 0 checks. Nothing was checked and nothing passed: `PLAYED` means only that the script log has the line saying the section was set up. The runner is to say that in those words; it is not changed in this commit.
+
+**Do the scripts hold the player's controls?** No, as far as reading them can tell. Nothing in `scripts/Source/User/TLM/` calls `DisablePlayerControls`, makes an input layer, sets the player AI-driven or restrains the player. `Debug.SetGodMode` is in the drivers of the matrix cases and `SetRestrained` and `EnableAI` are used on a settler in scenario 11; none of those runs in play mode. The set-up opens no box: its opening line (`TLM_MSG_A1_Begin`) is a notice in the corner, and the first box comes only when the player activates somebody. For the session the runner changes two settings, the start-up console command and `bAlwaysActive=1` (the game keeps running without focus), and neither is about input. That Alt+F4 worked and the game's own keys did not would fit a game that does not read keys sent to it by another program the way it reads a keyboard, since closing a window is done by Windows and not by the game; that is a guess, not a finding, and nothing is changed on the strength of it. A person at the keyboard settles it.
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
@@ -890,7 +911,7 @@ Native signatures used by the scripts are recorded in [`tools/papyrus_natives.js
 3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Done 2026-11-13: 8 of 8.** A person with no packages stands exactly where it is placed, and activating it reached the project's script on its alias. Open: why `Enable` takes as long as it does for such a person, and so unevenly: between 1 and 30 seconds in the four runs so far.
 3h. A trigger with no collision layer. **Done 2026-11-13**: both comparison triggers of scenario 10 set their stages.
 3i. The first section of Act I as the plugin places it: thirteen people, the things, the boxes, put into the two quests' aliases and walked once by their stages (scenario 12, [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md)). **Done 2026-11-14: 42 of 42** in the sixteenth run and again in the seventeenth, the run of all 65 scenarios, after 39 of 42 in the fifteenth (a spot that was not open floor, and a revolver nobody can pick up; both put right).
-3j. The same played by a person (`tools\win\Play-Act1.ps1`): can everybody be seen and told apart, do the boxes open and their buttons do what they say, can the papers be read, does a fight stay between those it concerns. **Still to do.**
+3j. The same played by a person (`tools\win\Play-Act1.ps1`): can everybody be seen and told apart, do the boxes open and their buttons do what they say, can the papers be read, does a fight stay between those it concerns. **Still to do.** On 2026-11-14 the set-up for play ran in the game once with an agent watching (38 seconds, everybody there, the quest's start and first objective on the screen), but no key reached the game, so none of these questions is answered.
 4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
 5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo **done 2026-11-14**: the weapon is `44` (`0CE97D`), which a player sees as ".44", and it fires `Ammo44` (`09221C`).
 6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).

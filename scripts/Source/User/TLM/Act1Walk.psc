@@ -32,10 +32,15 @@ Seen at work there: properties that are lists of aliases and of text, arrays
 made with "new", EnableNoWait, ForceRefTo for a thing, a placed actor that
 starts dead, a placed weapon picked up, and the books and the container the
 plugin places (held and, the books, taken; none read or opened).
-NOT RUN IN THE GAME: everything a person does. Begin, the Pip-Boy
-(EquipItem), every box (Message.Show, with buttons or without),
-Utility.RandomInt, Spoken and all that people say, the debrief. Nobody has
-played the section, and no agent has watched it either.}
+Begin RAN IN THE GAME once, on 2026-11-14, with an agent watching and nobody
+playing: the section was set up in 38 seconds, no alias empty and nobody
+missing, the main quest's start and its first objective came up on the
+screen and people stood in the room. Whether the Pip-Boy was on the arm
+(EquipItem) and whether the opening notice showed was not looked at.
+NOT RUN IN THE GAME: everything a person does after that. Every box
+(Message.Show with buttons), Utility.RandomInt, Spoken and all that people
+say, the debrief. Nobody has played the section: no key the agent sent
+reached the game.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

@@ -19,7 +19,8 @@ scenario number 900 in the plugin, TLM:Act1Walk on that quest sets the
 section up for a person to play, and the game stays open
 (tools\win\Play-Act1.ps1). COMPILES in this form (2026-11-14), and the
 unattended scenarios of that day were started through it. The branch for 900
-itself has NOT RUN in the game.}
+ran in the game once that day: the set-up only, watched by an agent, played
+by nobody.}
 
 int DATA_VERSION = 1 Const
 ; Development only: the scenario number that means "set the first section up
