@@ -58,7 +58,7 @@ Message (55)
           button 1: "Keep it"
   000826  TLM_MSG_TrialPersonName  [notification]  ""  title: "Trial Settler"
   00082E  TLM_MSG_TrialTalk  [notification]  "The second trial settler has nothing to say yet."
-  000848  TLM_MSG_A1_Begin  [notification]  "Act I, first section. The wreck is to your left, the road ahead, Mercy Crossing to your right."
+  000848  TLM_MSG_A1_Begin  [notification]  "Look around the wreck to your left. Investigate the ground for the marshal's dispatch case and anything useful."
   000849  TLM_MSG_A1_DunmoreHold  [box]  "Reese Dunmore: "Keep walking. Or stay and pick up a share.""  title: "Reese Dunmore"
           button 0: "Pritchard hangs road-takers. Leave."
           button 1: "Let them go."
@@ -302,7 +302,7 @@ Quest TLM_MQ01  00081A  "Six Rounds to Mercy"  type=MainQuest priority=60 flags=
   stage   60  "Pritchard has more for you."
   stage  100 [complete]  (Completed)
   stage  900  (Recovery)
-  objective 10: "Find the marshal's dispatch case"  -> alias 1
+  objective 10: "Investigate the wreck: search the ground for the marshal's dispatch case"  -> alias 1
   objective 20: "Take the dispatch to Sheriff Owen Pritchard in Mercy Crossing"  -> alias 4
   alias  0 Player  (reference) [Optional]
            script TLM:MQ01PlayerAlias

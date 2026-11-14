@@ -496,7 +496,10 @@ public static class Spec
         },
         Objectives: new ObjectiveSpec[]
         {
-            new(10, "Find the marshal's dispatch case", "Marshal"),
+            // Says what to do as well as what to find (amendment A26, after the owner's first play): it stays on
+            // the screen when the opening notice has gone. Its number, its target and the stages that show and
+            // complete it are as they were.
+            new(10, "Investigate the wreck: search the ground for the marshal's dispatch case", "Marshal"),
             new(20, "Take the dispatch to Sheriff Owen Pritchard in Mercy Crossing", "SheriffPritchard"),
         },
         Aliases: new AliasSpec[]

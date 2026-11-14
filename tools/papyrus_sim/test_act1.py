@@ -404,6 +404,143 @@ class TheSectionSetUpForAPerson(unittest.TestCase):
         self.assertNotIn(30, s.quests["TLM_MQ01"].done)
 
 
+class TheOpeningCue(unittest.TestCase):
+    """What a player is told to do first (issue 3, task DEMO-ONBOARD-001).
+
+    The owner played the section on 2026-11-14 and found it unclear what to
+    do. The stages of that play, as reported, show the wreck's papers and both
+    clues found, the case reported in town, and the dispatch never taken. Two
+    texts were changed for it and nothing else: the notice that comes up when
+    everybody is there, and the main quest's first objective, which stays on
+    the screen. These tests hold the two texts to saying what to do, and hold
+    everything about them that was not to change: which objective it is, what
+    it points at, what shows it and what completes it, and that nothing is
+    picked up for the player.
+
+    They say nothing about whether a person now finds the dispatch. That is
+    for a person to say.
+    """
+
+    def setUp(self):
+        self.data = need_act1_build(self)
+        self.mq = [q for q in self.data["Quests"] if q["EditorId"] == "TLM_MQ01"][0]
+        self.notice = [m for m in self.data["Messages"] if m["EditorId"] == MSG + "Begin"][0]
+        self.objectives = {o["Index"]: o for o in self.mq["Objectives"]}
+
+    def plain(self, text, most):
+        self.assertLessEqual(len(text), most, text)
+        self.assertTrue(all(32 <= ord(c) <= 126 for c in text), text)
+        for c in ('"', "%"):
+            self.assertNotIn(c, text)
+
+    def test_the_opening_notice_says_what_to_do_at_the_wreck(self):
+        text = self.notice["Text"]
+        self.assertFalse(self.notice["Box"], "the opening line must not be a box: nothing may stop the player there")
+        self.assertEqual(self.notice["Buttons"], [])
+        for words in ("look around", "wreck", "investigate", "ground", "marshal's dispatch case", "anything useful"):
+            self.assertIn(words, text.lower())
+        self.plain(text, 120)
+
+    def test_the_first_objective_says_what_to_do_and_names_the_dispatch_case(self):
+        text = self.objectives[10]["Text"]
+        for words in ("investigate", "wreck", "search", "ground", "marshal's dispatch case"):
+            self.assertIn(words, text.lower())
+        self.plain(text, 100)
+
+    def test_the_notice_and_the_objective_ask_for_the_same_thing(self):
+        # The objective is what is left when the notice has gone: it must not ask for less.
+        for words in ("investigate", "wreck", "ground", "marshal's dispatch case"):
+            self.assertIn(words, self.notice["Text"].lower())
+            self.assertIn(words, self.objectives[10]["Text"].lower())
+
+    def test_the_objective_is_the_one_it_was(self):
+        aliases = {a["Name"]: a["Id"] for a in self.mq["Aliases"]}
+        self.assertEqual(sorted(self.objectives), [10, 20])
+        self.assertEqual(self.objectives[10]["TargetAliases"], [aliases["Marshal"]])
+        self.assertEqual(self.objectives[20]["Text"], "Take the dispatch to Sheriff Owen Pritchard in Mercy Crossing")
+        self.assertEqual(self.objectives[20]["TargetAliases"], [aliases["SheriffPritchard"]])
+
+    def test_neither_text_says_more_than_the_first_chapter_knows(self):
+        sys.path.insert(0, str(ROOT / "tools"))
+        import check_story_intake as intake
+        for text in (self.notice["Text"], self.objectives[10]["Text"]):
+            for word in intake.NOT_IN_ACT_ONE:
+                self.assertFalse(intake.names(word, text), "%r in %r" % (word, text))
+
+    def test_the_objective_is_there_from_the_start_and_the_notice_when_everybody_is(self):
+        s = Session(SCRIPTS, PLUGIN, VANILLA, NATIVES)
+        s.set_global("TLM_G_DevScenario", PLAY)
+        s.enter_game()
+        s.run(20.0)
+        mq = s.quests["TLM_MQ01"]
+        self.assertTrue(mq.displayed.get(10), "the first objective is not on the screen while the section is being set up")
+        self.assertTrue(s.placed[REF + "Pritchard"].disabled)
+        self.assertNotIn(MSG + "Begin", s.messages_shown)
+        s.run(60.0)
+        self.assertFalse(s.placed[REF + "Pritchard"].disabled)
+        self.assertEqual([m for m in s.messages_shown if m == MSG + "Begin"], [MSG + "Begin"])
+        self.assertEqual(s.boxes_answered, [], "the opening opened a box")
+
+    def test_nothing_is_picked_up_or_decided_for_the_player(self):
+        p = Person(self)
+        mq = p.s.quests["TLM_MQ01"]
+        p.wait(60)
+        self.assertEqual(mq.done, [10])
+        self.assertEqual(p.has("TLM_MISC_Dispatch"), 0)
+        self.assertFalse(p.s.placed[REF + "Dispatch"].disabled, "the dispatch is not lying at the wreck")
+        self.assertTrue(mq.displayed.get(10))
+        self.assertFalse(mq.completed_objectives.get(10, False))
+        self.assertFalse(mq.displayed.get(20, False))
+        self.assertEqual(p.g("TLM_G_CaravanOutcome"), 0)
+        self.assertEqual(p.shown(), ["Begin"])
+
+    def test_taking_the_dispatch_moves_the_objective_on_as_it_did(self):
+        p = Person(self)
+        mq = p.s.quests["TLM_MQ01"]
+        p.press("Dispatch", events=["take_dispatch"])
+        self.assertEqual(mq.done, [10, 20])
+        self.assertEqual(p.has("TLM_MISC_Dispatch"), 1)
+        self.assertTrue(mq.completed_objectives.get(10))
+        self.assertTrue(mq.displayed.get(20))
+        self.assertFalse(mq.completed_objectives.get(20, False))
+        p.to_town()
+        p.hand_over("DebriefMissed")
+        self.assertTrue(mq.completed_objectives.get(20))
+        self.assertTrue(mq.completed)
+
+    def test_the_owners_first_play(self):
+        # What the owner did on 2026-11-14, as far as the stages of that play tell it: both clues, the ledger,
+        # the journal, the town, Pike's book, the report to Pritchard. The dispatch and the revolver were never
+        # taken. The scripts then set the stages the game set, in that order; and the first objective is still
+        # on the screen at the end, which is why it has to say what to do.
+        p = Person(self)
+        mq, sq = p.s.quests["TLM_MQ01"], p.s.quests["TLM_SQ01"]
+        p.press("DrawBar", boxes={"TLM_MSG_E2": [0]}, events=["examine_e2"])
+        p.press("BrakeShoes", boxes={"TLM_MSG_E1": [0]}, events=["examine_e1"])
+        p.press("Ledger", events=["take_ledger"])
+        p.press("Journal", events=["take_journal"])
+        p.to_town()
+        p.press("Pike", {"PikeBook": [0]}, ["pike_parts_book"])
+        p.press("Pritchard", {"PritchardNoCaseAndMore": [3], "PritchardReported": [0]}, ["sq_report"])
+        self.assertEqual(mq.done, [10, 40, 34], "the main quest's stages, in the order of the owner's play")
+        self.assertEqual(sq.done, [5, 12, 11, 10, 20, 13, 25, 14, 41, 50, 100], "the side quest's stages, in the order of the owner's play")
+        self.assertTrue(sq.completed)
+        self.assertFalse(mq.completed)
+        self.assertEqual(p.has("TLM_MISC_Dispatch"), 0)
+        self.assertNotIn(15, mq.done)
+        self.assertTrue(mq.displayed.get(10))
+        self.assertFalse(mq.completed_objectives.get(10, False))
+        self.assertFalse(mq.displayed.get(20, False))
+        # and it can still be put right from there: back to the wreck, the dispatch, the sheriff
+        p.go("Marshal", "goto_wreck")
+        p.press("Dispatch", events=["take_dispatch"])
+        self.assertTrue(mq.completed_objectives.get(10))
+        p.to_town()
+        p.hand_over("DebriefMissed")
+        self.assertTrue(mq.completed)
+        self.assertEqual(mq.done[:4], [10, 40, 34, 20])
+
+
 class EveryRoadThroughTheChapter(unittest.TestCase):
     """Each test is one road. After every step the two quests are compared
     with the logic model (Person.same)."""
