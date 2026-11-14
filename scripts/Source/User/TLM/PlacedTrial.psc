@@ -39,8 +39,9 @@ the plugin's: both set their stages. A trigger needs nothing but its box.
 What the runs showed besides: the settler, once enabled, does not stand where
 the plugin put it. Scenario 11 (TLM:PlacedPeople, on the same quest) found
 out why: its sandbox package puts it on a seat of the room at once.
-Changed since the second run and NOT YET COMPILED: the step that enables the
-person is given 150 seconds.}
+Changed since the second run: the step that enables the person is given 150
+seconds. That compiled and ran on 2026-11-14 (the fifteenth, sixteenth and
+seventeenth runs: 17 of 17 each time).}
 
 Group Aliases
 	ReferenceAlias Property Alias_Person Auto Const Mandatory

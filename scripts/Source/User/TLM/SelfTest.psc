@@ -32,7 +32,9 @@ ran that day (the thirteenth run: seven scenarios, 196 checks, 0 failed).
 Scenario 11 was added after that run, and compiled and ran on 2026-11-13 as
 well (the fourteenth run: three scenarios, 40 checks, 0 failed).
 Scenario 12 was added after that run: the property TLM_A1, its branch in
-RunSelfTest and its part of the "already started" test are NOT YET COMPILED.}
+RunSelfTest and its part of the "already started" test compiled and ran on
+2026-11-14 (the fifteenth run: 39 of 42 for scenario 12; the sixteenth: 42 of
+42; the seventeenth, all 65 scenarios: 1,628 checks, 0 failed).}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory

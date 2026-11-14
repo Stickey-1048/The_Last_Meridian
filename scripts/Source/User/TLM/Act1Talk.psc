@@ -8,9 +8,14 @@ It knows nothing itself. When the player activates the reference, or picks
 it up, it tells TLM:Act1Walk on the owning quest who or what that was; what
 is said, and what follows from an answer, is there.
 
-NOT COMPILED. NOT RUN IN THE GAME. What it rests on has run there: an alias's
-script hears its reference being activated by the player (2026-11-13, the
-fourteenth run), and hears it being picked up (the thirteenth).}
+COMPILES (2026-11-14). The half that hears a pick-up RAN IN THE GAME that
+day: the marshal's revolver, picked up in scenario 12, was heard here and the
+six rounds were given (docs/design/VERIFY_LOG.md, the sixteenth and
+seventeenth runs). The half that hears somebody being spoken to has NOT RUN
+IN THE GAME: no person of the section has been activated there, because that
+opens a box and nobody was at the keyboard. What it rests on has run there:
+an alias's script hears its reference being activated by the player
+(2026-11-13, the fourteenth run).}
 
 int Property Who Auto Const Mandatory
 {Who or what this is, in the numbers of TLM:Act1Walk: 1 Reese Dunmore,

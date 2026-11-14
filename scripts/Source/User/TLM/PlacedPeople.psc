@@ -51,8 +51,11 @@ and can be activated; the game's settler is put on a seat of the room the
 moment it is enabled, by its sandbox package, and walks on from there; both
 spots are on the navigation mesh. Enable took 18 and 20 seconds to come back
 for the two persons of the plugin's own, and two for the settlers.
-Changed since that run and NOT YET COMPILED: the steps that enable somebody
-are given 150 seconds, and "Yes"/"No" are written as the game printed them.}
+Changed since that run: the steps that enable somebody are given 150
+seconds, and "Yes"/"No" are written as the game printed them. That compiled
+and ran on 2026-11-14 (the fifteenth, sixteenth and seventeenth runs: 8 of 8
+each time). Enable then took 26 to 30 seconds for the first person of the
+plugin's own and 1 to 3 for the second; in the seventeenth run, 10 and 9.}
 
 Group Aliases
 	ReferenceAlias Property Alias_Person Auto Const Mandatory

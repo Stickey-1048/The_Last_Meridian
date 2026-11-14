@@ -28,7 +28,8 @@ nobody standing by the kill was no fight. The experiment with one Cutter
 standing by (part 3b) compiled and ran on 2026-11-13 twice: no fight with one
 made in the same breath as the killing (the thirteenth run), and no fight
 with one who had stood there three seconds (the fourteenth). Part 4b, with
-four standing by, was added after that and is NOT YET COMPILED.}
+four standing by, was added after that; it compiled and ran on 2026-11-14 in
+the fifteenth, sixteenth and seventeenth runs: no fight.}
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 Form Property TornTransitPass Auto Const Mandatory

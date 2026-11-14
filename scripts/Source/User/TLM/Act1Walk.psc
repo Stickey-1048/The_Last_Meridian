@@ -25,12 +25,17 @@ Fenwick's thanks (caps, once), the share of a deal with Reese Dunmore
 
 Lines that begin INFO are facts about the game, reported and not scored.
 
-NOT COMPILED. NOT RUN IN THE GAME. New to this project, and so not seen at
-work in the game: properties that are lists of aliases and of text, arrays
-made with "new", Utility.RandomInt, EnableNoWait, EquipItem, a message box
-with buttons, ForceRefTo for a thing (it has run for actors), a placed
-actor that starts dead, a book, a weapon and a container placed by the
-plugin.}
+COMPILES (2026-11-14). The unattended check (Audit) RAN IN THE GAME that
+day: 39 of 42 in the fifteenth run, 42 of 42 in the sixteenth and again in
+the seventeenth, the run of all 65 scenarios (docs/design/VERIFY_LOG.md).
+Seen at work there: properties that are lists of aliases and of text, arrays
+made with "new", EnableNoWait, ForceRefTo for a thing, a placed actor that
+starts dead, a placed weapon picked up, and the books and the container the
+plugin places (held and, the books, taken; none read or opened).
+NOT RUN IN THE GAME: everything a person does. Begin, the Pip-Boy
+(EquipItem), every box (Message.Show, with buttons or without),
+Utility.RandomInt, Spoken and all that people say, the debrief. Nobody has
+played the section, and no agent has watched it either.}
 
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
