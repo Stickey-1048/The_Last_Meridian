@@ -6,3 +6,6 @@
 
 # The plugin builder keeps this file in LF on every machine (see Builder.Create).
 tools/PluginBuilder/formkeys.txt text eol=lf
+
+# Pictures are binary too.
+*.png binary
