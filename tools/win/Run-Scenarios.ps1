@@ -79,13 +79,29 @@
 
   WHAT THE REPORT COUNTS. Scored scenarios and play sessions are counted
   apart. A scored scenario is PASSED when the self-test wrote its RESULT line
-  and no FAIL line; the checks in the totals are those of scored scenarios
-  only. A play session is SET UP when the game's script log has the line
+  and no FAIL line, and the game then closed by itself; the checks in the
+  totals are those of scored scenarios only. If the RESULT line is there but
+  the time ran out and this script had to close the game, the scenario is
+  TIMED OUT: its checks are counted as they were written, and it is not a
+  pass. A play session is SET UP when the game's script log has the line
   saying the section was set up, and NOT SET UP otherwise. SET UP is not a
   pass and is never counted as one: nothing is checked in a play session, and
-  the word does not say that anybody played. This script ends with 0 when
-  everything asked for was run, every scored scenario passed and every play
-  session was set up; with 1 otherwise.
+  the word does not say that anybody played.
+
+  WHEN IT ENDS WITH 0: everything asked for was run, every scored scenario
+  passed, every play session was set up, AND what the run changed was put
+  back: the scenario number, the two settings, each read back after it was
+  written, and the installed plugin the same file as the build again. If any
+  of that could not be put back, the run ends with 1 whatever the scenarios
+  did, the report says which, and the note of how things were
+  (build\scenario-run.unfinished.json) is kept so that the next run tries
+  again. (Until 2026-11-14 a run whose scenarios all passed ended with 0 even
+  when the putting back had failed, and a scenario that wrote RESULT and then
+  hung was called PASSED after this script had closed the game. No run on
+  record shows either. The one session this script had to close, on
+  2026-11-12, had written no RESULT line and was reported as unfinished; in
+  the reports of 2026-11-14 every session closed itself, everything was put
+  back and the installed plugin was the build again.)
   (Until 2026-11-14 a set-up was reported as PLAYED and counted into
   "1 of 1 run: 1 passed" with no checks. Reports written before that carry
   those words.) The reading of the logs, the word for a session and the
@@ -320,6 +336,8 @@ function Read-ScenarioLogs([datetime]$since) {
 $results = New-Object System.Collections.Generic.List[object]
 $stoppedEarly = $null
 $restoreNotes = New-Object System.Collections.Generic.List[string]
+# Until the putting back has been seen to work, it has not.
+$restoreFailed = $true
 $runStarted = Get-Date
 try {
     Say '== Unattended scenario run =='
@@ -468,7 +486,7 @@ try {
         $logs = Read-ScenarioLogs $since
         $seconds = [int]((Get-Date) - $since).TotalSeconds
         # One word for the session. A play session is SET UP or NOT SET UP and is never a pass.
-        $verdict = Get-ScenarioSessionStatus -Logs $logs -Playing $playing -ClosedBy $closedBy
+        $verdict = Get-ScenarioSessionStatus -Logs $logs -Playing $playing -ClosedBy $closedBy -TimedOut $timedOut
         $status = $verdict.Status
         $note = $verdict.Note
         $results.Add([pscustomobject]@{ Scenario = $n; Status = $status; Seconds = $seconds; Logs = $logs; Note = $note })
@@ -487,33 +505,17 @@ try {
     Say "UNEXPECTED ERROR in Run-Scenarios.ps1: $($_.Exception.Message)"
     foreach ($line in ("$($_.ScriptStackTrace)" -split "`r?`n")) { Say "    $line" }
 } finally {
-    # Put back what the run changed, whatever happened.
+    # Put back what the run changed, whatever happened, and know whether it all went back.
     try {
-        [void](Set-PluginGlobal -Path $installedPlugin -EditorId $globalName -Value $valueAtStart)
-        $restoreNotes.Add("Scenario number in the installed plugin: back to $(Get-PluginGlobal -Path $installedPlugin -EditorId $globalName)")
-    } catch { $restoreNotes.Add("COULD NOT restore the scenario number in the installed plugin: $($_.Exception.Message). Run the install again to replace it.") }
-    try {
-        Set-IniValue $customIni 'General' 'sStartingConsoleCommand' ''
-        $restoreNotes.Add("Start-up console command in the test profile: emptied (now '$(Get-IniValue $customIni 'General' 'sStartingConsoleCommand')')")
-    } catch { $restoreNotes.Add("COULD NOT empty the start-up console command in ${customIni}: $($_.Exception.Message)") }
-    try {
-        # 0 is the game's own default, so "not set before" and 0 mean the same.
-        $back = if ($null -eq $alwaysActiveBefore -or $alwaysActiveBefore -eq '') { '0' } else { $alwaysActiveBefore }
-        Set-IniValue $customIni 'General' 'bAlwaysActive' $back
-        $restoreNotes.Add("Keep-running-without-focus setting in the test profile: back to $(Get-IniValue $customIni 'General' 'bAlwaysActive')")
-    } catch { $restoreNotes.Add("COULD NOT restore bAlwaysActive in ${customIni}: $($_.Exception.Message)") }
-    $builtPlugin = Join-Path $build $pluginName
-    if (Test-Path -LiteralPath $builtPlugin) {
-        $same = (Get-FileHash -LiteralPath $builtPlugin).Hash -eq (Get-FileHash -LiteralPath $installedPlugin).Hash
-        $restoreNotes.Add("Installed plugin identical to the build again: $(if ($same) { 'yes' } else { 'NO' })")
-    }
-    # The note about how things were goes only when all of it has been put back.
-    if (-not @($restoreNotes | Where-Object { $_ -match '^COULD NOT' }).Count) {
-        try { if (Test-Path -LiteralPath $unfinishedPath) { Remove-Item -LiteralPath $unfinishedPath -Force } } catch { }
-        if ($unfinished) { $restoreNotes.Add("What the earlier, unfinished run had changed (it began $($unfinished.Began)): put back with the above") }
-        if ($cutOffWithoutNote) { $restoreNotes.Add("What an earlier, unfinished run had changed: the game's own defaults were put back, as above") }
-    } else {
-        $restoreNotes.Add("Not everything could be put back. The note of how things were is kept (build\scenario-run.unfinished.json), and the next run will try again.")
+        $restore = Restore-ScenarioRunState -InstalledPlugin $installedPlugin -GlobalName $globalName -ValueAtStart $valueAtStart `
+            -CustomIni $customIni -AlwaysActiveBefore $alwaysActiveBefore -BuiltPlugin (Join-Path $build $pluginName) `
+            -UnfinishedPath $unfinishedPath -Unfinished $unfinished -CutOffWithoutNote $cutOffWithoutNote
+        foreach ($l in $restore.Notes) { $restoreNotes.Add($l) }
+        $restoreFailed = [bool]$restore.Failed
+    } catch {
+        $restoreFailed = $true
+        $restoreNotes.Add("COULD NOT put back what the run changed: $($_.Exception.Message)")
+        $restoreNotes.Add('The note of how things were is kept (build\scenario-run.unfinished.json), and the next run will try again.')
     }
 }
 
@@ -531,7 +533,7 @@ foreach ($l in $ev) { $out.Add($l) }
 $out.Add('')
 $out.Add('== Scenarios ==')
 # Scored scenarios and play sessions are counted apart: a play session has no checks and is never "passed".
-$summary = Get-ScenarioRunSummary -Results $results.ToArray() -Requested $list.ToArray() -PlayNumber $playNumber -Titles $caseTitles -StoppedEarly $stoppedEarly
+$summary = Get-ScenarioRunSummary -Results $results.ToArray() -Requested $list.ToArray() -PlayNumber $playNumber -Titles $caseTitles -StoppedEarly $stoppedEarly -RestoreFailed $restoreFailed
 foreach ($l in $summary.Lines) { $out.Add($l) }
 if ($stoppedEarly) {
     $out.Add('')

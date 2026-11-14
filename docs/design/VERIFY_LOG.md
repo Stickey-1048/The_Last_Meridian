@@ -819,6 +819,19 @@ Not a scenario run and not a playtest. After the seventeenth run the coordinator
 
 **Do the scripts hold the player's controls?** No, as far as reading them can tell. Nothing in `scripts/Source/User/TLM/` calls `DisablePlayerControls`, makes an input layer, sets the player AI-driven or restrains the player. `Debug.SetGodMode` is in the drivers of the matrix cases and `SetRestrained` and `EnableAI` are used on a settler in scenario 11; none of those runs in play mode. The set-up opens no box: its opening line (`TLM_MSG_A1_Begin`) is a notice in the corner, and the first box comes only when the player activates somebody. For the session the runner changes two settings, the start-up console command and `bAlwaysActive=1` (the game keeps running without focus), and neither is about input. That Alt+F4 worked and the game's own keys did not would fit a game that does not read keys sent to it by another program the way it reads a keyboard, since closing a window is done by Windows and not by the game; that is a guess, not a finding, and nothing is changed on the strength of it. A person at the keyboard settles it.
 
+### Found in review, 2026-11-14: two ways the runner could report a success that was none
+
+Not a run. The coordinator had the runner for the PC, `tools/win/Run-Scenarios.ps1`, read by a second reader, who found two faults in how a run is judged. Both are older than the reporting of play sessions above, and both are put right in the same change.
+
+| The fault | What the runner did | What it does now |
+|---|---|---|
+| What the run changed is not put back | The scenario number in the installed plugin and the two settings of the test profile are put back at the end. When that failed, the report said `COULD NOT ...`, and the command still ended as a success if every scenario had passed. The same when the installed plugin was then not the same file as the build | Each thing is read back after it is written. If anything could not be put back, or the installed plugin is not the build, the run ends as failed whatever the scenarios did, the report says which, and the run's note of how things were is kept so that the next run tries again |
+| A scenario writes its RESULT line and then never closes the game | When the time ran out the runner closed the game, and then read the RESULT line and called the scenario `PASSED` | `TIMED OUT`. Its checks are counted as they were written; it is not a pass, and the run ends as failed |
+
+**No run on record is changed by this, and none is re-read as failed.** The one session the runner had to close (2026-11-12, the first unattended run) had written no RESULT line and was reported as not finished. In the sixteenth and seventeenth runs every session closed itself, scenario 4's slow one included, and the reports show everything put back and the installed plugin identical to the build.
+
+**How it was tried.** Not on the PC. With stand-in files, by `tools/win/tests/Test-ScenarioReport.ps1`: a stand-in plugin holding the global, a stand-in settings file, the run's note; a clean putting back, a plugin the number cannot be written into, a plugin that is gone, a settings file that cannot be written, an installed plugin that is not the build, each alone and each failing the run and keeping the note; a passing RESULT with a forced close. And with the real runner against stand-ins for Mod Organizer and the game, on Linux: the installed plugin damaged while the game ran, the settings file made unwritable while the game ran, the build changed, a game that wrote RESULT and stayed open, and the run after each, which put things back and removed the note. Windows PowerShell 5.1 has run none of it.
+
 Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
 
 - **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.

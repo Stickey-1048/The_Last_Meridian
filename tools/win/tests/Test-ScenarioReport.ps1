@@ -20,6 +20,16 @@
   set-up in one run; a set-up that did not happen; a scored scenario that
   failed, did not finish or was refused; a run that stopped early.
 
+  Two more faults, found in review on 2026-11-14, are covered as well. A
+  scenario that wrote its RESULT line and then never closed the game, so that
+  the runner had to close it, was called PASSED: it is now TIMED OUT. And a
+  run whose scenarios passed ended as a success even when what it had changed
+  (the scenario number in the installed plugin, two settings of the test
+  profile) could not be put back, or the installed plugin was not the build:
+  it now ends as failed and keeps its note of how things were. The putting
+  back (Restore-ScenarioRunState) is tried here on a stand-in plugin file and
+  a stand-in settings file.
+
   It reads and writes nothing outside its own temporary folder. It starts no
   program. It works under Windows PowerShell 5.1 and PowerShell 7.
 
@@ -66,7 +76,8 @@ function New-Session {
         [string[]]$ScriptLog,        # lines of Papyrus.0.log; $null: the game wrote none
         [string[]]$SelfTestLog,      # lines of User\TLM.0.log; $null: none
         [string]$ClosedBy = 'the game closed itself',
-        [int]$Seconds = 40
+        [int]$Seconds = 40,
+        [bool]$TimedOut = $false
     )
     $dir = Join-Path $root ("session-" + [guid]::NewGuid().ToString('N'))
     [void](New-Item -ItemType Directory -Path (Join-Path $dir 'User'))
@@ -76,7 +87,7 @@ function New-Session {
     if ($null -ne $ScriptLog) { Set-Content -LiteralPath $papyrusLog -Value $ScriptLog -Encoding utf8 }
     if ($null -ne $SelfTestLog) { Set-Content -LiteralPath $userLog -Value $SelfTestLog -Encoding utf8 }
     $logs = Read-ScenarioSessionLogs -UserLog $userLog -PapyrusLog $papyrusLog -Since $since
-    $verdict = Get-ScenarioSessionStatus -Logs $logs -Playing ($Scenario -eq $PlayNumber) -ClosedBy $ClosedBy
+    $verdict = Get-ScenarioSessionStatus -Logs $logs -Playing ($Scenario -eq $PlayNumber) -ClosedBy $ClosedBy -TimedOut $TimedOut
     return [pscustomobject]@{ Scenario = $Scenario; Status = $verdict.Status; Seconds = $Seconds; Logs = $logs; Note = $verdict.Note }
 }
 
@@ -237,14 +248,159 @@ try {
     Check-Equal 'a play session with only old logs is NOT SET UP' 'NOT SET UP' (Get-ScenarioSessionStatus -Logs $logs -Playing $true -ClosedBy 'the game was closed').Status
     Check-Equal 'a scored scenario with only old logs has NO RESULT' 'NO RESULT' (Get-ScenarioSessionStatus -Logs $logs -Playing $false -ClosedBy 'the game closed itself').Status
 
-    # ------------------------------------------------------------ 8. the runner uses these, and nothing of its own
-    Write-Host '8. Run-Scenarios.ps1 takes its words and its totals from the module'
+    # ------------------------------------------------------------ 9. a RESULT line, and then the game never closed
+    Write-Host '9. a scenario that wrote RESULT and then had to be closed by the runner'
+    $closedByRunner = 'not finished after 900 seconds; this script ended its process'
+    $passLog = Lines-PassedScenario 4 27
+    $hung = New-Session -Scenario 4 -ScriptLog $scoredLog -SelfTestLog $passLog -ClosedBy $closedByRunner -Seconds 900 -TimedOut $true
+    Check-Equal 'a passing RESULT line and a forced close is TIMED OUT, not PASSED' 'TIMED OUT' $hung.Status
+    Check 'the note says the result was written and the game did not close' ($hung.Note -match 'wrote its RESULT line, but the game did not close by itself' -and $hung.Note -match 'ended its process')
+    Check-Equal 'the checks it reported are kept' 27 $hung.Logs.Passed
+    $s = Summarize @($hung) @(4) $null
+    Check 'it is counted among those that did not pass, with its checks' ((Text $s) -match 'Scored scenarios: 1 of 1 run: 0 passed, 1 did not\. Checks: 27 passed, 0 failed\.')
+    Check-Equal 'and the run is not in order' 1 $s.ExitCode
+    Check 'its row says TIMED OUT and why' (@($s.Lines | Where-Object { $_ -match '^\s+4\s+TIMED OUT\s+27\s+0\s+900\s' -and $_ -match 'did not close by itself' }).Count -eq 1)
+    $graceful = New-Session -Scenario 4 -ScriptLog $scoredLog -SelfTestLog $passLog -ClosedBy 'the game closed itself' -Seconds 442
+    Check-Equal 'the same log from a game that closed itself, however slowly, is PASSED' 'PASSED' $graceful.Status
+    $s = Summarize @($graceful) @(4) $null
+    Check-Equal 'and that run is in order' 0 $s.ExitCode
+    $hungFailed = New-Session -Scenario 2 -ScriptLog $scoredLog -SelfTestLog $failLog -ClosedBy $closedByRunner -TimedOut $true
+    Check-Equal 'a failing RESULT line and a forced close is TIMED OUT as well' 'TIMED OUT' $hungFailed.Status
+    $s = Summarize @($hungFailed) @(2) $null
+    Check 'and its failed check is still counted' ($s.ChecksPassed -eq 9 -and $s.ChecksFailed -eq 1 -and $s.ExitCode -eq 1)
+    $hungNoResult = New-Session -Scenario 2 -ScriptLog $scoredLog -SelfTestLog @("$stamp ==== The Last Meridian self-test: scenario 2 ====", "$stamp PASS  check 1") -ClosedBy $closedByRunner -TimedOut $true
+    Check-Equal 'a forced close with no RESULT line stays UNFINISHED' 'UNFINISHED' $hungNoResult.Status
+    $s = Summarize @($twelve, $hung, $play) @(12, 4, 900) $null
+    Check 'one timed-out scenario fails a run in which everything else is in order' ($s.ScoredPassed -eq 1 -and $s.ScoredNotPassed -eq 1 -and $s.PlaySetUp -eq 1 -and $s.ChecksPassed -eq 69 -and $s.ExitCode -eq 1)
+
+    # ------------------------------------------------------------ 10. putting back what a run changed
+    Write-Host '10. putting back what a run changed'
+    $globalName = 'TLM_G_DevScenario'
+    function New-StandInPlugin([string]$Path, [single]$Value) {
+        # The least a plugin needs for the global to be found: a GLOB record with its EditorID and its value.
+        $ascii = [System.Text.Encoding]::ASCII
+        $b = New-Object System.Collections.Generic.List[byte]
+        $b.AddRange($ascii.GetBytes('TES4')); $b.AddRange([byte[]](0) * 20)
+        $b.AddRange($ascii.GetBytes('GLOB')); $b.AddRange([byte[]](0) * 20)
+        $name = $ascii.GetBytes($globalName)
+        $b.AddRange($ascii.GetBytes('EDID')); $b.AddRange([System.BitConverter]::GetBytes([uint16]($name.Length + 1))); $b.AddRange($name); $b.Add(0)
+        $b.AddRange($ascii.GetBytes('FLTV')); $b.AddRange([System.BitConverter]::GetBytes([uint16]4)); $b.AddRange([System.BitConverter]::GetBytes([single]$Value))
+        [System.IO.File]::WriteAllBytes($Path, $b.ToArray())
+    }
+    function New-RunState([string]$Name, [single]$During = 12, [single]$Built = 0) {
+        # A PC in the middle of a run: the scenario number written into the installed plugin, the two
+        # settings changed, and the run's note of how things were.
+        $dir = Join-Path $root "state-$Name"
+        [void](New-Item -ItemType Directory -Path $dir)
+        $state = [pscustomobject]@{
+            Installed = Join-Path $dir 'installed.esp'; Built = Join-Path $dir 'built.esp'
+            Ini = Join-Path $dir 'fallout4custom.ini'; Note = Join-Path $dir 'scenario-run.unfinished.json'
+        }
+        New-StandInPlugin $state.Installed $During
+        New-StandInPlugin $state.Built $Built
+        Set-Content -LiteralPath $state.Ini -Value @('[General]', 'sStartingConsoleCommand=coc qasmoke', 'bAlwaysActive=1', '[Display]', 'iSize W=1920') -Encoding ascii
+        Set-Content -LiteralPath $state.Note -Value '{ "Began": "2026-11-14 10:50:31", "ScenarioBefore": 0, "AlwaysActiveBefore": "0" }' -Encoding ascii
+        return $state
+    }
+    function Restore($state, $alwaysActiveBefore = '0') {
+        return (Restore-ScenarioRunState -InstalledPlugin $state.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $state.Ini `
+            -AlwaysActiveBefore $alwaysActiveBefore -BuiltPlugin $state.Built -UnfinishedPath $state.Note -Unfinished $null -CutOffWithoutNote $false)
+    }
+    function Notes($restore) { return ($restore.Notes -join "`n") }
+
+    # everything goes back
+    $st = New-RunState 'clean'
+    $re = Restore $st
+    Check 'a clean putting back is not a failure' (-not $re.Failed)
+    Check-Equal 'the scenario number is back to 0' 0 (Get-PluginGlobal -Path $st.Installed -EditorId $globalName)
+    Check-Equal 'the start-up command is empty' '' "$(Get-IniValue $st.Ini 'General' 'sStartingConsoleCommand')"
+    Check-Equal 'the keep-running setting is back' '0' (Get-IniValue $st.Ini 'General' 'bAlwaysActive')
+    Check-Equal 'another section of the settings file is untouched' '1920' (Get-IniValue $st.Ini 'Display' 'iSize W')
+    Check 'the installed plugin is the build again, and the notes say so' ((Notes $re) -match 'Installed plugin identical to the build again: yes')
+    Check 'the note of how things were is removed' (-not (Test-Path -LiteralPath $st.Note))
+    Check 'no line says COULD NOT' (-not ((Notes $re) -match 'COULD NOT|NOT EVERYTHING'))
+    $s = Get-ScenarioRunSummary -Results @($twelve) -Requested @(12) -PlayNumber $PlayNumber -Titles $Titles -RestoreFailed $re.Failed
+    Check-Equal 'a passed run that was put back ends with 0' 0 $s.ExitCode
+    # a setting that was something else before the run goes back to that
+    $st = New-RunState 'was-on'
+    $re = Restore $st '1'
+    Check 'a setting that was 1 before the run is 1 again' ((-not $re.Failed) -and (Get-IniValue $st.Ini 'General' 'bAlwaysActive') -eq '1')
+
+    # the scenario number cannot be put back: the installed plugin no longer holds the global
+    $st = New-RunState 'no-global'
+    Set-Content -LiteralPath $st.Installed -Value 'not a plugin any more' -Encoding ascii
+    $re = Restore $st
+    Check 'a scenario number that cannot be written is a failure' $re.Failed
+    Check 'the notes say what could not be done, and what to do' ((Notes $re) -match 'COULD NOT restore the scenario number in the installed plugin' -and (Notes $re) -match 'Run the install again')
+    Check 'the note of how things were is kept' (Test-Path -LiteralPath $st.Note)
+    Check 'the notes say that it is kept' ((Notes $re) -match 'NOT EVERYTHING WAS PUT BACK' -and (Notes $re) -match 'scenario-run\.unfinished\.json')
+    Check 'the settings were still put back' ("$(Get-IniValue $st.Ini 'General' 'sStartingConsoleCommand')" -eq '' -and (Get-IniValue $st.Ini 'General' 'bAlwaysActive') -eq '0')
+    $s = Get-ScenarioRunSummary -Results @($twelve) -Requested @(12) -PlayNumber $PlayNumber -Titles $Titles -RestoreFailed $re.Failed
+    Check-Equal 'a run whose scenarios all passed ends with 1 when the number was not put back' 1 $s.ExitCode
+    Check 'the scenario still counts as passed' ($s.ScoredPassed -eq 1 -and $s.ChecksPassed -eq 42)
+    Check 'and the totals say the run is not in order' ((Text $s) -match 'THE RUN IS NOT IN ORDER')
+
+    # each thing that cannot be put back fails the run by itself: here nothing else is wrong, and there is no build to compare with
+    $st = New-RunState 'only-the-number'
+    Remove-Item -LiteralPath $st.Built -Force
+    Set-Content -LiteralPath $st.Installed -Value 'not a plugin any more' -Encoding ascii
+    $re = Restore $st
+    Check 'the scenario number alone, not put back, is a failure' ($re.Failed -and @($re.Notes | Where-Object { $_ -match '^COULD NOT' }).Count -eq 1 -and (Test-Path -LiteralPath $st.Note))
+    $st = New-RunState 'only-the-settings'
+    Remove-Item -LiteralPath $st.Built -Force
+    Remove-Item -LiteralPath $st.Ini -Force
+    [void](New-Item -ItemType Directory -Path $st.Ini)
+    $re = Restore $st
+    Check 'the settings alone, not put back, are a failure' ($re.Failed -and @($re.Notes | Where-Object { $_ -match '^COULD NOT' }).Count -eq 2 -and (Test-Path -LiteralPath $st.Note))
+
+    # the installed plugin is gone
+    $st = New-RunState 'no-plugin'
+    Remove-Item -LiteralPath $st.Installed -Force
+    $re = Restore $st
+    Check 'an installed plugin that is gone is a failure, and nothing is thrown' ($re.Failed -and (Notes $re) -match 'COULD NOT restore the scenario number' -and (Test-Path -LiteralPath $st.Note))
+
+    # the settings file cannot be written: something else is in its place
+    $st = New-RunState 'no-ini'
+    Remove-Item -LiteralPath $st.Ini -Force
+    [void](New-Item -ItemType Directory -Path $st.Ini)
+    $re = Restore $st
+    Check 'settings that cannot be written are a failure' $re.Failed
+    Check 'the notes name the start-up command' ((Notes $re) -match 'COULD NOT empty the start-up console command')
+    Check 'the notes name the keep-running setting' ((Notes $re) -match 'COULD NOT restore bAlwaysActive')
+    Check 'the scenario number was still put back' ((Get-PluginGlobal -Path $st.Installed -EditorId $globalName) -eq 0)
+    Check 'the note of how things were is kept' (Test-Path -LiteralPath $st.Note)
+    $s = Get-ScenarioRunSummary -Results @($twelve, $play) -Requested @(12, 900) -PlayNumber $PlayNumber -Titles $Titles -RestoreFailed $re.Failed
+    Check-Equal 'a run in order otherwise ends with 1 when the settings were not put back' 1 $s.ExitCode
+
+    # the installed plugin is not the build
+    $st = New-RunState 'mismatch'
+    [System.IO.File]::AppendAllText($st.Built, 'x')
+    $re = Restore $st
+    Check 'an installed plugin that is not the build is a failure' $re.Failed
+    Check 'the notes say NO, and what to do' ((Notes $re) -match 'Installed plugin identical to the build again: NO' -and (Notes $re) -match 'Run the install again')
+    Check 'the notes say that this, and not a failed putting back, is why the run fails' ((Notes $re) -match 'THE INSTALLED PLUGIN IS NOT THE BUILD' -and -not ((Notes $re) -match 'COULD NOT|NOT EVERYTHING WAS PUT BACK') -and (Notes $re) -match 'scenario-run\.unfinished\.json')
+    Check 'the scenario number and the settings were put back all the same' ((Get-PluginGlobal -Path $st.Installed -EditorId $globalName) -eq 0 -and "$(Get-IniValue $st.Ini 'General' 'sStartingConsoleCommand')" -eq '')
+    Check 'the note of how things were is kept' (Test-Path -LiteralPath $st.Note)
+    $s = Get-ScenarioRunSummary -Results @($twelve) -Requested @(12) -PlayNumber $PlayNumber -Titles $Titles -RestoreFailed $re.Failed
+    Check-Equal 'a passed run ends with 1 when the installed plugin is not the build' 1 $s.ExitCode
+
+    # no build to compare with: nothing to say about it, and no failure
+    $st = New-RunState 'no-build'
+    Remove-Item -LiteralPath $st.Built -Force
+    $re = Restore $st
+    Check 'with no build to compare with, a clean putting back is still clean' ((-not $re.Failed) -and -not ((Notes $re) -match 'identical to the build'))
+
+    # ------------------------------------------------------------ 11. the runner uses these, and nothing of its own
+    Write-Host '11. Run-Scenarios.ps1 takes its words and its totals from the module'
     $runner = Get-Content -LiteralPath (Join-Path $winDir 'Run-Scenarios.ps1') -Raw
     # Its description says what the word used to be; its code must not use it.
     $runner = $runner -replace '(?s)<#.*?#>', ''
     Check 'the runner''s code does not use the word PLAYED' (-not ($runner -cmatch 'PLAYED'))
     Check 'the runner reads a session''s logs through the module' ($runner -match 'Read-ScenarioSessionLogs -UserLog \$userLog -PapyrusLog \$papyrusLog -Since \$since')
-    Check 'the runner names a session through the module' ($runner -match 'Get-ScenarioSessionStatus -Logs \$logs -Playing \$playing -ClosedBy \$closedBy')
+    Check 'the runner names a session through the module, and tells it when the time ran out' ($runner -match 'Get-ScenarioSessionStatus -Logs \$logs -Playing \$playing -ClosedBy \$closedBy -TimedOut \$timedOut')
+    Check 'the runner puts things back through the module' ($runner -match 'Restore-ScenarioRunState -InstalledPlugin \$installedPlugin')
+    Check 'the runner tells the summary whether everything was put back' ($runner -match '-RestoreFailed \$restoreFailed')
+    Check 'the runner takes the putting back for failed until it has been seen to work' ($runner -match '(?m)^\$restoreFailed = \$true\s*$')
     Check 'the runner adds the run up through the module' ($runner -match 'Get-ScenarioRunSummary -Results')
     Check 'the runner ends with the summary''s verdict' ($runner -match 'exit \$summary\.ExitCode')
     Check 'the runner counts no status as passed by itself' (-not ($runner -match "Status -eq 'PASSED' -or"))
