@@ -62,6 +62,15 @@ NOT_IN_ACT_ONE = ["deep", "meridian", "rider", "charter", "open ledger", "vault"
 # of Act I. Everything else (the other chapters, town talk, every paper) is held to the whole list.
 REVEALED = {"mq05": {"id": "TLM_MQ05", "chapter": 5, "words": ("deep", "meridian", "rider")}}
 PRIORITY_MAX = 1000
+
+
+def names(word, text):
+    """Whether the text uses one of those words: as it stands, in the plural, or as an owner.
+
+    "The Riders are coming" and "the Rider's horse" say what "the Rider" says, so one rule holds all three.
+    Longer words that merely begin the same (deeper, deeply, vaulted) are other words and are let be.
+    """
+    return re.search(r"\b%s(?:s|'s|s')?\b" % re.escape(word), text.lower()) is not None
 TEXT_MAX, LABEL_MAX, BUTTONS_MAX, DOCUMENT_MAX = 240, 48, 4, 1500
 KEY = re.compile(r"^[a-z][a-z0-9_]*$")
 SOURCE = re.compile(r"^R\d+$")
@@ -109,11 +118,10 @@ class Intake:
         if not allow_newlines and '"' in value:
             self.bad(where, 'has a double quote; the speaker\'s words are put in quotes when the line is built')
         if act_one:
-            low = value.lower()
             for word in NOT_IN_ACT_ONE:
                 if word in may_say:
                     continue        # the last chapter's own quest and talk, and only these words (REVEALED)
-                if re.search(r"\b%s\b" % re.escape(word), low):
+                if names(word, value):
                     self.bad(where, "says '%s', which nobody in Act I knows of" % word)
 
     # ---- the small language of conditions and effects
@@ -480,7 +488,15 @@ NOBODY_KNOWS = "which nobody in Act I knows of"
 # Words for the self-test only. They are not story text and nothing is built from them.
 PROBE = "TEST PROBE, not story text: the Deep, MERIDIAN, a Rider."
 PROBE_TOO_FAR = ["TEST PROBE, not story text: the Charter.", "TEST PROBE, not story text: the Open Ledger.",
-                 "TEST PROBE, not story text: a vault."]
+                 "TEST PROBE, not story text: a vault.", "TEST PROBE, not story text: the Charters.",
+                 "TEST PROBE, not story text: the Charter's seal.", "TEST PROBE, not story text: the Open Ledgers.",
+                 "TEST PROBE, not story text: two vaults."]
+# One word in its forms: as it stands, in the plural, as an owner. Each is the same word to the check.
+FORMS_REVEALED = ["TEST PROBE: the Rider.", "TEST PROBE: the Riders.", "TEST PROBE: the Rider's.", "TEST PROBE: the Riders'.",
+                  "TEST PROBE: the Deep.", "TEST PROBE: the Deep's.", "TEST PROBE: MERIDIAN.", "TEST PROBE: Meridian's."]
+FORMS_UNSAID = FORMS_REVEALED + ["TEST PROBE: THE RIDERS.", "TEST PROBE: riders."] + [x.replace("not story text", "probe") for x in PROBE_TOO_FAR]
+# Words that only begin the same are other words.
+FORMS_ORDINARY = ["TEST PROBE: deeper water, a deeply cut bank, a vaulted roof, a chartered run."]
 
 
 def changed_in(files, path, change):
@@ -526,7 +542,19 @@ def with_last_chapter(files):
 
 def sound(files):
     """(what it is, the files) for folders the check has to let through."""
-    out = [("the folder with a sound last chapter that says what the canon lets it say", with_last_chapter(files))]
+    last = with_last_chapter(files)
+    out = [("the folder with a sound last chapter that says what the canon lets it say", last)]
+    for form in FORMS_REVEALED:
+        out += [
+            ("the last chapter's quest saying: %s" % form,
+             changed_in(last, "quests/tlm_mq05.json", lambda d, x=form: d["stages"][0].update(log=x))),
+            ("the last chapter's talk saying: %s" % form,
+             changed_in(last, "talk/tlm_mq05.json", lambda d, x=form: d["lines"][0].update(text=x))),
+        ]
+    first_talk = sorted(p for p in files if p.startswith("talk/") and p != "talk/town.json")
+    for form in FORMS_ORDINARY if first_talk else []:
+        out.append(("ordinary words that only begin like one of them: %s" % form,
+                    changed_in(files, first_talk[0], lambda d, x=form: d["lines"][0].update(text=x))))
     talk = sorted(p for p in files if p.startswith("talk/") and p != "talk/town.json")
     if talk:
         t = talk[0]
@@ -636,6 +664,19 @@ def damages(files):
             {"format": "tlm-talk-1", "quest": None, "lines": [dict(json.loads(last[talk05])["lines"][0], id="probe_town")]})}),
          NOBODY_KNOWS),
     ]
+    # Every form of every one of the words, where none of them may be said: the first chapter's talk, a quest
+    # of the plugin's, a paper. With the last chapter present and without it.
+    for form in FORMS_UNSAID:
+        for where_from, base in (("", files), (", with the last chapter present", last)):
+            if talk:
+                out.append(("a line of the first chapter saying: %s%s" % (form, where_from),
+                            changed_in(base, talk[0], lambda d, x=form: d["lines"][0].update(text=x)), NOBODY_KNOWS))
+        if quests and json.loads(files[quests[0]]).get("key") in QUEST_IDS:
+            out.append(("a quest of the plugin's whose log says: %s" % form,
+                        changed_in(files, quests[0], lambda d, x=form: d["stages"][0].update(log=x)), NOBODY_KNOWS))
+        if "documents.json" in files:
+            out.append(("a paper saying: %s" % form,
+                        changed_in(last, "documents.json", lambda d, x=form: d["documents"][0].update(text=x)), NOBODY_KNOWS))
     for too_far in PROBE_TOO_FAR:
         word = too_far.split(": ")[1].rstrip(".")
         out += [
@@ -720,7 +761,7 @@ def self_test(files):
     whole = all(p in files for p in ("characters.json", "documents.json", "RESEARCH.md")) and \
         any(p.startswith("talk/") for p in files) and any(json.loads(files[p]).get("key") in QUEST_IDS
                                                            for p in files if p.startswith("quests/"))
-    if unnoticed or (whole and len(tried) < 55):
+    if unnoticed or (whole and len(tried) < 130):
         failed = True
         print("STORY INTAKE SELF-TEST FAILED: %d kinds of damage tried; not noticed, or not for the right reason:" % len(tried))
         for u in unnoticed:

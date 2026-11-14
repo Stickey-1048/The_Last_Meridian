@@ -107,11 +107,11 @@
   those words.) The reading of the logs, the word for a session and the
   totals are in Tlm.psm1 and are tested by tests\Test-ScenarioReport.ps1
   with stand-in logs. On the PC, under Windows PowerShell 5.1, that test
-  passed as it stood when play sessions were first counted apart (81
-  checks, 2026-11-14, no game started). What was added after that (the
-  timeout, the putting back, results being exactly what was asked for) and
-  this script itself in its changed form have run on Linux PowerShell 7
-  only.
+  passed twice on 2026-11-14 with no game started: 81 checks when play
+  sessions were first counted apart, then 130 with the timeout and the
+  putting back. The ten checks added after that (results being exactly
+  what was asked for) and this script itself in its changed form have run
+  on Linux PowerShell 7 only.
 
   Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-12,
   three times. The chain works there: the game enters the room, starts the

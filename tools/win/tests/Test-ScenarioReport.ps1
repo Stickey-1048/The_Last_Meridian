@@ -34,11 +34,11 @@
   program. It works under Windows PowerShell 5.1 and PowerShell 7.
 
   Status: passes on Linux PowerShell 7.4. Under Windows PowerShell 5.1,
-  which is what the PC uses, its first 81 checks passed there on 2026-11-14
-  (version 5.1.26100.9818, in a checkout of its own, no game started). The
-  checks added since (a forced close after RESULT, the putting back, results
-  being exactly what was asked for) HAVE NOT YET RUN under 5.1; they can,
-  without the game.
+  which is what the PC uses, it passed there twice on 2026-11-14 (version
+  5.1.26100.9818, in a checkout of its own, no game started): its first 81
+  checks, and then 130 with the forced close after RESULT and the putting
+  back. The ten checks added since (results being exactly what was asked
+  for) HAVE NOT YET RUN under 5.1; they can, without the game.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\tests\Test-ScenarioReport.ps1
