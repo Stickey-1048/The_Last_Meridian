@@ -14,7 +14,10 @@
   quit it from its own menu when you have seen enough. This window waits for
   that, puts back what the run changed, and collects what the game wrote
   (which stages were set, in what order, and anything the script log says of
-  the section) into build\scenario-results.txt and onto the clipboard.
+  the section) into build\scenario-results.txt and onto the clipboard. The
+  report says SET UP or NOT SET UP for the session, apart from any scored
+  scenario: a set-up is not a pass, and the report cannot tell whether
+  anybody played.
 
   It is Update-And-Run.ps1 with  -Install -Unattended -Scenarios 900 ;
   anything else on the command line is passed on with those. 900 is not a
@@ -26,7 +29,10 @@
   switch Mod Organizer back to your own profile afterwards.
 
   Status: tested on Linux PowerShell 7 with stand-ins for Mod Organizer and
-  the game. NOT YET RUN ON A REAL PC.
+  the game. THIS SCRIPT HAS NOT YET RUN ON A REAL PC. What it leads to,
+  Run-Scenarios.ps1 with the number 900, ran there once on 2026-11-14 on a
+  build already installed: the section was set up, and nobody played
+  (docs\design\VERIFY_LOG.md).
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\win\Play-Act1.ps1

@@ -6,6 +6,9 @@
 # plugin and model, builds against generated stand-in masters, and runs the
 # project's Papyrus sources in the project's own stand-in for the game,
 # replaying every game run on record.
+# After it, tools/win/tests/Test-ScenarioReport.ps1 under PowerShell 7: how
+# the test runner for the PC reads a game session's logs and adds a run up,
+# tried on stand-in logs.
 #
 # A green run means the design is internally consistent.
 # It is NOT a Papyrus compile (the compiler ships with the game and is not
@@ -98,6 +101,15 @@ jobs:
             exit 1
           fi
 
+      # How tools/win/Run-Scenarios.ps1 reads a game session's logs and adds a
+      # run up, tried on stand-in logs in a temporary folder. PowerShell 7 is
+      # on GitHub's Linux machines. No game, nothing installed. The PC uses
+      # Windows PowerShell 5.1, which this does not show.
+      - name: The runner's report on stand-in logs (PowerShell 7; no game)
+        run: |
+          set -euo pipefail
+          pwsh -NoLogo -NoProfile -File tools/win/tests/Test-ScenarioReport.ps1 2>&1 | tee "$RUNNER_TEMP/scenario_report_test.log"
+
       - name: Summary
         if: always()
         run: |
@@ -106,7 +118,7 @@ jobs:
             echo
             echo "Commit \`${GITHUB_SHA}\`. Job status: **${{ job.status }}**."
             echo
-            echo "What ran: \`tools/run_checks.sh\`, unchanged, on a GitHub-hosted Linux machine with Python 3 and the .NET 8 SDK."
+            echo "What ran: \`tools/run_checks.sh\`, unchanged, on a GitHub-hosted Linux machine with Python 3 and the .NET 8 SDK; then \`tools/win/tests/Test-ScenarioReport.ps1\` under PowerShell 7, which tries the test runner's reading and counting of a game session's logs on stand-in logs."
             echo
             echo "**What a green run means:** the logic model, the Papyrus sources and the plugin specification agree with one another, the plugin builds and reads back, and the scripts behave in the project's stand-in engine as the recorded game runs did."
             echo
@@ -120,5 +132,13 @@ jobs:
               echo '```'
             else
               echo "The script did not start; see the steps before it."
+            fi
+            if [ -f "$RUNNER_TEMP/scenario_report_test.log" ]; then
+              echo
+              echo "### The runner's report on stand-in logs"
+              echo
+              echo '```text'
+              grep -E 'FAILED|^Test-ScenarioReport' "$RUNNER_TEMP/scenario_report_test.log" | cut -c1-200 || true
+              echo '```'
             fi
           } >> "$GITHUB_STEP_SUMMARY"
