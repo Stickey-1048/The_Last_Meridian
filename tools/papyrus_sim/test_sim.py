@@ -106,7 +106,16 @@ class ReplaysOfGameRuns(unittest.TestCase):
         need_build(self)
         replayed = 0
         for run in GAME_RUNS:
-            folder = scripts_at(run["commit"], self)
+            # The scripts as they were for that run. A run made on a branch names, besides its own commit, a
+            # commit of the main line with the very same scripts (scripts_commit), so that the replay does not
+            # depend on the branch's commits outliving its merge.
+            folder = scripts_at(run.get("scripts_commit", run["commit"]), self)
+            if "scripts_commit" in run:
+                trees = [subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--verify", "--quiet", c + ":scripts/Source/User/TLM"],
+                                        capture_output=True, text=True).stdout.strip() for c in (run["commit"], run["scripts_commit"])]
+                if trees[0]:     # the run's own commit is still there: the two have to hold the same scripts
+                    self.assertEqual(trees[0], trees[1], "%s: the scripts at %s are not those at %s" % (
+                        run["name"], run["scripts_commit"], run["commit"]))
             plugin = plugin_with(run.get("plugin_fault"))
             for number, want in sorted(run["scenarios"].items()):
                 with self.subTest(run=run["name"], scenario=number):

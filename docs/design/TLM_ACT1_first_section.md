@@ -2,7 +2,7 @@
 
 Branch `feat/tlm-mq01-graybox`. Self-test scenario 12, and one command to play it by hand.
 
-**Status: compiled, and its unattended check passes in the game: 42 of 42 on 2026-11-14** ([VERIFY_LOG.md](VERIFY_LOG.md), the sixteenth run, and again in the seventeenth with all 65 scenarios; 39 of 42 in the fifteenth, before a Cutter was moved off a spot that is not open floor and the revolver was looked up by the name the game uses inside). The people, the things, the boxes and the road by its stages all work there. Its set-up for play ran in the game once that day with an agent watching: everybody there in 38 seconds, the quest's start and first objective on the screen. **It has not been played by a person**, nor by the agent, whose keys did not reach the game: no box has been answered, no paper read, no fight fought.
+**Status: compiled, and its unattended check passes in the game: 42 of 42 on 2026-11-14** ([VERIFY_LOG.md](VERIFY_LOG.md), the sixteenth run, again in the seventeenth with all 65 scenarios, and in the eighteenth; 39 of 42 in the fifteenth, before a Cutter was moved off a spot that is not open floor and the revolver was looked up by the name the game uses inside). The people, the things, the boxes and the road by its stages all work there. Its set-up for play ran in the game once that day with an agent watching: everybody there in 38 seconds, the quest's start and first objective on the screen. **It has not been played by a person**, nor by the agent, whose keys did not reach the game: no box has been answered, no paper read, no fight fought.
 
 What follows was written before that run, and is kept as written where it says what was not yet known.
 

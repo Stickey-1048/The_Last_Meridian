@@ -77,7 +77,8 @@ jobs:
           python3 - <<'PY'
           import json, subprocess, sys
           runs = json.load(open("tools/papyrus_sim/game_runs.json"))["runs"]
-          missing = [c for c in sorted({r["commit"] for r in runs})
+          # A run made on a branch names a commit of the main line with the same scripts (scripts_commit).
+          missing = [c for c in sorted({r.get("scripts_commit", r["commit"]) for r in runs})
                      if subprocess.run(["git", "cat-file", "-e", c + "^{commit}"]).returncode != 0]
           if missing:
               print("::error::Commits of recorded game runs are not in this copy: " + ", ".join(missing))
