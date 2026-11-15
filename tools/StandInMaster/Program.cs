@@ -239,6 +239,13 @@ if (room)
     mod.Armors.AddNew("Pipboy");
 
     var marker = mod.Statics.AddNew("XMarker");
+    // Synthetic records for DEMO-ORIENT-002 lookup/placement/enable tests.
+    // These paths are deliberately fake: this is not geometry or visual proof.
+    foreach (var id in new[] { "StoneWallOldRubble", "ExtRubble_BricksLrg_Clump01", "FenceWIBollardPost01", "FenceWoodPost01", "ModernDomesticTableLrg01" })
+    {
+        var decor = mod.Statics.AddNew(id);
+        decor.Model = new Model { File = @"StandIn\" + id + ".nif" };
+    }
     fixtures = $" WorkshopNPC={settler.FormKey} XMarker={marker.FormKey}";
 
     // The test room. Something of the game's own lies in each of its two

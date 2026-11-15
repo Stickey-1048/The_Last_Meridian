@@ -373,6 +373,23 @@ class TheSectionSetUpForAPerson(unittest.TestCase):
         self.assertFalse(s.quests["TLM_A1"].running)
         self.assertEqual([e for e, r in s.placed.items() if e.startswith(REF) and not r.disabled], [])
 
+    def test_orientation_decor_is_additive_disabled_and_only_enabled_for_the_demo(self):
+        # Static placement/enable wiring only. The stand-in does not simulate
+        # collision, sightlines or whether a human recognizes the three areas.
+        names = ["DecorWreckOuter", "DecorWreckRear", "DecorRoadLeft", "DecorRoadRight",
+                 "DecorMercyLeft", "DecorMercyRight", "DecorMercyCounter"]
+        s = Session(SCRIPTS, PLUGIN, VANILLA, NATIVES)
+        for name in names:
+            self.assertIn(REF + name, s.placed)
+            self.assertTrue(s.placed[REF + name].disabled)
+        s.set_global("TLM_G_DevScenario", PLAY)
+        s.enter_game()
+        s.run(60.0)
+        for name in names:
+            self.assertFalse(s.placed[REF + name].disabled)
+        self.assertNotIn(30, s.quests["TLM_MQ01"].done)  # decoration does not trigger the ambush
+        self.assertNotIn(40, s.quests["TLM_MQ01"].done)  # or a caravan outcome
+
     def test_the_people_take_their_time_and_are_then_there(self):
         s = Session(SCRIPTS, PLUGIN, VANILLA, NATIVES)
         s.set_global("TLM_G_DevScenario", PLAY)
@@ -604,6 +621,8 @@ class EveryRoadThroughTheChapter(unittest.TestCase):
         p = Person(self)
         p.to_the_ambush()
         p.press("Dunmore", {"DunmoreHold": [1], "DunmoreTurns": [0]}, ["attack_cutter"])
+        self.assertIn(37, p.s.quests["TLM_MQ01"].done)
+        self.assertTrue(p.s.player_in_combat())
         p.kill("Dunmore", "player_kills_lead")
         p.to_town()
         p.hand_over("DebriefSaved")
@@ -656,11 +675,36 @@ class EveryRoadThroughTheChapter(unittest.TestCase):
         p.hand_over("DebriefWitness", 3)
         self.assertEqual(p.g("TLM_G_MQ01_DebriefAnswer"), 9)
 
-    def test_the_deal_refused_is_a_fight(self):
+    def refuse_share(self):
         p = Person(self)
         p.to_the_ambush()
-        p.press("Dunmore", {"DunmoreHold": [2], "DunmoreShare": [1], "DunmoreTurns": [0]}, ["dunmore_refuse"])
+        said = p.press("Dunmore", {"DunmoreHold": [2], "DunmoreShare": [1]}, ["dunmore_refuse"])
+        self.assertEqual(said, ["DunmoreHold", "DunmoreShare"])
         self.assertEqual(p.has(p.caps), 0)
+        self.assertFalse(p.s.player_in_combat())
+        self.assertNotIn(37, p.s.quests["TLM_MQ01"].done)
+        self.assertEqual(p.g("TLM_G_CaravanOutcome"), 0)
+        self.assertEqual(p.g("TLM_G_CaravanMethod"), 0)
+        self.assertFalse(p.s.placed[REF + "Abel"].dead)
+        return p
+
+    def test_refusing_share_leaves_peacefully_then_times_out(self):
+        p = self.refuse_share()
+        p.wait(95, "evade_timer")
+        self.assertEqual(p.g("TLM_G_CaravanOutcome"), 2)
+        p.to_town()
+        p.hand_over("DebriefEvaded", 0, "debrief_admit")
+
+    def test_refusing_share_then_walking_to_town_can_finish(self):
+        p = self.refuse_share()
+        p.to_town()
+        p.hand_over("DebriefEvaded", 2)
+
+    def test_refusing_share_does_not_disable_a_later_fight(self):
+        p = self.refuse_share()
+        p.press("Dunmore", {"DunmoreHold": [1], "DunmoreTurns": [0]}, ["attack_cutter"])
+        self.assertTrue(p.s.player_in_combat())
+        self.assertIn(37, p.s.quests["TLM_MQ01"].done)
         p.kill("Dunmore", "player_kills_lead")
         p.to_town()
         p.hand_over("DebriefSaved")
@@ -670,6 +714,9 @@ class EveryRoadThroughTheChapter(unittest.TestCase):
         p = Person(self)
         p.to_the_ambush()
         p.press("Dunmore", {"DunmoreHold": [3]}, ["dunmore_talk", "walk_away_from_dunmore"])
+        self.assertFalse(p.s.player_in_combat())
+        self.assertNotIn(37, p.s.quests["TLM_MQ01"].done)
+        self.assertEqual(p.has(p.caps), 0)
         self.assertEqual(p.g("TLM_G_CaravanOutcome"), 0)
         p.wait(95, "evade_timer")
         self.assertEqual(p.g("TLM_G_CaravanOutcome"), 2)
@@ -896,7 +943,8 @@ class WhatThePlayCatches(unittest.TestCase):
             p.press("Dunmore", {"DunmoreHold": [0], "DunmoreTurns": [0]}, ["dunmore_speech_fail"])
 
     def test_walking_on_that_settles_something(self):
-        scripts = changed_scripts("Act1Walk.psc", "\t; \"Not my business.\": nothing.", "\tIf answer == 3\n\t\tTLM_MQ01.SetStage(32)\n\tEndIf\n\t; \"Not my business.\": nothing.")
+        marker = '\t; "[Leave] I\'m walking away.": the same non-escalating exit.'
+        scripts = changed_scripts("Act1Walk.psc", marker, "\tIf answer == 3\n\t\tTLM_MQ01.SetStage(32)\n\tEndIf\n" + marker)
         p = self.road(scripts)
         with self.assertRaises(AssertionError):
             p.press("Dunmore", {"DunmoreHold": [3]}, ["dunmore_talk", "walk_away_from_dunmore"])
@@ -994,6 +1042,25 @@ class TheLinesAndTheScript(unittest.TestCase):
             if m["EditorId"].startswith(MSG) and m["Box"]:
                 self.assertTrue(1 <= len(m["Buttons"]) <= 4, m["EditorId"])
                 self.assertTrue(all(not b["Conditions"] for b in m["Buttons"]), m["EditorId"])
+
+    def test_dunmore_buttons_disclose_combat_and_leave_routes(self):
+        messages = {m["EditorId"]: m for m in self.data["Messages"]}
+        hold = messages[MSG + "DunmoreHold"]["Buttons"]
+        share = messages[MSG + "DunmoreShare"]["Buttons"]
+        self.assertEqual([b["Text"] for b in hold], [
+            "[Risk combat] Pritchard hangs road-takers. Leave.",
+            "[Fight] Let them go.", "What kind of share?", "[Leave] I'm walking away."])
+        self.assertEqual([b["Text"] for b in share], ["Take the share.", "[Leave] No deal. I'm leaving."])
+
+    def test_handoff_and_repeat_talk_explain_the_demo_boundary(self):
+        messages = {m["EditorId"]: m for m in self.data["Messages"]}
+        for name in ("PritchardHandOff", "PritchardAfter", "PritchardAfterAndMore"):
+            message = messages[MSG + name]
+            self.assertIn('"\n\n[First-section demo complete.', message["Text"])
+            self.assertIn('Greenwater, Red Hollow and Iron Junction are not implemented in this demo.', message["Text"])
+            self.assertIn('There are no route choices yet.]', message["Text"])
+            expected = ["Continue"] + (["There's something else from that train."] if name.endswith("AndMore") else [])
+            self.assertEqual([b["Text"] for b in message["Buttons"]], expected)
 
 
 if __name__ == "__main__":

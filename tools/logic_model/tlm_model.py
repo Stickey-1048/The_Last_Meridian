@@ -67,6 +67,8 @@ class Rules:
     #      (v0.1: it kept running, and a deal taken after it ran out was
     #      silently refused).
     evade_blocked_in_conversation: bool = True
+    # A27: declining the share is a peaceful exit, not hostile intervention.
+    peaceful_share_refusal: bool = True
 
 
 V02 = Rules()
@@ -82,6 +84,7 @@ V01 = Rules(
     handover_keyed_on_stage=False,
     hands_essential_in_town=False,
     evade_blocked_in_conversation=False,
+    peaceful_share_refusal=False,
 )
 
 # --------------------------------------------------------------------------
@@ -544,9 +547,14 @@ def ev_dunmore_deal(s: State, r: Rules) -> Optional[State]:
 
 
 def ev_dunmore_refuse(s: State, r: Rules) -> Optional[State]:
+    """A27: decline the share and leave the conversation, not a fight.
+
+    This neither saves nor resolves the hold-up. Timers, leaving the area,
+    actual attacks and the explicitly hostile intervention still apply.
+    """
     if not _dunmore_available(s):
         return None
-    return replace(s, in_combat=True)
+    return replace(s, talking=False) if r.peaceful_share_refusal else replace(s, in_combat=True)
 
 
 def _hand_reachable(s: State, r: Rules) -> bool:

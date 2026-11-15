@@ -118,10 +118,10 @@ Only while nothing has been settled and the Cutters have not turned on the playe
 
 | Button *(all design)* | What happens |
 |---|---|
-| "Pritchard hangs road-takers. Leave." | A coin is tossed, for want of a speech check. Heads: "Not for one wagon. We're gone." **[NEW]**, the Cutters break and the wagon is saved (stage 31). Tails: "Then you're in the way." **[NEW]**, and they turn on the player (stage 37) |
-| "Let them go." | "Then you're in the way." They turn on the player (stage 37) |
-| "What kind of share?" | "Half the cargo. The drover won't be a problem." *(design)* Then "Done.": "Smart. Stand clear." **[NEW]**, the deal (stage 33) and 20 caps; or "No.": they turn on the player (stage 37) |
-| "Not my business." | Nothing. The quest's own rules for walking on apply |
+| "[Risk combat] Pritchard hangs road-takers. Leave." | A coin is tossed, for want of a speech check. Heads: "Not for one wagon. We're gone." **[NEW]**, the Cutters break and the wagon is saved (stage 31). Tails: "Then you're in the way." **[NEW]**, and they turn on the player (stage 37) |
+| "[Fight] Let them go." | "Then you're in the way." They turn on the player (stage 37) |
+| "What kind of share?" | "Half the cargo. The drover won't be a problem." *(design)* Then "Take the share.": "Smart. Stand clear." **[NEW]**, the deal (stage 33) and 20 caps; or "[Leave] No deal. I'm leaving.": no stage, payout, hostile response or combat; the live encounter's timer and walking-on rules still apply (A27) |
+| "[Leave] I'm walking away." | Nothing. The quest's own rules for walking on apply |
 
 Afterwards, if he lives: "We're done here. Walk on." **[NEW]**
 
@@ -154,6 +154,15 @@ Afterwards, if he lives: "We're done here. Walk on." **[NEW]**
 | Delivered, Nell dead otherwise | "... Nell Fenwick's wagon never came in." **[NEW]** | |
 | Then, in the same breath | "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three." *(design)* | "Continue" (stage 60, which completes the chapter) |
 | After that | "Greenwater, Red Hollow or Iron Junction. Pick one." **[NEW]** | |
+
+**Demo boundary:** the handoff and both repeat-talk messages append a separate
+UI statement outside Pritchard's quotation: **[First-section demo complete.
+Greenwater, Red Hollow and Iron Junction are not implemented in this demo.
+There are no route choices yet.]** The fictional future-hook dialogue remains,
+but Continue dismisses it; no destination menu or future quest is implemented.
+The repeat-talk option to report the train evidence remains available when its
+existing conditions permit it. Owner-reported arrival with the dispatch is not
+proof that stage 60 fired without the session log.
 
 Whenever the side quest's case can be presented and nothing has been done with it, his box (before the dispatch, with it, and after the chapter) has one button more: "There's something else from that train." *(design)* It reports the ledger to him (side quest stage 41): "Show me. I'll take copies and send word up the line." **[NEW]**
 

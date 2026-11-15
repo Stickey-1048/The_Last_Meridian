@@ -65,7 +65,7 @@ ANSWER_LYING = 5                # "deny" when a witness accuses: "She's lying."
 HASKELL_CODE = {"present": 0, "gone": 1, "dead": 2}
 DECISION_STAGE = {"sq_report": 41, "sq_post": 42, "sq_post_yard": 43, "sq_post_haskell": 44, "sq_sell": 45, "sq_destroy": 46}
 ANSWER_STAGE = {"debrief_admit": 51, "debrief_deny": 52, "debrief_confess": 53, "debrief_blame": 54}
-COMBAT_EVENTS = {"attack_cutter", "break_combat", "dunmore_speech_fail", "dunmore_refuse"}
+COMBAT_EVENTS = {"attack_cutter", "break_combat", "dunmore_speech_fail"}
 SKIP = -999                     # TLM:CaseDriver.SKIP: "not looked at in this step"
 
 
@@ -232,6 +232,7 @@ NOT_RUN = {
     "T29": "the timer during the conversation with the Cutter lead: there is no dialogue yet, and nothing else "
            "makes the game say he is talking to the player",
     "T29b": "leaving that conversation: there is no dialogue yet",
+    "T30": "A27 share refusal is a dialogue exit with no stage API; covered by stand-in button tests, not this stage driver",
     "S14": "Pike dead: the guard is a dialogue condition, and there is no dialogue yet",
     "S16": "reload: needs a save and a load",
     "S20": "Vane dead hides the sale: the guard is a dialogue condition, and there is no dialogue yet",
@@ -299,8 +300,10 @@ def action_for(event, pre, post):
         return ["DoKillCutter()"], set(), set()
     if event == "dunmore_speech_success":
         return ["DoSpeechSuccess()"], {31}, set()
-    if event in ("dunmore_speech_fail", "dunmore_refuse"):
+    if event == "dunmore_speech_fail":
         return ["DoSpeechFail()"], {37}, set()
+    if event == "dunmore_refuse":
+        return [], set(), set()  # A27: a peaceful dialogue exit sets no stage
     if event == "dunmore_deal":
         return ["DoDeal()"], {33}, set()
     if event == "player_kills_nell":

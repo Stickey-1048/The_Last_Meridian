@@ -239,15 +239,20 @@ Rules: ≤ 4 player options per node (the vanilla wheel limit **[VERIFY]**), rol
 ### 8.1 Reese Dunmore (greeting while state = LIVE and no shot fired)
 ```
 DUNMORE: "Keep walking. Or stay and pick up a share."
- ├─ [Intimidate/Persuade, speech check] "Pritchard hangs road-takers. Leave." ── success → Cutters break → SAVED(31)
+ ├─ "[Risk combat] Pritchard hangs road-takers. Leave." [speech check] ── success → Cutters break → SAVED(31)
  │                                                                        └─ fail → combat → fight
- ├─ [Attack] "Let them go." ── combat → fight (outcome decided by §7.1)
+ ├─ "[Fight] Let them go." ── combat → fight (outcome decided by §7.1)
  ├─ "What kind of share?" → DUNMORE: "Half the cargo. The drover won't be a problem."
- │     ├─ "Done." ── EXPLOITED/Deal (33)
- │     └─ "No." ── combat → fight
- └─ [Leave] "Not my business." ── no stage; EVADE rules apply (§7.3)
+ │     ├─ "Take the share." ── EXPLOITED/Deal (33)
+ │     └─ "[Leave] No deal. I'm leaving." ── no stage, payout or combat; EVADE rules apply (§7.3)
+ └─ "[Leave] I'm walking away." ── no stage; EVADE rules apply (§7.3)
 ```
 Dunmore's greeting is gated by `GetStage TLM_MQ01 == 30`-equivalent state and "not in combat with player". Once combat or a deal starts, this branch ends.
+
+Amendment A27 (issue 6): declining the criminal offer is peaceful disengagement,
+not a rescue or immunity. The live hold-up's normal timer, leaving-area and town
+resolution still apply. Actual attacks, explicit intervention and a failed threat
+retain their combat behavior. The visible button labels disclose that risk.
 
 ### 8.2 Nell Fenwick (after outcome, in town or on road)
 | Outcome | Opening | Player options | Effect |
@@ -516,6 +521,7 @@ All commands in this table are the author's recollection of the Fallout 4 consol
 | T26 | Completion | Reach 100 | `MQ01_Done = 1`; MQ02 hook text | ☐ |
 | T27 | Clean plugin load | Fresh profile, plugin only | No missing-master/script errors in logs | ☐ |
 | T28 | Unrelated saves | Load a vanilla save with plugin disabled/enabled | No corruption | ☐ |
+| T30 | Peaceful share refusal (A27) | Ask about the share, choose the labeled Leave option, then let the timer resolve or walk to town | No stage 37, combat or share from refusal; encounter remains live until normal evasion; debrief can finish. Fight/failed threat still initiate combat | ☐ |
 
 ---
 

@@ -482,7 +482,7 @@ public static class Spec
             new(33, "You took a share."),
             new(34, Note: "Caravan missed: the player never met the ambush"),
             new(35, "You turned your gun on the wagon's own."),
-            new(37, Note: "Cutters turn on the player (speech failed or deal refused)"),
+            new(37, Note: "Cutters turn on the player (failed threat or explicit hostile intervention)"),
             new(40, "Mercy Crossing."),
             new(50, "Delivered to Sheriff Pritchard."),
             new(51, Note: "Debrief: admit (evaded)"),
