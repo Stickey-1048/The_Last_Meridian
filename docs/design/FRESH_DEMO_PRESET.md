@@ -51,7 +51,13 @@ manually on an owner's loaded save.
 The runner records its batch path/hash in the existing unfinished-run note
 before creating it or changing startup settings. Its name is a unique
 `TLM_FreshDemo_<guid>.txt` in the managed game root. CreateNew refuses existing
-files. Cleanup requires that exact filename pattern, direct game-root parent,
+files. The note starts as Planned; only successful CreateNew changes ownership
+to Owned, and that transition is journaled before batch bytes or startup settings
+are written. A rejected existing path is explicitly recorded and preserved even
+if its bytes match. Planned plus a present file is an ambiguous interrupted
+window: cleanup fails closed and keeps the artifact/note for review.
+
+Owned cleanup requires that exact filename pattern, direct game-root parent,
 non-link file and recorded SHA256. A changed or out-of-scope file is preserved
 and cleanup fails the run; startup settings are still cleared and the recovery
 note is retained. A subsequent run cleans a recorded interrupted batch before
@@ -61,7 +67,8 @@ making another. No recursive deletion or owner save access is involved.
 
 PowerShell stand-in tests check the eight-command whitelist, each SPECIAL once,
 owned create/remove, collisions, modified/out-of-scope file preservation,
-serialized interrupted-run cleanup and failure propagation. These test guards
+serialized interrupted-run cleanup, unowned collision/finally/restart preservation,
+ownership journaling before bytes, ambiguous creation and failure propagation. These test guards
 and intended commands; they do not establish the game's native values.
 
 Actual fresh after-capture is still required: level 1, base/current SPECIAL 4,

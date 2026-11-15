@@ -469,6 +469,49 @@ try {
     Check 'a path outside the specified game root is preserved' ($rejected -and (Test-Path -LiteralPath $plan.Path))
     Remove-Item -LiteralPath $plan.Path -Force
 
+    $st = New-RunState 'fresh-preexisting-collision'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    # Not created by the runner: identical content must not establish ownership.
+    [System.IO.File]::WriteAllBytes($plan.Path, [System.Text.Encoding]::ASCII.GetBytes($plan.Content))
+    $journal = [pscustomobject]@{ FreshDemoBatch = $plan }
+    $recordState = { param($p) Set-Content -LiteralPath $st.Note -Value ($journal | ConvertTo-Json) -Encoding utf8 }.GetNewClosure()
+    $rejected = $false
+    try { Write-FreshDemoStartupBatch -Plan $plan -OnStateChanged $recordState } catch { $rejected = $true }
+    Check 'identical pre-existing collision is recorded as rejected, not owned' ($rejected -and $plan.CreationState -eq 'RejectedExisting')
+    $recovered = (Get-Content -LiteralPath $st.Note -Raw | ConvertFrom-Json).FreshDemoBatch
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $recovered -GameFolder $root
+    Check 'finally and serialized recovery preserve identical unowned file' (-not $re.Failed -and (Test-Path -LiteralPath $plan.Path) -and (Get-FileHash -LiteralPath $plan.Path -Algorithm SHA256).Hash -eq $plan.Hash)
+    [void](Remove-FreshDemoStartupBatch -Plan $recovered -GameFolder $root)
+    Check 'restart cleanup does not adopt a rejected file' (Test-Path -LiteralPath $plan.Path)
+    Remove-Item -LiteralPath $plan.Path -Force
+
+    $st = New-RunState 'fresh-ambiguous-creation'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    # Simulate interruption after creating a file but before journaling ownership.
+    [System.IO.File]::WriteAllBytes($plan.Path, [System.Text.Encoding]::ASCII.GetBytes($plan.Content))
+    $saved = ([pscustomobject]@{ FreshDemoBatch = $plan } | ConvertTo-Json | ConvertFrom-Json).FreshDemoBatch
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $saved -GameFolder $root
+    Check 'ambiguous ownership fails closed despite matching bytes' ($re.Failed -and (Test-Path -LiteralPath $plan.Path) -and (Test-Path -LiteralPath $st.Note))
+    Check 'ambiguous ownership clears future startup command' ("$(Get-IniValue $st.Ini 'General' 'sStartingConsoleCommand')" -eq '')
+    $rejected = $false
+    try { [void](Remove-FreshDemoStartupBatch -Plan $saved -GameFolder $root) } catch { $rejected = $true }
+    Check 'restart keeps ambiguous artifact for review' ($rejected -and (Test-Path -LiteralPath $plan.Path))
+    Remove-Item -LiteralPath $plan.Path -Force
+
+    $st = New-RunState 'fresh-ownership-journal'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    $journal = [pscustomobject]@{ FreshDemoBatch = $plan }
+    Write-FreshDemoStartupBatch -Plan $plan -OnStateChanged ({
+        param($p)
+        if ((Get-Item -LiteralPath $p.Path).Length -ne 0) { throw 'Ownership journal happened after batch writes' }
+        Set-Content -LiteralPath $st.Note -Value ($journal | ConvertTo-Json) -Encoding utf8
+    }.GetNewClosure())
+    $saved = (Get-Content -LiteralPath $st.Note -Raw | ConvertFrom-Json).FreshDemoBatch
+    Check 'successful CreateNew ownership is journaled before writing bytes' ($saved.CreationState -eq 'Owned')
+    [void](Remove-FreshDemoStartupBatch -Plan $saved -GameFolder $root)
+
     Write-Host '11. Run-Scenarios.ps1 takes its words and its totals from the module'
     $runner = Get-Content -LiteralPath (Join-Path $winDir 'Run-Scenarios.ps1') -Raw
     Check 'only play900 selects the preset startup command' ($runner.Contains('$sessionEntry = if ($n -eq $playNumber) { $freshDemoPlan.Command } else { $enterCommand }'))

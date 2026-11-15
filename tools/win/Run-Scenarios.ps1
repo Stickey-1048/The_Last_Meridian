@@ -351,7 +351,7 @@ $batchToRestore = if ($unfinished -and ($unfinished.PSObject.Properties.Name -co
 try {
     # Finish cleanup from an interrupted fresh launch before creating a new batch.
     if ($batchToRestore) {
-        Remove-FreshDemoStartupBatch -Plan $batchToRestore -GameFolder $gameFolder
+        [void](Remove-FreshDemoStartupBatch -Plan $batchToRestore -GameFolder $gameFolder)
         $batchToRestore = $null
     }
     Say '== Unattended scenario run =='
@@ -381,7 +381,10 @@ try {
     Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
     if ($freshDemoPlan) {
         $batchToRestore = $freshDemoPlan
-        Write-FreshDemoStartupBatch -Plan $freshDemoPlan
+        Write-FreshDemoStartupBatch -Plan $freshDemoPlan -OnStateChanged ({
+            param($plan)
+            Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
+        }.GetNewClosure())
         Say 'Fresh play session 900 startup requests seven base SPECIAL values of 4 on a new COC character; no level or health/AP write. Native results require capture.'
     }
     Say "Scenario number in the installed plugin before the run: $valueAtStart"
