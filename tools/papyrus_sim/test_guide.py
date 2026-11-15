@@ -34,6 +34,21 @@ class DemoGuide(unittest.TestCase):
         self.assertNotIn(20, p.s.quests['TLM_MQ01'].done)
         self.assertIn('return to the wreck', self.read(p, 'GuideMercy'))
 
+    def test_exterior_copy_flag_keeps_help_read_only_and_uses_the_fenced_yard_route(self):
+        p = Person(self)
+        for alias in p.s.quests['TLM_A1'].aliases.values():
+            if alias.name in ('GuideWreck', 'GuideRoad', 'GuideMercy'):
+                for script in alias.scripts:
+                    script.props['exterior'] = True
+        self.assertIn('fenced cabin yard', self.read(p, 'GuideMercy'))
+        p.press('Dispatch', events=['take_dispatch'])
+        before = list(p.s.quests['TLM_MQ01'].done)
+        text = self.read(p, 'GuideWreck')
+        self.assertIn('marked route', text)
+        self.assertIn('eastern marked route bypasses', text)
+        self.assertNotIn('timber posts', text)
+        self.assertEqual(p.s.quests['TLM_MQ01'].done, before)
+
     def test_dispatch_then_town_points_to_pritchard_without_delivering(self):
         p = Person(self)
         p.press('Dispatch', events=['take_dispatch'])
