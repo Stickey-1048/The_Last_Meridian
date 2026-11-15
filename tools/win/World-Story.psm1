@@ -1,6 +1,36 @@
 Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1')
 
+function Get-WorldStoryProcessInventory {
+    # Get-Process can omit an incompletely terminated process. CIM presence is
+    # deliberately conservative: no launcher/cleanup action until both agree.
+    try {
+        $hostRows = @(Get-Process -ErrorAction Stop | Where-Object { $_.ProcessName -in @('Fallout4','ModOrganizer') })
+        $cimRows = @(Get-CimInstance -ClassName Win32_Process -Filter "Name='Fallout4.exe' OR Name='ModOrganizer.exe'" -ErrorAction Stop)
+        $rows = @{}
+        foreach ($p in $hostRows) {
+            $rows[[int]$p.Id] = [pscustomobject]@{ Id=[int]$p.Id; Name=$p.ProcessName; Source='Get-Process' }
+        }
+        foreach ($p in $cimRows) {
+            if (-not $p.Name -or [int]$p.ProcessId -le 0) { throw 'Incomplete Windows process record.' }
+            $id = [int]$p.ProcessId
+            if ($rows.ContainsKey($id)) { $rows[$id].Source += '+CIM' }
+            else { $rows[$id] = [pscustomobject]@{ Id=$id; Name=$p.Name; Source='CIM' } }
+        }
+        return [pscustomobject]@{ Clear=($rows.Count -eq 0); Processes=@($rows.Values | Sort-Object Id) }
+    } catch {
+        throw ('Cannot confirm Windows game/manager process inventory; launch and cleanup are blocked, ownership note must be retained. ' + $_.Exception.Message)
+    }
+}
+
+function Assert-WorldStoryProcessesClear {
+    $inventory = Get-WorldStoryProcessInventory
+    if (-not $inventory.Clear) {
+        $details = ($inventory.Processes | ForEach-Object { "$($_.Name) PID $($_.Id) [$($_.Source)]" }) -join ', '
+        throw "Windows still lists game/manager processes: $details. Close both and wait for full exit; any startup ownership note is retained."
+    }
+}
+
 function Get-WorldStoryContext {
     param([string]$ModOrganizerRoot, [string]$ProfileName = 'TLM-World-Story-Preview',
         [string]$ManifestPath = (Join-Path $PSScriptRoot 'world-story-artifact.json'))
@@ -73,6 +103,7 @@ function Get-WorldStoryStartupPlan {
 
 function Restore-WorldStoryState {
     param($Note)
+    Assert-WorldStoryProcessesClear
     $errors = @()
     foreach ($pair in @(@('sStartingConsoleCommand','StartupBefore'),@('bAlwaysActive','ActiveBefore'))) {
         try {
@@ -91,4 +122,4 @@ function Get-WorldStoryStartupState {
     if ($null -eq $active -or "$active" -eq '') { $active='0' }
     return [pscustomobject]@{Startup=$startup;Active="$active"}
 }
-Export-ModuleMember -Function Get-WorldStoryContext, Get-WorldStoryStartupPlan, Restore-WorldStoryState, Get-WorldStoryStartupState
+Export-ModuleMember -Function Get-WorldStoryContext, Get-WorldStoryStartupPlan, Restore-WorldStoryState, Get-WorldStoryStartupState, Get-WorldStoryProcessInventory, Assert-WorldStoryProcessesClear

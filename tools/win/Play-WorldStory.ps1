@@ -5,7 +5,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'World-Story.psm1') -Force
-if (@(Get-RunningGame).Count -or (Test-ModOrganizerRunning)) { throw 'Close Fallout 4 and Mod Organizer before starting the world preview.' }
+Assert-WorldStoryProcessesClear
 $context = Get-WorldStoryContext -ModOrganizerRoot $ModOrganizerRoot
 if ((Get-ExeVersion $context.GameExe) -ne '1.10.163.0') { throw 'Story preview is reviewed for the managed Fallout 4 1.10.163 runtime only.' }
 if ($context.RequiresF4SE -and -not $UseF4SE) { throw 'This story profile enables F4SE-dependent mods. Use -UseF4SE or the story .cmd launcher.' }
@@ -26,6 +26,7 @@ $state = Get-WorldStoryStartupState -Ini $ini
 $startup = $state.Startup; $active = $state.Active
 if ($ValidateOnly) { Write-Host "Story preflight passed; launcher: $launcher; nothing changed or started. Native startup not tested."; exit 0 }
 [void](New-Item -ItemType Directory -Force -Path $build)
+Assert-WorldStoryProcessesClear
 $plan = Get-WorldStoryStartupPlan -GameFolder $context.Mo.GamePath
 $note = [pscustomobject]@{ Ini = $ini; GameFolder = $context.Mo.GamePath; StartupBefore = $startup; ActiveBefore = "$active"; Batch = $plan }
 Set-Content -LiteralPath $journal -Value ($note | ConvertTo-Json -Depth 4) -Encoding utf8
@@ -45,6 +46,8 @@ try {
     $process = Start-Process -FilePath $manager -ArgumentList $argsLine -WorkingDirectory $context.Mo.Root -WindowStyle Hidden -PassThru
     $deadline = (Get-Date).AddSeconds(180)
     while ((Get-Date) -lt $deadline) {
+        # A failed Windows inventory must not be mistaken for an absent game.
+        [void](Get-WorldStoryProcessInventory)
         $running = @(Get-RunningGame)
         if ($running.Count) { $startedGame = $running[0]; break }
         Start-Sleep -Milliseconds 500
@@ -52,14 +55,11 @@ try {
     if (-not $startedGame) { throw 'The game did not appear. Close any Mod Organizer prompt/process before retrying; no preview pass is claimed.' }
     $path = $startedGame.Path
     if (-not $path -or -not (Test-SamePath $path $context.GameExe)) { throw 'The running game is not the expected managed Fallout4.exe. Close it; no preview pass is claimed.' }
-    while (@(Get-RunningGame).Count -or (Test-ModOrganizerRunning)) { Start-Sleep -Seconds 1 }
+    while (-not (Get-WorldStoryProcessInventory).Clear) { Start-Sleep -Seconds 1 }
 } finally {
-    # Do not remove a live startup batch or change settings under a running game/manager.
-    if (@(Get-RunningGame).Count -or (Test-ModOrganizerRunning)) {
-        Write-Warning 'Game/manager still open: ownership note and startup state retained. Close both; the next launch retries cleanup.'
-    } else {
-        Restore-WorldStoryState -Note $note
-        Remove-Item -LiteralPath $journal -Force
-        Write-Host 'World preview settings restored and owned startup batch removed. No gameplay completion is inferred.'
-    }
+    # Restore checks both inventories again before its first write. Any live,
+    # residual or unreadable inventory throws and leaves note/batch/settings.
+    Restore-WorldStoryState -Note $note
+    Remove-Item -LiteralPath $journal -Force
+    Write-Host 'World preview settings restored and owned startup batch removed. No gameplay completion is inferred.'
 }
