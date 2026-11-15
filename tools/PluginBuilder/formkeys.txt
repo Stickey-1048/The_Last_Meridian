@@ -288,3 +288,17 @@ TLM_REF_A1_Stove
 2191
 TLM_REF_A1_CaravanYard
 2192
+TLM_REF_A1_DecorWreckOuter
+2193
+TLM_REF_A1_DecorWreckRear
+2194
+TLM_REF_A1_DecorRoadLeft
+2195
+TLM_REF_A1_DecorRoadRight
+2196
+TLM_REF_A1_DecorMercyLeft
+2197
+TLM_REF_A1_DecorMercyRight
+2198
+TLM_REF_A1_DecorMercyCounter
+2199

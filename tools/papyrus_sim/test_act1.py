@@ -373,6 +373,23 @@ class TheSectionSetUpForAPerson(unittest.TestCase):
         self.assertFalse(s.quests["TLM_A1"].running)
         self.assertEqual([e for e, r in s.placed.items() if e.startswith(REF) and not r.disabled], [])
 
+    def test_orientation_decor_is_additive_disabled_and_only_enabled_for_the_demo(self):
+        # Static placement/enable wiring only. The stand-in does not simulate
+        # collision, sightlines or whether a human recognizes the three areas.
+        names = ["DecorWreckOuter", "DecorWreckRear", "DecorRoadLeft", "DecorRoadRight",
+                 "DecorMercyLeft", "DecorMercyRight", "DecorMercyCounter"]
+        s = Session(SCRIPTS, PLUGIN, VANILLA, NATIVES)
+        for name in names:
+            self.assertIn(REF + name, s.placed)
+            self.assertTrue(s.placed[REF + name].disabled)
+        s.set_global("TLM_G_DevScenario", PLAY)
+        s.enter_game()
+        s.run(60.0)
+        for name in names:
+            self.assertFalse(s.placed[REF + name].disabled)
+        self.assertNotIn(30, s.quests["TLM_MQ01"].done)  # decoration does not trigger the ambush
+        self.assertNotIn(40, s.quests["TLM_MQ01"].done)  # or a caravan outcome
+
     def test_the_people_take_their_time_and_are_then_there(self):
         s = Session(SCRIPTS, PLUGIN, VANILLA, NATIVES)
         s.set_global("TLM_G_DevScenario", PLAY)
