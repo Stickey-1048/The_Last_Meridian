@@ -8,6 +8,19 @@ ROOT=Path(__file__).resolve().parents[1]
 DLL=ROOT/'tools/WorldSliceBuilder/bin/Debug/net8.0/WorldSliceBuilder.dll'
 
 class OutputSafety(unittest.TestCase):
+    def test_expand_flag_preserves_input_and_occupied_output_refusals(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);master=root/'master';master.mkdir()
+            input_file=master/'Fallout4.esm';input_file.write_bytes(b'input sentinel')
+            occupied=root/'occupied';occupied.mkdir();sentinel=occupied/'keep.txt';sentinel.write_bytes(b'owner content')
+            for output in (input_file,master,master/'new-output',occupied):
+                result=subprocess.run(['dotnet',str(DLL),str(input_file),str(output),'--expand'],capture_output=True,text=True)
+                self.assertEqual(result.returncode,2,result.stderr)
+                self.assertIn('Output must',result.stderr)
+                self.assertEqual(input_file.read_bytes(),b'input sentinel')
+                self.assertEqual(sentinel.read_bytes(),b'owner content')
+                self.assertFalse((master/'new-output').exists())
+
     def test_story_source_input_tree_is_never_an_output(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);master=root/'master';master.mkdir()
