@@ -60,13 +60,13 @@ Message (55)
   00082E  TLM_MSG_TrialTalk  [notification]  "The second trial settler has nothing to say yet."
   000848  TLM_MSG_A1_Begin  [notification]  "Look around the wreck to your left. Investigate the ground for the marshal's dispatch case and anything useful."
   000849  TLM_MSG_A1_DunmoreHold  [box]  "Reese Dunmore: "Keep walking. Or stay and pick up a share.""  title: "Reese Dunmore"
-          button 0: "Pritchard hangs road-takers. Leave."
-          button 1: "Let them go."
+          button 0: "[Risk combat] Pritchard hangs road-takers. Leave."
+          button 1: "[Fight] Let them go."
           button 2: "What kind of share?"
-          button 3: "Not my business."
+          button 3: "[Leave] I'm walking away."
   00084A  TLM_MSG_A1_DunmoreShare  [box]  "Reese Dunmore: "Half the cargo. The drover won't be a problem.""  title: "Reese Dunmore"
-          button 0: "Done."
-          button 1: "No."
+          button 0: "Take the share."
+          button 1: "[Leave] No deal. I'm leaving."
   00084B  TLM_MSG_A1_DunmoreBreaks  [box]  "Reese Dunmore: "Not for one wagon. We're gone.""  title: "Reese Dunmore"
           button 0: "Continue"
   00084C  TLM_MSG_A1_DunmoreTurns  [box]  "Reese Dunmore: "Then you're in the way.""  title: "Reese Dunmore"
@@ -143,11 +143,17 @@ Message (55)
           button 0: "Continue"
   000866  TLM_MSG_A1_DebriefLost  [box]  "Owen Pritchard: "The line keeps losing marshals. Nell Fenwick's wagon never came in.""  title: "Owen Pritchard"
           button 0: "Continue"
-  000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three.""  title: "Owen Pritchard"
+  000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
+
+[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]"  title: "Owen Pritchard"
           button 0: "Continue"
-  000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one.""  title: "Owen Pritchard"
+  000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
+
+[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]"  title: "Owen Pritchard"
           button 0: "Continue"
-  000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one.""  title: "Owen Pritchard"
+  000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
+
+[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]"  title: "Owen Pritchard"
           button 0: "Continue"
           button 1: "There's something else from that train."
   00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Pike. I fix what shoots. Forty-fours are scarce, so make yours count.""  title: "Ada Pike"
@@ -291,7 +297,7 @@ Quest TLM_MQ01  00081A  "Six Rounds to Mercy"  type=MainQuest priority=60 flags=
   stage   33  "You took a share."
   stage   34  (Caravan missed: the player never met the ambush)
   stage   35  "You turned your gun on the wagon's own."
-  stage   37  (Cutters turn on the player (speech failed or deal refused))
+  stage   37  (Cutters turn on the player (failed threat or explicit hostile intervention))
   stage   40  "Mercy Crossing."
   stage   50  "Delivered to Sheriff Pritchard."
   stage   51  (Debrief: admit (evaded))

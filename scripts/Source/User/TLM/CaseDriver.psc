@@ -342,7 +342,8 @@ Function DoSpeechSuccess()
 EndFunction
 
 Function DoSpeechFail()
-	{dunmore_speech_fail and dunmore_refuse: the line sets stage 37.}
+	{dunmore_speech_fail: the risky threat failed and sets stage 37.
+	A27: refusing a share no longer calls this combat path.}
 	test.Reach(TLM_MQ01, 37)
 	WaitCombat(true)
 EndFunction

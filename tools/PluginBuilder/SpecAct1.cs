@@ -149,6 +149,14 @@ public static class Act1
         new("TLM_MSG_A1_" + id, who, who + ": \"" + line + "\"", Box: true,
             (buttons.Length == 0 ? new[] { GoOn } : buttons).Select(b => new ButtonSpec(b)).ToArray());
 
+    // Demo UI, outside the character's quoted line. The future route selection
+    // is not implemented; no new quest or button is implied by the fiction.
+    static MessageSpec DemoEnd(string id, string line, params string[] buttons)
+    {
+        var message = Says(id, Pritchard, line, buttons);
+        return message with { Text = message.Text + "\n\n[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]" };
+    }
+
     const string Dunmore = "Reese Dunmore", Nell = "Nell Fenwick", Abel = "Abel Rudd", Cutter = "Tellico Cutter",
         Pritchard = "Owen Pritchard", Pike = "Ada Pike", Vane = "Silas Vane", Keene = "Miriam Keene",
         Talbot = "Jonah Talbot", Haskell = "Corwin Haskell";
@@ -164,8 +172,8 @@ public static class Act1
         // ---- Reese Dunmore, at the wagon (design 8.1). The button order is
         // the contract with TLM:Act1Walk.TalkDunmore.
         Says("DunmoreHold", Dunmore, "Keep walking. Or stay and pick up a share.",
-            "Pritchard hangs road-takers. Leave.", "Let them go.", "What kind of share?", "Not my business."),
-        Says("DunmoreShare", Dunmore, "Half the cargo. The drover won't be a problem.", "Done.", "No."),
+            "[Risk combat] Pritchard hangs road-takers. Leave.", "[Fight] Let them go.", "What kind of share?", "[Leave] I'm walking away."),
+        Says("DunmoreShare", Dunmore, "Half the cargo. The drover won't be a problem.", "Take the share.", "[Leave] No deal. I'm leaving."),
         Says("DunmoreBreaks", Dunmore, "Not for one wagon. We're gone."),                           // NEW
         Says("DunmoreTurns", Dunmore, "Then you're in the way."),                                   // NEW
         Says("DunmoreDeal", Dunmore, "Smart. Stand clear."),                                        // NEW
@@ -210,9 +218,9 @@ public static class Act1
         Says("DebriefNoWitness", Pritchard, Marshals + "Two dead on the Tellico road and no one to say how."),
         Says("DebriefMissed", Pritchard, Marshals + "Fenwick's wagon was hit on the Tellico road, and you came in by it."),   // NEW
         Says("DebriefLost", Pritchard, Marshals + "Nell Fenwick's wagon never came in."),                                  // NEW
-        Says("PritchardHandOff", Pritchard, "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."),
-        Says("PritchardAfter", Pritchard, "Greenwater, Red Hollow or Iron Junction. Pick one."),    // NEW
-        Says("PritchardAfterAndMore", Pritchard, "Greenwater, Red Hollow or Iron Junction. Pick one.", GoOn, More),   // NEW
+        DemoEnd("PritchardHandOff", "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."),
+        DemoEnd("PritchardAfter", "Greenwater, Red Hollow or Iron Junction. Pick one."),    // NEW
+        DemoEnd("PritchardAfterAndMore", "Greenwater, Red Hollow or Iron Junction. Pick one.", GoOn, More),   // NEW
 
         // ---- The town.
         Says("PikeHello", Pike, "Pike. I fix what shoots. Forty-fours are scarce, so make yours count."),   // NEW

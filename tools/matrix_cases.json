@@ -897,6 +897,7 @@
   "T28": "unrelated saves: needs other saves",
   "T29": "the timer during the conversation with the Cutter lead: there is no dialogue yet, and nothing else makes the game say he is talking to the player",
   "T29b": "leaving that conversation: there is no dialogue yet",
+  "T30": "A27 share refusal is a dialogue exit with no stage API; covered by stand-in button tests, not this stage driver",
   "S14": "Pike dead: the guard is a dialogue condition, and there is no dialogue yet",
   "S16": "reload: needs a save and a load",
   "S20": "Vane dead hides the sale: the guard is a dialogue condition, and there is no dialogue yet"

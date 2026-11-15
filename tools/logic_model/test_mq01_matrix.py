@@ -318,6 +318,24 @@ class MQ01Matrix(unittest.TestCase):
             with self.assertRaises(NotAvailable):
                 run(TO_AMBUSH + before + ["dunmore_talk"])
 
+    def test_T30_share_refusal_is_peaceful_and_does_not_rescue(self):
+        s = run(TO_AMBUSH + ["dunmore_talk", "dunmore_refuse"])
+        self.assertFalse(s.talking)
+        self.assertFalse(s.in_combat)
+        self.assertEqual(s.outcome, m.OUT_NONE)
+        self.assertEqual(s.caravan_state, m.LIVE)
+        self.assertEqual(s.method, m.METHOD_NONE)
+        self.assertTrue(s.abel_alive)
+        self.assertTrue(run(TO_AMBUSH + ["dunmore_refuse"], rules=V01).in_combat)
+        self.assertEqual(apply(s, "evade_timer").outcome, m.OUT_EVADED)
+        self.assertEqual(run(FINISH, start=s).mq01_done, True)
+        # Leaving is not immunity: real attacks and failed threats still fight.
+        for event in ("attack_cutter", "dunmore_speech_fail"):
+            self.assertTrue(apply(s, event).in_combat, event)
+        # No new immunity applies to a refusal attempted after combat starts.
+        with self.assertRaises(NotAvailable):
+            apply(apply(s, "attack_cutter"), "dunmore_refuse")
+
     @unittest.skip(ENGINE_ONLY + " (plugin load and logs)")
     def test_T27_clean_plugin_load(self):
         pass

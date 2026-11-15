@@ -443,7 +443,7 @@ Function TalkDunmore()
 	EndIf
 	int answer = ShowLine(SayDunmoreHold)
 	If answer == 0
-		; "Pritchard hangs road-takers. Leave."
+		; "[Risk combat] Pritchard hangs road-takers. Leave."
 		If Coin()
 			ShowLine(SayDunmoreBreaks)
 			TLM_MQ01.SetStage(31)
@@ -452,7 +452,7 @@ Function TalkDunmore()
 			TLM_MQ01.SetStage(37)
 		EndIf
 	ElseIf answer == 1
-		; "Let them go."
+		; "[Fight] Let them go."
 		ShowLine(SayDunmoreTurns)
 		TLM_MQ01.SetStage(37)
 	ElseIf answer == 2
@@ -464,12 +464,11 @@ Function TalkDunmore()
 			If Caps && Outcome() == OUT_EXPLOITED && TLM_G_CaravanMethod.GetValueInt() == METHOD_DEAL
 				Game.GetPlayer().AddItem(Caps, DEAL_SHARE)
 			EndIf
-		Else
-			ShowLine(SayDunmoreTurns)
-			TLM_MQ01.SetStage(37)
 		EndIf
+		; A27: "[Leave] No deal. I'm leaving." closes this menu without
+		; a stage, a share or hostility. The live hold-up still has its timer.
 	EndIf
-	; "Not my business.": nothing. The quest's own rules for walking on apply.
+	; "[Leave] I'm walking away.": the same non-escalating exit.
 EndFunction
 
 ; ------------------------------------------------- the caravan and the gang
