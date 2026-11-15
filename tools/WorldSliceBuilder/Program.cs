@@ -89,7 +89,7 @@ for(int row=0;row<2;row++){
  Put("CabinRightWall"+row,wall,3304,y,16,-MathF.PI/2);
 }
 Put("Bed",Furniture("WorkshopNpcBedMilitaryCottLay01"),2832,2984,16);
-Put("Couch",Furniture("NpcCouchSet02Weathered1x2Straight01Sit01"),3232,2984,9);
+Put("Couch",Furniture("NpcCouchSet02Weathered1x2Straight01Sit01"),3232,2984,9,MathF.PI);
 // Yard fence: 128-unit panels, explicit 256-unit opening centered on X3048.
 var fence=Static("PicketFenceB_PW_Fence01");
 for(int i=0;i<10;i++){
