@@ -8,6 +8,18 @@ ROOT=Path(__file__).resolve().parents[1]
 DLL=ROOT/'tools/WorldSliceBuilder/bin/Debug/net8.0/WorldSliceBuilder.dll'
 
 class OutputSafety(unittest.TestCase):
+    def test_story_source_input_tree_is_never_an_output(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);master=root/'master';master.mkdir()
+            input_file=master/'Fallout4.esm';input_file.write_bytes(b'input sentinel')
+            story=root/'story';story.mkdir();template=story/'TheLastMeridian.esp';template.write_bytes(b'story sentinel')
+            for output in (template,story,story/'new-output'):
+                result=subprocess.run(['dotnet',str(DLL),str(input_file),str(output),'--story-source',str(template)],capture_output=True,text=True)
+                self.assertEqual(result.returncode,2,result.stderr)
+                self.assertIn('story-source input directory',result.stderr)
+                self.assertEqual(template.read_bytes(),b'story sentinel')
+                self.assertFalse((story/'new-output').exists())
+
     def test_refuses_input_file_input_tree_and_nonempty_output_without_touching_files(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);master=root/'master';master.mkdir()

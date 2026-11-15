@@ -4,6 +4,8 @@ a stage, gives an item or resolves an encounter. Not evidence or world lettering
 
 Quest Property TLM_MQ01 Auto Const Mandatory
 int Property Place Auto Const Mandatory
+bool Property Exterior = false Auto Const
+{Only the exterior addon sets this; existing QASmoke guide copy stays unchanged.}
 ; 1 wreck, 2 caravan road, 3 Mercy Crossing.
 
 Event OnActivate(ObjectReference akActionRef)
@@ -19,6 +21,9 @@ Event OnActivate(ObjectReference akActionRef)
 		here = "Caravan road - the wagon and the Tellico Cutters."
 	ElseIf Place == 3
 		here = "Mercy Crossing - the timber posts and townsfolk."
+		If Exterior
+			here = "Mercy Crossing - the fenced cabin yard and townsfolk."
+		EndIf
 	EndIf
 	string next = ""
 	; Completed flags, not numeric stage comparisons: an early town visit can
@@ -37,6 +42,9 @@ Event OnActivate(ObjectReference akActionRef)
 		next = "Next: speak to Sheriff Owen Pritchard in Mercy Crossing and hand over the marshal's dispatch."
 	Else
 		next = "Next: take the dispatch to Sheriff Owen Pritchard in Mercy Crossing, beyond the timber posts. The caravan by the road is optional: Fight means combat; Leave does not itself start a fight."
+		If Exterior
+			next = "Next: follow the marked route to Sheriff Owen Pritchard at the fenced cabin yard. The caravan by the road is optional: Fight means combat; Leave does not itself start a fight. The eastern marked route bypasses the hold-up."
+		EndIf
 	EndIf
 	Debug.MessageBox("DEMO GUIDE - DIRECTIONS\n" + here + "\n\n" + next)
 EndEvent

@@ -7,11 +7,16 @@ using System.Text.Json;
 
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
-if(args.Length!=2){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory>");return 2;}
+if(args.Length!=2&&(args.Length!=4||args[2]!="--story-source")){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory> [--story-source <TheLastMeridian.esp>]");return 2;}
 var input=Path.GetFullPath(args[0]);var output=Path.GetFullPath(args[1]);
 var comparison=OperatingSystem.IsWindows()?StringComparison.OrdinalIgnoreCase:StringComparison.Ordinal;
 var masterDirectory=Path.GetDirectoryName(input)!;
 if(!File.Exists(input)){Console.Error.WriteLine("Master input must exist.");return 2;}
+if(args.Length==4){
+ var template=Path.GetFullPath(args[3]);var templateDirectory=Path.GetDirectoryName(template)!;
+ if(!File.Exists(template)||!Path.GetFileName(template).Equals("TheLastMeridian.esp",StringComparison.OrdinalIgnoreCase)){Console.Error.WriteLine("Story source must be an existing TheLastMeridian.esp.");return 2;}
+ if(output.Equals(template,comparison)||output.Equals(templateDirectory,comparison)||output.StartsWith(templateDirectory+Path.DirectorySeparatorChar,comparison)){Console.Error.WriteLine("Output must stay outside the story-source input directory.");return 2;}
+}
 if(output.Equals(input,comparison)||output.Equals(masterDirectory,comparison)||output.StartsWith(masterDirectory+Path.DirectorySeparatorChar,comparison)){
  Console.Error.WriteLine("Output must stay outside the master input directory.");return 2;
 }
@@ -136,8 +141,12 @@ foreach(var route in new[]{mainRoute,bypassRoute})for(int s=0;s<route.Length-1;s
  foreach(var p in routeObstacles){float dx=MathF.Max(MathF.Max(p.MinX-x,0),x-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-y,0),y-p.MaxY);if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Object intrudes into 192-unit corridor: "+p.Id);}
 }
 var plugin=Path.Combine(output,"TLMWorldSlice.esp");
-mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(ModKey.FromNameAndExtension("Fallout4.esm")).Write();
+object? story=null;
+var included=new List<ModKey>{ModKey.FromNameAndExtension("Fallout4.esm")};
+if(args.Length==4){using var template=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);story=WorldStory.Add(mod,world,cell,template);included.Add(template.ModKey);}
+mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(included.ToArray()).Write();
 using var read=Fallout4Mod.CreateFromBinaryOverlay(plugin,Fallout4Release.Fallout4);
+if(story!=null)WorldStory.Validate(read);
 var gotWorld=read.Worldspaces.Single();var gotCell=gotWorld.SubCells.Single().Items.Single().Items.Single();
 if(gotCell.Grid?.Point!=new P2Int(0,0)||gotCell.Landscape?.VertexHeightMap?.HeightMap.Width!=33||gotCell.Temporary.Count!=placements.Count)throw new InvalidDataException("World/cell/LAND/reference roundtrip failed");
 var heights=gotCell.Landscape!.VertexHeightMap!.HeightMap;
@@ -145,6 +154,7 @@ if(heights.Height!=33||gotCell.Landscape.Layers.Count!=4||gotCell.Landscape.Vert
 for(int y=0;y<33;y++)for(int x=0;x<33;x++)if(heights[x,y]!=0)throw new InvalidDataException("Unexpected terrain height delta");
 if(read.Worldspaces.Any(w=>w.FormKey.ModKey!=mod.ModKey)||gotCell.FormKey.ModKey!=mod.ModKey)throw new InvalidDataException("Unexpected vanilla override");
 if(read.EnumerateMajorRecords().Any(r=>r.FormKey.ModKey!=mod.ModKey))throw new InvalidDataException("Unexpected override record");
-File.WriteAllText(Path.Combine(output,"world-slice.json"),JsonSerializer.Serialize(new{world=gotWorld.EditorID,worldForm=gotWorld.FormKey.ToString(),cell=gotCell.EditorID,cellForm=gotCell.FormKey.ToString(),entry="coc TLM_WS_Clearing (native entry pending)",terrain="new generated flat33x33LAND at height0",placementCount=placements.Count,mainRoute=mainRoute.Select(p=>new{x=p.Item1,y=p.Item2}),bypassRoute=bypassRoute.Select(p=>new{x=p.Item1,y=p.Item2}),placements,nativeProof="PENDING: ground collision, COC entry, roof/doorway/furniture and route usability; no navmesh or quest binding"},new JsonSerializerOptions{WriteIndented=true}));
-Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} new references; binary readback passed. Native walk/use acceptance pending.");
+File.WriteAllText(Path.Combine(output,"world-slice.json"),JsonSerializer.Serialize(new{world=gotWorld.EditorID,worldForm=gotWorld.FormKey.ToString(),cell=gotCell.EditorID,cellForm=gotCell.FormKey.ToString(),entry="coc TLM_WS_Clearing (native entry pending)",terrain="new generated flat33x33LAND at height0",placementCount=placements.Count,storyReferenceCount=story==null?0:29,mainRoute=mainRoute.Select(p=>new{x=p.Item1,y=p.Item2}),bypassRoute=bypassRoute.Select(p=>new{x=p.Item1,y=p.Item2}),placements,nativeProof=story==null?"Shell: native acceptance recorded separately; no quest binding/navmesh":"Story candidate: native actor loading, alias binding, pickups, guides, peaceful choices, bypass and handoff UNVERIFIED; no navmesh/pursuit/combat proof"},new JsonSerializerOptions{WriteIndented=true}));
+if(story!=null)File.WriteAllText(Path.Combine(output,"world-story.json"),JsonSerializer.Serialize(new{sourcePlugin=Path.GetFileName(args[3]),sourceSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(args[3]))),masters=read.ModHeader.MasterReferences.Select(m=>m.Master.ToString()),wiring=story,runtimeRequirement="Reviewed 7f3 departure runtime plus this candidate's exterior Guide and WorldEntry scripts; ESP hash alone does not establish script version"},new JsonSerializerOptions{WriteIndented=true}));
+Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;

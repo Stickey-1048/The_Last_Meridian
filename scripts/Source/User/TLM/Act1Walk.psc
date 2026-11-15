@@ -212,6 +212,7 @@ bool talking = false
 bool quiet = false
 bool nellThanked = false
 bool roundsGiven = false
+bool departureShown = false
 
 ; ================================================================== set-up
 
@@ -230,6 +231,10 @@ Function Begin()
 	EndIf
 	If !TLM_MQ01.GetStageDone(10)
 		TLM_MQ01.SetStage(10)
+	EndIf
+	TLM:MQ01Quest questScript = TLM_MQ01 as TLM:MQ01Quest
+	If questScript
+		questScript.RegisterDemoPresentation(Self)
 	EndIf
 	int unfilled = CastAll()
 	SwitchOn()
@@ -250,6 +255,21 @@ EndFunction
 bool Function CanReadGuide()
 	{Explicit help only during a manual demo, never during the unattended audit.}
 	Return begun && !quiet && !talking
+EndFunction
+
+Function CuttersDeparted(int aiLivingGone)
+	{A nonmodal manual-demo cue after MQ01 verifies actual living-gang cleanup.
+	Never a death cue, audit box, encounter resolution or extra stage.}
+	If !begun || quiet || departureShown || aiLivingGone <= 0
+		Return
+	EndIf
+	departureShown = true
+	If aiLivingGone == 1
+		Debug.Notification("The surviving Cutter has left the caravan road.")
+	Else
+		Debug.Notification("The surviving Cutters have left the caravan road.")
+	EndIf
+	Debug.Trace("TLM_A1: town cleanup verified living Cutters gone: " + aiLivingGone)
 EndFunction
 
 int Function CastAll()
