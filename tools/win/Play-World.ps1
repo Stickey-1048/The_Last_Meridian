@@ -37,7 +37,8 @@ try {
         (Get-IniValue $ini 'General' 'bAlwaysActive') -ne '1') { throw 'Temporary world startup settings failed read-back.' }
     Write-Host 'MERIDIAN EXTERIOR PREVIEW - fresh disposable character, balanced SPECIAL 4 each.'
     Write-Host 'This is the exterior shell: terrain, cabin, furniture and fences. Story quests/guides are not connected here yet.'
-    Write-Host 'Look around, try the cabin bed and couch, then quit normally WITHOUT SAVING. This window restores the two temporary settings.'
+    Write-Host 'Look around, try the cabin bed and couch, then quit normally WITHOUT SAVING.'
+    Write-Host 'Close Mod Organizer too if it stays open (check the taskbar). Keep this window open until it confirms settings restored.'
     Write-Host "Verified world: $($context.World); launch: $launcher; profile: TLM-World-Preview"
     $argsLine = '-p "TLM-World-Preview" run "{0}"' -f $launcher
     $process = Start-Process -FilePath $manager -ArgumentList $argsLine -WorkingDirectory $context.Mo.Root -WindowStyle Hidden -PassThru
