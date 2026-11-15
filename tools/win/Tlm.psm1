@@ -1350,6 +1350,84 @@ function Get-ScenarioRunSummary {
     }
 }
 
+function Get-ScenarioLaunchExecutable {
+    param([Parameter(Mandatory)][string]$GameExe, [switch]$UseF4SE)
+    if (-not (Test-Path -LiteralPath $GameExe -PathType Leaf)) { throw "Managed game executable is missing: $GameExe" }
+    if (-not $UseF4SE) { return $GameExe }
+    $folder = Split-Path -Parent $GameExe
+    $loader = Join-Path $folder 'f4se_loader.exe'
+    if (-not (Test-Path -LiteralPath $loader -PathType Leaf)) { throw 'UseF4SE requested, but f4se_loader.exe is missing from the managed game folder. Nothing was launched.' }
+    $gameVersion = Get-ExeVersion $GameExe
+    $loaderVersion = Get-ExeVersion $loader
+    if ($gameVersion -ne '1.10.163.0' -or $loaderVersion -ne '0.0.6.23') {
+        throw "UseF4SE is verified only for managed Fallout 4 1.10.163.0 with F4SE 0.6.23 (loader resource 0.0.6.23); found game $gameVersion, loader $loaderVersion. Nothing was launched."
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $folder 'f4se_1_10_163.dll') -PathType Leaf)) { throw 'UseF4SE requested, but its f4se_1_10_163.dll runtime is missing. Nothing was launched.' }
+    return $loader
+}
+
+function Get-FreshDemoStartupPlan {
+    # This batch is for a new main-menu COC character, never a save-load hook.
+    param([Parameter(Mandatory)][string]$GameFolder)
+    $folder = [System.IO.Path]::GetFullPath($GameFolder)
+    $name = 'TLM_FreshDemo_' + [guid]::NewGuid().ToString('N')
+    $lines = @('coc qasmoke')
+    foreach ($av in @('Strength', 'Perception', 'Endurance', 'Charisma', 'Intelligence', 'Agility', 'Luck')) {
+        $lines += "player.setav $av 4"
+    }
+    $content = ($lines -join "`r`n") + "`r`n"
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try { $hash = [System.BitConverter]::ToString($sha.ComputeHash([System.Text.Encoding]::ASCII.GetBytes($content))).Replace('-', '') }
+    finally { $sha.Dispose() }
+    return [pscustomobject]@{ Path = (Join-Path $folder ($name + '.txt')); Hash = $hash; Content = $content; Command = "bat $name"; CreationState = 'Planned' }
+}
+
+function Write-FreshDemoStartupBatch {
+    param([Parameter(Mandatory)]$Plan, [scriptblock]$OnStateChanged)
+    # CreateNew refuses an existing file, even on an improbable name collision.
+    try { $stream = [System.IO.File]::Open($Plan.Path, [System.IO.FileMode]::CreateNew, [System.IO.FileAccess]::Write) }
+    catch {
+        # Open failed, so this attempt did not create the pre-existing path.
+        $openError = $_
+        if ((Test-Path -LiteralPath $Plan.Path) -and $Plan.CreationState -ne 'Owned') {
+            $Plan.CreationState = 'RejectedExisting'
+            if ($OnStateChanged) { & $OnStateChanged $Plan }
+        }
+        throw $openError
+    }
+    try {
+        $Plan.CreationState = 'Owned'
+        # Journal ownership immediately after successful CreateNew, before any
+        # batch bytes or startup setting are written. A crash before this note
+        # leaves Planned+present, which cleanup must treat as ambiguous.
+        if ($OnStateChanged) { & $OnStateChanged $Plan }
+        $bytes = [System.Text.Encoding]::ASCII.GetBytes($Plan.Content); $stream.Write($bytes, 0, $bytes.Length)
+    }
+    finally { $stream.Dispose() }
+    if ((Get-FileHash -LiteralPath $Plan.Path -Algorithm SHA256).Hash -ne $Plan.Hash) { throw 'Fresh-demo startup batch did not read back correctly' }
+}
+
+function Remove-FreshDemoStartupBatch {
+    param([Parameter(Mandatory)]$Plan, [Parameter(Mandatory)][string]$GameFolder)
+    $path = [System.IO.Path]::GetFullPath([string]$Plan.Path)
+    if (-not (Test-SamePath (Split-Path -Parent $path) $GameFolder) -or
+        (Split-Path -Leaf $path) -notmatch '^TLM_FreshDemo_[0-9a-f]{32}\.txt$') { throw 'Fresh-demo batch is outside its owned game-root path' }
+    if (-not ($Plan.PSObject.Properties.Name -contains 'CreationState')) { throw 'Fresh-demo creation ownership was not recorded; artifact left untouched' }
+    if ($Plan.CreationState -eq 'RejectedExisting') { return 'pre-existing path preserved (CreateNew rejected it)' }
+    if ($Plan.CreationState -eq 'Planned') {
+        if (Test-Path -LiteralPath $path) { throw 'Fresh-demo creation was interrupted before ownership was recorded; artifact left untouched for review' }
+        return 'not created; no artifact to remove'
+    }
+    if ($Plan.CreationState -ne 'Owned') { throw 'Unknown fresh-demo ownership state; artifact left untouched' }
+    if (Test-Path -LiteralPath $path) {
+        if ((Get-Item -LiteralPath $path).Attributes -band [System.IO.FileAttributes]::ReparsePoint) { throw 'Fresh-demo batch is a link; left untouched' }
+        if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne $Plan.Hash) { throw 'Fresh-demo batch changed; left untouched' }
+        Remove-Item -LiteralPath $path -Force
+        if (Test-Path -LiteralPath $path) { throw 'Fresh-demo batch still exists after cleanup' }
+    }
+    return 'removed or already absent (recorded ownership, path and content verified)'
+}
+
 function Restore-ScenarioRunState {
     <#
       Puts back what a scenario run changed, and says whether it all went back.
@@ -1357,6 +1435,8 @@ function Restore-ScenarioRunState {
       WRITES: the scenario number in this project's own installed plugin (four bytes), and two
       settings in the test profile's fallout4custom.ini. It removes the run's own note of how
       things were (build\scenario-run.unfinished.json), and only when everything is back.
+      For fresh play900 it also removes only its recorded Owned startup batch;
+      rejected existing files are preserved and ambiguous ownership fails closed.
 
       Each thing is read back after it is written. Failed is true when anything could not be
       written, reads back as something else, or when the installed plugin is then not the same
@@ -1374,10 +1454,18 @@ function Restore-ScenarioRunState {
         [string]$BuiltPlugin,
         [string]$UnfinishedPath,
         $Unfinished,
-        [bool]$CutOffWithoutNote
+        [bool]$CutOffWithoutNote,
+        $FreshDemoBatch,
+        [string]$GameFolder
     )
     $notes = New-Object System.Collections.Generic.List[string]
     $notTheBuild = $false
+    if ($FreshDemoBatch) {
+        try {
+            $cleanup = Remove-FreshDemoStartupBatch -Plan $FreshDemoBatch -GameFolder $GameFolder
+            $notes.Add("Fresh-demo startup batch: $cleanup")
+        } catch { $notes.Add("COULD NOT remove the fresh-demo startup batch: $($_.Exception.Message)") }
+    }
     try {
         [void](Set-PluginGlobal -Path $InstalledPlugin -EditorId $GlobalName -Value $ValueAtStart)
         $now = Get-PluginGlobal -Path $InstalledPlugin -EditorId $GlobalName
@@ -1447,4 +1535,6 @@ Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Ge
     Get-RegistryValueSafe, Wait-GameAndManagerClosed, Find-Bytes, Get-PluginGlobalOffset, Get-PluginGlobal, Set-PluginGlobal,
     Get-SteamFileManagerLooksFor, Test-SteamRunning, Get-SteamExePath, Confirm-SteamForManager, Get-MainWindowTitle,
     Get-ProgramsOfInterest, Close-ManagerStartedSince,
-    Read-ScenarioSessionLogs, Get-ScenarioSessionStatus, Get-ScenarioRunSummary, Restore-ScenarioRunState
+    Read-ScenarioSessionLogs, Get-ScenarioSessionStatus, Get-ScenarioRunSummary, Restore-ScenarioRunState,
+    Get-FreshDemoStartupPlan, Write-FreshDemoStartupBatch, Remove-FreshDemoStartupBatch,
+    Get-ScenarioLaunchExecutable

@@ -153,6 +153,8 @@ param(
     # Defaults come from build\install-manifest.json (written by Install-Dev.ps1).
     [string]$ModOrganizerRoot,
     [string]$ProfileName,
+    # Optional personal-mod launch; default remains the managed Fallout4.exe.
+    [switch]$UseF4SE,
     # How long to wait for Fallout4.exe to appear after starting Mod Organizer.
     [int]$StartTimeoutSeconds = 180,
     # The same for the first scenario, which also has to wake everything up
@@ -267,6 +269,7 @@ if (Test-FalloutLondonFolder $mo.GamePath) {
 }
 $gameExe = Join-Path $mo.GamePath 'Fallout4.exe'
 if (-not (Test-Path -LiteralPath $gameExe)) { throw "No Fallout4.exe in $($mo.GamePath)" }
+$launchExe = Get-ScenarioLaunchExecutable -GameExe $gameExe -UseF4SE:$UseF4SE
 $profileFolder = Join-Path $mo.ProfilesDirectory $ProfileName
 $installHint = 'Run:  powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1 -Install'
 if (-not (Test-Path -LiteralPath $profileFolder)) { throw "The test profile '$ProfileName' does not exist yet. $installHint" }
@@ -345,11 +348,20 @@ $restoreNotes = New-Object System.Collections.Generic.List[string]
 # Until the putting back has been seen to work, it has not.
 $restoreFailed = $true
 $runStarted = Get-Date
+$gameFolder = Split-Path -Parent $gameExe
+$freshDemoPlan = if ($list.Contains($playNumber)) { Get-FreshDemoStartupPlan -GameFolder $gameFolder } else { $null }
+$batchToRestore = if ($unfinished -and ($unfinished.PSObject.Properties.Name -contains 'FreshDemoBatch')) { $unfinished.FreshDemoBatch } else { $null }
 try {
+    # Finish cleanup from an interrupted fresh launch before creating a new batch.
+    if ($batchToRestore) {
+        [void](Remove-FreshDemoStartupBatch -Plan $batchToRestore -GameFolder $gameFolder)
+        $batchToRestore = $null
+    }
     Say '== Unattended scenario run =='
     Say "Scenarios            : $($list.Count) ($Scenarios)"
     Write-Host "This takes about $([math]::Max(1, [int][math]::Round($list.Count * 36 / 60))) minutes: $($list.Count) game sessions of roughly half a minute each."
     Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
+    Say "Launch executable    : $launchExe  (UseF4SE=$([bool]$UseF4SE))"
     Say "Through              : $moExe   profile $ProfileName"
     foreach ($l in @($steam.Lines)) { Say $l }
     if ($unfinished) {
@@ -360,15 +372,24 @@ try {
         Say "An earlier run did not finish: its start-up command is still in the test profile, and every run that ends removes it."
         Say "  It left no note of how things were before it. This run puts back the game's own defaults:"
         Say "  scenario number 0, keep-running-without-focus 0, no start-up command."
-    } else {
-        # Written before anything is changed; removed when everything has been put back.
-        $note = [ordered]@{
+    }
+    # Written before creating the owned batch or changing any startup setting.
+    # Original values recovered from an interrupted run stay the original values.
+    $note = [ordered]@{
             Began              = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
             CustomIni          = $customIni
             AlwaysActiveBefore = $alwaysActiveBefore
             ScenarioBefore     = $valueAtStart
-        }
-        Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
+            FreshDemoBatch     = $freshDemoPlan
+    }
+    Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
+    if ($freshDemoPlan) {
+        $batchToRestore = $freshDemoPlan
+        Write-FreshDemoStartupBatch -Plan $freshDemoPlan -OnStateChanged ({
+            param($plan)
+            Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
+        }.GetNewClosure())
+        Say 'Fresh play session 900 startup requests seven base SPECIAL values of 4 on a new COC character; no level or health/AP write. Native results require capture.'
     }
     Say "Scenario number in the installed plugin before the run: $valueAtStart"
     Say "Start-up command for the run: [General] sStartingConsoleCommand=$enterCommand  (in $customIni)"
@@ -382,9 +403,14 @@ try {
     foreach ($n in $list) {
         Write-Host ''
         Write-Host "---- scenario $n ----"
+        # Only the fresh manual demo gets the preset, never a scored session or
+        # a loaded save. The batch first creates a new character with COC.
+        $sessionEntry = if ($n -eq $playNumber) { $freshDemoPlan.Command } else { $enterCommand }
+        Set-IniValue $customIni 'General' 'sStartingConsoleCommand' $sessionEntry
+        Say "Session $n start-up command: $sessionEntry"
         [void](Set-PluginGlobal -Path $installedPlugin -EditorId $globalName -Value $n)
         $since = Get-Date
-        $argLine = '-p "{0}" run "{1}"' -f $ProfileName, $gameExe
+        $argLine = '-p "{0}" run "{1}"' -f $ProfileName, $launchExe
         $moProc = Start-Process -FilePath $moExe -ArgumentList $argLine -WorkingDirectory $mo.Root -PassThru
         try { $null = $moProc.Handle } catch { }
 
@@ -515,7 +541,8 @@ try {
     try {
         $restore = Restore-ScenarioRunState -InstalledPlugin $installedPlugin -GlobalName $globalName -ValueAtStart $valueAtStart `
             -CustomIni $customIni -AlwaysActiveBefore $alwaysActiveBefore -BuiltPlugin (Join-Path $build $pluginName) `
-            -UnfinishedPath $unfinishedPath -Unfinished $unfinished -CutOffWithoutNote $cutOffWithoutNote
+            -UnfinishedPath $unfinishedPath -Unfinished $unfinished -CutOffWithoutNote $cutOffWithoutNote `
+            -FreshDemoBatch $batchToRestore -GameFolder $gameFolder
         foreach ($l in $restore.Notes) { $restoreNotes.Add($l) }
         $restoreFailed = [bool]$restore.Failed
     } catch {

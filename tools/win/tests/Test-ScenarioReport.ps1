@@ -423,8 +423,152 @@ try {
     Check 'with no build to compare with, a clean putting back is still clean' ((-not $re.Failed) -and -not ((Notes $re) -match 'identical to the build'))
 
     # ------------------------------------------------------------ 11. the runner uses these, and nothing of its own
+    Write-Host '10b. fresh-demo startup owns only its batch and seven SPECIAL writes'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    $commands = @($plan.Content.Trim() -split "`r?`n")
+    Check-Equal 'fresh character creation precedes every preset write' 'coc qasmoke' $commands[0]
+    Check-Equal 'exactly seven writes and the fresh entry' 8 $commands.Count
+    foreach ($av in @('Strength', 'Perception', 'Endurance', 'Charisma', 'Intelligence', 'Agility', 'Luck')) {
+        Check "only base $av 4 is requested once" (@($commands | Where-Object { $_ -ceq "player.setav $av 4" }).Count -eq 1)
+    }
+    Check 'no level, derived-stat, perk, caps, inventory or cheat command' (-not ($plan.Content -match '(?i)health|actionpoints|setlevel|perk|caps|additem|remove|god|tgm|tim|loadgame'))
+    Write-FreshDemoStartupBatch -Plan $plan
+    Check 'batch bytes match the planned hash' ((Get-FileHash -LiteralPath $plan.Path -Algorithm SHA256).Hash -eq $plan.Hash)
+    $collisionRejected = $false
+    try { Write-FreshDemoStartupBatch -Plan $plan } catch { $collisionRejected = $true }
+    Check 'CreateNew refuses even an identical existing batch' $collisionRejected
+    Remove-FreshDemoStartupBatch -Plan $plan -GameFolder $root
+    Check 'owned batch is removed' (-not (Test-Path -LiteralPath $plan.Path))
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    Write-FreshDemoStartupBatch -Plan $plan
+    Add-Content -LiteralPath $plan.Path -Value '; user edited this file'
+    $rejected = $false
+    try { Remove-FreshDemoStartupBatch -Plan $plan -GameFolder $root } catch { $rejected = $true }
+    Check 'changed batch is preserved' ($rejected -and (Test-Path -LiteralPath $plan.Path))
+    Remove-Item -LiteralPath $plan.Path -Force
+    $st = New-RunState 'fresh-recovery'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    Write-FreshDemoStartupBatch -Plan $plan
+    $saved = ([pscustomobject]@{ FreshDemoBatch = $plan } | ConvertTo-Json | ConvertFrom-Json).FreshDemoBatch
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $saved -GameFolder $root
+    Check 'serialized interrupted-run ownership cleans up and restores' (-not $re.Failed -and -not (Test-Path -LiteralPath $plan.Path) -and -not (Test-Path -LiteralPath $st.Note))
+    $st = New-RunState 'fresh-changed'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    Write-FreshDemoStartupBatch -Plan $plan
+    Add-Content -LiteralPath $plan.Path -Value '; changed after launch'
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $plan -GameFolder $root
+    Check 'modified-batch cleanup fails the run and keeps its recovery note' ($re.Failed -and (Test-Path -LiteralPath $plan.Path) -and (Test-Path -LiteralPath $st.Note))
+    Check 'even failed batch cleanup empties the future startup command' ("$(Get-IniValue $st.Ini 'General' 'sStartingConsoleCommand')" -eq '')
+    Remove-Item -LiteralPath $plan.Path -Force
+    $plan = Get-FreshDemoStartupPlan -GameFolder (Split-Path -Parent $st.Ini)
+    Write-FreshDemoStartupBatch -Plan $plan
+    $rejected = $false
+    try { Remove-FreshDemoStartupBatch -Plan $plan -GameFolder $root } catch { $rejected = $true }
+    Check 'a path outside the specified game root is preserved' ($rejected -and (Test-Path -LiteralPath $plan.Path))
+    Remove-Item -LiteralPath $plan.Path -Force
+
+    $st = New-RunState 'fresh-preexisting-collision'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    # Not created by the runner: identical content must not establish ownership.
+    [System.IO.File]::WriteAllBytes($plan.Path, [System.Text.Encoding]::ASCII.GetBytes($plan.Content))
+    $journal = [pscustomobject]@{ FreshDemoBatch = $plan }
+    $recordState = { param($p) Set-Content -LiteralPath $st.Note -Value ($journal | ConvertTo-Json) -Encoding utf8 }.GetNewClosure()
+    $rejected = $false
+    try { Write-FreshDemoStartupBatch -Plan $plan -OnStateChanged $recordState } catch { $rejected = $true }
+    Check 'identical pre-existing collision is recorded as rejected, not owned' ($rejected -and $plan.CreationState -eq 'RejectedExisting')
+    $recovered = (Get-Content -LiteralPath $st.Note -Raw | ConvertFrom-Json).FreshDemoBatch
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $recovered -GameFolder $root
+    Check 'finally and serialized recovery preserve identical unowned file' (-not $re.Failed -and (Test-Path -LiteralPath $plan.Path) -and (Get-FileHash -LiteralPath $plan.Path -Algorithm SHA256).Hash -eq $plan.Hash)
+    [void](Remove-FreshDemoStartupBatch -Plan $recovered -GameFolder $root)
+    Check 'restart cleanup does not adopt a rejected file' (Test-Path -LiteralPath $plan.Path)
+    Remove-Item -LiteralPath $plan.Path -Force
+
+    $st = New-RunState 'fresh-ambiguous-creation'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    # Simulate interruption after creating a file but before journaling ownership.
+    [System.IO.File]::WriteAllBytes($plan.Path, [System.Text.Encoding]::ASCII.GetBytes($plan.Content))
+    $saved = ([pscustomobject]@{ FreshDemoBatch = $plan } | ConvertTo-Json | ConvertFrom-Json).FreshDemoBatch
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $saved -GameFolder $root
+    Check 'ambiguous ownership fails closed despite matching bytes' ($re.Failed -and (Test-Path -LiteralPath $plan.Path) -and (Test-Path -LiteralPath $st.Note))
+    Check 'ambiguous ownership clears future startup command' ("$(Get-IniValue $st.Ini 'General' 'sStartingConsoleCommand')" -eq '')
+    $rejected = $false
+    try { [void](Remove-FreshDemoStartupBatch -Plan $saved -GameFolder $root) } catch { $rejected = $true }
+    Check 'restart keeps ambiguous artifact for review' ($rejected -and (Test-Path -LiteralPath $plan.Path))
+    Remove-Item -LiteralPath $plan.Path -Force
+
+    $st = New-RunState 'fresh-ownership-journal'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    $journal = [pscustomobject]@{ FreshDemoBatch = $plan }
+    Write-FreshDemoStartupBatch -Plan $plan -OnStateChanged ({
+        param($p)
+        if ((Get-Item -LiteralPath $p.Path).Length -ne 0) { throw 'Ownership journal happened after batch writes' }
+        Set-Content -LiteralPath $st.Note -Value ($journal | ConvertTo-Json) -Encoding utf8
+    }.GetNewClosure())
+    $saved = (Get-Content -LiteralPath $st.Note -Raw | ConvertFrom-Json).FreshDemoBatch
+    Check 'successful CreateNew ownership is journaled before writing bytes' ($saved.CreationState -eq 'Owned')
+    [void](Remove-FreshDemoStartupBatch -Plan $saved -GameFolder $root)
+
+    Write-Host '10c. optional F4SE launcher choice and compatibility'
+    $launchDir = Join-Path $root 'launch-choice'
+    [void](New-Item -ItemType Directory -Path $launchDir)
+    $game = Join-Path $launchDir 'Fallout4.exe'
+    $loader = Join-Path $launchDir 'f4se_loader.exe'
+    Set-Content -LiteralPath $game -Value 'fixture'
+    Check-Equal 'default launch needs no F4SE' $game (Get-ScenarioLaunchExecutable -GameExe $game)
+    $rejected = $false
+    try { Get-ScenarioLaunchExecutable -GameExe $game -UseF4SE | Out-Null } catch { $rejected = $true }
+    Check 'explicit F4SE request refuses missing loader' $rejected
+    Set-Content -LiteralPath $loader -Value 'fixture'
+    $module = Get-Module Tlm
+    & $module {
+        $script:OriginalVersionReader = (Get-Command Get-ExeVersion).ScriptBlock
+        $script:FixtureVersions = @{ 'Fallout4.exe' = '1.10.163.0'; 'f4se_loader.exe' = '0.0.6.23' }
+        Set-Item Function:script:Get-ExeVersion -Value { param($Path) $script:FixtureVersions[(Split-Path -Leaf $Path)] }
+    }
+    try {
+        $rejected = $false
+        try { Get-ScenarioLaunchExecutable -GameExe $game -UseF4SE | Out-Null } catch { $rejected = $true }
+        Check 'matching loader still requires its runtime DLL' $rejected
+        Set-Content -LiteralPath (Join-Path $launchDir 'f4se_1_10_163.dll') -Value 'fixture'
+        Check-Equal 'known compatible opt-in selects loader only' $loader (Get-ScenarioLaunchExecutable -GameExe $game -UseF4SE)
+        & $module { $script:FixtureVersions['Fallout4.exe'] = '1.10.984.0' }
+        $rejected = $false
+        try { Get-ScenarioLaunchExecutable -GameExe $game -UseF4SE | Out-Null } catch { $rejected = $true }
+        Check 'unverified game version is refused' $rejected
+        & $module { $script:FixtureVersions['Fallout4.exe'] = '1.10.163.0'; $script:FixtureVersions['f4se_loader.exe'] = 'present (version unreadable)' }
+        $rejected = $false
+        try { Get-ScenarioLaunchExecutable -GameExe $game -UseF4SE | Out-Null } catch { $rejected = $true }
+        Check 'unreadable loader version is refused' $rejected
+    } finally {
+        & $module { Set-Item Function:script:Get-ExeVersion -Value $script:OriginalVersionReader; Remove-Variable FixtureVersions,OriginalVersionReader -Scope Script }
+    }
+    $tokens = $null; $parseErrors = $null
+    $firstBuildAst = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $winDir 'Run-FirstBuild.ps1'), [ref]$tokens, [ref]$parseErrors)
+    Check 'first-build script parses with UseF4SE switch' ($parseErrors.Count -eq 0 -and @($firstBuildAst.ParamBlock.Parameters | Where-Object { $_.Name.VariablePath.UserPath -eq 'UseF4SE' }).Count -eq 1)
+    $forward = @($firstBuildAst.FindAll({
+        param($node)
+        if ($node -isnot [System.Management.Automation.Language.IfStatementAst]) { return $false }
+        if ($node.Clauses[0].Item1.Extent.Text.Trim('(', ')') -ne '$Unattended') { return $false }
+        return @($node.Clauses[0].Item2.FindAll({ param($a) $a -is [System.Management.Automation.Language.AssignmentStatementAst] -and $a.Left.Extent.Text -eq '$playScript' }, $true)).Count -gt 0
+    }, $true))
+    Check-Equal 'one real unattended forwarding branch is inspected' 1 $forward.Count
+    $body = $forward[0].Clauses[0].Item2.Extent.Text
+    $forwardScript = [scriptblock]::Create($body.Substring(1, $body.Length - 2))
+    foreach ($enabled in @($false, $true)) {
+        $playArgs = @{}; $Scenarios = '900'; $UseF4SE = $enabled; $playScript = ''
+        . $forwardScript
+        Check "actual unattended splat forwards UseF4SE=$enabled" (($playScript -eq 'Run-Scenarios.ps1') -and $playArgs['Scenarios'] -eq '900' -and $playArgs.ContainsKey('UseF4SE') -eq $enabled)
+    }
+
     Write-Host '11. Run-Scenarios.ps1 takes its words and its totals from the module'
     $runner = Get-Content -LiteralPath (Join-Path $winDir 'Run-Scenarios.ps1') -Raw
+    $runnerAst = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $winDir 'Run-Scenarios.ps1'), [ref]$tokens, [ref]$parseErrors)
+    Check 'scenario runner parses with UseF4SE switch' ($parseErrors.Count -eq 0 -and @($runnerAst.ParamBlock.Parameters | Where-Object { $_.Name.VariablePath.UserPath -eq 'UseF4SE' }).Count -eq 1)
+    Check 'only play900 selects the preset startup command' ($runner.Contains('$sessionEntry = if ($n -eq $playNumber) { $freshDemoPlan.Command } else { $enterCommand }'))
     # Its description says what the word used to be; its code must not use it.
     $runner = $runner -replace '(?s)<#.*?#>', ''
     Check 'the runner''s code does not use the word PLAYED' (-not ($runner -cmatch 'PLAYED'))
