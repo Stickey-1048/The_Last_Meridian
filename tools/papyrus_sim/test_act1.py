@@ -1057,8 +1057,8 @@ class TheLinesAndTheScript(unittest.TestCase):
         for name in ("PritchardHandOff", "PritchardAfter", "PritchardAfterAndMore"):
             message = messages[MSG + name]
             self.assertIn('"\n\n[First-section demo complete.', message["Text"])
-            self.assertIn('Greenwater, Red Hollow and Iron Junction are not implemented in this demo.', message["Text"])
-            self.assertIn('There are no route choices yet.]', message["Text"])
+            self.assertIn('Later routes are not playable.]', message["Text"])
+            self.assertLessEqual(len(message["Text"].encode('ascii')), 240, name)
             expected = ["Continue"] + (["There's something else from that train."] if name.endswith("AndMore") else [])
             self.assertEqual([b["Text"] for b in message["Buttons"]], expected)
 

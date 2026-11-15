@@ -148,15 +148,15 @@ Message (55)
           button 0: "Continue"
   000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
 
-[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]"  title: "Owen Pritchard"
+[First-section demo complete. Later routes are not playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]"  title: "Owen Pritchard"
+[First-section demo complete. Later routes are not playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]"  title: "Owen Pritchard"
+[First-section demo complete. Later routes are not playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
           button 1: "There's something else from that train."
   00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Pike. I fix what shoots. Forty-fours are scarce, so make yours count.""  title: "Ada Pike"
