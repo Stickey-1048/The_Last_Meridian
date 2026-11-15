@@ -30,7 +30,12 @@ public static class WorldStory
         var guides=vmad.Aliases.SelectMany(a=>a.Scripts).Where(s=>s.Name=="TLM:Act1Guide").ToArray();
         if(guides.Length!=3||guides.Any(s=>!s.Properties.OfType<IScriptBoolPropertyGetter>().Any(p=>p.Name=="Exterior"&&p.Data)))throw new InvalidDataException("Missing exterior guide copy binding");
         var entry=addon.Quests.Single(q=>q.EditorID=="TLM_WS_Entry");
-        if(entry.Aliases?.Count>0||entry.VirtualMachineAdapter?.Scripts.Single().Name!="TLM:WorldEntry")throw new InvalidDataException("Unsafe entry wrapper layout");
+        if(entry.Aliases?.Count!=1||entry.VirtualMachineAdapter?.Scripts.Single().Name!="TLM:WorldEntry")throw new InvalidDataException("Unsafe entry wrapper layout");
+        var player=entry.Aliases!.OfType<IQuestReferenceAliasGetter>().Single();
+        var guard=entry.VirtualMachineAdapter!.Aliases.Single();
+        if(player.ID!=0||player.ForcedReference.FormKey!=FormKey.Factory("000014:Fallout4.esm")||guard.Property.Object.FormKey!=entry.FormKey||guard.Property.Alias!=0||guard.Scripts.Single().Name!="TLM:WorldEntryPlayer")throw new InvalidDataException("Missing saved-load cancellation guard");
+        var playerProperty=entry.VirtualMachineAdapter.Scripts.Single().Properties.OfType<IScriptObjectPropertyGetter>().Single(p=>p.Name=="FreshPlayer");
+        if(playerProperty.Object.FormKey!=entry.FormKey||playerProperty.Alias!=0)throw new InvalidDataException("Missing guarded player-alias property");
     }
     public static object Add(Fallout4Mod mod, Worldspace world, Cell clearing, IFallout4ModGetter source)
     {
@@ -88,10 +93,15 @@ public static class WorldStory
         // narrow guarded entry script and no actor aliases on this wrapper.
         var entry=original.Duplicate(mod.GetNextFormKey());entry.EditorID="TLM_WS_Entry";entry.Name="Exterior story entry - explicit development only";
         entry.Aliases!.Clear();entry.VirtualMachineAdapter=new QuestAdapter();
+        var player=new QuestReferenceAlias{ID=0,Name="FreshEntryPlayer"};
+        player.ForcedReference.SetTo(FormKey.Factory("000014:Fallout4.esm"));entry.Aliases.Add(player);
+        var guard=new QuestFragmentAlias{Property=new ScriptObjectProperty{Object=entry.ToLink<IFallout4MajorRecordGetter>(),Alias=0}};
+        guard.Scripts.Add(new ScriptEntry{Name="TLM:WorldEntryPlayer"});entry.VirtualMachineAdapter.Aliases.Add(guard);
         var start=new ScriptEntry{Name="TLM:WorldEntry"};
         void Prop(string name,FormKey key)=>start.Properties.Add(new ScriptObjectProperty{Name=name,Flags=ScriptProperty.Flag.Edited,Object=new FormLink<IFallout4MajorRecordGetter>(key),Alias=-1});
         Prop("Preview",original.FormKey);Prop("MainQuest",source.Quests.Single(q=>q.EditorID=="TLM_MQ01").FormKey);
         Prop("SideQuest",source.Quests.Single(q=>q.EditorID=="TLM_SQ01").FormKey);Prop("Section",section.FormKey);Prop("Clearing",clearing.FormKey);
+        start.Properties.Add(new ScriptObjectProperty{Name="FreshPlayer",Flags=ScriptProperty.Flag.Edited,Object=entry.ToLink<IFallout4MajorRecordGetter>(),Alias=0});
         entry.VirtualMachineAdapter.Scripts.Add(start);mod.Quests.Add(entry);
         if(adapter.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.OfType<ScriptObjectListProperty>().Single(p=>p.Name=="Everything").Objects.Count!=29)throw new InvalidDataException("Exterior Everything binding mismatch");
         return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};

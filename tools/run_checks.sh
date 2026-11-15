@@ -27,6 +27,7 @@ python3 tools/test_world_slice_output.py
 # Compilation/output-safety only; exterior serialization/native walking require
 # the owner's real master and the separate isolated world QA gate.
 dotnet run --project tools/PluginBuilder -- --out build | grep -v warning
+python3 tools/test_world_story_launcher.py
 if ! diff -q build/TheLastMeridian.report.txt tools/PluginBuilder/last-build.report.txt >/dev/null; then
   echo "NOTE: the plugin report changed. Review it, then:"
   echo "  cp build/TheLastMeridian.report.txt tools/PluginBuilder/last-build.report.txt"
