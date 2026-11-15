@@ -53,6 +53,13 @@ class MQ01Matrix(unittest.TestCase):
         self.assertEqual(s.outcome, m.OUT_NONE)
         self.assertEqual(s.caravan_state, m.LIVE)
 
+    def test_T05c_npc_cannot_claim_the_player_save(self):
+        """A1: an NPC kill must not resolve the protected lead encounter."""
+        s = run(TO_AMBUSH)
+        self.assertNotIn("npc_kills_lead", available(s))
+        with self.assertRaises(NotAvailable):
+            apply(s, "npc_kills_lead")
+
     def test_T06_saved_by_lead_kill(self):
         s = run(TO_AMBUSH + ["player_kills_lead"])
         self.assertEqual(s.outcome, m.OUT_SAVED)
@@ -266,7 +273,10 @@ class MQ01Matrix(unittest.TestCase):
     def test_T26b_conversation_can_be_resumed(self):
         """Amendment A5: leaving between P1 and P2 must not strand the quest."""
         s = run(TO_AMBUSH + ["evade_timer"] + FINISH[:2])
-        s2 = run(["goto_wreck", "goto_town", "pritchard_handoff"], start=s)
+        self.assertNotIn("walk_away_from_pritchard", available(s))
+        s2 = run(["goto_wreck", "goto_town"], start=s)
+        self.assertIn("pritchard_handoff", available(s2))
+        s2 = apply(s2, "pritchard_handoff")
         self.assertTrue(s2.done(100))
         old = run(TO_AMBUSH + ["evade_timer"] + FINISH[:2] + ["walk_away_from_pritchard"], rules=V01)
         with self.assertRaises(NotAvailable):
@@ -329,3 +339,4 @@ class MQ01Matrix(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
