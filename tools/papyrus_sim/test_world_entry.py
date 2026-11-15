@@ -40,6 +40,7 @@ EndFunction
         alias.ref=self.s.player
         alias.scripts.append(self.s._attach({'Name':'TLM:WorldEntryPlayer','Props':[]},alias,self.s.quests['Entry']))
         self.s.quests['Entry'].aliases[0]=alias
+        self.entry.props['freshplayer']=alias
 
     def queue(self):
         self.s.invoke('Entry','QueueFreshEntry',[])
@@ -112,5 +113,11 @@ EndFunction
     def test_wrong_timer_does_not_start_section(self):
         self.queue();self.s.invoke('Entry','OnTimer',[999])
         self.assertEqual(self.calls(),0)
+
+    def test_missing_cancellation_alias_fails_closed(self):
+        self.entry.props['freshplayer'].ref=None
+        self.queue();self.s.run(4)
+        self.assertEqual(self.calls(),0)
+        self.assertTrue(self.entry.vars['loadcancelled'])
 
 if __name__=='__main__':unittest.main()

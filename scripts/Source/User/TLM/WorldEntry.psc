@@ -7,6 +7,7 @@ Quest Property MainQuest Auto Const Mandatory
 Quest Property SideQuest Auto Const Mandatory
 Quest Property Section Auto Const Mandatory
 Cell Property Clearing Auto Const Mandatory
+ReferenceAlias Property FreshPlayer Auto Const Mandatory
 
 bool queued = false
 bool consumed = false
@@ -37,6 +38,11 @@ Function QueueFreshEntry()
 			CancelFreshEntry()
 			Return
 		EndIf
+	EndIf
+	If !FreshPlayer || FreshPlayer.GetReference() != Game.GetPlayer()
+		Debug.Trace("TLM_WORLD_ENTRY: saved-load cancellation alias not filled; stop")
+		CancelFreshEntry()
+		Return
 	EndIf
 	If loadCancelled
 		Return

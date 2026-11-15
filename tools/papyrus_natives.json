@@ -1,6 +1,18 @@
 {
  "_note": "Signatures of the Fallout 4 Papyrus natives this project calls, as documented on the Creation Kit wiki (fetched 2026-11-11). Used by tools/check_consistency.py. Documentation-level check only: nothing here has been compiled.",
  "natives": {
+  "IsInMenuMode": [
+   {
+    "global": true,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Utility",
+    "params": [],
+    "returns": "bool",
+    "source": "Local Creation Kit 1.11.246 Base/Utility.psc line32; compiled in the 19-script candidate"
+   }
+  ],
   "Activate": [
    {
     "global": false,
