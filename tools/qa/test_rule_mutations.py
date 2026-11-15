@@ -34,6 +34,24 @@ class RunnerClassification(unittest.TestCase):
         result = self.result('interpreter crashed', 2)
         self.assertIsNone(result['tests'])
 
+    def test_chained_import_error_invalidates_audit(self):
+        output = ('ERROR: test_guard (matrix.Tests.test_guard)\n'
+                  '----------------------------------------------------------------------\n'
+                  'Traceback (most recent call last):\n'
+                  'tlm_model.NotAvailable: handoff\n\n'
+                  'During handling of the above exception, another exception occurred:\n\n'
+                  'Traceback (most recent call last):\n'
+                  'ImportError: broken dependency\n\n'
+                  '----------------------------------------------------------------------\n'
+                  'Ran 70 tests in 0.01s\n\nFAILED (errors=1)\n')
+        result = self.result(output)
+        self.assertEqual(result['model_errors'], 0)
+        baseline = dict(result, exit_code=0, errors=[], model_errors=0)
+        with patch.object(qa, 'run_case', side_effect=[(baseline, '')] + [(result, output)] * len(qa.RULES)):
+            report = qa.audit()
+        self.assertEqual(report['status'], 'failed')
+        self.assertTrue(all(item['status'] == 'invalid_run' for item in report['mutations']))
+
 
 if __name__ == '__main__':
     unittest.main()

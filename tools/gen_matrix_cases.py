@@ -222,6 +222,7 @@ CASES = [
 
 # Rows of the matrices that no case stands for, and why.
 NOT_RUN = {
+    "T05c": "NPC-only kill protection depends on the engine's Protected actor flag; the model checks the rule, but a stage-only driver cannot prove native death protection",
     "T13": "ownership and theft: engine behaviour, needs a placed container",
     "T15": "reload in mid-encounter: needs a save and a load",
     "T16": "reload at each stage: needs a save and a load",

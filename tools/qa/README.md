@@ -32,8 +32,11 @@ The added protected-lead test explicitly rejects an NPC resolving that encounter
 The strengthened resume test asserts that abandonment is unavailable under V02,
 then confirms the return/handoff path remains available. The V01 comparison stays.
 With these test changes, 70 matrix tests run with the same 8 engine-only skips,
-and all eleven single-rule regressions are detected. The harness has five
-negative/classification tests, all passed on Linux/Python 3.
+and all eleven single-rule regressions are detected. The original five
+negative/classification tests passed on Linux/Python 3. Independent review added
+a sixth test: an import error raised while handling `NotAvailable` must invalidate
+the audit, rather than count as a semantic detection. All six tests and the full
+eleven-rule audit passed with bundled Python on Windows after that correction.
 
 No .NET SDK was present in the QA environment. The full plugin aggregate,
 Papyrus compilation, Windows execution, and physical player acceptance were not

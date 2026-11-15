@@ -37,8 +37,11 @@ def run_case(directory, timeout):
     summary = re.search(r"Ran (\d+) tests? in", output)
     failures = re.findall(r"^FAIL: (.+)$", output, re.MULTILINE)
     errors = re.findall(r"^ERROR: (.+)$", output, re.MULTILINE)
-    error_sections = re.findall(r"^ERROR: .*?\n(.*?)(?=^={10}|^-{10}\nRan|\Z)", output, re.MULTILINE | re.DOTALL)
-    model_errors = sum(bool(re.search(r"^tlm_model\.NotAvailable: .+$", section, re.MULTILINE)) for section in error_sections)
+    error_sections = re.findall(r"^ERROR: .*?\n(.*?)(?=^={10,}|^-{10,}\nRan|\Z)", output, re.MULTILINE | re.DOTALL)
+    # Only the terminal exception counts: a handler can itself fail after a
+    # NotAvailable exception, leaving both exceptions in one traceback.
+    model_errors = sum(bool(re.fullmatch(r"tlm_model\.NotAvailable: .+", section.rstrip().splitlines()[-1]))
+                       for section in error_sections if section.strip())
     skipped = re.findall(r"^(.+?) \.\.\. skipped (.+)$", output, re.MULTILINE)
     return {"exit_code": result.returncode,
             "tests": int(summary.group(1)) if summary else None,
