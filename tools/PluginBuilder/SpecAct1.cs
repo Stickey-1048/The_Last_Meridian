@@ -154,7 +154,10 @@ public static class Act1
     static MessageSpec DemoEnd(string id, string line, params string[] buttons)
     {
         var message = Says(id, Pritchard, line, buttons);
-        return message with { Text = message.Text + "\n\n[First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented in this demo. There are no route choices yet.]" };
+        // Native1.10.163 showed the306-character handoff ending truncated with
+        // garbage after~255characters. Keep the complete boundary well below
+        // that observed failure point; this is not a general engine-limit claim.
+        return message with { Text = message.Text + "\n\n[First-section demo complete. Later routes are not playable.]" };
     }
 
     const string Dunmore = "Reese Dunmore", Nell = "Nell Fenwick", Abel = "Abel Rudd", Cutter = "Tellico Cutter",
