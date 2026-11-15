@@ -423,8 +423,55 @@ try {
     Check 'with no build to compare with, a clean putting back is still clean' ((-not $re.Failed) -and -not ((Notes $re) -match 'identical to the build'))
 
     # ------------------------------------------------------------ 11. the runner uses these, and nothing of its own
+    Write-Host '10b. fresh-demo startup owns only its batch and seven SPECIAL writes'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    $commands = @($plan.Content.Trim() -split "`r?`n")
+    Check-Equal 'fresh character creation precedes every preset write' 'coc qasmoke' $commands[0]
+    Check-Equal 'exactly seven writes and the fresh entry' 8 $commands.Count
+    foreach ($av in @('Strength', 'Perception', 'Endurance', 'Charisma', 'Intelligence', 'Agility', 'Luck')) {
+        Check "only base $av 4 is requested once" (@($commands | Where-Object { $_ -ceq "player.setav $av 4" }).Count -eq 1)
+    }
+    Check 'no level, derived-stat, perk, caps, inventory or cheat command' (-not ($plan.Content -match '(?i)health|actionpoints|setlevel|perk|caps|additem|remove|god|tgm|tim|loadgame'))
+    Write-FreshDemoStartupBatch -Plan $plan
+    Check 'batch bytes match the planned hash' ((Get-FileHash -LiteralPath $plan.Path -Algorithm SHA256).Hash -eq $plan.Hash)
+    $collisionRejected = $false
+    try { Write-FreshDemoStartupBatch -Plan $plan } catch { $collisionRejected = $true }
+    Check 'CreateNew refuses even an identical existing batch' $collisionRejected
+    Remove-FreshDemoStartupBatch -Plan $plan -GameFolder $root
+    Check 'owned batch is removed' (-not (Test-Path -LiteralPath $plan.Path))
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    Write-FreshDemoStartupBatch -Plan $plan
+    Add-Content -LiteralPath $plan.Path -Value '; user edited this file'
+    $rejected = $false
+    try { Remove-FreshDemoStartupBatch -Plan $plan -GameFolder $root } catch { $rejected = $true }
+    Check 'changed batch is preserved' ($rejected -and (Test-Path -LiteralPath $plan.Path))
+    Remove-Item -LiteralPath $plan.Path -Force
+    $st = New-RunState 'fresh-recovery'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    Write-FreshDemoStartupBatch -Plan $plan
+    $saved = ([pscustomobject]@{ FreshDemoBatch = $plan } | ConvertTo-Json | ConvertFrom-Json).FreshDemoBatch
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $saved -GameFolder $root
+    Check 'serialized interrupted-run ownership cleans up and restores' (-not $re.Failed -and -not (Test-Path -LiteralPath $plan.Path) -and -not (Test-Path -LiteralPath $st.Note))
+    $st = New-RunState 'fresh-changed'
+    $plan = Get-FreshDemoStartupPlan -GameFolder $root
+    Write-FreshDemoStartupBatch -Plan $plan
+    Add-Content -LiteralPath $plan.Path -Value '; changed after launch'
+    $re = Restore-ScenarioRunState -InstalledPlugin $st.Installed -GlobalName $globalName -ValueAtStart 0 -CustomIni $st.Ini `
+        -AlwaysActiveBefore '0' -BuiltPlugin $st.Built -UnfinishedPath $st.Note -FreshDemoBatch $plan -GameFolder $root
+    Check 'modified-batch cleanup fails the run and keeps its recovery note' ($re.Failed -and (Test-Path -LiteralPath $plan.Path) -and (Test-Path -LiteralPath $st.Note))
+    Check 'even failed batch cleanup empties the future startup command' ("$(Get-IniValue $st.Ini 'General' 'sStartingConsoleCommand')" -eq '')
+    Remove-Item -LiteralPath $plan.Path -Force
+    $plan = Get-FreshDemoStartupPlan -GameFolder (Split-Path -Parent $st.Ini)
+    Write-FreshDemoStartupBatch -Plan $plan
+    $rejected = $false
+    try { Remove-FreshDemoStartupBatch -Plan $plan -GameFolder $root } catch { $rejected = $true }
+    Check 'a path outside the specified game root is preserved' ($rejected -and (Test-Path -LiteralPath $plan.Path))
+    Remove-Item -LiteralPath $plan.Path -Force
+
     Write-Host '11. Run-Scenarios.ps1 takes its words and its totals from the module'
     $runner = Get-Content -LiteralPath (Join-Path $winDir 'Run-Scenarios.ps1') -Raw
+    Check 'only play900 selects the preset startup command' ($runner.Contains('$sessionEntry = if ($n -eq $playNumber) { $freshDemoPlan.Command } else { $enterCommand }'))
     # Its description says what the word used to be; its code must not use it.
     $runner = $runner -replace '(?s)<#.*?#>', ''
     Check 'the runner''s code does not use the word PLAYED' (-not ($runner -cmatch 'PLAYED'))

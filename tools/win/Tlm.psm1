@@ -1350,6 +1350,44 @@ function Get-ScenarioRunSummary {
     }
 }
 
+function Get-FreshDemoStartupPlan {
+    # This batch is for a new main-menu COC character, never a save-load hook.
+    param([Parameter(Mandatory)][string]$GameFolder)
+    $folder = [System.IO.Path]::GetFullPath($GameFolder)
+    $name = 'TLM_FreshDemo_' + [guid]::NewGuid().ToString('N')
+    $lines = @('coc qasmoke')
+    foreach ($av in @('Strength', 'Perception', 'Endurance', 'Charisma', 'Intelligence', 'Agility', 'Luck')) {
+        $lines += "player.setav $av 4"
+    }
+    $content = ($lines -join "`r`n") + "`r`n"
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try { $hash = [System.BitConverter]::ToString($sha.ComputeHash([System.Text.Encoding]::ASCII.GetBytes($content))).Replace('-', '') }
+    finally { $sha.Dispose() }
+    return [pscustomobject]@{ Path = (Join-Path $folder ($name + '.txt')); Hash = $hash; Content = $content; Command = "bat $name" }
+}
+
+function Write-FreshDemoStartupBatch {
+    param([Parameter(Mandatory)]$Plan)
+    # CreateNew refuses an existing file, even on an improbable name collision.
+    $stream = [System.IO.File]::Open($Plan.Path, [System.IO.FileMode]::CreateNew, [System.IO.FileAccess]::Write)
+    try { $bytes = [System.Text.Encoding]::ASCII.GetBytes($Plan.Content); $stream.Write($bytes, 0, $bytes.Length) }
+    finally { $stream.Dispose() }
+    if ((Get-FileHash -LiteralPath $Plan.Path -Algorithm SHA256).Hash -ne $Plan.Hash) { throw 'Fresh-demo startup batch did not read back correctly' }
+}
+
+function Remove-FreshDemoStartupBatch {
+    param([Parameter(Mandatory)]$Plan, [Parameter(Mandatory)][string]$GameFolder)
+    $path = [System.IO.Path]::GetFullPath([string]$Plan.Path)
+    if (-not (Test-SamePath (Split-Path -Parent $path) $GameFolder) -or
+        (Split-Path -Leaf $path) -notmatch '^TLM_FreshDemo_[0-9a-f]{32}\.txt$') { throw 'Fresh-demo batch is outside its owned game-root path' }
+    if (Test-Path -LiteralPath $path) {
+        if ((Get-Item -LiteralPath $path).Attributes -band [System.IO.FileAttributes]::ReparsePoint) { throw 'Fresh-demo batch is a link; left untouched' }
+        if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne $Plan.Hash) { throw 'Fresh-demo batch changed; left untouched' }
+        Remove-Item -LiteralPath $path -Force
+        if (Test-Path -LiteralPath $path) { throw 'Fresh-demo batch still exists after cleanup' }
+    }
+}
+
 function Restore-ScenarioRunState {
     <#
       Puts back what a scenario run changed, and says whether it all went back.
@@ -1374,10 +1412,18 @@ function Restore-ScenarioRunState {
         [string]$BuiltPlugin,
         [string]$UnfinishedPath,
         $Unfinished,
-        [bool]$CutOffWithoutNote
+        [bool]$CutOffWithoutNote,
+        $FreshDemoBatch,
+        [string]$GameFolder
     )
     $notes = New-Object System.Collections.Generic.List[string]
     $notTheBuild = $false
+    if ($FreshDemoBatch) {
+        try {
+            Remove-FreshDemoStartupBatch -Plan $FreshDemoBatch -GameFolder $GameFolder
+            $notes.Add('Fresh-demo startup batch: removed (owned path and content verified)')
+        } catch { $notes.Add("COULD NOT remove the fresh-demo startup batch: $($_.Exception.Message)") }
+    }
     try {
         [void](Set-PluginGlobal -Path $InstalledPlugin -EditorId $GlobalName -Value $ValueAtStart)
         $now = Get-PluginGlobal -Path $InstalledPlugin -EditorId $GlobalName
@@ -1447,4 +1493,5 @@ Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Ge
     Get-RegistryValueSafe, Wait-GameAndManagerClosed, Find-Bytes, Get-PluginGlobalOffset, Get-PluginGlobal, Set-PluginGlobal,
     Get-SteamFileManagerLooksFor, Test-SteamRunning, Get-SteamExePath, Confirm-SteamForManager, Get-MainWindowTitle,
     Get-ProgramsOfInterest, Close-ManagerStartedSince,
-    Read-ScenarioSessionLogs, Get-ScenarioSessionStatus, Get-ScenarioRunSummary, Restore-ScenarioRunState
+    Read-ScenarioSessionLogs, Get-ScenarioSessionStatus, Get-ScenarioRunSummary, Restore-ScenarioRunState,
+    Get-FreshDemoStartupPlan, Write-FreshDemoStartupBatch, Remove-FreshDemoStartupBatch

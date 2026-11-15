@@ -24,6 +24,12 @@
   scenario of the self-test: it is the number that tells the plugin to set
   the section up and leave the game open.
 
+  Its fresh main-menu COC entry uses a temporary startup batch that sets the
+  seven base SPECIAL values to 4 (28 total). Native level 1 is left unchanged;
+  health/AP are derived by the engine. It grants no perks, caps, gear or cheat
+  protection. No quest/load function resets stats on an existing or resumed
+  character. The runner removes its batch and startup command afterwards.
+
   DEVELOPMENT ONLY. The section stands in the game's own test room and its
   people are copies of the game's settler. Use the test profile only, and
   switch Mod Organizer back to your own profile afterwards.
