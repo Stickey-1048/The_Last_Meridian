@@ -196,6 +196,18 @@
     "source": "falloutck.uesp.net/wiki/GetCurrentRealTime_-_Utility"
    }
   ],
+  "GetCurrentStageID": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "int",
+    "source": "Installed CK Base/Quest.psc:104; highest completed stage ID, native int GetCurrentStageID()"
+   }
+  ],
   "GetDistance": [
    {
     "global": false,
