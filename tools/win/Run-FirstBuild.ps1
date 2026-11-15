@@ -79,6 +79,8 @@ param(
     # enters the test room, runs the scenario and closes by itself. Needs
     # -Install. If both are given, this wins over -Play.
     [switch]$Unattended,
+    # Optional launch through already-installed F4SE, with -Unattended only.
+    [switch]$UseF4SE,
     # For -Unattended: scenario numbers, ranges (101-128) and set names (all,
     # basic, matrix, main, side), separated by commas. Default: all.
     [string]$Scenarios,
@@ -98,6 +100,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
+if ($UseF4SE -and -not $Unattended) { throw '-UseF4SE requires -Unattended (Play-Act1.ps1 supplies it). No build or game launch was performed.' }
 
 # For this run only: no .NET first-run banner, no usage data sent to Microsoft,
 # and none of the extras .NET sets up the first time it is ever used on a PC
@@ -371,6 +374,7 @@ try {
             if ($Unattended) {
                 $playScript = 'Run-Scenarios.ps1'
                 if ($Scenarios) { $playArgs['Scenarios'] = $Scenarios }
+                if ($UseF4SE) { $playArgs['UseF4SE'] = $true }
             }
             try { & (Join-Path $PSScriptRoot $playScript) @playArgs }
             catch {

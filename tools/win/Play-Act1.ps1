@@ -30,6 +30,11 @@
   protection. No quest/load function resets stats on an existing or resumed
   character. The runner removes its batch and startup command afterwards.
 
+  For the owner's already-installed F4SE-dependent personal mods, add -UseF4SE.
+  Default is off. This validates the known 1.10.163/0.6.23 pair and changes only
+  the launcher; the expected game process stays the managed Fallout4.exe.
+  Nothing installs F4SE, a mod, or additional settings.
+
   DEVELOPMENT ONLY. The section stands in the game's own test room and its
   people are copies of the game's settler. Use the test profile only, and
   switch Mod Organizer back to your own profile afterwards.

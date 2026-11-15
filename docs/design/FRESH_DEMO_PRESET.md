@@ -71,9 +71,27 @@ serialized interrupted-run cleanup, unowned collision/finally/restart preservati
 ownership journaling before bytes, ambiguous creation and failure propagation. These test guards
 and intended commands; they do not establish the game's native values.
 
-Actual fresh after-capture is still required: level 1, base/current SPECIAL 4,
-engine-derived health/AP, unchanged innate-perk count/caps/gear, and no protection
-added. Then verify normal revolver/six-round discovery and completion. Capture
+Maya captured the actual native before/after on 2026-11-15 using the exact
+generated startup writes, before demo setup (`begun=False`, MQ01stage10=False).
+The private archived logs are `work/runs/fresh-baseline-20261115/native-before.log`
+and `native-after.log`; after capture ran 09:08:42–09:08:51. Batch SHA256:
+`77B4D90066ADA12AD2B53F7BEFBA2C0D44A93627875E0268E0137FEA2CC75E68`.
+
+| Native reading | Before | After |
+|---|---|---|
+| Level | 1 | 1 |
+| Seven SPECIAL, base/current | 1 each | 4 each |
+| Health, base/current | 85 | 100 |
+| AP, base/current | 70 | 100 |
+| Caps/Stimpak/.44/ammo/transit-pass counts | 0 each | 0 each |
+| Total inventory item count | 2 | 2 |
+| Active base-game perk forms (innate included) | 5 | 5 |
+| Actor-base Essential/Invulnerable | false/false | false/false |
+
+Health/AP 100 are observed engine results, not constants written by the preset.
+Perk points and god mode remain UNKNOWN; no such command was issued. The full
+production runner's launch/close/recovery path remains to be exercised separately.
+Then verify normal revolver/six-round discovery and completion. Capture
 a progressed/resumed character separately without the bootstrap and show no
 stat reset or repeated item grants. A SET UP report is never a gameplay pass.
 Root-owned private probes may supply native evidence; no physical controller
@@ -81,3 +99,15 @@ press or completed new preset playthrough is claimed here.
 
 Rollback: revert this runner-only change. It cannot migrate an already-saved
 character's stats and contains no automatic save migration.
+
+## Optional personal F4SE launch
+
+`Play-Act1.ps1 -UseF4SE` forwards through Update-And-Run and Run-FirstBuild to
+Run-Scenarios. Default is off, including scored tests. With the explicit switch,
+the launcher is the managed game's existing `f4se_loader.exe`; the expected game
+process/path remains that same `Fallout4.exe`. The known managed pair is checked:
+game 1.10.163.0, loader resource 0.0.6.23, and matching runtime DLL present.
+Missing/unreadable/unverified pairs stop before launch. No installer, download,
+authentication, automatic mod enablement or extra settings change is introduced.
+This supports the owner's personal UI mods; the project keeps vanilla Papyrus
+APIs and does not require F4SE for its ordinary demo or tests.

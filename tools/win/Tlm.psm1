@@ -1350,6 +1350,22 @@ function Get-ScenarioRunSummary {
     }
 }
 
+function Get-ScenarioLaunchExecutable {
+    param([Parameter(Mandatory)][string]$GameExe, [switch]$UseF4SE)
+    if (-not (Test-Path -LiteralPath $GameExe -PathType Leaf)) { throw "Managed game executable is missing: $GameExe" }
+    if (-not $UseF4SE) { return $GameExe }
+    $folder = Split-Path -Parent $GameExe
+    $loader = Join-Path $folder 'f4se_loader.exe'
+    if (-not (Test-Path -LiteralPath $loader -PathType Leaf)) { throw 'UseF4SE requested, but f4se_loader.exe is missing from the managed game folder. Nothing was launched.' }
+    $gameVersion = Get-ExeVersion $GameExe
+    $loaderVersion = Get-ExeVersion $loader
+    if ($gameVersion -ne '1.10.163.0' -or $loaderVersion -ne '0.0.6.23') {
+        throw "UseF4SE is verified only for managed Fallout 4 1.10.163.0 with F4SE 0.6.23 (loader resource 0.0.6.23); found game $gameVersion, loader $loaderVersion. Nothing was launched."
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $folder 'f4se_1_10_163.dll') -PathType Leaf)) { throw 'UseF4SE requested, but its f4se_1_10_163.dll runtime is missing. Nothing was launched.' }
+    return $loader
+}
+
 function Get-FreshDemoStartupPlan {
     # This batch is for a new main-menu COC character, never a save-load hook.
     param([Parameter(Mandatory)][string]$GameFolder)
@@ -1520,4 +1536,5 @@ Export-ModuleMember -Function Find-Fallout4Installs, Get-Fallout4InstallInfo, Ge
     Get-SteamFileManagerLooksFor, Test-SteamRunning, Get-SteamExePath, Confirm-SteamForManager, Get-MainWindowTitle,
     Get-ProgramsOfInterest, Close-ManagerStartedSince,
     Read-ScenarioSessionLogs, Get-ScenarioSessionStatus, Get-ScenarioRunSummary, Restore-ScenarioRunState,
-    Get-FreshDemoStartupPlan, Write-FreshDemoStartupBatch, Remove-FreshDemoStartupBatch
+    Get-FreshDemoStartupPlan, Write-FreshDemoStartupBatch, Remove-FreshDemoStartupBatch,
+    Get-ScenarioLaunchExecutable

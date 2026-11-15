@@ -153,6 +153,8 @@ param(
     # Defaults come from build\install-manifest.json (written by Install-Dev.ps1).
     [string]$ModOrganizerRoot,
     [string]$ProfileName,
+    # Optional personal-mod launch; default remains the managed Fallout4.exe.
+    [switch]$UseF4SE,
     # How long to wait for Fallout4.exe to appear after starting Mod Organizer.
     [int]$StartTimeoutSeconds = 180,
     # The same for the first scenario, which also has to wake everything up
@@ -267,6 +269,7 @@ if (Test-FalloutLondonFolder $mo.GamePath) {
 }
 $gameExe = Join-Path $mo.GamePath 'Fallout4.exe'
 if (-not (Test-Path -LiteralPath $gameExe)) { throw "No Fallout4.exe in $($mo.GamePath)" }
+$launchExe = Get-ScenarioLaunchExecutable -GameExe $gameExe -UseF4SE:$UseF4SE
 $profileFolder = Join-Path $mo.ProfilesDirectory $ProfileName
 $installHint = 'Run:  powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1 -Install'
 if (-not (Test-Path -LiteralPath $profileFolder)) { throw "The test profile '$ProfileName' does not exist yet. $installHint" }
@@ -358,6 +361,7 @@ try {
     Say "Scenarios            : $($list.Count) ($Scenarios)"
     Write-Host "This takes about $([math]::Max(1, [int][math]::Round($list.Count * 36 / 60))) minutes: $($list.Count) game sessions of roughly half a minute each."
     Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
+    Say "Launch executable    : $launchExe  (UseF4SE=$([bool]$UseF4SE))"
     Say "Through              : $moExe   profile $ProfileName"
     foreach ($l in @($steam.Lines)) { Say $l }
     if ($unfinished) {
@@ -406,7 +410,7 @@ try {
         Say "Session $n start-up command: $sessionEntry"
         [void](Set-PluginGlobal -Path $installedPlugin -EditorId $globalName -Value $n)
         $since = Get-Date
-        $argLine = '-p "{0}" run "{1}"' -f $ProfileName, $gameExe
+        $argLine = '-p "{0}" run "{1}"' -f $ProfileName, $launchExe
         $moProc = Start-Process -FilePath $moExe -ArgumentList $argLine -WorkingDirectory $mo.Root -PassThru
         try { $null = $moProc.Handle } catch { }
 
