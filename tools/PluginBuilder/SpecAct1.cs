@@ -61,7 +61,7 @@ public static class Act1
     // Each looks like one of the game's own things, found by the name a
     // player sees (the first of the names that the game has); only the path
     // of the model is taken.
-    public static readonly ActivatorSpec[] Activators =
+    public static readonly ActivatorSpec[] Activators = new ActivatorSpec[]
     {
         new("TLM_TRIG_AmbushSight"),
         new("TLM_TRIG_TownGate"),
@@ -69,7 +69,7 @@ public static class Act1
         new("TLM_ACTI_DrawBar", "Draw-bar", new[] { "Connecting Rod", "Adjustable Wrench", "Wrench" }, "Examine"),
         new("TLM_ACTI_NoticeBoard", "Notice board", new[] { "Clipboard", "Folder" }, "Read"),
         new("TLM_ACTI_Stove", "Stove", new[] { "Hot Plate", "Cooking Pot" }, "Use"),
-    };
+    }.Concat(Guide.Activators).ToArray();
 
     public static readonly ContainerSpec[] Containers =
     {
@@ -131,7 +131,7 @@ public static class Act1
         Own("NoticeBoard", "TLM_ACTI_NoticeBoard", 480, 180, 12),
         Own("Stove", "TLM_ACTI_Stove", 600, 400, 12),
         new("TLM_REF_A1_CaravanYard", Cell, "XMarker", "Static", 620, 320, 0, InitiallyDisabled: true),
-    }.Concat(Orientation.Placed).ToArray();
+    }.Concat(Orientation.Placed).Concat(Guide.Placed).ToArray();
 
     // ------------------------------------------------------------- the talk
     // Who is who to TLM:Act1Talk (the number on each speaker's alias) and to
@@ -298,7 +298,7 @@ public static class Act1
         Objectives: Array.Empty<ObjectiveSpec>(),
         Aliases: Parts.Select(p => new AliasSpec(p.Alias, Fill.Placed, AllowDisabled: true, AllowDead: p.AllowDead, Protected: p.Protected,
             Placed: "TLM_REF_A1_" + p.Alias,
-            Scripts: p.Who == 0 ? Array.Empty<ScriptBind>() : new[] { Talk(p.Who) })).Concat(Orientation.Aliases).ToArray(),
+            Scripts: p.Who == 0 ? Array.Empty<ScriptBind>() : new[] { Talk(p.Who) })).Concat(Orientation.Aliases).Concat(Guide.Aliases).ToArray(),
         Script: new ScriptBind("TLM:Act1Walk", new Prop[]
         {
             new FormProp("TLM_MQ01", "TLM_MQ01"),
@@ -315,8 +315,8 @@ public static class Act1
             new FormProp("TLM_G_SQ01_VaneHasLedger", "TLM_G_SQ01_VaneHasLedger"),
             new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
             // Everything placed, to switch on; the people among it; and what is put where.
-            new AliasListProp("Everything", Parts.Select(p => (QuestId, p.Alias)).Concat(Orientation.Pieces.Select(p => (QuestId, p.Alias))).ToArray()),
-            new StringListProp("EverythingNames", Parts.Select(p => p.Name).Concat(Orientation.Pieces.Select(p => p.Name)).ToArray()),
+            new AliasListProp("Everything", Parts.Select(p => (QuestId, p.Alias)).Concat(Orientation.Pieces.Select(p => (QuestId, p.Alias))).Concat(Guide.Points.Select(p => (QuestId, p.Alias))).ToArray()),
+            new StringListProp("EverythingNames", Parts.Select(p => p.Name).Concat(Orientation.Pieces.Select(p => p.Name)).Concat(Guide.Points.Select(p => p.Name)).ToArray()),
             new AliasListProp("People", Parts.Where(p => p.IsPerson).Select(p => (QuestId, p.Alias)).ToArray()),
             new StringListProp("PeopleNames", Parts.Where(p => p.IsPerson).Select(p => p.Name).ToArray()),
             new AliasListProp("CastFrom", Casts.Select(c => (QuestId, c.Part.Alias)).ToArray()),
