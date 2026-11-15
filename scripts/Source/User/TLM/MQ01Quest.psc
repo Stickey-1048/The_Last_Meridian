@@ -565,6 +565,16 @@ EndFunction
 
 ; ------------------------------------------------------------------ stage 40
 
+; Manual demo registers its existing presentation script at Begin. Keeping
+; this out of plugin properties preserves archived-script fixture bindings.
+TLM:Act1Walk demoPresentation
+
+Function RegisterDemoPresentation(TLM:Act1Walk akWalk)
+	If !demoPresentation && akWalk && akWalk.CanReadGuide()
+		demoPresentation = akWalk
+	EndIf
+EndFunction
+
 Function ApplyTown()
 	; A resolution may be half done on another thread: the player left the
 	; ambush and reached the gate in the same breath. Let it finish, because
@@ -583,11 +593,59 @@ Function ApplyTown()
 	WaitForResolutions(0)
 	MoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown)
 	MoveHandToTown(Alias_CaravanDrover, Alias_CaravanDroverInTown)
-	Alias_CutterLead.TryToDisable()
-	Alias_CutterA.TryToDisable()
-	Alias_CutterB.TryToDisable()
-	Alias_CutterC.TryToDisable()
+	int livingGone = DisableCuttersForTown()
 	UpdateAliveAtMercy()
+	If livingGone > 0 && demoPresentation
+		demoPresentation.CuttersDeparted(livingGone)
+	EndIf
+EndFunction
+
+int Function DisableCuttersForTown()
+	{Keep the existing cleanup, but report departure only when a living actor
+	was newly disabled and all four known gang references have no living member
+	still enabled. Missing/replaced references or failed disables are not proof.}
+	ReferenceAlias[] aliases = new ReferenceAlias[4]
+	aliases[0] = Alias_CutterLead
+	aliases[1] = Alias_CutterA
+	aliases[2] = Alias_CutterB
+	aliases[3] = Alias_CutterC
+	Actor[] gang = new Actor[4]
+	bool[] presentAlive = new bool[4]
+	int i = 0
+	While i < 4
+		gang[i] = aliases[i].GetActorReference()
+		presentAlive[i] = gang[i] && !gang[i].IsDead() && !gang[i].IsDisabled()
+		i += 1
+	EndWhile
+	i = 0
+	While i < 4
+		aliases[i].TryToDisable()
+		i += 1
+	EndWhile
+	int newlyGone = 0
+	int livingGone = 0
+	bool verified = true
+	i = 0
+	While i < 4
+		Actor current = aliases[i].GetActorReference()
+		If !current || current != gang[i]
+			verified = false
+		ElseIf !current.IsDead()
+			If !current.IsDisabled()
+				verified = false
+			Else
+				livingGone += 1
+				If presentAlive[i]
+					newlyGone += 1
+				EndIf
+			EndIf
+		EndIf
+		i += 1
+	EndWhile
+	If verified && newlyGone > 0
+		Return livingGone
+	EndIf
+	Return 0
 EndFunction
 
 Function MoveHandToTown(ReferenceAlias akHand, ReferenceAlias akTownAlias)
