@@ -302,3 +302,15 @@ TLM_REF_A1_DecorMercyRight
 2198
 TLM_REF_A1_DecorMercyCounter
 2199
+TLM_ACTI_GuideWreck
+2200
+TLM_ACTI_GuideRoad
+2201
+TLM_ACTI_GuideMercy
+2202
+TLM_REF_A1_GuideWreck
+2203
+TLM_REF_A1_GuideRoad
+2204
+TLM_REF_A1_GuideMercy
+2205

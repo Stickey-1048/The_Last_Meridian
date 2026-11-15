@@ -247,6 +247,11 @@ Function Begin()
 	EndIf
 EndFunction
 
+bool Function CanReadGuide()
+	{Explicit help only during a manual demo, never during the unattended audit.}
+	Return begun && !quiet && !talking
+EndFunction
+
 int Function CastAll()
 	{Puts each placed reference into the alias of the real quests that is
 	meant for it. Returns how many of those aliases do not hold it afterwards.}

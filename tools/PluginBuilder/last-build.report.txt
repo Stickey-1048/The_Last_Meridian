@@ -31,7 +31,7 @@ MiscItem (3)
 Book (2)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
-Activator (7)
+Activator (10)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
   000834  TLM_TRIG_TownGate
@@ -39,6 +39,9 @@ Activator (7)
   000836  TLM_ACTI_DrawBar  "Draw-bar"
   000837  TLM_ACTI_NoticeBoard  "Notice board"
   000838  TLM_ACTI_Stove  "Stove"
+  000898  TLM_ACTI_GuideWreck  "Demo guide - Wreck directions"
+  000899  TLM_ACTI_GuideRoad  "Demo guide - Caravan road directions"
+  00089A  TLM_ACTI_GuideMercy  "Demo guide - Mercy Crossing directions"
 Container (1)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
 Message (55)
@@ -471,8 +474,8 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
            TLM_G_SQ01_VaneHasLedger = TLM_G_SQ01_VaneHasLedger
            TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
-           Everything = [alias 0 on TLM_A1, alias 1 on TLM_A1, alias 2 on TLM_A1, alias 3 on TLM_A1, alias 4 on TLM_A1, alias 5 on TLM_A1, alias 6 on TLM_A1, alias 7 on TLM_A1, alias 8 on TLM_A1, alias 9 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 16 on TLM_A1, alias 17 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 21 on TLM_A1, alias 22 on TLM_A1, alias 23 on TLM_A1, alias 24 on TLM_A1, alias 25 on TLM_A1, alias 26 on TLM_A1, alias 27 on TLM_A1, alias 28 on TLM_A1, alias 29 on TLM_A1, alias 30 on TLM_A1, alias 31 on TLM_A1, alias 32 on TLM_A1]
-           EverythingNames = ["Tobias Gantt", "the sealed dispatch", "the marshal's revolver", "the marshal's journal", "the maintenance ledger", "the brake shoes", "the draw-bar", "the place the ambush is seen from", "the middle of the ambush", "the wagon's cargo", "Nell Fenwick", "Abel Rudd", "Reese Dunmore", "the first Cutter", "the second Cutter", "the third Cutter", "the town gate", "Jonah Talbot", "Owen Pritchard", "Ada Pike", "Silas Vane", "Miriam Keene", "Corwin Haskell", "the notice board", "the stove", "the caravan yard", "wreck outer rubble", "wreck rear debris", "road left marker", "road right marker", "Mercy left gatepost", "Mercy right gatepost", "Mercy rear table"]
+           Everything = [alias 0 on TLM_A1, alias 1 on TLM_A1, alias 2 on TLM_A1, alias 3 on TLM_A1, alias 4 on TLM_A1, alias 5 on TLM_A1, alias 6 on TLM_A1, alias 7 on TLM_A1, alias 8 on TLM_A1, alias 9 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 16 on TLM_A1, alias 17 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 21 on TLM_A1, alias 22 on TLM_A1, alias 23 on TLM_A1, alias 24 on TLM_A1, alias 25 on TLM_A1, alias 26 on TLM_A1, alias 27 on TLM_A1, alias 28 on TLM_A1, alias 29 on TLM_A1, alias 30 on TLM_A1, alias 31 on TLM_A1, alias 32 on TLM_A1, alias 33 on TLM_A1, alias 34 on TLM_A1, alias 35 on TLM_A1]
+           EverythingNames = ["Tobias Gantt", "the sealed dispatch", "the marshal's revolver", "the marshal's journal", "the maintenance ledger", "the brake shoes", "the draw-bar", "the place the ambush is seen from", "the middle of the ambush", "the wagon's cargo", "Nell Fenwick", "Abel Rudd", "Reese Dunmore", "the first Cutter", "the second Cutter", "the third Cutter", "the town gate", "Jonah Talbot", "Owen Pritchard", "Ada Pike", "Silas Vane", "Miriam Keene", "Corwin Haskell", "the notice board", "the stove", "the caravan yard", "wreck outer rubble", "wreck rear debris", "road left marker", "road right marker", "Mercy left gatepost", "Mercy right gatepost", "Mercy rear table", "Demo guide - Wreck directions", "Demo guide - Caravan road directions", "Demo guide - Mercy Crossing directions"]
            People = [alias 0 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 17 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 21 on TLM_A1, alias 22 on TLM_A1]
            PeopleNames = ["Tobias Gantt", "Nell Fenwick", "Abel Rudd", "Reese Dunmore", "the first Cutter", "the second Cutter", "the third Cutter", "Jonah Talbot", "Owen Pritchard", "Ada Pike", "Silas Vane", "Miriam Keene", "Corwin Haskell"]
            CastFrom = [alias 0 on TLM_A1, alias 0 on TLM_A1, alias 1 on TLM_A1, alias 2 on TLM_A1, alias 3 on TLM_A1, alias 4 on TLM_A1, alias 5 on TLM_A1, alias 6 on TLM_A1, alias 7 on TLM_A1, alias 8 on TLM_A1, alias 9 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 16 on TLM_A1, alias 18 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 22 on TLM_A1, alias 23 on TLM_A1, alias 24 on TLM_A1, alias 25 on TLM_A1]
@@ -598,8 +601,20 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
   alias 30 DecorMercyLeft  (reference) [Optional, AllowDisabled]
   alias 31 DecorMercyRight  (reference) [Optional, AllowDisabled]
   alias 32 DecorMercyCounter  (reference) [Optional, AllowDisabled]
+  alias 33 GuideWreck  (reference) [Optional, AllowDisabled]
+           script TLM:Act1Guide
+                    TLM_MQ01 = TLM_MQ01
+                    Place = 1
+  alias 34 GuideRoad  (reference) [Optional, AllowDisabled]
+           script TLM:Act1Guide
+                    TLM_MQ01 = TLM_MQ01
+                    Place = 2
+  alias 35 GuideMercy  (reference) [Optional, AllowDisabled]
+           script TLM:Act1Guide
+                    TLM_MQ01 = TLM_MQ01
+                    Place = 3
 
-Not wired yet (150):
+Not wired yet (159):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -607,6 +622,9 @@ Not wired yet (150):
   - TLM_ACTI_DrawBar: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NoticeBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_Stove: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GuideWreck: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GuideRoad: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GuideMercy: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: empty (it holds 'Caps001', which needs Fallout4.esm)
   - TLM_NPC_TrialPerson: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
@@ -667,6 +685,9 @@ Not wired yet (150):
   - TLM_REF_A1_DecorMercyLeft: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_A1_DecorMercyRight: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_A1_DecorMercyCounter: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_A1_GuideWreck: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_A1_GuideRoad: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_A1_GuideMercy: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -750,3 +771,6 @@ Not wired yet (150):
   - TLM_A1 alias DecorMercyLeft: its reference TLM_REF_A1_DecorMercyLeft is not placed
   - TLM_A1 alias DecorMercyRight: its reference TLM_REF_A1_DecorMercyRight is not placed
   - TLM_A1 alias DecorMercyCounter: its reference TLM_REF_A1_DecorMercyCounter is not placed
+  - TLM_A1 alias GuideWreck: its reference TLM_REF_A1_GuideWreck is not placed
+  - TLM_A1 alias GuideRoad: its reference TLM_REF_A1_GuideRoad is not placed
+  - TLM_A1 alias GuideMercy: its reference TLM_REF_A1_GuideMercy is not placed
