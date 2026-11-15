@@ -1,0 +1,26 @@
+"""Filesystem refusal tests. No licensed master, world build or game required."""
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+DLL=ROOT/'tools/WorldSliceBuilder/bin/Debug/net8.0/WorldSliceBuilder.dll'
+
+class OutputSafety(unittest.TestCase):
+    def test_refuses_input_file_input_tree_and_nonempty_output_without_touching_files(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);master=root/'master';master.mkdir()
+            input_file=master/'Fallout4.esm';input_file.write_bytes(b'not a licensed master; refusal occurs before parsing')
+            occupied=root/'occupied';occupied.mkdir();sentinel=occupied/'owner-file.txt';sentinel.write_bytes(b'preserve me')
+            for output in (input_file,master,master/'new-output',occupied):
+                with self.subTest(output=str(output)):
+                    result=subprocess.run(['dotnet',str(DLL),str(input_file),str(output)],capture_output=True,text=True)
+                    self.assertEqual(result.returncode,2,result.stderr)
+                    self.assertIn('Output must',result.stderr)
+                    self.assertEqual(sentinel.read_bytes(),b'preserve me')
+                    self.assertEqual(input_file.read_bytes(),b'not a licensed master; refusal occurs before parsing')
+                    self.assertFalse((master/'new-output').exists())
+                    self.assertEqual(sorted(p.name for p in occupied.iterdir()),['owner-file.txt'])
+
+if __name__=='__main__':unittest.main()
