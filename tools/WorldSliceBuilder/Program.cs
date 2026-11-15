@@ -52,6 +52,10 @@ void Put(string id,FormKey key,float x,float y,float z=0,float yaw=0){
  var p=new PlacedObject(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_WS_"+id,Position=new P3Float(x,y,z),Rotation=new P3Float(0,0,yaw)};
  p.Base.SetTo(key);cell.Temporary.Add(p);placements.Add(new{id=p.EditorID,form=p.FormKey.ToString(),@base=key.ToString(),x,y,z,yaw});
  var bounds=master.Statics.FirstOrDefault(s=>s.FormKey==key)?.ObjectBounds??master.Furniture.Single(f=>f.FormKey==key).ObjectBounds;
+ if(id is "Bed" or "Couch"){
+  if(x+bounds.First.X-2668<128||3428-x-bounds.Second.X<128||y+bounds.First.Y-2676<128||3180-y-bounds.Second.Y<128)
+   throw new InvalidDataException("Furniture model bounds need 128-unit body clearance from the cabin wall planes: "+id);
+ }
  if(id!="Arrival"&&z+bounds.Second.Z>1&&z+bounds.First.Z<128){
   var xx=new List<float>();var yy=new List<float>();
   foreach(float bx in new[]{(float)bounds.First.X,bounds.Second.X})foreach(float by in new[]{(float)bounds.First.Y,bounds.Second.Y}){xx.Add(x+bx*MathF.Cos(yaw)+by*MathF.Sin(yaw));yy.Add(y+by*MathF.Cos(yaw)-bx*MathF.Sin(yaw));}
@@ -84,8 +88,8 @@ for(int row=0;row<2;row++){
  Put("CabinLeftWall"+row,wall,2792,y,16,MathF.PI/2);
  Put("CabinRightWall"+row,wall,3304,y,16,-MathF.PI/2);
 }
-Put("Bed",Furniture("WorkshopNpcBedMilitaryCottLay01"),2800,3040,16);
-Put("Couch",Furniture("NpcCouchSet02Weathered1x2Straight01Sit01"),3280,3040,9);
+Put("Bed",Furniture("WorkshopNpcBedMilitaryCottLay01"),2832,2984,16);
+Put("Couch",Furniture("NpcCouchSet02Weathered1x2Straight01Sit01"),3232,2984,9);
 // Yard fence: 128-unit panels, explicit 256-unit opening centered on X3048.
 var fence=Static("PicketFenceB_PW_Fence01");
 for(int i=0;i<10;i++){

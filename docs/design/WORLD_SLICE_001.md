@@ -25,10 +25,12 @@ Explicit development entry for later isolated native QA: `coc TLM_WS_Clearing`. 
 - Wreck site around700/900: rubble/wood debris sit outside the walking corridor. No train geometry, marshal, dispatch or quest pickup is claimed in this shell.
 - Hold-up site around1900/1700: timber markers delimit the future encounter area. The bypass branches before it and rejoins toward Mercy; no trigger/actors are installed yet, so avoiding an actual ambush remains a later integration test.
 - Mercy yard:256-unit gap centered3048/2432. The main path squares up at3048/2200 before the entrance, avoiding fence collision bounds. Cabin spans approximately2664–3432X and2672–3184Y; front center tile is left unwalled. Floor top16, roof underside about214, front opening about256wide×198high. Native walking/roof/steps remain unverified.
-- Bed: `WorkshopNpcBedMilitaryCottLay01`, a native IsSleepFurniture base, at2800/3040/16. Couch: `NpcCouchSet02Weathered1x2Straight01Sit01`, native Furniture, at3280/3040/9; its7-unit model minimum puts it on the16-unit floor. The central aisle and front approach are unobstructed by these object bounds; animation/exit space requires actual use.
+- Bed: `WorkshopNpcBedMilitaryCottLay01`, a native IsSleepFurniture base, at2832/2984/16. Couch: `NpcCouchSet02Weathered1x2Straight01Sit01`, native Furniture, at3232/2984/9; its7-unit model minimum puts it on the16-unit floor. Their actual model bounds have at least128units from all cabin wall planes, checked during build; the central body-to-body gap is302units. This does not certify animation/exit space, which requires actual use.
 - Floors `workshop_ShackMidFloor01B`; roof `ShackMidRoof01`; thin wall `ShackWallFlat02`; fence `PicketFenceB_PW_Fence01`. Exact EditorIDs are required; missing assets fail rather than substitute caps. Only references are written, never bundled vanilla meshes/textures.
 
 The generated LAND is flat at0 and uses33×33normals/heights with four dirt/gravel quadrants. There is no copied landscape record, LOD generation, navigation mesh, water, terrain seam beyond this single cell, cluttered world or distant environment. A96-unit perimeter rail discourages accidental walking off this cell; it is not an invisible wall or a guarantee against jumping over it.
+
+Raw subrecord inspection of200actual master LAND records corroborated the chosen DATA mask:127records used0x1D withoutVCLR,65used0x1F withVCLR,8used0x19 withoutVCLR. The prototype's0x1D/noVCLR layout has VNML3267bytes, VHGT1096bytes and four BTXT quadrants0–3, matching the observed no-color pattern. This independent byte-level check supplements serializer readback; engine terrain collision still requires native validation.
 
 ## Next milestone and native acceptance
 
