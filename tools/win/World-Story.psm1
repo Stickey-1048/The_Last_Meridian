@@ -1,6 +1,31 @@
 Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1')
 
+function Get-WorldStoryVariant {
+    param([switch]$Expanded)
+    if ($Expanded) {
+        return [pscustomobject]@{ Id='expanded'; ProfileName='TLM-World-Expanded-Preview'; ModName='TheLastMeridian-WorldExpandedPreview'; JournalName='world-expanded.unfinished.json'; ManifestPath=(Join-Path $PSScriptRoot '../WorldSliceBuilder/expanded-artifact.json') }
+    }
+    return [pscustomobject]@{ Id='story'; ProfileName='TLM-World-Story-Preview'; ModName='TheLastMeridian-WorldStoryPreview'; JournalName='world-story.unfinished.json'; ManifestPath=(Join-Path $PSScriptRoot 'world-story-artifact.json') }
+}
+
+function Assert-WorldStoryRecoveryNote {
+    param($Note,[string]$Ini,[string]$GameFolder,[ValidateSet('story','expanded')][string]$Variant='story')
+    $expected=Get-WorldStoryVariant -Expanded:($Variant -eq 'expanded')
+    # Legacy default notes had no variant fields. Retain that recovery route
+    # only for the default variant and its exact expected INI/game paths.
+    if ($Note.PSObject.Properties.Name -contains 'Variant') {
+        if ($Note.Variant -cne $expected.Id) { throw 'Recovery note belongs to another world variant; left untouched.' }
+    } elseif ($Variant -ne 'story') { throw 'Expanded recovery note has no variant identity; left untouched.' }
+    if ($Note.PSObject.Properties.Name -contains 'ProfileName') {
+        if ($Note.ProfileName -cne $expected.ProfileName) { throw 'Recovery note belongs to another profile; left untouched.' }
+    } elseif ($Variant -ne 'story') { throw 'Expanded recovery note has no profile identity; left untouched.' }
+    if ($Note.Batch.PSObject.Properties.Name -contains 'Variant') {
+        if ($Note.Batch.Variant -cne $expected.Id) { throw 'Startup batch belongs to another world variant; left untouched.' }
+    } elseif ($Variant -ne 'story' -or ($Note.PSObject.Properties.Name -contains 'Variant')) { throw 'Startup batch has no matching variant identity; left untouched.' }
+    if (-not (Test-SamePath $Note.Ini $Ini) -or -not (Test-SamePath $Note.GameFolder $GameFolder)) { throw 'Unfinished note belongs to another profile/install; left untouched.' }
+}
+
 function Get-WorldStoryProcessInventory {
     # Get-Process can omit an incompletely terminated process. CIM presence is
     # deliberately conservative: no launcher/cleanup action until both agree.
@@ -32,10 +57,12 @@ function Assert-WorldStoryProcessesClear {
 }
 
 function Get-WorldStoryContext {
-    param([string]$ModOrganizerRoot, [string]$ProfileName = 'TLM-World-Story-Preview',
-        [string]$ManifestPath = (Join-Path $PSScriptRoot 'world-story-artifact.json'))
+    param([string]$ModOrganizerRoot, [string]$ProfileName='', [string]$ManifestPath='', [switch]$Expanded)
     # ManifestPath permits isolated fixture testing; the launcher exposes no override.
-    if ($ProfileName -cne 'TLM-World-Story-Preview') { throw 'Use the dedicated TLM-World-Story-Preview profile only.' }
+    $variant=Get-WorldStoryVariant -Expanded:$Expanded
+    if (-not $ProfileName) { $ProfileName=$variant.ProfileName }
+    if (-not $ManifestPath) { $ManifestPath=$variant.ManifestPath }
+    if ($ProfileName -cne $variant.ProfileName) { throw "Use the dedicated $($variant.ProfileName) profile only." }
     $manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
     $runtime = @($manifest.runtime.PSObject.Properties)
     if ($manifest.schema -ne 1 -or $runtime.Count -ne 19 -or
@@ -53,14 +80,14 @@ function Get-WorldStoryContext {
     foreach ($key in @('LocalSaves','LocalSettings')) {
         if ((Get-IniValue (Join-Path $profile 'settings.ini') General $key) -ine 'true') { throw "Dedicated profile requires $key=true." }
     }
-    $allowed = @('TheLastMeridian-WorldStoryPreview','F4SE Scripts 0.6.23','FallUI - Workbench','Mod Configuration Menu')
+    $allowed = @($variant.ModName,'F4SE Scripts 0.6.23','FallUI - Workbench','Mod Configuration Menu')
     $enabled = @(Read-RawLines (Join-Path $profile 'modlist.txt') | Where-Object { $_.StartsWith('+') } | ForEach-Object { $_.Substring(1) })
     if (@($enabled | Select-Object -Unique).Count -ne $enabled.Count) { throw 'Duplicate enabled mod entries.' }
     foreach ($name in $enabled) { if ($name -notin $allowed) { throw "Unreviewed/private mod enabled in story profile: $name" } }
-    if ('TheLastMeridian-WorldStoryPreview' -notin $enabled) { throw 'The isolated story mod is not enabled.' }
+    if ($variant.ModName -notin $enabled) { throw 'The isolated selected world mod is not enabled.' }
     $plugins = @(Read-RawLines (Join-Path $profile 'plugins.txt') | Where-Object { $_.StartsWith('*') } | ForEach-Object { $_.Substring(1) })
     if ($plugins.Count -ne 2 -or $plugins[0] -cne 'TheLastMeridian.esp' -or $plugins[1] -cne 'TLMWorldSlice.esp') { throw 'Story profile must activate only the master then the world addon.' }
-    $story = Join-Path $mo.ModsDirectory 'TheLastMeridian-WorldStoryPreview'
+    $story = Join-Path $mo.ModsDirectory $variant.ModName
     $world = Join-Path $story 'TLMWorldSlice.esp'; $core = Join-Path $story 'TheLastMeridian.esp'
     foreach ($pair in @(@($world,$manifest.worldSha256),@($core,$manifest.masterSha256))) {
         if (-not (Test-Path -LiteralPath $pair[0] -PathType Leaf) -or (Get-FileHash -LiteralPath $pair[0] -Algorithm SHA256).Hash -ne $pair[1]) { throw "Story plugin absent or differs from reviewed artifact: $($pair[0])" }
@@ -91,8 +118,9 @@ function Get-WorldStoryContext {
 }
 
 function Get-WorldStoryStartupPlan {
-    param([string]$GameFolder)
+    param([string]$GameFolder,[switch]$Expanded)
     $plan = Get-FreshDemoStartupPlan -GameFolder $GameFolder
+    $plan | Add-Member -MemberType NoteProperty -Name Variant -Value (Get-WorldStoryVariant -Expanded:$Expanded).Id
     if (-not $plan.Content.StartsWith("coc qasmoke`r`n")) { throw 'Unexpected fresh startup template.' }
     $plan.Content = $plan.Content.Replace("coc qasmoke`r`n", "coc TLM_WS_Clearing`r`n") + "cqf TLM_WS_Entry QueueFreshEntry`r`n"
     $sha = [Security.Cryptography.SHA256]::Create()
@@ -122,4 +150,4 @@ function Get-WorldStoryStartupState {
     if ($null -eq $active -or "$active" -eq '') { $active='0' }
     return [pscustomobject]@{Startup=$startup;Active="$active"}
 }
-Export-ModuleMember -Function Get-WorldStoryContext, Get-WorldStoryStartupPlan, Restore-WorldStoryState, Get-WorldStoryStartupState, Get-WorldStoryProcessInventory, Assert-WorldStoryProcessesClear
+Export-ModuleMember -Function Get-WorldStoryContext, Get-WorldStoryStartupPlan, Restore-WorldStoryState, Get-WorldStoryStartupState, Get-WorldStoryProcessInventory, Assert-WorldStoryProcessesClear, Get-WorldStoryVariant, Assert-WorldStoryRecoveryNote
