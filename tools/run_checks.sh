@@ -22,6 +22,10 @@ echo "== 1/5 logic model =="
 (cd tools/logic_model && python3 -m unittest 2>&1 | tail -4)
 
 echo "== 2/5 plugin build =="
+dotnet build tools/WorldSliceBuilder --nologo
+python3 tools/test_world_slice_output.py
+# Compilation/output-safety only; exterior serialization/native walking require
+# the owner's real master and the separate isolated world QA gate.
 dotnet run --project tools/PluginBuilder -- --out build | grep -v warning
 if ! diff -q build/TheLastMeridian.report.txt tools/PluginBuilder/last-build.report.txt >/dev/null; then
   echo "NOTE: the plugin report changed. Review it, then:"

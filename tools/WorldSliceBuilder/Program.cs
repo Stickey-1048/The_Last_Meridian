@@ -8,8 +8,18 @@ using System.Text.Json;
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
 if(args.Length!=2){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory>");return 2;}
-var output=Path.GetFullPath(args[1]);Directory.CreateDirectory(output);
-using var master=Fallout4Mod.CreateFromBinaryOverlay(args[0],Fallout4Release.Fallout4);
+var input=Path.GetFullPath(args[0]);var output=Path.GetFullPath(args[1]);
+var comparison=OperatingSystem.IsWindows()?StringComparison.OrdinalIgnoreCase:StringComparison.Ordinal;
+var masterDirectory=Path.GetDirectoryName(input)!;
+if(!File.Exists(input)){Console.Error.WriteLine("Master input must exist.");return 2;}
+if(output.Equals(input,comparison)||output.Equals(masterDirectory,comparison)||output.StartsWith(masterDirectory+Path.DirectorySeparatorChar,comparison)){
+ Console.Error.WriteLine("Output must stay outside the master input directory.");return 2;
+}
+if(File.Exists(output)||(Directory.Exists(output)&&Directory.EnumerateFileSystemEntries(output).Any())){
+ Console.Error.WriteLine("Output must be a new or empty staging directory; existing files will not be overwritten.");return 2;
+}
+using var master=Fallout4Mod.CreateFromBinaryOverlay(input,Fallout4Release.Fallout4);
+Directory.CreateDirectory(output);
 var mod=new Fallout4Mod(ModKey.FromNameAndExtension("TLMWorldSlice.esp"),Fallout4Release.Fallout4);
 mod.ModHeader.Stats.Version=0.95f;
 var world=mod.Worldspaces.AddNew("TLM_WS_Meridian");
