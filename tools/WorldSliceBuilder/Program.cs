@@ -7,7 +7,9 @@ using System.Text.Json;
 
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
-if(args.Length!=2&&(args.Length!=4||args[2]!="--story-source")){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory> [--story-source <TheLastMeridian.esp>]");return 2;}
+bool expanded=args.LastOrDefault()=="--expand";
+if(expanded)args=args[..^1];
+if(args.Length!=2&&(args.Length!=4||args[2]!="--story-source")){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory> [--story-source <TheLastMeridian.esp>] [--expand]");return 2;}
 var input=Path.GetFullPath(args[0]);var output=Path.GetFullPath(args[1]);
 var comparison=OperatingSystem.IsWindows()?StringComparison.OrdinalIgnoreCase:StringComparison.Ordinal;
 var masterDirectory=Path.GetDirectoryName(input)!;
@@ -54,6 +56,10 @@ var routeObstacles=new List<(string Id,float X,float Y,float MinX,float MaxX,flo
 FormKey Static(string id)=>master.Statics.Single(x=>x.EditorID==id).FormKey;
 FormKey Furniture(string id)=>master.Furniture.Single(x=>x.EditorID==id).FormKey;
 void Put(string id,FormKey key,float x,float y,float z=0,float yaw=0){
+ // Two decorative posts otherwise seal the new west-street junction. Keep
+ // their form IDs and all quest coordinates; default mode is unchanged.
+ if(expanded&&id=="Main15L"){x=2450;y=2550;}
+ if(expanded&&id=="Main16L"){x=2440;y=2360;}
  var p=new PlacedObject(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_WS_"+id,Position=new P3Float(x,y,z),Rotation=new P3Float(0,0,yaw)};
  p.Base.SetTo(key);cell.Temporary.Add(p);placements.Add(new{id=p.EditorID,form=p.FormKey.ToString(),@base=key.ToString(),x,y,z,yaw});
  var bounds=master.Statics.FirstOrDefault(s=>s.FormKey==key)?.ObjectBounds??master.Furniture.Single(f=>f.FormKey==key).ObjectBounds;
@@ -144,6 +150,27 @@ var plugin=Path.Combine(output,"TLMWorldSlice.esp");
 object? story=null;
 var included=new List<ModKey>{ModKey.FromNameAndExtension("Fallout4.esm")};
 if(args.Length==4){using var template=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);story=WorldStory.Add(mod,world,cell,template);included.Add(template.ModKey);}
+object? expansion=null;
+var protectedPoints=new List<object>();
+if(expanded){
+ expansion=Expansion.Add(master,Put);
+ // Recheck both old routes AND new streets after adding scenery. AABBs are
+ // conservative coarse checks, not Havok/navmesh certification.
+ foreach(var route in new[]{mainRoute,bypassRoute}.Concat(Expansion.Routes.Select(r=>r.Points)))for(int s=0;s<route.Length-1;s++)for(int tick=0;tick<=100;tick++){
+  float t=tick/100f,x=route[s].Item1*(1-t)+route[s+1].Item1*t,y=route[s].Item2*(1-t)+route[s+1].Item2*t;
+  foreach(var p in routeObstacles){float dx=MathF.Max(MathF.Max(p.MinX-x,0),x-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-y,0),y-p.MaxY);if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Expanded object intrudes into 192-unit corridor: "+p.Id);}
+ }
+ foreach(var reference in world.TopCell!.Persistent){
+  if(reference.EditorID is not {} id||!id.StartsWith("TLM_WS_ST_")||id is "TLM_WS_ST_AmbushSight" or "TLM_WS_ST_TownGate")continue;
+  P3Float? at=reference switch {IPlacedNpcGetter n=>n.Position,IPlacedObjectGetter o=>o.Position,_=>null};
+  if(at is not {} pos)throw new InvalidDataException("Missing protected story position: "+id);
+  protectedPoints.Add(new{id,x=pos.X,y=pos.Y,z=pos.Z});
+  foreach(var p in routeObstacles.Where(p=>p.Id.StartsWith("EX_")||p.Id is "Main15L" or "Main16L")){
+   float dx=MathF.Max(MathF.Max(p.MinX-pos.X,0),pos.X-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-pos.Y,0),pos.Y-p.MaxY);
+   if(dx*dx+dy*dy<128*128)throw new InvalidDataException("Expanded object intrudes into 128-unit story activation/standing space: "+p.Id+" / "+id);
+  }
+ }
+}
 mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(included.ToArray()).Write();
 using var read=Fallout4Mod.CreateFromBinaryOverlay(plugin,Fallout4Release.Fallout4);
 if(story!=null)WorldStory.Validate(read);
@@ -156,5 +183,7 @@ if(read.Worldspaces.Any(w=>w.FormKey.ModKey!=mod.ModKey)||gotCell.FormKey.ModKey
 if(read.EnumerateMajorRecords().Any(r=>r.FormKey.ModKey!=mod.ModKey))throw new InvalidDataException("Unexpected override record");
 File.WriteAllText(Path.Combine(output,"world-slice.json"),JsonSerializer.Serialize(new{world=gotWorld.EditorID,worldForm=gotWorld.FormKey.ToString(),cell=gotCell.EditorID,cellForm=gotCell.FormKey.ToString(),entry="coc TLM_WS_Clearing (native entry pending)",terrain="new generated flat33x33LAND at height0",placementCount=placements.Count,storyReferenceCount=story==null?0:29,mainRoute=mainRoute.Select(p=>new{x=p.Item1,y=p.Item2}),bypassRoute=bypassRoute.Select(p=>new{x=p.Item1,y=p.Item2}),placements,nativeProof=story==null?"Shell: native acceptance recorded separately; no quest binding/navmesh":"Story candidate: native actor loading, alias binding, pickups, guides, peaceful choices, bypass and handoff UNVERIFIED; no navmesh/pursuit/combat proof"},new JsonSerializerOptions{WriteIndented=true}));
 if(story!=null)File.WriteAllText(Path.Combine(output,"world-story.json"),JsonSerializer.Serialize(new{sourcePlugin=Path.GetFileName(args[3]),sourceSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(args[3]))),masters=read.ModHeader.MasterReferences.Select(m=>m.Master.ToString()),wiring=story,runtimeRequirement="Reviewed 7f3 departure runtime plus this candidate's exterior Guide and WorldEntry scripts; ESP hash alone does not establish script version"},new JsonSerializerOptions{WriteIndented=true}));
+if(expansion!=null)File.WriteAllText(Path.Combine(output,"world-expansion.json"),JsonSerializer.Serialize(expansion,new JsonSerializerOptions{WriteIndented=true}));
+if(expansion!=null)File.WriteAllText(Path.Combine(output,"world-clearance.json"),JsonSerializer.Serialize(new{method="Actual transformed ObjectBounds AABBs, player-height0..128; sampled every1/100segment; not Havok/navmesh proof",routeRadius=96,standingRadius=128,protectedPoints,obstacles=routeObstacles.Select(p=>new{id=p.Id,minX=p.MinX,maxX=p.MaxX,minY=p.MinY,maxY=p.MaxY})},new JsonSerializerOptions{WriteIndented=true}));
 Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;
