@@ -322,7 +322,7 @@
    "entry": false,
    "priority": 0,
    "when": [],
-   "text": "That is Captain Blevins's final warning. When his firing preparations are finished, he turns the key with eleven people below. Start the rescue, stop his firing, or tell me you're leaving it to him.",
+   "text": "Captain Blevins is making ready to fire. When his preparations are finished, he turns the key with eleven people below. Start the rescue or stop him before then.",
    "buttons": [
     {
      "label": "Start the rescue. Lower the cage.",

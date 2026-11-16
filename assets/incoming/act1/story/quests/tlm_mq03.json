@@ -18,7 +18,7 @@
   {"n": 22, "set_by": "Being beaten at the shooting line", "log": "Edda Flint drove her nail. You did not. She did not gloat, which was worse."},
   {"n": 40, "set_by": "The courier reaching the long table. Armed only after the player has arrived on the camp-ground and been given the fair's choices; never fired from an unvisited map", "log": "A courier came across the meadow at a dead run with a tin case on her wrist. She was three steps from Pritchard when the shot came off the meeting shed roof."},
   {"n": 41, "set_by": "The button '(Search the roof and landing)'", "log": "You searched the meeting-shed roof and the river landing for the shooter's trail. A skiff was already pulling away in the distance."},
-  {"n": 42, "set_by": "The button '(Stay with the courier)'", "log": "You stayed with her. She said: lights on Blackstone ridge. Trains on the dead line. Then a number, twice, and nothing else."},
+  {"n": 42, "set_by": "The button '(Stay with the courier)'", "log": "You chose to stay with the courier. What she can tell you depends on whether she is still alive to speak."},
   {"n": 43, "set_by": "Brigg accepting those limits after the public exchange, not merely the player's first click.", "log": "The delegates and local witnesses backed the Decoration Day truce. Brigg accepted a limited search instead of taking the camp-ground."},
   {"n": 44, "set_by": "The button '(Take the case and go)'", "log": "You cut the case off her wrist and went out through the burying ground while everybody was looking at the roof."},
   {"n": 50, "set_by": "Reaching the bell-rail on the meeting shed roof", "log": "One empty case, silver, standing on end on the bell-rail where it would be found. Edda Flint was already there. She put it on her string."},
@@ -34,8 +34,8 @@
  ],
  "choices": [
   {"at": 40, "options": [
-   {"label": "(Search the roof and landing)", "sets": 41, "now": "A silver case on the bell-rail and evidence of a prepared escape. No promised chance to catch or kill a target who is made invulnerable.", "later": "You have useful observations of the route. Flint is willing to compare evidence. The crowd is left to Brigg."},
-   {"label": "(Stay with the courier)", "sets": 42, "now": "You hear her last words and keep the case out of other hands", "later": "You alone know the number she carried in her head as well as on paper. The shooter is a rumour"},
+   {"label": "(Search the roof and landing)", "sets": 41, "now": "A silver case on the bell-rail and evidence of a prepared escape. No promised chance to catch or kill a target who is made invulnerable.", "later": "You have useful observations of the route. Flint can compare evidence if alive and available. Who can manage the crowd depends on the surviving cast; no dead Brigg is assigned that job."},
+   {"label": "(Stay with the courier)", "sets": 42, "now": "You choose to stay with the living courier. Only words actually delivered grant spoken knowledge; choosing this course is not proof that they were heard.", "later": "Any last words you actually heard are a lead. The number can also be learned from the case; no exclusive knowledge is granted merely by choosing to stay."},
    {"label": "(Call the delegates to uphold the truce)", "now": "The player asks living delegates and local officers to challenge Brigg's occupation claim in public. The supporting dialogue is shown; this is not a body-block against automatic rifles.", "later": "Brigg accepts a limited local search under public witnesses and holds back the occupation. The truce, not the player's immunity to bullets, is the reason."},
    {"label": "(Take the case and go)", "sets": 44, "now": "You have the case and nobody knows it", "later": "Every flag wants what you carry. You can sell it, read it or burn it. Pritchard learns who took it"}
   ]}
@@ -64,11 +64,12 @@
  "open_questions": [
   "Resolved 2026-11-16: the assassin is a distant departing figure only; no close cameo, no name, and no chase that cannot be won (decisions 4 and 21).",
   "Resolved 2026-11-16: every recognition cue is deferred (decision 5).",
-  "Resolved by packet 2: the truce is called for in public and spoken by the living; Brigg's order is a line of his own; stage 43 is his concession, not the player's click.",
-  "Open, returned for review: the truce is offered only when Whitcomb, Belden and Grey are all alive and either Pritchard or Talbot is. With any of them dead the other three courses remain and the truce is not offered. What a truce with fewer voices looks like is not written.",
-  "Open, returned for review: with Brigg dead there is no order and so no line that carries the three remaining courses. The format has no narrator to carry them.",
-  "Unresolved runtime mapping: brigg_demand has to be put on the screen after the shot. In this format a boxed line is said only when its speaker is spoken to.",
-  "Unresolved: 'present' cannot be asked. A condition can ask whether a person is alive, not whether they are on the camp-ground.",
-  "WITHHELD: packet 2's text for whitcomb_rates uses the word 'charter', which no line of Act I may use. The line is as it was."
+  "Resolved by packets 2 and 3: the truce is called for in public and spoken by the living; Brigg says his concession before anything is recorded, and stage 43 is set only by the Continue under it.",
+  "KEPT by packet 3, not a question: the truce needs all three living delegates and one living local officer. With one of them dead it is not offered and the other courses remain.",
+  "Resolved by packet 3: with Brigg dead the remaining courses are carried by Pritchard, else Talbot, else Flint, by who is alive. With the courier dead, staying with her is not offered by anyone.",
+  "Runtime gate: with Brigg, Pritchard, Talbot and Flint all dead no line carries the courses and none is taken. In this source the quest then completes only through Pritchard's reading of the case, so getting at the case itself is a matter for the game.",
+  "Runtime gate: the courier's order, the fallback menus and Brigg's order are said only when their speaker is spoken to. Putting one on the screen after the shot needs a scene.",
+  "Runtime gate: a condition can ask whether a person is alive, not whether they are on the camp-ground.",
+  "Runtime gate: the flag courier_heard has to follow the courier's words actually being delivered, not the choice to stay."
  ]
 }

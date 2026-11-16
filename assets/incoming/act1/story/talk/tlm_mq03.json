@@ -58,7 +58,7 @@
    "entry": false,
    "priority": 0,
    "when": [],
-   "text": "The carriers do, by vote, one wagon one voice. Nell Fenwick yonder voted against me twice and for me once, and I count that a landslide. It's slow. It's loud. Nobody gets shot for losing.",
+   "text": "Carriers in the Compact vote on a shared rate. Nell Fenwick voted against me twice and for me once. Others want to set their own rates. Leaving an agreement mustn't cost them the right to use the road.",
    "sources": []
   },
   {
@@ -102,11 +102,11 @@
      "then": "brigg_quill"
     },
     {
-     "label": "(Move on)"
-    },
-    {
      "label": "Do all your Wardens agree?",
      "then": "brigg_dissent"
+    },
+    {
+     "label": "(Move on)"
     }
    ],
    "sources": []
@@ -172,11 +172,11 @@
      "then": "belden_leave"
     },
     {
-     "label": "(Move on)"
-    },
-    {
      "label": "Who argues against your office?",
      "then": "belden_dissent"
+    },
+    {
+     "label": "(Move on)"
     }
    ],
    "sources": []
@@ -242,11 +242,11 @@
      "then": "grey_train"
     },
     {
-     "label": "(Move on)"
-    },
-    {
      "label": "Do your engineers agree?",
      "then": "grey_dissent"
+    },
+    {
+     "label": "(Move on)"
     }
    ],
    "sources": []
@@ -376,7 +376,8 @@
    "priority": 90,
    "when": [
     "mq03 done 42",
-    "mq03 notdone 100"
+    "mq03 notdone 100",
+    "alive threefords"
    ],
    "text": "Not you. Pritchard. ...No time. Listen. Lights on Blackstone ridge, every night, where there's no town. Trains on the dead line. They stop there. And a number. Learn it, I had to. Four, one, one, seven. Four, one, one, seven.",
    "sources": []
@@ -493,11 +494,13 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
     "alive grey",
-    "alive pritchard"
+    "alive pritchard",
+    "alive threefords"
    ],
    "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
    "buttons": [
@@ -527,6 +530,48 @@
    "sources": []
   },
   {
+   "id": "brigg_demand_courier_dead",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": true,
+   "priority": 59,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive pritchard",
+    "dead threefords"
+   ],
+   "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Call the delegates to uphold the truce)",
+     "then": "whitcomb_truce"
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
    "id": "brigg_demand_talbot",
    "speaker": "brigg",
    "status": "new",
@@ -539,12 +584,14 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
     "alive grey",
     "dead pritchard",
-    "alive talbot"
+    "alive talbot",
+    "alive threefords"
    ],
    "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
    "buttons": [
@@ -574,6 +621,49 @@
    "sources": []
   },
   {
+   "id": "brigg_demand_talbot_courier_dead",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": true,
+   "priority": 58,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "dead pritchard",
+    "alive talbot",
+    "dead threefords"
+   ],
+   "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Call the delegates to uphold the truce)",
+     "then": "whitcomb_truce_talbot"
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
    "id": "brigg_demand_no_whitcomb",
    "speaker": "brigg",
    "status": "new",
@@ -586,8 +676,10 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
-    "dead whitcomb"
+    "dead whitcomb",
+    "alive threefords"
    ],
    "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
    "buttons": [
@@ -601,6 +693,41 @@
      "label": "(Stay with the courier)",
      "do": [
       "mq03 set 42"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "brigg_demand_no_whitcomb_courier_dead",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": true,
+   "priority": 57,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "dead whitcomb",
+    "dead threefords"
+   ],
+   "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
      ]
     },
     {
@@ -625,9 +752,11 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
-    "dead belden"
+    "dead belden",
+    "alive threefords"
    ],
    "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
    "buttons": [
@@ -641,6 +770,42 @@
      "label": "(Stay with the courier)",
      "do": [
       "mq03 set 42"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "brigg_demand_no_belden_courier_dead",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": true,
+   "priority": 56,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "alive whitcomb",
+    "dead belden",
+    "dead threefords"
+   ],
+   "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
      ]
     },
     {
@@ -665,10 +830,12 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
-    "dead grey"
+    "dead grey",
+    "alive threefords"
    ],
    "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
    "buttons": [
@@ -682,6 +849,43 @@
      "label": "(Stay with the courier)",
      "do": [
       "mq03 set 42"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "brigg_demand_no_grey_courier_dead",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": true,
+   "priority": 55,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "dead grey",
+    "dead threefords"
+   ],
+   "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
      ]
     },
     {
@@ -706,12 +910,14 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
     "alive grey",
     "dead pritchard",
-    "dead talbot"
+    "dead talbot",
+    "alive threefords"
    ],
    "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
    "buttons": [
@@ -737,6 +943,45 @@
    "sources": []
   },
   {
+   "id": "brigg_demand_no_officer_courier_dead",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": true,
+   "priority": 54,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "dead pritchard",
+    "dead talbot",
+    "dead threefords"
+   ],
+   "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
    "id": "whitcomb_truce",
    "speaker": "whitcomb",
    "status": "new",
@@ -749,6 +994,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -777,6 +1023,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -805,6 +1052,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -833,6 +1081,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -843,10 +1092,7 @@
    "buttons": [
     {
      "label": "Continue",
-     "do": [
-      "mq03 set 43"
-     ],
-     "then": "brigg_rifles"
+     "then": "brigg_truce_concession_pritchard"
     }
    ],
    "sources": []
@@ -864,6 +1110,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -893,6 +1140,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -922,6 +1170,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -951,6 +1200,7 @@
     "mq03 notdone 43",
     "mq03 notdone 44",
     "mq03 notdone 70",
+    "mq03 notdone 100",
     "alive brigg",
     "alive whitcomb",
     "alive belden",
@@ -962,10 +1212,306 @@
    "buttons": [
     {
      "label": "Continue",
+     "then": "brigg_truce_concession_talbot"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "brigg_truce_concession_pritchard",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive pritchard"
+   ],
+   "text": "I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+   "buttons": [
+    {
+     "label": "Continue",
      "do": [
       "mq03 set 43"
      ],
      "then": "brigg_rifles"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "brigg_truce_concession_talbot",
+   "speaker": "brigg",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "dead pritchard",
+    "alive talbot"
+   ],
+   "text": "I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+   "buttons": [
+    {
+     "label": "Continue",
+     "do": [
+      "mq03 set 43"
+     ],
+     "then": "brigg_rifles"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_courier_no_brigg_living",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 75,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "dead brigg",
+    "alive pritchard",
+    "alive threefords"
+   ],
+   "text": "The courier is down. Keep the case from the crowd. We need someone on the roof and someone with her. Say what you'll do.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Stay with the courier)",
+     "do": [
+      "mq03 set 42"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_courier_no_brigg_dead",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 74,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "dead brigg",
+    "alive pritchard",
+    "dead threefords"
+   ],
+   "text": "The courier is dead. Keep the case from the crowd. Someone should search the roof and landing. Say whether you'll look or take the case out of the crush.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "talbot_courier_no_brigg_living",
+   "speaker": "talbot",
+   "status": "new",
+   "entry": true,
+   "priority": 75,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "dead brigg",
+    "alive talbot",
+    "dead pritchard",
+    "alive threefords"
+   ],
+   "text": "The courier's down. I can keep people back, not do three jobs at once. Somebody stay with her, somebody find the shot, somebody keep that case safe. Choose.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Stay with the courier)",
+     "do": [
+      "mq03 set 42"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "talbot_courier_no_brigg_dead",
+   "speaker": "talbot",
+   "status": "new",
+   "entry": true,
+   "priority": 74,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "dead brigg",
+    "alive talbot",
+    "dead pritchard",
+    "dead threefords"
+   ],
+   "text": "The courier is dead. I can keep people back. You can search the roof and landing, or get the case out of the crush.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "flint_courier_no_brigg_living",
+   "speaker": "flint",
+   "status": "new",
+   "entry": true,
+   "priority": 75,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "dead brigg",
+    "alive flint",
+    "dead pritchard",
+    "dead talbot",
+    "alive threefords"
+   ],
+   "text": "The shot came from the roof. Her case is still on her wrist. Help her, take it out of the crush, or come look at the landing. I'm not spending another minute guessing.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Stay with the courier)",
+     "do": [
+      "mq03 set 42"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "flint_courier_no_brigg_dead",
+   "speaker": "flint",
+   "status": "new",
+   "entry": true,
+   "priority": 74,
+   "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "mq03 notdone 100",
+    "dead brigg",
+    "alive flint",
+    "dead pritchard",
+    "dead talbot",
+    "dead threefords"
+   ],
+   "text": "The courier is dead. The shot came from the roof. Search the landing, or take her case out of the crush. Standing here won't tell us who fired.",
+   "buttons": [
+    {
+     "label": "(Search the roof and landing)",
+     "do": [
+      "mq03 set 41"
+     ]
+    },
+    {
+     "label": "(Take the case and go)",
+     "do": [
+      "mq03 set 44"
+     ]
     }
    ],
    "sources": []

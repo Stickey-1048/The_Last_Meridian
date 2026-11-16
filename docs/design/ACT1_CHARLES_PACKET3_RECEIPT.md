@@ -68,3 +68,125 @@ Intended changes, by area:
 | `docs/design/ACT1_CHARLES_REVISION_CHECKS.py` | Packet 3 in the order of precedence; the new chain; the new guards; the withheld exception removed |
 | `tools/test_story_intake_v2.py` | The histories the order lists, added to the 54 |
 | Ledgers | A complete final entry ledger and a node-by-node change ledger against the integration commit |
+
+Sections 1 to 6 above were committed as `0f8d5d2` before any source or story file was changed. What follows was added afterwards.
+
+## 7. What was done
+
+Packet 3 is applied in full. No supplied line is withheld and none is altered.
+
+| Part of the packet | Applied as |
+|---|---|
+| 23 text replacements | All 23, character for character: 17 lines of talk, 5 quest fields, 1 character note |
+| 12 new lines | All 12, whole: speaker, `entry`, conditions, text and buttons exactly as supplied. I added only a priority |
+| Routing: open-road reports | The link "Discuss a road account." appended to all seven open-roads lines, after their road buttons. The eight evidence-split menus and their six leaves are kept |
+| Routing: the truce | `pritchard_truce` and `talbot_truce` now lead, with no effect, to Brigg's concession for that officer. **Stage 43 is recorded in two places only, both Brigg's: the Continue under each concession** |
+| Routing: Brigg dead | Six fallback menus, Pritchard, then Talbot, then Flint by who is alive, each in a living-courier and a dead-courier form |
+| Routing: the courier | Brigg's six existing menus now ask for a living courier. Six copies ask for a dead one and have no button to stay with her. `threefords_dying` needs her alive |
+| Routing: completion | `mq03 notdone 100` on all twelve of Brigg's menus and all eight lines of the two truce chains. The supplied concessions and fallbacks already carry it |
+| Routing: fidelity | `pruitt_ran` only from a living Rafferty; `pritchard_after_rope` only from a living Pritchard after the chosen hanging |
+| Routing: dissent order | On `belden_offer`, `brigg_offer` and `grey_offer` the dissent question is third and "(Move on)" last |
+
+Talk is now 227 lines: 129 entries, 86 continuations, 12 asides. It was 209. Seventy-four nodes changed: 23 supplied values, 18 lines added, 29 changes of conditions or buttons, 4 lists of open questions. Each is in [the change ledger](ACT1_CHARLES_PACKET3_CHANGES.md). Every line's `entry`, priority and conditions are in [the complete entry ledger](ACT1_CHARLES_PACKET3_ENTRY_LEDGER.md), which replaces the packet 2 ledger as the current one.
+
+**Priorities.** No existing number was changed. Twelve are new:
+
+| Lines | Priority | Why |
+|---|---|---|
+| Pritchard's two fallbacks | 75, 74 | Above anything else he would say while the courier's fate is open (66 at most), below the porch at 85 |
+| Talbot's two | 75, 74 | Above his only other conditional greeting (30) |
+| Flint's two | 75, 74 | Above her lines at the shooting match (50, 60), below the roof at 80 |
+| Brigg's six dead-courier menus | 59 to 54 | Directly under his six living-courier menus at 65 to 60, which keep their numbers |
+
+**Sam's three repairs are kept as they were**: the selector's implicit Continue and index check, the bounded walks in the focused check with their two messages, and the full guards on the truce. His seven tests are kept; one had its expected result updated, because the officer's button now leads to the concession and no longer records 43.
+
+**Checks and tests brought up to packet 3**
+
+- `docs/design/ACT1_CHARLES_REVISION_CHECKS.py`: packet 3's hash; packet 3 last in the order of precedence; each of the 12 new lines compared whole with the packet; a check that every one of the 23 replacements is looked at by something; the open-roads link; the chain through the concession; the twelve menus and six fallbacks; completion; the living only. The exception that held `whitcomb_rates` back is removed, and the line is now expected to be packet 3's. Ten more histories.
+- `tools/test_story_intake_v2.py`: 20 tests added, 74 in all.
+
+**A defect of my own, found and fixed before returning.** While trying the focused check against damaged copies of the folder, one copy made it crash instead of report: a walk I had just extended read the next line's name without asking whether there was a next line. That is the same kind of fault Sam found last time. It is fixed, and the same damaged copy now produces a report.
+
+## 8. Packet 3, item by item
+
+| # | Disposition | What I did |
+|---|---|---|
+| 1 | REPLACE `whitcomb_rates` | APPLIED. The line no longer says "yonder" and the check fails if it does |
+| 2 | ADD the report link | APPLIED to all seven, with the dispatcher and three leaves. None has an effect or asks for evidence |
+| 3 | REPLACE six report texts | APPLIED |
+| 4 | REPLACE the open-roads header | APPLIED to all seven |
+| 5 | KEEP the full-quorum truce | KEPT. Not returned as a question. The quest file records it as a decision |
+| 6 | ADD fallbacks, with a return gate | APPLIED. The gate is in section 10 |
+| 7 | REPLACE the fraction | APPLIED: Rafferty's line and the consequence text. The pilot rule stays in `cannot_break` as the packet says |
+| 8 | REPLACE the rope reply | APPLIED, with the living-Pritchard guard |
+| 9 | REPLACE Roark's warning, with a runtime gate | APPLIED. Stage 30 is still set only by her two confirming buttons |
+| 10 | REORDER dissent | APPLIED |
+| 11 | REPLACE Pritchard's note | APPLIED |
+| 12 | KEEP the `Continue` labels and repair the flow | KEPT and APPLIED. Eleven such buttons now: the nine, and the two under the concessions |
+
+## 9. What was run
+
+On the final files, in the cloud session. **Source checks and a stand-in selector. Not a compile, not a game test, and no proof of a playable quest, an inventory, a scene or a timer.**
+
+| Check | Result |
+|---|---|
+| SHA-256 of the four packets and the contract (line endings as LF) | All five match |
+| `python3 tools/check_story_intake.py --strict assets/incoming/act1/story` | Pass: 16 files, 6 quest files, 227 lines of talk |
+| `python3 tools/check_story_intake.py --self-test docs/design/story_intake_example` | Pass, unchanged: 132 kinds of damage caught, 21 sound folders passed |
+| `python3 tools/check_story_intake.py --strict --self-test docs/design/story_intake_example_v2` | Pass: 92 kinds of damage caught, 21 sound folders passed |
+| `python3 tools/test_story_intake_v2.py` | 74 tests, all pass |
+| `python3 docs/design/ACT1_CHARLES_REVISION_CHECKS.py` | Pass. 33 histories through the selector |
+| `python3 tools/check_consistency.py`, `python3 tools/gen_matrix_cases.py --check` | No problems; 53 matrix cases as before |
+| The focused check and the two story test classes against 20 damaged copies of the folder | The focused check refused all 20, each for its own reason, without crashing. The tests failed on 19; the twentieth, a character note put back, is a value only the focused check compares. The undamaged copy passes both. Done by hand in this session; the copies are not committed |
+
+The four commands `tools/run_checks.sh` uses as hard gates for this source (its lines 46 and 49 to 51) were run exactly as written there and pass. **The script as a whole was not run here**: it stops earlier on this machine for want of PowerShell. The remote run on the pushed commit is the place it runs entire, and I have not seen that result.
+
+What the 20 new tests cover, against the order:
+
+- Both truce paths, with the courier alive and dead, reach Brigg's concession with stage 43 unset, show his supplied words, and record 43 only on the Continue beneath.
+- At the concession: each of the five required people killed in turn, and each of 41, 42, 43, 44, 70 and 100 set in turn. No effect, no reply, no false acknowledgement afterwards.
+- The same for every one of the ten lines of the two chains, and for every one of the eighteen course menus, each tried in a state built from its own conditions. A menu written for somebody dead is also tried with them alive.
+- Every course menu does record its course while its conditions hold, and none records 43 or 70.
+- Completion blocks every one of the 28 active courier and truce sources.
+- A dead courier: no menu offers to stay; her last words cannot be said; exactly one carrier offers the courses in each cast tried.
+- Brigg dead: Pritchard, then Talbot, then Flint; nobody else; no truce. All four dead: nobody, and nothing recorded.
+- All seven open-road contexts, reached both by a refusal and by a report, with and without evidence flags: the right road buttons, the link, the dispatcher, three leaves, and no change to stages, flags or caps.
+- Learned payment evidence against the review copy in hand; `whitcomb_rates`; no fraction and no dead pilot; the rope reply; the dissent order.
+
+## 10. Runtime gates that remain
+
+This source cannot express these. None is implemented or claimed, and none is a request for writing.
+
+1. **The case when every carrier is dead.** With Brigg, Pritchard, Talbot and Flint dead, no line offers a course and none is taken. In source, stage 100 of the fair is then set only by Pritchard's reading of the case, and stage 60 has no source setter at all. How the player gets at the case is for the game.
+2. **Presence.** A condition asks whether someone is alive, never whether they are there. Every fallback, every voice in the truce, Belden's wagon and Nell's aside are wired on life alone.
+3. **Putting a line on the screen.** Brigg's order and each fallback menu are greetings: they are said when their speaker is spoken to. Showing one after the shot, before anything else can be chosen, needs a scene.
+4. **Order and atomicity in the game.** In source the concession is read before its Continue records 43, and a failed target does not undo an effect. Whether the game shows the words before committing is not shown by anything here.
+5. **Flags.** Nothing in the format sets one. Twenty are read. `docket_2298_held` must follow what is carried; the `silver_` flags mean something learned; `courier_heard` must follow the courier's words being delivered, not the choice to stay.
+6. **The review copy.** Stage 16 is set from the hub's talk for a quest that may not have begun, and handing over a document is not something the format does.
+7. **The mine.** A visible warning, the timer, its behaviour in menus and when unloaded, and a living Captain. No number of minutes exists.
+8. **The occupation.** Stage 70 has no source setter.
+9. **The Chute.** What is lost depends on the route and the pilot. Only the living-or-dead rule exists, in prose.
+10. **Asides** have no rule for when they are shown. **Food, caps and cargo** are words. **The duel, the engine, the rope shot and the crowd** are untested ideas.
+
+## 11. For the reviewers
+
+Things I decided that the packet did not spell out:
+
+1. **The six dead-courier menus** are copies named `<line>_courier_dead`. The six existing ids keep the living-courier form. Both forms of `brigg_demand` and `brigg_demand_talbot` keep the truce button.
+2. **`brigg_rifles` does not ask `mq03 notdone 100`.** It has no button, so it is not a source, and the order says to keep its guards those of the committed state.
+3. **`threefords_default` is unchanged.** Only `threefords_dying` was named for the living-courier guard.
+4. **`talk/tlm_mq03.json` is written back in the layout of the other talk files**, so its diff is larger than its changes.
+5. **One state the source cannot reach but does not exclude**: if stage 100 of the hub were ever set without 50 or 60, Pritchard would offer the first, pre-fair choice of roads again. No button here does that. I found it by setting a test up wrongly and did not add a guard nobody asked for.
+6. **The flag `courier_heard`** still means "heard the courier's last words". Packet 3 says choosing to stay is not hearing; the flag's meaning already fits, and what sets it is gate 5.
+
+## 12. Files
+
+Changed: `docs/design/ACT1_CHARLES_REVISION_CHECKS.py`, `tools/test_story_intake_v2.py`, `tools/README.md`, `assets/incoming/act1/PROVENANCE.md`; under `assets/incoming/act1/story/`: `OVERVIEW.md`, `QUESTIONS_FOR_OWNER.md`, `README.md`, `characters.json`, four quest files (`tlm_mq02.json`, `tlm_mq02b.json`, `tlm_mq03.json`, `tlm_mq04.json`) and five talk files (`tlm_mq02.json`, `tlm_mq02b.json`, `tlm_mq02c.json`, `tlm_mq03.json`, `tlm_mq04.json`).
+
+Added: `docs/design/ACT1_CHARLES_PACKET3_RECEIPT.md` (this file), `ACT1_CHARLES_PACKET3_ENTRY_LEDGER.md`, `ACT1_CHARLES_PACKET3_CHANGES.md`.
+
+Not changed: the four packets, the contract, the orders, the repair review, the canonical decisions, `CANON.md`, the naming registry, both worked examples, `tools/check_story_intake.py`, `tools/story_intake_select.py`, `tools/run_checks.sh`, the workflow, `.gitattributes`, the earlier receipts and ledgers, `documents.json`, `RESEARCH.md`, every Papyrus script, the logic model, the builders, and anything installed.
+
+## 13. Handoff
+
+Charles to Maya, Iris, Nora and Sam. A revised proposal in source. Not accepted, not built, not playable. The branch and commit are in the delivery message and in `git log`.

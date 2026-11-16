@@ -4,6 +4,8 @@
 
 **16 November, after packet 2:** writing closure packet 2 has been applied and the talk moved to the second format. One supplied line is withheld. What was done, what was run and what is still open: [the packet 2 receipt](../../../../docs/design/ACT1_CHARLES_PACKET2_RECEIPT.md). Still a proposal awaiting acceptance; nothing is built from it.
 
+**16 November, after packet 3:** writing closure packet 3 has been applied in full, with the three reviewed source repairs kept. No supplied line is withheld. What was done, what was run and which runtime gates remain: [the packet 3 receipt](../../../../docs/design/ACT1_CHARLES_PACKET3_RECEIPT.md). Still a proposal awaiting acceptance; nothing is built from it.
+
 Characters, quests, talk and papers written outside the repository. The format is
 [docs/design/STORY_INTAKE.md](../../../../docs/design/STORY_INTAKE.md); a worked example is in
 `docs/design/story_intake_example/`.
@@ -19,7 +21,7 @@ Written in a Claude Code session at the owner's request, not by the usual writin
 
 - `characters.json`: 26 people (7 of the plugin's, 19 it does not have). Four display names changed; ids kept.
 - `quests/`: six quests (`mq02`, `mq02a`, `mq02b`, `mq02c`, `mq03`, `mq04`), 82 stages, 40 new flags.
-- `talk/`: 209 lines in seven files, in the second talk format (`tlm-talk-2`).
+- `talk/`: 227 lines in seven files, in the second talk format (`tlm-talk-2`).
 - `documents.json`: 23 papers.
 - `RESEARCH.md`: nine rows, unchanged; the six REAL rows are from web search summaries read on 2026-11-16, not from the full pages, and are not verified.
 
