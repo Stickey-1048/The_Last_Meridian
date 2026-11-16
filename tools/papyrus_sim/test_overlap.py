@@ -75,9 +75,10 @@ def scripts_with_the_old_quest(test):
     return scripts_with_the_quest_at(BEFORE_THE_GUARDS, test)
 
 
-def scripts_without(test, name, old, new):
+def scripts_without(test, name, old, new, base=None):
     """The scripts as they are, with one of the later fixes taken out again."""
-    text = (SCRIPTS / "MQ01Quest.psc").read_text()
+    folder = scripts_with_the_quest_at(base, test) if base else SCRIPTS
+    text = (folder / "MQ01Quest.psc").read_text()
     test.assertEqual(text.count(old), 1, "the text of the fix '%s' is no longer in MQ01Quest.psc; bring this test up to date" % name)
     return scripts_with_quest(text.replace(old, new), name)
 
@@ -354,10 +355,14 @@ class Shaken(unittest.TestCase):
 
     def test_the_count_of_handlers_at_work_has_to_be_read_last(self):
         need_build(self)
+        # Preserve the historical regression proof. The new acknowledgment
+        # checks also guard promotion, masking this single removed guard in
+        # current end-state tests; current barrier behavior is tested directly
+        # in test_death_ack, and current unmutated schedules above still pass.
         scripts = scripts_without(
             self, "the count read last",
             "((Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun) || resolutionsAtWork > aiMine)",
-            "(resolutionsAtWork > aiMine || (Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun))")
+            "(resolutionsAtWork > aiMine || (Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun))", base="f26e5be")
         self.assertGreater(self.wrong(self.leaving_and_the_gate, scripts, range(60), range(-6, 13)), 0,
                            "taking this fix out changed nothing in these shakes: this test would not notice it missing")
 
@@ -366,7 +371,7 @@ class Shaken(unittest.TestCase):
         scripts = scripts_without(
             self, "the second wait in the town stage",
             "\tWaitForResolutions(0)\n\tMoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown)",
-            "\tMoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown)")
+            "\tMoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown)", base="f26e5be")
         self.assertGreater(self.wrong(self.leaving_and_the_gate, scripts, range(10), range(-6, 13)), 0,
                            "taking this fix out changed nothing in these shakes: this test would not notice it missing")
 
@@ -378,7 +383,7 @@ class Shaken(unittest.TestCase):
             "\t\t; Another resolution claimed the encounter while the outcome was being\n"
             "\t\t; read just now. It writes its outcome when it gets there; this one\n"
             "\t\t; has to write after it.\n"
-            "\t\tWaitForResolutions(1)\n"
+            "\t\tIf !WaitForResolutions(1)\n\t\t\tbetrayalDeferred = true\n\t\t\tReturn\n\t\tEndIf\n"
             "\tEndIf\n",
             "")
         self.assertGreater(self.wrong(self.a_betrayal_and_the_timer, scripts, range(200), range(0, 13)), 0,
