@@ -1,0 +1,464 @@
+{
+ "format": "tlm-talk-1",
+ "quest": "TLM_MQ03",
+ "lines": [
+  {
+   "id": "pritchard_fair",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 50,
+   "when": [
+    "mq03 done 10",
+    "mq03 notdone 40"
+   ],
+   "text": "Forty years. Not one gun drawn on this ground on Decoration Day, and I've buried men who wanted to. Eat something. Shoot for the beef if you must. Then go and let each of those four lie to you. I want to know which does it best.",
+   "sources": []
+  },
+  {
+   "id": "whitcomb_default",
+   "speaker": "whitcomb",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Clara Whitcomb, for the Compact. If you've freight to move, I'm listening. If you've a grievance, I'm listening with my other ear.",
+   "sources": []
+  },
+  {
+   "id": "whitcomb_offer",
+   "speaker": "whitcomb",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq03 done 10",
+    "mq03 notdone 40"
+   ],
+   "text": "Clara Whitcomb, for the Compact. You're the one from the wreck; I'd know you by the ballad. Here's my whole pitch, no charge: open roads, posted rates, and nobody's leave to ask. Now what am I bid?",
+   "buttons": [
+    {
+     "label": "Who sets the rates?",
+     "then": "whitcomb_rates"
+    },
+    {
+     "label": "And when a big buyer undercuts?",
+     "then": "whitcomb_big"
+    },
+    {
+     "label": "(Move on)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "whitcomb_rates",
+   "speaker": "whitcomb",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "The carriers do, by vote, one wagon one voice. Nell Fenwick yonder voted against me twice and for me once, and I count that a landslide. It's slow. It's loud. Nobody gets shot for losing.",
+   "sources": []
+  },
+  {
+   "id": "whitcomb_big",
+   "speaker": "whitcomb",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "...You've been talking to Nell. Then the small sell out, one bad season at a time, to people in my own Compact who smile just the way I do. I know it. I haven't a rule for it yet. I'd sooner tell you that than sell you a pig in a sack.",
+   "sources": []
+  },
+  {
+   "id": "brigg_default",
+   "speaker": "brigg",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "State your business and your arms. In that order.",
+   "sources": []
+  },
+  {
+   "id": "brigg_offer",
+   "speaker": "brigg",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq03 done 10",
+    "mq03 notdone 40"
+   ],
+   "text": "Colonel Brigg. You are the armed party who came down from the wreck. You have been of use to Sergeant Pritchard; I note it. The Dominion offers one thing: a road you may walk at night. Everything else people say they want comes after.",
+   "buttons": [
+    {
+     "label": "At what price?",
+     "then": "brigg_price"
+    },
+    {
+     "label": "Your judge hangs men from a wagon.",
+     "then": "brigg_quill"
+    },
+    {
+     "label": "(Move on)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "brigg_price",
+   "speaker": "brigg",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "A gate at each gap. A levy by the head and the wheel. Arms registered, militias under one command, mine. People call that a price. In ten years they call it the way things have always been.",
+   "sources": []
+  },
+  {
+   "id": "brigg_quill",
+   "speaker": "brigg",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Judge Quill hangs road-agents after a hearing, at noon, in public. Before there was a gate at the gap they were hanged by whoever caught them, or not at all. Tell me which you prefer and I will tell you what you are.",
+   "sources": []
+  },
+  {
+   "id": "belden_default",
+   "speaker": "belden",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Tomas Belden, friend, Commonwealth provisioning. You'll take a bowl. We insist.",
+   "sources": []
+  },
+  {
+   "id": "belden_offer",
+   "speaker": "belden",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq03 done 10",
+    "mq03 notdone 40"
+   ],
+   "text": "Tomas Belden, friend, and you'll take a bowl before we talk, we insist. There. Nobody goes hungry in a Commonwealth town. One list, one store, every pantry in it and every mouth on it. We look after our own.",
+   "buttons": [
+    {
+     "label": "Who keeps the list?",
+     "then": "belden_list"
+    },
+    {
+     "label": "And if a town wants off the list?",
+     "then": "belden_leave"
+    },
+    {
+     "label": "(Move on)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "belden_list",
+   "speaker": "belden",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "The committee, friend. And who sits on the committee? Why, people who have shown they can be trusted with a list. It goes round and round very nicely. More soup?",
+   "sources": []
+  },
+  {
+   "id": "belden_leave",
+   "speaker": "belden",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Off? Well now. I can't recall that it has come up. I should have to take it to the committee. Folks who have eaten at one table three winters don't generally ask where the door is. Have you noticed that? We have.",
+   "sources": []
+  },
+  {
+   "id": "grey_default",
+   "speaker": "grey",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Grey. I am measuring. Please do not stand in the line of sight.",
+   "sources": []
+  },
+  {
+   "id": "grey_offer",
+   "speaker": "grey",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq03 done 10",
+    "mq03 notdone 40"
+   ],
+   "text": "Grey. I survey. Your reservoir stands at a head of two hundred and six feet and nobody has drawn a watt from it in two centuries. Untidy. The Directorate could light this valley in a year. You came off the morning train. How is your memory?",
+   "buttons": [
+    {
+     "label": "What would the light cost?",
+     "then": "grey_cost"
+    },
+    {
+     "label": "What do you know about that train?",
+     "then": "grey_train"
+    },
+    {
+     "label": "(Move on)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "grey_cost",
+   "speaker": "grey",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Access. A hill for my instruments, the right to read what they read, and your patience when I tell you what will happen next and am correct. People find the last part hardest. They prefer to be surprised.",
+   "sources": []
+  },
+  {
+   "id": "grey_train",
+   "speaker": "grey",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "It left Iron Junction eleven minutes late with a cracked draw-bar and one passenger nobody had sold a ticket to. It was always going to come off at the river. I was not asked to prevent it. ...You truly do not recall. How interesting.",
+   "sources": []
+  },
+  {
+   "id": "pike_line",
+   "speaker": "pike",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq03 done 10",
+    "mq03 notdone 40",
+    "mq03 notdone 20"
+   ],
+   "text": "Beef shoot. A share of the steer is four caps. One ball, sixty paces, closest to the cross takes the hind quarter. I measure. I don't argue. The one to beat is the long drink of water with the beaded scabbard.",
+   "buttons": [
+    {
+     "label": "I'm in.",
+     "do": [
+      "mq03 set 20"
+     ]
+    },
+    {
+     "label": "Who is she?",
+     "then": "pike_flint"
+    },
+    {
+     "label": "Not today."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pike_flint",
+   "speaker": "pike",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Calls herself Flint. Hunts men for pay and one man for nothing. I re-crowned that rifle for her last spring and wouldn't take money, and no, I'm not telling you why. Shoot, or step off my line.",
+   "sources": []
+  },
+  {
+   "id": "flint_default",
+   "speaker": "flint",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "I'm working.",
+   "sources": []
+  },
+  {
+   "id": "flint_line",
+   "speaker": "flint",
+   "status": "new",
+   "priority": 50,
+   "when": [
+    "mq03 done 20",
+    "mq03 notdone 21",
+    "mq03 notdone 22",
+    "mq03 notdone 40"
+   ],
+   "text": "You hold it like somebody taught you. Somebody good. ...No. Never mind. Shoot.",
+   "sources": []
+  },
+  {
+   "id": "flint_beaten",
+   "speaker": "flint",
+   "status": "new",
+   "priority": 60,
+   "when": [
+    "mq03 done 21",
+    "mq03 notdone 40"
+   ],
+   "text": "Hm. That's twice I've been beaten on this ground today, and the other one used a pistol and gave the beef away. Grey duster. Did you see where he went? No. Nobody ever does.",
+   "sources": []
+  },
+  {
+   "id": "voss_default",
+   "speaker": "voss",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "A fine day for it. One should always notice a fine day.",
+   "sources": []
+  },
+  {
+   "id": "voss_line",
+   "speaker": "voss",
+   "status": "new",
+   "priority": 50,
+   "when": [
+    "mq03 done 10",
+    "mq03 notdone 40"
+   ],
+   "text": "That was neatly shot. You let the breath out just before, the way you... the way a person ought. Forgive me, I have been staring. You have a familiar sort of face. I expect you hear that.",
+   "buttons": [
+    {
+     "label": "Do I know you?",
+     "do": [
+      "mq03 set 30"
+     ],
+     "then": "voss_know"
+    },
+    {
+     "label": "You gave your prize away.",
+     "do": [
+      "mq03 set 30"
+     ],
+     "then": "voss_beef"
+    },
+    {
+     "label": "(Walk on)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "voss_know",
+   "speaker": "voss",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Apparently not. Isn't that a mercy. No, friend, I am nobody: a traveller who heard a train came off at the river and one soul walked out of it. I had a little money on none. I have never been so pleased to lose a bet.",
+   "sources": []
+  },
+  {
+   "id": "voss_beef",
+   "speaker": "voss",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "I've no use for a hind quarter, and that widow has four children and a great deal of pride. It is easy to be kind when one is only passing through. Enjoy the day. It is the last quiet one for some while. One can smell it.",
+   "sources": []
+  },
+  {
+   "id": "threefords_default",
+   "speaker": "threefords",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Pritchard. Where is Pritchard.",
+   "sources": []
+  },
+  {
+   "id": "threefords_dying",
+   "speaker": "threefords",
+   "status": "new",
+   "priority": 90,
+   "when": [
+    "mq03 done 42",
+    "mq03 notdone 100"
+   ],
+   "text": "Not you. Pritchard. ...No time. Listen. Lights on Blackstone ridge, every night, where there's no town. Trains on the dead line. They stop there. And a number. Learn it, I had to. Four, one, one, seven. Four, one, one, seven.",
+   "sources": []
+  },
+  {
+   "id": "flint_roof",
+   "speaker": "flint",
+   "status": "new",
+   "priority": 80,
+   "when": [
+    "mq03 done 50"
+   ],
+   "text": "Don't touch it. ...Seven of these in six years. He stands every one on end so I'll find it. That makes eight. You ran well. He let you get that close, you understand. He lets me, too. I'd like to know what he saw in you.",
+   "buttons": [
+    {
+     "label": "Who is he?",
+     "then": "flint_who"
+    },
+    {
+     "label": "He tipped his hat to me.",
+     "then": "flint_hat"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "flint_who",
+   "speaker": "flint",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "If I had a name I'd not be collecting brass. Grey coat, silver gun, leaves by water. And somebody tells him where to stand a week before anyone knows there'll be a reason. Find me at Pike's if you learn more than that. I'll trade.",
+   "sources": []
+  },
+  {
+   "id": "flint_hat",
+   "speaker": "flint",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "...To you. Six years and he has never once tipped his hat to me. Either you're a very fine shot or you're something of his. I'm going to watch you until I know which. You won't see me doing it.",
+   "sources": []
+  },
+  {
+   "id": "brigg_rifles",
+   "speaker": "brigg",
+   "status": "new",
+   "priority": 90,
+   "when": [
+    "mq03 done 43"
+   ],
+   "text": "Stand easy. ...You walked in front of forty rifles for a field of strangers. That is either principle or an inability to count. Sergeant Pritchard keeps his camp-ground tonight. I shall remember who gave it to him.",
+   "sources": []
+  },
+  {
+   "id": "brigg_holds",
+   "speaker": "brigg",
+   "status": "new",
+   "priority": 85,
+   "when": [
+    "mq03 done 70"
+   ],
+   "text": "This ground is under Dominion order until the murderer is found. Nobody leaves it armed. That includes you. You may object in writing, to Judge Quill, who sits at noon.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_case",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 90,
+   "when": [
+    "mq03 done 60",
+    "mq03 notdone 100"
+   ],
+   "text": "Brass with holes in it. A hill with lamps drawn on. And a number, in a hand I've seen on my grocery account every month for twenty years. ...Give me a minute. No. Don't. Read it to me again.",
+   "buttons": [
+    {
+     "label": "Four, one, one, seven. Vane's hand.",
+     "do": [
+      "mq03 set 100"
+     ]
+    },
+    {
+     "label": "(Say nothing)",
+     "do": [
+      "mq03 set 100"
+     ]
+    }
+   ],
+   "sources": []
+  }
+ ]
+}

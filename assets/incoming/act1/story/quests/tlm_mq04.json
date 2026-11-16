@@ -1,0 +1,78 @@
+{
+ "format": "tlm-quest-1",
+ "key": "mq04", "id": "TLM_MQ04", "title": "The Black Ledger", "chapter": 4, "kind": "main",
+ "premise": "The number in the courier's case is an entry in a book that Silas Vane keeps behind the one he shows people. For six years he has paid, a little every month, for a pulled rail, a held barge, a chained mine and a gang on the Tellico road, out of silver that comes down sealed from Blackstone Station. He says he has kept four armies out of the valley with a pencil. He may be right. The town finds out before the stranger has decided, and comes to his porch with a rope, and Pritchard stands on the steps with a hand that will not hold still.",
+ "draws_on": ["R7", "R8", "R9"],
+ "reads": ["mq03 done 100", "ledger is sold", "flag vane_has_ledger", "flag haskell_scapegoated", "flag silver_rail", "flag silver_river", "flag silver_mine", "flag silver_road", "flag neck_owed", "flag crowd_spared", "flag brigg_holds_fair"],
+ "cast": ["vane", "vickers", "pritchard", "haskell", "nell", "pike", "granger", "talbot", "brigg"],
+ "places": [
+  {"id": "trading_post", "name": "Vane's trading post", "what": "The best-stocked counter in the valleys, with a porch the whole town can see"},
+  {"id": "counting_room", "name": "The counting room", "what": "Behind the post: a high desk, a letter-press, and a safe from a bank that no longer has a town round it"},
+  {"id": "freight_platform", "name": "The freight platform", "what": "Where the night freight sets down sealed crates, and Vickers signs for them in a glove"},
+  {"id": "the_porch", "name": "Vane's porch", "what": "Six steps up from the street. Room for two people to stand at the top and a crowd at the bottom"}
+ ],
+ "stages": [
+  {"n": 10, "set_by": "Pritchard naming Vane's book, after The Four Flags completes", "log": "The number is a page in a book of Silas Vane's that nobody has seen. Pritchard can ask for it with a warrant. He would rather somebody else looked first."},
+  {"n": 21, "set_by": "Walking into the counting room beside Pritchard with his warrant", "log": "Pritchard put the warrant on Vane's counter and did not sit down when he was asked."},
+  {"n": 22, "set_by": "Opening the safe during the Harvest Supper, while Vane is carving", "log": "The whole town is at Vane's table. His safe was not hard, for somebody who knew he was born in the year of the flood."},
+  {"n": 23, "set_by": "Taking the strongbox from Vickers on the freight platform, by force or by the night freight's lantern code", "log": "You have the box that came off the night freight, and what was in it: silver, and the month's page for the book."},
+  {"n": 24, "set_by": "Vane's button, offered only to a stranger the valley has reason to distrust", "log": "Silas Vane opened the book himself and turned it round on the desk. He said he had been waiting six years for somebody with the stomach to read it."},
+  {"n": 30, "set_by": "Reading the black book", "log": "Four columns. Rail. River. Mine. Road. A payment against each, every month for six years. And a fifth column, received, with a small square drawn where a name should be."},
+  {"n": 40, "set_by": "Vickers stepping between the player and the door with the box open", "log": "Temperance Vickers has a sawn-off in a cash box and has corrected your arithmetic. She says the book stays."},
+  {"n": 41, "set_by": "Temperance Vickers dead", "log": "Temperance Vickers died in the counting room doorway with the ledger-box still under her arm."},
+  {"n": 42, "set_by": "The button 'He left you everything, and himself nothing.'", "log": "Temperance Vickers put the box down on the desk, very carefully, and went and stood by the window."},
+  {"n": 50, "set_by": "The crowd reaching the porch, at dusk on the day the book is read", "log": "The town is in the street with a rope. Pritchard is on the porch steps with his hand in his coat. Silas Vane has put on a clean collar."},
+  {"n": 61, "set_by": "The button '(Read the book out from the porch)'", "log": "You read it out, page by page, to the whole street. Nobody shouted. That was worse."},
+  {"n": 62, "set_by": "The button 'Sign it over, and they never hear the rest.'", "log": "Silas Vane signed away the holds on rail, river and mine with the town at his door. The street was told there had been a mistake in the accounts."},
+  {"n": 63, "set_by": "The button 'You work for me now.'", "log": "Silas Vane keeps his counter and his pencil. He keeps them for you. He says it is the first honest contract he has signed in six years."},
+  {"n": 64, "set_by": "The button '(Step aside)' or leaving the porch before it is settled", "log": "They hanged Silas Vane from his own sign-bracket. Owen Pritchard did not draw. He has not been seen out of his office since."},
+  {"n": 100, "set_by": "Learning where the silver comes from: from Vane, from Vickers, from the book's last page or from Haskell's hidden weight-sheet", "log": "The silver comes down on the night freight from Blackstone Station. Nobody in the valley has been up that line in six years. Somebody up there has been paying for the quiet.", "completes": true}
+ ],
+ "objectives": [
+  {"n": 10, "text": "Get a look at the book Silas Vane does not show"},
+  {"n": 30, "text": "Read it"},
+  {"n": 50, "text": "The town is at Vane's porch. Get there"},
+  {"n": 61, "text": "Find out where the silver comes from"}
+ ],
+ "choices": [
+  {"at": 10, "options": [
+   {"label": "Bring your warrant, Sheriff.", "sets": 21, "now": "In by the front door in daylight with Pritchard beside you", "later": "It is lawful and the town knows by noon. Pritchard has to watch his friend's face while you read"},
+   {"label": "(Go in during the Harvest Supper)", "sets": 22, "now": "The safe, by candle, while the whole town eats at Vane's table", "later": "Nobody knows you have read it. What you do next is yours alone"},
+   {"label": "(Meet the night freight)", "sets": 23, "now": "Take the month's box from Vickers on the platform", "later": "You have silver in your hands and Vickers at your back. Vane knows before breakfast"},
+   {"label": "I hear you keep two books.", "now": "Ask him. If the valley has cause to distrust you, he shows you himself", "later": "He believes you are his kind. Everything after starts from that"}
+  ]},
+  {"at": 50, "options": [
+   {"label": "(Read the book out from the porch)", "sets": 61, "now": "The street hears all of it and goes home", "later": "Vane lives, ruined. Credit stops at every counter in the valleys for a month. Every flag at the fair sends a man with an offer"},
+   {"label": "Sign it over, and they never hear the rest.", "sets": 62, "now": "The holds are lifted tonight. The town is told it was an error", "later": "Rail, river and mine open by spring. Those who buried somebody this year are never told why. It is yours to keep quiet"},
+   {"label": "You work for me now.", "sets": 63, "now": "Vane stays at his counter under your hand", "later": "You own the best ledger in the valleys and the man who can read the fifth column. The town has been lied to twice"},
+   {"label": "(Step aside)", "sets": 64, "now": "The rope", "later": "The book burns with the post. Pritchard is finished. Whoever sent the silver sends it to someone else"}
+  ]}
+ ],
+ "evidence": [
+  {"id": "black_book", "kind": "ledger", "found": "The safe in the counting room; or the month's page in the box off the night freight", "sets": 30},
+  {"id": "haskell_weight_sheet", "kind": "note", "found": "Folded inside the lining of the receiving book at Haskell's desk; he hands it over if asked a direct question", "sets": null},
+  {"id": "vickers_glove", "kind": "label", "found": "Vickers, if she lives: the hand that passes the box out of the car wears a glove with a square mark on the cuff", "sets": null},
+  {"id": "vane_will", "kind": "letter", "found": "In the safe, under the book", "sets": null}
+ ],
+ "ways_through": [
+  "Go in with Pritchard's warrant, read the book, stand on the porch and step aside or speak. Needs nothing from any earlier road and nothing optional.",
+  "Burgle the safe during the supper and decide alone what the town learns.",
+  "Take the box from the night freight and work back from the silver.",
+  "Be shown the book by Vane and take his offer or turn it on him."
+ ],
+ "cannot_break": "If Vane is killed before the book is read, the book is still in the safe and Vickers holds the room. If Vickers is killed, Haskell's weight-sheet names the station. If both are dead the last page of the book has the square mark and a freight number, and the yard at Iron Junction can say which platform it leaves from. If the player never comes to the porch the town hangs Vane. If Pritchard is absent, Talbot stands on the steps, or nobody does. The side quest is not needed: a stranger who sold Vane the Line 14 book only finds it lying open on his desk.",
+ "new_flags": [
+  {"name": "vane_exposed", "meaning": "The black book was read to the town; Vane is alive and ruined"},
+  {"name": "vane_bound", "meaning": "Vane lifted the holds in exchange for silence"},
+  {"name": "vane_yours", "meaning": "Vane works for the player"},
+  {"name": "vane_hanged", "meaning": "The town hanged Vane and Pritchard did not stop it"},
+  {"name": "vickers_dead", "meaning": "Vickers died defending the book"},
+  {"name": "blackstone_named", "meaning": "The player knows the silver comes from Blackstone Station"}
+ ],
+ "open_questions": [
+  "One purse behind all three roads, and behind the Cutters: this is the answer to the question the canon notes left open. Each of the four hands had a reason of their own and would have done it anyway.",
+  "Vane does not know who pays him. Should he?",
+  "The square mark stands for Blackstone Station and for nothing else in Act I. What it is the mark of is the last chapter's business.",
+  "Can the town hang Vane with the player watching and Pritchard failing to draw? It is the darkest thing in the act."
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "format": "tlm-quest-1",
+ "key": "mq02b", "id": "TLM_MQ02B", "title": "The Queen of Tellico", "chapter": 2, "kind": "main",
+ "premise": "Greenwater stands on stilts over a drowned town and ties its boats to a steeple. Its winter grain went down the lake on a barge and never came back. The barge is lashed to a gambling boat anchored in plain sight, whose owner is selling the town its own corn by the cup across a faro table and calling it salvage. An old woman with a ladle chained to her wrist wants the grain and wants him hanged, in that order, and she is running out of time for both.",
+ "draws_on": ["R6", "R9"],
+ "reads": ["mq01 done 100", "outcome is saved", "flag talbot_shot"],
+ "cast": ["starnes", "hatcher", "pruitt", "belden"],
+ "places": [
+  {"id": "greenwater", "name": "Greenwater", "what": "Plank streets on stilts, a cook-shed with a line out the door, a steeple standing out of the lake with a bell and a mooring ring"},
+  {"id": "queen_of_tellico", "name": "The Queen of Tellico", "what": "A sternwheeler with a saloon deck, a faro table, a boiler that should not be lit, and the grain barge lashed along her off side"},
+  {"id": "hangmans_chute", "name": "Hangman's Chute", "what": "The fast water below the old dam: the only way to take a barge home without passing the Queen's guns"}
+ ],
+ "stages": [
+  {"n": 10, "set_by": "Stepping off the skiff at Greenwater landing with the scoop from Pritchard's desk", "log": "Greenwater is a town on stilts with a queue from the cook-shed to the water. Everybody in the queue is looking at the same boat."},
+  {"n": 20, "set_by": "Hearing Opal Starnes out at the cook-shed", "log": "Opal Starnes has corn for nine days and a town for ninety. Her grain is on Lyle Hatcher's boat. She wants it back, and she wants him on the steeple."},
+  {"n": 30, "set_by": "Boarding the Queen of Tellico, by the gangway or over the off side from Pruitt's skiff", "log": "The Queen of Tellico has a band, a bar and a faro bank. The stake at the high table is a cup of Greenwater's own corn."},
+  {"n": 40, "set_by": "Sitting down at Hatcher's table", "log": "Commodore Hatcher deals without looking at his hands. He says the barge is salvage, the law is on his side, and would you care for a card."},
+  {"n": 41, "set_by": "Passing the check on the button 'Deal. The barge against my gun.'", "log": "You took the barge off Lyle Hatcher with his own deck. He stood the house a round and called it the best hand he ever lost."},
+  {"n": 42, "set_by": "The button 'Cut the barge loose.' and bringing it through Hangman's Chute", "log": "You cut the barge out from under the Queen's guns and Catfish Pruitt took it down the Chute in the dark. A third of the grain is in the lake."},
+  {"n": 43, "set_by": "The button 'Light the boiler and get clear.'", "log": "The Queen of Tellico burned to the waterline in a quarter of an hour. Greenwater watched from the planks. Some of them cheered."},
+  {"n": 44, "set_by": "The button 'Sell me a share, Commodore.'", "log": "You told Greenwater the barge went down in the Chute. Hatcher counted your share onto the felt, and Opal Starnes thanked you for trying."},
+  {"n": 45, "set_by": "Failing the check on the button 'Deal. The barge against my gun.'", "log": "Lyle Hatcher won your gun on the turn of a card and gave it back with a bow. He says you may still buy in."},
+  {"n": 50, "set_by": "Opening the strongbox under the faro table", "log": "There is a letter in Hatcher's strongbox. He was paid in stamped silver to hold the grain past first frost. Selling it back was his own idea."},
+  {"n": 60, "set_by": "The button 'He's yours, Opal.'", "log": "Greenwater rang the steeple bell and hanged Lyle Hatcher from the mooring ring. Opal Starnes held the ladle the whole time."},
+  {"n": 61, "set_by": "The button 'He goes to Pritchard, alive.'", "log": "Lyle Hatcher left Greenwater in irons in the bottom of a skiff, still talking."},
+  {"n": 100, "set_by": "Leaving Greenwater after stage 41, 42, 43 or 44", "log": null, "completes": true}
+ ],
+ "objectives": [
+  {"n": 10, "text": "Find who keeps the stores at Greenwater"},
+  {"n": 20, "text": "Get aboard the Queen of Tellico"},
+  {"n": 40, "text": "Get the grain barge off Commodore Hatcher, or get paid"},
+  {"n": 50, "text": "(Optional) Find out why a gambler wanted a town's corn"}
+ ],
+ "choices": [
+  {"at": 40, "options": [
+   {"label": "Deal. The barge against my gun.", "now": "One hand of cards, with a check of nerve. Win and the barge is yours; lose and you have only lost the stake", "later": "Won: the grain goes home whole and Hatcher owes you nothing but likes you. He can be found at the fair with a boat for hire"},
+   {"label": "Cut the barge loose.", "sets": 42, "now": "A night run with Catfish Pruitt through Hangman's Chute under fire", "later": "Greenwater eats, a third short. Hatcher puts a price on you that Dole or the Cutters may collect"},
+   {"label": "Light the boiler and get clear.", "sets": 43, "now": "The Queen burns. The barge is saved only if it was cut free first", "later": "Thirty of Hatcher's people are in the water, cooks and fiddlers among them. Greenwater eats, and learns what it is willing to cheer"},
+   {"label": "Sell me a share, Commodore.", "sets": 44, "now": "You are paid well and Greenwater is told the grain is lost", "later": "Belden's soup wagon is in Greenwater within the week and the town signs whatever he puts in front of it"}
+  ]},
+  {"at": 41, "options": [
+   {"label": "He's yours, Opal.", "sets": 60, "now": "Hatcher hangs from the steeple", "later": "Greenwater has its grain and its hanging. Nobody alive can say who paid him"},
+   {"label": "He goes to Pritchard, alive.", "sets": 61, "now": "Hatcher is taken to Mercy Crossing", "later": "He talks at the fair, to anybody who will stand him a drink, about silver with a square mark. Opal does not forgive it"},
+   {"label": "Let him keep his boat.", "now": "Hatcher sails with the band playing", "later": "He is a friend on the river for the rest of the act, and Greenwater shuts its cook-shed door to you"}
+  ]}
+ ],
+ "evidence": [
+  {"id": "letter_of_hire", "kind": "letter", "found": "Hatcher's strongbox, under the faro table on the saloon deck", "sets": 50},
+  {"id": "ration_board", "kind": "notice", "found": "Nailed to the cook-shed door", "sets": null},
+  {"id": "anchor_chain", "kind": "label", "found": "The Queen's bow, seen from Pruitt's skiff: the chain is rusted through at the third link", "sets": null}
+ ],
+ "ways_through": [
+  "Cut the barge loose with Pruitt and run the Chute. Needs no card played, no check passed and nothing optional.",
+  "Win the barge at Hatcher's table.",
+  "Burn the Queen, with or without cutting the barge free first.",
+  "Buy a share and tell Greenwater the grain is gone."
+ ],
+ "cannot_break": "If Hatcher is shot at the table his crew fight and the barge can still be cut loose or burned. If Pruitt is dead the player can steer the Chute alone and loses half the grain instead of a third. If Opal Starnes is dead the cook-shed is kept by whoever is next in the queue and no hanging is asked for. If the player leaves without doing anything, Belden's wagon arrives and the quest completes as though a share had been sold, without the pay.",
+ "new_flags": [
+  {"name": "grain_home", "meaning": "Greenwater has its winter grain, all or most of it"},
+  {"name": "grain_sold", "meaning": "The player took a share and told Greenwater the grain was lost"},
+  {"name": "queen_burned", "meaning": "The Queen of Tellico was burned with her people aboard"},
+  {"name": "hatcher_hanged", "meaning": "Greenwater hanged Hatcher from the steeple"},
+  {"name": "hatcher_friend", "meaning": "Hatcher was beaten at cards and let go; he will carry the player on the river"},
+  {"name": "hatcher_hunting", "meaning": "Hatcher has put a price on the player"},
+  {"name": "silver_river", "meaning": "The player has read Hatcher's letter of hire"}
+ ],
+ "open_questions": [
+  "Greenwater stands over an invented drowned town. The real reservoir here drowned real communities, Cherokee towns among them. Is an invented one the right distance to keep?",
+  "A public hanging that the player can hand a man over to: does the owner want it in the game?",
+  "Should Opal Starnes's illness be something the player can find out and act on, or stay hers?"
+ ]
+}

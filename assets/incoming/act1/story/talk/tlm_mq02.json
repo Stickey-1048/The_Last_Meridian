@@ -1,0 +1,254 @@
+{
+ "format": "tlm-talk-1",
+ "quest": "TLM_MQ02",
+ "lines": [
+  {
+   "id": "pritchard_default",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Door's open. So is the cell.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq01 done 100",
+    "mq02 notdone 50",
+    "mq02 notdone 60"
+   ],
+   "text": "Gantt wrote three towns and one sentence: somebody is being paid. I've a deputy who irons his star and a hand that won't hold a cup. So. Spike, scoop or tag. Pick one up off my desk.",
+   "buttons": [
+    {
+     "label": "The spike. I'll take the rail.",
+     "do": [
+      "mq02 set 10"
+     ],
+     "then": "pritchard_road_rail"
+    },
+    {
+     "label": "The scoop. I'll go by river.",
+     "do": [
+      "mq02 set 10"
+     ],
+     "then": "pritchard_road_river"
+    },
+    {
+     "label": "The tag. I'll walk the pike.",
+     "do": [
+      "mq02 set 10"
+     ],
+     "then": "pritchard_road_pike"
+    },
+    {
+     "label": "Send your deputy.",
+     "do": [
+      "mq02 set 50"
+     ],
+     "then": "pritchard_sends_talbot"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_road_rail",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Iron Junction. Ask for Gussie Lockridge and don't let her feed you. She's lost four trains and blames the weather, and Gussie has never been wrong about weather in her life.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_road_river",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Greenwater. The woman with the ladle is Opal Starnes. Do what she says until you understand why, and after that use your own judgment. There's a boy with a skiff at the landing.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_road_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Red Hollow, by the pike. You'll pass Brigg's gate at the gap. Pay the toll and keep your hands where Esther Quill can see them. Whatever she's doing on that wagon, it's lawful. I'd know.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_sends_talbot",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Then I send the boy. ...He's twenty-two. He'll be so pleased. You remember you had a say in it.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_rail",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 60,
+   "when": [
+    "mq02 done 20",
+    "mq02 notdone 60"
+   ],
+   "text": "Sawtooth Cut. I had it from the yard hands before you'd your boots off, in four versions, and you were nine feet tall in one. Tell me the part they don't know.",
+   "buttons": [
+    {
+     "label": "Silver. With a square stamped on it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    },
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_river",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 60,
+   "when": [
+    "mq02 done 30",
+    "mq02 notdone 60"
+   ],
+   "text": "Greenwater. I can smell the lake on you. Opal Starnes sent a boy to say you'd been, and nothing else, which from Opal is a sermon. What was Lyle Hatcher doing with a town's corn?",
+   "buttons": [
+    {
+     "label": "He was paid to hold it. In silver.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    },
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 60,
+   "when": [
+    "mq02 done 40",
+    "mq02 notdone 60"
+   ],
+   "text": "Red Hollow. You've the clay on you to the knee. I'm told the hill moved, or didn't, depending who's telling. Sit. What did Hobart Greer chain that mine against?",
+   "buttons": [
+    {
+     "label": "He was paid to. In silver.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    },
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_calls_fair",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "One purse. Gantt had a name and I haven't. ...Decoration Day's in a week. Forty years nobody's pulled a gun on that ground. I'm going to ask every flag in these valleys to come and eat my chicken and lie to me in person.",
+   "buttons": [
+    {
+     "label": "I'll be there.",
+     "do": [
+      "mq02 set 100"
+     ]
+    },
+    {
+     "label": "(Say nothing)",
+     "do": [
+      "mq02 set 100"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_talbot_back",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 80,
+   "when": [
+    "mq02 done 70"
+   ],
+   "text": "Keene says he'll keep the arm. He asked was the stranger all right. I told him you were fine. I told him you were just fine. Decoration Day's in a week. Be on that ground.",
+   "buttons": [
+    {
+     "label": "(Say nothing)",
+     "do": [
+      "mq02 set 100"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "talbot_default",
+   "speaker": "talbot",
+   "status": "new",
+   "priority": 0,
+   "when": [],
+   "text": "Gate's open till dark. Weapons stay holstered inside. That's the sheriff's rule, I mean. Not mine. Well, mine too.",
+   "sources": []
+  },
+  {
+   "id": "talbot_going_out",
+   "speaker": "talbot",
+   "status": "new",
+   "priority": 30,
+   "when": [
+    "mq02 done 10",
+    "mq02 notdone 50",
+    "mq02 notdone 60"
+   ],
+   "text": "You're going out? On your own? He's never sent me past the creek. ...If you get to the Junction and see Billie Tarrow, don't say I asked after her. But I'm asking.",
+   "sources": []
+  },
+  {
+   "id": "talbot_sent",
+   "speaker": "talbot",
+   "status": "new",
+   "priority": 60,
+   "when": [
+    "mq02 done 50",
+    "mq02 notdone 70"
+   ],
+   "text": "He's sending ME. Up the pike. I've cleaned it twice, look. You could... no. No, he said just me. I'll tell you how it went. I'll tell you all of it.",
+   "sources": []
+  }
+ ]
+}
