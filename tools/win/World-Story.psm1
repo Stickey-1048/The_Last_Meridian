@@ -2,8 +2,11 @@ Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1')
 
 function Get-WorldStoryVariant {
-    param([switch]$Expanded,[switch]$Natural)
-    if ($Expanded -and $Natural) { throw "Select only one world variant." }
+    param([switch]$Expanded,[switch]$Natural,[switch]$Details)
+    if (([int][bool]$Expanded + [int][bool]$Natural + [int][bool]$Details) -gt 1) { throw "Select only one world variant." }
+    if ($Details) {
+        return [pscustomobject]@{ Id='details'; ProfileName='TLM-World-Details-Preview'; ModName='TheLastMeridian-WorldDetailsPreview'; JournalName='world-details.unfinished.json'; ManifestPath=(Join-Path $PSScriptRoot 'world-details-artifact.json') }
+    }
     if ($Natural) {
         return [pscustomobject]@{ Id='natural'; ProfileName='TLM-World-Natural-Preview'; ModName='TheLastMeridian-WorldNaturalPreview'; JournalName='world-natural.unfinished.json'; ManifestPath=(Join-Path $PSScriptRoot 'world-natural-artifact.json') }
     }
@@ -14,8 +17,8 @@ function Get-WorldStoryVariant {
 }
 
 function Assert-WorldStoryRecoveryNote {
-    param($Note,[string]$Ini,[string]$GameFolder,[ValidateSet('story','expanded','natural')][string]$Variant='story')
-    $expected=Get-WorldStoryVariant -Expanded:($Variant -eq 'expanded') -Natural:($Variant -eq 'natural')
+    param($Note,[string]$Ini,[string]$GameFolder,[ValidateSet('story','expanded','natural','details')][string]$Variant='story')
+    $expected=Get-WorldStoryVariant -Expanded:($Variant -eq 'expanded') -Natural:($Variant -eq 'natural') -Details:($Variant -eq 'details')
     # Legacy default notes had no variant fields. Retain that recovery route
     # only for the default variant and its exact expected INI/game paths.
     if ($Note.PSObject.Properties.Name -contains 'Variant') {
@@ -61,9 +64,9 @@ function Assert-WorldStoryProcessesClear {
 }
 
 function Get-WorldStoryContext {
-    param([string]$ModOrganizerRoot, [string]$ProfileName='', [string]$ManifestPath='', [switch]$Expanded,[switch]$Natural)
+    param([string]$ModOrganizerRoot, [string]$ProfileName='', [string]$ManifestPath='', [switch]$Expanded,[switch]$Natural,[switch]$Details)
     # ManifestPath permits isolated fixture testing; the launcher exposes no override.
-    $variant=Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural
+    $variant=Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural -Details:$Details
     if (-not $ProfileName) { $ProfileName=$variant.ProfileName }
     if (-not $ManifestPath) { $ManifestPath=$variant.ManifestPath }
     if ($ProfileName -cne $variant.ProfileName) { throw "Use the dedicated $($variant.ProfileName) profile only." }
@@ -122,9 +125,9 @@ function Get-WorldStoryContext {
 }
 
 function Get-WorldStoryStartupPlan {
-    param([string]$GameFolder,[switch]$Expanded,[switch]$Natural)
+    param([string]$GameFolder,[switch]$Expanded,[switch]$Natural,[switch]$Details)
     $plan = Get-FreshDemoStartupPlan -GameFolder $GameFolder
-    $plan | Add-Member -MemberType NoteProperty -Name Variant -Value (Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural).Id
+    $plan | Add-Member -MemberType NoteProperty -Name Variant -Value (Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural -Details:$Details).Id
     if (-not $plan.Content.StartsWith("coc qasmoke`r`n")) { throw 'Unexpected fresh startup template.' }
     $plan.Content = $plan.Content.Replace("coc qasmoke`r`n", "coc TLM_WS_Clearing`r`n") + "cqf TLM_WS_Entry QueueFreshEntry`r`n"
     $sha = [Security.Cryptography.SHA256]::Create()

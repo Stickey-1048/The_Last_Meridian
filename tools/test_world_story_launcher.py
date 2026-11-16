@@ -7,3 +7,6 @@ if not shell:raise SystemExit('PowerShell is required for story launcher fixture
 process_flags=['-ExecutionPolicy','Bypass'] if os.name=='nt' else []
 subprocess.run([shell,'-NoLogo','-NoProfile',*process_flags,'-File',str(root/'tools/win/tests/Test-WorldStory.ps1'),'-CoreArtifact',str(root/'build/TheLastMeridian.esp')],check=True,cwd=root)
 subprocess.run([shell,'-NoLogo','-NoProfile',*process_flags,'-File',str(root/'tools/win/tests/Test-WorldNaturalPackageSafety.ps1')],check=True,cwd=root)
+subprocess.run([shell,'-NoLogo','-NoProfile',*process_flags,'-File',str(root/'tools/win/tests/Test-WorldDetails.ps1'),'-CoreArtifact',str(root/'build/TheLastMeridian.esp')],check=True,cwd=root)
+subprocess.run([shell,'-NoLogo','-NoProfile',*process_flags,'-File',str(root/'tools/win/tests/Test-WorldDetailsPackageSafety.ps1')],check=True,cwd=root)
+subprocess.run([shell,'-NoLogo','-NoProfile',*process_flags,'-File',str(root/'tools/win/tests/Test-WorldDetailsStageHelpers.ps1')],check=True,cwd=root)

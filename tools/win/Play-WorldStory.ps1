@@ -1,13 +1,13 @@
 <# Fresh exterior story entry only. No installation, saved-character reset or private probe. #>
 [CmdletBinding()]
-param([string]$ModOrganizerRoot = 'C:\Modlists\TMR', [switch]$UseF4SE, [switch]$ValidateOnly, [switch]$Expanded, [switch]$Natural)
+param([string]$ModOrganizerRoot = 'C:\Modlists\TMR', [switch]$UseF4SE, [switch]$ValidateOnly, [switch]$Expanded, [switch]$Natural, [switch]$Details)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'World-Story.psm1') -Force
 Assert-WorldStoryProcessesClear
-$variant = Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural
-$context = Get-WorldStoryContext -ModOrganizerRoot $ModOrganizerRoot -Expanded:$Expanded -Natural:$Natural
+$variant = Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural -Details:$Details
+$context = Get-WorldStoryContext -ModOrganizerRoot $ModOrganizerRoot -Expanded:$Expanded -Natural:$Natural -Details:$Details
 if ((Get-ExeVersion $context.GameExe) -ne '1.10.163.0') { throw 'Story preview is reviewed for the managed Fallout 4 1.10.163 runtime only.' }
 if ($context.RequiresF4SE -and -not $UseF4SE) { throw 'This story profile enables F4SE-dependent mods. Use -UseF4SE or the story .cmd launcher.' }
 $launcher = Get-ScenarioLaunchExecutable -GameExe $context.GameExe -UseF4SE:$UseF4SE
@@ -28,7 +28,7 @@ $startup = $state.Startup; $active = $state.Active
 if ($ValidateOnly) { Write-Host "Story preflight passed; launcher: $launcher; nothing changed or started. Native startup not tested."; exit 0 }
 [void](New-Item -ItemType Directory -Force -Path $build)
 Assert-WorldStoryProcessesClear
-$plan = Get-WorldStoryStartupPlan -GameFolder $context.Mo.GamePath -Expanded:$Expanded -Natural:$Natural
+$plan = Get-WorldStoryStartupPlan -GameFolder $context.Mo.GamePath -Expanded:$Expanded -Natural:$Natural -Details:$Details
 $note = [pscustomobject]@{ Variant=$variant.Id; ProfileName=$variant.ProfileName; Ini = $ini; GameFolder = $context.Mo.GamePath; StartupBefore = $startup; ActiveBefore = "$active"; Batch = $plan }
 Set-Content -LiteralPath $journal -Value ($note | ConvertTo-Json -Depth 4) -Encoding utf8
 $startedGame = $null
@@ -39,6 +39,7 @@ try {
     if ((Get-IniValue $ini 'General' 'sStartingConsoleCommand') -cne $plan.Command -or
         (Get-IniValue $ini 'General' 'bAlwaysActive') -ne '1') { throw 'Temporary world startup settings failed read-back.' }
     Write-Host 'MERIDIAN EXTERIOR STORY PROTOTYPE - fresh disposable character, balanced SPECIAL 4 each.'
+    if ($Details) { Write-Host 'Shelter Details variant selected: six storage props are scenery, with no new crafting or storage functions. Native preview acceptance remains pending.' }
     if ($Natural) { Write-Host 'Natural layout and repaired handover variant selected. Composed native acceptance remains pending.' }
     if ($Expanded) { Write-Host 'Expanded world variant selected. Native rendering, routes and full quest acceptance remain pending.' }
     Write-Host 'Fresh story setup is queued after the exterior loads. This prototype reuses the first-section quest rules.'
