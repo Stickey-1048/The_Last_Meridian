@@ -45,11 +45,37 @@
      "then": "pritchard_road_pike"
     },
     {
-     "label": "Send your deputy.",
+     "label": "Call the fair without my report.",
      "do": [
-      "mq02 set 50"
+      "mq02 set 50",
+      "mq02 set 100"
      ],
      "then": "pritchard_sends_talbot"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later",
+   "speaker": "pritchard",
+   "status": "new",
+   "priority": 10,
+   "when": [
+    "mq02 done 100"
+   ],
+   "text": "Gantt wrote three towns and one sentence: somebody is being paid. I've a deputy who irons his star and a hand that won't hold a cup. So. Spike, scoop or tag. Pick one up off my desk.",
+   "buttons": [
+    {
+     "label": "The spike. I'll take the rail.",
+     "then": "pritchard_road_rail"
+    },
+    {
+     "label": "The scoop. I'll go by river.",
+     "then": "pritchard_road_river"
+    },
+    {
+     "label": "The tag. I'll walk the pike.",
+     "then": "pritchard_road_pike"
     }
    ],
    "sources": []
@@ -87,7 +113,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "Then I send the boy. ...He's twenty-two. He'll be so pleased. You remember you had a say in it.",
+   "text": "Then we hear what the flags have to offer. Talbot will post the notice. The roads are still there if you change your mind; I won't call a refusal a promise.",
    "sources": []
   },
   {
@@ -97,7 +123,8 @@
    "priority": 60,
    "when": [
     "mq02 done 20",
-    "mq02 notdone 60"
+    "mq02 notdone 60",
+    "mq02 notdone 100"
    ],
    "text": "Sawtooth Cut. I had it from the yard hands before you'd your boots off, in four versions, and you were nine feet tall in one. Tell me the part they don't know.",
    "buttons": [
@@ -125,7 +152,8 @@
    "priority": 60,
    "when": [
     "mq02 done 30",
-    "mq02 notdone 60"
+    "mq02 notdone 60",
+    "mq02 notdone 100"
    ],
    "text": "Greenwater. I can smell the lake on you. Opal Starnes sent a boy to say you'd been, and nothing else, which from Opal is a sermon. What was Lyle Hatcher doing with a town's corn?",
    "buttons": [
@@ -153,9 +181,10 @@
    "priority": 60,
    "when": [
     "mq02 done 40",
-    "mq02 notdone 60"
+    "mq02 notdone 60",
+    "mq02 notdone 100"
    ],
-   "text": "Red Hollow. You've the clay on you to the knee. I'm told the hill moved, or didn't, depending who's telling. Sit. What did Hobart Greer chain that mine against?",
+   "text": "Red Hollow. You've the clay on you to the knee. I'm told the hill moved, or didn't, depending who's telling. Sit. What did Hobart Blevins chain that mine against?",
    "buttons": [
     {
      "label": "He was paid to. In silver.",
@@ -198,25 +227,6 @@
    "sources": []
   },
   {
-   "id": "pritchard_talbot_back",
-   "speaker": "pritchard",
-   "status": "new",
-   "priority": 80,
-   "when": [
-    "mq02 done 70"
-   ],
-   "text": "Keene says he'll keep the arm. He asked was the stranger all right. I told him you were fine. I told him you were just fine. Decoration Day's in a week. Be on that ground.",
-   "buttons": [
-    {
-     "label": "(Say nothing)",
-     "do": [
-      "mq02 set 100"
-     ]
-    }
-   ],
-   "sources": []
-  },
-  {
    "id": "talbot_default",
    "speaker": "talbot",
    "status": "new",
@@ -235,19 +245,7 @@
     "mq02 notdone 50",
     "mq02 notdone 60"
    ],
-   "text": "You're going out? On your own? He's never sent me past the creek. ...If you get to the Junction and see Billie Tarrow, don't say I asked after her. But I'm asking.",
-   "sources": []
-  },
-  {
-   "id": "talbot_sent",
-   "speaker": "talbot",
-   "status": "new",
-   "priority": 60,
-   "when": [
-    "mq02 done 50",
-    "mq02 notdone 70"
-   ],
-   "text": "He's sending ME. Up the pike. I've cleaned it twice, look. You could... no. No, he said just me. I'll tell you how it went. I'll tell you all of it.",
+   "text": "You're going out? On your own? He's never sent me past the creek. ...If you get to the Junction and see Billie Tupper, don't say I asked after her. But I'm asking.",
    "sources": []
   }
  ]

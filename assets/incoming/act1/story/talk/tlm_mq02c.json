@@ -30,17 +30,36 @@
      "then": "quill_fine"
     },
     {
-     "label": "You hanged the wrong man in ninety-eight.",
-     "check": "speech",
-     "pass": {
-      "do": [
-       "mq02c set 13"
-      ],
-      "then": "quill_shamed"
-     },
-     "fail": {
-      "then": "quill_unmoved"
-     }
+     "label": "(Step back)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "quill_court_docket",
+   "speaker": "quill",
+   "status": "new",
+   "priority": 55,
+   "when": [
+    "mq02c done 10",
+    "mq02c notdone 11",
+    "mq02c notdone 12",
+    "mq02c notdone 13",
+    "mq02c notdone 14",
+    "flag docket_2298_held"
+   ],
+   "text": "Order. Circuit court of the Dominion, the Honourable Esther Quill, sitting on a wagon. The prisoner robbed upon the highway and hangs at noon. You have the look of somebody with an observation. Make it grammatical.",
+   "buttons": [
+    {
+     "label": "What's the fine for a neck?",
+     "then": "quill_fine"
+    },
+    {
+     "label": "Show the 2298 docket. Demand a hearing.",
+     "do": [
+      "mq02c set 13"
+     ],
+     "then": "quill_shamed"
     },
     {
      "label": "(Step back)"
@@ -74,16 +93,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "...Who told you that. No. Do not tell me. Bailiff, cut the prisoner down. Court is adjourned. You may say to Owen Pritchard that I have always known, and that it has not kept me from my dinner one night in nineteen years.",
-   "sources": []
-  },
-  {
-   "id": "quill_unmoved",
-   "speaker": "quill",
-   "status": "new",
-   "priority": 0,
-   "when": [],
-   "text": "Hearsay, from a stranger, on a matter nineteen years closed. Overruled. And if you say it twice I shall find you room on the beam. It takes two.",
+   "text": "The court will adjourn. This docket goes with the old one for review, and the accused stays alive to answer it. If you mean to put Owen Pritchard on that bench, bring him as well.",
    "sources": []
   },
   {
@@ -119,7 +129,8 @@
     "mq02c notdone 11",
     "mq02c notdone 12",
     "mq02c notdone 13",
-    "mq02c notdone 14"
+    "mq02c notdone 14",
+    "outcome isnot missed"
    ],
    "text": "Partner! Well, look who the road brought. You owe me nothing and I know it. But I know why we were on the Tellico road that morning, and it was not for any wagon. Get this off my neck and it's yours.",
    "buttons": [
@@ -139,7 +150,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "Silver. Square stamp. A man with no face said a train would come off by the river and somebody might walk away from it. Take the pouch off the marshal, he said. And if the walker is who we think... I never asked who they thought.",
+   "text": "Silver. Square stamp. We watched the Tellico road for Gantt's freight if it was held up, and took his pouch if he came through. Nobody named a wreck or a passenger. The wagon was my own improvement.",
    "buttons": [
     {
      "label": "Go on.",
@@ -161,9 +172,10 @@
     "mq02c notdone 11",
     "mq02c notdone 12",
     "mq02c notdone 13",
-    "mq02c notdone 14"
+    "mq02c notdone 14",
+    "outcome isnot missed"
    ],
-   "text": "You. You were on the Tellico road. Reese is dead and they'll hang me for his notion. Listen: we were never there for the wagon. We were paid to wait for the train. Silver, with a square on it. That's all I know. I swear it is.",
+   "text": "You. You were on the Tellico road. Reese is dead and they'll hang me for his notion. We were paid to watch for the marshal's pouch if his freight was held up. Silver with a square on it. The wagon wasn't in the bargain. That's what I know.",
    "buttons": [
     {
      "label": "Go on.",
@@ -180,9 +192,20 @@
    "status": "new",
    "priority": 40,
    "when": [
-    "mq02c done 15",
-    "alive dunmore",
-    "mq02c notdone 14"
+    "mq02c done 11",
+    "alive dunmore"
+   ],
+   "text": "I'm in your book now, partner, and I hate it. One time. You whistle one time and Reese Dunmore comes running, and then we're square and I never knew you. Don't spend it on anything small.",
+   "sources": []
+  },
+  {
+   "id": "dunmore_freed_fine",
+   "speaker": "dunmore",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq02c done 12",
+    "alive dunmore"
    ],
    "text": "I'm in your book now, partner, and I hate it. One time. You whistle one time and Reese Dunmore comes running, and then we're square and I never knew you. Don't spend it on anything small.",
    "sources": []
@@ -204,9 +227,10 @@
    "when": [
     "mq02c done 20",
     "mq02c notdone 40",
-    "mq02c notdone 53"
+    "mq02c notdone 53",
+    "mq02c notdone 56"
    ],
-   "text": "Put your ear on the chain. Go on. ...Hear it? That's hoist code. Eleven men, bad air. That's my Pell and ten more. Greer's chained them in and means to bury them at sunup. I can run the cage. I need somebody to go down in it.",
+   "text": "Put your ear on the chain. Go on. ...Hear it? That's hoist code. Eleven men, bad air. That's my Pell and ten more. Blevins has chained them in and means to bury them at sunup. I can run the cage. I need somebody to go down in it.",
    "buttons": [
     {
      "label": "Lower the cage. I'll go down.",
@@ -277,7 +301,9 @@
     "mq02c done 20",
     "mq02c notdone 51",
     "mq02c notdone 52",
-    "mq02c notdone 53"
+    "mq02c notdone 53",
+    "mq02c notdone 30",
+    "mq02c notdone 56"
    ],
    "text": "You're from Pritchard. Then you'll want reasons. The Nine level is flooding and the air's gone; those men were dead the first night. Open the Mouth and the damp comes up into the town. For the good of the Hollow, I fire at dawn.",
    "buttons": [
@@ -290,7 +316,35 @@
      "then": "greer_lamp"
     },
     {
-     "label": "Fire your charges, Captain.",
+     "label": "(Leave him)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "greer_first_heard",
+   "speaker": "greer",
+   "status": "new",
+   "priority": 46,
+   "when": [
+    "mq02c done 30",
+    "mq02c notdone 51",
+    "mq02c notdone 52",
+    "mq02c notdone 53",
+    "mq02c notdone 56"
+   ],
+   "text": "You're from Pritchard. Then you'll want reasons. The Nine level is flooding and the air's gone; those men were dead the first night. Open the Mouth and the damp comes up into the town. For the good of the Hollow, I fire at dawn.",
+   "buttons": [
+    {
+     "label": "They're knocking. They're alive.",
+     "then": "greer_knock"
+    },
+    {
+     "label": "What came up in the cage?",
+     "then": "greer_lamp"
+    },
+    {
+     "label": "Seal it. Leave the shift below.",
      "do": [
       "mq02c set 53"
      ]
@@ -337,7 +391,8 @@
     "mq02c done 45",
     "mq02c notdone 51",
     "mq02c notdone 52",
-    "mq02c notdone 53"
+    "mq02c notdone 53",
+    "mq02c notdone 56"
    ],
    "text": "Stand. Let me look at you. ...You are not one of the eleven. You came down on purpose. Good. I am Dorn, warden of this gallery. Your people broke my wall with powder. I have fed them three days. Are you the one who can swear?",
    "buttons": [
@@ -371,10 +426,10 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "A line. Here, in the rock, where your powder met my wall. Above it, dig as you please. Below it is my House, as it was before your town had a name. You swear for yours, I for mine. It is not complicated. Most true things are not.",
+   "text": "A line, where your powder met my wall. I answer for this gallery; you for yourself. Keep your passage above it and carry our terms to the mine. I'll get the shift to the cage. Your people can answer when the eleven are home.",
    "buttons": [
     {
-     "label": "Set a line here. Both sides swear to it.",
+     "label": "I'll keep the line and carry your terms.",
      "do": [
       "mq02c set 51"
      ],
@@ -408,10 +463,10 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "No? Then who can? ...You have no head. All of you, up there, and nobody who can say yes for the rest. That is the most frightening thing I have heard since the powder. Swear for yourself, then. I will take one honest name over none.",
+   "text": "Then don't swear for them. One honest name is enough for a passage. Bring their answer back when they have one.",
    "buttons": [
     {
-     "label": "Then I swear it. A line, here.",
+     "label": "For my own passage, I swear it.",
      "do": [
       "mq02c set 51"
      ],
@@ -432,7 +487,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "It is cut. Take your eleven; they eat like forgemen and complain like children. And tell the one who knocks: Dorn says the code for thank you is three, a rest, and one. Nobody has used it yet.",
+   "text": "Take your eleven. They eat like forgemen and complain like children. My House will hold its side while the mine hears the terms. And tell the one who knocks: thank you is three, a rest, and one.",
    "sources": []
   },
   {
@@ -474,7 +529,18 @@
    "when": [
     "mq02c done 53"
    ],
-   "text": "It stopped a little before noon. I was listening. I'll always know the hour. You stood there and you said fire. I've the baby to feed, or I'd do it now. But you look behind you, on the road. You look behind you.",
+   "text": "It stopped a little before noon. I was listening. I'll always know the hour. You heard them, and you told him to fire. I've the baby to feed, or I'd do it now. But you look behind you, on the road. You look behind you.",
+   "sources": []
+  },
+  {
+   "id": "roark_after_deadline",
+   "speaker": "roark",
+   "status": "new",
+   "priority": 90,
+   "when": [
+    "mq02c done 56"
+   ],
+   "text": "It stopped a little before noon. Blevins turned the key. I looked for help until there was nobody left to ask. If you come back through this town, don't tell me you never heard the knocking.",
    "sources": []
   }
  ]

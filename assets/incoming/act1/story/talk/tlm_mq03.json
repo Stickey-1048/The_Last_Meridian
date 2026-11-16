@@ -106,7 +106,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "A gate at each gap. A levy by the head and the wheel. Arms registered, militias under one command, mine. People call that a price. In ten years they call it the way things have always been.",
+   "text": "A gate at each gap. A levy by head and wheel. Arms registered; militias under my command. I can patrol this road, not put a decent officer behind every desk. A bad one will have too much power. That's a price. I still mean to collect.",
    "sources": []
   },
   {
@@ -136,7 +136,7 @@
     "mq03 done 10",
     "mq03 notdone 40"
    ],
-   "text": "Tomas Belden, friend, and you'll take a bowl before we talk, we insist. There. Nobody goes hungry in a Commonwealth town. One list, one store, every pantry in it and every mouth on it. We look after our own.",
+   "text": "Tomas Belden, Commonwealth provisioning. Take a bowl if you want; supper isn't a signature. Our stores can carry a town through a bad season. One list tells us where the need is. Somebody must answer for what it leaves out.",
    "buttons": [
     {
      "label": "Who keeps the list?",
@@ -158,7 +158,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "The committee, friend. And who sits on the committee? Why, people who have shown they can be trusted with a list. It goes round and round very nicely. More soup?",
+   "text": "A provisioning committee. It reaches people a merchant might never trust with credit. It also puts mistakes behind an office door. Ask to see your entry and who can correct it. I ought to have better answers than a committee's address.",
    "sources": []
   },
   {
@@ -167,7 +167,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "Off? Well now. I can't recall that it has come up. I should have to take it to the committee. Folks who have eaten at one table three winters don't generally ask where the door is. Have you noticed that? We have.",
+   "text": "There is an appeal, and a committee can delay it. I won't tell you that is the same as a door you can open yourself. When every pantry shares a winter store, leaving has a cost. You should know who sets it before you sign.",
    "sources": []
   },
   {
@@ -188,7 +188,7 @@
     "mq03 done 10",
     "mq03 notdone 40"
    ],
-   "text": "Grey. I survey. Your reservoir stands at a head of two hundred and six feet and nobody has drawn a watt from it in two centuries. Untidy. The Directorate could light this valley in a year. You came off the morning train. How is your memory?",
+   "text": "Grey. I survey. Your reservoir stands at a head of two hundred and six feet and nobody has drawn a watt from it in two centuries. The Directorate could light this valley in a year. First you should ask what we would need to control.",
    "buttons": [
     {
      "label": "What would the light cost?",
@@ -210,7 +210,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "Access. A hill for my instruments, the right to read what they read, and your patience when I tell you what will happen next and am correct. People find the last part hardest. They prefer to be surprised.",
+   "text": "Access to the works, instruments on the hill, operating records. Outages while we test. Need our engineers long enough and you may find you cannot refuse them. Ask who may end the agreement. My instructions have no satisfactory answer.",
    "sources": []
   },
   {
@@ -219,7 +219,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "It left Iron Junction eleven minutes late with a cracked draw-bar and one passenger nobody had sold a ticket to. It was always going to come off at the river. I was not asked to prevent it. ...You truly do not recall. How interesting.",
+   "text": "The yard's copy lists outstanding repairs under a clearance nobody can verify. Ask to see the original inspection page. A signature is not an inspection, whatever confidence people place in it.",
    "sources": []
   },
   {
@@ -279,7 +279,7 @@
     "mq03 notdone 22",
     "mq03 notdone 40"
    ],
-   "text": "You hold it like somebody taught you. Somebody good. ...No. Never mind. Shoot.",
+   "text": "Watch the flags, then the sight. Keep your finger clear till Pike calls it. Your turn.",
    "sources": []
   },
   {
@@ -291,65 +291,7 @@
     "mq03 done 21",
     "mq03 notdone 40"
    ],
-   "text": "Hm. That's twice I've been beaten on this ground today, and the other one used a pistol and gave the beef away. Grey duster. Did you see where he went? No. Nobody ever does.",
-   "sources": []
-  },
-  {
-   "id": "voss_default",
-   "speaker": "voss",
-   "status": "new",
-   "priority": 0,
-   "when": [],
-   "text": "A fine day for it. One should always notice a fine day.",
-   "sources": []
-  },
-  {
-   "id": "voss_line",
-   "speaker": "voss",
-   "status": "new",
-   "priority": 50,
-   "when": [
-    "mq03 done 10",
-    "mq03 notdone 40"
-   ],
-   "text": "That was neatly shot. You let the breath out just before, the way you... the way a person ought. Forgive me, I have been staring. You have a familiar sort of face. I expect you hear that.",
-   "buttons": [
-    {
-     "label": "Do I know you?",
-     "do": [
-      "mq03 set 30"
-     ],
-     "then": "voss_know"
-    },
-    {
-     "label": "You gave your prize away.",
-     "do": [
-      "mq03 set 30"
-     ],
-     "then": "voss_beef"
-    },
-    {
-     "label": "(Walk on)"
-    }
-   ],
-   "sources": []
-  },
-  {
-   "id": "voss_know",
-   "speaker": "voss",
-   "status": "new",
-   "priority": 0,
-   "when": [],
-   "text": "Apparently not. Isn't that a mercy. No, friend, I am nobody: a traveller who heard a train came off at the river and one soul walked out of it. I had a little money on none. I have never been so pleased to lose a bet.",
-   "sources": []
-  },
-  {
-   "id": "voss_beef",
-   "speaker": "voss",
-   "status": "new",
-   "priority": 0,
-   "when": [],
-   "text": "I've no use for a hind quarter, and that widow has four children and a great deal of pride. It is easy to be kind when one is only passing through. Enjoy the day. It is the last quiet one for some while. One can smell it.",
+   "text": "Hm. Pike's dividers agree with you. Enjoy the beef. I've business beyond the shooting line.",
    "sources": []
   },
   {
@@ -381,14 +323,14 @@
    "when": [
     "mq03 done 50"
    ],
-   "text": "Don't touch it. ...Seven of these in six years. He stands every one on end so I'll find it. That makes eight. You ran well. He let you get that close, you understand. He lets me, too. I'd like to know what he saw in you.",
+   "text": "Don't touch it yet. Seven of these in six years. That makes eight. Left on the rail where anyone could find it. Someone wants an audience. I mean to find out who paid for one.",
    "buttons": [
     {
      "label": "Who is he?",
      "then": "flint_who"
     },
     {
-     "label": "He tipped his hat to me.",
+     "label": "What does the landing tell us?",
      "then": "flint_hat"
     }
    ],
@@ -400,7 +342,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "If I had a name I'd not be collecting brass. Grey coat, silver gun, leaves by water. And somebody tells him where to stand a week before anyone knows there'll be a reason. Find me at Pike's if you learn more than that. I'll trade.",
+   "text": "If I had a name I'd not be collecting brass. A distant coat, a bright gun, a boat already waiting. I reckon someone sold him the courier's road and hour. Find me at Pike's if you learn more. I'll trade.",
    "sources": []
   },
   {
@@ -409,7 +351,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "...To you. Six years and he has never once tipped his hat to me. Either you're a very fine shot or you're something of his. I'm going to watch you until I know which. You won't see me doing it.",
+   "text": "He had a boat waiting. That tells me he chose the ground before he took the shot. Find the landing. Someone tied that skiff up.",
    "sources": []
   },
   {

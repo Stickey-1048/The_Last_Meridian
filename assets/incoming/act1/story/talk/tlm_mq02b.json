@@ -257,7 +257,7 @@
     "mq02b notdone 43",
     "mq02b notdone 44"
    ],
-   "text": "Here's the chain. One good cut. Then it's us and a loaded barge and Hangman's Chute in the dark, with his swivels behind. Or there's the boiler door, right there, if you'd sooner he never chased anybody again.",
+   "text": "Here's the chain. One good cut and we can take the barge through the Chute. The boiler would burn the Queen instead. Thirty people are still aboard - crew, cooks, the fiddler. If we fire it now, some won't get off. Say what you're ordering.",
    "buttons": [
     {
      "label": "Cut the barge loose.",
@@ -267,7 +267,7 @@
      "then": "pruitt_ran"
     },
     {
-     "label": "Light the boiler and get clear.",
+     "label": "Burn the occupied Queen.",
      "do": [
       "mq02b set 43"
      ],
@@ -294,7 +294,7 @@
    "status": "new",
    "priority": 0,
    "when": [],
-   "text": "There were folks on her. The cook. Dessie that plays the fiddle, she taught me to waltz. I can hear them in the water. You never said... I didn't think she'd go up so fast.",
+   "text": "The cook was still aboard. The fiddler too; she taught me to waltz. We knew they were there. I can hear them in the water. Don't tell me this was only a boat.",
    "sources": []
   },
   {

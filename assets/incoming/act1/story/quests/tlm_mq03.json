@@ -1,9 +1,9 @@
 {
  "format": "tlm-quest-1",
  "key": "mq03", "id": "TLM_MQ03", "title": "The Four Flags", "chapter": 3, "kind": "main",
- "premise": "Decoration Day on the old camp-ground is the one day in the year nobody in the valleys shoots anybody. Pritchard has used it to put four flags on four poles and four speakers at one table: the Compact, the Commonwealth, the Dominion and the Directorate, each with an offer for a valley that has just learned somebody is paying to keep it poor. There is dinner on the ground, a fiddle contest and a beef shoot. There is a courteous stranger in a grey duster who wins the shoot without trying. Then a courier comes in off the high country with a tin case chained to her wrist, and the truce lasts as long as it takes a bullet to cross a fairground.",
+ "premise": "Decoration Day brings four flags and practical offers to one table. A courier arrives with a chained case. The shot comes from the meeting-shed roof. The assassin is only a distant departing figure, not a contestant or a face-to-face acquaintance.",
  "draws_on": ["R3", "R4", "R8", "R9"],
- "reads": ["mq02 done 100", "flag talbot_shot", "flag mail_through", "flag grain_home", "flag hollow_line", "flag lamp_taken", "flag rope_shot", "flag dole_lives", "flag hatcher_friend", "flag neck_owed"],
+ "reads": ["mq02 done 100", "flag mail_through", "flag grain_home", "flag hollow_line", "flag lamp_taken", "flag rope_shot", "flag dole_lives", "flag hatcher_friend", "flag neck_owed"],
  "cast": ["pritchard", "whitcomb", "brigg", "belden", "grey", "voss", "flint", "threefords", "pike", "granger", "nell", "talbot"],
  "places": [
   {"id": "camp_ground", "name": "The camp-ground", "what": "A meadow outside Mercy Crossing with an old meeting shed, a burying ground dressed with paper flowers, plank tables, four flagpoles and a long table under them"},
@@ -16,15 +16,14 @@
   {"n": 20, "set_by": "Paying a share of the steer at the shooting line", "log": "You are in the beef shoot. Ada Pike judges. The shot to beat belongs to a woman with a string of silver cases round her neck."},
   {"n": 21, "set_by": "Putting the closest shot to the cross", "log": "Ada Pike laid her dividers on the board and said your name. You own the hind quarter of a steer."},
   {"n": 22, "set_by": "Being beaten at the shooting line", "log": "Edda Flint drove her nail. You did not. She did not gloat, which was worse."},
-  {"n": 30, "set_by": "Speaking with the man in the grey duster", "log": "A stranger in a grey duster split the cross at sixty paces with a pistol and gave the beef away. He looked at you a moment too long."},
-  {"n": 40, "set_by": "The courier reaching the long table, or the last shot of the beef shoot, whichever is first", "log": "A courier came across the meadow at a dead run with a tin case on her wrist. She was three steps from Pritchard when the shot came off the meeting shed roof."},
-  {"n": 41, "set_by": "The button '(Go after the shooter)'", "log": "You went after the shooter: over the tables, up the shed, across the roof and down to the river."},
+  {"n": 40, "set_by": "The courier reaching the long table. Armed only after the player has arrived on the camp-ground and been given the fair's choices; never fired from an unvisited map", "log": "A courier came across the meadow at a dead run with a tin case on her wrist. She was three steps from Pritchard when the shot came off the meeting shed roof."},
+  {"n": 41, "set_by": "The button '(Search the roof and landing)'", "log": "You searched the meeting-shed roof and the river landing for the shooter's trail. A skiff was already pulling away in the distance."},
   {"n": 42, "set_by": "The button '(Stay with the courier)'", "log": "You stayed with her. She said: lights on Blackstone ridge. Trains on the dead line. Then a number, twice, and nothing else."},
   {"n": 43, "set_by": "The button '(Stand between the rifles and the crowd)'", "log": "Brigg's line had their rifles up and four hundred people in front of them. You walked into the middle and stood there. Nobody fired."},
   {"n": 44, "set_by": "The button '(Take the case and go)'", "log": "You cut the case off her wrist and went out through the burying ground while everybody was looking at the roof."},
   {"n": 50, "set_by": "Reaching the bell-rail on the meeting shed roof", "log": "One empty case, silver, standing on end on the bell-rail where it would be found. Edda Flint was already there. She put it on her string."},
   {"n": 60, "set_by": "Opening the tin case, alone or on Pritchard's desk", "log": "The courier's case holds a strip of brass punched with holes, a sketch of a ridge with lamps drawn on it, and one line of writing: a ledger number, in Silas Vane's hand."},
-  {"n": 70, "set_by": "Brigg's order, an hour after the shot, unless stage 43 is set", "log": "The Dominion holds the camp-ground. Brigg says it is for the public safety and will be for as long as the public is unsafe."},
+  {"n": 70, "set_by": "Brigg's own order after the shot, with his demand and the chance to intervene shown to the player first. Never set because the player was elsewhere. Not set if stage 43 is", "log": "The Dominion holds the camp-ground. Brigg says it is for the public safety and will be for as long as the public is unsafe."},
   {"n": 100, "set_by": "Pritchard reading the line in the case, or the player reading it if the case was taken", "log": "Pritchard read the number twice and sat down. He has eaten supper with Silas Vane for twenty years.", "completes": true}
  ],
  "objectives": [
@@ -35,7 +34,7 @@
  ],
  "choices": [
   {"at": 40, "options": [
-   {"label": "(Go after the shooter)", "sets": 41, "now": "A chase over the roof to the river. He gets to the skiff. He tips his hat", "later": "You have seen his face and his gun. Flint decides you are worth talking to. The crowd is left to Brigg"},
+   {"label": "(Search the roof and landing)", "sets": 41, "now": "A silver case on the bell-rail and evidence of a prepared escape. No promised chance to catch or kill a target who is made invulnerable.", "later": "You have useful observations of the route. Flint is willing to compare evidence. The crowd is left to Brigg."},
    {"label": "(Stay with the courier)", "sets": 42, "now": "You hear her last words and keep the case out of other hands", "later": "You alone know the number she carried in her head as well as on paper. The shooter is a rumour"},
    {"label": "(Stand between the rifles and the crowd)", "sets": 43, "now": "Brigg's men lower their rifles. He does not take the camp-ground", "later": "The valley remembers who stood there. So does Brigg. The case may be in anybody's hands by nightfall"},
    {"label": "(Take the case and go)", "sets": 44, "now": "You have the case and nobody knows it", "later": "Every flag wants what you carry. You can sell it, read it or burn it. Pritchard learns who took it"}
@@ -44,29 +43,29 @@
  "evidence": [
   {"id": "silver_case", "kind": "label", "found": "Standing on the bell-rail of the meeting shed roof", "sets": 50},
   {"id": "courier_case", "kind": "note", "found": "Chained to the courier's wrist", "sets": 60},
-  {"id": "pike_dividers", "kind": "label", "found": "Ada Pike, shown the silver case: it came from a mould with a maker's mark filed off, and she knows whose", "sets": null}
+  {"id": "pike_dividers", "kind": "label", "found": "Ada Pike, shown the silver case: it bears a filed-off tool mark she recognises from a twelve-year-old ammunition-tooling commission. It does not identify the shooter", "sets": null}
  ],
  "ways_through": [
   "Walk onto the camp-ground, be there when the shot comes, and open the case with Pritchard afterward. Needs no match shot, no chase and nothing optional.",
-  "Chase the shooter to the river and come back for the case.",
+  "Search the meeting-shed roof and the river landing, then come back for the case.",
   "Stay with the courier and carry what she said to Pritchard.",
   "Take the case and read it alone; the chapter completes on reading the line."
  ],
- "cannot_break": "The shooter cannot be caught or killed here: the skiff is always a boat-length out. If the player is not on the camp-ground when the courier arrives, the shot is heard from wherever the player is and stage 70 follows. If Pritchard is somehow absent the case is opened by Talbot, or by Keene if Talbot is in her clinic. If the player shoots first on Decoration Day the Dominion takes the camp-ground at once and the courier is shot in the confusion all the same. Nobody at the table can be killed in this chapter.",
+ "cannot_break": "Arm the courier scene after the player arrives and has been given the fair's choices. Do not fire the shot from an unvisited map or auto-occupy because the player was elsewhere. Brigg's occupation is his decision, distinct from arranging the assassination; the demand and opportunity to intervene must be visible. Do not impose chapter-long immunity on every interactable delegate as an unexplained substitute for a fallback design. If Pritchard is absent the case is opened by Talbot.",
  "new_flags": [
   {"name": "beef_won", "meaning": "The player won the beef shoot"},
-  {"name": "saw_the_shooter", "meaning": "The player chased the shooter and has seen his face and his gun"},
+  {"name": "saw_the_shooter", "meaning": "The player observed a distant departing figure and the prepared route, not a confirmed face or identity."},
   {"name": "courier_heard", "meaning": "The player heard the courier's last words"},
   {"name": "crowd_spared", "meaning": "The player stood between Brigg's rifles and the crowd; the Dominion did not take the camp-ground"},
   {"name": "case_taken", "meaning": "The player took the courier's case for themselves"},
   {"name": "brigg_holds_fair", "meaning": "The Dominion has occupied the camp-ground and has not left"},
-  {"name": "flint_talks", "meaning": "Edda Flint has decided the player is worth talking to"}
+  {"name": "flint_talks", "meaning": "Edda Flint is willing to compare evidence with the player"}
  ],
  "open_questions": [
-  "May the silver gun's owner walk onto the stage in Act I, unnamed, and speak to the player? Everything he says can be cut and the shot still comes off the roof.",
-  "He and the surveyor both look at the player as though they know them. Nothing is said. Is even that too much before the choices about the player's past are settled?",
-  "The four flags are named people from the registry. Are Whitcomb and Brigg wanted here in person, or their juniors?",
-  "How does the Directorate show itself in a valley that does not know what it is? Here it is a surveyor who offers to bring the power back.",
-  "The courier is the first Hollowborn the player sees. Nobody remarks on it. Is that the right way to meet one?"
+  "Resolved 2026-11-16: the assassin is a distant departing figure only; no close cameo, no name, and no chase that cannot be won (decisions 4 and 21).",
+  "Resolved 2026-11-16: every recognition cue is deferred (decision 5).",
+  "UNREVISED, needs text from Iris: stage 43, its choice and Brigg's reply still have the player stand in front of the rifles, which decision 18 rules out.",
+  "Not yet authored, returned to Iris: the visible demand Brigg makes before occupying the camp-ground.",
+  "Not yet designed: what happens if a delegate is attacked or killed at the fair. The supplied rule forbids blanket immunity as the substitute."
  ]
 }

@@ -1,6 +1,6 @@
 # Story material for Act I, waiting to be taken in
 
-**16 November creative decision update:** [the canon amendment](../../../../docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md) resolves the proposal's owner questions under delegated creative authority. The JSON below is still the original, unaccepted writing proposal; revise its recognition, names, causality, choice labels and outcome rules before construction. No new chapter is implemented by this decision pass.
+**16 November, after the decisions:** the JSON below this line has since been revised to [the adopted creative decisions](../../../../docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md). It is a revised proposal awaiting narrative acceptance and independent engineering review, not an accepted or playable chapter. What was done and what is missing: [the receipt](../../../../docs/design/ACT1_CHARLES_REVISION_RECEIPT.md).
 
 Characters, quests, talk and papers written outside the repository. The format is
 [docs/design/STORY_INTAKE.md](../../../../docs/design/STORY_INTAKE.md); a worked example is in
@@ -13,13 +13,13 @@ Nothing here is canon until the owner accepts it, and nothing is built from a fi
 ## 2026-11-16: Chapters 2 to 4, a bolder proposal
 
 Written in a Claude Code session at the owner's request, not by the usual writing partner. Start with
-[OVERVIEW.md](OVERVIEW.md); what the owner has to decide is in [QUESTIONS_FOR_OWNER.md](QUESTIONS_FOR_OWNER.md).
+[OVERVIEW.md](OVERVIEW.md); how the owner's questions were resolved is in [QUESTIONS_FOR_OWNER.md](QUESTIONS_FOR_OWNER.md).
 
-- `characters.json`: 26 people (7 of the plugin's, 19 it does not have).
-- `quests/`: six quests (`mq02`, `mq02a`, `mq02b`, `mq02c`, `mq03`, `mq04`), 82 stages, 40 new flags.
-- `talk/`: 164 lines in seven files.
-- `documents.json`: 18 papers.
-- `RESEARCH.md`: nine rows; the six REAL rows are from web search summaries read on 2026-11-16, not from the full pages.
+- `characters.json`: 26 people (7 of the plugin's, 19 it does not have). Four display names changed; ids kept.
+- `quests/`: six quests (`mq02`, `mq02a`, `mq02b`, `mq02c`, `mq03`, `mq04`), 81 stages, 40 new flags.
+- `talk/`: 161 lines in seven files.
+- `documents.json`: 21 papers.
+- `RESEARCH.md`: nine rows, unchanged; the six REAL rows are from web search summaries read on 2026-11-16, not from the full pages, and are not verified.
 
-It passes the strict check. It is not accepted, not canon, and nothing has been built from it.
+It passes the strict check. It is not accepted, and nothing has been built from it. A format pass is not a compile or a game test.
 
