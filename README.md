@@ -11,6 +11,7 @@ An original, fan-created **Fallout 4 total-conversion RPG concept** set in the s
 - [Fallout lore audit](docs/fallout-lore-audit.md): research agenda and compatibility risks, not yet a verified final audit.
 - [World history and Hollowborn](docs/history-hollowborn.md): in-universe chronology and disputed origin theories.
 - [Development plan](docs/development-plan.md): Fallout 4 Creation Kit/Papyrus vertical slice.
+- [TLM_MQ01 technical design](docs/quests/TLM_MQ01-six-rounds-to-mercy.md): design-only specification for Six Rounds to Mercy; nothing built or tested.
 - [Claude Code instructions](CLAUDE.md): repo guidance for AI-assisted engineering.
 - [Open decisions](docs/open-decisions.md): unresolved continuity issues.
 
