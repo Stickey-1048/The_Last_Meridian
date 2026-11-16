@@ -145,6 +145,31 @@ class DeathAcknowledgment(unittest.TestCase):
         self.assertEqual(p.g('TLM_G_Rep_MercyCrossing'),7)
         self.assertEqual(p.g('TLM_G_MQ01_DebriefVariant'),0)
         self.assertFalse(p.s.invoke('TLM_MQ01','DeliveryAcknowledged',[]))
+
+    def test_old_completed40_before50_can_deliver_once_with_default_new_fields(self):
+        for branch,reward in (('saved',2),('evaded',1),('bypassed',1)):
+            with self.subTest(branch=branch):
+                p=self.person();i=self.inst(p)
+                if branch=='evaded':self.rapid(p)
+                else:
+                    if branch=='saved':
+                        self.stage(p,30);p.s.run(p.s.now+.1)
+                        self.stage(p,31);p.s.run(p.s.now+1)
+                    self.stage(p,40);p.s.run(p.s.now+12)
+                dead=p.s.placed[REF+'Abel'].dead;kills=p.s.kill_requests
+                for name in ('deathunacknowledged','townapplying','towndeferred','townfinished',
+                             'deliveryapplying','deliverydeferred','deliveryfinished','deliveryrequestedhere','betrayaldeferred'):
+                    i.vars[name]=False
+                i.vars['requesteddeath']=None
+                before=p.g('TLM_G_Rep_MercyCrossing')
+                self.stage(p,50);p.s.run(p.s.now+8)
+                for _ in range(2):p.s.invoke('TLM_MQ01','Recover',[])
+                self.assertTrue(p.s.invoke('TLM_MQ01','DeliveryAcknowledged',[]))
+                self.assertEqual(p.g('TLM_G_Rep_MercyCrossing'),before+reward)
+                self.assertEqual(p.has(p.s.forms['TLM_MISC_Dispatch']),0)
+                self.assertTrue(i.vars['townfinished'])
+                self.assertEqual(p.s.placed[REF+'Abel'].dead,dead)
+                self.assertEqual(p.s.kill_requests,kills)
     def test_already_dead_target_does_not_request_another_kill(self):
         p=self.person();p.s.placed[REF+'Abel'].dead=True
         p.s.invoke('TLM_MQ01','KillByCutters',[next(a for a in p.s.quests['TLM_MQ01'].aliases.values() if a.name=='CaravanDrover')])
