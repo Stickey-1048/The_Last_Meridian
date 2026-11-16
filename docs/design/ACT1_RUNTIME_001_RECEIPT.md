@@ -101,4 +101,11 @@ Maya's, after source review: the build and read-back against the real master, in
 
 ## 8. What was done
 
-To be completed when the work is finished.
+Completed after the work. The account in full, with every changed file, form, property, digest and result, is in [ACT1_RUNTIME_001_LEDGER.md](ACT1_RUNTIME_001_LEDGER.md); the text mapping is in [ACT1_RUNTIME_001_MAPPING.json](ACT1_RUNTIME_001_MAPPING.json).
+
+- **Done, in one implementation commit after this receipt's:** `TLM:MercyBriefing` (the twentieth script); the bounded change to `TLM:Act1Walk`; the quest `TLM_MercyBriefing`, the book `TLM_BOOK_Docket2298` and nine messages in `SpecMercyBriefing.cs`; eleven ids appended to the id file with its earlier 316 lines untouched; the briefing's state model; 98 new stand-in tests and 21 model tests; the text mapping and its check; the candidate's own source manifest and recipe.
+- **Results here:** every check that can run in this container passes on the final tree: logic model 115 tests; stand-in engine 358 tests; 65 of 65 scenarios with 1628 checks, also with 60 calls a second; scenario 12 still 42 checks and no box; strict intake, the 74 fixtures and the four-packet check unchanged; eight stand-in masters; the id file stable. A pass means the scripts, the plugin as built against stand-in masters, the models and the accepted writing agree. **It is not a compile and not a game test.**
+- **Not run here:** the PowerShell fixtures (no PowerShell; installing it was refused). Two of them needed one expectation each changed, as section 3 foresaw; those two edits are unexecuted.
+- **Corrections to what this receipt said before the work:** the speaker prefix adds 18 characters, not 19, and the longest spoken box is 221, or 231 with the hand-off's footer; `SpecAct1.cs` gained the property line and a comment line; `tools/papyrus_sim/test_act1.py` also changed (three presses of Pritchard after the chapter now answer the briefing's boxes); `WorldStory.cs` gained a check and no remapping; the cloning step was exercised through a scratch harness on a stand-in build.
+- **Pending, as section 7 said:** the build and read-back against the game's master, the Windows compile of the 20 scripts, the candidate's measured digests, and private native QA. None is claimed.
+- **Unresolved mechanics:** fourteen, listed exactly in the ledger's section 10.

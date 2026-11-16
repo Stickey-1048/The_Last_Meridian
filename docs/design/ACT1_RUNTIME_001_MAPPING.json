@@ -1,0 +1,149 @@
+{
+  "what": "ACT1-RUNTIME-001: which field of the accepted writing each native record of the Mercy briefing takes its text from, and what of that writing is deliberately not imported. Checked character by character by tools/papyrus_sim/test_mercy_briefing_projection.py against the plugin as built. Not a compile and not a game test.",
+  "contract": "docs/design/ACT1_RUNTIME_001.md",
+  "source": {
+    "accepted_at": "d142104fdc6f72ae556f285a0166c1122893b991",
+    "folder": "assets/incoming/act1/story",
+    "talk": "talk/tlm_mq02.json",
+    "documents": "documents.json",
+    "characters": "characters.json"
+  },
+  "speech": {
+    "how_a_box_is_written": "<name>: \"<text>\"",
+    "name_from": {"file": "characters.json", "id": "pritchard", "field": "name"},
+    "why": "The first section writes every spoken box this way (SpecAct1.cs, Says); the name is the registered one."
+  },
+  "limit": {
+    "longest_displayed_string": 240,
+    "why": "The game was seen to cut a box of 306 characters short after about 255 (SpecAct1.cs, DemoEnd). 240 is this project's own margin under that, and is what the first section's ending boxes are held to. It is not a claim about the engine's limit."
+  },
+  "ui": {
+    "what": "Product-availability text. Not fiction, not said by anybody, and kept outside the quoted speech.",
+    "briefing_only": "Mercy briefing only. The three destinations are not playable in this build.",
+    "hand_off_footer": "Opening complete. Ask again for Mercy briefs; roads unbuilt.",
+    "journal_complete": "Mercy briefing complete. Destinations are not playable in this build.",
+    "objective": "Ask Pritchard about the three roads.",
+    "quest_name": "Mercy briefing",
+    "copy_issued": "One review copy only. No second copy is given.",
+    "copy_pending": "Review copy hand-over unconfirmed. None is given again. Report this to the tester.",
+    "continue": "Continue",
+    "from_the_contract": ["briefing_only", "hand_off_footer", "journal_complete", "objective"],
+    "written_for_this_increment": ["quest_name", "copy_issued", "copy_pending"],
+    "continue_is": "The first section's own word for going on (SpecAct1.cs, GoOn). The writing's nodes without buttons have an implicit Continue, and pritchard_road_pike has an explicit one."
+  },
+  "messages": [
+    {
+      "record": "TLM_MSG_MB_Hub",
+      "property": "HubLine",
+      "box": true,
+      "text": {"line": "pritchard_report_open_roads", "field": "text"},
+      "ui_under_the_speech": "briefing_only",
+      "buttons": [
+        {"line": "pritchard_report_open_roads", "button": 0},
+        {"line": "pritchard_report_open_roads", "button": 1},
+        {"line": "pritchard_report_open_roads", "button": 2},
+        {"line": "pritchard_report_open_roads", "button": 3}
+      ],
+      "not_imported": [
+        "The node's condition, mq02 done 100: the hub is a new preview message that reuses the wording, not the post-fair node.",
+        "The three targets pritchard_report_open_rail, pritchard_report_open_river and pritchard_report_open_pike. The buttons here lead to the three briefs below instead.",
+        "Its place in the entry and priority order of the 227 lines."
+      ]
+    },
+    {
+      "record": "TLM_MSG_MB_Rail",
+      "property": "RailLine",
+      "box": true,
+      "text": {"line": "pritchard_road_rail", "field": "text"},
+      "buttons": [{"ui": "continue"}],
+      "not_imported": ["Whatever leads to this node in the writing (a promise to travel). Here it is information only: no road is started."]
+    },
+    {
+      "record": "TLM_MSG_MB_River",
+      "property": "RiverLine",
+      "box": true,
+      "text": {"line": "pritchard_road_river", "field": "text"},
+      "buttons": [{"ui": "continue"}],
+      "not_imported": ["As for the rail."]
+    },
+    {
+      "record": "TLM_MSG_MB_Pike",
+      "property": "PikeLine",
+      "box": true,
+      "text": {"line": "pritchard_road_pike", "field": "text"},
+      "buttons": [
+        {"line": "pritchard_road_pike", "button": 0},
+        {"line": "pritchard_road_pike", "button": 1}
+      ],
+      "not_imported": ["As for the rail."]
+    },
+    {
+      "record": "TLM_MSG_MB_Docket",
+      "property": "DocketLine",
+      "box": true,
+      "text": {"line": "pritchard_docket_context", "field": "text"},
+      "buttons": [
+        {"line": "pritchard_docket_context", "button": 0},
+        {"line": "pritchard_docket_context", "button": 1}
+      ],
+      "not_imported": [
+        "The Take button's effect, mq02c set 16. TLM_MQ02c is not built and no stage of it is set. The hand-over is recorded privately on TLM:MercyBriefing (CopyIssued, CopyGrantPending).",
+        "The flag docket_2298_held. Its precursor is TLM:MercyBriefing.HasReviewCopy(), which reads the inventory when asked and remembers nothing."
+      ]
+    },
+    {
+      "record": "TLM_MSG_MB_DocketIssued",
+      "property": "DocketIssuedLine",
+      "box": true,
+      "text": {"line": "pritchard_docket_context", "field": "text"},
+      "buttons": [{"ui": "continue"}],
+      "why": "The same speech when no copy can be given (one is held, one was issued, or a request was never acknowledged), so that no button promises a second copy.",
+      "not_imported": ["Both of the node's buttons."]
+    },
+    {
+      "record": "TLM_MSG_MB_CopyIssuedNote",
+      "property": "CopyIssuedNote",
+      "box": false,
+      "ui_only": "copy_issued"
+    },
+    {
+      "record": "TLM_MSG_MB_CopyPendingNote",
+      "property": "CopyPendingNote",
+      "box": false,
+      "ui_only": "copy_pending"
+    },
+    {
+      "record": "TLM_MSG_MB_HandOff",
+      "property": "HandOffLine",
+      "box": true,
+      "text": {"same_speech_as_record": "TLM_MSG_A1_PritchardHandOff"},
+      "ui_under_the_speech": "hand_off_footer",
+      "buttons": [{"ui": "continue"}],
+      "why": "The first section's own hand-off line (the TLM_MQ01 design, section 8.3), unchanged, with the contract's footer in place of the first section's. Not from the writing intake. TLM_MSG_A1_PritchardHandOff itself is unchanged and is what is shown when the briefing is not bound."
+    }
+  ],
+  "book": {
+    "record": "TLM_BOOK_Docket2298",
+    "property": "ReviewCopy",
+    "title": {"document": "docket_2298", "field": "title"},
+    "text": {"document": "docket_2298", "field": "text"},
+    "text_characters": 629,
+    "text_sha256_utf8": "1613a058406d0776cbd073d1c6be83e969ff078a269366140b9d96e832e03b11",
+    "not_imported": [
+      "The document's found field: no copy is placed on a desk. The book is put into the player's inventory on the Take button.",
+      "Any use of the copy: nobody is shown it, no hearing exists, and it proves nothing about any present prisoner."
+    ]
+  },
+  "quest": {
+    "record": "TLM_MercyBriefing",
+    "script": "TLM:MercyBriefing",
+    "name": "quest_name",
+    "stages": [
+      {"index": 10, "log": "briefing_only", "means": "the briefing was begun: the first hub was shown"},
+      {"index": 20, "log": "journal_complete", "completes_the_quest": true, "means": "a road's brief was shown; the utility task is complete"}
+    ],
+    "objectives": [{"index": 10, "text": "objective", "target_alias": "Briefer"}],
+    "not_a_stage_of": ["TLM_MQ02", "TLM_MQ02a", "TLM_MQ02b", "TLM_MQ02c", "TLM_MQ03", "TLM_MQ04"],
+    "sets_nothing_on": ["TLM_MQ01", "TLM_SQ01", "any global", "any flag of the writing"]
+  }
+}

@@ -28,9 +28,10 @@ MiscItem (3)
   000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
   000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
   000823  TLM_MISC_TrialObject  "Trial Object"
-Book (2)
+Book (3)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
+  00089E  TLM_BOOK_Docket2298  "Mercy Road Case: 2298 Review Copy"
 Activator (10)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
@@ -44,7 +45,7 @@ Activator (10)
   00089A  TLM_ACTI_GuideMercy  "Demo guide - Mercy Crossing directions"
 Container (1)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
-Message (55)
+Message (64)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -186,6 +187,31 @@ Message (55)
   000875  TLM_MSG_A1_TalbotAfter  [box]  "Jonah Talbot: "Sheriff's got your paper. He'll want a word more, I'd reckon.""  title: "Jonah Talbot"
           button 0: "Continue"
   000876  TLM_MSG_A1_Haskell  [box]  "Corwin Haskell: "Freight's signed for at the shed. Line 14's run nothing since the wreck.""  title: "Corwin Haskell"
+          button 0: "Continue"
+  0008A0  TLM_MSG_MB_Hub  [box]  "Owen Pritchard: "Which road do you want to ask about? Tell me what you know, or ask what to look for."
+
+[Mercy briefing only. The three destinations are not playable in this build.]"  title: "Owen Pritchard"
+          button 0: "The rail."
+          button 1: "The river."
+          button 2: "Red Hollow."
+          button 3: "Not now."
+  0008A1  TLM_MSG_MB_Rail  [box]  "Owen Pritchard: "Iron Junction. Ask for Gussie Lockridge and don't let her feed you. She's lost four trains and blames the weather, and Gussie has never been wrong about weather in her life.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  0008A2  TLM_MSG_MB_River  [box]  "Owen Pritchard: "Greenwater. The woman with the ladle is Opal Starnes. Do what she says until you understand why, and after that use your own judgment. There's a boy with a skiff at the landing.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  0008A3  TLM_MSG_MB_Pike  [box]  "Owen Pritchard: "Red Hollow, by the pike. You'll pass Brigg's gate at the gap. Ask what evidence Esther Quill has heard before you pay for a pardon. A bench on a wagon isn't proof of a fair hearing.""  title: "Owen Pritchard"
+          button 0: "What should I ask Quill?"
+          button 1: "Continue"
+  0008A4  TLM_MSG_MB_Docket  [box]  "Owen Pritchard: "In 2298 I hanged an innocent man. Quill had the counter-evidence before the drop. I checked too late. Take my review copy if you mean to ask for a hearing. It doesn't prove the man on her wagon innocent.""  title: "Owen Pritchard"
+          button 0: "Take the review copy."
+          button 1: "Leave the copy."
+  0008A5  TLM_MSG_MB_DocketIssued  [box]  "Owen Pritchard: "In 2298 I hanged an innocent man. Quill had the counter-evidence before the drop. I checked too late. Take my review copy if you mean to ask for a hearing. It doesn't prove the man on her wagon innocent.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  0008A6  TLM_MSG_MB_CopyIssuedNote  [notification]  "One review copy only. No second copy is given."
+  0008A7  TLM_MSG_MB_CopyPendingNote  [notification]  "Review copy hand-over unconfirmed. None is given again. Report this to the tester."
+  0008A8  TLM_MSG_MB_HandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
+
+[Opening complete. Ask again for Mercy briefs; roads unbuilt.]"  title: "Owen Pritchard"
           button 0: "Continue"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
@@ -463,6 +489,7 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
   script TLM:Act1Walk
            TLM_MQ01 = TLM_MQ01
            TLM_SQ01 = TLM_SQ01
+           TLM_MercyBriefing = TLM_MercyBriefing
            TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
            TLM_G_CaravanMethod = TLM_G_CaravanMethod
            TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
@@ -614,7 +641,28 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
                     TLM_MQ01 = TLM_MQ01
                     Place = 3
 
-Not wired yet (159):
+Quest TLM_MercyBriefing  00089F  "Mercy briefing"  type=SideQuests priority=35 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MercyBriefing
+           TLM_MQ01 = TLM_MQ01
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           Alias_Briefer = alias 0 on TLM_MercyBriefing
+           ReviewCopy = TLM_BOOK_Docket2298
+           HubLine = TLM_MSG_MB_Hub
+           RailLine = TLM_MSG_MB_Rail
+           RiverLine = TLM_MSG_MB_River
+           PikeLine = TLM_MSG_MB_Pike
+           DocketLine = TLM_MSG_MB_Docket
+           DocketIssuedLine = TLM_MSG_MB_DocketIssued
+           CopyIssuedNote = TLM_MSG_MB_CopyIssuedNote
+           CopyPendingNote = TLM_MSG_MB_CopyPendingNote
+           HandOffLine = TLM_MSG_MB_HandOff
+  structure: 2 of 2 stages have one item with its flags subrecord; 1 of 1 objectives have flags; condition marker present
+  stage   10  "Mercy briefing only. The three destinations are not playable in this build."
+  stage   20 [complete]  "Mercy briefing complete. Destinations are not playable in this build."
+  objective 10: "Ask Pritchard about the three roads."  -> alias 0
+  alias  0 Briefer  (reference) [Optional]
+
+Not wired yet (160):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -644,6 +692,7 @@ Not wired yet (159):
   - TLM_NPC_CUTTER_03: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_MarshalLog: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_Docket2298: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTrigger: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is in Fallout4.esm)

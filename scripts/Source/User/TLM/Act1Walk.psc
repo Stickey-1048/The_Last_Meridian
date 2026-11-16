@@ -153,6 +153,13 @@ Group Lines
 	Message Property SayHaskell Auto Const
 EndGroup
 
+Group Preview
+	Quest Property TLM_MercyBriefing Auto Const
+	{TLM_MercyBriefing, with TLM:MercyBriefing on it: the optional Mercy
+	briefing (ACT1-RUNTIME-001). None, or not that script: the section ends
+	as it always did.}
+EndGroup
+
 ; ----------------------------------------------------------------- constants
 
 ; Who is who: the numbers TLM:Act1Talk carries on each alias.
@@ -390,7 +397,7 @@ Function Spoken(int aiWho, Actor akWho)
 		ElseIf aiWho == WHO_CUTTER
 			TalkCutter()
 		ElseIf aiWho == WHO_PRITCHARD
-			TalkPritchard()
+			TalkPritchard(akWho)
 		ElseIf aiWho == WHO_PIKE
 			TalkPike()
 		ElseIf aiWho == WHO_VANE
@@ -547,9 +554,12 @@ EndFunction
 
 ; ---------------------------------------------------------- Owen Pritchard
 
-Function TalkPritchard()
+Function TalkPritchard(Actor akWho = None)
 	{Design 8.3: the dispatch, then what he makes of the road, then the three
-	towns. Reporting the ledger to him is the side quest's route A.}
+	towns. Reporting the ledger to him is the side quest's route A.
+	akWho is whoever was activated, passed on by Spoken; only the Mercy
+	briefing after the chapter uses it. Called without it, this does what it
+	always did.}
 	bool more = CanDecide()
 	TLM:MQ01Quest mainScript = TLM_MQ01 as TLM:MQ01Quest
 	If mainScript
@@ -594,17 +604,58 @@ Function TalkPritchard()
 	EndIf
 	If !TLM_MQ01.GetStageDone(60)
 		Debrief()
-		ShowLine(SayPritchardHandOff)
+		ShowLine(HandOffLine())
 		TLM_MQ01.SetStage(60)
 		Return
 	EndIf
 	If more
+		; The side quest's report keeps its button and its place. Only
+		; Continue goes on to the briefing.
 		If ShowLine(SayPritchardAfterAndMore) == 1
 			Report()
+		Else
+			OfferBriefing(akWho)
 		EndIf
-	Else
+	ElseIf !OfferBriefing(akWho)
 		ShowLine(SayPritchardAfter)
 	EndIf
+EndFunction
+
+TLM:MercyBriefing Function Briefing()
+	{The Mercy briefing's script, if it is bound. None otherwise.}
+	If !TLM_MercyBriefing
+		Return None
+	EndIf
+	Return TLM_MercyBriefing as TLM:MercyBriefing
+EndFunction
+
+Message Function HandOffLine()
+	{The hand-off, with the briefing's footer if the briefing is bound.}
+	TLM:MercyBriefing brief = Briefing()
+	If brief
+		Return brief.HandOffLineOr(SayPritchardHandOff)
+	EndIf
+	Return SayPritchardHandOff
+EndFunction
+
+bool Function OfferBriefing(Actor akWho)
+	{After the chapter: the Mercy briefing (ACT1-RUNTIME-001), given by
+	whoever was activated. True if it took this activation. False, with
+	nothing shown or changed, if it is not bound, nobody was passed on, or
+	the main quest is not complete with its delivery acknowledged; what
+	exactly it requires is the briefing's own script's to decide, and it
+	reads all of it again itself.}
+	If !akWho
+		Return false
+	EndIf
+	If !TLM_MQ01.GetStageDone(100) || TLM_G_MQ01_Done.GetValueInt() != 1
+		Return false
+	EndIf
+	TLM:MercyBriefing brief = Briefing()
+	If !brief
+		Return false
+	EndIf
+	Return brief.Offer(akWho)
 EndFunction
 
 Function Debrief()

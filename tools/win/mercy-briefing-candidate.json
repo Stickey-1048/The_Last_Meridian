@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "candidate": "ACT1-RUNTIME-001: Mercy briefing and the optional review copy",
+  "status": "SOURCE CANDIDATE ONLY. Not compiled by the Papyrus compiler, not built against the game's master, not run in the game. No digest of a compiled script or a built plugin is recorded until one has been measured.",
+  "contract": "docs/design/ACT1_RUNTIME_001.md",
+  "composedFrom": "2efe2dbbaba543f7976a3df86bb81a96463aaa90",
+  "detailsSource": "b280847ef14bfd03eea102d7845675506f51c3fe",
+  "writingSource": "d142104fdc6f72ae556f285a0166c1122893b991",
+  "notUnder": "This manifest is separate from tools/win/world-details-artifact.json, world-natural-artifact.json, world-story-artifact.json and tools/WorldSliceBuilder/expanded-artifact.json. Those pin the 19-script runtime and are unchanged; their packagers refuse this checkout's source.",
+  "scripts": 20,
+  "sourceTextSha256": {
+    "Act1Guide.psc": "BC6B8C70A51CE12C324FDB466D0643510318CE64E834BF775F259B949340F455",
+    "Act1Talk.psc": "CEC5BCC33B63A55E2427FBA4422E2A375E31598E52911DF79B4DEC040207039A",
+    "Act1Walk.psc": "8311DFB920EEE18B98436AE38DB706AFAB1454E03579FB74C7203A7737587B00",
+    "CaseDriver.psc": "04012F79061B9F0F73D8FA353176B5D5267A73F2E810857FD2CE22D60922A241",
+    "Core.psc": "17E9008372C7BF01AF1676DB6EA093C7BBEE7F8CA01EBACEDA5389164C6B00D4",
+    "FixtureProbe.psc": "F670FDD250514576FB6D4C09EF0229FC9287F24649BD4FD4C370CBE3B467B87E",
+    "MQ01CaravanHandAlias.psc": "84CF637A5434F82E7409DC39D1C346A96DEC03ED7EDE6A88181F01B152900378",
+    "MQ01CutterAlias.psc": "F11732576830A95D310FEBECF042C2A228F502CE4FC99A6165368F774AD49FBB",
+    "MQ01PlayerAlias.psc": "F7D4F23B8DBB829F2ED09F62F17D330046E1ACBD2F6C0439E573B3F7CA3DAE25",
+    "MQ01Quest.psc": "4146C08D783C2DB99A8E734CB411536120BBA41DBD61C5989035D0B0D4445B35",
+    "MatrixCases.psc": "72C7DDF351DA609940298DF0592F50919A05FF6A98B9EBCF3EDA306EDD6CD68D",
+    "MercyBriefing.psc": "A5D284748CF9E6C5CD44E8140C3FD0DE48B2535942B030FA777E6BE91B53FD8C",
+    "MessageStageAlias.psc": "BC2ED1F7851038AD0067389D1365E891803083A757A34B1516F0BF6027F198A6",
+    "PlacedPeople.psc": "41E2CF916C809B9EE169EC98F94DBFC082FA544CD5BF43102BDDF80E5EF7FC5F",
+    "PlacedTrial.psc": "A55D13539C8460C55B99FEF9DA4835C68AB0BEF6F14BD0A55EE4FB73606A9E7C",
+    "SQ01Quest.psc": "B9E1849D30F32E3B19A7E6E4BAA08D26EC203885D9FACB20855DB7777EC1157B",
+    "SelfTest.psc": "EF9AB48B3D3300432517F63580A3527E5DF2C50A05A2643073DAB6FC911FF511",
+    "WorldCases.psc": "9317C75366B84C22E07DEE10424465207A68C595D2572A18BB908DD8A9CC6BC2",
+    "WorldEntry.psc": "B9FAE7EE772FF9681CF9D9DDD3A1D04AAB2AC1C5BBFE283BD098F309A68C3C2E",
+    "WorldEntryPlayer.psc": "F7B9D85C3967F6C5A19DB1F6814E3D9954D3AD0503379F61CA3E3B08F184CFDF"
+  },
+  "sourceTextIs": "SHA-256 of each script's UTF-8 text with every line end made LF, as tools/win/Build-WorldDetails.ps1 reads a source. Not a digest of anything compiled.",
+  "unchangedFromTheDetailsPins": [
+    "Act1Guide.psc",
+    "Act1Talk.psc",
+    "CaseDriver.psc",
+    "Core.psc",
+    "FixtureProbe.psc",
+    "MQ01CaravanHandAlias.psc",
+    "MQ01CutterAlias.psc",
+    "MQ01PlayerAlias.psc",
+    "MQ01Quest.psc",
+    "MatrixCases.psc",
+    "MessageStageAlias.psc",
+    "PlacedPeople.psc",
+    "PlacedTrial.psc",
+    "SQ01Quest.psc",
+    "SelfTest.psc",
+    "WorldCases.psc",
+    "WorldEntry.psc",
+    "WorldEntryPlayer.psc"
+  ],
+  "changed": [
+    "Act1Walk.psc"
+  ],
+  "added": [
+    "MercyBriefing.psc"
+  ],
+  "builderSourceTextSha256": {
+    "tools/PluginBuilder/Spec.cs": "668A0D5F481A14E0A6367B54A96C35AFEF34EC7A2583502CDAEA7D2D6D3F39FD",
+    "tools/PluginBuilder/SpecAct1.cs": "92022CDCF2A3E9BD982999727F4C9674C206C04F635AE876AB25015575267D36",
+    "tools/PluginBuilder/SpecMercyBriefing.cs": "D2F9C8063926360B8DF59456B845D02A5D61FC811934A3133851641050E90D0C",
+    "tools/PluginBuilder/SpecGuide.cs": "68DB9FBDE8A98F61863D3DA6E1096ACDE1D4016C4266FD89CEA73C3DC2C8D324",
+    "tools/PluginBuilder/SpecOrientation.cs": "AB0E8D60159C950629A75A2926A7F1AC90CB86DA2D4519A1FDE2C951B297709A",
+    "tools/PluginBuilder/Builder.cs": "519927ED61A0417589E48A35F4DB0564CB44CBECEF4A951D22125445E7863868",
+    "tools/PluginBuilder/formkeys.txt": "4EB2CD2A04CF52A4A035A5C813F86162EA928110D8C43A3B48A6B8D35210306B",
+    "tools/WorldSliceBuilder/WorldStory.cs": "4C2CB1D6474990A9FE39B730BB942104838DAAF70E5B2F38C6EFCC66497DCC03"
+  },
+  "idFile": {
+    "earlierLines": 316,
+    "earlierLinesSha256": "CBCB3388AC93BB3CA63D6FEF410DD95A3AB5BC8D5A7C5B4801B9DA4BA2F18119",
+    "appended": {
+      "TLM_BOOK_Docket2298": 2206,
+      "TLM_MercyBriefing": 2207,
+      "TLM_MSG_MB_Hub": 2208,
+      "TLM_MSG_MB_Rail": 2209,
+      "TLM_MSG_MB_River": 2210,
+      "TLM_MSG_MB_Pike": 2211,
+      "TLM_MSG_MB_Docket": 2212,
+      "TLM_MSG_MB_DocketIssued": 2213,
+      "TLM_MSG_MB_CopyIssuedNote": 2214,
+      "TLM_MSG_MB_CopyPendingNote": 2215,
+      "TLM_MSG_MB_HandOff": 2216
+    }
+  },
+  "document": {
+    "id": "docket_2298",
+    "characters": 629,
+    "textSha256": "1613A058406D0776CBD073D1C6BE83E969FF078A269366140B9D96E832E03B11"
+  },
+  "earlierManifestsSha256": {
+    "tools/win/world-details-artifact.json": "ED3B17FF37CBDBE2D7A991ED463ACC07C68F6D176656D5A9D3B8ADB0283E692E",
+    "tools/win/world-natural-artifact.json": "369D2683992AA4943C1D8A5D7F5381B3B7BB7C626AA3DBFF71C873B06D92135E",
+    "tools/win/world-story-artifact.json": "3CC0CEA8ACDBE237933BC3E6099199BECA6C590BAF8109711C014C0423C44945",
+    "tools/WorldSliceBuilder/expanded-artifact.json": "C7FEC2334BF5A84A06C005F794C109FCD82A70F83CE5923A121144C57FBF4C61"
+  },
+  "records": {
+    "quest": {
+      "TLM_MercyBriefing": {
+        "script": "TLM:MercyBriefing",
+        "startGameEnabled": false,
+        "type": "SideQuests",
+        "priority": 35,
+        "stages": {
+          "10": "briefing begun",
+          "20": "a road's brief was shown; completes the quest"
+        },
+        "objectives": {
+          "10": "Ask Pritchard about the three roads."
+        },
+        "aliases": {
+          "0": "Briefer (optional, filled by script)"
+        }
+      }
+    },
+    "book": "TLM_BOOK_Docket2298",
+    "messages": [
+      "TLM_MSG_MB_Hub",
+      "TLM_MSG_MB_Rail",
+      "TLM_MSG_MB_River",
+      "TLM_MSG_MB_Pike",
+      "TLM_MSG_MB_Docket",
+      "TLM_MSG_MB_DocketIssued",
+      "TLM_MSG_MB_CopyIssuedNote",
+      "TLM_MSG_MB_CopyPendingNote",
+      "TLM_MSG_MB_HandOff"
+    ],
+    "properties": {
+      "TLM:MercyBriefing on TLM_MercyBriefing": {
+        "TLM_MQ01": "TLM_MQ01",
+        "TLM_G_MQ01_Done": "TLM_G_MQ01_Done",
+        "Alias_Briefer": "alias 0 of TLM_MercyBriefing",
+        "ReviewCopy": "TLM_BOOK_Docket2298",
+        "HubLine": "TLM_MSG_MB_Hub",
+        "RailLine": "TLM_MSG_MB_Rail",
+        "RiverLine": "TLM_MSG_MB_River",
+        "PikeLine": "TLM_MSG_MB_Pike",
+        "DocketLine": "TLM_MSG_MB_Docket",
+        "DocketIssuedLine": "TLM_MSG_MB_DocketIssued",
+        "CopyIssuedNote": "TLM_MSG_MB_CopyIssuedNote",
+        "CopyPendingNote": "TLM_MSG_MB_CopyPendingNote",
+        "HandOffLine": "TLM_MSG_MB_HandOff"
+      },
+      "TLM:Act1Walk on TLM_A1 (and on its exterior clone TLM_WS_A1)": {
+        "TLM_MercyBriefing": "TLM_MercyBriefing, in TheLastMeridian.esp"
+      }
+    },
+    "scriptState": {
+      "TLM:MercyBriefing": [
+        "busy",
+        "CopyIssued",
+        "CopyGrantPending"
+      ]
+    },
+    "textMapping": "docs/design/ACT1_RUNTIME_001_MAPPING.json"
+  },
+  "recipe": {
+    "what": "How a workspace package of this candidate is built. Steps 2 to 5 need the game's own master and the Papyrus compiler on a licensed PC; none of them has been run for this candidate. Nothing is installed, and no licensed file goes into the repository or the cloud.",
+    "steps": [
+      "1. python3 tools/mercy_briefing_candidate.py verify   (the checkout is this manifest's source)",
+      "2. dotnet run --project tools/PluginBuilder -- --out <new folder>/plugin --fallout4-esm <Fallout4.esm>   (self-check must pass; read the report: the new quest, book and nine messages, and the ids below)",
+      "3. dotnet run --project tools/WorldSliceBuilder -- <Fallout4.esm> <new folder>/world --story-source <new folder>/plugin/TheLastMeridian.esp --natural --private-shelter-detail   (the same exterior options as the Details package; WorldStory refuses a clone whose walk does not point at the master's TLM_MercyBriefing)",
+      "4. Compile all 20 scripts under scripts/Source/User/TLM with the game's Papyrus compiler (tools/win/Build-Scripts.ps1 compiles every .psc there). A fresh compile; no earlier PEX is reused or assumed byte-identical.",
+      "5. python3 tools/mercy_briefing_candidate.py measure <bundle folder>   (prints the measured digests for a build receipt; it changes no pin)"
+    ],
+    "expectedIds": "The eleven records appended to tools/PluginBuilder/formkeys.txt keep their numbers in every build: the allocator reads that file."
+  },
+  "measured": {
+    "masterSha256": null,
+    "worldSha256": null,
+    "runtime": null,
+    "runtimeManifestSha256": null,
+    "measuredBy": null,
+    "measuredFrom": null,
+    "note": "To be filled from a real build on a licensed PC, by whoever made it. Until then: pending."
+  }
+}

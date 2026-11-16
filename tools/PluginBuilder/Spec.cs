@@ -309,7 +309,7 @@ public static class Spec
 
     // Both take after one of the game's notes, so that they can lie in the
     // world and be read there (the first section's rough cut places them).
-    public static readonly BookSpec[] Books =
+    public static readonly BookSpec[] Books = new BookSpec[]
     {
         new("TLM_BOOK_RailMaintLedger", "Maintenance Ledger, Line 14",
             "LINE 14 - LOCO/CAR MAINTENANCE - IRON JUNCTION YARD\n\n" +
@@ -323,7 +323,7 @@ public static class Spec
             "the line's word to the yard the same week. Last I saw, no one had been sent in his place.\n\n" +
             "Odd, then, that every car I rode on this trip came up on the list as \"signed clean\".\n\n" +
             "Pritchard will want to see this in person.", LooksLikeANote: true),
-    };
+    }.Concat(MercyBriefing.Books).ToArray();
 
     // ----------------------------------------------------------- messages
     public static readonly MessageSpec[] Messages = new MessageSpec[]
@@ -350,7 +350,7 @@ public static class Spec
         // Development only (scenario 11): what is shown when the person of the
         // plugin's own is activated. Not a box: nobody is there to answer one.
         new("TLM_MSG_TrialTalk", null, "The second trial settler has nothing to say yet.", Box: false),
-    }.Concat(Act1.Messages).ToArray();
+    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).ToArray();
 
     // --------------------------------------------------------------- core
     public static readonly QuestSpec Core = new(
@@ -692,5 +692,5 @@ public static class Spec
                 new VanillaProp("MarkerBase", "XMarker", "Static")),
         });
 
-    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest };
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest };
 }
