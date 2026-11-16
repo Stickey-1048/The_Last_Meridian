@@ -551,6 +551,10 @@ Function TalkPritchard()
 	{Design 8.3: the dispatch, then what he makes of the road, then the three
 	towns. Reporting the ledger to him is the side quest's route A.}
 	bool more = CanDecide()
+	TLM:MQ01Quest mainScript = TLM_MQ01 as TLM:MQ01Quest
+	If mainScript
+		mainScript.ResumeCaravanConsequences()
+	EndIf
 	If !TLM_MQ01.GetStageDone(20)
 		int first = 0
 		If more
@@ -580,6 +584,10 @@ Function TalkPritchard()
 			Return
 		EndIf
 		TLM_MQ01.SetStage(50)
+	EndIf
+	If !mainScript || !mainScript.WaitForDeliveryAcknowledgment()
+		Debug.Notification("The caravan handover has not finished. Try again shortly; if it persists, restart this demo.")
+		Return
 	EndIf
 	If !TLM_MQ01.GetStageDone(50)
 		Return
