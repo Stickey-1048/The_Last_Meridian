@@ -43,7 +43,7 @@ Event OnActivate(ObjectReference akActionRef)
 	Else
 		next = "Next: take the dispatch to Sheriff Owen Pritchard in Mercy Crossing, beyond the timber posts. The caravan by the road is optional: Fight means combat; Leave does not itself start a fight."
 		If Exterior
-			next = "Next: follow the marked route to Sheriff Owen Pritchard at the fenced cabin yard. The caravan by the road is optional: Fight means combat; Leave does not itself start a fight. The eastern marked route bypasses the hold-up."
+			next = "Next: find Sheriff Pritchard in the fenced cabin yard beyond the timber gateway. The caravan by the wooden road posts is optional. Fight starts combat; Leave does not. To bypass the hold-up, keep east of it."
 		EndIf
 	EndIf
 	Debug.MessageBox("DEMO GUIDE - DIRECTIONS\n" + here + "\n\n" + next)

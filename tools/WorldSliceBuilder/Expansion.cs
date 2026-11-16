@@ -55,7 +55,14 @@ public static class Expansion
         Place("SoutheastTreeA","TreeMapleForest6",3400,1000,7);
         Place("SoutheastTreeB","TreeMapleForest6",3650,2150,7);
         Place("TownEastTree","TreeMapleForest6",3500,3750,7);
-        return new{layout="WORLD-EXPAND003",newReferences=refs.Count,referenceIds=refs,
+        // Small groups soften the isolated-stem look. Append after the frozen
+        // expansion so every old scenery and story reference keeps its ID.
+        Place("NAT_WreckTreeA","TreeMapleForestsmall1",650,2360,4,0.35f);
+        Place("NAT_WreckTreeB","TreeMapleForestsmall1",800,2210,4,1.1f);
+        Place("NAT_TownTreeA","TreeMapleForestsmall1",3630,3690,4,0.7f);
+        Place("NAT_TownTreeB","TreeMapleForestsmall1",3690,3720,4,1.5f);
+        return new{layout="WORLD-NATURAL004",newReferences=refs.Count,referenceIds=refs,
+            hiddenRoutePosts="All66 Main/Bypass metal route posts retained with InitiallyDisabled in expanded mode; explicit wooden road markers/gateway remain",
             movedDecorativePosts=new[]{new{id="TLM_WS_Main15L",x=2450,y=2550},new{id="TLM_WS_Main16L",x=2440,y=2360}},
             areas=new[]{new{name="Wreck",purpose="Real boxcar/bogie behind the unchanged evidence foreground"},new{name="Caravan road",purpose="Open encounter and bypass, framed by sparse landscape assets"},new{name="Mercy",purpose="Existing rest/debrief cabin; open freight/repair annex and rear supply shelter; visible passable gateway"}},
             buildings=new[]{new{name="Freight/repair shelter",center=new{x=1880,y=2800},floor=new{minX=1624,maxX=2136,minY=2672,maxY=2928},openFrontWidth=504},new{name="Supply shelter",center=new{x=3050,y=3800},floor=new{minX=2794,maxX=3306,minY=3672,maxY=3928},openFrontWidth=504}},
