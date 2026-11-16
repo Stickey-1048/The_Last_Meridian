@@ -7,9 +7,12 @@ using System.Text.Json;
 
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
+bool fenceComparison=args.LastOrDefault()=="--private-fence-ab";
+if(fenceComparison)args=args[..^1];
 bool natural=args.LastOrDefault()=="--natural";
 bool expanded=natural||args.LastOrDefault()=="--expand";
 if(expanded)args=args[..^1];
+if(fenceComparison&&!natural){Console.Error.WriteLine("Private fence comparison requires --natural; no default/yard substitution.");return 2;}
 if(args.Length!=2&&(args.Length!=4||args[2]!="--story-source")){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory> [--story-source <TheLastMeridian.esp>] [--expand|--natural]");return 2;}
 var input=Path.GetFullPath(args[0]);var output=Path.GetFullPath(args[1]);
 var comparison=OperatingSystem.IsWindows()?StringComparison.OrdinalIgnoreCase:StringComparison.Ordinal;
@@ -53,6 +56,21 @@ var land=new Landscape(mod.GetNextFormKey(),Fallout4Release.Fallout4){
 foreach(var quadrant in Enum.GetValues<Quadrant>())land.Layers.Add(new BaseLayer {Header=new LayerHeader {Texture=new FormLink<ILandscapeTextureGetter>(texture.FormKey),Quadrant=quadrant,LayerNumber=0}});
 land.Textures.Add(texture.ToLink<ILandscapeTextureGetter>());cell.Landscape=land;
 var placements=new List<object>();
+// PRIVATE A/B only: sixteen boundary specimens, never Yard or a global swap.
+// No allocation, position, rotation, enable-state, material or terrain change.
+var fenceComparisonIds=new HashSet<string>(StringComparer.Ordinal);
+foreach(var side in new[]{"South","West"})for(int i=4;i<=7;i++)fenceComparisonIds.Add("Boundary"+side+i);
+foreach(var side in new[]{"North","East"})for(int i=21;i<=24;i++)fenceComparisonIds.Add("Boundary"+side+i);
+var fenceSwaps=new List<object>();
+var specimen=fenceComparison?master.Statics.Single(x=>x.EditorID=="PicketFenceStr02"):null;
+if(specimen!=null){
+ var control=master.Statics.Single(x=>x.EditorID=="PicketFenceB_PW_Fence01");
+ var a=control.ObjectBounds;var b=specimen.ObjectBounds;
+ if(control.FormKey.ID!=0x125C67||specimen.FormKey.ID!=0x3622D||
+    a.First.X!=-64||a.First.Y!=-2||a.First.Z!=0||a.Second.X!=64||a.Second.Y!=2||a.Second.Z!=96||
+    b.First.X!=-64||b.First.Y!=-15||b.First.Z!=0||b.Second.X!=64||b.Second.Y!=5||b.Second.Z!=95)
+  throw new InvalidDataException("Private fence identity/bounds differ from audited master; no fallback.");
+}
 var routeObstacles=new List<(string Id,float X,float Y,float MinX,float MaxX,float MinY,float MaxY)>();
 FormKey Static(string id)=>master.Statics.Single(x=>x.EditorID==id).FormKey;
 FormKey Furniture(string id)=>master.Furniture.Single(x=>x.EditorID==id).FormKey;
@@ -62,6 +80,12 @@ void Put(string id,FormKey key,float x,float y,float z=0,float yaw=0){
  if(expanded&&id=="Main15L"){x=2450;y=2550;}
  if(expanded&&id=="Main16L"){x=2440;y=2360;}
  var p=new PlacedObject(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_WS_"+id,Position=new P3Float(x,y,z),Rotation=new P3Float(0,0,yaw)};
+ if(specimen!=null&&fenceComparisonIds.Contains(id)){
+  // Retain the already allocated reference; swap only its base. Geometry
+  // checks below intentionally use the specimen's actual rotated bounds.
+  fenceSwaps.Add(new{id=p.EditorID,form=p.FormKey.ToString(),oldBase=key.ToString(),newBase=specimen.FormKey.ToString(),x,y,z,yaw});
+  key=specimen.FormKey;
+ }
  // Keep the original route-reference allocation, but hide the dense paired
  // bollards in the expanded landscape. Explicit road markers and the town
  // gateway remain visible; the default shell keeps its original route posts.
@@ -191,5 +215,10 @@ File.WriteAllText(Path.Combine(output,"world-slice.json"),JsonSerializer.Seriali
 if(story!=null)File.WriteAllText(Path.Combine(output,"world-story.json"),JsonSerializer.Serialize(new{sourcePlugin=Path.GetFileName(args[3]),sourceSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(args[3]))),masters=read.ModHeader.MasterReferences.Select(m=>m.Master.ToString()),wiring=story,runtimeRequirement="Reviewed 7f3 departure runtime plus this candidate's exterior Guide and WorldEntry scripts; ESP hash alone does not establish script version"},new JsonSerializerOptions{WriteIndented=true}));
 if(expansion!=null)File.WriteAllText(Path.Combine(output,"world-expansion.json"),JsonSerializer.Serialize(expansion,new JsonSerializerOptions{WriteIndented=true}));
 if(expansion!=null)File.WriteAllText(Path.Combine(output,"world-clearance.json"),JsonSerializer.Serialize(new{method="Actual transformed ObjectBounds AABBs, player-height0..128; sampled every1/100segment; not Havok/navmesh proof",routeRadius=96,standingRadius=128,protectedPoints,obstacles=routeObstacles.Select(p=>new{id=p.Id,minX=p.MinX,maxX=p.MaxX,minY=p.MinY,maxY=p.MaxY})},new JsonSerializerOptions{WriteIndented=true}));
+if(fenceComparison){
+ if(fenceSwaps.Count!=16||gotCell.Temporary.OfType<IPlacedObjectGetter>().Count(r=>fenceComparisonIds.Contains((r.EditorID??"").Replace("TLM_WS_","",StringComparison.Ordinal))&&r.Base.FormKey==specimen!.FormKey)!=16)
+  throw new InvalidDataException("Private fence comparison did not roundtrip sixteen exact base substitutions.");
+ File.WriteAllText(Path.Combine(output,"private-fence-comparison.json"),JsonSerializer.Serialize(new{mode="PRIVATE sixteen-reference visual A/B; no native color/material/collision acceptance",control="00125C67 PicketFenceB_PW_Fence01",specimen="0003622D PicketFenceStr02",controlBounds=new[]{-64,-2,0,64,2,96},specimenBounds=new[]{-64,-15,0,64,5,95},unchangedYardPanels=34,unchangedBoundaryControls=104,policy="Same allocated form IDs, position, rotation, flags and pitch; no Z correction or material swap",swaps=fenceSwaps},new JsonSerializerOptions{WriteIndented=true}));
+}
 Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;
