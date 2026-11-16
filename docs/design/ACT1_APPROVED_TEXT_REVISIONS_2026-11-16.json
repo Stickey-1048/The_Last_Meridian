@@ -1,0 +1,187 @@
+{
+  "format": "iris-creative-revision-instructions-1",
+  "source": "6f21643ec36c1e0511dadd59e28e5ea3b4552a82",
+  "scope": "Approved creative prose for Maya/Charles integration. Not an executable patch or implemented-game claim. Resolve references and validate the actual intake format after applying.",
+  "display_name_replacements": {
+    "Wilhelmina Tarrow": "Wilhelmina Tupper",
+    "Billie Tarrow": "Billie Tupper",
+    "Hobart Greer": "Hobart Blevins",
+    "Mose Pruitt": "Mose Rafferty",
+    "Catfish Pruitt": "Catfish Rafferty",
+    "Temperance Vickers": "Temperance Beckett"
+  },
+  "stable_id_rule": "Retain tarrow, greer, pruitt, vickers and all other existing IDs. Replace remaining surname-only player-facing/prose occurrences; retain old spellings only in explicit migration/decision history.",
+  "remove_fair_dialogue_nodes": ["voss_default", "voss_line", "voss_know", "voss_beef"],
+  "remove_fair_stage": {
+    "file": "quests/tlm_mq03.json",
+    "n": 30,
+    "reason": "No face-to-face Voss cameo in this version. Remove references/actions specific to that optional conversation; do not renumber other proposed stages. Author-level voss identity may remain as the distant assassin, never a player-visible name at the fair."
+  },
+  "talk_text_replacements": [
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "grey_offer",
+      "text": "Grey. I survey. Your reservoir stands at a head of two hundred and six feet and nobody has drawn a watt from it in two centuries. The Directorate could light this valley in a year. First you should ask what we would need to control."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "grey_train",
+      "text": "The yard's copy lists outstanding repairs under a clearance nobody can verify. Ask to see the original inspection page. A signature is not an inspection, whatever confidence people place in it."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "flint_line",
+      "text": "Watch the flags, then the sight. Keep your finger clear till Pike calls it. Your turn."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "flint_hat",
+      "text": "He had a boat waiting. That tells me he chose the ground before he took the shot. Find the landing. Someone tied that skiff up.",
+      "incoming_button_change": {"from": "He tipped his hat to me.", "to": "What does the landing tell us?"}
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "flint_beaten",
+      "text": "Hm. Pike's dividers agree with you. Enjoy the beef. I've business beyond the shooting line."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "flint_roof",
+      "text": "Don't touch it yet. Seven of these in six years. That makes eight. Left on the rail where anyone could find it. Someone wants an audience. I mean to find out who paid for one."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "flint_who",
+      "text": "If I had a name I'd not be collecting brass. A distant coat, a bright gun, a boat already waiting. Somebody gave him the courier's road and hour. Find me at Pike's if you learn more than that. I'll trade."
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "dunmore_tells",
+      "text": "Silver. Square stamp. We watched the Tellico road for Gantt's freight if it was held up, and took his pouch if he came through. Nobody named a wreck or a passenger. The wagon was my own improvement."
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "cutter_rope",
+      "text": "You. You were on the Tellico road. Reese is dead and they'll hang me for his notion. We were paid to watch for the marshal's pouch if his freight was held up. Silver with a square on it. The wagon wasn't in the bargain. That's what I know."
+    },
+    {
+      "file": "talk/tlm_mq02.json",
+      "id": "pritchard_sends_talbot",
+      "text": "Then we hear what the flags have to offer. Talbot will post the notice. The roads are still there if you change your mind; I won't call a refusal a promise.",
+      "incoming_button_change": {"from": "Send your deputy.", "to": "Call the fair without my report."},
+      "stage_contract": "Stage50 becomes the deliberate fair-without-report path. It does not send Talbot into a guaranteed ambush. Remove automatic stage70 Talbot injury and the corresponding default talbot_shot assignment; do not renumber other stages. Any later Talbot injury needs its own clearly presented event."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "pruitt_chain",
+      "text": "Here's the chain. One good cut and we can take the barge through the Chute. The boiler would burn the Queen instead. Thirty people are still aboard - crew, cooks, the fiddler. If we fire it now, some won't get off. Say what you're ordering.",
+      "button_change": {"from": "Light the boiler and get clear.", "to": "Burn the occupied Queen."}
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "pruitt_burned",
+      "text": "The cook was still aboard. The fiddler too; she taught me to waltz. We knew they were there. I can hear them in the water. Don't tell me this was only a boat."
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "dorn_terms",
+      "text": "A line, where your powder met my wall. I answer for this gallery; you for yourself. Keep your passage above it and carry our terms to the mine. I'll get the shift to the cage. Your people can answer when the eleven are home.",
+      "button_change": {"from": "Set a line here. Both sides swear to it.", "to": "I'll keep the line and carry your terms."}
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "dorn_no_head",
+      "text": "Then don't swear for them. One honest name is enough for a passage. Bring their answer back when they have one.",
+      "button_change": {"from": "Then I swear it. A line, here.", "to": "For my own passage, I swear it."}
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "dorn_sworn",
+      "text": "Take your eleven. They eat like forgemen and complain like children. My House will hold its side while the mine hears the terms. And tell the one who knocks: thank you is three, a rest, and one."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "belden_offer",
+      "text": "Tomas Belden, Commonwealth provisioning. Take a bowl if you want; supper isn't a signature. Our stores can carry a town through a bad season. One list tells us where the need is. Somebody must answer for what it leaves out."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "belden_list",
+      "text": "A provisioning committee. It reaches people a merchant might never trust with credit. It also puts mistakes behind an office door. Ask to see your entry and who can correct it. I ought to have better answers than a committee's address."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "belden_leave",
+      "text": "There is an appeal, and a committee can delay it. I won't tell you that is the same as a door you can open yourself. When every pantry shares a winter store, leaving has a cost. You should know who sets it before you sign."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "brigg_price",
+      "text": "A gate at each gap. A levy by head and wheel. Arms registered; militias under my command. I can patrol this road, not put a decent officer behind every desk. A bad one will have too much power. That's a price. I still mean to collect."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "grey_cost",
+      "text": "Access to the works, instruments on the hill, operating records. Outages while we test. Need our engineers long enough and you may find you cannot refuse them. Ask who may end the agreement. My instructions have no satisfactory answer."
+    }
+  ],
+  "character_field_replacements": [
+    {"id": "grey", "field": "secret", "value": "He knew the courier was coming and when. He did not stop the shot and he did not order it."},
+    {"id": "grey", "field": "wants", "value": "Leave to set his instruments on the camp-ground hill, and agreements that turn a temporary survey into lasting access."},
+    {"id": "grey", "field": "does_not_know", "value": ["Whether the valley will trade control of its infrastructure for restored power", "That Edda Flint has been tracking his footprints as well as the shooter's"]},
+    {"id": "voss", "field": "secret", "value": "He has reconnoitred the landing and arranged a skiff. He intends the silver case to be found."},
+    {"id": "voss", "field": "wants", "value": "The courier silent and the route back to the river clear."},
+    {"id": "voss", "field": "wrong_about", "value": "He thinks a prepared escape will keep the inquiry fixed on the gun instead of the payment behind it."},
+    {"id": "voss", "field": "knows", "value": ["The courier's road and the hour", "The fairground roof and the waiting landing"]},
+    {"id": "voss", "field": "does_not_know", "value": ["Which witnesses will retain the courier's evidence", "That Ada Pike has kept the drawings from the ammunition-tooling commission"]},
+    {"id": "flint", "field": "secret", "value": "She has been following the surveyor's movements as well as the silver cases, and has not told him."},
+    {"id": "vane", "field": "secret", "value": "For six years he has taken Blackstone silver to keep the valley's roads slow and its towns apart. The present rail attacks, held grain, chained mine and road interception are separate commissions within that network; each recipient has purposes of their own."},
+    {"id": "dunmore", "field": "secret", "value": "The Cutters were paid to watch the Tellico road for Gantt's delayed or stranded freight and seize the marshal's pouch if it reached the road. Robbing Fenwick's wagon was their own addition."},
+    {"id": "dunmore", "field": "knows", "value": ["The hire was paid in stamped silver through an intermediary", "The target was the marshal's pouch, not a named passenger or a guaranteed wreck"]}
+  ],
+  "conditional_roark_lines": {
+    "implementation_rule": "Distinguish the explicit order from an expired, warned local deadline. Do not use the same accusation for both. Add reviewed intake facts/conditions if necessary; no unsupported OR syntax. Neither condition may be set for an unvisited road or simply by calling the fair.",
+    "ordered_charges": "It stopped a little before noon. I was listening. I'll always know the hour. You heard them, and you told him to fire. I've the baby to feed, or I'd do it now. But you look behind you, on the road. You look behind you.",
+    "warned_deadline_abandoned": "It stopped a little before noon. Blevins turned the key. I looked for help until there was nobody left to ask. If you come back through this town, don't tell me you never heard the knocking."
+  },
+  "quest_text_contracts": {
+    "mq02": "One completed road opens the fair; the deliberate fair-without-report path also works. Untouched roads do not settle automatically as the worst outcome. Local irreversible events require explicit warning, player entry and a clearly armed decision/timer. Ordinary menu pauses and time spent on another road do not trigger atrocities.",
+    "mq02c_stage15_log": "The Cutters were paid in stamped silver to watch for Gantt's delayed or stranded freight and seize the marshal's pouch. They were not told of an exact wreck or a particular survivor.",
+    "mq02c_stage51_log": "The shift is up. You promised to respect the gallery line on your own passage and carry the House's terms to the mine. Red Hollow has not yet ratified a town-wide agreement.",
+    "mq02c_hollow_line_flag": "A personal passage undertaking and temporary local truce were made; this is not blanket authority to bind Red Hollow or a main-faction allegiance.",
+    "mq02c_stage53_rule": "Only an explicit informed order with the shift still below, or an expired locally armed and clearly warned deadline. No firing on unvisited/merely deferred content.",
+    "mq02c_fire_button": "Seal it. Leave the shift below.",
+    "mq02b_fire_button": "Burn the occupied Queen.",
+    "mq02b_queen_burned_flag": "The occupied Queen burned; people were endangered. Do not assert an exact death count unless actually tracked by the implementation.",
+    "mq03_premise": "Decoration Day brings four flags and practical offers to one table. A courier arrives with a chained case. The shot comes from the meeting-shed roof. The assassin is only a distant departing figure, not a contestant or a face-to-face acquaintance.",
+    "mq03_stage41_log": "You searched the meeting-shed roof and the river landing for the shooter's trail. A skiff was already pulling away in the distance.",
+    "mq03_choice41_label": "(Search the roof and landing)",
+    "mq03_choice41_now": "A silver case on the bell-rail and evidence of a prepared escape. No promised chance to catch or kill a target who is made invulnerable.",
+    "mq03_choice41_later": "You have useful observations of the route. Flint is willing to compare evidence. The crowd is left to Brigg.",
+    "mq03_saw_the_shooter_flag": "The player observed a distant departing figure and the prepared route, not a confirmed face or identity.",
+    "mq03_shot_and_occupation_rule": "Arm the courier scene after the player arrives and has been given the fair's choices. Do not fire the shot from an unvisited map or auto-occupy because the player was elsewhere. Brigg's occupation is his decision, distinct from arranging the assassination; the demand and opportunity to intervene must be visible. Do not impose chapter-long immunity on every interactable delegate as an unexplained substitute for a fallback design."
+  },
+  "pike_ammunition_tooling": {
+    "decision": "Retain the twelve-year-old commission, but distinguish a projectile mould from case-making/marking tools. The silver case clue bears a trace from a complete ammunition-tooling commission, not a claim that a bullet mould cast a cartridge case.",
+    "replacement_secret": "Twelve years ago a stranger paid her a year's keep for an ammunition-tooling commission: a projectile mould and case-marking tools. Since the fair she has recognised a filed-off tool mark on the silver case. She knew the work was unusual, not what the customer would later do with it."
+  },
+  "pritchard_quill_history": {
+    "date": "spring 2298",
+    "decision": "Retain the wrongful execution and both officials' responsibility. The special challenge requires learned corroborating evidence; it earns adjournment and review, not a magic pardon or immunity for the current accused.",
+    "challenge_button": "Show the 2298 docket. Demand a hearing.",
+    "quill_response": "The court will adjourn. This docket goes with the old one for review, and the accused stays alive to answer it. If you mean to put Owen Pritchard on that bench, bring him as well."
+  },
+  "ballad_endings": {
+    "decision": "Write all three actual outcome variants before claiming three exist. Treat Granger's account as reported opinion, not objective past, gender, ammunition count or player motive. Verify actor survival separately where the ballad names it.",
+    "saved": "The cart came through the Cutters' hands; its people reached the door.\nThe stranger left a road behind worth travelling once more.\nNo singer owns the reason, and no verse can set the fee:\nAsk those who walked to Mercy what that mercy ought to be.",
+    "evaded_or_missed": "News came down to Mercy with a space beside the rein.\nThey spoke of Abel Rudd that night and spoke his name again.\nWhat passed between the strangers is a thing I did not see.\nI set the names upon the sheet; the judgement isn't free.",
+    "exploited": "They counted out a wagon's worth and called the counting fair.\nThe quiet after trading had a name that wasn't there.\nYou ask me who was paid for it; I only sell the sheet.\nTo call it trade is easy from a dry and distant seat."
+  },
+  "validation_requirements": [
+    "Update QUESTIONS_FOR_OWNER and OVERVIEW to resolved delegated decisions; preserve original proposal in Git history.",
+    "Mirror decisions consistently across character metadata, talk, quests, documents and canon/registry; do not edit only the six spoken lines.",
+    "Search for all exact/near names, recognition/forgotten-memory/foreknown-survivor cues, obsolete Voss cameo/stage30 links and contradictory six-year acute-emergency claims.",
+    "Keep Chapters1 quest stages/scripts/installed runtime unchanged. Approved prose remains an intake proposal until mechanical contracts, review and native implementation.",
+    "Validate all dialogue targets, stage/fact references, conditions, branch precedence and exactly-once effects in the actual supported intake format. No invented capabilities or test claims."
+  ]
+}

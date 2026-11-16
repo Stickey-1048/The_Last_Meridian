@@ -47,6 +47,12 @@ Ancillary faction quests and local settlement arcs can offer allies, trade, equi
 ## Conflict resolution protocol
 This file overrides older chat drafts. Proposals changing a LOCKED item require a documented design decision and user approval. PROVISIONAL entries can be refined but must be logged. Fallout lore compatibility is a separate audit, not a claim of official canon.
 
+## Act I decisions [OWNER-DELEGATED CREATIVE REVIEW, 2026-11-16]
+
+The owner delegated the Act I proposal decisions to the creative team and directed that the results enter canon and return to Claude engineering. [The complete decision amendment](docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md) is authoritative for those questions: Vane funds independent local hands; Reuben Ostrander lives under the Dole identity and Lockridge forged inspections; the opening wreck is criminal neglect, distinct from later rail sabotage; one limited Helga Dorn contact is allowed; Voss remains a distant assassin at the fair; early personal-recognition hints are deferred. Player history and the existing Chapter 5 reveal boundary remain unsettled as previously specified.
+
+The amendment also adopts the naming expansion, credible four-faction presentation and informed-consequence rules. No unvisited-road atrocity or automatic punishment for refusing a quest is authorized. The submitted Chapters 2–4 JSON must be revised before acceptance; these decisions do not certify implementation or alter the installed prototype. Existing locked geography, four principal factions, act structure and targeted recent-memory erasure remain in force.
+
 ## Deep-centered story revision [PROPOSED; requires owner lock]
 The Deep is more than an optional strengthening ally: it is the protagonist's ancestral city and key political stakes. Descendants of an exile/purge approximately two generations prior now live on the surface. Player can keep the Deep autonomous, ally or integrate with a principal faction, or establish Deep-led regional ascendancy. Keep exactly four principal endgame power systems; Deep ascendancy is a distinct outcome/coalition configuration rather than an automatically required fifth campaign. Full proposal in [docs/child-of-the-deep.md](docs/child-of-the-deep.md).
 

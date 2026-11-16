@@ -1,5 +1,7 @@
 # Act I, turned up: Chapters 2 to 4
 
+**16 November decision update:** this overview preserves the submitted proposal. [The adopted creative decisions](../../../../docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md) supersede conflicting recognition, naming, foreknowledge, Voss-cameo and automatic-catastrophe proposals below. The JSON and prose still require revision; this is not an accepted playable chapter.
+
 2026-11-16. Written at the owner's request ("it's all been very boring, push into things more"). **A proposal. Nothing here is canon, nothing is built, and no canonical file, design or script was changed.** It is in the story-intake format and passes `python3 tools/check_story_intake.py --strict assets/incoming/act1/story`. Every decision that is the owner's is in [QUESTIONS_FOR_OWNER.md](QUESTIONS_FOR_OWNER.md).
 
 Who wrote it: the coding assistant in this session, not the usual writing partner. The owner said to ask Maya to bring the other agents in if more story was needed; no other agent session was reachable from here, so it was written directly.
