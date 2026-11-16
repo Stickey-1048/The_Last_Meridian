@@ -44,6 +44,11 @@ python3 tools/check_consistency.py
 # and the check has to notice a folder that does not. Whatever has arrived so far is checked too, and reported:
 # that it does not fit yet is for its writer to put right, not a fault of the build.
 python3 tools/check_story_intake.py --self-test docs/design/story_intake_example | grep -v "left blank"
+# Versioned entry/continuation semantics and the reviewed source proposal are
+# hard checks. These reference histories do not execute any game quest.
+python3 tools/check_story_intake.py --strict --self-test docs/design/story_intake_example_v2
+python3 tools/test_story_intake_v2.py
+python3 docs/design/ACT1_CHARLES_REVISION_CHECKS.py
 if ls assets/incoming/act1/story/*.json assets/incoming/act1/story/*/*.json >/dev/null 2>&1; then
   python3 tools/check_story_intake.py --strict assets/incoming/act1/story | head -12 || true
 fi
