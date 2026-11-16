@@ -15,9 +15,42 @@
   {
    "id": "ballad_six_rounds",
    "kind": "notice",
-   "title": "The Stranger and the Six Rounds",
-   "found": "Sold by Tolly Granger at the town gate for a penny, from the day after the stranger arrives. This is the sheet he prints when the wagon was saved; he has two others set in type",
-   "text": "THE STRANGER AND THE SIX ROUNDS\nA new ballad. T. Granger, printer. One penny.\n\nCome all you valley people and listen to my song,\nAbout a morning on the line when everything went wrong.\nThe train lay in the river and the marshal he lay dead,\nAnd one walked out of all of them with ashes on the head.\n\nSix rounds had the stranger, six rounds and no more,\nAnd met the Tellico Cutters with a wagon on the floor.\nSays Dunmore, take a share of it, or walk and save your skin.\nThe stranger never said a word. The stranger just walked in.\n\nNow some say it was mercy and some say it was pay,\nAnd some say that the stranger had been coming all the way.\nI only know what's told me and I set it as I can:\nSix rounds went up the Tellico. And five came back again.\n\n(Second and third endings available on application to the printer.)",
+   "title": "The Stranger and the Tellico Road",
+   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. This sheet is sold when the recorded Chapter 1 outcome is saved",
+   "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nThe word came down that trouble met an unexpected hand.\nWhat happened past the telling wasn't mine to understand.\nNo singer owns the reason, and no verse can set the fee:\nAsk those who came to Mercy what that mercy ought to be.",
+   "sources": [
+    "R7",
+    "R9"
+   ]
+  },
+  {
+   "id": "ballad_six_rounds_evaded_or_missed",
+   "kind": "notice",
+   "title": "The Stranger and the Tellico Road",
+   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. This sheet is sold when the recorded Chapter 1 outcome is evaded, and also when it is missed",
+   "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nNews came down to Mercy with a space beside the rein.\nThey argued who had seen the road, then argued it again.\nWhat passed between the strangers is a thing I did not see.\nI set the tale upon the sheet; the judgement isn't free.",
+   "sources": [
+    "R7",
+    "R9"
+   ]
+  },
+  {
+   "id": "ballad_six_rounds_exploited",
+   "kind": "notice",
+   "title": "The Stranger and the Tellico Road",
+   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. This sheet is sold when the recorded Chapter 1 outcome is exploited",
+   "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nThey counted out a wagon's worth and called the counting fair.\nThe quiet after trading had a name that wasn't there.\nYou ask me who was paid for it; I only sell the sheet.\nTo call it trade is easy from a dry and distant seat.",
+   "sources": [
+    "R7",
+    "R9"
+   ]
+  },
+  {
+   "id": "ballad_six_rounds_unconfirmed",
+   "kind": "notice",
+   "title": "The Stranger and the Tellico Road",
+   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. The common body alone: an unconfirmed account, for use only while no Chapter 1 outcome is recorded",
+   "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.",
    "sources": [
     "R7",
     "R9"
@@ -70,7 +103,7 @@
    "kind": "notice",
    "title": "The Queen of Tellico: Handbill",
    "found": "Nailed to every piling at Greenwater landing, and floating in the lake",
-   "text": "TONIGHT AND EVERY NIGHT\naboard the palatial sternwheeler\nQUEEN OF TELLICO\nCommodore L. Hatcher, Prop.\n\nFARO. MONTE. THE WHEEL.\nMusic by Miss Dessie and her Lake Orchestra.\n\nNEW THIS SEASON: play for CORN.\nFinest valley meal, by the cup, at the high table.\nWhy queue for a ladle when you may WIN A SACK?\n\nSkiffs leave the steeple on the hour.\nGentlemen will check their arms. Ladies need not.\n\nThe management regrets that it cannot extend credit\nto residents of Greenwater.",
+   "text": "TONIGHT AND EVERY NIGHT\naboard the palatial sternwheeler\nQUEEN OF TELLICO\nCommodore L. Hatcher, Prop.\n\nFARO. MONTE. THE WHEEL.\nMusic by the Lake Orchestra.\n\nNEW THIS SEASON: play for CORN.\nFinest valley meal, by the cup, at the high table.\nWhy queue for a ladle when you may WIN A SACK?\n\nSkiffs leave the steeple on the hour.\nGentlemen will check their arms. Ladies need not.\n\nThe management regrets that it cannot extend credit\nto residents of Greenwater.",
    "sources": [
     "R6",
     "R9"
@@ -122,8 +155,8 @@
    "id": "chalk_message",
    "kind": "note",
    "title": "Chalk on a Shovel Blade",
-   "found": "On a shovel sent up in the cage from the Nine level, the night before the Mouth was chained. Greer keeps it under his cot with the lamp",
-   "text": "WE ARE 11. ALL LIVING.\nAIR BAD AT THE FACE. WATER TO THE KNEE.\nBROKE THROUGH AT THE END OF 9.\nIT IS NOT ROCK BEHIND. IT IS A ROOM.\nSOMEBODY CUT IT.\n\nWE KNOCKED FOR YOU.\nSOMETHING KNOCKED BACK\nAND IT WAS NOT YOU.\n\nSEND THE CAGE.\nPELL R.",
+   "found": "On a shovel sent up in the cage from the Nine level, the night before the Mouth was chained. Blevins keeps it under his cot with the lamp",
+   "text": "WE ARE 11. ALL LIVING.\nAIR BAD AT THE FACE. WATER TO THE KNEE.\nBROKE THROUGH AT THE END OF 9.\nIT IS NOT ROCK BEHIND. IT IS A ROOM.\nSOMEBODY CUT IT.\n\nWE KNOCKED FOR YOU.\nSOMETHING KNOCKED BACK\nAND IT WAS NOT YOU.\n\nSEND THE CAGE.\nPELL",
    "sources": [
     "R5",
     "R9"
@@ -167,7 +200,7 @@
    "kind": "ledger",
    "title": "A Page of the Black Book",
    "found": "The book in the safe in Vane's counting room. Page 4117 is the last one written",
-   "text": "4117\n\nRAIL    Cut, Sawtooth. By E.D.                 30   pd.\nRIVER   Barge held, Greenwater. By L.H.        40   pd.\n        NOTE: L.H. has not released. Not paid the second 40.\nMINE    Mouth kept shut. By H.G.               25   pd.\nROAD    Tellico. Four hands, to wait. By R.D.  20   pd.\n        NOTE: R.D. exceeded. A wagon. I did not ask for a wagon.\n\nPaid out, the month                           115\n\nRECEIVED, by the night freight                150\n        from  [a small square, drawn in ink]\n\nBalance to the school roof, the clinic stove,\nand Widow Tansley's account, which I have marked paid.\n\nSix years. No garrison. No list. No gate.\nI should like it noted that it worked.",
+   "text": "4117\n\nRAIL    Cut, Sawtooth. By E.D.                 30   pd.\nRIVER   Barge held, Greenwater. By L.H.        40   pd.\n        NOTE: L.H. has not released. Not paid the second 40.\nMINE    Mouth kept shut. By H.B.               25   pd.\nROAD    Tellico. Four hands, to wait. By R.D.  20   pd.\n        NOTE: R.D. exceeded. A wagon. I did not ask for a wagon.\n\nPaid out, the month                           115\n\nRECEIVED, by the night freight                150\n        from  [a small square, drawn in ink]\n\nBalance to the school roof, the clinic stove,\nand a widow's account, which I have marked paid.\n\nSix years. No garrison. No list. No gate.\nI should like it noted that it worked.",
    "sources": [
     "R7",
     "R9"
@@ -178,7 +211,7 @@
    "kind": "letter",
    "title": "Last Testament of S. Vane",
    "found": "In the safe, under the black book",
-   "text": "I, Silas Vane, merchant, of Mercy Crossing, being of sound mind\nand entirely aware of what is likely to become of me:\n\nTo Temperance Vickers, the trading post, its stock and its good\nwill, such as remains. She will run it better than I have.\nShe is to burn the second book unread. She will not.\n\nTo Owen Pritchard, my chess set, and my apology,\nwhich he will understand in time and not accept.\n\nTo the town of Mercy Crossing, every debt owing to me, cancelled.\n\nTo myself, nothing. I have had my share.\n\nI do not know who sent the silver. I thought it better not to.\nThat is the only cowardice I will own to.\n\nS. V.",
+   "text": "I, Silas Vane, merchant, of Mercy Crossing, being of sound mind\nand entirely aware of what is likely to become of me:\n\nTo Temperance Beckett, the trading post, its stock and its good\nwill, such as remains. She will run it better than I have.\nShe is to burn the second book unread. She will not.\n\nTo Owen Pritchard, my chess set, and my apology,\nwhich he will understand in time and not accept.\n\nTo the town of Mercy Crossing, every debt owing to me, cancelled.\n\nTo myself, nothing. I have had my share.\n\nI do not know who sent the silver. I thought it better not to.\nThat is the only cowardice I will own to.\n\nS. V.",
    "sources": [
     "R9"
    ]

@@ -7,43 +7,39 @@
  "cast": ["pritchard", "talbot", "granger"],
  "places": [
   {"id": "warden_office", "name": "The Warden's office, Mercy Crossing", "what": "Pritchard's desk, with the three tokens on it and a drawer he does not open"},
-  {"id": "town_gate", "name": "The town gate", "what": "Where Talbot stands, and where he is carried back in if the stranger will not go"}
+  {"id": "town_gate", "name": "The town gate", "what": "Where Talbot stands"}
  ],
  "stages": [
   {"n": 10, "set_by": "Speaking to Pritchard once Six Rounds to Mercy is complete", "log": "Pritchard has three troubles and one deputy. A rail spike for Iron Junction. A grain scoop for Greenwater. A brass tag for Red Hollow. He says pick one up."},
   {"n": 20, "set_by": "The Night Mail (mq02a) completing", "log": "Iron Junction is settled, one way or another."},
   {"n": 30, "set_by": "The Queen of Tellico (mq02b) completing", "log": "Greenwater is settled, one way or another."},
   {"n": 40, "set_by": "What Knocks in Red Hollow (mq02c) completing", "log": "Red Hollow is settled, one way or another."},
-  {"n": 50, "set_by": "The button 'Send your deputy.' at Pritchard's desk", "log": "You told Pritchard to send his deputy. Jonah Talbot went up the pike alone with a clean gun."},
+  {"n": 50, "set_by": "The button 'Call the fair without my report.' at Pritchard's desk", "log": null},
   {"n": 60, "set_by": "Telling Pritchard what happened on any one road", "log": "Pritchard has heard one road's worth. It was enough to make him get the good paper out."},
-  {"n": 70, "set_by": "The morning after stage 50, at the town gate", "log": "They carried Jonah Talbot back in through the gate on a door."},
-  {"n": 100, "set_by": "Pritchard calling the fair, after stage 60 or stage 70", "log": "Pritchard is done guessing. He has sent to every flag in the valleys: come to the camp-ground on Decoration Day and say it to each other's faces.", "completes": true}
+  {"n": 100, "set_by": "Pritchard calling the fair, after stage 60 or stage 50", "log": "Pritchard is done guessing. He has sent to every flag in the valleys: come to the camp-ground on Decoration Day and say it to each other's faces.", "completes": true}
  ],
  "objectives": [
   {"n": 10, "text": "Take a road: rail to Iron Junction, river to Greenwater, or the pike to Red Hollow"},
-  {"n": 60, "text": "Tell Pritchard what you found"},
-  {"n": 70, "text": "See who they are carrying in at the gate"}
+  {"n": 60, "text": "Tell Pritchard what you found"}
  ],
  "choices": [
   {"at": 10, "options": [
    {"label": "The spike. I'll take the rail.", "now": "Starts The Night Mail: the yard at Iron Junction expects a gun for its mail train", "later": "Iron Junction is the road that answers who signed for the train you walked out of"},
    {"label": "The scoop. I'll go by river.", "now": "Starts The Queen of Tellico: a skiff is waiting at the landing", "later": "Greenwater is the road that decides whether a town eats this winter"},
    {"label": "The tag. I'll walk the pike.", "now": "Starts What Knocks in Red Hollow: the Dominion's toll-gate and a hanging are on the way", "later": "Red Hollow is the road that finds out the valley is not the only place with people in it"},
-   {"label": "Send your deputy.", "sets": 50, "now": "Talbot rides out in your place", "later": "He comes back shot. The fair is called anyway, with every road gone the worst way and Pritchard short a deputy"}
+   {"label": "Call the fair without my report.", "sets": 50, "now": "Pritchard calls the fair without a road report. Talbot posts the notice", "later": "Nothing is learned yet. The roads stay open and unresolved. Refusing brings no injury and no penalty"}
   ]}
  ],
  "evidence": [],
  "ways_through": [
   "Take any one road, come back, and tell Pritchard. Nothing optional is needed and the other two roads may be left alone.",
   "Take two or all three roads in any order. Each adds a piece of silver to the case and changes who stands where at the fair.",
-  "Refuse. Talbot goes instead and is carried back the next morning. The fair is called without anything learned."
+  "Call the fair without a report. Nothing is learned yet, and the three roads stay open and unresolved."
  ],
- "cannot_break": "The roads can be taken in any order, left half done or never started. A road abandoned midway settles itself the worst way when the fair is called. If Pritchard is somehow gone, the notice of the fair is on the board and the chapter completes on reading it. Talbot cannot die of the wound.",
- "new_flags": [
-  {"name": "talbot_shot", "meaning": "The stranger refused all three roads; Talbot went, was shot, and spends the rest of the act in Keene's clinic"}
- ],
+ "cannot_break": "One completed road opens the fair; the deliberate fair-without-report path also works. Untouched roads do not settle automatically as the worst outcome. Local irreversible events require explicit warning, player entry and a clearly armed decision/timer. Ordinary menu pauses and time spent on another road do not trigger atrocities. If Pritchard is somehow gone, the notice of the fair is on the board and the chapter completes on reading it.",
+ "new_flags": [],
  "open_questions": [
-  "Is one road really enough to open Chapter 3, or should it be two?",
-  "Should a refused road be allowed to be picked up again after Talbot is hurt?"
+  "Resolved 2026-11-16 (decision amendment): one completed road opens the fair, and so does calling it without a report. No injury follows a refusal.",
+  "Not yet authored, returned to Iris: what Pritchard says when a road is reported after the fair has already been called. Also a journal entry for stage 50."
  ]
 }

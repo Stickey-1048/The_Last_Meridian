@@ -10,7 +10,7 @@
    "when": [
     "outcome is saved"
    ],
-   "text": "Six rounds had the stranger, six rounds and no more, and the Cutters lay cold on the Tellico shore! Penny a sheet, patrons of letters, every word true or near enough to pass!",
+   "text": "The word came down that trouble met an unexpected hand. What happened past the telling wasn't mine to understand.",
    "kind": "aside",
    "sources": []
   },
@@ -22,7 +22,19 @@
    "when": [
     "outcome is evaded"
    ],
-   "text": "The stranger walked by with a hand on the gun, and the drover lay dead when the walking was done! Penny a sheet! What? I only print what I'm told.",
+   "text": "News came down to Mercy with a space beside the rein. They argued who had seen the road, then argued it again.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "granger_ballad_missed",
+   "speaker": "granger",
+   "status": "new",
+   "priority": 20,
+   "when": [
+    "outcome is missed"
+   ],
+   "text": "News came down to Mercy with a space beside the rein. They argued who had seen the road, then argued it again.",
    "kind": "aside",
    "sources": []
   },
@@ -34,7 +46,7 @@
    "when": [
     "outcome is exploited"
    ],
-   "text": "...and nobody asks where a stranger gets pay, when a wagon rides light on the Tellico way. It's only a song. Penny a sheet.",
+   "text": "They counted out a wagon's worth and called the counting fair. The quiet after trading had a name that wasn't there.",
    "kind": "aside",
    "sources": []
   },
@@ -47,19 +59,7 @@
     "flag mail_through",
     "mq02a done 41"
    ],
-   "text": "Billie Tarrow jumped a train over a hole. Over a HOLE. She told me herself. Well. She told the whole street, and I was standing in it.",
-   "kind": "aside",
-   "sources": []
-  },
-  {
-   "id": "keene_talbot_aside",
-   "speaker": "keene",
-   "status": "new",
-   "priority": 40,
-   "when": [
-    "flag talbot_shot"
-   ],
-   "text": "He'll keep the arm. He won't thank you for asking after him, so I'll do it for him: he is twenty-two, and he went because you would not.",
+   "text": "Billie Tupper jumped a train over a hole. Over a HOLE. She told me herself. Well. She told the whole street, and I was standing in it.",
    "kind": "aside",
    "sources": []
   },
@@ -84,18 +84,6 @@
     "flag grain_sold"
    ],
    "text": "Greenwater's signed with the Commonwealth. Whole town, for soup. Funny how a barge goes down in the Chute and a soup wagon turns up the same week. I'm not saying a thing. I'm only counting.",
-   "kind": "aside",
-   "sources": []
-  },
-  {
-   "id": "pritchard_quill_aside",
-   "speaker": "pritchard",
-   "status": "new",
-   "priority": 45,
-   "when": [
-    "flag quill_shamed"
-   ],
-   "text": "Esther Quill sent me one line. I've had it nineteen years coming. ...You carried it, and you knew what it was. We'll talk about that. Not today.",
    "kind": "aside",
    "sources": []
   },

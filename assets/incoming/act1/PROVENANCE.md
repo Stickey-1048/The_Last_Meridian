@@ -11,6 +11,7 @@ One line for each file or batch: the file or folder, what made it, who asked for
 | `layout/road_plan.json` (45 measured things: buildings, spots for people, boxes, road, track, water) | ChatGPT | The owner, from the same brief | 2026-11-14 |
 | `REVIEW_REQUIRED.md` | ChatGPT's own note on the pack: what is in it, what is not, and what to look at before any of it is used | | 2026-11-14 |
 | `story/` (`OVERVIEW.md`, `QUESTIONS_FOR_OWNER.md`, `RESEARCH.md`, `characters.json`, `documents.json`, six files under `quests/`, seven under `talk/`) | Claude Code, in a cloud session: written directly by the assistant. The six REAL rows of `RESEARCH.md` are from web search summaries, not from reading the pages | The assistant, at the owner's request to develop more of Act I and make it bolder. Not by the usual writing partner; no other agent took part | 2026-11-16 |
+| `story/`, revised (the same files; four ballad sheets where there was one) | Claude Code, in a cloud session. Replacement wording is Iris's, taken character for character from `docs/design/ACT1_APPROVED_TEXT_REVISIONS_2026-11-16.json` and `docs/design/ACT1_BALLAD_ADDENDUM_2026-11-16.json`; conditions, links, names and removals are the assistant's. Recorded node by node in `docs/design/ACT1_CHARLES_REVISION_CHANGES.md` | The assistant, on the handoff in `docs/design/ACT1_CHARLES_CREATIVE_HANDOFF.md` from the creative team's delegated review | 2026-11-16 |
 
 ## The ten portraits, 2026-11-14
 
