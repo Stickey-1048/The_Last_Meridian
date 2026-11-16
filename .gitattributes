@@ -11,6 +11,7 @@ tools/PluginBuilder/formkeys.txt text eol=lf
 docs/design/ACT1_APPROVED_TEXT_REVISIONS_2026-11-16.json text eol=lf
 docs/design/ACT1_BALLAD_ADDENDUM_2026-11-16.json text eol=lf
 docs/design/ACT1_WRITING_CLOSURE_PACKET_2.json text eol=lf
+docs/design/ACT1_WRITING_CLOSURE_PACKET_3.json text eol=lf
 
 # Pictures are binary too.
 *.png binary

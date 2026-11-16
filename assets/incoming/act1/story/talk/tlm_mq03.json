@@ -430,7 +430,13 @@
    "entry": true,
    "priority": 90,
    "when": [
-    "mq03 done 43"
+    "mq03 done 40",
+    "mq03 done 43",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg"
    ],
    "text": "Stand easy. Search the landing with the local officers and witnesses present. We do not take the fair tonight. I will not make a second shooting out of a public inquiry.",
    "sources": []
@@ -737,7 +743,17 @@
    "entry": false,
    "priority": 0,
    "when": [
-    "alive whitcomb"
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive pritchard"
    ],
    "text": "We came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record.",
    "buttons": [
@@ -755,7 +771,17 @@
    "entry": false,
    "priority": 0,
    "when": [
-    "alive belden"
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive pritchard"
    ],
    "text": "My provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names.",
    "buttons": [
@@ -773,7 +799,17 @@
    "entry": false,
    "priority": 0,
    "when": [
-    "alive grey"
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive pritchard"
    ],
    "text": "A witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing.",
    "buttons": [
@@ -791,6 +827,16 @@
    "entry": false,
    "priority": 0,
    "when": [
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
     "alive pritchard"
    ],
    "text": "This is my circuit. I'll take the statements in the open and give every flag a copy. Your men can help search the landing. They don't take the fair.",
@@ -812,7 +858,18 @@
    "entry": false,
    "priority": 0,
    "when": [
-    "alive whitcomb"
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive talbot",
+    "dead pritchard"
    ],
    "text": "We came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record.",
    "buttons": [
@@ -830,7 +887,18 @@
    "entry": false,
    "priority": 0,
    "when": [
-    "alive belden"
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive talbot",
+    "dead pritchard"
    ],
    "text": "My provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names.",
    "buttons": [
@@ -848,7 +916,18 @@
    "entry": false,
    "priority": 0,
    "when": [
-    "alive grey"
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive talbot",
+    "dead pritchard"
    ],
    "text": "A witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing.",
    "buttons": [
@@ -866,7 +945,18 @@
    "entry": false,
    "priority": 0,
    "when": [
-    "alive talbot"
+    "mq03 done 40",
+    "mq03 notdone 41",
+    "mq03 notdone 42",
+    "mq03 notdone 43",
+    "mq03 notdone 44",
+    "mq03 notdone 70",
+    "alive brigg",
+    "alive whitcomb",
+    "alive belden",
+    "alive grey",
+    "alive talbot",
+    "dead pritchard"
    ],
    "text": "These people came under truce. Take their names, not their right to leave. I'll keep the statements where the witnesses can see them.",
    "buttons": [

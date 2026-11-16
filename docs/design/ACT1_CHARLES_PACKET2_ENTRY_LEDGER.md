@@ -33,7 +33,7 @@ This is the order in which a speaker's greetings are tried. No two entries of on
 
 | Priority | Was | Line | File | Conditions | Why the number |
 |---|---|---|---|---|---|
-| 90 | 90 | `brigg_rifles` | tlm_mq03 | mq03 done 43 |  |
+| 90 | 90 | `brigg_rifles` | tlm_mq03 | mq03 done 40; mq03 done 43; mq03 notdone 41; mq03 notdone 42; mq03 notdone 44; mq03 notdone 70; alive brigg |  |
 | 85 | 85 | `brigg_holds` | tlm_mq03 | mq03 done 70 |  |
 | 65 | new | `brigg_demand` | tlm_mq03 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive pritchard | New. Six contexts that cannot hold together; ordered 65 down to 60, above his offer and below his later replies |
 | 64 | new | `brigg_demand_talbot` | tlm_mq03 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; dead pritchard; alive talbot | New. Six contexts that cannot hold together; ordered 65 down to 60, above his offer and below his later replies |
@@ -425,7 +425,7 @@ This is the order in which a speaker's greetings are tried. No two entries of on
 | tlm_mq03 | `flint_roof` | flint | **entry** | 80 | mq03 done 50 |  | as at 975a262 |  |
 | tlm_mq03 | `flint_who` | flint | continuation | 0 | (none) | `flint_roof` | as at 975a262 |  |
 | tlm_mq03 | `flint_hat` | flint | continuation | 0 | (none) | `flint_roof` | as at 975a262 |  |
-| tlm_mq03 | `brigg_rifles` | brigg | **entry**, and a button's target | 90 | mq03 done 43 | `pritchard_truce`, `talbot_truce` | as at 975a262 |  |
+| tlm_mq03 | `brigg_rifles` | brigg | **entry**, and a button's target | 90 | mq03 done 40; mq03 done 43; mq03 notdone 41; mq03 notdone 42; mq03 notdone 44; mq03 notdone 70; alive brigg | `pritchard_truce`, `talbot_truce` | as at 975a262 |  |
 | tlm_mq03 | `brigg_holds` | brigg | **entry** | 85 | mq03 done 70 |  | as at 975a262 |  |
 | tlm_mq03 | `pritchard_case` | pritchard | **entry** | 90 | mq03 done 60; mq03 notdone 100 |  | as at 975a262 |  |
 | tlm_mq03 | `brigg_demand` | brigg | **entry** | 65 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive pritchard |  | new: packet 2 line |  |
@@ -434,14 +434,14 @@ This is the order in which a speaker's greetings are tried. No two entries of on
 | tlm_mq03 | `brigg_demand_no_belden` | brigg | **entry** | 62 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; dead belden |  | new: copy of packet 2's `brigg_demand` for another context |  |
 | tlm_mq03 | `brigg_demand_no_grey` | brigg | **entry** | 61 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; dead grey |  | new: copy of packet 2's `brigg_demand` for another context |  |
 | tlm_mq03 | `brigg_demand_no_officer` | brigg | **entry** | 60 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; dead pritchard; dead talbot |  | new: copy of packet 2's `brigg_demand` for another context |  |
-| tlm_mq03 | `whitcomb_truce` | whitcomb | continuation, guarded | 0 | alive whitcomb | `brigg_demand` | new: packet 2 line |  |
-| tlm_mq03 | `belden_truce` | belden | continuation, guarded | 0 | alive belden | `whitcomb_truce` | new: packet 2 line |  |
-| tlm_mq03 | `grey_truce` | grey | continuation, guarded | 0 | alive grey | `belden_truce` | new: packet 2 line |  |
-| tlm_mq03 | `pritchard_truce` | pritchard | continuation, guarded | 0 | alive pritchard | `grey_truce` | new: packet 2 line |  |
-| tlm_mq03 | `whitcomb_truce_talbot` | whitcomb | continuation, guarded | 0 | alive whitcomb | `brigg_demand_talbot` | new: copy of packet 2's `whitcomb_truce` for another context |  |
-| tlm_mq03 | `belden_truce_talbot` | belden | continuation, guarded | 0 | alive belden | `whitcomb_truce_talbot` | new: copy of packet 2's `belden_truce` for another context |  |
-| tlm_mq03 | `grey_truce_talbot` | grey | continuation, guarded | 0 | alive grey | `belden_truce_talbot` | new: copy of packet 2's `grey_truce` for another context |  |
-| tlm_mq03 | `talbot_truce` | talbot | continuation, guarded | 0 | alive talbot | `grey_truce_talbot` | new: packet 2 line |  |
+| tlm_mq03 | `whitcomb_truce` | whitcomb | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive pritchard | `brigg_demand` | new: packet 2 line |  |
+| tlm_mq03 | `belden_truce` | belden | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive pritchard | `whitcomb_truce` | new: packet 2 line |  |
+| tlm_mq03 | `grey_truce` | grey | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive pritchard | `belden_truce` | new: packet 2 line |  |
+| tlm_mq03 | `pritchard_truce` | pritchard | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive pritchard | `grey_truce` | new: packet 2 line |  |
+| tlm_mq03 | `whitcomb_truce_talbot` | whitcomb | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive talbot; dead pritchard | `brigg_demand_talbot` | new: copy of packet 2's `whitcomb_truce` for another context |  |
+| tlm_mq03 | `belden_truce_talbot` | belden | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive talbot; dead pritchard | `whitcomb_truce_talbot` | new: copy of packet 2's `belden_truce` for another context |  |
+| tlm_mq03 | `grey_truce_talbot` | grey | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive talbot; dead pritchard | `belden_truce_talbot` | new: copy of packet 2's `grey_truce` for another context |  |
+| tlm_mq03 | `talbot_truce` | talbot | continuation, guarded | 0 | mq03 done 40; mq03 notdone 41; mq03 notdone 42; mq03 notdone 43; mq03 notdone 44; mq03 notdone 70; alive brigg; alive whitcomb; alive belden; alive grey; alive talbot; dead pritchard | `grey_truce_talbot` | new: packet 2 line |  |
 | tlm_mq04 | `pritchard_warrant` | pritchard | **entry** | 52 | mq04 done 10; mq04 notdone 30 |  | as at 975a262 |  |
 | tlm_mq04 | `pritchard_guilty` | pritchard | continuation | 0 | (none) | `pritchard_warrant` | as at 975a262 |  |
 | tlm_mq04 | `vane_default` | vane | **entry**: default | 0 | (none) |  | as at 975a262 |  |

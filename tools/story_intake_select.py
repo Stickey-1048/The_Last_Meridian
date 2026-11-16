@@ -121,7 +121,14 @@ class Selector:
         line = self.lines[line_id]
         if not self.valid(line, state):
             return Result(diagnostic="%s is no longer valid: no effects were applied and nothing follows" % line_id)
-        chosen = line["buttons"][button]
+        buttons = line.get("buttons") or []
+        # The format supplies a single Continue-close when no choices were
+        # authored. It is not an effect-bearing or inferred transition.
+        if type(button) is not int or button < 0 or button >= max(1, len(buttons)):
+            raise ValueError("%s has no button at index %r" % (line_id, button))
+        if not buttons:
+            return Result()
+        chosen = buttons[button]
         branch = chosen
         if "check" in chosen:
             if speech is not True and speech is not False:

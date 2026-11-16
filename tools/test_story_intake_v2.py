@@ -15,9 +15,11 @@ a game test, and shows nothing about scenes, timers, inventories or who is stand
 import contextlib
 import hashlib
 import io
+import importlib.util
 import json
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -218,6 +220,25 @@ class Selected(unittest.TestCase):
         r = s.press("menu", 3, state)
         self.assertEqual((r.line, r.effects, r.diagnostic), (None, ["mq01 set 31"], None))
 
+    def test_implicit_continue_closes_without_effects(self):
+        for authored in (None, []):
+            s = select.Selector({"talk/a.json": talk(box("a", buttons=authored))})
+            st = select.State()
+            r = s.press("a", 0, st)
+            self.assertEqual((r.line, r.effects, r.diagnostic), (None, [], None))
+            self.assertEqual(st.stages, {})
+            self.assertEqual(st.caps, 0)
+            for index in (-1, 1, True, "0"):
+                with self.assertRaises(ValueError):
+                    s.press("a", index, st)
+
+    def test_implicit_continue_still_checks_a_stale_source(self):
+        s = select.Selector({"talk/a.json": talk(box("a", when=["mq01 done 20"]))})
+        r = s.press("a", 0, select.State())
+        self.assertIsNone(r.line)
+        self.assertEqual(r.effects, [])
+        self.assertIn("no longer valid", r.diagnostic)
+
     def test_a_speech_check_takes_one_branch_once(self):
         check = {"label": "x", "check": "speech", "pass": {"do": ["mq01 set 31"], "then": "won"}, "fail": {"do": ["mq01 set 37"], "then": "lost"}}
         s = select.Selector({"talk/a.json": talk(box("a", buttons=[check]), box("won", entry=False), box("lost", entry=False))})
@@ -336,6 +357,59 @@ class RevisedActOne(unittest.TestCase):
     def test_the_hearing_reply_is_shut_unless_13_is_set(self):
         self.assertFalse(self.s.valid(self.s.lines["quill_shamed"], select.State(stages={"mq02c": {10}})))
 
+    def truce_at_authority(self, talbot=False):
+        st = select.State(stages={"mq03": {10, 40}}, dead={"pritchard"} if talbot else ())
+        demand = self.s.greet("brigg", st).line
+        expected = "brigg_demand_talbot" if talbot else "brigg_demand"
+        self.assertEqual(demand, expected)
+        button = next(i for i, b in enumerate(self.s.lines[demand]["buttons"]) if "truce" in b["label"])
+        r = self.s.press(demand, button, st)
+        authority = "talbot_truce" if talbot else "pritchard_truce"
+        for _ in range(4):
+            if r.line == authority:
+                self.assertFalse(st.done("mq03", 43))
+                return st, authority
+            self.assertIsNotNone(r.line)
+            r = self.s.press(r.line, 0, st)
+        self.fail("normal truce did not reach its authority in the bounded chain")
+
+    def test_both_truce_authorities_recheck_death_before_effects(self):
+        for talbot in (False, True):
+            for dead in ("brigg", "whitcomb", "belden", "grey", "talbot" if talbot else "pritchard"):
+                st, authority = self.truce_at_authority(talbot)
+                st.dead.add(dead)
+                r = self.s.press(authority, 0, st)
+                self.assertEqual(r.effects, [], (talbot, dead))
+                self.assertIsNone(r.line)
+                self.assertFalse(st.done("mq03", 43))
+                self.assertIn("no longer valid", r.diagnostic)
+
+    def test_both_truce_authorities_recheck_changed_resolution_before_effects(self):
+        for talbot in (False, True):
+            for resolved in (41, 42, 43, 44, 70):
+                st, authority = self.truce_at_authority(talbot)
+                st.stages["mq03"].add(resolved)
+                before = set(st.stages["mq03"])
+                r = self.s.press(authority, 0, st)
+                self.assertEqual(r.effects, [], (talbot, resolved))
+                self.assertIsNone(r.line)
+                self.assertEqual(st.stages["mq03"], before)
+
+    def test_both_normal_truce_paths_still_reach_briggs_acknowledgement(self):
+        for talbot in (False, True):
+            st, authority = self.truce_at_authority(talbot)
+            r = self.s.press(authority, 0, st)
+            self.assertEqual((r.line, r.effects, r.diagnostic), ("brigg_rifles", ["mq03 set 43"], None))
+            self.assertTrue(st.done("mq03", 43))
+            self.assertEqual(self.s.greet("brigg", st).line, "brigg_rifles")
+
+    def test_dead_or_superseded_brgg_cannot_deliver_the_acknowledgement(self):
+        for dead, other in (({"brigg"}, None), ((), 41), ((), 42), ((), 44), ((), 70)):
+            stages = {10, 40, 43} | ({other} if other is not None else set())
+            st = select.State(stages={"mq03": stages}, dead=dead)
+            self.assertFalse(self.s.valid(self.s.lines["brigg_rifles"], st))
+            self.assertNotEqual(self.s.greet("brigg", st).line, "brigg_rifles")
+
     # ---- a guarded target that is also a greeting
     def test_tarrow_in_cut_both_ways(self):
         st = select.State(stages={"mq02a": {10, 20, 30, 40}})
@@ -375,6 +449,30 @@ class RevisedActOne(unittest.TestCase):
             for who in sorted({l["speaker"] for l in self.s.lines.values()}):
                 r = self.s.greet(who, st)
                 self.assertFalse(r.diagnostic and "ambiguous" in r.diagnostic, who)
+
+
+class FocusedTruceTermination(unittest.TestCase):
+    def test_a_rooted_cycle_fails_both_focused_walks_without_hanging(self):
+        files = intake.read_folder(STORY)
+        path = "talk/tlm_mq03.json"
+        data = json.loads(files[path])
+        for line in data["lines"]:
+            if line["id"] == "grey_truce":
+                # The second edge keeps the normal final authority reachable.
+                # Rooted cycles are permitted by the general v2 format.
+                line["buttons"] = [{"label": "Continue", "then": "whitcomb_truce"},
+                                   {"label": "Other", "then": "pritchard_truce"}]
+        files[path] = json.dumps(data)
+        self.assertEqual(intake.Intake(files, strict=True).run(), [])
+        spec = importlib.util.spec_from_file_location("focused_cycle_probe", ROOT / "docs/design/ACT1_CHARLES_REVISION_CHECKS.py")
+        focused = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(focused)
+        out = io.StringIO()
+        with mock.patch.object(focused.intake, "read_folder", return_value=files), contextlib.redirect_stdout(out):
+            code = focused.main()
+        self.assertEqual(code, 1)
+        self.assertIn("truce chain from brigg_demand repeats", out.getvalue())
+        self.assertIn("truce history repeats", out.getvalue())
 
 
 class Legacy(unittest.TestCase):

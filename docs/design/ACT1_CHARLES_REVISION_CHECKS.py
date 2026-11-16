@@ -397,14 +397,24 @@ def main():
                        ("brigg_demand_talbot", ["whitcomb_truce_talbot", "belden_truce_talbot", "grey_truce_talbot", "talbot_truce"])):
         t = [x for x in lines[lid]["buttons"] if x["label"] == truce]
         chain, at = [], (t[0].get("then") if t else None)
+        seen = set()
         while at and at != "brigg_rifles":
+            if at in seen or len(seen) >= len(lines):
+                bad("truce chain from %s repeats %s or exceeds the finite line inventory" % (lid, at))
+                break
+            seen.add(at)
+            if at not in lines:
+                bad("truce chain from %s reaches missing line %s" % (lid, at))
+                break
             chain.append(at)
             speaker = lines[at]["speaker"]
             if "alive " + speaker not in when(at) or "alive " + speaker not in when(lid):
                 bad("%s can be said by the dead, or is promised by an order that does not ask whether its speaker lives" % at)
-            nxt = lines[at]["buttons"]
+            nxt = lines[at].get("buttons") or []
             if len(nxt) != 1 or nxt[0]["label"] != CONTINUE:
                 bad("%s does not lead on by one plain button" % at)
+            if not nxt:
+                break
             if nxt[0].get("do") and nxt[0].get("then") != "brigg_rifles":
                 bad("%s sets a stage before Brigg has answered" % at)
             at = nxt[0].get("then")
@@ -415,7 +425,8 @@ def main():
     for lid in demands:
         if lid not in ("brigg_demand", "brigg_demand_talbot") and truce in [x["label"] for x in lines[lid]["buttons"]]:
             bad("%s offers a truce that someone dead would have to speak" % lid)
-    if setters("mq03 set 43") != ["pritchard_truce", "talbot_truce"] or when("brigg_rifles") != ["mq03 done 43"]:
+    concession_guard = ["mq03 done 40", "mq03 done 43"] + ["mq03 notdone %d" % n for n in (41, 42, 44, 70)] + ["alive brigg"]
+    if setters("mq03 set 43") != ["pritchard_truce", "talbot_truce"] or when("brigg_rifles") != concession_guard:
         bad("Brigg's concession is not what sets stage 43, or his reply can be said without it")
 
     # ---- 11. the entry contract, on this folder: labels, and the histories it names
@@ -472,7 +483,12 @@ def main():
         st = S(stages={"mq03": {10, 40}})
         said = ["brigg_demand"]
         r = s.press("brigg_demand", 2, st)
+        seen = set()
         while r.line:
+            if r.line in seen or len(seen) >= len(lines):
+                bad("truce history repeats %s or exceeds the finite line inventory" % r.line)
+                break
+            seen.add(r.line)
             said.append(r.line)
             if r.line == "brigg_rifles":
                 break
