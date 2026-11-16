@@ -14,7 +14,7 @@
   {"n": 20, "set_by": "The Night Mail (mq02a) completing", "log": "Iron Junction is settled, one way or another."},
   {"n": 30, "set_by": "The Queen of Tellico (mq02b) completing", "log": "Greenwater is settled, one way or another."},
   {"n": 40, "set_by": "What Knocks in Red Hollow (mq02c) completing", "log": "Red Hollow is settled, one way or another."},
-  {"n": 50, "set_by": "The button 'Call the fair without my report.' at Pritchard's desk", "log": null},
+  {"n": 50, "set_by": "The button 'Call the fair without my report.' at Pritchard's desk", "log": "You asked Pritchard to call the fair without a road report. Talbot is posting the notice. The three roads remain open if you change your mind."},
   {"n": 60, "set_by": "Telling Pritchard what happened on any one road", "log": "Pritchard has heard one road's worth. It was enough to make him get the good paper out."},
   {"n": 100, "set_by": "Pritchard calling the fair, after stage 60 or stage 50", "log": "Pritchard is done guessing. He has sent to every flag in the valleys: come to the camp-ground on Decoration Day and say it to each other's faces.", "completes": true}
  ],
@@ -40,6 +40,6 @@
  "new_flags": [],
  "open_questions": [
   "Resolved 2026-11-16 (decision amendment): one completed road opens the fair, and so does calling it without a report. No injury follows a refusal.",
-  "Not yet authored, returned to Iris: what Pritchard says when a road is reported after the fair has already been called. Also a journal entry for stage 50."
+  "Open, returned to Iris and Sam: after the fair Pritchard has one greeting and two things to offer, the roads still to take and the report menu. No supplied button joins them, so the roads are offered first and the menu is reached only when no road is left to take."
  ]
 }

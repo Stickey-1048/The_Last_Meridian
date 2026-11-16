@@ -32,6 +32,6 @@ Names: eleven registered, four changed (Tupper, Blevins, Rafferty, Beckett), ids
 
 ## What is open now
 
-Nothing new is asked of the owner here. What the revision could not do without writing story is listed once, with the exact node and field for each item, in [the receipt](../../../../docs/design/ACT1_CHARLES_REVISION_RECEIPT.md), section 8, and is addressed to Iris. The engineering gaps are in its section 9.
+Nothing new is asked of the owner here. The 22 writing requests of the first revision were all answered by writing closure packet 2, which has been applied. What is open after it is listed once, in [the packet 2 receipt](../../../../docs/design/ACT1_CHARLES_PACKET2_RECEIPT.md), sections 10 and 11, and is addressed to Iris, Nora and Sam.
 
 Two things stay the owner's and are not touched by any of this: the choices in `docs/child-of-the-deep.md`, and Chapter 5.

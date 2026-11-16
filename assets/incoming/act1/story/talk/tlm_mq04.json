@@ -1,12 +1,13 @@
 {
- "format": "tlm-talk-1",
+ "format": "tlm-talk-2",
  "quest": "TLM_MQ04",
  "lines": [
   {
    "id": "pritchard_warrant",
    "speaker": "pritchard",
    "status": "new",
-   "priority": 50,
+   "entry": true,
+   "priority": 52,
    "when": [
     "mq04 done 10",
     "mq04 notdone 30"
@@ -33,6 +34,7 @@
    "id": "pritchard_guilty",
    "speaker": "pritchard",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "Then I arrest a man who has sat at my table every Sunday since my wife died, and the town goes hungry by Christmas because nobody else knows where anything is. And I'll do it. Don't look at my hand. I'll do it.",
@@ -42,6 +44,7 @@
    "id": "vane_default",
    "speaker": "vane",
    "status": "new",
+   "entry": true,
    "priority": 0,
    "when": [],
    "text": "Good day. If it is on the shelf it is for sale, and if it is not, give me a week.",
@@ -51,6 +54,7 @@
    "id": "vane_two_books",
    "speaker": "vane",
    "status": "new",
+   "entry": true,
    "priority": 50,
    "when": [
     "mq04 done 10",
@@ -76,6 +80,7 @@
    "id": "vane_two_books_kind",
    "speaker": "vane",
    "status": "new",
+   "entry": true,
    "priority": 70,
    "when": [
     "mq04 done 10",
@@ -106,6 +111,7 @@
    "id": "vane_refuses",
    "speaker": "vane",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "Every merchant keeps two: the book that says what happened and the book that says what he wishes had. You may see the first for nothing. For the second, bring Owen and a paper, or come when I am not looking. I should respect either.",
@@ -115,15 +121,17 @@
    "id": "vane_opens",
    "speaker": "vane",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
-   "text": "You took a share on that road; Reese Dunmore itemises. So you know what a thing costs. Here. Turn it to the light. Six years, four columns, and not one army in this valley. Read it, and then tell me my price was too high.",
+   "text": "The road account records your share. That's why I thought you might understand the price. Here: six years of payments, and the present work in four columns. Read it before you decide what my arithmetic is worth.",
    "sources": []
   },
   {
    "id": "vane_silver_early",
    "speaker": "vane",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "From people who want what I want, for reasons I have been careful never to learn. That is not evasion. It is the only honest answer I shall give you today, so do write it down.",
@@ -133,6 +141,7 @@
    "id": "vickers_default",
    "speaker": "vickers",
    "status": "new",
+   "entry": true,
    "priority": 0,
    "when": [],
    "text": "Mr Vane is engaged. I can take a message, if it is brief and adds up.",
@@ -142,6 +151,7 @@
    "id": "vickers_door",
    "speaker": "vickers",
    "status": "new",
+   "entry": true,
    "priority": 80,
    "when": [
     "mq04 done 30",
@@ -181,6 +191,7 @@
    "id": "vickers_yields",
    "speaker": "vickers",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "...You have read the will. He never said. He never says anything that is not a number. Take it. Take it before I recollect myself. And if they hurt him I shall find you, and I am very thorough.",
@@ -190,6 +201,7 @@
    "id": "vickers_holds",
    "speaker": "vickers",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "No. I am sorry. One. Two.",
@@ -199,6 +211,7 @@
    "id": "vickers_glove",
    "speaker": "vickers",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "A hand. From the car door, at twenty past two, every fourth Thursday. A grey glove with a small square stitched on the cuff. It has never spoken. I sign; it withdraws. I have always thought it a very well-kept glove.",
@@ -208,6 +221,7 @@
    "id": "vane_porch",
    "speaker": "vane",
    "status": "new",
+   "entry": true,
    "priority": 90,
    "when": [
     "mq04 done 50",
@@ -216,7 +230,7 @@
     "mq04 notdone 63",
     "mq04 notdone 64"
    ],
-   "text": "Listen to them. Six years I kept the Dominion's gate out of this street with a pencil, and Belden's list, and Clara's friends. They will hang me before supper for it. You have read it. You are the only one out here who has. What am I?",
+   "text": "There's a rope below the steps. If you let them take me, they'll hang me here. You've read the book. Speak it, bargain with it, or tell them you won't stop them. At least name what you're choosing.",
    "buttons": [
     {
      "label": "(Read the book out from the porch)",
@@ -240,7 +254,7 @@
      "then": "vane_after_hire"
     },
     {
-     "label": "(Step aside)",
+     "label": "Let the crowd hang him.",
      "do": [
       "mq04 set 64"
      ]
@@ -252,6 +266,7 @@
    "id": "pritchard_porch",
    "speaker": "pritchard",
    "status": "new",
+   "entry": true,
    "priority": 85,
    "when": [
     "mq04 done 50",
@@ -260,13 +275,14 @@
     "mq04 notdone 63",
     "mq04 notdone 64"
    ],
-   "text": "Stay behind me. ...That's Tolly Granger with the rope. I taught his boy to fish. Forty of them and I know every name, and my hand's doing what it does. If I draw I'll drop it. If I don't they go through me. Say something. Anything.",
+   "text": "Granger has the rope. I know these people. I'll keep them off the steps while you decide. Leaving to think is not telling them to hang a man. If you mean that, say it where I can hear.",
    "sources": []
   },
   {
    "id": "granger_rope",
    "speaker": "granger",
    "status": "new",
+   "entry": true,
    "priority": 70,
    "when": [
     "mq04 done 50",
@@ -282,6 +298,7 @@
    "id": "nell_porch",
    "speaker": "nell",
    "status": "new",
+   "entry": true,
    "priority": 60,
    "when": [
     "mq04 done 50",
@@ -297,6 +314,7 @@
    "id": "vane_after_read",
    "speaker": "vane",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "Every page. Even the receipts for the school roof. That was fair. Nobody has been fair to me in some time, and I find I do not care for it. They will not hang me now. They will only never buy from me again. You have been very cruel.",
@@ -312,6 +330,7 @@
    "id": "vane_after_sign",
    "speaker": "vane",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "There. Rail, river, mine. Released. And they go home believing it was an error in the accounts. So now there are two of us who know what quiet costs, and only one of us chose it. Welcome to the trade.",
@@ -327,6 +346,7 @@
    "id": "vane_after_hire",
    "speaker": "vane",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "Yours. How novel. Then your first report, employer: the silver comes by the night freight, sealed, from Blackstone Station. I have never been up that line. Nobody has, and come back to say so. I take it that is where you are going.",
@@ -344,6 +364,7 @@
    "id": "vane_names",
    "speaker": "vane",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "Blackstone Station. Up the dead line, past the Junction, where the night freight comes from and goes back to. That is all I know, and I have paid a great deal not to know more. If you go, go armed. And do give them my regards.",
@@ -361,6 +382,7 @@
    "id": "pritchard_after_rope",
    "speaker": "pritchard",
    "status": "new",
+   "entry": true,
    "priority": 95,
    "when": [
     "mq04 done 64"
@@ -372,6 +394,7 @@
    "id": "haskell_default",
    "speaker": "haskell",
    "status": "new",
+   "entry": true,
    "priority": 0,
    "when": [],
    "text": "Received in good order, or not. I can tell you which. I cannot tell you why.",
@@ -381,6 +404,7 @@
    "id": "haskell_sheet",
    "speaker": "haskell",
    "status": "new",
+   "entry": true,
    "priority": 40,
    "when": [
     "mq04 done 10",
@@ -402,6 +426,7 @@
    "id": "haskell_tells",
    "speaker": "haskell",
    "status": "new",
+   "entry": false,
    "priority": 0,
    "when": [],
    "text": "Ninety-one pounds. Entered as dry goods, eleven pounds. I wrote it down. It is in the lining of the receiving book. They come off the night freight from past Iron Junction. From Blackstone. There. I have wanted to say that for a year.",
@@ -411,6 +436,7 @@
    "id": "haskell_after_rope",
    "speaker": "haskell",
    "status": "new",
+   "entry": true,
    "priority": 90,
    "when": [
     "mq04 done 64",

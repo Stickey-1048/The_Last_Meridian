@@ -25,7 +25,7 @@
   {"n": 61, "set_by": "The button '(Read the book out from the porch)'", "log": "You read it out, page by page, to the whole street. Nobody shouted. That was worse."},
   {"n": 62, "set_by": "The button 'Sign it over, and they never hear the rest.'", "log": "Silas Vane signed away the holds on rail, river and mine with the town at his door. The street was told there had been a mistake in the accounts."},
   {"n": 63, "set_by": "The button 'You work for me now.'", "log": "Silas Vane keeps his counter and his pencil. He keeps them for you. He says it is the first honest contract he has signed in six years."},
-  {"n": 64, "set_by": "The button '(Step aside)' or leaving the porch before it is settled", "log": "They hanged Silas Vane from his own sign-bracket. Owen Pritchard did not draw. He has not been seen out of his office since."},
+  {"n": 64, "set_by": "Only the explicit informed choice after the player has arrived and heard the rope warning. Closing a menu, leaving to think or never visiting the porch is not this choice.", "log": "They hanged Silas Vane from his own sign-bracket. Owen Pritchard did not draw. He has not been seen out of his office since."},
   {"n": 100, "set_by": "Learning where the silver comes from: from Vane, from Beckett, from the book's last page or from Haskell's hidden weight-sheet", "log": "The silver comes down on the night freight from Blackstone Station. Nobody in the valley has been up that line in six years. Somebody up there has been paying for the quiet.", "completes": true}
  ],
  "objectives": [
@@ -45,7 +45,7 @@
    {"label": "(Read the book out from the porch)", "sets": 61, "now": "The street hears all of it and goes home", "later": "Vane lives, ruined. Credit stops at every counter in the valleys for a month. Every flag at the fair sends a man with an offer"},
    {"label": "Sign it over, and they never hear the rest.", "sets": 62, "now": "The holds are lifted tonight. The town is told it was an error", "later": "Rail, river and mine open by spring. Those who buried somebody this year are never told why. It is yours to keep quiet"},
    {"label": "You work for me now.", "sets": 63, "now": "Vane stays at his counter under your hand", "later": "You own the best ledger in the valleys and the man who can read the fifth column. The town has been lied to twice"},
-   {"label": "(Step aside)", "sets": 64, "now": "The rope", "later": "The book burns with the post. Pritchard is finished. Whoever sent the silver sends it to someone else"}
+   {"label": "Let the crowd hang him.", "sets": 64, "now": "The rope", "later": "The book burns with the post. Pritchard is finished. Whoever sent the silver sends it to someone else"}
   ]}
  ],
  "evidence": [
@@ -60,7 +60,7 @@
   "Take the box from the night freight and work back from the silver.",
   "Be shown the book by Vane and take his offer or turn it on him."
  ],
- "cannot_break": "If Vane is killed before the book is read, the book is still in the safe and Beckett holds the room. If Beckett is killed, Haskell's weight-sheet names the station. If both are dead the last page of the book has the square mark and a freight number, and the yard at Iron Junction can say which platform it leaves from. If the player never comes to the porch the town hangs Vane. If Pritchard is absent, Talbot stands on the steps, or nobody does. The side quest is not needed: a stranger who sold Vane the Line 14 book only finds it lying open on his desk.",
+ "cannot_break": "If Vane is killed before the book is read, the book is still in the safe and Beckett holds the room. If Beckett is killed, Haskell's weight-sheet names the station. If both are dead the last page of the book has the square mark and a freight number, and the yard at Iron Junction can say which platform it leaves from. No offscreen automatic lynching when the player fails to arrive. The threatened confrontation remains unresolved. Main Blackstone evidence may still be learned through the existing Vane/Beckett/book/Haskell alternatives; no porch choice may be secretly assigned just to complete the chapter. If Pritchard is absent, Talbot stands on the steps, or nobody does. The side quest is not needed: a stranger who sold Vane the Line 14 book only finds it lying open on his desk.",
  "new_flags": [
   {"name": "vane_exposed", "meaning": "The black book was read to the town; Vane is alive and ruined"},
   {"name": "vane_bound", "meaning": "Vane lifted the holds in exchange for silence"},
@@ -71,7 +71,7 @@
  ],
  "open_questions": [
   "Resolved 2026-11-16: one purse, independent hands. Vane funds the network; he does not control every hand or know the explanation (decision 1).",
-  "Open for Iris and Nora: the town hangs Vane if the player never comes to the porch. The agency rules written for the roads may be meant to apply here too.",
-  "Open for Iris: whether '(Step aside)' is explicit enough for a decision that allows an execution (decision 10)."
+  "Resolved by packet 2: the hanging happens only by the explicit, warned choice. Leaving, closing the box or never coming to the porch does not choose it.",
+  "Open for Iris: pritchard_after_rope still says 'You stepped aside', which was the old button."
  ]
 }

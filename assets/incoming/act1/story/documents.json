@@ -6,7 +6,7 @@
    "kind": "letter",
    "title": "Sealed Dispatch, Corridor Line Office",
    "found": "In the marshal's pouch, sealed. Pritchard breaks the seal and reads it out at the hand-off; afterwards it lies on his desk",
-   "text": "CORRIDOR LINE OFFICE, IRON JUNCTION\nBY HAND OF MARSHAL T. GANTT\nTO THE SHERIFF AT MERCY CROSSING. NO OTHER.\n\nOwen,\n\nThree things in one month.\n\nGreenwater's winter grain was loaded and did not arrive.\nRed Hollow has chained its own mine and will not say why.\nRails are being lifted in Sawtooth Cut. Four trains so far.\n\nI do not believe in three accidents. Somebody is being paid,\nand paid in coin I have not seen before.\n\nI have a name. I will not put it on paper. I will say it to\nyou across your own desk with the door shut.\n\nIf I do not come, I was right.\n\nHold this. Trust nobody who offers to help you carry it.\n\nT. G.",
+   "text": "CORRIDOR LINE OFFICE, IRON JUNCTION\nBY HAND OF MARSHAL T. GANTT\nTO THE SHERIFF AT MERCY CROSSING. NO OTHER.\n\nOwen,\n\nThree things in one month.\n\nGreenwater's winter grain was loaded and did not arrive.\nRed Hollow has chained its own mine and will not say why.\nRails are being lifted in Sawtooth Cut. Four trains so far.\n\nI do not believe in three accidents. Somebody is being paid,\nand paid in coin I have not seen before.\n\nI have a name to check, not a charge I can prove. I will show\nyou the entries across your desk before I write an accusation.\n\nIf I do not come, follow the entries. My absence is not proof.\n\nHold this. Trust nobody who offers to help you carry it.\n\nT. G.",
    "sources": [
     "R7",
     "R9"
@@ -38,8 +38,19 @@
    "id": "ballad_six_rounds_exploited",
    "kind": "notice",
    "title": "The Stranger and the Tellico Road",
-   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. This sheet is sold when the recorded Chapter 1 outcome is exploited",
+   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. This sheet is sold when the recorded Chapter 1 outcome is exploited and the method is deal",
    "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nThey counted out a wagon's worth and called the counting fair.\nThe quiet after trading had a name that wasn't there.\nYou ask me who was paid for it; I only sell the sheet.\nTo call it trade is easy from a dry and distant seat.",
+   "sources": [
+    "R7",
+    "R9"
+   ]
+  },
+  {
+   "id": "ballad_six_rounds_betrayal",
+   "kind": "notice",
+   "title": "The Stranger and the Tellico Road",
+   "found": "Granger's sheet for outcome exploited with method betrayal. The trade sheet is restricted to method deal.",
+   "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nThe talk is trouble on the road; the telling turns to blame.\nEach teller sets the reckoning beside a different name.\nI wasn't there to count the cost or judge what passed that day.\nThe ink is mine; the deeds are not. Hear what the witnesses say.",
    "sources": [
     "R7",
     "R9"
@@ -49,7 +60,7 @@
    "id": "ballad_six_rounds_unconfirmed",
    "kind": "notice",
    "title": "The Stranger and the Tellico Road",
-   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. The common body alone: an unconfirmed account, for use only while no Chapter 1 outcome is recorded",
+   "found": "Sold by Tolly Granger at the town gate for a penny once the first chapter is complete. Printed hearsay, not a record. The common body alone: an unconfirmed account, for use only while no Chapter 1 outcome is recorded, or the outcome is exploited with no method recorded",
    "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.",
    "sources": [
     "R7",
@@ -225,6 +236,17 @@
    "sources": [
     "R7",
     "R9"
+   ]
+  },
+  {
+   "id": "docket_2298",
+   "kind": "note",
+   "title": "Mercy Road Case: 2298 Review Copy",
+   "found": "Pritchard voluntarily offers his retained review copy when asked about Quill while explaining the pike route. It lies in the open on his desk after that conversation. Taking the copy records optional mq02c stage16; current possession controls docket_2298_held.",
+   "text": "MERCY ROAD CASE: SPRING 2298\nRetained review copy. Not a pardon in any current case.\n\nThe carrier's dated receipt and two sworn accounts place the condemned man away from the road at the hour alleged. Copies were entered with Magistrate Esther Quill before sentence was carried out.\n\nI received the warrant and carried it out. I later checked the accounts against the receiving ledger. We hanged an innocent man. I have kept the rope; it is not an answer. The finding should have gone into the court record then. I am making this copy available now.\n\nOwen Pritchard, Sheriff\nAttached: entry receipt bearing E. Quill's court mark.",
+   "sources": [
+    "R7",
+    "R8"
    ]
   }
  ]

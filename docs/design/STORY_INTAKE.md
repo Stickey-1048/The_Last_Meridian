@@ -135,7 +135,7 @@ Kind is `REAL` (the world as it is or was), `FALLOUT` (something the Fallout gam
 ```
 
 - `quest` is the `id` of the quest the talk belongs to: one of the plugin's (`TLM_MQ01`, `TLM_SQ01`) or one that a file under `quests/` in the same folder declares. A talk file about a quest nothing declares is refused. In `talk/town.json`, which belongs to no quest, it is `null`.
-- A person who is spoken to says **the line with the highest `priority` among those whose `when` all hold**. Give each person a line with an empty `when` and priority 0, so that there is always something to say. `priority` is a whole number from 0 to 1000; left out, it is 0. Anything else (a word, a number in quotes, a fraction, a negative number) is refused, because it cannot be compared.
+- **This bullet is the rule of the first format, `tlm-talk-1`, kept as it was written.** It does not say which of two lines is said when both have no condition and priority 0, and a line reached only by a button could be taken for a greeting. The second format, below, settles that. A person who is spoken to says **the line with the highest `priority` among those whose `when` all hold**. Give each person a line with an empty `when` and priority 0, so that there is always something to say. `priority` is a whole number from 0 to 1000; left out, it is 0. Anything else (a word, a number in quotes, a fraction, a negative number) is refused, because it cannot be compared.
 - `kind`: `talk` (the default: a box) or `aside` (a line at the edge of the screen; no buttons).
 - `status`: `design` if the line is already in the designs, `new` otherwise.
 - A line with no buttons gets one, "Continue". A button may `do` things, lead on to another line (`then`), both, or neither (the box closes).
@@ -165,6 +165,28 @@ Kind is `REAL` (the world as it is or was), `FALLOUT` (something the Fallout gam
 | `give caps 30` | Gives the player caps |
 
 Anything else a line should bring about is a stage: propose it in the quest's file.
+
+## talk in the second format: `tlm-talk-2`
+
+The same file, with `"format": "tlm-talk-2"` and one more field on every boxed line. The rules are those of [ACT1_ENTRY_SELECTION_CONTRACT.md](ACT1_ENTRY_SELECTION_CONTRACT.md); a worked example is in [story_intake_example_v2/](story_intake_example_v2/). The first format and its example are unchanged and still accepted.
+
+```json
+{ "id": "dunmore_hold", "speaker": "dunmore", "status": "design", "entry": true, "priority": 10,
+  "when": [ "outcome is none" ], "text": "...", "buttons": [ { "label": "...", "then": "dunmore_share" } ] },
+{ "id": "dunmore_share", "speaker": "dunmore", "status": "design", "entry": false,
+  "when": [], "text": "..." }
+```
+
+- **`entry`** is `true` or `false`, written out, on every boxed line (`kind` `talk`, or no `kind`). `true`: a person may open with this line. `false`: a continuation, said only when a button leads on to it. It is what the writer says it is. Nothing is worked out from the line's name, its priority or what leads to it; a line may be both an entry and the target of a button.
+- **Speaking to a person.** Of that person's boxed lines that say `entry: true`, the one with the highest `priority` among those whose `when` all hold is said. If none holds, nothing is said: a continuation is never used to fill the silence. Give a person an entry with an empty `when` and priority 0 if there is something they would always say; none is made up for them.
+- **A speaker's entries are strictly ordered.** No two entries of one speaker have the same `priority`, anywhere in the folder, town talk and quest talk together. That two lines "cannot both hold" is not accepted as a reason: the check does not reason about stages. If two were ever equal at the top, nothing would be said.
+- **A continuation has no priority** (0, or left out). It can never win a greeting.
+- **A button that leads on.** The line on the screen is checked again when the button is chosen. The button's `do` is applied once, in the order written. Then the `then` line is looked up by its exact id and its `when` is asked *after* those effects. If it holds, that line is said, whatever its `entry` or priority. If it does not, the box closes; the effects stay, and nothing is said in its place.
+- **Every continuation is reachable**: some entry leads on to it through buttons. This is a check of the links only. It does not show that the conditions along the way can hold together.
+- **An aside** (`kind: aside`) is not part of this. It carries no `entry`, has no buttons, and no button may lead on to one. When asides are shown is not defined here.
+- **One format to a folder.** Talk files with lines in them are all `tlm-talk-1` or all `tlm-talk-2`. A `tlm-talk-1` file with an `entry` in it is refused.
+
+`tools/story_intake_select.py` answers "what does this person say" and "what does this button do" by these rules, for the checks and for review. It is not the game and proves nothing about it.
 
 ## documents.json
 
