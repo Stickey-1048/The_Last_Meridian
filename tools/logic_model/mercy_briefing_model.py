@@ -11,7 +11,8 @@ What it models, and what scripts/Source/User/TLM/MercyBriefing.psc must do:
 
   - Pritchard offers it only when the main quest's delivery is acknowledged and
     its stages 60 and 100 and its Done global are all set, he is alive and in
-    no fight, the player is alive, and the briefing's records are bound;
+    no fight, the player is alive, the briefing's records are bound, and its
+    own quest is running (started if need be, and then seen to be running);
   - the first access sets stage 10 and shows objective 10, once;
   - a visit shows the hub, then at most one road's brief (and, for the pike,
     at most the one follow-on about the 2298 review copy), then ends;
@@ -63,10 +64,12 @@ class Gates:
     briefer_fighting: bool = False
     player_alive: bool = True
     bound: bool = True            # the briefing's quest, messages and book are filled in
+    startable: bool = True        # its own quest is running, or starts when asked and is then running
 
     def open(self) -> bool:
         return (self.delivered and self.acknowledged and self.stage60 and self.stage100 and self.done
-                and self.briefer_alive and not self.briefer_fighting and self.player_alive and self.bound)
+                and self.briefer_alive and not self.briefer_fighting and self.player_alive and self.bound
+                and self.startable)
 
 
 @dataclass(frozen=True)

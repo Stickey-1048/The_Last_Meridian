@@ -4,9 +4,12 @@ tools/win/mercy-briefing-candidate.json, read by tools/mercy_briefing_candidate.
 That the checkout is the source the manifest describes: 20 scripts, eighteen
 of them the text the Details package pins, one changed, one added; the id
 file's earlier 316 lines untouched and eleven ids appended; the earlier
-manifests unchanged and saying nothing of this candidate; and no digest of
-anything compiled or built recorded that nobody measured. And that the check
-notices each of those going wrong.
+manifests unchanged, byte for byte on every machine, and saying nothing of
+this candidate; which compiled scripts a bundle takes from where (18 reviewed
+ones of the earlier runtime, 2 fresh), kept apart from the proof that all 20
+compile; and no digest of anything compiled or built for this candidate
+recorded that nobody measured. And that the check notices each of those going
+wrong.
 
 It lives here, with the stand-in engine's tests, only so that
 tools/run_checks.sh runs it without being changed. It needs no build.
@@ -82,13 +85,43 @@ class TheCandidate(unittest.TestCase):
 
     def test_nothing_built_or_compiled_is_claimed(self):
         measured = self.manifest["measured"]
-        for key in ("masterSha256", "worldSha256", "runtime", "runtimeManifestSha256", "measuredBy", "measuredFrom"):
+        for key in ("masterSha256", "worldSha256", "runtime", "runtimeManifestSha256", "freshCompile", "measuredBy", "measuredFrom"):
             self.assertIsNone(measured[key], key)
         self.assertIn("SOURCE CANDIDATE ONLY", self.manifest["status"])
         text = candidate.MANIFEST.read_text()
         old = json.loads(candidate.DETAILS.read_text())
-        for pinned in [old["masterSha256"], old["worldSha256"], old["runtimeManifestSha256"]] + list(old["runtime"].values()):
-            self.assertNotIn(pinned, text, "a digest of the 19-script package is in the candidate's manifest")
+        # The earlier package's plugin, exterior and Act1Walk are not this candidate's and are nowhere in its manifest.
+        for pinned in (old["masterSha256"], old["worldSha256"], old["runtime"]["Act1Walk.pex"]):
+            self.assertNotIn(pinned, text, "a digest of the 19-script package's own plugin, exterior or Act1Walk is in the candidate's manifest")
+        # Its runtime manifest is named once, as where the 18 reviewed scripts come from; the 18 once each, as inputs.
+        self.assertEqual(text.count(old["runtimeManifestSha256"]), 1)
+        self.assertEqual(self.manifest["runtimeSelection"]["reusedFrom"]["runtimeManifestSha256"], old["runtimeManifestSha256"])
+        for name, pinned in old["runtime"].items():
+            self.assertEqual(text.count(pinned), 0 if name == "Act1Walk.pex" else 1, name)
+
+    def test_which_compiled_scripts_go_into_the_bundle(self):
+        chosen = self.manifest["runtimeSelection"]
+        old = json.loads(candidate.DETAILS.read_text())
+        reused, fresh = chosen["reusedReviewedPex"], chosen["freshlyCompiled"]
+        self.assertEqual((len(reused), fresh), (18, ["Act1Walk.pex", "MercyBriefing.pex"]))
+        self.assertEqual(set(reused) & set(fresh), set())
+        self.assertEqual(sorted(list(reused) + fresh), sorted(n[:-4] + ".pex" for n in self.manifest["sourceTextSha256"]))
+        # Each reused one is the earlier runtime's pinned file, and its source is that runtime's pinned source.
+        for name, digest in reused.items():
+            self.assertEqual(digest, old["runtime"][name], name)
+            source = name[:-4] + ".psc"
+            self.assertEqual(self.manifest["sourceTextSha256"][source], old["sourceTextSha256"][source], source)
+            self.assertIn(source, self.manifest["unchangedFromTheDetailsPins"])
+        self.assertNotIn("Act1Walk.pex", reused)
+        self.assertNotIn("MercyBriefing.pex", old["runtime"])
+        self.assertEqual(chosen["reusedFrom"]["manifest"], "tools/win/world-details-artifact.json")
+        for word in ("18", "reviewed", "byte for byte", "fresh compile", "not bundled", "assumed"):
+            self.assertIn(word, chosen["policy"])
+        steps = " ".join(self.manifest["recipe"]["steps"])
+        self.assertIn("COMPILE PROOF: compile all 20", steps)
+        self.assertIn("Never the freshly compiled 18", steps)
+        self.assertIn("--fresh-compile", steps)
+        self.assertNotIn("no earlier PEX is reused", steps)
 
     def test_the_earlier_manifests_are_as_they_were_and_say_nothing_of_it(self):
         for name, digest in self.manifest["earlierManifestsSha256"].items():
@@ -99,17 +132,109 @@ class TheCandidate(unittest.TestCase):
             self.skipTest("the composition commit is not in this copy")
         self.assertEqual(got.returncode, 0, "an earlier manifest differs from the composition commit's")
 
+    def test_the_four_earlier_manifests_are_the_same_bytes_on_every_machine(self):
+        """Their committed blobs are the pinned bytes, and Git is told to write exactly those bytes out whatever
+        the machine's line-end setting. (A fresh Windows checkout is root's to try; this reads what Git holds.)"""
+        for name, pinned in self.manifest["earlierManifestsSha256"].items():
+            with self.subTest(name):
+                blob = subprocess.run(["git", "cat-file", "blob", ":" + name], cwd=ROOT, capture_output=True)
+                if blob.returncode != 0:
+                    self.skipTest("not a Git working copy")
+                self.assertEqual(candidate.hashlib.sha256(blob.stdout).hexdigest().upper(), pinned, "the committed bytes are not the pinned bytes")
+                self.assertNotIn(b"\r", blob.stdout, "the committed file holds a carriage return")
+                attr = subprocess.run(["git", "check-attr", "text", "eol", "--", name], cwd=ROOT, capture_output=True, text=True).stdout
+                self.assertIn(name + ": text: set", attr)
+                self.assertIn(name + ": eol: lf", attr)
+        rules = [l for l in (ROOT / ".gitattributes").read_text().splitlines() if l.endswith("-artifact.json text eol=lf")]
+        self.assertEqual(sorted(l.split()[0] for l in rules), sorted(candidate.OLD_MANIFESTS))
+
+    def bundle(self, scripts):
+        """A folder laid out like a built bundle, with stand-in bytes for the compiled scripts."""
+        root = Path(tempfile.mkdtemp(prefix="tlm-bundle-"))
+        (root / "Scripts" / "TLM").mkdir(parents=True)
+        (root / "TheLastMeridian.esp").write_bytes(b"not a plugin")
+        for name, data in scripts.items():
+            (root / "Scripts" / "TLM" / name).write_bytes(data)
+        return root
+
+    def reviewed_like(self):
+        """Stand-in files that hash to made-up 'reviewed' digests, and a manifest copy that pins those, so that a
+        selection can be tried without any real compiled script (none is in the repository)."""
+        chosen = self.manifest["runtimeSelection"]
+        files = {name: ("reviewed " + name).encode() for name in chosen["reusedReviewedPex"]}
+        pins = dict(self.manifest)
+        pins["runtimeSelection"] = dict(chosen, reusedReviewedPex={n: candidate.hashlib.sha256(d).hexdigest().upper() for n, d in files.items()})
+        path = Path(tempfile.mkdtemp(prefix="tlm-pins-")) / "candidate.json"
+        path.write_text(json.dumps(pins))
+        fresh = {name: ("fresh " + name).encode() for name in list(files) + chosen["freshlyCompiled"]}
+        return files, fresh, path
+
     def test_measuring_reads_a_bundle_and_changes_nothing(self):
-        bundle = Path(tempfile.mkdtemp(prefix="tlm-bundle-"))
-        (bundle / "Scripts" / "TLM").mkdir(parents=True)
-        (bundle / "TheLastMeridian.esp").write_bytes(b"not a plugin")
-        for name in ("B.pex", "A.pex"):
-            (bundle / "Scripts" / "TLM" / name).write_bytes(name.encode())
         before = candidate.MANIFEST.read_bytes()
-        got = candidate.measure(bundle)
+        got = candidate.measure(self.bundle({"B.pex": b"B.pex", "A.pex": b"A.pex"}))
         self.assertEqual((got["runtimeCount"], sorted(got["runtime"]), got["worldSha256"]), (2, ["A.pex", "B.pex"], None))
         self.assertEqual(len(got["masterSha256"]), 64)
+        self.assertFalse(got["selection"]["ok"])
+        self.assertEqual((got["selection"]["unexpected"], len(got["selection"]["missing"])), (["A.pex", "B.pex"], 20))
         self.assertEqual(candidate.MANIFEST.read_bytes(), before)
+
+    def test_a_bundle_of_eighteen_reviewed_and_two_fresh_is_the_selection(self):
+        reviewed, fresh, pins = self.reviewed_like()
+        compile_folder = self.bundle({})
+        for name, data in fresh.items():
+            (compile_folder / name).write_bytes(data)
+        good = dict(reviewed, **{"Act1Walk.pex": fresh["Act1Walk.pex"], "MercyBriefing.pex": fresh["MercyBriefing.pex"]})
+        got = candidate.measure(self.bundle(good), compile_folder, pins)
+        self.assertTrue(candidate.measured_as_required(got))
+        self.assertEqual((len(got["selection"]["reusedAsReviewed"]), sorted(got["selection"]["freshlyCompiled"]), got["runtimeCount"]),
+                         (18, ["Act1Walk.pex", "MercyBriefing.pex"], 20))
+        self.assertEqual((got["freshCompile"]["count"], got["freshCompile"]["allTwenty"], got["freshCompile"]["theBundlesTwoAreFromIt"]), (20, True, True))
+        # The compiler did not reproduce any of the 18 here; that is observed, and changes nothing.
+        self.assertEqual(got["freshCompile"]["ofTheEighteenByteIdenticalToTheReviewed"], [])
+
+    def test_what_is_not_the_selection(self):
+        reviewed, fresh, pins = self.reviewed_like()
+        two = {"Act1Walk.pex": fresh["Act1Walk.pex"], "MercyBriefing.pex": fresh["MercyBriefing.pex"]}
+        good = dict(reviewed, **two)
+        compile_folder = self.bundle({})
+        for name, data in fresh.items():
+            (compile_folder / name).write_bytes(data)
+
+        def measured(scripts, compiled=compile_folder):
+            return candidate.measure(self.bundle(scripts), compiled, pins)
+
+        # All 20 taken from the fresh compile: what the first recipe said, and what the contract forbids.
+        got = measured(dict(fresh))
+        self.assertFalse(candidate.measured_as_required(got))
+        self.assertEqual(len(got["selection"]["notTheReviewedBytes"]), 18)
+        # One freshly compiled script in a reviewed one's place.
+        got = measured(dict(good, **{"Core.pex": fresh["Core.pex"]}))
+        self.assertEqual((got["selection"]["notTheReviewedBytes"], got["selection"]["ok"]), (["Core.pex"], False))
+        # One missing; one too many; a fresh one missing.
+        self.assertEqual(measured({n: d for n, d in good.items() if n != "SelfTest.pex"})["selection"]["missing"], ["SelfTest.pex"])
+        self.assertEqual(measured(dict(good, **{"Extra.pex": b"x"}))["selection"]["unexpected"], ["Extra.pex"])
+        got = measured({n: d for n, d in good.items() if n != "MercyBriefing.pex"})
+        self.assertEqual((got["selection"]["missing"], got["selection"]["ok"]), (["MercyBriefing.pex"], False))
+        # The bundle's Act1Walk is not the one the full compile produced.
+        got = measured(dict(good, **{"Act1Walk.pex": b"from somewhere else"}))
+        self.assertTrue(got["selection"]["ok"])
+        self.assertFalse(got["freshCompile"]["theBundlesTwoAreFromIt"])
+        self.assertFalse(candidate.measured_as_required(got))
+        # The full compile did not produce all 20: no proof that the source compiles.
+        short = self.bundle({})
+        for name, data in fresh.items():
+            if name != "MQ01Quest.pex":
+                (short / name).write_bytes(data)
+        got = measured(good, short)
+        self.assertEqual((got["freshCompile"]["count"], got["freshCompile"]["allTwenty"]), (19, False))
+        self.assertFalse(candidate.measured_as_required(got))
+        # Where the compiler does reproduce a reviewed file, that is recorded, and the reviewed file is still what is bundled.
+        same = self.bundle({})
+        for name, data in fresh.items():
+            (same / name).write_bytes(reviewed[name] if name == "Core.pex" else data)
+        got = measured(good, same)
+        self.assertEqual(got["freshCompile"]["ofTheEighteenByteIdenticalToTheReviewed"], ["Core.pex"])
+        self.assertTrue(candidate.measured_as_required(got))
 
 
 class WhatTheCheckCatches(unittest.TestCase):
@@ -138,10 +263,12 @@ class WhatTheCheckCatches(unittest.TestCase):
         self.assertIn("only in the manifest ['MercyBriefing.psc']", self.damaged(lambda r: (r / "scripts/Source/User/TLM/MercyBriefing.psc").unlink()))
 
     def test_line_ends_alone_are_not_a_change(self):
-        def crlf(root):
+        # Whichever line ends this working copy has (a Windows checkout writes the scripts with CRLF), the other kind.
+        def other(root, to):
             path = root / "scripts/Source/User/TLM/MercyBriefing.psc"
-            path.write_bytes(path.read_bytes().replace(b"\n", b"\r\n"))
-        self.assertEqual(self.damaged(crlf), "")
+            path.write_bytes(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", to))
+        self.assertEqual(self.damaged(lambda r: other(r, b"\r\n")), "")
+        self.assertEqual(self.damaged(lambda r: other(r, b"\n")), "")
 
     def test_an_earlier_id_renumbered_or_a_new_one_moved(self):
         self.assertIn("idFile", self.damaged(lambda r: self.edit(r, "tools/PluginBuilder/formkeys.txt", "TLM_G_CaravanOutcome\n2049", "TLM_G_CaravanOutcome\n2999")))
@@ -152,7 +279,9 @@ class WhatTheCheckCatches(unittest.TestCase):
         self.assertIn("document", self.damaged(lambda r: self.edit(r, "assets/incoming/act1/story/documents.json", "MERCY ROAD CASE: SPRING 2298", "MERCY ROAD CASE: SPRING 2299")))
 
     def test_an_earlier_manifest_changed_or_made_to_describe_the_candidate(self):
-        self.assertIn("earlierManifestsSha256", self.damaged(lambda r: self.edit(r, "tools/win/world-details-artifact.json", '"schema": 1', '"schema": 2')))
+        said = self.damaged(lambda r: self.edit(r, "tools/win/world-details-artifact.json", '"schema": 1', '"schema": 2'))
+        self.assertIn("world-details-artifact.json is not the pinned file", said)
+        self.assertNotIn("line ends", said)
 
         def under_the_old_pins(root):
             path = root / "tools/win/world-details-artifact.json"
@@ -160,6 +289,50 @@ class WhatTheCheckCatches(unittest.TestCase):
             data["sourceTextSha256"]["MercyBriefing.psc"] = "0" * 64
             path.write_text(json.dumps(data, indent=2))
         self.assertIn("must not be put under an earlier manifest", self.damaged(under_the_old_pins))
+
+    def test_an_earlier_manifest_with_other_line_ends_is_still_not_the_pinned_file(self):
+        def crlf(root):
+            path = root / "tools/win/world-natural-artifact.json"
+            path.write_bytes(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+        said = self.damaged(crlf)
+        self.assertIn("world-natural-artifact.json is not the pinned bytes", said)
+        self.assertIn("other line ends", said)
+        # An edit is never called a matter of line ends, with or without them.
+        def edited(root):
+            path = root / "tools/win/world-natural-artifact.json"
+            path.write_bytes(path.read_bytes().replace(b'"schema": 1', b'"schema": 3').replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+        said = self.damaged(edited)
+        self.assertIn("world-natural-artifact.json is not the pinned file", said)
+        self.assertNotIn("other line ends", said)
+
+    def test_the_selection_changed(self):
+        def moved(root):
+            path = root / "tools/win/mercy-briefing-candidate.json"
+            data = json.loads(path.read_text())
+            chosen = data["runtimeSelection"]
+            chosen["reusedReviewedPex"]["Act1Walk.pex"] = json.loads((root / "tools/win/world-details-artifact.json").read_text())["runtime"]["Act1Walk.pex"]
+            chosen["freshlyCompiled"] = ["MercyBriefing.pex"]
+            path.write_text(json.dumps(data, indent=2))
+        self.assertIn("runtimeSelection", self.damaged(moved))
+
+        def all_fresh(root):
+            path = root / "tools/win/mercy-briefing-candidate.json"
+            data = json.loads(path.read_text())
+            data["runtimeSelection"]["freshlyCompiled"] = sorted(list(data["runtimeSelection"]["reusedReviewedPex"]) + data["runtimeSelection"]["freshlyCompiled"])
+            data["runtimeSelection"]["reusedReviewedPex"] = {}
+            path.write_text(json.dumps(data, indent=2))
+        self.assertIn("is not 18 reviewed compiled scripts and the 2 fresh ones", self.damaged(all_fresh))
+
+        def another_digest(root):
+            path = root / "tools/win/mercy-briefing-candidate.json"
+            data = json.loads(path.read_text())
+            data["runtimeSelection"]["reusedReviewedPex"]["Core.pex"] = "0" * 64
+            path.write_text(json.dumps(data, indent=2))
+        self.assertIn("runtimeSelection is not what this source and the earlier runtime's pins give", self.damaged(another_digest))
+
+        # A reviewed script whose source is no longer the reviewed text may not be reused.
+        said = self.damaged(lambda r: (r / "scripts/Source/User/TLM/Core.psc").write_text((r / "scripts/Source/User/TLM/Core.psc").read_text() + "\n; x\n"))
+        self.assertIn("runtimeSelection", said)
 
     def test_a_built_digest_nobody_measured(self):
         def invented(root):

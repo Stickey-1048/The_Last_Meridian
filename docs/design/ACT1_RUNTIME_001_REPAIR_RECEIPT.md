@@ -46,4 +46,14 @@ Root's, after independent acceptance of the repaired source: the fresh Windows c
 
 ## 5. What was done
 
-To be completed when the repair is finished.
+Completed after the repair. The account in full is in the ledger, [section 13](ACT1_RUNTIME_001_LEDGER.md).
+
+- **Finding 1:** repaired as section 3 says. Before the fix, the new regressions failed on the reviewed scripts for −1 and for every unsupported value; after it they pass, with the side quest, every global, the caps and everybody placed compared.
+- **Finding 2:** repaired as section 3 says, and `IsOpen` now also requires the quest to be running. Before the fix the new tests reproduced Sam's failure word for word ("ForceRefTo … while its quest is not running"). The three failing-start cases are seeded; nobody has seen the game refuse to start a quest.
+- **The same mistake in my own boxes:** a brief now counts only on one of its own buttons.
+- **Finding 3:** the four rules are in `.gitattributes`; the four blobs are unchanged and are the recorded digests. Reproduced and re-tried in clones with line-end conversion on (not on Windows). One thing section 3 did not foresee: a working copy made before the rules keeps its line ends until the four files are written again, and `git checkout-index --force` does not do that; what does is in the ledger. And one more fault of mine found that way, in a test that assumed LF in the working copy; corrected.
+- **Finding 4:** the selection policy is recorded in the manifest, checked by `verify`, enforced by `measure`, and the recipe is rewritten. Measured digests are still empty.
+- **Wording:** the ledger's item 4 is corrected.
+- **Not changed:** everything section 3 lists as not to be touched; also `SpecMercyBriefing.cs`, the mapping, the ids and the build report.
+- **Results here:** logic model 115 tests; stand-in engine 378 tests; 65 of 65 scenarios, 1628 checks, also with 60 calls a second; strict intake of the 227 lines, the 74 fixtures and the 33 histories unchanged; eight stand-in masters; `verify` passes. **Not a compile, not a build against the game's master, not a game test.** The PowerShell fixtures were not run by me.
+- **Pending:** as section 4.
