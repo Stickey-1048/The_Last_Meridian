@@ -805,6 +805,11 @@ Function ApplyDelivered()
 		Debug.Trace("TLM_MQ01: stage 50 set without stage 20; ignored")
 		Return
 	EndIf
+	; The legacy/stage queries above yield. Acquire only after rechecking,
+	; with no native call between this check and the lock assignment.
+	If deliveryApplying || deliveryFinished
+		Return
+	EndIf
 	deliveryApplying = true
 	deliveryDeferred = true
 	If !WaitForResolutions(0)
