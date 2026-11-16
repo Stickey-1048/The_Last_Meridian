@@ -9,8 +9,9 @@ using System.Text.Json;
 // a master record, installed files or a save. Output must be a workspace folder.
 var privateMode=args.LastOrDefault();
 bool combinedArt=privateMode=="--private-art-combined";
+bool gatheringGreen=privateMode=="--private-gathering-green";
 bool fenceComparison=combinedArt||privateMode=="--private-fence-ab";
-bool shelterDetail=combinedArt||privateMode=="--private-shelter-detail";
+bool shelterDetail=combinedArt||gatheringGreen||privateMode=="--private-shelter-detail";
 if(fenceComparison||shelterDetail)args=args[..^1];
 bool natural=args.LastOrDefault()=="--natural";
 bool expanded=natural||args.LastOrDefault()=="--expand";
@@ -185,15 +186,17 @@ var included=new List<ModKey>{ModKey.FromNameAndExtension("Fallout4.esm")};
 if(args.Length==4){using var template=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);story=WorldStory.Add(mod,world,cell,template);included.Add(template.ModKey);}
 object? expansion=null;
 object? details=null;
+object? green=null;
 var protectedPoints=new List<object>();
 if(expanded){
  expansion=Expansion.Add(master,Put,natural);
  // Append only AFTER all existing scenery/story allocation. Default natural
  // mode and the owner bundle are unchanged.
  if(shelterDetail)details=ShelterDetails.Add(master,Put);
+ if(gatheringGreen)green=GatheringGreen.Add(master,Put);
  // Recheck both old routes AND new streets after adding scenery. AABBs are
  // conservative coarse checks, not Havok/navmesh certification.
- foreach(var route in new[]{mainRoute,bypassRoute}.Concat(Expansion.Routes.Select(r=>r.Points)))for(int s=0;s<route.Length-1;s++)for(int tick=0;tick<=100;tick++){
+ foreach(var route in new[]{mainRoute,bypassRoute}.Concat(Expansion.Routes.Select(r=>r.Points)).Concat(gatheringGreen?GatheringGreen.Routes.Select(r=>r.Points):Enumerable.Empty<(float X,float Y)[]>()))for(int s=0;s<route.Length-1;s++)for(int tick=0;tick<=100;tick++){
   float t=tick/100f,x=route[s].Item1*(1-t)+route[s+1].Item1*t,y=route[s].Item2*(1-t)+route[s+1].Item2*t;
   foreach(var p in routeObstacles){float dx=MathF.Max(MathF.Max(p.MinX-x,0),x-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-y,0),y-p.MaxY);if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Expanded object intrudes into 192-unit corridor: "+p.Id);}
  }
@@ -215,6 +218,10 @@ if(expanded){
    float dx=MathF.Max(MathF.Max(p.MinX-x,0),x-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-y,0),y-p.MaxY);
    if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Private shelter aisle blocked: "+aisle.Name+" / "+p.Id);
   }
+ }
+ if(gatheringGreen)foreach(var point in GatheringGreen.Standing)foreach(var p in routeObstacles.Where(p=>p.Id!=point.Bench)){
+  float dx=MathF.Max(MathF.Max(p.MinX-point.X,0),point.X-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-point.Y,0),point.Y-p.MaxY);
+  if(dx*dx+dy*dy<128*128)throw new InvalidDataException("Green bench side-entry standing space blocked: "+point.Bench+" / "+p.Id);
  }
 }
 mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(included.ToArray()).Write();
@@ -240,6 +247,11 @@ if(details!=null){
  var refs=gotCell.Temporary.OfType<IPlacedObjectGetter>().Where(r=>(r.EditorID??"").StartsWith("TLM_WS_EX_DETAIL_",StringComparison.Ordinal)).ToArray();
  if(refs.Length!=6)throw new InvalidDataException("Private shelter detail did not roundtrip exactly six references.");
  File.WriteAllText(Path.Combine(output,"private-shelter-details.json"),JsonSerializer.Serialize(new{detail=details,references=refs.Select(r=>new{id=r.EditorID,form=r.FormKey.ToString(),@base=r.Base.FormKey.ToString(),x=r.Position!.X,y=r.Position.Y,z=r.Position.Z,yaw=r.Rotation!.Z})},new JsonSerializerOptions{WriteIndented=true}));
+}
+if(green!=null){
+ var refs=gotCell.Temporary.OfType<IPlacedObjectGetter>().Where(r=>(r.EditorID??"").StartsWith("TLM_WS_EX_GREEN_",StringComparison.Ordinal)).ToArray();
+ if(refs.Length!=5)throw new InvalidDataException("Green did not roundtrip exactly five references.");
+ File.WriteAllText(Path.Combine(output,"private-gathering-green.json"),JsonSerializer.Serialize(new{green,references=refs.Select(r=>new{id=r.EditorID,form=r.FormKey.ToString(),@base=r.Base.FormKey.ToString(),x=r.Position!.X,y=r.Position.Y,z=r.Position.Z,yaw=r.Rotation!.Z})},new JsonSerializerOptions{WriteIndented=true}));
 }
 Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;
