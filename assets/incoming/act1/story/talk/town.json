@@ -1,0 +1,156 @@
+{
+ "format": "tlm-talk-2",
+ "quest": null,
+ "lines": [
+  {
+   "id": "granger_ballad_saved",
+   "speaker": "granger",
+   "status": "new",
+   "priority": 20,
+   "when": [
+    "outcome is saved"
+   ],
+   "text": "Help on the Tellico! Penny a sheet, patrons of letters. The stranger's reasons cost extra, and I don't have them.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "granger_ballad_walked",
+   "speaker": "granger",
+   "status": "new",
+   "priority": 20,
+   "when": [
+    "outcome is evaded"
+   ],
+   "text": "News from the Tellico, and three tellings for every tale. Penny a sheet. If you want a witness, don't mistake the printer for one.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "granger_ballad_missed",
+   "speaker": "granger",
+   "status": "new",
+   "priority": 20,
+   "when": [
+    "outcome is missed"
+   ],
+   "text": "News from the Tellico, and three tellings for every tale. Penny a sheet. If you want a witness, don't mistake the printer for one.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "granger_ballad_deal",
+   "speaker": "granger",
+   "status": "new",
+   "priority": 20,
+   "when": [
+    "outcome is exploited",
+    "method is deal"
+   ],
+   "text": "A share on the road, a bargain on the page. Penny a sheet. I print the price I'm told; I wasn't there to call it fair.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "granger_ballad_betrayal",
+   "speaker": "granger",
+   "status": "new",
+   "priority": 20,
+   "when": [
+    "outcome is exploited",
+    "method is betrayal"
+   ],
+   "text": "Trouble on the Tellico! Penny a sheet. Everybody's got the blame worked out; nobody agrees on the rest. Buy two and argue with yourself.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "talbot_tarrow_aside",
+   "speaker": "talbot",
+   "status": "new",
+   "priority": 30,
+   "when": [
+    "flag mail_through",
+    "mq02a done 41"
+   ],
+   "text": "Billie Tupper jumped a train over a hole. Over a HOLE. She told me herself. Well. She told the whole street, and I was standing in it.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "pike_mould_aside",
+   "speaker": "pike",
+   "status": "new",
+   "priority": 40,
+   "when": [
+    "mq03 done 50"
+   ],
+   "text": "That silver case carries a mark from case-working tools I made years ago. Not the bullet mould. Come by after dark and I'll show you the drawings; they don't tell us the customer's name.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "nell_soup_aside",
+   "speaker": "nell",
+   "status": "new",
+   "priority": 30,
+   "when": [
+    "flag grain_sold",
+    "alive nell"
+   ],
+   "text": "Delegate Belden's wagon reached Greenwater. People ate. Now he's asking about a continuing agreement, and they can argue over it with something in their stomachs. The missing grain still belongs on somebody's account.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "vane_ledger_aside",
+   "speaker": "vane",
+   "status": "new",
+   "priority": 30,
+   "when": [
+    "ledger is sold",
+    "mq04 notdone 10"
+   ],
+   "text": "Your Line 14 book is quite safe with me. I have read it twice. Somebody at that yard has a steady hand and a dead man's stamp. I do admire thrift.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "vane_mail_aside",
+   "speaker": "vane",
+   "status": "new",
+   "priority": 35,
+   "when": [
+    "flag mail_sold",
+    "mq04 notdone 10"
+   ],
+   "text": "I hear the Night Mail had a difficult evening, and that somebody was paid for it in the Cut. Do not look alarmed. I am the last man in this valley to think the less of you.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "keene_fever_aside",
+   "speaker": "keene",
+   "status": "new",
+   "priority": 35,
+   "when": [
+    "flag mail_through"
+   ],
+   "text": "The physic came in on the Night Mail at dawn. Eleven children on my list. I had been choosing which four. I don't have to choose. Whoever you are, go and eat something.",
+   "kind": "aside",
+   "sources": []
+  },
+  {
+   "id": "keene_no_physic_aside",
+   "speaker": "keene",
+   "status": "new",
+   "priority": 45,
+   "when": [
+    "flag mail_sold"
+   ],
+   "text": "No Night Mail. No physic. I have eleven children on a list and enough for four. I am told somebody on that train was paid. I should like very much to be shown which somebody.",
+   "kind": "aside",
+   "sources": []
+  }
+ ]
+}

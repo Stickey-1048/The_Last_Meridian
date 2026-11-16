@@ -17,6 +17,12 @@ mechanics can take it in as it stands: that every name it uses is one the
 plugin and the scripts know, that a box has no more buttons than a box can
 have, that a line of Act I does not say what nobody in Act I knows.
 
+Talk comes in two formats. tlm-talk-1 is the first and is checked as it always
+was. tlm-talk-2 says of every boxed line whether it is an entry (a line a
+person may open with) or a continuation (a line only a button leads to), and
+is held to the rules of docs/design/ACT1_ENTRY_SELECTION_CONTRACT.md. A folder
+uses one of the two.
+
 It says NOTHING about whether the writing is good, and nothing is canon
 because it passes: the owner decides that.
 """
@@ -62,6 +68,8 @@ NOT_IN_ACT_ONE = ["deep", "meridian", "rider", "charter", "open ledger", "vault"
 # of Act I. Everything else (the other chapters, town talk, every paper) is held to the whole list.
 REVEALED = {"mq05": {"id": "TLM_MQ05", "chapter": 5, "words": ("deep", "meridian", "rider")}}
 PRIORITY_MAX = 1000
+TALK_FORMATS = ("tlm-talk-1", "tlm-talk-2")
+TALK_V2 = "tlm-talk-2"
 
 
 def names(word, text):
@@ -374,12 +382,16 @@ class Intake:
 
     def talk_files(self):
         lines = []
+        versions = {}                                            # format -> the talk files with lines that use it
         for path in sorted(p for p in self.files if p.startswith("talk/") and p.endswith(".json")):
             data = self.load(path)
             if data is None:
                 continue
-            if data.get("format") != "tlm-talk-1":
-                self.bad(path, "format is not tlm-talk-1")
+            version = data.get("format")
+            if version not in TALK_FORMATS:
+                self.bad(path, "format is not tlm-talk-1 or tlm-talk-2")
+            if data.get("lines"):
+                versions.setdefault(version, []).append(path)
             # Which quest the talk belongs to: one the plugin has, or one a file under quests/ here declares
             # (and declares soundly). Talk that belongs to none is in talk/town.json and says so with null.
             quest = data.get("quest")
@@ -401,8 +413,14 @@ class Intake:
                 if lid in self.line_ids:
                     self.bad(where, "that id is also in %s" % self.line_ids[lid])
                 self.line_ids[lid] = path
-                lines.append((where, line, may_say))
-        for where, line, may_say in lines:
+                lines.append((where, line, may_say, version))
+        # One way of choosing what a person says to a folder: two formats in one folder would put a speaker's
+        # lines under two rules at once.
+        if len([v for v in versions if v in TALK_FORMATS]) > 1:
+            self.bad("talk", "the talk files mix tlm-talk-1 (%s) and tlm-talk-2 (%s): a folder uses one format" % (
+                ", ".join(sorted(versions["tlm-talk-1"])), ", ".join(sorted(versions[TALK_V2]))))
+        self.entries_v2(lines)
+        for where, line, may_say, version in lines:
             if line.get("speaker") not in self.characters:
                 self.bad(where, "no character '%s'" % (line.get("speaker"),))
             if line.get("kind", "talk") not in ("talk", "aside"):
@@ -438,7 +456,65 @@ class Intake:
                         self.effect(where, e)
                     if o.get("then") is not None and o["then"] not in self.line_ids:
                         self.bad(where, "leads on to '%s', which is no line" % (o["then"],))
+                    elif o.get("then") is not None and version == TALK_V2 and o["then"] in self._asides:
+                        self.bad(where, "leads on to '%s', which is an aside: an aside is not part of a conversation" % (o["then"],))
             self.cites(where, line.get("sources"))
+
+    def entries_v2(self, lines):
+        """What tlm-talk-2 adds (docs/design/ACT1_ENTRY_SELECTION_CONTRACT.md).
+
+        Every boxed line says whether it is an entry. An entry is what a person may say when spoken to; a
+        continuation is said only when a button leads on to it. A speaker's entries are strictly ordered by
+        priority across the whole folder, so that which one is said never depends on the order of files or
+        lines. Nothing here guesses: a line is an entry because it says so, not because of its name, its
+        priority or what leads to it.
+        """
+        self._asides = set()
+        entries, roots, boxed, edges = {}, set(), {}, {}
+        for where, line, may_say, version in lines:
+            lid, aside = line["id"], line.get("kind") == "aside"
+            if version != TALK_V2:
+                if "entry" in line:
+                    self.bad(where, "has 'entry', which tlm-talk-1 does not have: a file that says which lines are entries is tlm-talk-2")
+                continue
+            if aside:
+                self._asides.add(lid)
+                if "entry" in line:
+                    self.bad(where, "an aside is not said in a box and has no 'entry'")
+                continue
+            boxed[lid] = where
+            edges[lid] = [o["then"] for b in line.get("buttons") or [] if isinstance(b, dict)
+                          for o in ([b.get("pass"), b.get("fail")] if "check" in b else [b])
+                          if isinstance(o, dict) and isinstance(o.get("then"), str)]
+            if "entry" not in line:
+                self.bad(where, "does not say whether it is an entry: in tlm-talk-2 every boxed line has entry true or false")
+                continue
+            entry = line["entry"]
+            if entry is not True and entry is not False:          # 1 and 0 are numbers, not yes and no
+                self.bad(where, "entry is true or false; %r is not" % (entry,))
+                continue
+            priority = line.get("priority", 0)
+            if entry:
+                roots.add(lid)
+                if isinstance(priority, int) and not isinstance(priority, bool):
+                    entries.setdefault((line.get("speaker"), priority), []).append(lid)
+            elif priority != 0 or isinstance(priority, bool):
+                self.bad(where, "is a continuation, said only when a button leads on to it: its priority is 0 or left out, not %r" % (priority,))
+        for (speaker, priority), ids in sorted(entries.items(), key=lambda kv: (str(kv[0][0]), kv[0][1])):
+            if len(ids) > 1:
+                self.bad("talk, %s" % speaker, "the entries %s all have priority %d: a speaker's entries are strictly ordered across the folder" % (
+                    ", ".join(sorted(ids)), priority))
+        # A continuation has to be reachable from an entry by the buttons that lead on. This looks at the
+        # links only: it does not ask whether the conditions along the way can all hold together.
+        seen, todo = set(roots), sorted(roots)
+        while todo:
+            for target in edges.get(todo.pop(), []):
+                if target in boxed and target not in seen:
+                    seen.add(target)
+                    todo.append(target)
+        for lid in sorted(boxed):
+            if lid not in seen:
+                self.bad(boxed[lid], "is a continuation that no entry leads on to")
 
     def documents_file(self):
         path = "documents.json"
@@ -507,6 +583,19 @@ def changed_in(files, path, change):
     return out
 
 
+def talk_version(files):
+    """The talk format the folder's talk files with lines in them use: tlm-talk-2 if any does."""
+    for p in sorted(files):
+        if p.startswith("talk/") and p.endswith(".json"):
+            try:
+                data = json.loads(files[p])
+            except ValueError:
+                continue
+            if data.get("lines") and data.get("format") == TALK_V2:
+                return TALK_V2
+    return "tlm-talk-1"
+
+
 def with_last_chapter(files):
     """The folder with a sound last chapter added: the quest mq05, its talk, and the one who speaks in it.
 
@@ -526,9 +615,11 @@ def with_last_chapter(files):
         "evidence": [], "ways_through": ["test probe one", "test probe two"], "cannot_break": "Test probe.",
         "new_flags": [], "open_questions": [],
     }
-    talk = {"format": "tlm-talk-1", "quest": "TLM_MQ05", "lines": [
+    talk = {"format": talk_version(files), "quest": "TLM_MQ05", "lines": [
         {"id": "probe_last_chapter", "speaker": "probe", "status": "new", "priority": 0, "when": [], "text": PROBE,
          "buttons": [{"label": "TEST PROBE: the Rider"}], "sources": []}]}
+    if talk["format"] == TALK_V2:
+        talk["lines"][0]["entry"] = True
     probe = {"id": "probe", "record": None, "status": "proposed", "name": "Test Probe", "sex": "female",
              "role": "probe", "looks": "probe", "voice": "probe", "wants": "probe", "fears": "probe", "secret": "probe",
              "wrong_about": "probe", "knows": [], "does_not_know": [], "ties": [], "sources": []}
@@ -558,9 +649,19 @@ def sound(files):
     talk = sorted(p for p in files if p.startswith("talk/") and p != "talk/town.json")
     if talk:
         t = talk[0]
+        # In tlm-talk-2 a priority means something only on an entry, and a speaker's entries are strictly
+        # ordered: so the line left without one is an entry that is at 0 already, and the line raised to the
+        # highest is an entry. In tlm-talk-1 it is the first line, as it always was.
+        first_lines = json.loads(files[t])["lines"]
+        v2 = talk_version(files) == TALK_V2
+        at_zero = [i for i, l in enumerate(first_lines) if l.get("entry") is True and l.get("priority", 0) == 0] if v2 else [0]
+        an_entry = [i for i, l in enumerate(first_lines) if l.get("entry") is True] if v2 else [0]
+        if at_zero:
+            out.append(("a line with no priority given", changed_in(files, t, lambda d: d["lines"][at_zero[0]].pop("priority", None))))
+        if an_entry:
+            out.append(("a line with the highest priority there is",
+                        changed_in(files, t, lambda d: d["lines"][an_entry[0]].update(priority=PRIORITY_MAX))))
         out += [
-            ("a line with no priority given", changed_in(files, t, lambda d: d["lines"][0].pop("priority", None))),
-            ("a line with the highest priority there is", changed_in(files, t, lambda d: d["lines"][0].update(priority=PRIORITY_MAX))),
             ("talk that belongs to no quest, in talk/town.json", dict(files, **{"talk/town.json": json.dumps(
                 {"format": "tlm-talk-1", "quest": None, "lines": []})})),
         ]
@@ -638,6 +739,8 @@ def damages(files):
                 ("a quest of the plugin's whose log names what Act I does not know",
                  changed(q, lambda d: d["stages"][0].update(log=PROBE)), NOBODY_KNOWS),
             ]
+    if talk and talk_version(files) == TALK_V2:
+        out += damages_v2(files, talk)
     # The last chapter: three words may be said there, by the quest that is really that chapter and its talk.
     last = with_last_chapter(files)
     mq05, talk05 = "quests/tlm_mq05.json", "talk/tlm_mq05.json"
@@ -699,6 +802,52 @@ def damages(files):
                     dict(files, **{"RESEARCH.md": re.sub(r"https?://\S+", "a book", text).replace("| INVENTED |", "| REAL |", 1)})))
     if "documents.json" in files:
         out.append(("a document too long to read", changed("documents.json", lambda d: d["documents"][0].update(text="x" * (DOCUMENT_MAX + 1)))))
+    return out
+
+
+def damages_v2(files, talk):
+    """What a tlm-talk-2 folder is damaged with besides: each has to be refused, and for its own reason."""
+    def changed(path, change):
+        return changed_in(files, path, change)
+    data = {p: json.loads(files[p]) for p in talk}
+    boxed = [(p, i) for p in talk for i, l in enumerate(data[p]["lines"]) if l.get("kind") != "aside"]
+    entry = [(p, i) for p, i in boxed if data[p]["lines"][i].get("entry") is True]
+    cont = [(p, i) for p, i in boxed if data[p]["lines"][i].get("entry") is False]
+    aside = [(p, i) for p in talk for i, l in enumerate(data[p]["lines"]) if l.get("kind") == "aside"]
+    out = []
+    if entry:
+        p, i = entry[0]
+        at = lambda d, i=i: d["lines"][i]                                           # noqa: E731
+        out += [
+            ("a boxed line that does not say whether it is an entry", changed(p, lambda d: at(d).pop("entry")), "does not say whether it is an entry"),
+            ("an entry given in words", changed(p, lambda d: at(d).update(entry="true")), "entry is true or false"),
+            ("an entry given as a number", changed(p, lambda d: at(d).update(entry=1)), "entry is true or false"),
+            ("an entry given as nothing", changed(p, lambda d: at(d).update(entry=None)), "entry is true or false"),
+            ("a second entry with the same priority for the same speaker, in another file",
+             dict(files, **{"talk/zz_probe.json": json.dumps({"format": TALK_V2, "quest": json.loads(files[p]).get("quest"), "lines": [
+                 dict(json.loads(files[p])["lines"][i], id="probe_same_priority", when=["truth >= 99"], buttons=[])]})}),
+             "strictly ordered across the folder"),
+            ("a file of the first talk format beside it", dict(files, **{"talk/zz_probe.json": json.dumps(
+                {"format": "tlm-talk-1", "quest": json.loads(files[p]).get("quest"), "lines": [
+                    {"id": "probe_old_format", "speaker": at(json.loads(files[p]))["speaker"], "status": "new", "priority": 0, "when": [],
+                     "text": "TEST PROBE.", "sources": []}]})}), "a folder uses one format"),
+            ("the first talk format with an entry in it", changed(p, lambda d: d.update(format="tlm-talk-1")), "which tlm-talk-1 does not have"),
+            ("a button that leads on to an aside", changed(p, lambda d: d["lines"].append(
+                {"id": "probe_aside", "speaker": at(d)["speaker"], "status": "new", "kind": "aside", "when": [], "text": "TEST PROBE.", "sources": []})
+                or at(d).update(buttons=[{"label": "x", "then": "probe_aside"}])), "which is an aside"),
+            ("two continuations that lead only to each other", changed(p, lambda d: d["lines"].extend([
+                {"id": "probe_ring_a", "speaker": at(d)["speaker"], "status": "new", "entry": False, "when": [], "text": "TEST PROBE.",
+                 "buttons": [{"label": "x", "then": "probe_ring_b"}], "sources": []},
+                {"id": "probe_ring_b", "speaker": at(d)["speaker"], "status": "new", "entry": False, "when": [], "text": "TEST PROBE.",
+                 "buttons": [{"label": "x", "then": "probe_ring_a"}], "sources": []}])), "no entry leads on to"),
+        ]
+    if cont:
+        p, i = cont[0]
+        out.append(("a continuation with a priority, as if it could be a greeting",
+                    changed(p, lambda d, i=i: d["lines"][i].update(priority=999)), "is a continuation"))
+    if aside:
+        p, i = aside[0]
+        out.append(("an aside that says it is an entry", changed(p, lambda d, i=i: d["lines"][i].update(entry=True)), "an aside is not said in a box"))
     return out
 
 

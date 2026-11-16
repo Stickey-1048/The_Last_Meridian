@@ -1,0 +1,69 @@
+{
+  "format": "iris-act1-ballad-addendum-1",
+  "source": "6f21643ec36c1e0511dadd59e28e5ea3b4552a82",
+  "immutable_prior_packet": "364BDAA09FAB8658CB99D0FF4EEFFCF5DB98767D465A0E427B1957BA5F4F2C5A",
+  "decision": "This small addendum supersedes only the ballad text/ending instructions and flint_who spoken text in the prior packet. The prior packet remains unchanged.",
+  "target": {
+    "file": "assets/incoming/act1/story/documents.json",
+    "document_id": "ballad_six_rounds",
+    "title": "The Stranger and the Tellico Road"
+  },
+  "replacement_rule": "Replace the ENTIRE old document text with the matching full_text below. Do not append a new ending to the old fixed-six-rounds/five-returned or fixed-player-action body. Stable document ID and any established binding remain reserved; Charles may add documented variant IDs/routing as the supported intake format requires.",
+  "common_body": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.",
+  "variants": {
+    "saved": {
+      "ending": "The word came down that trouble met an unexpected hand.\nWhat happened past the telling wasn't mine to understand.\nNo singer owns the reason, and no verse can set the fee:\nAsk those who came to Mercy what that mercy ought to be.",
+      "full_text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nThe word came down that trouble met an unexpected hand.\nWhat happened past the telling wasn't mine to understand.\nNo singer owns the reason, and no verse can set the fee:\nAsk those who came to Mercy what that mercy ought to be."
+    },
+    "evaded_or_missed": {
+      "ending": "News came down to Mercy with a space beside the rein.\nThey argued who had seen the road, then argued it again.\nWhat passed between the strangers is a thing I did not see.\nI set the tale upon the sheet; the judgement isn't free.",
+      "full_text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nNews came down to Mercy with a space beside the rein.\nThey argued who had seen the road, then argued it again.\nWhat passed between the strangers is a thing I did not see.\nI set the tale upon the sheet; the judgement isn't free."
+    },
+    "exploited": {
+      "ending": "They counted out a wagon's worth and called the counting fair.\nThe quiet after trading had a name that wasn't there.\nYou ask me who was paid for it; I only sell the sheet.\nTo call it trade is easy from a dry and distant seat.",
+      "full_text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nThey counted out a wagon's worth and called the counting fair.\nThe quiet after trading had a name that wasn't there.\nYou ask me who was paid for it; I only sell the sheet.\nTo call it trade is easy from a dry and distant seat."
+    }
+  },
+  "routing": [
+    {
+      "outcome": "saved",
+      "variant": "saved"
+    },
+    {
+      "outcome": "evaded",
+      "variant": "evaded_or_missed"
+    },
+    {
+      "outcome": "missed",
+      "variant": "evaded_or_missed"
+    },
+    {
+      "outcome": "exploited",
+      "variant": "exploited"
+    }
+  ],
+  "routing_rule": "Use the actual recorded Chapter1 outcome. Evaded and missed may use separate AND-only condition bindings to the same variant; do not invent unsupported OR syntax. Do not select an outcome ending while the outcome is none/unknown. A common-body-only sheet can be labelled an unconfirmed account instead.",
+  "actor_survival_fidelity": "No variant names Abel, Nell or another caravan member, states all saved people remain alive, or fixes a later fate. Saved describes a report of help, not a guarantee of current survival. The common body only uses the established wreck and arrival at Mercy. Any later named-person death/survival verse requires a matching actual actor-state condition; do not infer all survivors from a historical saved outcome. Granger's print is hearsay, not a neutral narrator proving motives, ammunition, gender, personality or training.",
+  "flint_who_override": {
+    "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+    "id": "flint_who",
+    "field": "text",
+    "text": "If I had a name I'd not be collecting brass. A distant coat, a bright gun, a boat already waiting. I reckon someone sold him the courier's road and hour. Find me at Pike's if you learn more. I'll trade.",
+    "reason": "'I reckon' explicitly presents the road/hour sale as Flint's hypothesis from current evidence, not objective proof, prior acquaintance with the player, or omniscient knowledge.",
+    "lengths": {
+      "text": 202,
+      "maximum": 240
+    }
+  },
+  "validation": {
+    "ascii": true,
+    "document_limit": 1500,
+    "full_text_lengths": {
+      "saved": 837,
+      "evaded_or_missed": 837,
+      "exploited": 835
+    },
+    "spoken_limit": 240,
+    "scope": "Creative text and wiring instructions only; not actual game integration or a runtime test."
+  }
+}

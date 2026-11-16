@@ -1,0 +1,78 @@
+{
+ "format": "tlm-quest-1",
+ "key": "mq02a", "id": "TLM_MQ02A", "title": "The Night Mail", "chapter": 2, "kind": "main",
+ "premise": "Iron Junction has lost four trains in a month to pulled rails. Each wreck has a hymn number chalked on its boiler. Tonight the yard sends the payroll and the valley's fever medicine through Sawtooth Cut behind an engine called Old Contrary, and the yardmaster wants a gun on the footplate. In the Cut a preacher is waiting on a flatcar with thirty rifles. He was this line's inspector for nineteen years, the valley buried him, and somebody has been signing his name ever since.",
+ "draws_on": ["R7", "R9"],
+ "reads": ["flag yard_alerted", "ledger is sold", "ledger is posted_yard", "evidence >= 2"],
+ "cast": ["lockridge", "tarrow", "dole"],
+ "places": [
+  {"id": "iron_junction", "name": "Iron Junction yard", "what": "A roundhouse with a wall round it, searchlights made of locomotive headlamps, and a dining car on the turntable that turns to face whoever is at the gate"},
+  {"id": "old_contrary", "name": "Old Contrary", "what": "A patched switch engine and one armoured mail car. The player rides the footplate"},
+  {"id": "sawtooth_cut", "name": "Sawtooth Cut", "what": "A rock cutting a train-length long. Lanterns across the track, one rail spread, a flatcar set up as a pulpit"},
+  {"id": "boxcar_tabernacle", "name": "The boxcar tabernacle", "what": "Dole's chapel on a dead siding above the Cut: pews from a wrecked coach, a collection plate full of silver"}
+ ],
+ "stages": [
+  {"n": 10, "set_by": "Entering the yard gate at Iron Junction with the spike from Pritchard's desk", "log": "Iron Junction is a roundhouse with a wall round it and a woman on the turntable who points her office at whoever is coming."},
+  {"n": 20, "set_by": "Lockridge's button 'I'll ride your mail.'", "log": "Gussie Lockridge has lost four trains in a month. Tonight's carries the payroll and the valley's fever medicine. She wants a gun on the footplate and is not asking twice."},
+  {"n": 30, "set_by": "Climbing onto the footplate of Old Contrary", "log": "Old Contrary is under steam. Billie Tupper drives as if the dark owed her money."},
+  {"n": 40, "set_by": "The train reaching the spread rail in Sawtooth Cut", "log": "Lanterns across the track. A rail pulled out of true. A tall man on a flatcar with a hymnal, and thirty rifles for a choir."},
+  {"n": 41, "set_by": "The button 'Stoke her. Run the gap.'", "log": "Billie put the regulator through the roof. Old Contrary took the gap in the air and came down on the rails, more or less."},
+  {"n": 42, "set_by": "Ezekiel Dole dead by the player's hand in the Cut", "log": "Preacher Dole is lying across the rail he pulled. His congregation went up the hill without singing."},
+  {"n": 43, "set_by": "The button 'Done.' on Dole's offer of a share", "log": "You sold the Night Mail. The payroll and the fever medicine went up the hill on the Black Rail's shoulders, and Billie Tupper was put off to walk home."},
+  {"n": 44, "set_by": "The button 'Back her out.'", "log": "Billie backed her out of the Cut in the dark. The mail is safe and no use to anybody, and the line is shut."},
+  {"n": 50, "set_by": "Looking in the collection plate in the boxcar tabernacle, or in Dole's coat", "log": "The preacher's collection plate is full of silver slugs. Each is stamped with a small square mark."},
+  {"n": 55, "set_by": "Reading the flyleaf of Dole's hymnal, or hearing it from him", "log": "The name written in the front of the preacher's hymnal is R. Ostrander, Inspector of Way."},
+  {"n": 60, "set_by": "Opening the top drawer of Lockridge's desk in the dining car, or showing her the hymnal", "log": "The dead inspector's stamp is in Gussie Lockridge's drawer. The pad is still wet."},
+  {"n": 61, "set_by": "The button 'Keep stamping. Trains have to run.'", "log": "You left the stamp where it was. The trains will run, and Ostrander will go on passing them."},
+  {"n": 62, "set_by": "The button 'Sign your own name from now on.'", "log": "Gussie Lockridge signed her own name under every entry for a year back. It took her until morning."},
+  {"n": 63, "set_by": "The button 'Pritchard gets the stamp.'", "log": "You took the stamp. Gussie Lockridge watched you carry it out and did not turn her office to follow."},
+  {"n": 100, "set_by": "Leaving Iron Junction or the Cut after stage 41, 42, 43 or 44", "log": null, "completes": true}
+ ],
+ "objectives": [
+  {"n": 10, "text": "Find the yardmaster at Iron Junction"},
+  {"n": 20, "text": "Ride the footplate of the Night Mail"},
+  {"n": 40, "text": "Get the Night Mail through Sawtooth Cut, or do not"},
+  {"n": 55, "text": "(Optional) Find out who has been signing for a dead man"}
+ ],
+ "choices": [
+  {"at": 40, "options": [
+   {"label": "Stoke her. Run the gap.", "sets": 41, "now": "The mail gets through. Old Contrary is half wrecked. Dole lives and has seen your face", "later": "The valley has its medicine. Dole comes to the fair for you"},
+   {"label": "Stop her. I'm getting down.", "now": "You face Dole on the track by lantern light. He will talk before he shoots", "later": "If he dies the Black Rail scatters and the line is quiet; nobody is left who can say what the yard signed"},
+   {"label": "What's my share, Preacher?", "now": "Dole offers a third of the payroll for standing aside", "later": "No fever medicine in the valley this month. Billie Tupper remembers. Lockridge shuts the gate to you"},
+   {"label": "Back her out.", "sets": 44, "now": "Nobody is hurt and nothing is delivered", "later": "The line is closed until somebody else clears the Cut. The yard lays off half its hands"}
+  ]},
+  {"at": 60, "options": [
+   {"label": "Keep stamping. Trains have to run.", "sets": 61, "now": "Nothing changes at the yard", "later": "Freight keeps moving on cars that should be scrap. The next wreck is a matter of time, and it is partly yours"},
+   {"label": "Sign your own name from now on.", "sets": 62, "now": "Lockridge countersigns a year of entries in her own hand", "later": "A third of the roster is laid up. Less moves, and what moves is sound. She can be held to it"},
+   {"label": "Pritchard gets the stamp.", "sets": 63, "now": "You take the stamp and the proof", "later": "The yard has no master by the time of the fair, and Brigg offers to supply one"}
+  ]}
+ ],
+ "evidence": [
+  {"id": "hymn_chalk", "kind": "label", "found": "Chalked on the boiler of each of the four wrecks along the line", "sets": null},
+  {"id": "silver_plate", "kind": "label", "found": "The collection plate in the boxcar tabernacle; or Dole's coat", "sets": 50},
+  {"id": "hymnal_flyleaf", "kind": "note", "found": "The hymnal chained to Dole's belt", "sets": 55},
+  {"id": "ostrander_stamp", "kind": "label", "found": "Top drawer of Lockridge's desk in the dining car", "sets": 60}
+ ],
+ "ways_through": [
+  "Ride the mail and run the gap. Needs no shot fired, no evidence found and nothing optional.",
+  "Get down and face Dole: kill him, or hear him out and then choose.",
+  "Take Dole's share and leave the train to him.",
+  "Back the train out and leave the Cut to the Black Rail."
+ ],
+ "cannot_break": "If the player never boards, the road stays unresolved: nothing is wrecked and nobody is hurt on that account. If Lockridge is killed, Billie takes the train out on her own word. If Dole is shot from the footplate before he speaks it counts as facing him. If Billie dies the player can drive: the regulator is a lever. The stamp and the hymnal are optional and nothing waits on them.",
+ "new_flags": [
+  {"name": "mail_through", "meaning": "The Night Mail reached the valley: the medicine and the payroll were delivered"},
+  {"name": "mail_sold", "meaning": "The player took a share of the Night Mail from Dole"},
+  {"name": "line_closed", "meaning": "The Corridor line is shut at Sawtooth Cut"},
+  {"name": "dole_lives", "meaning": "Dole is alive and knows the player's face"},
+  {"name": "silver_rail", "meaning": "The player has seen the stamped silver Dole is paid in"},
+  {"name": "ostrander_known", "meaning": "The player knows that Dole is the inspector Ostrander"},
+  {"name": "lockridge_stamping", "meaning": "The player found the stamp and let Lockridge keep using it"},
+  {"name": "lockridge_signed", "meaning": "Lockridge has put her own name to her inspections"},
+  {"name": "lockridge_reported", "meaning": "The stamp is in Pritchard's hands and the yard has no master"}
+ ],
+ "open_questions": [
+  "Resolved 2026-11-16: Reuben Ostrander lives as Preacher Dole; Lockridge forged the clearances; the Chapter 1 wreck is neglect and fraudulent certification, distinct from Dole's later rail attacks (decision 2).",
+  "Feasibility-gated, not authored here: the moving-engine ride and jump, and the duel in the Cut. A stopped-engine or grounded alternative must preserve progression if the spectacle cannot be supported (decisions 20 and 22)."
+ ]
+}
