@@ -300,8 +300,10 @@
    "status": "new",
    "entry": false,
    "priority": 0,
-   "when": [],
-   "text": "WE'RE THROUGH! We're... oh Lord. Look how low she's riding. That's a third of it over the side. That's my doing. Tombstone Rock, I always cut it fine. Granny's going to count every sack.",
+   "when": [
+    "alive pruitt"
+   ],
+   "text": "WE'RE THROUGH! Look at what's gone over the side. Granny's going to count every sack we brought home. We'll count the loss before we start calling it a victory.",
    "sources": []
   },
   {

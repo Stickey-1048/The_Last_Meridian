@@ -2,11 +2,12 @@
 
 16 November 2026. **Status: a revised proposal, returned for narrative acceptance and independent engineering review. Not accepted, not built, not compiled, not tested in the game.** The installed first-section demo and the tested world packages are unchanged.
 
-This file describes the package as it stands after the delegated creative decisions and writing closure packet 2 were applied, with the talk in the second format (`tlm-talk-2`). The original proposal, including the earlier version of this overview, is in Git at `6f21643`.
+This file describes the package as it stands after the delegated creative decisions and writing closure packets 2 and 3 were applied, with the talk in the second format (`tlm-talk-2`). The original proposal, including the earlier version of this overview, is in Git at `6f21643`.
 
 - What was decided: [ACT1_CREATIVE_DECISIONS_2026-11-16.md](../../../../docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md).
 - What was received, what was done and what is still missing: [ACT1_CHARLES_REVISION_RECEIPT.md](../../../../docs/design/ACT1_CHARLES_REVISION_RECEIPT.md).
 - Every node that changed in that first revision, before and after: [ACT1_CHARLES_REVISION_CHANGES.md](../../../../docs/design/ACT1_CHARLES_REVISION_CHANGES.md).
+- Packet 3, the latest: [the receipt](../../../../docs/design/ACT1_CHARLES_PACKET3_RECEIPT.md), [every node that changed](../../../../docs/design/ACT1_CHARLES_PACKET3_CHANGES.md), and [the complete entry and priority ledger](../../../../docs/design/ACT1_CHARLES_PACKET3_ENTRY_LEDGER.md).
 - Packet 2 and the entry format: [the receipt](../../../../docs/design/ACT1_CHARLES_PACKET2_RECEIPT.md), [every node that changed](../../../../docs/design/ACT1_CHARLES_PACKET2_CHANGES.md), and [every line's entry label and priority](../../../../docs/design/ACT1_CHARLES_PACKET2_ENTRY_LEDGER.md).
 
 The format check passes (`python3 tools/check_story_intake.py --strict assets/incoming/act1/story`). That says the mechanics can take the files in. It says nothing about fairness, whether a duel or a moving train can be staged, or whether the writing is good.
@@ -17,7 +18,7 @@ Silver from Blackstone Station has reached Silas Vane for six years, and he has 
 
 ## Chapter 2: Three Roads to Ruin (`mq02`, and one quest per road)
 
-Pritchard puts a rail spike, a grain scoop and a miner's brass tag on his desk. One completed road opens the fair. So does telling him to call the fair without a report: nobody is hurt for refusing, and the roads stay open. A road that is never visited, or is left half done, stays unresolved; calling the fair settles nothing on it.
+Pritchard puts a rail spike, a grain scoop and a miner's brass tag on his desk. One completed road opens the fair. So does telling him to call the fair without a report: nobody is hurt for refusing, and the roads stay open. While a road is still open after the fair he offers it, and beside it a way to talk over any road's account without promising a journey. A road that is never visited, or is left half done, stays unresolved; calling the fair settles nothing on it.
 
 **The Night Mail** (`mq02a`, by rail). Gussie Lockridge runs Iron Junction from a dining car on the roundhouse turntable. The player rides the footplate of Old Contrary beside Billie Tupper into Sawtooth Cut, where Preacher Dole waits on a flatcar. Run the gap, face him, take his share or back out. Dole is Reuben Ostrander, the inspector reported dead of fever; the player learns it from him or from his hymnal, not from a nameplate. Lockridge kept using his stamp to pass unsafe equipment. The wreck in Chapter 1 came from that neglect and false certification. Dole's rail attacks are his own, later crimes. The moving engine, the jump and the duel are feasibility-gated and need a grounded alternative.
 
@@ -31,9 +32,9 @@ At Red Hollow, Captain Hobart Blevins has chained the mine with eleven of the ni
 
 Decoration Day on the camp-ground. Four flags at one table: Clara Whitcomb for the Compact, Colonel Brigg for the Dominion, Tomas Belden for the Commonwealth, Lucien Grey for the Directorate. Each now names a cost of its own offer. A beef shoot, with Edda Flint as the shot to beat.
 
-A courier comes in with a case chained to her wrist. The shot comes from the meeting-shed roof. The shooter is a distant figure leaving by a boat that was already waiting: no face, no name, no conversation, no chase that cannot be won. Brigg gives his order where it can be read, and the player's four courses come after it: search the roof and the landing, stay with the courier, call the delegates to uphold the truce, or take the case. The truce is spoken by the living delegates and a local officer in turn; it is Brigg's answer to them, not the player's request, that holds the occupation back. If one of those voices is dead the truce is not offered and the other three courses remain. Nobody at the fair hints that they know the player.
+A courier comes in with a case chained to her wrist. The shot comes from the meeting-shed roof. The shooter is a distant figure leaving by a boat that was already waiting: no face, no name, no conversation, no chase that cannot be won. Brigg gives his order where it can be read, and the player's courses come after it: search the roof and the landing, stay with the courier, call the delegates to uphold the truce, or take the case. The truce is spoken by the three living delegates and a local officer in turn. Then Brigg says his concession, and only the Continue under those words records it. If any of those voices is dead the truce is not offered and the other courses remain; that is a decision, not a gap. If the courier is dead nobody offers to stay with her. If Brigg is dead the courses are carried by Pritchard, or Talbot, or Flint, by who is alive. Once the quest is complete none of these lines can be used. Nobody at the fair hints that they know the player.
 
-Each of the four flags now also names a disagreement inside itself, except the Compact, whose revised line could not be taken in (see the receipt).
+Each of the four flags names a disagreement inside itself.
 
 ## Chapter 4: The Black Ledger (`mq04`)
 
@@ -45,7 +46,7 @@ Four ways to Vane's second book. Temperance Beckett, his bookkeeper, stands betw
 |---|---|
 | `characters.json` | 26 people: 7 of the plugin's, 19 it does not have |
 | `quests/` | Six quest files, 82 stages, 40 facts later chapters can read |
-| `talk/` | 209 lines in seven files, in the second talk format: 117 entries, 80 continuations, 12 asides |
+| `talk/` | 227 lines in seven files, in the second talk format: 129 entries, 86 continuations, 12 asides |
 | `documents.json` | 23 papers. Five are the ballad: one sheet for each recorded outcome of Chapter 1, one for a betrayal, one for none. One is Pritchard's 2298 review copy |
 | `RESEARCH.md` | Unchanged. Its six real-world rows come from search summaries and have not been verified |
 | `QUESTIONS_FOR_OWNER.md` | The original questions as resolved, and what is open now |

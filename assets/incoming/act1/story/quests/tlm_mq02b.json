@@ -34,7 +34,7 @@
  "choices": [
   {"at": 40, "options": [
    {"label": "Deal. The barge against my gun.", "now": "One hand of cards, with a check of nerve. Win and the barge is yours; lose and you have only lost the stake", "later": "Won: the grain goes home whole and Hatcher owes you nothing but likes you. He can be found at the fair with a boat for hire"},
-   {"label": "Cut the barge loose.", "sets": 42, "now": "The barge escapes through the Chute. Rafferty pilots if alive; otherwise the player steers. Some cargo is lost.", "later": "Greenwater eats, a third short. Hatcher puts a price on you that Dole or the Cutters may collect"},
+   {"label": "Cut the barge loose.", "sets": 42, "now": "The barge escapes through the Chute. Rafferty pilots if alive; otherwise the player steers. Some cargo is lost.", "later": "Greenwater receives the recovered cargo; losses depend on the actual route and pilot state. Hatcher may seek revenge if alive. No fixed fraction or dead pilot is asserted."},
    {"label": "Burn the occupied Queen.", "sets": 43, "now": "The occupied Queen and the winter cargo still lashed alongside burn. People are endangered; no exact death count is invented.", "later": "Greenwater loses the grain. Survivors need help, and Belden can offer immediate food without requiring political consent."},
    {"label": "Sell me a share, Commodore.", "sets": 44, "now": "You are paid well and Greenwater is told the grain is lost", "later": "The missing grain makes Greenwater vulnerable. Delegate Belden offers real meals and a later provisioning agreement that the town may contest or refuse; a bowl is not a signature."}
   ]},
@@ -68,7 +68,7 @@
  "open_questions": [
   "Resolved 2026-11-16: the drowned settlement stays fictional; real historical claims are to be verified separately before publication (decision 14).",
   "Resolved by packet 2: stage 42 is the completed Chute escape and stage 43 the fire that takes the occupied boat and the cargo lashed to it. They are alternatives; there is no cut-then-burn.",
-  "Open for Iris: `pruitt_ran` and the later text of the Chute choice still say a third of the grain was lost; packet 2 took that fraction out of the journal and of Starnes's reply.",
+  "Resolved by packet 3: no fixed fraction of the cargo is asserted in the journal, in Rafferty's line or in the consequence text, and a dead Rafferty does not speak. The living and dead pilot's difference in loss stays a mechanical rule in cannot_break until a route is measured.",
   "Open for Iris: whether Opal Starnes's illness is something the player can learn and act on."
  ]
 }

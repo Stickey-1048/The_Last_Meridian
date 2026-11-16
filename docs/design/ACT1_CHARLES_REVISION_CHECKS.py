@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
-"""Focused checks for the Act I writing intake after packet 2 (docs/design/ACT1_CHARLES_PACKET2_RECEIPT.md).
+"""Focused checks for the Act I writing intake after packet 3 (docs/design/ACT1_CHARLES_PACKET3_RECEIPT.md).
 
   python3 docs/design/ACT1_CHARLES_REVISION_CHECKS.py
 
-Reads the three frozen packets and the story folder and says whether the folder is what they ask for.
+Reads the four frozen packets and the story folder and says whether the folder is what they ask for.
 
 Expected values follow the documented order of precedence: the primary packet, then the ballad
-addendum for its two subjects, then packet 2 for exactly what it names. Where a later packet replaces
-a value an earlier one supplied, the later value is the one expected, and the pair is printed. Every
-comparison of supplied wording is exact, character for character.
+addendum for its two subjects, then packet 2 for exactly what it names, then packet 3 for exactly
+what it names. Where a later packet replaces a value an earlier one supplied, the later value is the
+one expected, and the pair is printed. Every comparison of supplied wording is exact, character for
+character. A line packet 3 supplies whole is compared whole: its speaker, conditions, text and buttons.
 
-One supplied line is WITHHELD and is checked as withheld: packet 2's whitcomb_rates uses a word that
-no line of Act I may use. The check holds the line to its earlier text and fails if that stops being
-the reason.
+No supplied line is withheld now. Packet 2's whitcomb_rates used a word no line of Act I may use and
+was held back; packet 3 replaces it. The check still knows how to hold a line back, and would fail if
+one were held back for a reason that had stopped being true.
 
-It also runs the histories the entry-selection contract names (Dole, Quill) through the reference
-selector, and PRINTS things for a person to read.
+It also runs histories through the reference selector (Dole, Quill, the roads, the truce, the courier)
+and PRINTS things for a person to read. Walks along a chain of lines stop on a repeated line or after
+as many steps as there are lines, so a chain that turns back on itself is reported and not followed
+for ever.
 
-A pass says the files agree with the packets and the contract's source rules. It is not a compile,
-not a game test, and says nothing about whether the writing is good.
+A pass says the files agree with the packets and the entry contract's source rules. It is not a
+compile, not a game test, and says nothing about whether the writing is good.
 """
 import hashlib
 import json
@@ -35,17 +38,20 @@ STORY = ROOT / "assets/incoming/act1/story"
 PACKET = ROOT / "docs/design/ACT1_APPROVED_TEXT_REVISIONS_2026-11-16.json"
 ADDENDUM = ROOT / "docs/design/ACT1_BALLAD_ADDENDUM_2026-11-16.json"
 PACKET2 = ROOT / "docs/design/ACT1_WRITING_CLOSURE_PACKET_2.json"
+PACKET3 = ROOT / "docs/design/ACT1_WRITING_CLOSURE_PACKET_3.json"
 CONTRACT = ROOT / "docs/design/ACT1_ENTRY_SELECTION_CONTRACT.md"
 HASHES = {PACKET: "364bdaa09fab8658cb99d0ff4eeffcf5db98767d465a0e427b1957ba5f4f2c5a",
           ADDENDUM: "50eeb71025b8cceac6d9d6e5f79656239406fd7a856f2343c94ee83953202cff",
           PACKET2: "f8166ead0b59050aec88a29b88be88244556cc3784c4c32189d503df0adb5a10",
+          PACKET3: "2955092d985afd5586f2eab9200d909fd5940a0e96a2a8a9533d6b1643a6f5d2",
           CONTRACT: "924ed1c382e13425800630c14d2cec8a002f8027996c63968478147bf5957148"}
-# The one supplied line that is not applied, the text the line keeps (as at 975a262), and the word that bars it.
-WITHHELD = {"whitcomb_rates": ("The carriers do, by vote, one wagon one voice. Nell Fenwick yonder voted against me twice and for me once, "
-                               "and I count that a landslide. It's slow. It's loud. Nobody gets shot for losing.", "charter")}
+# Supplied lines that are not applied: id -> (the text the line keeps, the word that bars the supplied text).
+# None now. Packet 2's whitcomb_rates was here until packet 3 replaced it.
+WITHHELD = {}
+STORY_PREFIX = "assets/incoming/act1/story/"
 GANTT_SHA256 = "22c5531d1776772e1e91a49604781c0871d0ec057c8f6ee368ba85f9fcc527ee"
 OLD_SURNAMES = ["Tarrow", "Greer", "Pruitt", "Vickers"]
-RETIRED_WORDS = ["Dessie", "Tansley", "H.G.", "talbot_shot", "ninety-eight", "'98"]
+RETIRED_WORDS = ["Dessie", "Tansley", "H.G.", "talbot_shot", "ninety-eight", "'98", "Fenwick yonder"]
 RETIRED_LABELS = ["You hanged the wrong man in ninety-eight.", "Fire your charges, Captain.", "Light the boiler and get clear.", "Send your deputy.",
                   "(Step aside)", "I can't swear for a whole town.", "(Stand between the rifles and the crowd)", "(Go after the shooter)",
                   "He tipped his hat to me.", "Set a line here. Both sides swear to it.", "Then I swear it. A line, here."]
@@ -79,7 +85,10 @@ def main():
         got = hashlib.sha256(lf(path)).hexdigest()
         if got != want:
             bad("%s: SHA-256 is %s, not %s" % (path.name, got, want))
-    pk, ad, p2 = (json.loads(lf(p)) for p in (PACKET, ADDENDUM, PACKET2))
+    pk, ad, p2, p3 = (json.loads(lf(p)) for p in (PACKET, ADDENDUM, PACKET2, PACKET3))
+    p3_text = {(r["file"][len(STORY_PREFIX):], r["id"], r["field"]): r["text"] for r in p3["text_replacements"]}
+    if len(p3_text) != len(p3["text_replacements"]):
+        bad("packet 3 names one field twice")
     c2 = p2["quest_and_evidence_contracts"]
     files = intake.read_folder(STORY)
     chars = {c["id"]: c for c in json.loads(files["characters.json"])["characters"]}
@@ -134,6 +143,20 @@ def main():
     menus = sorted(l for l in lines if l.startswith("pritchard_report_menu_"))
     for lid in menus:
         text.supply(lid, c2["after_fair_report_menu"]["text"], "packet 2")
+    p3_new = {x["id"]: x for x in p3["new_lines"]}
+    for (path, lid, name), value in sorted(p3_text.items()):
+        if path.startswith("talk/"):
+            if name != "text" or where.get(lid) != path:
+                bad("packet 3 names %s.%s in %s, which is not a line's text there" % (lid, name, path))
+            text.supply(lid, value, "packet 3")
+    for lid, x in p3_new.items():
+        text.supply(lid, x["text"], "packet 3")
+        got = dict(lines.get(lid, {}))
+        got.pop("priority", None)                       # the one thing packet 3 leaves to the ledger
+        if got != {k: v for k, v in x.items() if k != "file"} or where.get(lid) != x["file"][len(STORY_PREFIX):]:
+            bad("%s is not the line packet 3 supplies whole (speaker, entry, conditions, text, buttons)" % lid)
+    for lid in sorted(l for l in lines if l.startswith("brigg_demand") and l.endswith("_courier_dead")):
+        text.supply(lid, new["brigg_demand"]["text"], "packet 2 (a context copy of brigg_demand for a dead courier)")
     for lid, (want, source) in sorted(text.items()):
         if lid not in lines:
             bad("line %s is missing (%s)" % (lid, source))
@@ -161,12 +184,32 @@ def main():
                                ("brigg_offer", "Do all your Wardens agree?", "brigg_dissent"), ("grey_offer", "Do your engineers agree?", "grey_dissent")):
         if not [b for b in lines[lid]["buttons"] if b["label"] == label and b.get("then") == target and not b.get("do")]:
             bad("%s lacks the supplied button %r leading to %s" % (lid, label, target))
+    for who in ("belden", "brigg", "grey"):             # packet 3: the question comes immediately before the way out
+        bs = lines[who + "_offer"]["buttons"]
+        if len(bs) != 4 or bs[2].get("then") != who + "_dissent" or bs[3] != {"label": "(Move on)"}:
+            bad("%s_offer does not put its dissent question immediately before (Move on)" % who)
+    report = [x for x in p3["routing"] if x["id"] == "open_road_reports"][0]
+    road_button = {20: "The spike. I'll take the rail.", 30: "The scoop. I'll go by river.", 40: "The tag. I'll walk the pike."}
+    open_lines = sorted(l for l in lines if l.startswith("pritchard_three_tokens_later"))
+    if open_lines != sorted(report["source_ids"]):
+        bad("the open-roads lines are not the seven packet 3 names")
+    for lid in open_lines:
+        bs = lines[lid]["buttons"]
+        want = [road_button[n] for n in (20, 30, 40) if "mq02 notdone %d" % n in lines[lid]["when"]]
+        if [b["label"] for b in bs[:-1]] != want or any(b.get("do") for b in bs) or bs[-1] != report["append_button"]:
+            bad("%s does not keep its road buttons and end with the supplied report link" % lid)
+        if sorted(w for w in lines[lid]["when"] if w != "mq02 done 100") != sorted("mq02 %s %d" % ("notdone" if road_button[n] in want else "done", n) for n in (20, 30, 40)):
+            bad("%s is no longer bound to exactly the roads it offers" % lid)
+    for lid in ("pritchard_report_open_roads", "pritchard_report_open_rail", "pritchard_report_open_river", "pritchard_report_open_pike"):
+        l = lines[lid]
+        if l["entry"] is not False or l["when"] != ["mq02 done 100"] or any(b.get("do") for b in l.get("buttons", [])):
+            bad("%s is not a neutral continuation: it has an effect, or asks for evidence, or is an entry" % lid)
     for lid in menus:
         if [b["label"] for b in lines[lid]["buttons"]] != c2["after_fair_report_menu"]["buttons"]:
             bad("%s does not have the supplied four buttons" % lid)
     # the only label not supplied by a packet or already in the folder is the builder's own word
     made = sorted({(lid, b["label"]) for lid, l in lines.items() for b in l.get("buttons", []) if b["label"] == CONTINUE})
-    notes.append("\nButtons labelled %r, the builder's own word, added because a line with one way on needs a button to carry it (%d):" % (CONTINUE, len(made)))
+    notes.append("\nButtons labelled %r (%d). Nine were added in the packet 2 revision and approved by packet 3; two are packet 3's own, under Brigg's concession:" % (CONTINUE, len(made)))
     notes += ["  " + lid for lid, _ in made]
 
     # ---- 3. removed nodes and stages stay removed; nothing is renumbered
@@ -191,6 +234,9 @@ def main():
     field.supply(("pike", "secret"), pk["pike_ammunition_tooling"]["replacement_secret"], "primary packet")
     for r in p2["character_replacements"]:
         field.supply((r["id"], r["field"]), r["value"], "packet 2")
+    for (path, cid, name), value in sorted(p3_text.items()):
+        if path == "characters.json":
+            field.supply((cid, name), value, "packet 3")
     for (cid, name), (want, source) in sorted(field.items()):
         m = re.match(r"^(\w+)\[(\w+)\]$", name)
         if not m:
@@ -228,6 +274,10 @@ def main():
     quest.supply("mq03 stage 41 log", q1["mq03_stage41_log"], "primary packet")
     for x in p2["journal_replacements"]:
         quest.supply("%s stage %d log" % (x["quest"], x["stage"]), x["log"], "packet 2")
+    for (path, node, name), value in sorted(p3_text.items()):
+        m = re.match(r"^stages\[n=(\d+)\]$", node)
+        if path.startswith("quests/") and m and name == "log":
+            quest.supply("%s stage %s log" % (path[len("quests/tlm_"):-len(".json")], m.group(1)), value, "packet 3")
     for key, (want, source) in sorted(quest.items()):
         k, _, n, _ = key.split()
         if stage(k, int(n))["log"] != want:
@@ -244,7 +294,10 @@ def main():
         ("mq02c flag docket_2298_held", flag("mq02c", "docket_2298_held"), c2["docket"]["flag_meaning"]),
         ("mq03 premise", quests["mq03"]["premise"], q1["mq03_premise"]),
         ("mq03 search choice now", option("mq03", 40, q1["mq03_choice41_label"]).get("now"), q1["mq03_choice41_now"]),
-        ("mq03 search choice later", option("mq03", 40, q1["mq03_choice41_label"]).get("later"), q1["mq03_choice41_later"]),
+        ("mq03 search choice later", option("mq03", 40, q1["mq03_choice41_label"]).get("later"), p3_text[("quests/tlm_mq03.json", "choices[at=40].options[sets=41]", "later")]),
+        ("mq03 stay choice now", option("mq03", 40, "(Stay with the courier)").get("now"), p3_text[("quests/tlm_mq03.json", "choices[at=40].options[sets=42]", "now")]),
+        ("mq03 stay choice later", option("mq03", 40, "(Stay with the courier)").get("later"), p3_text[("quests/tlm_mq03.json", "choices[at=40].options[sets=42]", "later")]),
+        ("mq02b choice 42 later", option("mq02b", 40, "Cut the barge loose.").get("later"), p3_text[("quests/tlm_mq02b.json", "choices[at=40].options[sets=42]", "later")]),
         ("mq03 truce choice now", option("mq03", 40, b["label"]).get("now"), b["now"]),
         ("mq03 truce choice later", option("mq03", 40, b["label"]).get("later"), b["later"]),
         ("mq03 truce choice sets nothing by itself: stage 43 is Brigg's concession", option("mq03", 40, b["label"]).get("sets"), None),
@@ -259,6 +312,12 @@ def main():
     for what, got, want in exact:
         if got != want:
             bad("%s is not the supplied value" % what)
+    succession.append(("mq03 search choice later", "primary packet", "packet 3"))
+    seen_p3 = {k for k in p3_text if k[0].startswith("talk/") or k[0] == "characters.json" or k[1].startswith("stages[")}
+    seen_p3 |= {("quests/tlm_mq03.json", "choices[at=40].options[sets=41]", "later"), ("quests/tlm_mq03.json", "choices[at=40].options[sets=42]", "now"),
+                ("quests/tlm_mq03.json", "choices[at=40].options[sets=42]", "later"), ("quests/tlm_mq02b.json", "choices[at=40].options[sets=42]", "later")}
+    if seen_p3 != set(p3_text):
+        bad("a packet 3 replacement is not checked by anything here: %s" % sorted(set(p3_text) - seen_p3))
     ev = [e for e in quests["mq02c"]["evidence"] if e["id"] == "docket_2298"][0]
     if ev["found"] != c2["docket"]["found"] or ev["sets"] != 16:
         bad("mq02c evidence docket_2298 is not the supplied contract")
@@ -365,6 +424,13 @@ def main():
         bad("Starnes's replies to the escape and to the fire are not bound to their own facts")
     if "alive hatcher" not in when("starnes_after_won") or "dead hatcher" not in when("starnes_won_hatcher_dead") or lines["starnes_won_hatcher_dead"].get("buttons"):
         bad("Hatcher can be handed over dead, or not when alive")
+    if when("pruitt_ran") != ["alive pruitt"] or lines["pruitt_ran"]["entry"] is not False:
+        bad("a dead Rafferty can describe the escape")
+    if when("pritchard_after_rope") != ["mq04 done 64", "alive pritchard"]:
+        bad("the reply to the hanging is not bound to the chosen hanging and a living Pritchard")
+    for lid in ("pruitt_ran", "starnes_after_chute"):
+        if re.search(r"third|half", lines[lid]["text"]):
+            bad("%s states a fraction of the cargo" % lid)
     if "alive nell" not in when("nell_soup_aside"):
         bad("Nell's aside can be said by the dead")
     for lid in ("belden_greenwater_relief", "belden_greenwater_relief_fire"):
@@ -376,25 +442,59 @@ def main():
     if setters("mq04 set 64") != ["vane_porch"] or len(hang) != 1 or hang[0].get("do") != ["mq04 set 64"]:
         bad("the hanging is set by something other than the one explicit button on the porch")
 
-    # ---- 10. the fair: Brigg's order is read first; the truce is spoken by the living; a request is not a concession
+    # ---- 10. the fair: the order is read first; the truce is spoken by the living; Brigg concedes BEFORE anything is recorded;
+    #          no course and no part of the truce can be taken once the quest is complete; a dead courier is not stayed with
     demands = sorted(l for l in lines if l.startswith("brigg_demand"))
+    fallbacks = sorted(l for l in p3_new if "_courier_no_brigg_" in l)
     truce = c2["brigg_choice"]["label"]
+    SEARCH, STAY, TAKE = "(Search the roof and landing)", "(Stay with the courier)", "(Take the case and go)"
+    unresolved = ["mq03 done 40"] + ["mq03 notdone %d" % n for n in (41, 42, 43, 44, 70, 100)]
+    def says(lid, who): return "alive " + who in when(lid), "dead " + who in when(lid)
+    if len(demands) != 12 or len(fallbacks) != 6:
+        bad("there are %d orders from Brigg and %d fallbacks, not 12 and 6" % (len(demands), len(fallbacks)))
+    for lid in demands + fallbacks:
+        if any(w not in when(lid) for w in unresolved):
+            bad("%s can offer a course before the shot, after another course, after the occupation or after the quest is complete" % lid)
+        living, dead = says(lid, "threefords")
+        if living == dead:
+            bad("%s does not say whether the courier lives" % lid)
+        if [x["label"] for x in lines[lid]["buttons"] if x["label"] != truce] != [SEARCH] + ([STAY] if living else []) + [TAKE]:
+            bad("%s does not offer exactly the courses that fit a %s courier" % (lid, "living" if living else "dead"))
+        if lines[lid]["entry"] is not True:
+            bad("%s is not an entry" % lid)
     for lid in demands:
-        if "alive brigg" not in when(lid) or "mq03 done 40" not in when(lid) or "mq03 notdone 70" not in when(lid):
-            bad("%s can be said by a dead Brigg, before the shot or after the occupation" % lid)
+        if "alive brigg" not in when(lid) or lid.endswith("_courier_dead") != says(lid, "threefords")[1]:
+            bad("%s can be said by a dead Brigg, or its name and its courier disagree" % lid)
         t = [x for x in lines[lid]["buttons"] if x["label"] == truce]
         if t and t[0].get("do"):
             bad("%s: asking for the truce sets a stage. Only Brigg's concession may" % lid)
-        if [x["label"] for x in lines[lid]["buttons"] if x["label"] != truce] != ["(Search the roof and landing)", "(Stay with the courier)", "(Take the case and go)"]:
-            bad("%s does not keep the other three courses" % lid)
-    people = ("whitcomb", "belden", "grey", "pritchard", "talbot")
-    def says(lid, who): return "alive " + who in when(lid), "dead " + who in when(lid)
-    for i, a_ in enumerate(demands):
-        for b_ in demands[i + 1:]:
-            if not any((says(a_, p)[0] and says(b_, p)[1]) or (says(a_, p)[1] and says(b_, p)[0]) for p in people):
-                bad("%s and %s could both hold" % (a_, b_))
-    for lid, order in (("brigg_demand", ["whitcomb_truce", "belden_truce", "grey_truce", "pritchard_truce"]),
-                       ("brigg_demand_talbot", ["whitcomb_truce_talbot", "belden_truce_talbot", "grey_truce_talbot", "talbot_truce"])):
+    order_of = {"pritchard": ["alive pritchard"], "talbot": ["dead pritchard", "alive talbot"], "flint": ["dead pritchard", "dead talbot", "alive flint"]}
+    for lid in fallbacks:
+        who = lines[lid]["speaker"]
+        if "dead brigg" not in when(lid) or any(w not in when(lid) for w in order_of[who]) or truce in [x["label"] for x in lines[lid]["buttons"]]:
+            bad("%s is not %s's turn with Brigg dead, or offers a truce nobody can concede" % (lid, who))
+    people = ("brigg", "whitcomb", "belden", "grey", "pritchard", "talbot", "flint", "threefords")
+    course_lines = demands + fallbacks
+    for i, a_ in enumerate(course_lines):
+        for b_ in course_lines[i + 1:]:
+            same_speaker = lines[a_]["speaker"] == lines[b_]["speaker"]
+            apart = any((says(a_, p)[0] and says(b_, p)[1]) or (says(a_, p)[1] and says(b_, p)[0]) for p in people)
+            if not apart:
+                bad("%s and %s could both hold%s" % (a_, b_, "" if same_speaker else ": two people would carry the same courses at once"))
+    for n in (41, 42, 44):
+        got = setters("mq03 set %d" % n)
+        want = sorted(l for l in course_lines if n != 42 or says(l, "threefords")[0])
+        if got != want:
+            bad("stage %d of mq03 is set by %s, not by exactly the lines that may offer it" % (n, got))
+    quorum = {"pritchard": ["alive brigg", "alive whitcomb", "alive belden", "alive grey", "alive pritchard"],
+              "talbot": ["alive brigg", "alive whitcomb", "alive belden", "alive grey", "dead pritchard", "alive talbot"]}
+    chains = (("brigg_demand", "pritchard", ["whitcomb_truce", "belden_truce", "grey_truce", "pritchard_truce", "brigg_truce_concession_pritchard"]),
+              ("brigg_demand_courier_dead", "pritchard", ["whitcomb_truce", "belden_truce", "grey_truce", "pritchard_truce", "brigg_truce_concession_pritchard"]),
+              ("brigg_demand_talbot", "talbot", ["whitcomb_truce_talbot", "belden_truce_talbot", "grey_truce_talbot", "talbot_truce", "brigg_truce_concession_talbot"]),
+              ("brigg_demand_talbot_courier_dead", "talbot", ["whitcomb_truce_talbot", "belden_truce_talbot", "grey_truce_talbot", "talbot_truce", "brigg_truce_concession_talbot"]))
+    for lid, officer, order in chains:
+        if any(w not in when(lid) for w in quorum[officer]):
+            bad("%s offers a truce without asking that everyone who must speak it is alive" % lid)
         t = [x for x in lines[lid]["buttons"] if x["label"] == truce]
         chain, at = [], (t[0].get("then") if t else None)
         seen = set()
@@ -407,27 +507,31 @@ def main():
                 bad("truce chain from %s reaches missing line %s" % (lid, at))
                 break
             chain.append(at)
-            speaker = lines[at]["speaker"]
-            if "alive " + speaker not in when(at) or "alive " + speaker not in when(lid):
-                bad("%s can be said by the dead, or is promised by an order that does not ask whether its speaker lives" % at)
+            if any(w not in when(at) for w in unresolved + quorum[officer]) or lines[at]["entry"] is not False:
+                bad("%s does not carry the whole guard (the shot, nothing else resolved, the quest not complete, every speaker alive), or is an entry" % at)
             nxt = lines[at].get("buttons") or []
             if len(nxt) != 1 or nxt[0]["label"] != CONTINUE:
                 bad("%s does not lead on by one plain button" % at)
             if not nxt:
                 break
-            if nxt[0].get("do") and nxt[0].get("then") != "brigg_rifles":
-                bad("%s sets a stage before Brigg has answered" % at)
+            is_concession = lines[at]["speaker"] == "brigg"
+            if is_concession and (nxt[0].get("do") != ["mq03 set 43"] or nxt[0].get("then") != "brigg_rifles"):
+                bad("%s: the Continue under Brigg's concession does not record stage 43 and lead to his acknowledgement" % at)
+            if not is_concession and nxt[0].get("do"):
+                bad("%s sets a stage before Brigg has conceded" % at)
             at = nxt[0].get("then")
         if chain != order:
             bad("the truce from %s is spoken as %s, not %s" % (lid, chain, order))
-        if lines[order[-1]]["buttons"][0].get("do") != ["mq03 set 43"]:
-            bad("stage 43 is not set at Brigg's answer")
     for lid in demands:
-        if lid not in ("brigg_demand", "brigg_demand_talbot") and truce in [x["label"] for x in lines[lid]["buttons"]]:
+        if lid not in [c[0] for c in chains] and truce in [x["label"] for x in lines[lid]["buttons"]]:
             bad("%s offers a truce that someone dead would have to speak" % lid)
     concession_guard = ["mq03 done 40", "mq03 done 43"] + ["mq03 notdone %d" % n for n in (41, 42, 44, 70)] + ["alive brigg"]
-    if setters("mq03 set 43") != ["pritchard_truce", "talbot_truce"] or when("brigg_rifles") != concession_guard:
-        bad("Brigg's concession is not what sets stage 43, or his reply can be said without it")
+    if setters("mq03 set 43") != ["brigg_truce_concession_pritchard", "brigg_truce_concession_talbot"]:
+        bad("stage 43 is recorded somewhere other than under Brigg's own concession: %s" % setters("mq03 set 43"))
+    if when("brigg_rifles") != concession_guard or "mq03 notdone 43" in when("brigg_rifles"):
+        bad("Brigg's acknowledgement does not fit the state his concession leaves")
+    if "alive threefords" not in when("threefords_dying"):
+        bad("the courier can speak her last words dead")
 
     # ---- 11. the entry contract, on this folder: labels, and the histories it names
     for lid in ("tarrow_in_cut", "dole_sermon", "tarrow_ran", "tarrow_backed", "hatcher_table"):
@@ -456,6 +560,14 @@ def main():
             ("Quill, after the hearing", greet("quill", stages={"mq02c": {10, 13}}, flags={"docket_2298_held"}), "quill_default"),
             ("Pritchard after a refusal, all roads open", greet("pritchard", stages={"mq01": {100}, "mq02": {50, 100}}), "pritchard_three_tokens_later"),
             ("Pritchard after the fair, rail done", greet("pritchard", stages={"mq01": {100}, "mq02": {10, 20, 60, 100}}), "pritchard_three_tokens_later_river_pike"),
+            ("Pritchard at the shot with Brigg dead, courier alive", greet("pritchard", stages={"mq01": {100}, "mq02": {100}, "mq03": {10, 40}}, dead={"brigg"}), "pritchard_courier_no_brigg_living"),
+            ("Pritchard at the shot with Brigg and the courier dead", greet("pritchard", stages={"mq03": {10, 40}}, dead={"brigg", "threefords"}), "pritchard_courier_no_brigg_dead"),
+            ("Talbot at the shot with Brigg and Pritchard dead", greet("talbot", stages={"mq03": {10, 40}}, dead={"brigg", "pritchard"}), "talbot_courier_no_brigg_living"),
+            ("Talbot at the shot with Brigg dead and Pritchard alive: it is not his turn", greet("talbot", stages={"mq03": {10, 40}}, dead={"brigg"}), "talbot_default"),
+            ("Flint at the shot with Brigg, Pritchard and Talbot dead", greet("flint", stages={"mq03": {10, 40}}, dead={"brigg", "pritchard", "talbot"}), "flint_courier_no_brigg_living"),
+            ("Flint at the shot with Brigg dead and Talbot alive: it is not her turn", greet("flint", stages={"mq03": {10, 40}}, dead={"brigg", "pritchard"}), "flint_default"),
+            ("Brigg after the shot, courier dead", greet("brigg", stages={"mq03": {10, 40}}, dead={"threefords"}), "brigg_demand_courier_dead"),
+            ("Brigg after the shot, the quest already complete: no order", greet("brigg", stages={"mq03": {10, 40, 100}}), "brigg_default"),
             ("Pritchard after the fair, every road done, nothing learned", greet("pritchard", stages={"mq01": {100}, "mq02": {10, 20, 30, 40, 60, 100}}), "pritchard_report_menu_uuu"),
             ("Pritchard before the fair, rail done, silver learned", greet("pritchard", stages={"mq01": {100}, "mq02": {10, 20}}, flags={"silver_rail"}), "pritchard_hears_rail"),
             ("Pritchard before the fair, rail done, silver not learned", greet("pritchard", stages={"mq01": {100}, "mq02": {10, 20}}), "pritchard_hears_rail_unknown"),
@@ -493,8 +605,14 @@ def main():
             if r.line == "brigg_rifles":
                 break
             r = s.press(r.line, 0, st)
-        if said != ["brigg_demand", "whitcomb_truce", "belden_truce", "grey_truce", "pritchard_truce", "brigg_rifles"] or not st.done("mq03", 43):
-            bad("history: the truce is not spoken through to Brigg's answer: %s" % said)
+            if r.line and r.line.startswith("brigg_truce_concession") and st.done("mq03", 43):
+                bad("history: stage 43 is recorded before Brigg's concession has been read")
+        if said != ["brigg_demand", "whitcomb_truce", "belden_truce", "grey_truce", "pritchard_truce", "brigg_truce_concession_pritchard", "brigg_rifles"] or not st.done("mq03", 43):
+            bad("history: the truce is not spoken through Brigg's concession to his acknowledgement: %s" % said)
+        for dead in ({"brigg", "pritchard", "talbot", "flint"}, {"brigg", "pritchard", "talbot", "flint", "threefords"}):
+            st = S(stages={"mq03": {10, 40}}, dead=dead)
+            if [w for w in ("brigg", "pritchard", "talbot", "flint") if s.greet(w, st).line in course_lines] or st.stages["mq03"] != {10, 40}:
+                bad("history: with every carrier dead somebody still offers a course")
         st = S(stages={"mq03": {10, 40}})
         s.press("brigg_demand", 2, st)
         if st.done("mq03", 43):
@@ -503,7 +621,7 @@ def main():
     # ---- for a person to read
     notes.append("\nValues that a later packet replaced (the later one is expected):")
     notes += ["  %-40s %s -> %s" % (str(k), a_, b_) for k, a_, b_ in succession]
-    notes.append("\nWITHHELD: " + ", ".join("%s (packet 2's text says %r)" % (k, w) for k, (_, w) in WITHHELD.items()))
+    notes.append("\nWITHHELD: " + (", ".join("%s (the supplied text says %r)" % (k, w) for k, (_, w) in WITHHELD.items()) or "nothing"))
     notes.append("\nWhere the inspector's legal name is written (each must be at or after the reveal):")
     for at, body in player_facing(quests, lines, docs):
         if re.search(r"Ostrander|Reuben", body):
@@ -527,9 +645,9 @@ def main():
             print("  " + f)
         return 1
     boxed = [l for l in lines.values() if l.get("kind") != "aside"]
-    print("revision checks: the story folder agrees with the three packets and the entry contract's source rules")
+    print("revision checks: the story folder agrees with the four packets and the entry contract's source rules")
     print("  %d lines (%d entries, %d continuations, %d asides), %d documents, %d characters, %d quests; %d histories run through the reference selector"
-          % (len(lines), sum(1 for l in boxed if l["entry"]), sum(1 for l in boxed if not l["entry"]), len(lines) - len(boxed), len(docs), len(chars), len(quests), len(histories) + 4))
+          % (len(lines), sum(1 for l in boxed if l["entry"]), sum(1 for l in boxed if not l["entry"]), len(lines) - len(boxed), len(docs), len(chars), len(quests), len(histories) + 6))
     print("This is agreement of source files with source documents. It is not a compile and not a game test.")
     return 0
 

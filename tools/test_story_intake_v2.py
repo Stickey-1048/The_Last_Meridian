@@ -398,7 +398,11 @@ class RevisedActOne(unittest.TestCase):
     def test_both_normal_truce_paths_still_reach_briggs_acknowledgement(self):
         for talbot in (False, True):
             st, authority = self.truce_at_authority(talbot)
-            r = self.s.press(authority, 0, st)
+            concession = "brigg_truce_concession_" + ("talbot" if talbot else "pritchard")
+            r = self.s.press(authority, 0, st)                                 # the local officer's Continue records nothing
+            self.assertEqual((r.line, r.effects, r.diagnostic), (concession, [], None))
+            self.assertFalse(st.done("mq03", 43))                              # Brigg's concession is on the screen and 43 is still unset
+            r = self.s.press(concession, 0, st)                                # only the Continue under it records 43
             self.assertEqual((r.line, r.effects, r.diagnostic), ("brigg_rifles", ["mq03 set 43"], None))
             self.assertTrue(st.done("mq03", 43))
             self.assertEqual(self.s.greet("brigg", st).line, "brigg_rifles")
@@ -449,6 +453,302 @@ class RevisedActOne(unittest.TestCase):
             for who in sorted({l["speaker"] for l in self.s.lines.values()}):
                 r = self.s.greet(who, st)
                 self.assertFalse(r.diagnostic and "ambiguous" in r.diagnostic, who)
+
+
+class PacketThree(unittest.TestCase):
+    """The histories docs/design/ACT1_CHARLES_PACKET3_ORDER.md asks for, on the revised Act I folder.
+
+    A state is built from a line's own conditions, so each line is tried in a state where it really is on
+    the screen; then one thing is changed and the button pressed."""
+
+    SEARCH, STAY, TAKE, TRUCE = "(Search the roof and landing)", "(Stay with the courier)", "(Take the case and go)", "(Call the delegates to uphold the truce)"
+    CHAIN = {False: ["whitcomb_truce", "belden_truce", "grey_truce", "pritchard_truce", "brigg_truce_concession_pritchard"],
+             True: ["whitcomb_truce_talbot", "belden_truce_talbot", "grey_truce_talbot", "talbot_truce", "brigg_truce_concession_talbot"]}
+
+    @classmethod
+    def setUpClass(cls):
+        cls.files = intake.read_folder(STORY)
+        cls.s = select.Selector(cls.files)
+        cls.p3 = json.loads((ROOT / "docs/design/ACT1_WRITING_CLOSURE_PACKET_3.json").read_text())
+        L = cls.s.lines
+        cls.demands = sorted(l for l in L if l.startswith("brigg_demand"))
+        cls.fallbacks = sorted(l for l in L if "_courier_no_brigg_" in l)
+        cls.course_lines = cls.demands + cls.fallbacks
+        cls.truce_lines = cls.CHAIN[False] + cls.CHAIN[True]
+
+    def state_for(self, lid):
+        """A state in which exactly this line's conditions hold: its stages set, its dead dead, its flags raised."""
+        st = select.State()
+        for w in self.s.lines[lid]["when"]:
+            a = w.split()
+            if a[1] == "done":
+                st.stages.setdefault(a[0], set()).add(int(a[2]))
+            elif a[0] == "dead":
+                st.dead.add(a[1])
+            elif a[0] == "flag":
+                st.flags.add(a[1])
+        self.assertTrue(self.s.valid(self.s.lines[lid], st), lid)
+        return st
+
+    def effect_buttons(self, lid):
+        return [i for i, b in enumerate(self.s.lines[lid].get("buttons", [])) if b.get("do")]
+
+    def assert_nothing_happens(self, lid, st, why):
+        for i in range(len(self.s.lines[lid].get("buttons", [])) or 1):
+            before = ({k: set(v) for k, v in st.stages.items()}, set(st.flags), st.caps)
+            r = self.s.press(lid, i, st)
+            self.assertEqual((r.line, r.effects), (None, []), (lid, i, why))
+            self.assertIn("no longer valid", r.diagnostic, (lid, i, why))
+            self.assertEqual(({k: set(v) for k, v in st.stages.items()}, set(st.flags), st.caps), before, (lid, i, why))
+
+    # ---- the concession comes first; only its Continue records 43
+    def walk_truce(self, talbot, courier_dead=False):
+        dead = ({"pritchard"} if talbot else set()) | ({"threefords"} if courier_dead else set())
+        st = select.State(stages={"mq03": {10, 40}}, dead=dead)
+        demand = self.s.greet("brigg", st).line
+        self.assertEqual(demand, "brigg_demand" + ("_talbot" if talbot else "") + ("_courier_dead" if courier_dead else ""))
+        labels = [b["label"] for b in self.s.lines[demand]["buttons"]]
+        r = self.s.press(demand, labels.index(self.TRUCE), st)
+        said = []
+        for _ in range(len(self.CHAIN[talbot])):
+            said.append(r.line)
+            self.assertEqual(r.effects, [], r.line)
+            self.assertFalse(st.done("mq03", 43), "43 was recorded before Brigg conceded, at %s" % r.line)
+            if r.line == self.CHAIN[talbot][-1]:
+                break
+            r = self.s.press(r.line, 0, st)
+        self.assertEqual(said, self.CHAIN[talbot])
+        return st, said[-1]
+
+    def test_both_paths_reach_briggs_concession_with_43_absent(self):
+        for talbot in (False, True):
+            for courier_dead in (False, True):
+                st, concession = self.walk_truce(talbot, courier_dead)
+                self.assertEqual(self.s.lines[concession]["speaker"], "brigg")
+                self.assertEqual(self.s.lines[concession]["text"], "I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.")
+                self.assertFalse(st.done("mq03", 43))
+                r = self.s.press(concession, 0, st)
+                self.assertEqual((r.line, r.effects, r.diagnostic), ("brigg_rifles", ["mq03 set 43"], None))
+
+    def test_stage_43_has_exactly_two_setters_and_they_are_briggs(self):
+        setters = sorted(lid for lid, l in self.s.lines.items() for b in l.get("buttons", []) if "mq03 set 43" in b.get("do", []))
+        self.assertEqual(setters, ["brigg_truce_concession_pritchard", "brigg_truce_concession_talbot"])
+        for lid in ("pritchard_truce", "talbot_truce"):
+            self.assertEqual(self.effect_buttons(lid), [], lid)
+        self.assertNotIn("mq03 notdone 43", self.s.lines["brigg_rifles"]["when"])
+        self.assertIn("mq03 done 43", self.s.lines["brigg_rifles"]["when"])
+
+    def test_a_death_before_the_concession_is_committed_records_nothing(self):
+        for talbot in (False, True):
+            for dead in ("brigg", "whitcomb", "belden", "grey", "talbot" if talbot else "pritchard"):
+                st, concession = self.walk_truce(talbot)
+                st.dead.add(dead)
+                self.assert_nothing_happens(concession, st, "%s died" % dead)
+                self.assertFalse(st.done("mq03", 43))
+                self.assertNotEqual(self.s.greet("brigg", st).line, "brigg_rifles")     # and no false acknowledgement afterwards
+        st, concession = self.walk_truce(True)
+        st.dead.discard("pritchard")                                                    # Talbot's path is not Pritchard's
+        self.assert_nothing_happens(concession, st, "Pritchard is alive on Talbot's path")
+
+    def test_another_resolution_before_the_concession_is_committed_records_nothing(self):
+        for talbot in (False, True):
+            for resolved in (41, 42, 43, 44, 70, 100):
+                st, concession = self.walk_truce(talbot)
+                st.stages["mq03"].add(resolved)
+                self.assert_nothing_happens(concession, st, "stage %d" % resolved)
+
+    def test_every_line_of_the_truce_is_shut_by_a_death_another_course_or_completion(self):
+        for lid in self.truce_lines:
+            needs = [w.split()[1] for w in self.s.lines[lid]["when"] if w.startswith("alive ")]
+            self.assertIn("brigg", needs, lid)
+            for who in needs:
+                st = self.state_for(lid)
+                st.dead.add(who)
+                self.assert_nothing_happens(lid, st, "%s died" % who)
+            for resolved in (41, 42, 43, 44, 70, 100):
+                st = self.state_for(lid)
+                st.stages["mq03"].add(resolved)
+                self.assert_nothing_happens(lid, st, "stage %d" % resolved)
+
+    # ---- the courses: every menu rechecks who lives and what is resolved, and stops at completion
+    def test_there_are_twelve_orders_and_six_fallbacks(self):
+        self.assertEqual((len(self.demands), len(self.fallbacks)), (12, 6))
+        setters = {n: sorted(lid for lid, l in self.s.lines.items() for b in l.get("buttons", []) if "mq03 set %d" % n in b.get("do", [])) for n in (41, 42, 44, 70)}
+        self.assertEqual(setters[41], sorted(self.course_lines))
+        self.assertEqual(setters[44], sorted(self.course_lines))
+        self.assertEqual(setters[42], sorted(l for l in self.course_lines if "alive threefords" in self.s.lines[l]["when"]))
+        self.assertEqual(setters[70], [])
+
+    def test_every_course_menu_is_shut_by_a_death_another_course_or_completion(self):
+        for lid in self.course_lines:
+            self.assertTrue(self.effect_buttons(lid), lid)
+            for who in [w.split()[1] for w in self.s.lines[lid]["when"] if w.startswith("alive ")]:
+                st = self.state_for(lid)
+                st.dead.add(who)
+                self.assert_nothing_happens(lid, st, "%s died" % who)
+            for who in [w.split()[1] for w in self.s.lines[lid]["when"] if w.startswith("dead ")]:
+                st = self.state_for(lid)
+                st.dead.discard(who)                                            # the menu was written for a state that is no longer so
+                self.assert_nothing_happens(lid, st, "%s is alive after all" % who)
+            for resolved in (41, 42, 43, 44, 70, 100):
+                st = self.state_for(lid)
+                st.stages["mq03"].add(resolved)
+                self.assert_nothing_happens(lid, st, "stage %d" % resolved)
+
+    def test_every_course_menu_works_while_its_conditions_hold(self):
+        for lid in self.course_lines:
+            for i in self.effect_buttons(lid):
+                st = self.state_for(lid)
+                r = self.s.press(lid, i, st)
+                self.assertEqual(len(r.effects), 1, (lid, i))
+                self.assertIsNone(r.diagnostic)
+                self.assertFalse(st.done("mq03", 43) or st.done("mq03", 70), lid)
+
+    def test_completed_100_blocks_every_active_courier_and_truce_source(self):
+        for lid in self.course_lines + self.truce_lines:
+            self.assertIn("mq03 notdone 100", self.s.lines[lid]["when"], lid)
+            st = self.state_for(lid)
+            st.stages["mq03"].add(100)
+            self.assertFalse(self.s.valid(self.s.lines[lid], st), lid)
+        done = select.State(stages={"mq03": {10, 40, 100}})
+        for who in ("brigg", "pritchard", "talbot", "flint", "whitcomb", "belden", "grey"):
+            self.assertNotIn(self.s.greet(who, done).line, self.course_lines + self.truce_lines, who)
+
+    # ---- the courier, alive and dead
+    def test_a_dead_courier_is_not_stayed_with_by_anyone(self):
+        for lid in self.course_lines:
+            labels = [b["label"] for b in self.s.lines[lid]["buttons"] if b["label"] != self.TRUCE]
+            when = self.s.lines[lid]["when"]
+            self.assertNotEqual("alive threefords" in when, "dead threefords" in when, lid)
+            self.assertEqual(labels, [self.SEARCH] + ([self.STAY] if "alive threefords" in when else []) + [self.TAKE], lid)
+        for dead_cast in (set(), {"pritchard"}, {"grey"}, {"brigg"}, {"brigg", "pritchard"}, {"brigg", "pritchard", "talbot"}):
+            for courier_dead in (False, True):
+                st = select.State(stages={"mq03": {10, 40}}, dead=dead_cast | ({"threefords"} if courier_dead else set()))
+                offering = [w for w in ("brigg", "pritchard", "talbot", "flint") if self.s.greet(w, st).line in self.course_lines]
+                self.assertEqual(len(offering), 1, (dead_cast, courier_dead, offering))   # one carrier, never two, never none while one lives
+                menu = self.s.greet(offering[0], st).line
+                self.assertEqual(self.STAY in [b["label"] for b in self.s.lines[menu]["buttons"]], not courier_dead, menu)
+
+    def test_the_couriers_last_words_need_a_living_courier(self):
+        self.assertEqual(self.s.greet("threefords", select.State(stages={"mq03": {10, 40, 42}})).line, "threefords_dying")
+        dead = select.State(stages={"mq03": {10, 40, 42}}, dead={"threefords"})
+        self.assertFalse(self.s.valid(self.s.lines["threefords_dying"], dead))
+        self.assertNotEqual(self.s.greet("threefords", dead).line, "threefords_dying")
+        stay = [x for x in self.p3["text_replacements"] if x["id"] == "stages[n=42]"][0]["text"]
+        quest = json.loads(self.files["quests/tlm_mq03.json"])
+        self.assertEqual([s_["log"] for s_ in quest["stages"] if s_["n"] == 42], [stay])
+        self.assertNotIn("She said", stay)                                      # choosing to stay is not hearing her
+
+    # ---- Brigg dead: Pritchard, then Talbot, then Flint; and nobody when none is left
+    def test_fallback_precedence_with_brigg_dead(self):
+        cases = [(set(), "pritchard"), ({"pritchard"}, "talbot"), ({"pritchard", "talbot"}, "flint")]
+        for gone, carrier in cases:
+            for courier_dead in (False, True):
+                st = select.State(stages={"mq03": {10, 40}}, dead={"brigg"} | gone | ({"threefords"} if courier_dead else set()))
+                want = "%s_courier_no_brigg_%s" % (carrier, "dead" if courier_dead else "living")
+                self.assertEqual(self.s.greet(carrier, st).line, want)
+                for other in {"pritchard", "talbot", "flint"} - {carrier}:
+                    self.assertNotIn(self.s.greet(other, st).line, self.course_lines, (gone, other))
+                self.assertNotIn(self.TRUCE, [b["label"] for b in self.s.lines[want]["buttons"]])
+                self.assertNotIn(self.s.greet("brigg", st).line, self.course_lines)
+
+    def test_every_carrier_dead_fails_closed(self):
+        for courier_dead in (False, True):
+            st = select.State(stages={"mq03": {10, 40}}, dead={"brigg", "pritchard", "talbot", "flint"} | ({"threefords"} if courier_dead else set()))
+            for who in sorted({l["speaker"] for l in self.s.lines.values()}):
+                self.assertNotIn(self.s.greet(who, st).line, self.course_lines + self.truce_lines, who)
+            self.assertEqual(st.stages["mq03"], {10, 40})
+        # In this source the quest then completes only through Pritchard's reading of the case. Getting at the
+        # case is the game's business and is returned as a gate; nothing here pretends otherwise.
+        setters_100 = sorted({lid for lid, l in self.s.lines.items() for b in l.get("buttons", []) if "mq03 set 100" in b.get("do", [])})
+        self.assertEqual(setters_100, ["pritchard_case"])
+
+    # ---- the roads still open after the fair
+    def test_all_seven_open_road_contexts_keep_their_roads_and_offer_the_report_link(self):
+        road = {20: "The spike. I'll take the rail.", 30: "The scoop. I'll go by river.", 40: "The tag. I'll walk the pike."}
+        seen = set()
+        # The fair is called either without a report (50) or after one (60); both are tried wherever both can be.
+        histories = [((), {50, 100})] + [(d, called | set(d)) for d in ((20,), (30,), (40,), (20, 30), (20, 40), (30, 40)) for called in ({50, 100}, {10, 60, 100})]
+        for done, hub in histories:
+            for flags in ((), ("silver_rail", "silver_river", "silver_mine"), ("docket_2298_held",)):
+                st = select.State(stages={"mq01": {100}, "mq02": set(hub)}, flags=flags)
+                lid = self.s.greet("pritchard", st).line
+                self.assertTrue(lid.startswith("pritchard_three_tokens_later"), (done, lid))
+                seen.add(lid)
+                labels = [b["label"] for b in self.s.lines[lid]["buttons"]]
+                self.assertEqual(labels, [road[n] for n in (20, 30, 40) if n not in done] + ["Discuss a road account."])
+                self.assertEqual(self.s.lines[lid]["text"], "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.")
+                before = ({k: set(v) for k, v in st.stages.items()}, set(st.flags), st.caps)
+                r = self.s.press(lid, len(labels) - 1, st)
+                self.assertEqual((r.line, r.effects, r.diagnostic), ("pritchard_report_open_roads", [], None))
+                for i, leaf in enumerate(("pritchard_report_open_rail", "pritchard_report_open_river", "pritchard_report_open_pike")):
+                    r = self.s.press("pritchard_report_open_roads", i, st)
+                    self.assertEqual((r.line, r.effects, r.diagnostic), (leaf, [], None))
+                    self.assertEqual(self.s.press(leaf, 0, st).line, None)      # its one implicit Continue closes
+                r = self.s.press("pritchard_report_open_roads", 3, st)          # "Not now."
+                self.assertEqual((r.line, r.effects), (None, []))
+                self.assertEqual(({k: set(v) for k, v in st.stages.items()}, set(st.flags), st.caps), before, "a report changed what is known or done")
+        self.assertEqual(len(seen), 7)
+
+    def test_the_evidence_split_menus_remain_for_when_no_road_is_open(self):
+        every = {"mq01": {100}, "mq02": {10, 20, 30, 40, 60, 100}}
+        self.assertEqual(self.s.greet("pritchard", select.State(stages=every)).line, "pritchard_report_menu_uuu")
+        st = select.State(stages=every, flags={"silver_rail"})
+        self.assertEqual(self.s.greet("pritchard", st).line, "pritchard_report_menu_kuu")
+        self.assertEqual(self.s.press("pritchard_report_menu_kuu", 0, st).line, "pritchard_hears_rail_after_fair")
+        self.assertEqual(self.s.press("pritchard_report_menu_kuu", 1, st).line, "pritchard_hears_river_after_fair_unknown")
+
+    # ---- what was learned is not what is in hand
+    def test_learned_payment_evidence_needs_no_paper_and_the_docket_needs_to_be_in_hand(self):
+        told = select.State(stages={"mq01": {100}, "mq02": {10, 20}}, flags={"silver_rail"})        # heard, with nothing carried
+        self.assertEqual(self.s.greet("pritchard", told).line, "pritchard_hears_rail")
+        self.assertIn("Silver. With a square stamped on it.", [b["label"] for b in self.s.lines["pritchard_hears_rail"]["buttons"]])
+        untold = select.State(stages={"mq01": {100}, "mq02": {10, 20}}, flags={"docket_2298_held"})   # a paper in hand about something else
+        self.assertEqual(self.s.greet("pritchard", untold).line, "pritchard_hears_rail_unknown")
+        self.assertNotIn("Silver. With a square stamped on it.", [b["label"] for b in self.s.lines["pritchard_hears_rail_unknown"]["buttons"]])
+        taken_once = select.State(stages={"mq02c": {10, 16}})                                       # the copy was taken; nothing says it is still held
+        self.assertEqual(self.s.greet("quill", taken_once).line, "quill_court")
+        in_hand = select.State(stages={"mq02c": {10}}, flags={"docket_2298_held"})                   # held, whatever stage 16 says
+        self.assertEqual(self.s.greet("quill", in_hand).line, "quill_court_docket")
+        self.assertFalse(any("mq02c done 16" in l["when"] for l in self.s.lines.values()))
+
+    # ---- words
+    def test_whitcomb_rates_is_packet_threes_and_says_nothing_act_one_may_not(self):
+        want = [x for x in self.p3["text_replacements"] if x["id"] == "whitcomb_rates"][0]["text"]
+        got = self.s.lines["whitcomb_rates"]["text"]
+        self.assertEqual(got, want)
+        for word in intake.NOT_IN_ACT_ONE:
+            self.assertFalse(intake.names(word, got), word)
+        self.assertNotIn("yonder", got)                                         # Nell's vote is history; nothing says where she is now
+        st = select.State(stages={"mq03": {10}})
+        self.assertEqual(self.s.press("whitcomb_offer", 0, st).line, "whitcomb_rates")
+
+    def test_the_escape_names_no_fraction_and_a_dead_pilot_does_not_tell_it(self):
+        for lid in ("pruitt_ran", "starnes_after_chute"):
+            self.assertNotRegex(self.s.lines[lid]["text"], r"third|half|quarter")
+        journal = [s_["log"] for s_ in json.loads(self.files["quests/tlm_mq02b.json"])["stages"] if s_["n"] == 42][0]
+        self.assertNotRegex(journal, r"third|half|quarter")
+        self.assertEqual(self.s.lines["pruitt_ran"]["when"], ["alive pruitt"])
+        st = select.State(stages={"mq02b": {10, 20, 30}})
+        self.assertEqual(self.s.press("pruitt_chain", 0, st).line, "pruitt_ran")
+        st = select.State(stages={"mq02b": {10, 20, 30}}, dead={"pruitt"})
+        r = self.s.press("pruitt_chain", 0, st)
+        self.assertIsNone(r.line)                                               # nobody narrates for him
+        self.assertEqual(r.effects, ["mq02b set 42"])                           # the escape itself is the quest's fact, not his line
+        self.assertIn("pruitt_ran is not available", r.diagnostic)
+
+    def test_the_reply_to_the_hanging_needs_the_choice_and_a_living_pritchard(self):
+        self.assertEqual(self.s.greet("pritchard", select.State(stages={"mq04": {10, 30, 50, 64}})).line, "pritchard_after_rope")
+        self.assertNotEqual(self.s.greet("pritchard", select.State(stages={"mq04": {10, 30, 50}})).line, "pritchard_after_rope")
+        self.assertFalse(self.s.valid(self.s.lines["pritchard_after_rope"], select.State(stages={"mq04": {64}}, dead={"pritchard"})))
+        setters = sorted(lid for lid, l in self.s.lines.items() for b in l.get("buttons", []) if "mq04 set 64" in b.get("do", []))
+        self.assertEqual(setters, ["vane_porch"])
+
+    def test_the_dissent_question_comes_before_the_way_out(self):
+        for who in ("belden", "brigg", "grey"):
+            buttons = self.s.lines[who + "_offer"]["buttons"]
+            self.assertEqual(buttons[2].get("then"), who + "_dissent")
+            self.assertEqual(buttons[3], {"label": "(Move on)"})
 
 
 class FocusedTruceTermination(unittest.TestCase):

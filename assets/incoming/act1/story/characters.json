@@ -10,7 +10,7 @@
    "fears": "That the last lawful thing he ever does will be signing the valley over to whichever flag gets to his porch first.",
    "secret": "He hanged the wrong man in the spring of 2298 and has kept the rope in his desk ever since. He has not hanged anybody since, whatever the Cutters believe.",
    "wrong_about": "He thinks the Dominion are still Wardens underneath, and that Amos Brigg can be shamed.",
-   "knows": ["Gantt was bringing him a name and would not put it on paper", "Three towns going under in one month is not weather", "Vane has kept this town fed through two bad winters"],
+   "knows": ["Gantt had a name he meant to check against the entries, not an accusation already proved.", "Three towns going under in one month is not weather", "Vane has kept this town fed through two bad winters"],
    "does_not_know": ["Who Gantt meant", "That Vane's money is behind the three roads", "Anything of what is under the mountains"],
    "ties": [{"to": "talbot", "what": "The son he never had and the deputy he should not have hired"}, {"to": "vane", "what": "Twenty years of supper together. Has never once asked to see the books"}, {"to": "brigg", "what": "Rode with him as a young Warden. Brigg still calls him Sergeant"}, {"to": "quill", "what": "She sat the bench the day he hanged the wrong man"}],
    "sources": ["R7", "R8"]

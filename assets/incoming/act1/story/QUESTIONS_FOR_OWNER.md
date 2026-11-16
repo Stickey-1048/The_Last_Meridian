@@ -32,6 +32,6 @@ Names: eleven registered, four changed (Tupper, Blevins, Rafferty, Beckett), ids
 
 ## What is open now
 
-Nothing new is asked of the owner here. The 22 writing requests of the first revision were all answered by writing closure packet 2, which has been applied. What is open after it is listed once, in [the packet 2 receipt](../../../../docs/design/ACT1_CHARLES_PACKET2_RECEIPT.md), sections 10 and 11, and is addressed to Iris, Nora and Sam.
+Nothing new is asked of the owner here. The 22 writing requests of the first revision were answered by writing closure packet 2, and the 12 that followed by packet 3. Both are applied. No writing request is open. What remains are runtime gates, things this source format cannot express and the game would have to do; they are listed once, in [the packet 3 receipt](../../../../docs/design/ACT1_CHARLES_PACKET3_RECEIPT.md), section 10.
 
 Two things stay the owner's and are not touched by any of this: the choices in `docs/child-of-the-deep.md`, and Chapter 5.
