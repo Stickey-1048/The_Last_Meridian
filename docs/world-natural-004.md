@@ -15,7 +15,7 @@ Four TreeMapleForestsmall1 additions use the existing audited vanilla static06C6
 
 ## Validation already performed
 
-Actual .NET build and local licensed-master world generation succeeded. Raw-byte comparison against5629 found all318 previous record keys and payloads preserved, only the66 intended initial-disable flags changed, and four appended scenery references; the new total is322 records. Terrain, quest records, actors and triggers remain unchanged. Real Papyrus2.8 compiled the single changed guide successfully. A separate default rebuild retained the exact6B617 hash.
+Actual .NET build and local licensed-master world generation succeeded. Raw-byte comparison against5629 found all318 previous record keys and all317 non-header payloads preserved, only the66 intended initial-disable flags changed, and four appended scenery references; the new total is322 records. The TES4 header advances its record count/object allocation; its other fields remain fixed. Terrain, quest records, actors and triggers remain unchanged. Real Papyrus2.8 compiled the single changed guide successfully. A separate default rebuild retained the exact6B617 hash.
 
 The intermediate posts-only95CA artifact received independent preservation review. That does not accept this later four-tree/guide composition. The final candidate requires independent review, remote checks, and new actual views of wreck, caravan/bypass and town. Guide text must be displayed and route landmarks verified in the game. Full walking, roof/doorway collision and navigation remain separate gates. Bright perimeter treatment and supply-shelter relocation are deferred; this pass does not claim to solve those larger composition/access issues.
 
