@@ -818,6 +818,11 @@ Function ApplyDelivered()
 	EndIf
 	If !GetStageDone(40)
 		SetStage(40)
+	ElseIf !townFinished && !townApplying
+		; A legitimate save from before these bookkeeping fields can already
+		; have stage 40 complete. Reapply its guarded, idempotent town setup;
+		; never infer readiness from the stage bit or replay delivery rewards.
+		ApplyTown()
 	EndIf
 	int townPolls = 0
 	While townPolls < 50 && !townFinished && !deathUnacknowledged
