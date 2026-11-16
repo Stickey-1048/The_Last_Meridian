@@ -7,12 +7,15 @@ using System.Text.Json;
 
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
-bool fenceComparison=args.LastOrDefault()=="--private-fence-ab";
-if(fenceComparison)args=args[..^1];
+var privateMode=args.LastOrDefault();
+bool combinedArt=privateMode=="--private-art-combined";
+bool fenceComparison=combinedArt||privateMode=="--private-fence-ab";
+bool shelterDetail=combinedArt||privateMode=="--private-shelter-detail";
+if(fenceComparison||shelterDetail)args=args[..^1];
 bool natural=args.LastOrDefault()=="--natural";
 bool expanded=natural||args.LastOrDefault()=="--expand";
 if(expanded)args=args[..^1];
-if(fenceComparison&&!natural){Console.Error.WriteLine("Private fence comparison requires --natural; no default/yard substitution.");return 2;}
+if((fenceComparison||shelterDetail)&&!natural){Console.Error.WriteLine("Private art modes require --natural; combined mode must be explicit.");return 2;}
 if(args.Length!=2&&(args.Length!=4||args[2]!="--story-source")){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory> [--story-source <TheLastMeridian.esp>] [--expand|--natural]");return 2;}
 var input=Path.GetFullPath(args[0]);var output=Path.GetFullPath(args[1]);
 var comparison=OperatingSystem.IsWindows()?StringComparison.OrdinalIgnoreCase:StringComparison.Ordinal;
@@ -181,9 +184,13 @@ object? story=null;
 var included=new List<ModKey>{ModKey.FromNameAndExtension("Fallout4.esm")};
 if(args.Length==4){using var template=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);story=WorldStory.Add(mod,world,cell,template);included.Add(template.ModKey);}
 object? expansion=null;
+object? details=null;
 var protectedPoints=new List<object>();
 if(expanded){
  expansion=Expansion.Add(master,Put,natural);
+ // Append only AFTER all existing scenery/story allocation. Default natural
+ // mode and the owner bundle are unchanged.
+ if(shelterDetail)details=ShelterDetails.Add(master,Put);
  // Recheck both old routes AND new streets after adding scenery. AABBs are
  // conservative coarse checks, not Havok/navmesh certification.
  foreach(var route in new[]{mainRoute,bypassRoute}.Concat(Expansion.Routes.Select(r=>r.Points)))for(int s=0;s<route.Length-1;s++)for(int tick=0;tick<=100;tick++){
@@ -198,6 +205,15 @@ if(expanded){
   foreach(var p in routeObstacles.Where(p=>p.Id.StartsWith("EX_")||p.Id is "Main15L" or "Main16L")){
    float dx=MathF.Max(MathF.Max(p.MinX-pos.X,0),pos.X-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-pos.Y,0),pos.Y-p.MaxY);
    if(dx*dx+dy*dy<128*128)throw new InvalidDataException("Expanded object intrudes into 128-unit story activation/standing space: "+p.Id+" / "+id);
+  }
+ }
+ if(shelterDetail)foreach(var aisle in ShelterDetails.Aisles)for(int tick=0;tick<=100;tick++){
+  float x=aisle.X,y=aisle.StartY+(aisle.EndY-aisle.StartY)*tick/100f;
+  // Existing floors are the native-tested supporting surface atZ16, not
+  // upright obstacles. No other obstruction is excluded from this screen.
+  foreach(var p in routeObstacles.Where(p=>!p.Id.Contains("Floor",StringComparison.Ordinal))){
+   float dx=MathF.Max(MathF.Max(p.MinX-x,0),x-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-y,0),y-p.MaxY);
+   if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Private shelter aisle blocked: "+aisle.Name+" / "+p.Id);
   }
  }
 }
@@ -219,6 +235,11 @@ if(fenceComparison){
  if(fenceSwaps.Count!=16||gotCell.Temporary.OfType<IPlacedObjectGetter>().Count(r=>fenceComparisonIds.Contains((r.EditorID??"").Replace("TLM_WS_","",StringComparison.Ordinal))&&r.Base.FormKey==specimen!.FormKey)!=16)
   throw new InvalidDataException("Private fence comparison did not roundtrip sixteen exact base substitutions.");
  File.WriteAllText(Path.Combine(output,"private-fence-comparison.json"),JsonSerializer.Serialize(new{mode="PRIVATE sixteen-reference visual A/B; no native color/material/collision acceptance",control="00125C67 PicketFenceB_PW_Fence01",specimen="0003622D PicketFenceStr02",controlBounds=new[]{-64,-2,0,64,2,96},specimenBounds=new[]{-64,-15,0,64,5,95},unchangedYardPanels=34,unchangedBoundaryControls=104,policy="Same allocated form IDs, position, rotation, flags and pitch; no Z correction or material swap",swaps=fenceSwaps},new JsonSerializerOptions{WriteIndented=true}));
+}
+if(details!=null){
+ var refs=gotCell.Temporary.OfType<IPlacedObjectGetter>().Where(r=>(r.EditorID??"").StartsWith("TLM_WS_EX_DETAIL_",StringComparison.Ordinal)).ToArray();
+ if(refs.Length!=6)throw new InvalidDataException("Private shelter detail did not roundtrip exactly six references.");
+ File.WriteAllText(Path.Combine(output,"private-shelter-details.json"),JsonSerializer.Serialize(new{detail=details,references=refs.Select(r=>new{id=r.EditorID,form=r.FormKey.ToString(),@base=r.Base.FormKey.ToString(),x=r.Position!.X,y=r.Position.Y,z=r.Position.Z,yaw=r.Rotation!.Z})},new JsonSerializerOptions{WriteIndented=true}));
 }
 Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;
