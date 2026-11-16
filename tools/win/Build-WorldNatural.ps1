@@ -13,7 +13,25 @@ $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $buildRoot=[IO.Path]::GetFullPath((Join-Path $repo 'build'))+[IO.Path]::DirectorySeparatorChar
 $output=[IO.Path]::GetFullPath($OutputDirectory)
 if (-not $output.StartsWith($buildRoot,[StringComparison]::OrdinalIgnoreCase)) { throw 'Package output must be a new directory under this checkout build folder.' }
-if ((Test-Path -LiteralPath $output) -and ((Get-Item -LiteralPath $output) -isnot [IO.DirectoryInfo] -or @(Get-ChildItem -LiteralPath $output -Force).Count)) { throw 'Package output must be new or empty; existing content was left unchanged.' }
+# Inspect every existing component without creating anything. A lexical prefix
+# alone does not contain writes when an ancestor is a junction/symlink. Refuse
+# all reparse points, including inside the checkout and above it; no resolution
+# or redirection is authorized. An existing empty output is also not ours.
+$cursor=$output
+while ($cursor) {
+    $entry=$null
+    try { $entry=Get-Item -LiteralPath $cursor -Force -ErrorAction Stop }
+    catch [System.Management.Automation.ItemNotFoundException] { $entry=$null }
+    catch { throw "Cannot inspect package output ancestry; no writes allowed: $cursor. $($_.Exception.Message)" }
+    if ($null -ne $entry) {
+        if (($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw "Package output ancestry contains a reparse point; left unchanged: $cursor" }
+        if ($cursor -ceq $output) { throw 'Package output must be wholly new; even an existing empty directory is left unchanged.' }
+        if (-not $entry.PSIsContainer) { throw "Package output ancestor is not a directory: $cursor" }
+    }
+    $parent=[IO.Path]::GetDirectoryName($cursor.TrimEnd([IO.Path]::DirectorySeparatorChar))
+    if (-not $parent -or $parent -ceq $cursor) { break }
+    $cursor=$parent
+}
 foreach ($file in @($VanillaMaster,$PapyrusCompiler)) { if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw "Required input absent: $file" } }
 if (-not (Test-Path -LiteralPath (Join-Path $BaseSources 'Quest.psc') -PathType Leaf)) { throw 'Base Papyrus sources are missing.' }
 $pins=Get-Content (Join-Path $PSScriptRoot 'world-natural-artifact.json') -Raw | ConvertFrom-Json

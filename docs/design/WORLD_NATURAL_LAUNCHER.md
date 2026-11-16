@@ -14,7 +14,7 @@ Builder modes also remain distinct: no flag reproduces6B, `--expand` reproduces5
 
 ## Build a reviewable package
 
-Run `tools/win/Build-WorldNatural.ps1` with `-VanillaMaster`, `-PapyrusCompiler`, `-BaseSources`, `-ReviewedRuntime` and `-OutputDirectory`. Output must be new/empty and under this checkout's build directory. This helper never installs or launches anything. Do not redistribute licensed master assets; generated development-only NPC copies remain subject to the existing project restrictions.
+Run `tools/win/Build-WorldNatural.ps1` with `-VanillaMaster`, `-PapyrusCompiler`, `-BaseSources`, `-ReviewedRuntime` and `-OutputDirectory`. Output must be wholly new and under this checkout's build directory. Existing empty directories, any existing reparse-point ancestor (junction/symlink), or unreadable ancestry metadata cause refusal before writes. The guard checks all existing ancestors through the drive root; no redirected checkout/build path is supported. This helper never installs or launches anything. Do not redistribute licensed master assets; generated development-only NPC copies remain subject to the existing project restrictions.
 
 ReviewedRuntime is a local directory containing exactly the19 approved PEX files pinned in `tools/win/world-natural-artifact.json`: source-approved4f1ece package plus DFFD guide from29cae1b. The helper verifies current normalized logical source text against19 recorded source digests and verifies every selected reviewed PEX before creating output. Logical normalization is UTF8 text, CRLF/CR to LF, final newline retained. Provenance links each script to an approved source head; no claim that a hash proves its behavior.
 
