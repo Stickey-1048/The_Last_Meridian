@@ -11,7 +11,7 @@ public static class Expansion
         new("Freight approach",new[]{(2600f,2200f),(2260f,2200f),(1880f,2480f),(1880f,2560f)}),
         new("West street and rear supply approach",new[]{(2260f,2200f),(2260f,3558f),(3050f,3558f),(3050f,3572f)})
     };
-    public static object Add(IFallout4ModGetter master, Action<string,FormKey,float,float,float,float> put)
+    public static object Add(IFallout4ModGetter master, Action<string,FormKey,float,float,float,float> put, bool natural=false)
     {
         var assets=new Dictionary<string,object>();var refs=new List<string>();
         void Place(string id,string asset,float x,float y,float z=0,float yaw=0){
@@ -57,12 +57,14 @@ public static class Expansion
         Place("TownEastTree","TreeMapleForest6",3500,3750,7);
         // Small groups soften the isolated-stem look. Append after the frozen
         // expansion so every old scenery and story reference keeps its ID.
+        if(natural){
         Place("NAT_WreckTreeA","TreeMapleForestsmall1",650,2360,4,0.35f);
         Place("NAT_WreckTreeB","TreeMapleForestsmall1",800,2210,4,1.1f);
         Place("NAT_TownTreeA","TreeMapleForestsmall1",3630,3690,4,0.7f);
         Place("NAT_TownTreeB","TreeMapleForestsmall1",3690,3720,4,1.5f);
-        return new{layout="WORLD-NATURAL004",newReferences=refs.Count,referenceIds=refs,
-            hiddenRoutePosts="All66 Main/Bypass metal route posts retained with InitiallyDisabled in expanded mode; explicit wooden road markers/gateway remain",
+        }
+        return new{layout=natural?"WORLD-NATURAL004":"WORLD-EXPAND003",newReferences=refs.Count,referenceIds=refs,
+            hiddenRoutePosts=natural?"All66 Main/Bypass metal route posts retained with InitiallyDisabled in natural mode; explicit wooden road markers/gateway remain":"Original expanded route posts retained enabled",
             movedDecorativePosts=new[]{new{id="TLM_WS_Main15L",x=2450,y=2550},new{id="TLM_WS_Main16L",x=2440,y=2360}},
             areas=new[]{new{name="Wreck",purpose="Real boxcar/bogie behind the unchanged evidence foreground"},new{name="Caravan road",purpose="Open encounter and bypass, framed by sparse landscape assets"},new{name="Mercy",purpose="Existing rest/debrief cabin; open freight/repair annex and rear supply shelter; visible passable gateway"}},
             buildings=new[]{new{name="Freight/repair shelter",center=new{x=1880,y=2800},floor=new{minX=1624,maxX=2136,minY=2672,maxY=2928},openFrontWidth=504},new{name="Supply shelter",center=new{x=3050,y=3800},floor=new{minX=2794,maxX=3306,minY=3672,maxY=3928},openFrontWidth=504}},

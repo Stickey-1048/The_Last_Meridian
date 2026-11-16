@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$CoreArtifact, [string]$WorldArtifact, [string]$ExpandedArtifact)
+param([Parameter(Mandatory)][string]$CoreArtifact, [string]$WorldArtifact, [string]$ExpandedArtifact, [string]$NaturalBundle)
 $ErrorActionPreference='Stop'
 Import-Module (Join-Path $PSScriptRoot '../Tlm.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot '../World-Story.psm1') -Force
@@ -226,7 +226,67 @@ try {
     Assert (-not (Test-Path $legacyBatch.Path) -and -not (Test-Path $journal) -and (Get-FileHash $ini).Hash -eq $defaultIniHash) 'legacy untagged default recovery remains functional'
     $defaultPlan=Get-WorldStoryStartupPlan $game;$expandedPlan=Get-WorldStoryStartupPlan $game -Expanded
     Assert ($defaultPlan.Content -ceq $expandedPlan.Content -and $defaultPlan.Hash -ceq $expandedPlan.Hash -and $defaultPlan.Path -cne $expandedPlan.Path -and $defaultPlan.Variant -ceq 'story' -and $expandedPlan.Variant -ceq 'expanded') 'same fresh startup behavior with unique independently identified batches'
+    Refuses { Get-WorldStoryVariant -Expanded -Natural } 'ambiguous variant selection refuses'
+    $naturalVariant=Get-WorldStoryVariant -Natural
+    Assert ($naturalVariant.ProfileName -ceq 'TLM-World-Natural-Preview' -and $naturalVariant.ModName -ceq 'TheLastMeridian-WorldNaturalPreview' -and $naturalVariant.JournalName -ceq 'world-natural.unfinished.json') 'natural identities are dedicated fixed values'
+    $naturalPlan=Get-WorldStoryStartupPlan $game -Natural
+    Assert ($naturalPlan.Content -ceq $defaultPlan.Content -and $naturalPlan.Hash -ceq $defaultPlan.Hash -and $naturalPlan.Variant -ceq 'natural' -and $naturalPlan.Path -cne $expandedPlan.Path) 'natural fresh stats and entry behavior unchanged with unique tagged batch'
+    $naturalProfile=Join-Path $mo ('profiles/'+$naturalVariant.ProfileName)
+    $naturalMod=Join-Path $mo ('mods/'+$naturalVariant.ModName)
+    [void](New-Item -ItemType Directory -Force $naturalProfile,(Join-Path $naturalMod 'Scripts/TLM'))
+    Copy-Item $core (Join-Path $naturalMod 'TheLastMeridian.esp');Copy-Item $world (Join-Path $naturalMod 'TLMWorldSlice.esp')
+    Copy-Item (Join-Path $scripts '*.pex') (Join-Path $naturalMod 'Scripts/TLM')
+    Set-Content (Join-Path $naturalProfile 'settings.ini') "[General]`nLocalSaves=true`nLocalSettings=true"
+    $naturalMods=Join-Path $naturalProfile 'modlist.txt';Set-Content $naturalMods ('+'+$naturalVariant.ModName)
+    Copy-Item $plugins (Join-Path $naturalProfile 'plugins.txt')
+    $fixedNatural=Get-Content $naturalVariant.ManifestPath -Raw | ConvertFrom-Json
+    Assert ($fixedNatural.worldSha256 -ceq 'B056F66D23D18BA7D156177C64B67552B10B2A74234C78139FBDCD5AED660723' -and $fixedNatural.masterSha256 -ceq 'AA52CBC3A6153BF83BB99EF22D8CC385DA2254052B49E4A78252494003250F3F') 'fixed natural world and repaired ending master pins'
+    Assert ($fixedDefault.worldSha256 -ceq '6B617B6F1566F34499545B940690AAB3CBF9DBC62F8051BB8E29C48112E8BB62' -and (Get-Content $expandedVariant.ManifestPath -Raw | ConvertFrom-Json).worldSha256 -ceq '5629DA87DD925A9BD8423823DA27C0E4E52E05F8DE827B2C65F48D78117CBF40') 'old world fallback pins preserved'
+    $naturalPins=$fixedNatural | ConvertTo-Json -Depth 5 | ConvertFrom-Json
+    foreach ($item in $naturalPins.runtime.PSObject.Properties) { $item.Value=(Get-FileHash (Join-Path $naturalMod ('Scripts/TLM/'+$item.Name))).Hash }
+    $naturalPins.masterSha256=(Get-FileHash (Join-Path $naturalMod 'TheLastMeridian.esp')).Hash;$naturalPins.worldSha256=(Get-FileHash (Join-Path $naturalMod 'TLMWorldSlice.esp')).Hash
+    $naturalManifest=Join-Path $root 'natural-fixture-manifest.json';$naturalPins | ConvertTo-Json -Depth 5 | Set-Content $naturalManifest
+    function NaturalContext { Get-WorldStoryContext -ModOrganizerRoot $mo -Natural -ManifestPath $naturalManifest }
+    Assert ((NaturalContext).Profile -ceq $naturalProfile) 'natural isolated context accepted with fixture bytes'
+    Refuses { Get-WorldStoryContext -ModOrganizerRoot $mo -Natural -Expanded -ManifestPath $naturalManifest } 'ambiguous context refuses'
+    Refuses { Get-WorldStoryContext -ModOrganizerRoot $mo -Natural -ProfileName $expandedVariant.ProfileName -ManifestPath $naturalManifest } 'natural cannot choose expanded profile'
+    Add-Content $naturalMods ('+'+$expandedVariant.ModName);Refuses { NaturalContext } 'expanded mod rejected in natural profile';Set-Content $naturalMods ('+'+$naturalVariant.ModName)
+    $naturalIni=Join-Path $naturalProfile 'fallout4custom.ini';Set-Content $naturalIni "[General]`nsStartingConsoleCommand=`nbAlwaysActive=0`nUnrelated=keep"
+    $variant=$naturalVariant;$ini=$naturalIni;$context=[pscustomobject]@{Mo=[pscustomobject]@{GamePath=$game}}
+    $p=$naturalPlan;Write-FreshDemoStartupBatch $p
+    $note=[pscustomobject]@{Variant=$variant.Id;ProfileName=$variant.ProfileName;Ini=$ini;GameFolder=$game;StartupBefore='';ActiveBefore='0';Batch=$p}
+    $journal=Join-Path $root $variant.JournalName;$note | ConvertTo-Json -Depth 4 | Set-Content $journal
+    Set-IniValue $ini General sStartingConsoleCommand $p.Command;Set-IniValue $ini General bAlwaysActive 1
+    $iniHash=(Get-FileHash $ini).Hash;$batchHash=(Get-FileHash $p.Path).Hash;$noteHash=(Get-FileHash $journal).Hash
+    foreach ($wrong in @('story','expanded')) {
+        $good=$note;$note=$good | ConvertTo-Json -Depth 4 | ConvertFrom-Json;$note.Batch.Variant=$wrong
+        Refuses { & $actualFinally } "natural rejects $wrong batch identity"
+        Assert ((Get-FileHash $ini).Hash -eq $iniHash -and (Get-FileHash $p.Path).Hash -eq $batchHash -and (Get-FileHash $journal).Hash -eq $noteHash) "natural wrong $wrong batch preserves artifacts"
+        $note=$good;$variant=Get-WorldStoryVariant -Expanded:($wrong -eq 'expanded')
+        Refuses { & $actualFinally } "natural note cannot recover as $wrong"
+        $variant=$naturalVariant
+    }
+    SetProcessFixture -CimBroken $true
+    Refuses { & $actualFinally } 'natural unreadable inventory preserves note'
+    Assert ((Get-FileHash $ini).Hash -eq $iniHash -and (Get-FileHash $journal).Hash -eq $noteHash) 'natural query failure leaves settings and journal unchanged'
+    SetProcessFixture
+    & $actualFinally
+    Assert (-not (Test-Path $journal) -and -not (Test-Path $p.Path) -and (Get-IniValue $ini General sStartingConsoleCommand) -ceq '' -and (Get-IniValue $ini General Unrelated) -ceq 'keep') 'natural actual finally restores owned state and preserves unrelated setting'
+    if ($NaturalBundle) {
+        Copy-Item (Join-Path $NaturalBundle '*.esp') $naturalMod -Force
+        Copy-Item (Join-Path $NaturalBundle 'Scripts/TLM/*.pex') (Join-Path $naturalMod 'Scripts/TLM') -Force
+        Assert ((Get-WorldStoryContext -ModOrganizerRoot $mo -Natural).World -ceq (Join-Path $naturalMod 'TLMWorldSlice.esp')) 'actual composed natural package satisfies fixed production manifest'
+        $naturalRuntime=Join-Path $naturalMod 'Scripts/TLM/MQ01Quest.pex';$saved=[IO.File]::ReadAllBytes($naturalRuntime)
+        Copy-Item (Join-Path $scripts 'MQ01Quest.pex') $naturalRuntime -Force
+        Refuses { Get-WorldStoryContext -ModOrganizerRoot $mo -Natural } 'natural refuses older MQ runtime despite correct plugins';[IO.File]::WriteAllBytes($naturalRuntime,$saved)
+        foreach ($oldVariant in @((Get-WorldStoryVariant),$expandedVariant)) {
+            $oldMod=Join-Path $mo ('mods/'+$oldVariant.ModName)
+            Copy-Item (Join-Path $NaturalBundle '*.esp') $oldMod -Force
+            Refuses { Get-WorldStoryContext -ModOrganizerRoot $mo -Expanded:($oldVariant.Id -eq 'expanded') } 'old fixed launcher rejects new composed plugins'
+        }
+    }
     $parameterNames=@($launcherAst.ParamBlock.Parameters | ForEach-Object { $_.Name.VariablePath.UserPath })
+    Assert ('Natural' -in $parameterNames) 'launcher exposes explicit Natural opt-in'
     Assert ('Expanded' -in $parameterNames -and 'ManifestPath' -notin $parameterNames -and 'ProfileName' -notin $parameterNames) 'launcher exposes fixed opt-in but no arbitrary manifest/profile override'
     foreach ($name in @('Play-WorldStory.ps1','World-Story.psm1')) {
         $tokens=$null;$errors=$null;[void][Management.Automation.Language.Parser]::ParseFile((Join-Path $PSScriptRoot "../$name"),[ref]$tokens,[ref]$errors)

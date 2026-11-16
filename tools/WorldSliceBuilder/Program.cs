@@ -7,9 +7,10 @@ using System.Text.Json;
 
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
-bool expanded=args.LastOrDefault()=="--expand";
+bool natural=args.LastOrDefault()=="--natural";
+bool expanded=natural||args.LastOrDefault()=="--expand";
 if(expanded)args=args[..^1];
-if(args.Length!=2&&(args.Length!=4||args[2]!="--story-source")){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory> [--story-source <TheLastMeridian.esp>] [--expand]");return 2;}
+if(args.Length!=2&&(args.Length!=4||args[2]!="--story-source")){Console.Error.WriteLine("WorldSliceBuilder <Fallout4.esm> <new-output-directory> [--story-source <TheLastMeridian.esp>] [--expand|--natural]");return 2;}
 var input=Path.GetFullPath(args[0]);var output=Path.GetFullPath(args[1]);
 var comparison=OperatingSystem.IsWindows()?StringComparison.OrdinalIgnoreCase:StringComparison.Ordinal;
 var masterDirectory=Path.GetDirectoryName(input)!;
@@ -64,7 +65,7 @@ void Put(string id,FormKey key,float x,float y,float z=0,float yaw=0){
  // Keep the original route-reference allocation, but hide the dense paired
  // bollards in the expanded landscape. Explicit road markers and the town
  // gateway remain visible; the default shell keeps its original route posts.
- bool hiddenRoutePost=expanded&&(id.StartsWith("Main",StringComparison.Ordinal)||id.StartsWith("Bypass",StringComparison.Ordinal));
+ bool hiddenRoutePost=natural&&(id.StartsWith("Main",StringComparison.Ordinal)||id.StartsWith("Bypass",StringComparison.Ordinal));
  if(hiddenRoutePost)p.MajorRecordFlagsRaw|=0x800; // initially disabled, own reference only
  p.Base.SetTo(key);cell.Temporary.Add(p);placements.Add(new{id=p.EditorID,form=p.FormKey.ToString(),@base=key.ToString(),x,y,z,yaw,initiallyDisabled=hiddenRoutePost});
  var bounds=master.Statics.FirstOrDefault(s=>s.FormKey==key)?.ObjectBounds??master.Furniture.Single(f=>f.FormKey==key).ObjectBounds;
@@ -158,7 +159,7 @@ if(args.Length==4){using var template=Fallout4Mod.CreateFromBinaryOverlay(args[3
 object? expansion=null;
 var protectedPoints=new List<object>();
 if(expanded){
- expansion=Expansion.Add(master,Put);
+ expansion=Expansion.Add(master,Put,natural);
  // Recheck both old routes AND new streets after adding scenery. AABBs are
  // conservative coarse checks, not Havok/navmesh certification.
  foreach(var route in new[]{mainRoute,bypassRoute}.Concat(Expansion.Routes.Select(r=>r.Points)))for(int s=0;s<route.Length-1;s++)for(int tick=0;tick<=100;tick++){

@@ -2,7 +2,11 @@ Set-StrictMode -Version Latest
 Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1')
 
 function Get-WorldStoryVariant {
-    param([switch]$Expanded)
+    param([switch]$Expanded,[switch]$Natural)
+    if ($Expanded -and $Natural) { throw "Select only one world variant." }
+    if ($Natural) {
+        return [pscustomobject]@{ Id='natural'; ProfileName='TLM-World-Natural-Preview'; ModName='TheLastMeridian-WorldNaturalPreview'; JournalName='world-natural.unfinished.json'; ManifestPath=(Join-Path $PSScriptRoot 'world-natural-artifact.json') }
+    }
     if ($Expanded) {
         return [pscustomobject]@{ Id='expanded'; ProfileName='TLM-World-Expanded-Preview'; ModName='TheLastMeridian-WorldExpandedPreview'; JournalName='world-expanded.unfinished.json'; ManifestPath=(Join-Path $PSScriptRoot '../WorldSliceBuilder/expanded-artifact.json') }
     }
@@ -10,16 +14,16 @@ function Get-WorldStoryVariant {
 }
 
 function Assert-WorldStoryRecoveryNote {
-    param($Note,[string]$Ini,[string]$GameFolder,[ValidateSet('story','expanded')][string]$Variant='story')
-    $expected=Get-WorldStoryVariant -Expanded:($Variant -eq 'expanded')
+    param($Note,[string]$Ini,[string]$GameFolder,[ValidateSet('story','expanded','natural')][string]$Variant='story')
+    $expected=Get-WorldStoryVariant -Expanded:($Variant -eq 'expanded') -Natural:($Variant -eq 'natural')
     # Legacy default notes had no variant fields. Retain that recovery route
     # only for the default variant and its exact expected INI/game paths.
     if ($Note.PSObject.Properties.Name -contains 'Variant') {
         if ($Note.Variant -cne $expected.Id) { throw 'Recovery note belongs to another world variant; left untouched.' }
-    } elseif ($Variant -ne 'story') { throw 'Expanded recovery note has no variant identity; left untouched.' }
+    } elseif ($Variant -ne 'story') { throw 'Non-default recovery note has no variant identity; left untouched.' }
     if ($Note.PSObject.Properties.Name -contains 'ProfileName') {
         if ($Note.ProfileName -cne $expected.ProfileName) { throw 'Recovery note belongs to another profile; left untouched.' }
-    } elseif ($Variant -ne 'story') { throw 'Expanded recovery note has no profile identity; left untouched.' }
+    } elseif ($Variant -ne 'story') { throw 'Non-default recovery note has no profile identity; left untouched.' }
     if ($Note.Batch.PSObject.Properties.Name -contains 'Variant') {
         if ($Note.Batch.Variant -cne $expected.Id) { throw 'Startup batch belongs to another world variant; left untouched.' }
     } elseif ($Variant -ne 'story' -or ($Note.PSObject.Properties.Name -contains 'Variant')) { throw 'Startup batch has no matching variant identity; left untouched.' }
@@ -57,9 +61,9 @@ function Assert-WorldStoryProcessesClear {
 }
 
 function Get-WorldStoryContext {
-    param([string]$ModOrganizerRoot, [string]$ProfileName='', [string]$ManifestPath='', [switch]$Expanded)
+    param([string]$ModOrganizerRoot, [string]$ProfileName='', [string]$ManifestPath='', [switch]$Expanded,[switch]$Natural)
     # ManifestPath permits isolated fixture testing; the launcher exposes no override.
-    $variant=Get-WorldStoryVariant -Expanded:$Expanded
+    $variant=Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural
     if (-not $ProfileName) { $ProfileName=$variant.ProfileName }
     if (-not $ManifestPath) { $ManifestPath=$variant.ManifestPath }
     if ($ProfileName -cne $variant.ProfileName) { throw "Use the dedicated $($variant.ProfileName) profile only." }
@@ -118,9 +122,9 @@ function Get-WorldStoryContext {
 }
 
 function Get-WorldStoryStartupPlan {
-    param([string]$GameFolder,[switch]$Expanded)
+    param([string]$GameFolder,[switch]$Expanded,[switch]$Natural)
     $plan = Get-FreshDemoStartupPlan -GameFolder $GameFolder
-    $plan | Add-Member -MemberType NoteProperty -Name Variant -Value (Get-WorldStoryVariant -Expanded:$Expanded).Id
+    $plan | Add-Member -MemberType NoteProperty -Name Variant -Value (Get-WorldStoryVariant -Expanded:$Expanded -Natural:$Natural).Id
     if (-not $plan.Content.StartsWith("coc qasmoke`r`n")) { throw 'Unexpected fresh startup template.' }
     $plan.Content = $plan.Content.Replace("coc qasmoke`r`n", "coc TLM_WS_Clearing`r`n") + "cqf TLM_WS_Entry QueueFreshEntry`r`n"
     $sha = [Security.Cryptography.SHA256]::Create()

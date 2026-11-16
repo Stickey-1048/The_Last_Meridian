@@ -1,5 +1,7 @@
 # WORLD-NATURAL004: replace the route-post course with landmarks
 
+Integration note: the historical component receipt below describes29cae1b. In the combined launcher branch, explicit `--natural` now selects this geometry; `--expand` again reproduces the preserved5629 output. The current AA52/repaired-quest natural package has its own `tools/win/world-natural-artifact.json`; `expanded-artifact.json` retains the original286B/5629 fallback pins. See design/WORLD_NATURAL_LAUNCHER.md.
+
 The expanded exterior's 66 paired metal route posts dominate the player-height view. This revision hides those decorative references in expanded mode, retains the existing wooden road markers and covered town gateway, and adds four smaller trees in two groups. The exterior directions now name those landmarks and explain the eastern bypass without promising a continuously marked path.
 
 This is a source/build candidate, not a tested owner demo. It changes no quest outcomes, actor positions, trigger extents, furniture, terrain heights or new services. It preserves the old references and IDs; the 66 old route-post references remain allocated but initially disabled. The four new static trees are appended after the previous expansion. The default story output remains byte-identical to 6B617B6F1566F34499545B940690AAB3CBF9DBC62F8051BB8E29C48112E8BB62.
