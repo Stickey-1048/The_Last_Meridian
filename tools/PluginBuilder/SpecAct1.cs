@@ -306,6 +306,8 @@ public static class Act1
         {
             new FormProp("TLM_MQ01", "TLM_MQ01"),
             new FormProp("TLM_SQ01", "TLM_SQ01"),
+            // ACT1-RUNTIME-001: the optional Mercy briefing after the chapter (SpecMercyBriefing.cs).
+            new FormProp("TLM_MercyBriefing", MercyBriefing.QuestId),
             new FormProp("TLM_G_CaravanOutcome", "TLM_G_CaravanOutcome"),
             new FormProp("TLM_G_CaravanMethod", "TLM_G_CaravanMethod"),
             new FormProp("TLM_G_CaravanAliveAtMercy", "TLM_G_CaravanAliveAtMercy"),

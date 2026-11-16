@@ -40,6 +40,10 @@ PLAY = 900                       # the scenario number that sets the section up 
 REF = "TLM_REF_A1_"
 MSG = "TLM_MSG_A1_"
 PEOPLE = 13
+# The Mercy briefing's two boxes these roads meet (tools/PluginBuilder/SpecMercyBriefing.cs; its own
+# tests are in test_mercy_briefing.py).
+BRIEF_HANDOFF = "TLM_MSG_MB_HandOff"
+BRIEF_HUB = "TLM_MSG_MB_Hub"
 # The stages the logic model keeps for each quest (it has no stage for a
 # button that only records an answer).
 MODEL_STAGES = (10, 15, 20, 30, 31, 32, 33, 34, 35, 40, 50, 60, 100)
@@ -336,10 +340,12 @@ class Person:
         self.go("TownGate", "goto_town")
 
     def hand_over(self, debrief, button=0, answer_event=None, more=False):
-        """The dispatch to Pritchard, what he makes of the road, and the three towns."""
+        """The dispatch to Pritchard, what he makes of the road, and the three towns.
+        With the Mercy briefing bound (ACT1-RUNTIME-001) the hand-off is that quest's
+        message: the same speech with a footer that says he can be asked again."""
         events = ["pritchard_handover"] + ([answer_event] if answer_event else []) + ["pritchard_handoff"]
         case = "PritchardCaseAndMore" if more else "PritchardCase"
-        return self.press("Pritchard", {case: [0], debrief: [button], "PritchardHandOff": [0]}, events)
+        return self.press("Pritchard", {case: [0], debrief: [button]}, events, boxes={BRIEF_HANDOFF: [0]})
 
 
 class TheSectionSetUpForAPerson(unittest.TestCase):
@@ -594,7 +600,8 @@ class EveryRoadThroughTheChapter(unittest.TestCase):
         p.hand_over("DebriefSaved")
         self.assertEqual((p.g("TLM_G_Rep_MercyCrossing"), p.g("TLM_G_MQ01_Done")), (2, 1))
         p.press("Talbot", {"TalbotAfter": [0]})
-        p.press("Pritchard", {"PritchardAfter": [0]})
+        # After the chapter he offers the Mercy briefing instead of his last line. "Not now."
+        p.press("Pritchard", boxes={BRIEF_HUB: [3]})
         p.press("Keene", {"KeeneHello": [0]})
 
     def test_her_thanks_can_be_turned_down_once(self):
@@ -844,7 +851,8 @@ class EveryRoadThroughTheChapter(unittest.TestCase):
         q.press("BrakeShoes", boxes={"TLM_MSG_E1": [0]}, events=["examine_e1"])
         q.to_town()
         q.hand_over("DebriefMissed", more=True)
-        q.press("Pritchard", {"PritchardAfterAndMore": [0]})
+        # Continue goes on to the Mercy briefing ("Not now."); the report keeps its own button.
+        q.press("Pritchard", {"PritchardAfterAndMore": [0]}, boxes={BRIEF_HUB: [3]})
         self.assertEqual(q.g("TLM_G_SQ01_Outcome"), 0)
         q.press("Pritchard", {"PritchardAfterAndMore": [1], "PritchardReported": [0]}, ["sq_report"])
         self.assertEqual(q.g("TLM_G_SQ01_Outcome"), 1)

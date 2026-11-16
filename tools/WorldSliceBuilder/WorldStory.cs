@@ -20,6 +20,8 @@ public static class WorldStory
         var walk=vmad.Scripts.Single(s=>s.Name=="TLM:Act1Walk");
         foreach(var p in walk.Properties){
             if(p is IScriptObjectPropertyGetter obj&&obj.Alias>=0&&obj.Object.FormKey!=section.FormKey)throw new InvalidDataException("Own alias property points at preview");
+            // ACT1-RUNTIME-001: the helper quest stays in the story master; the clone only points at it.
+            if(p.Name=="TLM_MercyBriefing"&&(p is not IScriptObjectPropertyGetter brief||brief.Alias!=-1||brief.Object.FormKey.ModKey!=ModKey.FromNameAndExtension("TheLastMeridian.esp")))throw new InvalidDataException("Mercy briefing binding does not point into the story master");
             if(p is IScriptObjectListPropertyGetter list){
                 if(p.Name=="Everything"&&list.Objects.Count!=29)throw new InvalidDataException("Everything mismatch");
                 if(p.Name!="CastInto"&&list.Objects.Any(o=>o.Alias>=0&&o.Object.FormKey!=section.FormKey))throw new InvalidDataException("Own alias array points at preview");
@@ -104,6 +106,12 @@ public static class WorldStory
         start.Properties.Add(new ScriptObjectProperty{Name="FreshPlayer",Flags=ScriptProperty.Flag.Edited,Object=entry.ToLink<IFallout4MajorRecordGetter>(),Alias=0});
         entry.VirtualMachineAdapter.Scripts.Add(start);mod.Quests.Add(entry);
         if(adapter.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.OfType<ScriptObjectListProperty>().Single(p=>p.Name=="Everything").Objects.Count!=29)throw new InvalidDataException("Exterior Everything binding mismatch");
+        // ACT1-RUNTIME-001: a check only; nothing is remapped or written for it. The cloned walk must keep
+        // pointing at the master's own Mercy briefing quest, never at a copy, the section or nothing.
+        // A source built before that quest existed has neither the quest nor the property.
+        var briefing=source.Quests.SingleOrDefault(q=>q.EditorID=="TLM_MercyBriefing");
+        var bound=adapter.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.Where(p=>p.Name=="TLM_MercyBriefing").ToArray();
+        if(briefing==null?bound.Length!=0:bound.Length!=1||bound[0] is not ScriptObjectProperty helper||helper.Alias!=-1||helper.Object.FormKey!=briefing.FormKey)throw new InvalidDataException("Mercy briefing binding missing or not the story master's TLM_MercyBriefing");
         return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
     }
 }

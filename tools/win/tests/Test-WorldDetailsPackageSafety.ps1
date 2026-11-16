@@ -33,7 +33,11 @@ try {
     $new=Join-Path $root 'new-package'
     $reason=''
     try { & $builder @args -OutputDirectory $new } catch { $reason=$_.Exception.Message }
-    if ($reason -notlike '*Reviewed runtime input must have exactly19 PEX files*') { throw "Normal new ancestry failed before intended input validation: $reason" };$checks++
+    # ACT1-RUNTIME-001 candidate checkout: the runtime source here is no longer the reviewed19 (Act1Walk changed,
+    # MercyBriefing added). This pinned packager must refuse it at its own frozen-source guard, before it looks at
+    # any runtime input and without creating output. The guard and the pins are unchanged; the immutable b280
+    # checkout keeps the earlier expectation (the19-PEX check is reached) and still builds the old package.
+    if ($reason -notlike '*Current source names differ from the reviewed19 scripts*') { throw "Pinned packager did not refuse the changed candidate source at its frozen-source guard: $reason" };$checks++
     if (Test-Path $new) { throw 'Refused package created output before validating runtime.' };$checks++
     if ((Get-Content $master -Raw).Trim() -ne 'input sentinel') { throw 'Input master changed.' };$checks++
     $empty=Join-Path $root 'empty';[void](New-Item -ItemType Directory $empty)
