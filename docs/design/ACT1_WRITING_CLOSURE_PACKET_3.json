@@ -1,0 +1,659 @@
+{
+  "format": "tlm-creative-closure-packet-3",
+  "author": "Iris",
+  "review_base": "f1b045e917abe37d6c2b34efe0f7da22601434a8",
+  "scope": "Exact writing and source-routing instructions only. No native scene, inventory, presence, timer, installation or playability claim. Earlier packets remain immutable.",
+  "text_replacements": [
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "whitcomb_rates",
+      "field": "text",
+      "text": "Carriers in the Compact vote on a shared rate. Nell Fenwick voted against me twice and for me once. Others want to set their own rates. Leaving an agreement mustn't cost them the right to use the road."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_three_tokens_later",
+      "field": "text",
+      "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_three_tokens_later_rail_river",
+      "field": "text",
+      "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_three_tokens_later_rail_pike",
+      "field": "text",
+      "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_three_tokens_later_rail",
+      "field": "text",
+      "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_three_tokens_later_river_pike",
+      "field": "text",
+      "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_three_tokens_later_river",
+      "field": "text",
+      "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_three_tokens_later_pike",
+      "field": "text",
+      "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_hears_rail_after_fair",
+      "field": "text",
+      "text": "You have a rail-payment lead. Tell me how you learned it. If you travelled the line, separate what you saw from what somebody told you."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_hears_rail_after_fair_unknown",
+      "field": "text",
+      "text": "If you haven't taken the rail, ask about Iron Junction. If you have, tell me what you saw. Don't name a payer unless you've learned who paid."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_hears_river_after_fair",
+      "field": "text",
+      "text": "You have a hire-payment lead for Greenwater. Tell me its source. Going there isn't the only way to hear a claim, and hearing one doesn't prove it."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_hears_river_after_fair_unknown",
+      "field": "text",
+      "text": "If you haven't been to Greenwater, ask me the way. If you have, tell me what became of the grain and how you learned it."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_hears_pike_after_fair",
+      "field": "text",
+      "text": "You have a payment lead about Red Hollow. Say how you learned it. If you've been to the Mouth, tell me that account separately."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_hears_pike_after_fair_unknown",
+      "field": "text",
+      "text": "If Red Hollow is still ahead of you, ask me the way. If you've been, tell me what happened at the Mouth. Leave the payment column blank unless you've learned it."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02b.json",
+      "id": "pruitt_ran",
+      "field": "text",
+      "text": "WE'RE THROUGH! Look at what's gone over the side. Granny's going to count every sack we brought home. We'll count the loss before we start calling it a victory."
+    },
+    {
+      "file": "assets/incoming/act1/story/quests/tlm_mq02b.json",
+      "id": "choices[at=40].options[sets=42]",
+      "field": "later",
+      "text": "Greenwater receives the recovered cargo; losses depend on the actual route and pilot state. Hatcher may seek revenge if alive. No fixed fraction or dead pilot is asserted."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq04.json",
+      "id": "pritchard_after_rope",
+      "field": "text",
+      "text": "The town hanged him after you let them take him. That was your choice. Keeping the law from becoming a rope was my responsibility. Tomorrow we answer for both."
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02c.json",
+      "id": "roark_deadline_warning",
+      "field": "text",
+      "text": "Captain Blevins is making ready to fire. When his preparations are finished, he turns the key with eleven people below. Start the rescue or stop him before then."
+    },
+    {
+      "file": "assets/incoming/act1/story/characters.json",
+      "id": "pritchard",
+      "field": "knows[0]",
+      "text": "Gantt had a name he meant to check against the entries, not an accusation already proved."
+    },
+    {
+      "file": "assets/incoming/act1/story/quests/tlm_mq03.json",
+      "id": "stages[n=42]",
+      "field": "log",
+      "text": "You chose to stay with the courier. What she can tell you depends on whether she is still alive to speak."
+    },
+    {
+      "file": "assets/incoming/act1/story/quests/tlm_mq03.json",
+      "id": "choices[at=40].options[sets=42]",
+      "field": "now",
+      "text": "You choose to stay with the living courier. Only words actually delivered grant spoken knowledge; choosing this course is not proof that they were heard."
+    },
+    {
+      "file": "assets/incoming/act1/story/quests/tlm_mq03.json",
+      "id": "choices[at=40].options[sets=42]",
+      "field": "later",
+      "text": "Any last words you actually heard are a lead. The number can also be learned from the case; no exclusive knowledge is granted merely by choosing to stay."
+    },
+    {
+      "file": "assets/incoming/act1/story/quests/tlm_mq03.json",
+      "id": "choices[at=40].options[sets=41]",
+      "field": "later",
+      "text": "You have useful observations of the route. Flint can compare evidence if alive and available. Who can manage the crowd depends on the surviving cast; no dead Brigg is assigned that job."
+    }
+  ],
+  "new_lines": [
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_report_open_roads",
+      "speaker": "pritchard",
+      "status": "new",
+      "entry": false,
+      "when": [
+        "mq02 done 100"
+      ],
+      "text": "Which road do you want to ask about? Tell me what you know, or ask what to look for.",
+      "buttons": [
+        {
+          "label": "The rail.",
+          "then": "pritchard_report_open_rail"
+        },
+        {
+          "label": "The river.",
+          "then": "pritchard_report_open_river"
+        },
+        {
+          "label": "Red Hollow.",
+          "then": "pritchard_report_open_pike"
+        },
+        {
+          "label": "Not now."
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_report_open_rail",
+      "speaker": "pritchard",
+      "status": "new",
+      "entry": false,
+      "when": [
+        "mq02 done 100"
+      ],
+      "text": "If you haven't taken the rail, ask about Iron Junction. If you have, tell me what you saw. Don't name a payer unless you've learned who paid.",
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_report_open_river",
+      "speaker": "pritchard",
+      "status": "new",
+      "entry": false,
+      "when": [
+        "mq02 done 100"
+      ],
+      "text": "If you haven't been to Greenwater, ask me the way. If you have, tell me what became of the grain and how you learned it.",
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "id": "pritchard_report_open_pike",
+      "speaker": "pritchard",
+      "status": "new",
+      "entry": false,
+      "when": [
+        "mq02 done 100"
+      ],
+      "text": "If Red Hollow is still ahead of you, ask me the way. If you've been, tell me what happened at the Mouth. Leave the payment column blank unless you've learned it.",
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "brigg_truce_concession_pritchard",
+      "speaker": "brigg",
+      "status": "new",
+      "entry": false,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard"
+      ],
+      "text": "I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+      "buttons": [
+        {
+          "label": "Continue",
+          "do": [
+            "mq03 set 43"
+          ],
+          "then": "brigg_rifles"
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "brigg_truce_concession_talbot",
+      "speaker": "brigg",
+      "status": "new",
+      "entry": false,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "dead pritchard",
+        "alive talbot"
+      ],
+      "text": "I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+      "buttons": [
+        {
+          "label": "Continue",
+          "do": [
+            "mq03 set 43"
+          ],
+          "then": "brigg_rifles"
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "pritchard_courier_no_brigg_living",
+      "speaker": "pritchard",
+      "status": "new",
+      "entry": true,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive pritchard",
+        "alive threefords"
+      ],
+      "text": "The courier is down. Keep the case from the crowd. We need someone on the roof and someone with her. Say what you'll do.",
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "pritchard_courier_no_brigg_dead",
+      "speaker": "pritchard",
+      "status": "new",
+      "entry": true,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive pritchard",
+        "dead threefords"
+      ],
+      "text": "The courier is dead. Keep the case from the crowd. Someone should search the roof and landing. Say whether you'll look or take the case out of the crush.",
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "talbot_courier_no_brigg_living",
+      "speaker": "talbot",
+      "status": "new",
+      "entry": true,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive talbot",
+        "dead pritchard",
+        "alive threefords"
+      ],
+      "text": "The courier's down. I can keep people back, not do three jobs at once. Somebody stay with her, somebody find the shot, somebody keep that case safe. Choose.",
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "talbot_courier_no_brigg_dead",
+      "speaker": "talbot",
+      "status": "new",
+      "entry": true,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive talbot",
+        "dead pritchard",
+        "dead threefords"
+      ],
+      "text": "The courier is dead. I can keep people back. You can search the roof and landing, or get the case out of the crush.",
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "flint_courier_no_brigg_living",
+      "speaker": "flint",
+      "status": "new",
+      "entry": true,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive flint",
+        "dead pritchard",
+        "dead talbot",
+        "alive threefords"
+      ],
+      "text": "The shot came from the roof. Her case is still on her wrist. Help her, take it out of the crush, or come look at the landing. I'm not spending another minute guessing.",
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "sources": []
+    },
+    {
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "id": "flint_courier_no_brigg_dead",
+      "speaker": "flint",
+      "status": "new",
+      "entry": true,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive flint",
+        "dead pritchard",
+        "dead talbot",
+        "dead threefords"
+      ],
+      "text": "The courier is dead. The shot came from the roof. Search the landing, or take her case out of the crush. Standing here won't tell us who fired.",
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "sources": []
+    }
+  ],
+  "routing": [
+    {
+      "id": "open_road_reports",
+      "file": "assets/incoming/act1/story/talk/tlm_mq02.json",
+      "source_ids": [
+        "pritchard_three_tokens_later",
+        "pritchard_three_tokens_later_rail_river",
+        "pritchard_three_tokens_later_rail_pike",
+        "pritchard_three_tokens_later_rail",
+        "pritchard_three_tokens_later_river_pike",
+        "pritchard_three_tokens_later_river",
+        "pritchard_three_tokens_later_pike"
+      ],
+      "append_button": {
+        "label": "Discuss a road account.",
+        "then": "pritchard_report_open_roads"
+      },
+      "rules": [
+        "Retain all existing road buttons and their guards. The new dispatcher and three leaves are continuations with no effects and no evidence assertions.",
+        "Retain the eight existing proof-split report entries and their six guarded leaves. Retain pre-fair report evidence guards. New neutral leaves accept all evidence states without setting evidence or road completion.",
+        "An urgent authored scene may still take precedence until resolved; this is a normal post-fair hub link, not an interrupt capability."
+      ]
+    },
+    {
+      "id": "truce_commit_pritchard",
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "source_id": "pritchard_truce",
+      "replace_buttons": [
+        {
+          "label": "Continue",
+          "then": "brigg_truce_concession_pritchard"
+        }
+      ],
+      "rules": [
+        "The local officer's Continue has NO stage effect. Brigg's concession text is displayed before its Continue commits 43.",
+        "Apply the complete live/unresolved/required-participant guard to every continuation and to the source of every button, including the concession. Recheck before effects. If Brigg or any required participant dies, or another resolution occurs, fail closed without 43.",
+        "brigg_rifles remains post-43 acknowledgement with alive brigg and coherent resolved-context guards. Do not put unresolved/not43 guards on that post-commit target.",
+        "A failed post-effect target does not roll effects back in this selector. Target guards alone cannot protect the commit. No assertion of native atomic speech acknowledgement is made."
+      ]
+    },
+    {
+      "id": "truce_commit_talbot",
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "source_id": "talbot_truce",
+      "replace_buttons": [
+        {
+          "label": "Continue",
+          "then": "brigg_truce_concession_talbot"
+        }
+      ],
+      "rules": [
+        "The local officer's Continue has NO stage effect. Brigg's concession text is displayed before its Continue commits 43.",
+        "Apply the complete live/unresolved/required-participant guard to every continuation and to the source of every button, including the concession. Recheck before effects. If Brigg or any required participant dies, or another resolution occurs, fail closed without 43.",
+        "brigg_rifles remains post-43 acknowledgement with alive brigg and coherent resolved-context guards. Do not put unresolved/not43 guards on that post-commit target.",
+        "A failed post-effect target does not roll effects back in this selector. Target guards alone cannot protect the commit. No assertion of native atomic speech acknowledgement is made."
+      ]
+    },
+    {
+      "id": "dead_brigg_courses",
+      "rules": [
+        "Assign new entry priorities unique for each speaker across the whole folder, above ordinary greeting entries in this unresolved courier context. Do not duplicate or renumber unrelated entries without a reason.",
+        "Pritchard, then Talbot, then Flint is source fallback precedence by alive state. This does not implement or assert physical presence. Native scene and availability remain engineering gates.",
+        "Alive-Juno entries offer three remaining courses; dead-Juno entries offer only search or take-case. Never set 42 or play final words from a dead courier. Apply the same alive/dead-Juno split to existing alive-Brigg courier course menus, preserving their other current guards and truce availability.",
+        "Recheck current cast and unresolved context before effects. No dead-Brigg course commits 43 or 70. No new subordinate commander or unseen military order is invented.",
+        "If all three carriers are dead or unavailable, source conversation fails closed with no course effects. Preserve existing case-read stage60 and quest completion100 paths; prove source reachability where supported. Native case access/location/UI is an explicit return gate. Do not invent narrator speech, heard words, automatic choices or a new actor to mask it.",
+        "threefords_dying itself requires alive threefords when selected and while advancing any speech. Stage 42 records the chosen living-courier course, not permission for a dead actor to speak later. Do not manufacture heard-last-words knowledge if the actor dies before those words are delivered.",
+        "Apply the four supplied MQ03 stage42/choice42/choice41 fidelity replacements as part of this same dead-cast routing change; do not treat choosing Stay as delivered speech or assign crowd management to dead Brigg."
+      ]
+    },
+    {
+      "id": "fraction_and_occupation_fidelity",
+      "rules": [
+        "Guard pruitt_ran by alive pruitt; do not make dead Rafferty narrate an escape. Keep the established living/dead-pilot loss rule until a measured route result exists; the supplied prose deliberately asserts no fraction.",
+        "The stage64 rope reply requires living Pritchard and the explicit player-authorized hanging outcome, not mere absence or actor death.",
+        "roark_deadline_warning is preparation text, not evidence of an audible final call already played. Keep packet2 explicit stage30 confirmation and living functional Blevins requirements. Native visible warning, timer/menu/unloaded behavior remain unimplemented gates."
+      ]
+    },
+    {
+      "id": "dissent_button_order",
+      "file": "assets/incoming/act1/story/talk/tlm_mq03.json",
+      "rules": [
+        "On the three existing faction greeting menus whose new fourth button leads to brigg_dissent, belden_dissent or grey_dissent, move that existing button immediately before the existing Move on button. Retain exact label, conditions and target. No story consequence attaches to ordering."
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "request": 1,
+      "status": "REPLACE",
+      "decision": "Shared rate/agreement replaces barred vocabulary; Nell's vote is historical, with no alive/location assumption."
+    },
+    {
+      "request": 2,
+      "status": "ADD",
+      "decision": "Seven normal open-road entries gain one neutral report link; new dispatcher needs no new grammar or evidence mutation."
+    },
+    {
+      "request": 3,
+      "status": "REPLACE",
+      "decision": "Six guarded post-fair leaves become conditional on actual travel and distinguish knowledge source from proof; optional oral knowledge remains valid."
+    },
+    {
+      "request": 4,
+      "status": "REPLACE",
+      "decision": "One common open-road header names no unavailable token or count."
+    },
+    {
+      "request": 5,
+      "status": "KEEP",
+      "decision": "For this bounded version the negotiated truce requires all three living delegates and one living local officer. Missing quorum retains other supported courses; no smaller coalition is promised. This is a delegated creative decision, not an owner question."
+    },
+    {
+      "request": 6,
+      "status": "ADD_WITH_RETURN_GATE",
+      "decision": "Existing cast carries dead-Brigg choices, with dead-Juno and no-available-carrier guards; native presence and physical case access remain honest engineering gates."
+    },
+    {
+      "request": 7,
+      "status": "REPLACE",
+      "decision": "Remove fixed cargo fraction from Rafferty's line and Chute consequence; protect dead-pilot fidelity."
+    },
+    {
+      "request": 8,
+      "status": "REPLACE",
+      "decision": "Reply names the authorized hanging and shared accountability without claiming the player merely stepped aside."
+    },
+    {
+      "request": 9,
+      "status": "REPLACE_WITH_RUNTIME_GATE",
+      "decision": "Roark warns about preparation; no already-delivered audible call assumed."
+    },
+    {
+      "request": 10,
+      "status": "REORDER",
+      "decision": "Existing dissent questions precede Move on."
+    },
+    {
+      "request": 11,
+      "status": "REPLACE",
+      "decision": "Pritchard knows a lead needing verification, not a proved name."
+    },
+    {
+      "request": 12,
+      "status": "KEEP_AND_REPAIR_FLOW",
+      "decision": "The nine existing Continue labels are approved neutral UI wording. New concession uses the same approved label. Display Brigg's concession before the only 43 commit and protect every stale source."
+    }
+  ]
+}

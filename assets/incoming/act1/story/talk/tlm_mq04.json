@@ -1,0 +1,458 @@
+{
+ "format": "tlm-talk-2",
+ "quest": "TLM_MQ04",
+ "lines": [
+  {
+   "id": "pritchard_warrant",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 52,
+   "when": [
+    "mq04 done 10",
+    "mq04 notdone 30"
+   ],
+   "text": "Four one one seven is a page in a book. Silas keeps one for the town and one for himself. I've known it twenty years and never asked, for the town one always came out in our favour. I can write a warrant. My hand will manage that much.",
+   "buttons": [
+    {
+     "label": "Bring your warrant, Sheriff.",
+     "do": [
+      "mq04 set 21"
+     ]
+    },
+    {
+     "label": "I'll look first. Quietly."
+    },
+    {
+     "label": "And if he's guilty?",
+     "then": "pritchard_guilty"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_guilty",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Then I arrest a man who has sat at my table every Sunday since my wife died, and the town goes hungry by Christmas because nobody else knows where anything is. And I'll do it. Don't look at my hand. I'll do it.",
+   "sources": []
+  },
+  {
+   "id": "vane_default",
+   "speaker": "vane",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Good day. If it is on the shelf it is for sale, and if it is not, give me a week.",
+   "sources": []
+  },
+  {
+   "id": "vane_two_books",
+   "speaker": "vane",
+   "status": "new",
+   "entry": true,
+   "priority": 50,
+   "when": [
+    "mq04 done 10",
+    "mq04 notdone 30"
+   ],
+   "text": "Four one one seven. Yes. I wondered who would come and say it. Sit down; you are letting the damp in. You have questions and I have a supper to carve at six, so let us be efficient.",
+   "buttons": [
+    {
+     "label": "I hear you keep two books.",
+     "then": "vane_refuses"
+    },
+    {
+     "label": "Where does the silver come from?",
+     "then": "vane_silver_early"
+    },
+    {
+     "label": "(Leave)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "vane_two_books_kind",
+   "speaker": "vane",
+   "status": "new",
+   "entry": true,
+   "priority": 70,
+   "when": [
+    "mq04 done 10",
+    "outcome is exploited",
+    "method is deal",
+    "mq04 notdone 30"
+   ],
+   "text": "Four one one seven. And it is you who brings it. Good. I had hoped it would be somebody who has counted money on the Tellico road. Sit down. I have a supper to carve at six, so let us be efficient.",
+   "buttons": [
+    {
+     "label": "I hear you keep two books.",
+     "do": [
+      "mq04 set 24"
+     ],
+     "then": "vane_opens"
+    },
+    {
+     "label": "Where does the silver come from?",
+     "then": "vane_silver_early"
+    },
+    {
+     "label": "(Leave)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "vane_refuses",
+   "speaker": "vane",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Every merchant keeps two: the book that says what happened and the book that says what he wishes had. You may see the first for nothing. For the second, bring Owen and a paper, or come when I am not looking. I should respect either.",
+   "sources": []
+  },
+  {
+   "id": "vane_opens",
+   "speaker": "vane",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "The road account records your share. That's why I thought you might understand the price. Here: six years of payments, and the present work in four columns. Read it before you decide what my arithmetic is worth.",
+   "sources": []
+  },
+  {
+   "id": "vane_silver_early",
+   "speaker": "vane",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "From people who want what I want, for reasons I have been careful never to learn. That is not evasion. It is the only honest answer I shall give you today, so do write it down.",
+   "sources": []
+  },
+  {
+   "id": "vickers_default",
+   "speaker": "vickers",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Mr Vane is engaged. I can take a message, if it is brief and adds up.",
+   "sources": []
+  },
+  {
+   "id": "vickers_door",
+   "speaker": "vickers",
+   "status": "new",
+   "entry": true,
+   "priority": 80,
+   "when": [
+    "mq04 done 30",
+    "mq04 notdone 41",
+    "mq04 notdone 42"
+   ],
+   "text": "You have misread the fourth column; that is a seven. Put the book down. I have kept it eleven years and it has never left this room. There are two barrels in this box. I would rather not spoil the carpet. It is his favourite.",
+   "buttons": [
+    {
+     "label": "He left you everything. Himself, nothing.",
+     "check": "speech",
+     "pass": {
+      "do": [
+       "mq04 set 42"
+      ],
+      "then": "vickers_yields"
+     },
+     "fail": {
+      "then": "vickers_holds"
+     }
+    },
+    {
+     "label": "Who hands you the silver?",
+     "then": "vickers_glove"
+    },
+    {
+     "label": "(Draw)",
+     "then": "vickers_holds"
+    },
+    {
+     "label": "(Put the book down)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "vickers_yields",
+   "speaker": "vickers",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "...You have read the will. He never said. He never says anything that is not a number. Take it. Take it before I recollect myself. And if they hurt him I shall find you, and I am very thorough.",
+   "sources": []
+  },
+  {
+   "id": "vickers_holds",
+   "speaker": "vickers",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "No. I am sorry. One. Two.",
+   "sources": []
+  },
+  {
+   "id": "vickers_glove",
+   "speaker": "vickers",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "A hand. From the car door, at twenty past two, every fourth Thursday. A grey glove with a small square stitched on the cuff. It has never spoken. I sign; it withdraws. I have always thought it a very well-kept glove.",
+   "sources": []
+  },
+  {
+   "id": "vane_porch",
+   "speaker": "vane",
+   "status": "new",
+   "entry": true,
+   "priority": 90,
+   "when": [
+    "mq04 done 50",
+    "mq04 notdone 61",
+    "mq04 notdone 62",
+    "mq04 notdone 63",
+    "mq04 notdone 64"
+   ],
+   "text": "There's a rope below the steps. If you let them take me, they'll hang me here. You've read the book. Speak it, bargain with it, or tell them you won't stop them. At least name what you're choosing.",
+   "buttons": [
+    {
+     "label": "(Read the book out from the porch)",
+     "do": [
+      "mq04 set 61"
+     ],
+     "then": "vane_after_read"
+    },
+    {
+     "label": "Sign it over. They never hear the rest.",
+     "do": [
+      "mq04 set 62"
+     ],
+     "then": "vane_after_sign"
+    },
+    {
+     "label": "You work for me now.",
+     "do": [
+      "mq04 set 63"
+     ],
+     "then": "vane_after_hire"
+    },
+    {
+     "label": "Let the crowd hang him.",
+     "do": [
+      "mq04 set 64"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_porch",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 85,
+   "when": [
+    "mq04 done 50",
+    "mq04 notdone 61",
+    "mq04 notdone 62",
+    "mq04 notdone 63",
+    "mq04 notdone 64"
+   ],
+   "text": "Granger has the rope. I know these people. I'll keep them off the steps while you decide. Leaving to think is not telling them to hang a man. If you mean that, say it where I can hear.",
+   "sources": []
+  },
+  {
+   "id": "granger_rope",
+   "speaker": "granger",
+   "status": "new",
+   "entry": true,
+   "priority": 70,
+   "when": [
+    "mq04 done 50",
+    "mq04 notdone 61",
+    "mq04 notdone 62",
+    "mq04 notdone 63",
+    "mq04 notdone 64"
+   ],
+   "text": "Don't look at me like that. I printed his handbills! BEWARE THE ROADS, he had me set, forty point, and all the while he was paying to make it so! My sister's boy was on the fever list. I've a right. We've all a right.",
+   "sources": []
+  },
+  {
+   "id": "nell_porch",
+   "speaker": "nell",
+   "status": "new",
+   "entry": true,
+   "priority": 60,
+   "when": [
+    "mq04 done 50",
+    "mq04 notdone 61",
+    "mq04 notdone 62",
+    "mq04 notdone 63",
+    "mq04 notdone 64"
+   ],
+   "text": "I hauled his sealed boxes three years and never opened one. So put me on the rope beside him, if that's what we're doing. No? Then somebody think what we ARE doing, and say it out loud, before that rope goes over.",
+   "sources": []
+  },
+  {
+   "id": "vane_after_read",
+   "speaker": "vane",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Every page. Even the receipts for the school roof. That was fair. Nobody has been fair to me in some time, and I find I do not care for it. They will not hang me now. They will only never buy from me again. You have been very cruel.",
+   "buttons": [
+    {
+     "label": "Where does the silver come from?",
+     "then": "vane_names"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "vane_after_sign",
+   "speaker": "vane",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "There. Rail, river, mine. Released. And they go home believing it was an error in the accounts. So now there are two of us who know what quiet costs, and only one of us chose it. Welcome to the trade.",
+   "buttons": [
+    {
+     "label": "Where does the silver come from?",
+     "then": "vane_names"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "vane_after_hire",
+   "speaker": "vane",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Yours. How novel. Then your first report, employer: the silver comes by the night freight, sealed, from Blackstone Station. I have never been up that line. Nobody has, and come back to say so. I take it that is where you are going.",
+   "buttons": [
+    {
+     "label": "(Go)",
+     "do": [
+      "mq04 set 100"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "vane_names",
+   "speaker": "vane",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Blackstone Station. Up the dead line, past the Junction, where the night freight comes from and goes back to. That is all I know, and I have paid a great deal not to know more. If you go, go armed. And do give them my regards.",
+   "buttons": [
+    {
+     "label": "(Go)",
+     "do": [
+      "mq04 set 100"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_after_rope",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 95,
+   "when": [
+    "mq04 done 64",
+    "alive pritchard"
+   ],
+   "text": "The town hanged him after you let them take him. That was your choice. Keeping the law from becoming a rope was my responsibility. Tomorrow we answer for both.",
+   "sources": []
+  },
+  {
+   "id": "haskell_default",
+   "speaker": "haskell",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Received in good order, or not. I can tell you which. I cannot tell you why.",
+   "sources": []
+  },
+  {
+   "id": "haskell_sheet",
+   "speaker": "haskell",
+   "status": "new",
+   "entry": true,
+   "priority": 40,
+   "when": [
+    "mq04 done 10",
+    "mq04 notdone 100"
+   ],
+   "text": "I sign for what arrives. That is all I do. But if somebody were to ask me a direct question, such as: Corwin, did you ever weigh one of Mr Vane's sealed crates... I should have to answer. Nobody has ever asked.",
+   "buttons": [
+    {
+     "label": "Corwin. Did you ever weigh one?",
+     "then": "haskell_tells"
+    },
+    {
+     "label": "(Leave him be)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "haskell_tells",
+   "speaker": "haskell",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Ninety-one pounds. Entered as dry goods, eleven pounds. I wrote it down. It is in the lining of the receiving book. They come off the night freight from past Iron Junction. From Blackstone. There. I have wanted to say that for a year.",
+   "sources": []
+  },
+  {
+   "id": "haskell_after_rope",
+   "speaker": "haskell",
+   "status": "new",
+   "entry": true,
+   "priority": 90,
+   "when": [
+    "mq04 done 64",
+    "mq04 notdone 100"
+   ],
+   "text": "They've burned the post. The book's gone with it. But I kept a page. I always keep a page. The crates came from Blackstone Station. Take it. Somebody ought to have asked me sooner. I ought to have said without asking.",
+   "buttons": [
+    {
+     "label": "(Take the page)",
+     "do": [
+      "mq04 set 100"
+     ]
+    }
+   ],
+   "sources": []
+  }
+ ]
+}

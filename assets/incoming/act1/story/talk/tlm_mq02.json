@@ -1,0 +1,938 @@
+{
+ "format": "tlm-talk-2",
+ "quest": "TLM_MQ02",
+ "lines": [
+  {
+   "id": "pritchard_default",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Door's open. So is the cell.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 40,
+   "when": [
+    "mq01 done 100",
+    "mq02 notdone 50",
+    "mq02 notdone 60"
+   ],
+   "text": "Gantt wrote three towns and one sentence: somebody is being paid. I've a deputy who irons his star and a hand that won't hold a cup. So. Spike, scoop or tag. Pick one up off my desk.",
+   "buttons": [
+    {
+     "label": "The spike. I'll take the rail.",
+     "do": [
+      "mq02 set 10"
+     ],
+     "then": "pritchard_road_rail"
+    },
+    {
+     "label": "The scoop. I'll go by river.",
+     "do": [
+      "mq02 set 10"
+     ],
+     "then": "pritchard_road_river"
+    },
+    {
+     "label": "The tag. I'll walk the pike.",
+     "do": [
+      "mq02 set 10"
+     ],
+     "then": "pritchard_road_pike"
+    },
+    {
+     "label": "Call the fair without my report.",
+     "do": [
+      "mq02 set 50",
+      "mq02 set 100"
+     ],
+     "then": "pritchard_sends_talbot"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 17,
+   "when": [
+    "mq02 done 100",
+    "mq02 notdone 20",
+    "mq02 notdone 30",
+    "mq02 notdone 40"
+   ],
+   "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.",
+   "buttons": [
+    {
+     "label": "The spike. I'll take the rail.",
+     "then": "pritchard_road_rail"
+    },
+    {
+     "label": "The scoop. I'll go by river.",
+     "then": "pritchard_road_river"
+    },
+    {
+     "label": "The tag. I'll walk the pike.",
+     "then": "pritchard_road_pike"
+    },
+    {
+     "label": "Discuss a road account.",
+     "then": "pritchard_report_open_roads"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later_rail_river",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 16,
+   "when": [
+    "mq02 done 100",
+    "mq02 notdone 20",
+    "mq02 notdone 30",
+    "mq02 done 40"
+   ],
+   "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.",
+   "buttons": [
+    {
+     "label": "The spike. I'll take the rail.",
+     "then": "pritchard_road_rail"
+    },
+    {
+     "label": "The scoop. I'll go by river.",
+     "then": "pritchard_road_river"
+    },
+    {
+     "label": "Discuss a road account.",
+     "then": "pritchard_report_open_roads"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later_rail_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 15,
+   "when": [
+    "mq02 done 100",
+    "mq02 notdone 20",
+    "mq02 done 30",
+    "mq02 notdone 40"
+   ],
+   "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.",
+   "buttons": [
+    {
+     "label": "The spike. I'll take the rail.",
+     "then": "pritchard_road_rail"
+    },
+    {
+     "label": "The tag. I'll walk the pike.",
+     "then": "pritchard_road_pike"
+    },
+    {
+     "label": "Discuss a road account.",
+     "then": "pritchard_report_open_roads"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later_rail",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 13,
+   "when": [
+    "mq02 done 100",
+    "mq02 notdone 20",
+    "mq02 done 30",
+    "mq02 done 40"
+   ],
+   "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.",
+   "buttons": [
+    {
+     "label": "The spike. I'll take the rail.",
+     "then": "pritchard_road_rail"
+    },
+    {
+     "label": "Discuss a road account.",
+     "then": "pritchard_report_open_roads"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later_river_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 14,
+   "when": [
+    "mq02 done 100",
+    "mq02 done 20",
+    "mq02 notdone 30",
+    "mq02 notdone 40"
+   ],
+   "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.",
+   "buttons": [
+    {
+     "label": "The scoop. I'll go by river.",
+     "then": "pritchard_road_river"
+    },
+    {
+     "label": "The tag. I'll walk the pike.",
+     "then": "pritchard_road_pike"
+    },
+    {
+     "label": "Discuss a road account.",
+     "then": "pritchard_report_open_roads"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later_river",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 12,
+   "when": [
+    "mq02 done 100",
+    "mq02 done 20",
+    "mq02 notdone 30",
+    "mq02 done 40"
+   ],
+   "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.",
+   "buttons": [
+    {
+     "label": "The scoop. I'll go by river.",
+     "then": "pritchard_road_river"
+    },
+    {
+     "label": "Discuss a road account.",
+     "then": "pritchard_report_open_roads"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_three_tokens_later_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 11,
+   "when": [
+    "mq02 done 100",
+    "mq02 done 20",
+    "mq02 done 30",
+    "mq02 notdone 40"
+   ],
+   "text": "There is still a road open if you want it. Or tell me what you've learned. No need to promise a journey just to ask a question.",
+   "buttons": [
+    {
+     "label": "The tag. I'll walk the pike.",
+     "then": "pritchard_road_pike"
+    },
+    {
+     "label": "Discuss a road account.",
+     "then": "pritchard_report_open_roads"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_road_rail",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Iron Junction. Ask for Gussie Lockridge and don't let her feed you. She's lost four trains and blames the weather, and Gussie has never been wrong about weather in her life.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_road_river",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Greenwater. The woman with the ladle is Opal Starnes. Do what she says until you understand why, and after that use your own judgment. There's a boy with a skiff at the landing.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_road_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Red Hollow, by the pike. You'll pass Brigg's gate at the gap. Ask what evidence Esther Quill has heard before you pay for a pardon. A bench on a wagon isn't proof of a fair hearing.",
+   "sources": [],
+   "buttons": [
+    {
+     "label": "What should I ask Quill?",
+     "then": "pritchard_docket_context"
+    },
+    {
+     "label": "Continue"
+    }
+   ]
+  },
+  {
+   "id": "pritchard_docket_context",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "In 2298 I hanged an innocent man. Quill had the counter-evidence before the drop. I checked too late. Take my review copy if you mean to ask for a hearing. It doesn't prove the man on her wagon innocent.",
+   "buttons": [
+    {
+     "label": "Take the review copy.",
+     "do": [
+      "mq02c set 16"
+     ]
+    },
+    {
+     "label": "Leave the copy."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_sends_talbot",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Then we hear what the flags have to offer. Talbot will post the notice. The roads are still there if you change your mind; I won't call a refusal a promise.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_rail",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 66,
+   "when": [
+    "mq02 done 20",
+    "mq02 notdone 60",
+    "mq02 notdone 100",
+    "flag silver_rail"
+   ],
+   "text": "Sawtooth Cut. I had it from the yard hands before you'd your boots off, in four versions, and you were nine feet tall in one. Tell me the part they don't know.",
+   "buttons": [
+    {
+     "label": "Silver. With a square stamped on it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    },
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_rail_unknown",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 65,
+   "when": [
+    "mq02 done 20",
+    "mq02 notdone 60",
+    "mq02 notdone 100",
+    "notflag silver_rail"
+   ],
+   "text": "Sawtooth Cut. I had it from the yard hands before you'd your boots off, in four versions, and you were nine feet tall in one. Tell me the part they don't know.",
+   "buttons": [
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_river",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 64,
+   "when": [
+    "mq02 done 30",
+    "mq02 notdone 60",
+    "mq02 notdone 100",
+    "flag silver_river"
+   ],
+   "text": "Greenwater. I can smell the lake on you. Opal Starnes sent a boy to say you'd been, and nothing else, which from Opal is a sermon. What was Lyle Hatcher doing with a town's corn?",
+   "buttons": [
+    {
+     "label": "He was paid to hold it. In silver.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    },
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_river_unknown",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 63,
+   "when": [
+    "mq02 done 30",
+    "mq02 notdone 60",
+    "mq02 notdone 100",
+    "notflag silver_river"
+   ],
+   "text": "Greenwater. I can smell the lake on you. Opal Starnes sent a boy to say you'd been, and nothing else, which from Opal is a sermon. What was Lyle Hatcher doing with a town's corn?",
+   "buttons": [
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 62,
+   "when": [
+    "mq02 done 40",
+    "mq02 notdone 60",
+    "mq02 notdone 100",
+    "flag silver_mine"
+   ],
+   "text": "Red Hollow. You've the clay on you to the knee. I'm told the hill moved, or didn't, depending who's telling. Sit. What did Hobart Blevins chain that mine against?",
+   "buttons": [
+    {
+     "label": "He was paid to. In silver.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    },
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_pike_unknown",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 61,
+   "when": [
+    "mq02 done 40",
+    "mq02 notdone 60",
+    "mq02 notdone 100",
+    "notflag silver_mine"
+   ],
+   "text": "Red Hollow. You've the clay on you to the knee. I'm told the hill moved, or didn't, depending who's telling. Sit. What did Hobart Blevins chain that mine against?",
+   "buttons": [
+    {
+     "label": "That's all of it.",
+     "do": [
+      "mq02 set 60"
+     ],
+     "then": "pritchard_calls_fair"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_calls_fair",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Gantt suspected a common purse. One road isn't the whole account. Decoration Day's in a week. I'll ask every flag in these valleys to eat my chicken and answer questions where the town can hear.",
+   "buttons": [
+    {
+     "label": "I'll be there.",
+     "do": [
+      "mq02 set 100"
+     ]
+    },
+    {
+     "label": "(Say nothing)",
+     "do": [
+      "mq02 set 100"
+     ]
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "talbot_default",
+   "speaker": "talbot",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Gate's open till dark. Weapons stay holstered inside. That's the sheriff's rule, I mean. Not mine. Well, mine too.",
+   "sources": []
+  },
+  {
+   "id": "talbot_going_out",
+   "speaker": "talbot",
+   "status": "new",
+   "entry": true,
+   "priority": 30,
+   "when": [
+    "mq02 done 10",
+    "mq02 notdone 50",
+    "mq02 notdone 60"
+   ],
+   "text": "You're going out? On your own? He's never sent me past the creek. ...If you get to the Junction and see Billie Tupper, don't say I asked after her. But I'm asking.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_rail_after_fair",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100",
+    "flag silver_rail"
+   ],
+   "text": "You have a rail-payment lead. Tell me how you learned it. If you travelled the line, separate what you saw from what somebody told you.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_rail_after_fair_unknown",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100",
+    "notflag silver_rail"
+   ],
+   "text": "If you haven't taken the rail, ask about Iron Junction. If you have, tell me what you saw. Don't name a payer unless you've learned who paid.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_river_after_fair",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100",
+    "flag silver_river"
+   ],
+   "text": "You have a hire-payment lead for Greenwater. Tell me its source. Going there isn't the only way to hear a claim, and hearing one doesn't prove it.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_river_after_fair_unknown",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100",
+    "notflag silver_river"
+   ],
+   "text": "If you haven't been to Greenwater, ask me the way. If you have, tell me what became of the grain and how you learned it.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_pike_after_fair",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100",
+    "flag silver_mine"
+   ],
+   "text": "You have a payment lead about Red Hollow. Say how you learned it. If you've been to the Mouth, tell me that account separately.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_hears_pike_after_fair_unknown",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100",
+    "notflag silver_mine"
+   ],
+   "text": "If Red Hollow is still ahead of you, ask me the way. If you've been, tell me what happened at the Mouth. Leave the payment column blank unless you've learned it.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_kkk",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 8,
+   "when": [
+    "mq02 done 100",
+    "flag silver_rail",
+    "flag silver_river",
+    "flag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_kku",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 7,
+   "when": [
+    "mq02 done 100",
+    "flag silver_rail",
+    "flag silver_river",
+    "notflag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair_unknown"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_kuk",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 6,
+   "when": [
+    "mq02 done 100",
+    "flag silver_rail",
+    "notflag silver_river",
+    "flag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair_unknown"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_kuu",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 5,
+   "when": [
+    "mq02 done 100",
+    "flag silver_rail",
+    "notflag silver_river",
+    "notflag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair_unknown"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair_unknown"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_ukk",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 4,
+   "when": [
+    "mq02 done 100",
+    "notflag silver_rail",
+    "flag silver_river",
+    "flag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair_unknown"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_uku",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 3,
+   "when": [
+    "mq02 done 100",
+    "notflag silver_rail",
+    "flag silver_river",
+    "notflag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair_unknown"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair_unknown"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_uuk",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 2,
+   "when": [
+    "mq02 done 100",
+    "notflag silver_rail",
+    "notflag silver_river",
+    "flag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair_unknown"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair_unknown"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_menu_uuu",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": true,
+   "priority": 1,
+   "when": [
+    "mq02 done 100",
+    "notflag silver_rail",
+    "notflag silver_river",
+    "notflag silver_mine"
+   ],
+   "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_hears_rail_after_fair_unknown"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_hears_river_after_fair_unknown"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_hears_pike_after_fair_unknown"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_open_roads",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100"
+   ],
+   "text": "Which road do you want to ask about? Tell me what you know, or ask what to look for.",
+   "buttons": [
+    {
+     "label": "The rail.",
+     "then": "pritchard_report_open_rail"
+    },
+    {
+     "label": "The river.",
+     "then": "pritchard_report_open_river"
+    },
+    {
+     "label": "Red Hollow.",
+     "then": "pritchard_report_open_pike"
+    },
+    {
+     "label": "Not now."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_open_rail",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100"
+   ],
+   "text": "If you haven't taken the rail, ask about Iron Junction. If you have, tell me what you saw. Don't name a payer unless you've learned who paid.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_open_river",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100"
+   ],
+   "text": "If you haven't been to Greenwater, ask me the way. If you have, tell me what became of the grain and how you learned it.",
+   "sources": []
+  },
+  {
+   "id": "pritchard_report_open_pike",
+   "speaker": "pritchard",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "mq02 done 100"
+   ],
+   "text": "If Red Hollow is still ahead of you, ask me the way. If you've been, tell me what happened at the Mouth. Leave the payment column blank unless you've learned it.",
+   "sources": []
+  }
+ ]
+}

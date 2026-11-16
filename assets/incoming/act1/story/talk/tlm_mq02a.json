@@ -1,0 +1,497 @@
+{
+ "format": "tlm-talk-2",
+ "quest": "TLM_MQ02A",
+ "lines": [
+  {
+   "id": "lockridge_default",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Honey, if it has wheels I can talk about it all day. If it hasn't, see my clerk.",
+   "sources": []
+  },
+  {
+   "id": "lockridge_gate",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 40,
+   "when": [
+    "mq02a done 10",
+    "mq02a notdone 20"
+   ],
+   "text": "Well now. Owen Pritchard's sent me a gun with legs. Sit. Four trains in a month, honey, and a hymn chalked on every boiler. Tonight I send the payroll and the fever physic through Sawtooth Cut. I want you on the footplate.",
+   "buttons": [
+    {
+     "label": "I'll ride your mail.",
+     "do": [
+      "mq02a set 20"
+     ],
+     "then": "lockridge_hired"
+    },
+    {
+     "label": "Who chalks the hymns?",
+     "then": "lockridge_dole"
+    },
+    {
+     "label": "Who passes your trains as sound?",
+     "then": "lockridge_rails"
+    },
+    {
+     "label": "Not tonight."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "lockridge_gate_alerted",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 61,
+   "when": [
+    "mq02a done 10",
+    "flag yard_alerted",
+    "mq02a notdone 20"
+   ],
+   "text": "So you're the one sent Pritchard a page of my Line 14. I've had the inspector's desk nailed shut since, and no, you may not see in it. Sit down anyway. I need a gun more than I need to like you.",
+   "buttons": [
+    {
+     "label": "I'll ride your mail.",
+     "do": [
+      "mq02a set 20"
+     ],
+     "then": "lockridge_hired"
+    },
+    {
+     "label": "Who signed that page?",
+     "then": "lockridge_rails"
+    },
+    {
+     "label": "Not tonight."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "lockridge_gate_sold",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 60,
+   "when": [
+    "mq02a done 10",
+    "ledger is sold",
+    "mq02a notdone 20"
+   ],
+   "text": "Silas Vane wrote me. A certain book has come into his keeping, he says, and no inquiry need ever trouble me. Now who sold him that, I wonder. Sit down, honey. Let's see what else you'll do for money.",
+   "buttons": [
+    {
+     "label": "I'll ride your mail.",
+     "do": [
+      "mq02a set 20"
+     ],
+     "then": "lockridge_hired"
+    },
+    {
+     "label": "Who chalks the hymns?",
+     "then": "lockridge_dole"
+    },
+    {
+     "label": "Not tonight."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "lockridge_dole",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Preacher Dole. He lifts a rail, lets the Lord and the grade do the rest, and holds a service on what's left. Thirty rifles say amen. I'd admire to see him answer for it. I'd admire it more to see my mail get through.",
+   "sources": []
+  },
+  {
+   "id": "lockridge_rails",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Every car on this line is passed by the Inspector of Way, and stamped. You want to read stamps, read stamps. The train leaves at dark whether you can read or not.",
+   "sources": []
+  },
+  {
+   "id": "lockridge_hired",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Billie drives. Do what she says about the engine and nothing she says about anything else. And honey? If it comes down to the mail or the girl, you bring me the girl.",
+   "sources": []
+  },
+  {
+   "id": "tarrow_default",
+   "speaker": "tarrow",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "If it's about the brakes, I know. If it's about a bet, I'm listening.",
+   "sources": []
+  },
+  {
+   "id": "tarrow_footplate",
+   "speaker": "tarrow",
+   "status": "new",
+   "entry": true,
+   "priority": 40,
+   "when": [
+    "mq02a done 20",
+    "mq02a notdone 40"
+   ],
+   "text": "You're the gun? You don't look like much. Neither does she. Old Contrary: eleven tons, nine of them spite. Hold that. Not that, that comes off. Bet you a day's pay you're sick before the Cut.",
+   "buttons": [
+    {
+     "label": "You're on."
+    },
+    {
+     "label": "What's in the Cut?",
+     "then": "tarrow_cut_before"
+    },
+    {
+     "label": "Just drive."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "tarrow_cut_before",
+   "speaker": "tarrow",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Rail's spread on the left hand, about so much. Not gone. Spread. Anything heavy lies down on its side. Anything light, going like the devil had a mortgage on it... well. Nobody's tried. Don't tell Gussie I said that.",
+   "sources": []
+  },
+  {
+   "id": "tarrow_in_cut",
+   "speaker": "tarrow",
+   "status": "new",
+   "entry": true,
+   "priority": 80,
+   "when": [
+    "mq02a done 40",
+    "mq02a notdone 41",
+    "mq02a notdone 42",
+    "mq02a notdone 43",
+    "mq02a notdone 44"
+   ],
+   "text": "Lanterns. That's him. That's all of them. Rail's out just where I said. I can stop her, I can back her, or I can find out something nobody knows about this engine. Your gun, your say. QUICK.",
+   "buttons": [
+    {
+     "label": "Stoke her. Run the gap.",
+     "do": [
+      "mq02a set 41"
+     ],
+     "then": "tarrow_ran"
+    },
+    {
+     "label": "Stop her. I'm getting down.",
+     "then": "dole_sermon"
+    },
+    {
+     "label": "Back her out.",
+     "do": [
+      "mq02a set 44"
+     ],
+     "then": "tarrow_backed"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "dole_default",
+   "speaker": "dole",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "The service is at dusk, traveller, wherever the rail gives out. All are welcome. Most arrive suddenly.",
+   "sources": []
+  },
+  {
+   "id": "dole_sermon",
+   "speaker": "dole",
+   "status": "new",
+   "entry": true,
+   "priority": 50,
+   "when": [
+    "mq02a done 40",
+    "mq02a notdone 41",
+    "mq02a notdone 42",
+    "mq02a notdone 43",
+    "mq02a notdone 44"
+   ],
+   "text": "Evening, traveller. The text tonight is four foot eight and one half. I measured this rail nineteen years, and they signed my name to it after I was in the ground. Step down off her lie and hear the rest.",
+   "buttons": [
+    {
+     "label": "Stand aside, Preacher.",
+     "then": "dole_face"
+    },
+    {
+     "label": "What's my share?",
+     "then": "dole_share"
+    },
+    {
+     "label": "They buried you. Who are you?",
+     "then": "dole_name"
+    },
+    {
+     "label": "(Go back to the footplate)",
+     "then": "tarrow_in_cut"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "dole_name",
+   "speaker": "dole",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Ostrander. Inspector of Way. I condemned the Greenwater trestle and they ran a train over it that same week. Then the fever, and a pest-house, and a hymn. Somebody in that yard still stamps my name on scrap iron. Ask who.",
+   "buttons": [
+    {
+     "label": "And the silver in your plate?",
+     "do": [
+      "mq02a set 55"
+     ],
+     "then": "dole_silver"
+    },
+    {
+     "label": "Stand aside.",
+     "do": [
+      "mq02a set 55"
+     ],
+     "then": "dole_face"
+    },
+    {
+     "label": "What's my share?",
+     "do": [
+      "mq02a set 55"
+     ],
+     "then": "dole_share"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "dole_silver",
+   "speaker": "dole",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Comes by a man who comes by a man. A square mark on every piece. It buys powder. I'd lift these rails for love, traveller. I take the silver so the Lord is not left out of pocket.",
+   "buttons": [
+    {
+     "label": "Stand aside.",
+     "do": [
+      "mq02a set 50"
+     ],
+     "then": "dole_face"
+    },
+    {
+     "label": "What's my share?",
+     "do": [
+      "mq02a set 50"
+     ],
+     "then": "dole_share"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "dole_share",
+   "speaker": "dole",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "A third of the pay-chest, and the girl walks home unharmed. The physic goes up the hill: my people have the fever too, and nobody ever sent them a train. Say done and step off the footplate.",
+   "buttons": [
+    {
+     "label": "Done.",
+     "do": [
+      "mq02a set 43",
+      "give caps 150"
+     ]
+    },
+    {
+     "label": "No.",
+     "then": "dole_face"
+    },
+    {
+     "label": "(Go back to the footplate)",
+     "then": "tarrow_in_cut"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "dole_face",
+   "speaker": "dole",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Then here endeth the lesson. I will count three for you, which is three more than the yard gave anybody on the morning train. One.",
+   "sources": []
+  },
+  {
+   "id": "tarrow_ran",
+   "speaker": "tarrow",
+   "status": "new",
+   "entry": true,
+   "priority": 71,
+   "when": [
+    "mq02a done 41"
+   ],
+   "text": "HA! Did you... we were in the AIR! She's bent, she's a little bit on fire, I think I bit my tongue through. You owe me a day's pay. No. I owe you. Oh, Gussie's going to skin me.",
+   "sources": []
+  },
+  {
+   "id": "tarrow_backed",
+   "speaker": "tarrow",
+   "status": "new",
+   "entry": true,
+   "priority": 70,
+   "when": [
+    "mq02a done 44"
+   ],
+   "text": "Well. Nobody's dead. That's the best I can say for it. You want to tell her, or shall I? ...I'll tell her. You'd only make it sound sensible.",
+   "sources": []
+  },
+  {
+   "id": "tarrow_walking",
+   "speaker": "tarrow",
+   "status": "new",
+   "entry": true,
+   "priority": 90,
+   "when": [
+    "mq02a done 43"
+   ],
+   "text": "Don't. Don't say one word to me. It's eleven miles and I know every tie. There are children in that valley with the fever and I was going to drive it to them. You think of that when you spend it.",
+   "sources": []
+  },
+  {
+   "id": "lockridge_after_ran",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 71,
+   "when": [
+    "mq02a done 41",
+    "mq02a notdone 60"
+   ],
+   "text": "You jumped my engine over a hole. She's a wreck. The physic's in the valley and the payroll's in my safe and I have not been this happy since I was a bride. Ask me for something.",
+   "buttons": [
+    {
+     "label": "Whose hand is on your inspections?",
+     "then": "lockridge_rails"
+    },
+    {
+     "label": "Nothing. Good night."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "lockridge_after_dole",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 70,
+   "when": [
+    "mq02a done 42",
+    "mq02a notdone 55"
+   ],
+   "text": "Dole's dead? ...You'll think me foolish. Six years back I read at a funeral for a man who used to stand right where you are and tell me no. I'd have liked to hear no again. Well. The line's open.",
+   "sources": []
+  },
+  {
+   "id": "lockridge_after_sold",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 90,
+   "when": [
+    "mq02a done 43"
+   ],
+   "text": "Billie walked in at four this morning. Eleven miles. She told me what you did, and then she asked me not to have you shot. So I'm asking you nicely, honey. Get out of my yard.",
+   "sources": []
+  },
+  {
+   "id": "lockridge_hymnal",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": true,
+   "priority": 85,
+   "when": [
+    "mq02a done 55",
+    "mq02a notdone 61",
+    "mq02a notdone 62",
+    "mq02a notdone 63"
+   ],
+   "text": "That's his hand. That's Reuben's own hand. He's ALIVE? ...Top drawer, honey. Go on. You'd find it anyway. Nobody would come out to inspect a line that kills inspectors. So Reuben went on inspecting.",
+   "buttons": [
+    {
+     "label": "(Open the drawer)",
+     "do": [
+      "mq02a set 60"
+     ],
+     "then": "lockridge_stamp"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "lockridge_stamp",
+   "speaker": "lockridge",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Every stamp was a train that ran. Physic, seed corn, coal. I never did the other sum and I'll thank you not to do it for me. Well? You've the drawer open. What becomes of an old woman and a dead man's name?",
+   "buttons": [
+    {
+     "label": "Keep stamping. Trains have to run.",
+     "do": [
+      "mq02a set 61"
+     ]
+    },
+    {
+     "label": "Sign your own name from now on.",
+     "do": [
+      "mq02a set 62"
+     ]
+    },
+    {
+     "label": "Pritchard gets the stamp.",
+     "do": [
+      "mq02a set 63"
+     ]
+    }
+   ],
+   "sources": []
+  }
+ ]
+}

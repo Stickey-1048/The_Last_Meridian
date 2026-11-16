@@ -1,0 +1,686 @@
+{
+  "format": "iris-act1-writing-closure-packet-2",
+  "source_commit": "975a26252322c6d4acac8086d0a85a2eef386409",
+  "prior_decision_commit": "4234ff2aa04caf6e671724ea894058e4dd6aad13",
+  "scope": "Creative source-writing closure only. Iris edited no canon, intake, runtime, installed files or published branches. Preserve the prior packets. Mechanical wiring must use the actual supported format; runtime design/native proof remains separate.",
+  "review": "Charles applied supplied prose faithfully and candidly reported gaps. The complete revised intake is not accepted yet: all 22 requested dispositions below and the additional fidelity corrections must be applied and independently checked.",
+  "document_additions": [
+    {
+      "id": "docket_2298",
+      "kind": "note",
+      "title": "Mercy Road Case: 2298 Review Copy",
+      "found": "Pritchard voluntarily offers his retained review copy when asked about Quill while explaining the pike route. It lies in the open on his desk after that conversation. Taking the copy records optional mq02c stage16; current possession controls docket_2298_held.",
+      "text": "MERCY ROAD CASE: SPRING 2298\nRetained review copy. Not a pardon in any current case.\n\nThe carrier's dated receipt and two sworn accounts place the condemned man away from the road at the hour alleged. Copies were entered with Magistrate Esther Quill before sentence was carried out.\n\nI received the warrant and carried it out. I later checked the accounts against the receiving ledger. We hanged an innocent man. I have kept the rope; it is not an answer. The finding should have gone into the court record then. I am making this copy available now.\n\nOwen Pritchard, Sheriff\nAttached: entry receipt bearing E. Quill's court mark.",
+      "sources": [
+        "R7",
+        "R8"
+      ],
+      "constraints": "No new named victim, witness actor or family connection. This records Quill's receipt before execution and Pritchard's later corroboration; it does not imply Pritchard knew before the drop. The current defendant is still entitled to a hearing, not presumed innocent because an earlier case was wrong."
+    }
+  ],
+  "journal_replacements": [
+    {
+      "quest": "mq02",
+      "stage": 50,
+      "log": "You asked Pritchard to call the fair without a road report. Talbot is posting the notice. The three roads remain open if you change your mind."
+    },
+    {
+      "quest": "mq02c",
+      "stage": 13,
+      "log": "Quill adjourned after you presented the 2298 review copy. The current accused remains alive under review; this is not a pardon."
+    },
+    {
+      "quest": "mq02c",
+      "stage": 16,
+      "new": true,
+      "set_by": "Taking the review copy offered by Pritchard. Stage16 records acquisition; docket_2298_held must reflect current possession, not a permanently latched acquisition stage.",
+      "log": "Pritchard gave you his review of the 2298 hanging, with the court's receipt for the evidence. Quill can be asked to enter it alongside the current case."
+    },
+    {
+      "quest": "mq02c",
+      "stage": 30,
+      "log": "Captain Blevins has given a final warning. Eleven people are alive below. Stop the firing or bring them up before he turns the key."
+    },
+    {
+      "quest": "mq02c",
+      "stage": 56,
+      "log": "The local deadline ran out. Captain Blevins fired with the shift still below. The cage came up empty. You gave no order, but the knocking has stopped."
+    },
+    {
+      "quest": "mq03",
+      "stage": 43,
+      "log": "The delegates and local witnesses backed the Decoration Day truce. Brigg accepted a limited search instead of taking the camp-ground."
+    },
+    {
+      "quest": "mq02b",
+      "stage": 42,
+      "log": "The grain barge reached Greenwater through Hangman's Chute. Some cargo was lost in the rapids."
+    },
+    {
+      "quest": "mq02b",
+      "stage": 43,
+      "log": "The occupied Queen burned with the grain lashed alongside. People tried to reach the water. The cargo is lost; the crew's account still needs witnesses."
+    }
+  ],
+  "talk_replacements": [
+    {
+      "file": "talk/tlm_mq02.json",
+      "id": "pritchard_road_pike",
+      "text": "Red Hollow, by the pike. You'll pass Brigg's gate at the gap. Ask what evidence Esther Quill has heard before you pay for a pardon. A bench on a wagon isn't proof of a fair hearing."
+    },
+    {
+      "file": "talk/tlm_mq02.json",
+      "id": "pritchard_calls_fair",
+      "text": "Gantt suspected a common purse. One road isn't the whole account. Decoration Day's in a week. I'll ask every flag in these valleys to eat my chicken and answer questions where the town can hear."
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "roark_mouth",
+      "text": "Hear that? Hoist code. Eleven alive below, my Pell among them. Captain Blevins is making ready to fire. I can work the cage. Decide whether you're starting the rescue before he gives the final warning."
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "dorn_terms",
+      "button_replacements": [
+        {
+          "from": "I can't swear for a whole town.",
+          "to": "What can I promise for myself?"
+        }
+      ]
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "belden_default",
+      "text": "Delegate Belden, Commonwealth provisioning. There is a bowl if you want one. Eating here commits you to nothing."
+    },
+    {
+      "file": "talk/town.json",
+      "id": "pike_mould_aside",
+      "text": "That silver case carries a mark from case-working tools I made years ago. Not the bullet mould. Come by after dark and I'll show you the drawings; they don't tell us the customer's name."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "brigg_rifles",
+      "text": "Stand easy. Search the landing with the local officers and witnesses present. We do not take the fair tonight. I will not make a second shooting out of a public inquiry."
+    },
+    {
+      "file": "talk/tlm_mq04.json",
+      "id": "vane_porch",
+      "text": "There's a rope below the steps. If you let them take me, they'll hang me here. You've read the book. Speak it, bargain with it, or tell them you won't stop them. At least name what you're choosing.",
+      "button_replacements": [
+        {
+          "from": "(Step aside)",
+          "to": "Let the crowd hang him."
+        }
+      ]
+    },
+    {
+      "file": "talk/tlm_mq04.json",
+      "id": "pritchard_porch",
+      "text": "Granger has the rope. I know these people. I'll keep them off the steps while you decide. Leaving to think is not telling them to hang a man. If you mean that, say it where I can hear."
+    },
+    {
+      "file": "talk/tlm_mq04.json",
+      "id": "vane_opens",
+      "text": "The road account records your share. That's why I thought you might understand the price. Here: six years of payments, and the present work in four columns. Read it before you decide what my arithmetic is worth."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "hatcher_share",
+      "text": "Two hundred, and a berth. Tell Opal the Chute took it. Delegate Belden has a soup wagon; he'll offer a bowl. I'm selling you a share, not a promise that his pot replaces the winter grain."
+    },
+    {
+      "file": "talk/town.json",
+      "id": "nell_soup_aside",
+      "text": "Delegate Belden's wagon reached Greenwater. People ate. Now he's asking about a continuing agreement, and they can argue over it with something in their stomachs. The missing grain still belongs on somebody's account."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "pruitt_chain",
+      "text": "One cut frees the barge for the Chute. Or burn the Queen. Thirty people are aboard - crew, cooks, the fiddler - and the winter grain is still lashed alongside. Fire can take them and the cargo. Say what you're ordering."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "starnes_after_chute",
+      "text": "We brought back less than we needed. Enough to stretch the pot, not enough to stop counting. We'll measure what came home before anybody calls it a victory. Thank you for what you brought."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "starnes_after_fire",
+      "text": "I asked for the grain and one man's answer. Now the cargo's burned and people are missing. Don't give me a number you haven't counted. Bring the living to the planks. We'll need every hand."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "starnes_after_won",
+      "text": "You won the barge from Hatcher? Every sack? Then we'll count it home. Now tell me what you mean to do with him. I want him on the steeple, and you know what that means.",
+      "required_when_additions": [
+        "alive hatcher"
+      ]
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "whitcomb_rates",
+      "text": "Signatory carriers vote on the charter rate. Nell Fenwick voted against me twice and for me once. Other carriers want independent rates. Leaving a voluntary agreement mustn't cost them the right to use the road."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "whitcomb_big",
+      "text": "The small carriers ask that too. One bad season can sell them to people in my own Compact who smile just the way I do. I know it. I haven't a rule for it yet. I'd sooner admit that than sell you a pig in a sack."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "threefords_default",
+      "text": "Juno Three-Fords. I carried this through three fords without opening it. Find me Sheriff Pritchard, then find me a dry bench. In that order."
+    },
+    {
+      "file": "talk/town.json",
+      "id": "granger_ballad_saved",
+      "text": "Help on the Tellico! Penny a sheet, patrons of letters. The stranger's reasons cost extra, and I don't have them."
+    },
+    {
+      "file": "talk/town.json",
+      "id": "granger_ballad_walked",
+      "text": "News from the Tellico, and three tellings for every tale. Penny a sheet. If you want a witness, don't mistake the printer for one."
+    },
+    {
+      "file": "talk/town.json",
+      "id": "granger_ballad_missed",
+      "text": "News from the Tellico, and three tellings for every tale. Penny a sheet. If you want a witness, don't mistake the printer for one."
+    },
+    {
+      "file": "talk/town.json",
+      "id": "granger_ballad_deal",
+      "text": "A share on the road, a bargain on the page. Penny a sheet. I print the price I'm told; I wasn't there to call it fair.",
+      "required_when_additions": [
+        "method is deal"
+      ]
+    }
+  ],
+  "new_talk_lines": [
+    {
+      "file": "talk/tlm_mq02.json",
+      "id": "pritchard_docket_context",
+      "speaker": "pritchard",
+      "text": "In 2298 I hanged an innocent man. Quill had the counter-evidence before the drop. I checked too late. Take my review copy if you mean to ask for a hearing. It doesn't prove the man on her wagon innocent.",
+      "buttons": [
+        {
+          "label": "Take the review copy.",
+          "do": [
+            "mq02c set 16"
+          ]
+        },
+        {
+          "label": "Leave the copy."
+        }
+      ],
+      "wiring": "Offer from pritchard_road_pike via a button labelled 'What should I ask Quill?' The copy is optional; no road or main progress requires it. No new actor is involved."
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "dunmore_rope_missed",
+      "speaker": "dunmore",
+      "text": "You there. Reese Dunmore. We watched the Tellico road for square-stamped silver. The order was for a marshal's pouch if his freight was held up. Nobody named a wreck. Hear the rest before they drop me.",
+      "when_rule": "Clone dunmore_rope with outcome is missed instead of outcome isnot missed; retain alive dunmore and unresolved gallows guards.",
+      "buttons": [
+        {
+          "label": "Go on.",
+          "do": [
+            "mq02c set 15"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "cutter_rope_missed",
+      "speaker": "cutter",
+      "text": "Reese is dead. They'll hang me for the gang's work. We were paid in square-stamped silver to watch for the marshal's pouch if his freight was held up. I don't know who paid. The wagon wasn't in the order.",
+      "when_rule": "Clone cutter_rope with outcome is missed instead of outcome isnot missed; retain dead dunmore and unresolved gallows guards.",
+      "buttons": [
+        {
+          "label": "Go on.",
+          "do": [
+            "mq02c set 15"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "talk/tlm_mq02c.json",
+      "id": "roark_deadline_warning",
+      "speaker": "roark",
+      "text": "That is Captain Blevins's final warning. When his firing preparations are finished, he turns the key with eleven people below. Start the rescue, stop his firing, or tell me you're leaving it to him.",
+      "buttons": [
+        {
+          "label": "Start the rescue. Lower the cage.",
+          "do": [
+            "mq02c set 30"
+          ],
+          "then": "roark_cage"
+        },
+        {
+          "label": "I'll speak to Captain Blevins.",
+          "do": [
+            "mq02c set 30"
+          ]
+        },
+        {
+          "label": "Not yet. I need to prepare."
+        }
+      ],
+      "wiring": "The first transition to stage30 must pass this warning and explicit confirmation. Move stage30 effects from earlier informational buttons to this confirmation; explanatory talk remains available. No countdown during menus, unloading or another road. A visible final call/countdown is an engineering prerequisite, not an implemented claim."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "brigg_demand",
+      "speaker": "brigg",
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "wiring": "Show after the courier shot, before the four urgent choices and before occupation70 can resolve. This is Brigg's own visible order, not a narrator assigning occupation from offscreen. The four choices are shown only after the order can be read."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "whitcomb_truce",
+      "speaker": "whitcomb",
+      "text": "We came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record.",
+      "wiring": "First response to the player's call to uphold the truce, if Whitcomb is alive/present."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "belden_truce",
+      "speaker": "belden",
+      "text": "My provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names.",
+      "wiring": "Living/present Belden's support in the truce chain."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "grey_truce",
+      "speaker": "grey",
+      "text": "A witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing.",
+      "wiring": "Living/present Grey's support in the truce chain."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "pritchard_truce",
+      "speaker": "pritchard",
+      "text": "This is my circuit. I'll take the statements in the open and give every flag a copy. Your men can help search the landing. They don't take the fair.",
+      "wiring": "Local-authority support; use Pritchard if alive/present. He is an accountable authority, not a human shield."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "talbot_truce",
+      "speaker": "talbot",
+      "text": "These people came under truce. Take their names, not their right to leave. I'll keep the statements where the witnesses can see them.",
+      "wiring": "Optional local-officer fallback if Pritchard is absent and Talbot is alive/present; never make a dead/absent speaker deliver a line."
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "belden_dissent",
+      "speaker": "belden",
+      "text": "Local provisioning crews want open counts and town appeals. Central stores insist on one office controlling release. That's an argument inside the Commonwealth, not a rumour from its enemies.",
+      "wiring": "Add a fourth belden_offer button: 'Who argues against your office?'"
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "brigg_dissent",
+      "speaker": "brigg",
+      "text": "Old Wardens want local warrants and limits on requisition. Iron Command wants one order obeyed before any appeal. Both wear the old badge. Pritchard and I differ on what that badge permits.",
+      "wiring": "Add a fourth brigg_offer button: 'Do all your Wardens agree?'"
+    },
+    {
+      "file": "talk/tlm_mq03.json",
+      "id": "grey_dissent",
+      "speaker": "grey",
+      "text": "Some of our engineers want every reading open to the people who supply it. Others want control first and explanations later. Both can build the works. They disagree about who gets to say stop.",
+      "wiring": "Add a fourth grey_offer button: 'Do your engineers agree?' No early Signal, Rider, Deep or ancestry disclosure."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "starnes_won_hatcher_dead",
+      "speaker": "starnes",
+      "text": "The grain is ours. Hatcher is dead. I can count both those facts without calling them the same kind of victory.",
+      "when_rule": "mq02b done41 and dead hatcher; do not offer handover/hanging choices for a corpse."
+    },
+    {
+      "file": "talk/town.json",
+      "id": "granger_ballad_betrayal",
+      "speaker": "granger",
+      "text": "Trouble on the Tellico! Penny a sheet. Everybody's got the blame worked out; nobody agrees on the rest. Buy two and argue with yourself.",
+      "when_rule": "outcome is exploited AND method is betrayal; keep separate from the deal cry."
+    },
+    {
+      "file": "talk/tlm_mq02b.json",
+      "id": "belden_greenwater_relief",
+      "speaker": "belden",
+      "text": "Delegate Belden. The pot is for people who need it. We can discuss an agreement after supper, and you may refuse it. This wagon won't replace a winter's grain. It can keep people fed while they decide.",
+      "wiring": "Use separate AND-only copies after deliberate grain sale44 and occupied-boat fire43, with living/present Belden. No agreement/signature flag is set by taking a bowl; actual food-inventory effects need their own implementation."
+    }
+  ],
+  "character_replacements": [
+    {
+      "id": "belden",
+      "field": "wants",
+      "value": "Enough food in the valleys to keep people alive, and a continuing provisioning agreement that gives his office influence over the distribution records."
+    },
+    {
+      "id": "belden",
+      "field": "secret",
+      "value": "He has requested another supply wagon and has no promise of one. Present meals remain unconditional while he presses for a continuing agreement; he fears admitting how soon those supplies could run out."
+    },
+    {
+      "id": "belden",
+      "field": "wrong_about",
+      "value": "He thinks a well-kept list can stand in for the consent of the people on it."
+    },
+    {
+      "id": "voss",
+      "field": "role",
+      "value": "Author-level identity of the distant fairground assassin. The player sees only an indistinct departure; no face-to-face meeting or in-game name reveal occurs in Chapter3."
+    },
+    {
+      "id": "voss",
+      "field": "fears",
+      "value": "That someone following the repeated silver-case pattern will identify his payment route before he can abandon it."
+    },
+    {
+      "id": "voss",
+      "field": "ties[flint]",
+      "value": "She has followed his marked cases for six years. He leaves a deliberate trail to shape the investigation and underestimates what she can infer from it."
+    },
+    {
+      "id": "flint",
+      "field": "ties[voss]",
+      "value": "Six years following the cases and landings. She knows a deliberate trail can still yield evidence; she has no guarantee he will let her approach safely."
+    },
+    {
+      "id": "flint",
+      "field": "fears",
+      "value": "That a paying network can replace a shooter faster than she can identify one."
+    },
+    {
+      "id": "pike",
+      "field": "knows[0]",
+      "value": "The silver case carries a filed-off tool mark from her old ammunition-tooling commission; it does not establish the customer's name or who fired at the fair."
+    },
+    {
+      "id": "pike",
+      "field": "ties[voss]",
+      "value": "Made the projectile mould and case-working tools under an unusual paid commission; did not know the customer's name or intended crimes. Kept drawings."
+    },
+    {
+      "id": "threefords",
+      "field": "role",
+      "value": "Courier out of the high country. Her delivery has a human arrival beat before the assassination; the case is her work, not an exotic prop."
+    }
+  ],
+  "quest_and_evidence_contracts": {
+    "docket": {
+      "quest": "mq02c",
+      "evidence": "docket_2298",
+      "found": "Pritchard's retained review copy, offered voluntarily while discussing Quill before the pike journey. Taking it records stage16; presenting it at the gallows requires the actual copy in hand.",
+      "sets": 16,
+      "flag": "docket_2298_held",
+      "flag_meaning": "The corroborated 2298 review copy is currently in the player's possession. Acquisition stage16 alone must not keep this true after the copy is lost or removed."
+    },
+    "brigg_choice": {
+      "quest": "mq03",
+      "at": 40,
+      "old_label": "(Stand between the rifles and the crowd)",
+      "label": "(Call the delegates to uphold the truce)",
+      "now": "The player asks living delegates and local officers to challenge Brigg's occupation claim in public. The supporting dialogue is shown; this is not a body-block against automatic rifles.",
+      "later": "Brigg accepts a limited local search under public witnesses and holds back the occupation. The truce, not the player's immunity to bullets, is the reason.",
+      "stage43_set_by": "Brigg accepting those limits after the public exchange, not merely the player's first click.",
+      "stage43_reply": "brigg_rifles",
+      "crowd_spared_meaning": "Living witnesses and local authority secured a limited search instead of Dominion occupation during this scene; no general immunity or guarantee of all civilians' survival."
+    },
+    "brigg_failure_rule": "Brigg's living presence, the visible demand and a real response opportunity are prerequisites to occupation70. Never populate support with dead/absent delegates. If Brigg is dead/absent, do not silently invent a replacement commander or set his occupation order. If witnesses/authority needed for the truce route are unavailable, preserve the other three courier choices and return the exact technical fallback for review; do not force43 or impose whole-cast immortality.",
+    "report_proof_rule": "Completing a road is not payment evidence. Gate the silver-claim button in pritchard_hears_rail by flag silver_rail, river by silver_river, pike by silver_mine; use complementary notflag whole-node copies for unknown evidence and omit the claim button there. No invented condition on a single button, no OR syntax. Both known/unknown prefair routes use the hedged pritchard_calls_fair text.",
+    "after_fair_reports": [
+      {
+        "id": "pritchard_hears_rail_after_fair",
+        "known_text": "The fair didn't close the rail account. Tell me what the payment evidence actually says, and what you saw for yourself.",
+        "unknown_text": "The rail still needs an account. If you have no payment record, leave the payer's name blank. Tell me what you saw without making the rest fit."
+      },
+      {
+        "id": "pritchard_hears_river_after_fair",
+        "known_text": "Tell me what the hire evidence says and how you learned it. A suspicion is not a name.",
+        "unknown_text": "Tell me what happened to the grain. If you found no hire letter, say that. A missing barge and a named paymaster are different claims."
+      },
+      {
+        "id": "pritchard_hears_pike_after_fair",
+        "known_text": "Tell me what you learned about the payment, then what happened at the Mouth. One doesn't erase the other.",
+        "unknown_text": "Tell me what happened at the Mouth. If you found no payment record, we'll leave that column empty. We need the truth before a tidy explanation."
+      }
+    ],
+    "after_fair_report_wiring": "Create known and unknown leaf copies of these approved texts. Reach them through an explicit report-topic menu, not tied default greetings that repeat one road forever. If a menu must route by the three evidence flags, generate eight mutually exclusive AND-only menu contexts with the same approved wording and correct leaf targets. No rewards or new completed-road facts arise from a report conversation. Incomplete roads remain available; hide already-completed road-commission buttons using supported whole-node context copies.",
+    "after_fair_report_menu": {
+      "text": "Which road's account do you want to discuss? The fair hasn't made the facts less important.",
+      "buttons": [
+        "The rail.",
+        "The river.",
+        "Red Hollow.",
+        "Not now."
+      ]
+    },
+    "mine_warning": "Stage30 now records an explicitly accepted local rescue deadline after the warning line. Informational conversation alone must not secretly arm it. A readable final call/countdown before firing is a runtime design prerequisite. Pausing, unloading, another road and calling the fair do not run or resolve it. No fixed number of minutes is invented here.",
+    "grain_routes": "Keep current42 as the completed Chute escape. Choices42 and43 are mutually exclusive story resolutions: the occupied-boat fire also loses the still-lashed winter cargo. Remove all unsupported 'cut free first, then burn and eat' benefits. A future separate cut-only fire-rescue route would require its own authored fact/stage and test; it is not approved or claimed by this packet.",
+    "grain_fidelity": [
+      {
+        "target": "mq02b choices at40 option42 now",
+        "text": "The barge escapes through the Chute. Rafferty pilots if alive; otherwise the player steers. Some cargo is lost."
+      },
+      {
+        "target": "mq02b choices at40 option43 now",
+        "text": "The occupied Queen and the winter cargo still lashed alongside burn. People are endangered; no exact death count is invented."
+      },
+      {
+        "target": "mq02b choices at40 option43 later",
+        "text": "Greenwater loses the grain. Survivors need help, and Belden can offer immediate food without requiring political consent."
+      },
+      {
+        "target": "mq02b choices at40 option44 later",
+        "text": "The missing grain makes Greenwater vulnerable. Delegate Belden offers real meals and a later provisioning agreement that the town may contest or refuse; a bowl is not a signature."
+      },
+      {
+        "target": "mq02b choices at41 option60 later",
+        "text": "Hatcher is dead. His testimony is lost, not every witness or document about the payment. Any recovered hire letter remains evidence."
+      }
+    ],
+    "vane_lynching": {
+      "label": "Let the crowd hang him.",
+      "stage64_set_by": "Only the explicit informed choice after the player has arrived and heard the rope warning. Closing a menu, leaving to think or never visiting the porch is not this choice.",
+      "cannot_break_delta": "No offscreen automatic lynching when the player fails to arrive. The threatened confrontation remains unresolved. Main Blackstone evidence may still be learned through the existing Vane/Beckett/book/Haskell alternatives; no porch choice may be secretly assigned just to complete the chapter.",
+      "possible_outcome": "The informed lynching route remains dark and consequential; this does not sanitize it into an impossible threat."
+    },
+    "gantt_dispatch_decision": "Keep his claimed lead as a fallible suspicion, not proof. Apply the exact two paragraph replacements below so his death/absence does not magically verify the theory.",
+    "juno_staging": "Give the existing courier a brief working arrival beat using her new default before she reaches the table. Her ears' subtle response is an observed feature, not the player's first-ever encounter with a people or a new ancestry claim. Skipping that optional conversation must not break the courier case route or make her untouchable; actual scene timing needs a tested contract."
+  },
+  "document_paragraph_replacements": [
+    {
+      "id": "gantt_dispatch",
+      "from": "I have a name. I will not put it on paper. I will say it to\nyou across your own desk with the door shut.",
+      "to": "I have a name to check, not a charge I can prove. I will show\nyou the entries across your desk before I write an accusation."
+    },
+    {
+      "id": "gantt_dispatch",
+      "from": "If I do not come, I was right.",
+      "to": "If I do not come, follow the entries. My absence is not proof."
+    }
+  ],
+  "keep_decisions": {
+    "request7": "The old two-line quoted hawker versions were not wrong, but the supplied exact patter replacements restore Granger's street voice without adding facts.",
+    "request14": "Gantt may believe he has a name; the replacement explicitly separates that lead from proof and removes absence-as-confirmation.",
+    "request18": "Keep the two deleted knowledge-list entries deleted. Character sheets need no filler ignorance and must not restore player recognition.",
+    "voss_role": "Approve the distant-shooter author-level role with the exact clearer field above; no player-visible identity revelation.",
+    "family": "Mose remains Opal's grandson, with no maternal/paternal explanation. Pell remains Dinah's husband, alive/dead only according to the eventual actual quest outcome. The packet invents no player's childhood, genealogy, teacher or moral past."
+  },
+  "betrayal_ballad": {
+    "id": "ballad_six_rounds_betrayal",
+    "kind": "notice",
+    "title": "The Stranger and the Tellico Road",
+    "found": "Granger's sheet for outcome exploited with method betrayal. The trade sheet is restricted to method deal.",
+    "text": "THE STRANGER AND THE TELLICO ROAD\nA new ballad. T. Granger, printer. One penny.\nSet from accounts heard in Mercy Crossing.\n\nCome gather, valley people, where the road comes down the grade;\nI'll sell the news I've gathered, and the rhymes that I have made.\nA train came off at Tellico. A stranger reached our town.\nThe rest depends on who you ask, and what they won't set down.\n\nOne tells it over supper; one swears the telling's wrong.\nI've ink enough for either, but there's only room for song.\nI did not ride that morning or stand beside the load.\nI set what folk have told me of the strangers on the road.\n\nThe talk is trouble on the road; the telling turns to blame.\nEach teller sets the reckoning beside a different name.\nI wasn't there to count the cost or judge what passed that day.\nThe ink is mine; the deeds are not. Hear what the witnesses say.",
+    "routing": "outcome is exploited AND method is betrayal; the existing exploited/trading document and granger_ballad_deal require method is deal. None/unknown method gets the unconfirmed common body, not a fabricated trade."
+  },
+  "request_dispositions": [
+    {
+      "request": 1,
+      "valid": true,
+      "resolution": "New optional docket_2298 document, Pritchard's voluntary discovery conversation, proposed acquisition16 and current-possession fact contract supply the missing route."
+    },
+    {
+      "request": 2,
+      "valid": true,
+      "resolution": "All three requested journal entries supplied: mq02:50, mq02c:13, mq02c:56."
+    },
+    {
+      "request": 3,
+      "valid": true,
+      "resolution": "Replace the physical body-shield choice with a public truce challenge backed by living delegates/local officers. Exact stage43 log, label, consequences and Brigg reply supplied."
+    },
+    {
+      "request": 4,
+      "valid": true,
+      "resolution": "New brigg_demand must be readable before urgent choices and any occupation resolution. Support chain prose supplied; no offscreen occupation."
+    },
+    {
+      "request": 5,
+      "valid": true,
+      "resolution": "Six postfair report leaves supplied, known/unknown for each road, plus a neutral report menu; mechanical routing must be deterministic AND-only."
+    },
+    {
+      "request": 6,
+      "valid": true,
+      "resolution": "New missed-outcome Dunmore/Cutter introductions preserve the pouch information without falsely recognising the player."
+    },
+    {
+      "request": 7,
+      "valid": true,
+      "resolution": "Quoted endings were an acceptable use of approved text, but new exact hawker patter now restores Granger's sales voice and removes the ambiguity."
+    },
+    {
+      "request": 8,
+      "valid": true,
+      "resolution": "New complete non-trade betrayal sheet and hawker line; existing trading sheet/cry restricted to method deal."
+    },
+    {
+      "request": 9,
+      "valid": true,
+      "resolution": "An explicit warning and acceptance now arm30; readable final call/countdown remains an honest engineering prerequisite. Existing distant dawn phrase alone is not enough."
+    },
+    {
+      "request": 10,
+      "valid": true,
+      "resolution": "Dorn middle button becomes 'What can I promise for myself?'"
+    },
+    {
+      "request": 11,
+      "valid": true,
+      "resolution": "Belden default now offers an optional bowl and names his delegate role; no consent by eating."
+    },
+    {
+      "request": 12,
+      "valid": true,
+      "resolution": "Pike aside identifies a case-working tool mark, separately from a projectile mould, without identifying the customer."
+    },
+    {
+      "request": 13,
+      "valid": true,
+      "resolution": "Explicit 'Let the crowd hang him.' choice and prior rope warning; no default lynching from absence/leaving/menu cancellation."
+    },
+    {
+      "request": 14,
+      "valid": true,
+      "resolution": "A claimed lead is permissible, but exact dispatch paragraph changes now distinguish a name-to-check from proof and remove absence-as-confirmation."
+    },
+    {
+      "request": 15,
+      "valid": true,
+      "resolution": "Belden wants/secret/wrong_about now combine genuine finite food aid, requested future supply and institutional control/consent flaws."
+    },
+    {
+      "request": 16,
+      "valid": true,
+      "resolution": "Approve distant author-level Voss role with no public identity; replace personal-history fear and respectful-case tie with investigation/payment-route stakes."
+    },
+    {
+      "request": 17,
+      "valid": true,
+      "resolution": "Pike knowledge and tie are explicitly an old tooling commission and unknown customer, not mould-produced cartridge cases or identified shooter."
+    },
+    {
+      "request": 18,
+      "valid": true,
+      "resolution": "Keep both deleted ignorance entries deleted; no need to manufacture filler or restore player recognition."
+    },
+    {
+      "request": 19,
+      "valid": true,
+      "resolution": "Juno receives an existing-character working arrival voice and staging contract. The subtle feature is not an origin exposition or imposed player history."
+    },
+    {
+      "request": 20,
+      "valid": true,
+      "resolution": "Captain Blevins and Delegate Belden appear in new first-return/crowded-scene wording."
+    },
+    {
+      "request": 21,
+      "valid": true,
+      "resolution": "Compact rate dissent is in revised existing wording; three additional named-speaker leaves supply Commonwealth, Dominion and Directorate internal disagreements without new factions/actors."
+    },
+    {
+      "request": 22,
+      "valid": true,
+      "resolution": "Revise the grain-sale consequences, Hatcher line and Nell aside; genuine meals are separate from a contested continuing agreement. No whole-town forced signature."
+    }
+  ],
+  "additional_fidelity": [
+    {
+      "finding": "Road completion is not payment proof",
+      "resolution": "Prefair silver claims require the corresponding actual evidence flag; unknown variants omit that claim. The common-purse theory in calls_fair is explicitly a suspicion."
+    },
+    {
+      "finding": "Dead pilot / variable Chute loss",
+      "resolution": "Journal and aftermath do not name a living pilot or fix a one-third fraction. Keep living/dead pilot mechanical loss difference as a separate tested contract."
+    },
+    {
+      "finding": "Impossible cut-then-fire benefit",
+      "resolution": "Declare existing42 completed escape and43 destructive occupied-boat/cargo fire as alternative story resolutions. No imaginary cut-only state; remove all contradictory saved-grain fire claims."
+    },
+    {
+      "finding": "Hanging does not erase every witness",
+      "resolution": "Hatcher's testimony is lost, not recovered papers or other people. No all-witnesses-dead claim."
+    },
+    {
+      "finding": "Caravan survival / presence assumed",
+      "resolution": "Whitcomb speaks of a recorded vote, not Nell standing yonder or a prior player conversation. Nell's aside needs living/present speaker; Starnes's Hatcher handover needs living Hatcher, with an authored dead-Hatcher aftermath."
+    },
+    {
+      "finding": "Vane's present-tense Reese report",
+      "resolution": "Use 'the road account records your share', not an assertion Reese is alive and currently reporting."
+    }
+  ],
+  "engineering_boundaries": [
+    "None of this creates a playable quest, actor, object, timer, food grant, chase, train ride or corpse state.",
+    "Keep source/runtime distinction. Define requested new stages only in the proposed quest, never renumber existing stages or alter mq01/sq01 scripts.",
+    "The exact format has no standalone setflag action: stage/evidence effects need explicit reviewed mapping. Do not claim flag setters exist merely because prose names them.",
+    "Then-only leaf handling and deterministic greetings remain technical design requirements. Do not let all priority0 follow-ons become greetings or expose unearned proof.",
+    "A stage/fact must record its actual narrative outcome; a click requesting a public truce does not itself prove Brigg conceded.",
+    "Only actual living/present speakers deliver dialogue. Generate supported AND-only context copies where button-level conditions or OR would otherwise be needed.",
+    "Docket16 is acquisition history; possession/readability must be verified at presentation. It is optional and never a gate on the main path.",
+    "Keep both ordered sealing53 and warned-deadline56 separate. No false accusation that a timeout was a spoken order.",
+    "Keep the original fair/rail/mine/porch feasibility gates and late/dead/absent actor matrix open until independently designed and tested.",
+    "Faction/food dialogue promises must not be reported as implemented HP/inventory/supply mechanics.",
+    "Learned silver evidence flags may result from oral testimony; do not silently turn them into current paper-inventory requirements. Only docket_2298_held here means current physical possession. Stage56 also requires a living, functional Blevins able to fire; his death does not leave a ghost actor turning the key."
+  ],
+  "validation": {
+    "ascii": true,
+    "spoken_and_journal_limit": 240,
+    "button_limit": 48,
+    "document_limit": 1500,
+    "fields_checked": 70,
+    "spoken_and_journal_maximum": 219,
+    "button_maximum": 40,
+    "document_maximum": 855,
+    "claim": "Local length/ASCII checks on this writing packet only; not the intake checker, compile, engine or full story acceptance."
+  }
+}

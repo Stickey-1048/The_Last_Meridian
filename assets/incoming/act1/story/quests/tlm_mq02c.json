@@ -1,0 +1,90 @@
+{
+ "format": "tlm-quest-1",
+ "key": "mq02c", "id": "TLM_MQ02C", "title": "What Knocks in Red Hollow", "chapter": 2, "kind": "main",
+ "premise": "The pike to Red Hollow runs through a Dominion toll-gate where a judge in a stove-in top hat holds court from a gallows wagon. Somebody from the Tellico road is on her rope at noon. Past the gate the hills are bald and red, and the mine at the bottom of them has been chained shut from the outside with eleven of the night shift still below. The captain means to blast it closed at dawn. The miners' wives say they can hear knocking. One of them says something is knocking back.",
+ "draws_on": ["R1", "R2", "R5", "R7", "R9"],
+ "reads": ["alive dunmore", "outcome is saved", "outcome is exploited", "method is deal"],
+ "cast": ["quill", "dunmore", "cutter", "greer", "roark", "dorn", "brigg"],
+ "places": [
+  {"id": "the_gap", "name": "The toll-gate at the gap", "what": "A log barrier across the pike, a board of tolls by the head and the wheel, Dominion rifles, and Judge Quill's wagon: a bench at one end, a beam at the other"},
+  {"id": "red_hollow", "name": "Red Hollow", "what": "Company houses on bare red clay, nothing green for a mile, a head-frame, and a crowd singing at a chained door in the hillside that they call the Mouth"},
+  {"id": "nine_level", "name": "The Nine level", "what": "Four hundred feet down by the cage. Bad air, standing water, the night shift huddled at a break in the rock"},
+  {"id": "stone_door", "name": "The stone door", "what": "Beyond the break: a gallery cut square and smooth by somebody else, long ago, and a door of fitted stone with a lamp burning in front of it"}
+ ],
+ "stages": [
+  {"n": 10, "set_by": "Reaching the toll-gate at the gap with the brass tag from Pritchard's desk", "log": "The Dominion has a gate across the pike and a judge on a wagon. Court sits at noon. The rope is already up."},
+  {"n": 11, "set_by": "Shooting the rope", "log": "You shot the rope. He hit the road running. Judge Quill fined you the price of the rope and wrote your name in her book."},
+  {"n": 12, "set_by": "The button 'What's the fine for a neck?'", "log": "You bought a man off the gallows for sixty caps. Judge Quill gave you a receipt."},
+  {"n": 13, "set_by": "The button 'Show the 2298 docket. Demand a hearing.', offered only while the player holds the docket (flag docket_2298_held)", "log": "Quill adjourned after you presented the 2298 review copy. The current accused remains alive under review; this is not a pardon."},
+  {"n": 14, "set_by": "The drop, with the player present and doing nothing", "log": "He dropped at noon exactly. The judge checked her watch."},
+  {"n": 15, "set_by": "Hearing the condemned man out, on the wagon or after he is freed", "log": "The Cutters were paid in stamped silver to watch for Gantt's delayed or stranded freight and seize the marshal's pouch. They were not told of an exact wreck or a particular survivor."},
+  {"n": 16, "set_by": "Taking the review copy offered by Pritchard. Stage16 records acquisition; docket_2298_held must reflect current possession, not a permanently latched acquisition stage.", "log": "Pritchard gave you his review of the 2298 hanging, with the court's receipt for the evidence. Quill can be asked to enter it alongside the current case."},
+  {"n": 20, "set_by": "Entering Red Hollow", "log": "Red Hollow is red to the ridge and nothing grows on it. The whole town is standing at a chained door in the hill, singing."},
+  {"n": 30, "set_by": "The player's explicit confirmation on the line roark_deadline_warning, by the button 'Start the rescue. Lower the cage.' or the button 'I'll speak to Captain Blevins.', after the warning has been read. Stage30 now records an explicitly accepted local rescue deadline after the warning line. Informational conversation alone must not secretly arm it. A readable final call/countdown before firing is a runtime design prerequisite. Pausing, unloading, another road and calling the fair do not run or resolve it. No fixed number of minutes is invented here.", "log": "Captain Blevins has given a final warning. Eleven people are alive below. Stop the firing or bring them up before he turns the key."},
+  {"n": 40, "set_by": "Riding the cage down, with Roark at the hoist or alone", "log": "Four hundred feet down. The lamp burns low and blue. The knocking is closer and it is coming from two places."},
+  {"n": 45, "set_by": "Finding the night shift at the break in the rock", "log": "The night shift is alive. They have been fed. None of them will say by whom, and all of them are looking at the hole in the wall."},
+  {"n": 50, "set_by": "Going through the break to the stone door", "log": "Somebody cut this gallery square and true a long time ago. A woman in an iron collar is sitting in front of a stone door with a lamp that does not smoke. She has been waiting for someone who can swear."},
+  {"n": 51, "set_by": "The button 'I'll keep the line and carry your terms.' or the button 'For my own passage, I swear it.'", "log": "The shift is up. You promised to respect the gallery line on your own passage and carry the House's terms to the mine. Red Hollow has not yet ratified a town-wide agreement."},
+  {"n": 52, "set_by": "The button 'They come up. Then I blow the break.'", "log": "The night shift is up. The break is a hundred tons of fallen rock. Nobody knows what the woman at the door made of it."},
+  {"n": 53, "set_by": "The button 'Seal it. Leave the shift below.': an explicit informed order with the shift still below, offered only after the knocking has been heard (stage 30). Never set for an unvisited or merely deferred road", "log": "Blevins turned the key at dawn. The hill settled a foot. The knocking went on for most of the morning."},
+  {"n": 56, "set_by": "The local deadline expiring with the shift still below. Armed only at stage 30, by the player's explicit acceptance of the warning; not counted in menus, while the place is unloaded or while the player is on another road; never set by calling the fair. Stage56 also requires a living, functional Blevins able to fire; his death does not leave a ghost actor turning the key.", "log": "The local deadline ran out. Captain Blevins fired with the shift still below. The cage came up empty. You gave no order, but the knocking has stopped."},
+  {"n": 54, "set_by": "Taking the smokeless lamp from the gallery", "log": "You have a lamp that burns without smoke and a place to say it came from. That will be worth something to somebody with a flag."},
+  {"n": 60, "set_by": "Opening the drawer of Blevins's desk in the hoist-house", "log": "There is stamped silver in the captain's desk and a note: keep the Mouth shut through winter. He would have done it for nothing."},
+  {"n": 100, "set_by": "Leaving Red Hollow after stage 51, 52, 53 or 56", "log": null, "completes": true}
+ ],
+ "objectives": [
+  {"n": 10, "text": "Get past the toll-gate at the gap"},
+  {"n": 20, "text": "Find out why Red Hollow chained its own mine"},
+  {"n": 30, "text": "Decide what happens at the Mouth before dawn"},
+  {"n": 45, "text": "Find out what is on the other side of the break"}
+ ],
+ "choices": [
+  {"at": 10, "options": [
+   {"label": "(Shoot the rope)", "sets": 11, "now": "He runs. You are fined and known to the Dominion", "later": "He owes you his neck and pays it once, at the fair or on the porch. Brigg has your name"},
+   {"label": "What's the fine for a neck?", "sets": 12, "now": "Sixty caps and a receipt", "later": "He walks, lawfully, and tells you what he was paid in. Quill thinks you soft and useful"},
+   {"label": "Show the 2298 docket. Demand a hearing.", "sets": 13, "now": "Offered only with the docket in hand. Court adjourns and the accused stays alive to answer the charge", "later": "Adjournment and review, not a pardon or immunity for the accused. Both officials' part in the 2298 hanging is open to review"},
+   {"label": "(Watch)", "sets": 14, "now": "He hangs at noon", "later": "What he knew goes with him unless his paper is read from the wagon afterward"}
+  ]},
+  {"at": 50, "options": [
+   {"label": "I'll keep the line and carry your terms.", "sets": 51, "now": "The shift goes up. The player undertakes to respect the gallery line on their own passage and to carry the House's terms to the mine", "later": "A personal passage undertaking and a temporary local truce. Red Hollow has not ratified a town-wide agreement, and no allegiance follows"},
+   {"label": "They come up. Then I blow the break.", "sets": 52, "now": "Eleven saved. The way below is shut", "later": "The mine works again by spring. Whoever is below has learned what the people above do with a door"},
+   {"label": "Seal it. Leave the shift below.", "sets": 53, "now": "The Mouth is shut for good with everyone below it", "later": "Red Hollow is a dead town by the fair. Dinah Roark comes looking for Blevins, and then for you"},
+   {"label": "(Take the lamp)", "sets": 54, "now": "You have proof of what is under Red Hollow", "later": "Brigg and Grey will both pay for it at the fair, and whichever gets it sends men down"}
+  ]}
+ ],
+ "evidence": [
+  {"id": "docket_2298", "kind": "note", "found": "Pritchard's retained review copy, offered voluntarily while discussing Quill before the pike journey. Taking it records stage16; presenting it at the gallows requires the actual copy in hand.", "sets": 16},
+  {"id": "condemned_paper", "kind": "note", "found": "The statement taken down by Quill's clerk, on the bench of the gallows wagon", "sets": 15},
+  {"id": "chalk_message", "kind": "note", "found": "Chalked on a shovel blade sent up in the cage before the Mouth was chained", "sets": null},
+  {"id": "greer_silver", "kind": "label", "found": "The desk drawer in the hoist-house", "sets": 60},
+  {"id": "smokeless_lamp", "kind": "label", "found": "In front of the stone door; or the one Blevins keeps wrapped in a coat under his cot", "sets": 54}
+ ],
+ "ways_through": [
+  "Pay the toll, walk past the hanging, hear the knocking, then give the order to seal the mine or leave and let the warned deadline run out. Needs nothing optional and nobody's help.",
+  "Go down in the cage, find the shift and bring them up, then blow the break or leave it.",
+  "Go through to the stone door and broker a line between the two sides.",
+  "Take the lamp and sell what is under Red Hollow to a flag."
+ ],
+ "cannot_break": "The hanging can be skipped by leaving the pike and climbing round the gap. If the condemned man is Dunmore and he died on the Tellico road, a Cutter is on the rope in his place and knows less. If Blevins is killed the firing key is on his body and Roark lowers the cage at once. If Roark is killed the player works the hoist alone. If Dorn is attacked she shuts the door; the shift can still be brought up. Stage56 also requires a living, functional Blevins able to fire; his death does not leave a ghost actor turning the key. The charges fire in two cases only: an explicit informed order with the shift still below, or an expired locally armed and clearly warned deadline. No firing on unvisited/merely deferred content.",
+ "new_flags": [
+  {"name": "rope_shot", "meaning": "The player shot a man off Quill's gallows and is in the Dominion's book"},
+  {"name": "neck_owed", "meaning": "The man from the Tellico road was freed and owes the player his life"},
+  {"name": "quill_shamed", "meaning": "The player showed the 2298 docket; Quill adjourned the court and sent both dockets for review"},
+  {"name": "silver_road", "meaning": "The player knows the Cutters were paid in stamped silver to watch for Gantt's delayed or stranded freight and seize the marshal's pouch"},
+  {"name": "shift_saved", "meaning": "The eleven of the night shift came up alive"},
+  {"name": "hollow_line", "meaning": "A personal passage undertaking and temporary local truce were made; this is not blanket authority to bind Red Hollow or a main-faction allegiance."},
+  {"name": "break_blown", "meaning": "The way between the mine and the galleries below was blasted shut"},
+  {"name": "mouth_shut", "meaning": "The mine was blasted closed with the night shift in it"},
+  {"name": "lamp_taken", "meaning": "The player carries proof of what is under Red Hollow"},
+  {"name": "docket_2298_held", "meaning": "The corroborated 2298 review copy is currently in the player's possession. Acquisition stage16 alone must not keep this true after the copy is lost or removed."},
+  {"name": "silver_mine", "meaning": "The player has seen the silver in Blevins's desk"}
+ ],
+ "open_questions": [
+  "Resolved 2026-11-16: one limited meeting with Helga Dorn; a personal undertaking, not authority over the town; no first-contact claim (decision 3).",
+  "Resolved 2026-11-16: the 2298 hanging is kept; the challenge needs the review copy in hand and earns adjournment and review, not a pardon (decision 8).",
+  "Resolved 2026-11-16: the Cutters watched for Gantt's freight and his pouch; no predicted wreck and no expected survivor (decision 7).",
+  "Resolved by packet 2: the review copy, its stage 16, the three journal entries, the missed-outcome lines at the gallows, and the warning that arms the deadline.",
+  "Unresolved runtime mapping: nothing in this format sets the flag docket_2298_held. Stage 16 records that the copy was taken; the flag has to follow what the player is actually carrying.",
+  "Unresolved runtime mapping: stage 16 belongs to this quest and is set from Pritchard's desk, in the hub's talk, possibly before this quest has begun."
+ ]
+}

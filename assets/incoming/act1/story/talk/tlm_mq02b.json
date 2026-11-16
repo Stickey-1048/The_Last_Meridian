@@ -1,0 +1,451 @@
+{
+ "format": "tlm-talk-2",
+ "quest": "TLM_MQ02B",
+ "lines": [
+  {
+   "id": "starnes_default",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Back of the line, bless you. Everybody eats or nobody does.",
+   "sources": []
+  },
+  {
+   "id": "starnes_first",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 40,
+   "when": [
+    "mq02b done 10",
+    "mq02b notdone 20"
+   ],
+   "text": "Pritchard sent you? He might have sent corn. Nine days in the bin, child, and ninety till the dogwood. And yonder sits my grain, tied to that painted hussy of a boat, with Lyle Hatcher selling it back by the cup.",
+   "buttons": [
+    {
+     "label": "What do you want done?",
+     "do": [
+      "mq02b set 20"
+     ],
+     "then": "starnes_wants"
+    },
+    {
+     "label": "Why not take it back yourselves?",
+     "then": "starnes_guns"
+    },
+    {
+     "label": "(Take a bowl)",
+     "then": "starnes_bowl"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "starnes_wants",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "The barge at my landing. And Lyle on that steeple by his neck, where the children can see what stealing bread comes to. I held him at his christening. I'll hold the rope. Mose has a skiff. Go on.",
+   "sources": []
+  },
+  {
+   "id": "starnes_guns",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "He's two swivel guns on the rail and I've nine men who can stand up straight. I can count, child. It's the one thing I've left that works.",
+   "sources": []
+  },
+  {
+   "id": "starnes_bowl",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "That's a quarter cup short and I know it, so don't look at it like that. Eat. You'll want it. I'd tell you I've had mine, but the Lord's listening.",
+   "sources": []
+  },
+  {
+   "id": "pruitt_default",
+   "speaker": "pruitt",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "River's up. River's always something.",
+   "sources": []
+  },
+  {
+   "id": "pruitt_skiff",
+   "speaker": "pruitt",
+   "status": "new",
+   "entry": true,
+   "priority": 40,
+   "when": [
+    "mq02b done 20",
+    "mq02b notdone 30"
+   ],
+   "text": "Granny send you? Then I'm to row you out. Front way's the gangway: buy a drink, look rich. Back way's her off side, where the barge is. Anchor chain's rotten at the third link. I, uh. I know that barge pretty well.",
+   "buttons": [
+    {
+     "label": "The gangway."
+    },
+    {
+     "label": "The off side."
+    },
+    {
+     "label": "How do you know the barge?",
+     "then": "pruitt_confess"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pruitt_confess",
+   "speaker": "pruitt",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "I towed it out. He said safe keeping. He gave me a dollar. I didn't know, I swear on the river I didn't. Don't tell her. I'll run the Chute for you at night, loaded, blind. Only don't tell her.",
+   "sources": []
+  },
+  {
+   "id": "hatcher_default",
+   "speaker": "hatcher",
+   "status": "new",
+   "entry": true,
+   "priority": 0,
+   "when": [],
+   "text": "Welcome aboard the Queen, friend. The first drink is on the house and the last one is on you.",
+   "sources": []
+  },
+  {
+   "id": "hatcher_table",
+   "speaker": "hatcher",
+   "status": "new",
+   "entry": true,
+   "priority": 50,
+   "when": [
+    "mq02b done 30",
+    "mq02b notdone 41",
+    "mq02b notdone 42",
+    "mq02b notdone 43",
+    "mq02b notdone 44"
+   ],
+   "text": "Sit, sit. Lyle Hatcher, Commodore by acclamation. You're Opal's new terrier. Now that barge was adrift, and I put a line on her, and that is salvage, friend, by a law older than this lake. Card?",
+   "buttons": [
+    {
+     "label": "Deal. The barge against my gun.",
+     "check": "speech",
+     "pass": {
+      "do": [
+       "mq02b set 41"
+      ],
+      "then": "hatcher_lost"
+     },
+     "fail": {
+      "do": [
+       "mq02b set 45"
+      ],
+      "then": "hatcher_won"
+     }
+    },
+    {
+     "label": "Sell me a share, Commodore.",
+     "then": "hatcher_share"
+    },
+    {
+     "label": "Who paid you to hold it?",
+     "then": "hatcher_paid"
+    },
+    {
+     "label": "(Leave the table)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "hatcher_lost",
+   "speaker": "hatcher",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Well, I will be eternally... Ladies! Gentlemen! The house stands a round, for I have just been skinned by an artist. She's yours, friend, every sack. Now. Do you mean to give me to Opal? She means it this year.",
+   "buttons": [
+    {
+     "label": "He's yours, Opal.",
+     "do": [
+      "mq02b set 60"
+     ]
+    },
+    {
+     "label": "He goes to Pritchard, alive.",
+     "do": [
+      "mq02b set 61"
+     ]
+    },
+    {
+     "label": "Let him keep his boat."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "hatcher_won",
+   "speaker": "hatcher",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Ah. The lady turns, and she's mine. No, no, keep your iron, I've a drawer full. You have sand, friend, and I've a use for sand. There's a quarter of that barge in it if Greenwater hears she went down in the Chute.",
+   "buttons": [
+    {
+     "label": "Sell me a share, Commodore.",
+     "then": "hatcher_share"
+    },
+    {
+     "label": "(Leave the table)"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "hatcher_share",
+   "speaker": "hatcher",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Two hundred, and a berth. Tell Opal the Chute took it. Delegate Belden has a soup wagon; he'll offer a bowl. I'm selling you a share, not a promise that his pot replaces the winter grain.",
+   "buttons": [
+    {
+     "label": "Done.",
+     "do": [
+      "mq02b set 44",
+      "give caps 200"
+     ]
+    },
+    {
+     "label": "No."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "hatcher_paid",
+   "speaker": "hatcher",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Paid? ...You've been in my box. Or you're guessing, and I've told you. Ha! Yes. Silver, square mark: hold her till first frost, then turn her loose. But a man sees that much corn and that many hungry folk and thinks: Lyle, that's a market.",
+   "buttons": [
+    {
+     "label": "Square mark. Go on.",
+     "do": [
+      "mq02b set 50"
+     ],
+     "then": "hatcher_table"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pruitt_chain",
+   "speaker": "pruitt",
+   "status": "new",
+   "entry": true,
+   "priority": 60,
+   "when": [
+    "mq02b done 30",
+    "mq02b notdone 41",
+    "mq02b notdone 42",
+    "mq02b notdone 43",
+    "mq02b notdone 44"
+   ],
+   "text": "One cut frees the barge for the Chute. Or burn the Queen. Thirty people are aboard - crew, cooks, the fiddler - and the winter grain is still lashed alongside. Fire can take them and the cargo. Say what you're ordering.",
+   "buttons": [
+    {
+     "label": "Cut the barge loose.",
+     "do": [
+      "mq02b set 42"
+     ],
+     "then": "pruitt_ran"
+    },
+    {
+     "label": "Burn the occupied Queen.",
+     "do": [
+      "mq02b set 43"
+     ],
+     "then": "pruitt_burned"
+    },
+    {
+     "label": "Not yet."
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "pruitt_ran",
+   "speaker": "pruitt",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [
+    "alive pruitt"
+   ],
+   "text": "WE'RE THROUGH! Look at what's gone over the side. Granny's going to count every sack we brought home. We'll count the loss before we start calling it a victory.",
+   "sources": []
+  },
+  {
+   "id": "pruitt_burned",
+   "speaker": "pruitt",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "The cook was still aboard. The fiddler too; she taught me to waltz. We knew they were there. I can hear them in the water. Don't tell me this was only a boat.",
+   "sources": []
+  },
+  {
+   "id": "starnes_after_won",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 74,
+   "when": [
+    "mq02b done 41",
+    "mq02b notdone 60",
+    "mq02b notdone 61",
+    "alive hatcher"
+   ],
+   "text": "You won the barge from Hatcher? Every sack? Then we'll count it home. Now tell me what you mean to do with him. I want him on the steeple, and you know what that means.",
+   "buttons": [
+    {
+     "label": "He's yours, Opal.",
+     "do": [
+      "mq02b set 60"
+     ]
+    },
+    {
+     "label": "He goes to Pritchard, alive.",
+     "do": [
+      "mq02b set 61"
+     ],
+     "then": "starnes_denied"
+    },
+    {
+     "label": "Let him keep his boat.",
+     "then": "starnes_denied"
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "starnes_won_hatcher_dead",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 73,
+   "when": [
+    "mq02b done 41",
+    "dead hatcher"
+   ],
+   "text": "The grain is ours. Hatcher is dead. I can count both those facts without calling them the same kind of victory.",
+   "sources": []
+  },
+  {
+   "id": "starnes_denied",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": false,
+   "priority": 0,
+   "when": [],
+   "text": "Then eat somewhere else. I'll feed a thief's dog before I feed the hand that turned him loose. Bless you for the corn. Now get off my planks.",
+   "sources": []
+  },
+  {
+   "id": "starnes_after_chute",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 72,
+   "when": [
+    "mq02b done 42"
+   ],
+   "text": "We brought back less than we needed. Enough to stretch the pot, not enough to stop counting. We'll measure what came home before anybody calls it a victory. Thank you for what you brought.",
+   "sources": []
+  },
+  {
+   "id": "starnes_after_fire",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 71,
+   "when": [
+    "mq02b done 43"
+   ],
+   "text": "I asked for the grain and one man's answer. Now the cargo's burned and people are missing. Don't give me a number you haven't counted. Bring the living to the planks. We'll need every hand.",
+   "sources": []
+  },
+  {
+   "id": "starnes_after_share",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 70,
+   "when": [
+    "mq02b done 44"
+   ],
+   "text": "The Chute. Yes. It had my husband and it had my daughter and now it's had the corn. You tried, child. Here. It's a short cup, but you earned it.",
+   "sources": []
+  },
+  {
+   "id": "starnes_after_hanging",
+   "speaker": "starnes",
+   "status": "new",
+   "entry": true,
+   "priority": 80,
+   "when": [
+    "mq02b done 60"
+   ],
+   "text": "It's done. I thought I'd feel fed. ...Fifty years ago I put a spoon in that boy's mouth. Go on, child. There's corn. There's corn for everybody.",
+   "sources": []
+  },
+  {
+   "id": "belden_greenwater_relief",
+   "speaker": "belden",
+   "status": "new",
+   "entry": true,
+   "priority": 31,
+   "when": [
+    "mq02b done 44",
+    "alive belden"
+   ],
+   "text": "Delegate Belden. The pot is for people who need it. We can discuss an agreement after supper, and you may refuse it. This wagon won't replace a winter's grain. It can keep people fed while they decide.",
+   "sources": []
+  },
+  {
+   "id": "belden_greenwater_relief_fire",
+   "speaker": "belden",
+   "status": "new",
+   "entry": true,
+   "priority": 30,
+   "when": [
+    "mq02b done 43",
+    "alive belden"
+   ],
+   "text": "Delegate Belden. The pot is for people who need it. We can discuss an agreement after supper, and you may refuse it. This wagon won't replace a winter's grain. It can keep people fed while they decide.",
+   "sources": []
+  }
+ ]
+}
