@@ -26,6 +26,7 @@ SHUT = {
     "Pritchard in a fight": replace(OPEN, briefer_fighting=True),
     "the player dead": replace(OPEN, player_alive=False),
     "not bound": replace(OPEN, bound=False),
+    "its quest cannot be started": replace(OPEN, startable=False),
 }
 
 RAIL = Visit(hub=mb.HUB_RAIL)

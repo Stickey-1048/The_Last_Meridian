@@ -609,11 +609,13 @@ Function TalkPritchard(Actor akWho = None)
 		Return
 	EndIf
 	If more
-		; The side quest's report keeps its button and its place. Only
-		; Continue goes on to the briefing.
-		If ShowLine(SayPritchardAfterAndMore) == 1
+		; The side quest's report keeps its button and its place: 1. Only
+		; an explicit Continue, 0, goes on to the briefing. No answer (-1)
+		; and any other number close here, as they always did.
+		int after = ShowLine(SayPritchardAfterAndMore)
+		If after == 1
 			Report()
-		Else
+		ElseIf after == 0
 			OfferBriefing(akWho)
 		EndIf
 	ElseIf !OfferBriefing(akWho)

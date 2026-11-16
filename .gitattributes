@@ -13,5 +13,16 @@ docs/design/ACT1_BALLAD_ADDENDUM_2026-11-16.json text eol=lf
 docs/design/ACT1_WRITING_CLOSURE_PACKET_2.json text eol=lf
 docs/design/ACT1_WRITING_CLOSURE_PACKET_3.json text eol=lf
 
+# The four earlier package manifests are pinned byte for byte by the Mercy
+# briefing candidate's check (tools/mercy_briefing_candidate.py). Their
+# committed bytes are LF; a checkout must write the same bytes on every
+# machine. This changes no byte in the repository. A working copy made before
+# these rules keeps the line ends it was written with until those four files
+# are written again (docs/design/ACT1_RUNTIME_001_LEDGER.md, section 13).
+tools/win/world-details-artifact.json text eol=lf
+tools/win/world-natural-artifact.json text eol=lf
+tools/win/world-story-artifact.json text eol=lf
+tools/WorldSliceBuilder/expanded-artifact.json text eol=lf
+
 # Pictures are binary too.
 *.png binary

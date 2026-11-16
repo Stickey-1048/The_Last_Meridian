@@ -14,16 +14,20 @@ of TLM_MQ02c, grants no evidence flag, pays nothing and moves nobody. The
 three destinations are not built.
 
 What it keeps to:
-  - It changes nothing unless the main quest's delivery is acknowledged, its
-    stages 50, 60 and 100 are set, its Done global is 1, the person asked is
-    alive and in no fight and the player is alive. All of that is read again
-    after every box, before anything is set or given.
+  - It changes nothing unless its own quest is running (started if need be,
+    and then seen to be running), the main quest's delivery is acknowledged,
+    its stages 50, 60 and 100 are set, its Done global is 1, the person asked
+    is alive and in no fight and the player is alive. All of that is read
+    again after every box, before anything is set or given.
+  - A box answers only with one of its own buttons. No answer, or a number
+    that is no button of that box, shows, sets and gives nothing further.
   - A visit is the hub, then at most one road, then (the pike only) at most
     the one exchange about the copy. Then it ends. No loop.
   - Stage 10 and the objective come with the first hub; stage 20 and the
     objective's completion once, after a road's brief was actually shown.
     (The quest record itself is started, with no stage and no objective,
-    the first time an activation is handed to it.)
+    the first time an activation is handed to it. It is never stopped,
+    reset or restarted from here.)
   - One copy, on the explicit Take only. The intent is written down before
     the game is asked for the book; the book is acknowledged from the count
     the player then holds. A copy in the inventory, a copy once issued or an
@@ -79,6 +83,7 @@ int HUB_RAIL = 0 Const
 int HUB_RIVER = 1 Const
 int HUB_PIKE = 2 Const
 int HUB_NOT_NOW = 3 Const
+int LEAF_CONTINUE = 0 Const
 int PIKE_ASK_QUILL = 0 Const
 int PIKE_CONTINUE = 1 Const
 int COPY_TAKE = 0 Const
@@ -113,9 +118,16 @@ bool Function Offer(Actor akBriefer)
 	; Its own quest first, so that nothing below depends on what the script
 	; of a quest that was never started can read. Starting it sets no stage,
 	; shows no objective and puts nothing in the journal: the task begins
-	; with the first hub, in Brief.
+	; with the first hub, in Brief. If the game says it did not start, or it
+	; is not running afterwards, that is the end of it: nothing is claimed,
+	; filled, set, shown or given, and nothing is tried again here.
 	If !IsRunning()
-		Start()
+		bool started = Start()
+		bool running = IsRunning()
+		If !started || !running
+			Debug.Trace("TLM_MercyBriefing: its quest is not running and could not be started (Start returned " + started + ", running " + running + "); nothing was shown or changed", 2)
+			Return false
+		EndIf
 	EndIf
 	If !Ready() || !IsOpen(akBriefer)
 		Return false
@@ -161,6 +173,9 @@ EndFunction
 bool Function IsOpen(Actor akBriefer)
 	{Read afresh every time: before the hub, and after every box before
 	anything is set or given. Reads only.}
+	If !IsRunning()
+		Return false
+	EndIf
 	If !akBriefer || akBriefer.IsDead() || akBriefer.IsInCombat()
 		Return false
 	EndIf
@@ -206,14 +221,16 @@ Function Brief(Actor akBriefer)
 		Debug.Trace("TLM_MercyBriefing: no longer to be had when the hub closed (button " + road + "); nothing shown or changed")
 		Return
 	EndIf
+	; A brief counts as shown only when its box comes back with one of its
+	; own buttons. No answer (-1) and any other number are not an answer.
 	bool presented = false
 	If road == HUB_RAIL
-		presented = RailLine.Show() >= 0
+		presented = RailLine.Show() == LEAF_CONTINUE
 	ElseIf road == HUB_RIVER
-		presented = RiverLine.Show() >= 0
+		presented = RiverLine.Show() == LEAF_CONTINUE
 	ElseIf road == HUB_PIKE
 		int follow = PikeLine.Show()
-		presented = follow >= 0
+		presented = follow == PIKE_ASK_QUILL || follow == PIKE_CONTINUE
 		If follow == PIKE_ASK_QUILL
 			If IsOpen(akBriefer)
 				AboutTheCopy(akBriefer)

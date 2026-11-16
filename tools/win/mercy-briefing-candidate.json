@@ -11,7 +11,7 @@
   "sourceTextSha256": {
     "Act1Guide.psc": "BC6B8C70A51CE12C324FDB466D0643510318CE64E834BF775F259B949340F455",
     "Act1Talk.psc": "CEC5BCC33B63A55E2427FBA4422E2A375E31598E52911DF79B4DEC040207039A",
-    "Act1Walk.psc": "8311DFB920EEE18B98436AE38DB706AFAB1454E03579FB74C7203A7737587B00",
+    "Act1Walk.psc": "F4F66E8E08FC7DA29A8561E7C5DA8C31F41AB5C2A786C49A2B4E29697FEBCC72",
     "CaseDriver.psc": "04012F79061B9F0F73D8FA353176B5D5267A73F2E810857FD2CE22D60922A241",
     "Core.psc": "17E9008372C7BF01AF1676DB6EA093C7BBEE7F8CA01EBACEDA5389164C6B00D4",
     "FixtureProbe.psc": "F670FDD250514576FB6D4C09EF0229FC9287F24649BD4FD4C370CBE3B467B87E",
@@ -20,7 +20,7 @@
     "MQ01PlayerAlias.psc": "F7D4F23B8DBB829F2ED09F62F17D330046E1ACBD2F6C0439E573B3F7CA3DAE25",
     "MQ01Quest.psc": "4146C08D783C2DB99A8E734CB411536120BBA41DBD61C5989035D0B0D4445B35",
     "MatrixCases.psc": "72C7DDF351DA609940298DF0592F50919A05FF6A98B9EBCF3EDA306EDD6CD68D",
-    "MercyBriefing.psc": "A5D284748CF9E6C5CD44E8140C3FD0DE48B2535942B030FA777E6BE91B53FD8C",
+    "MercyBriefing.psc": "041E03DE8E161C7F954AC98D9C669C5FD9D15E34ACA913B284CD597AB826D0D1",
     "MessageStageAlias.psc": "BC2ED1F7851038AD0067389D1365E891803083A757A34B1516F0BF6027F198A6",
     "PlacedPeople.psc": "41E2CF916C809B9EE169EC98F94DBFC082FA544CD5BF43102BDDF80E5EF7FC5F",
     "PlacedTrial.psc": "A55D13539C8460C55B99FEF9DA4835C68AB0BEF6F14BD0A55EE4FB73606A9E7C",
@@ -57,6 +57,37 @@
   "added": [
     "MercyBriefing.psc"
   ],
+  "runtimeSelection": {
+    "policy": "The 18 scripts whose source text is unchanged are bundled as the reviewed compiled files of the earlier runtime, byte for byte, after their source and their bytes have been checked against its pins. Act1Walk.pex and MercyBriefing.pex are bundled from the fresh compile. A full fresh compile of all 20 is the proof that the source compiles and is kept with its log; its 18 are not bundled, and no compiler output is assumed to equal an earlier one.",
+    "reusedFrom": {
+      "manifest": "tools/win/world-details-artifact.json",
+      "runtimeManifestSha256": "F8649EE3E35DB1711089C6A7B21283E385DC31A2729802748A43491681478412"
+    },
+    "reusedReviewedPex": {
+      "Act1Guide.pex": "DFFD07D540AFD85A477253000A7A7AED38D6B0264FA51EE6FCFCE3B3B2896B2F",
+      "Act1Talk.pex": "FF867431D5C53FAF53A992E38F6F2CBF461E927467100EE3F9042EF7EA286E2C",
+      "CaseDriver.pex": "A133E06E1CE8748D7279CF76D0AB8C7BDDFC0AF8EFA4D29D21B50DEB428A24F4",
+      "Core.pex": "BD7A9CBB30F5DCB3858EFA9556BE14B875332056A86B6B7816838E1577A8E4E3",
+      "FixtureProbe.pex": "BC451008F293516EF5BDE0C2B2A422889F3E45D0B677FD76EDD5612A89F9690F",
+      "MQ01CaravanHandAlias.pex": "1DD56AD2619933B0EA571BA4AC974E04FEED14E654D75B9B8A3923FD178A98FE",
+      "MQ01CutterAlias.pex": "1FE94F460B8ECCF71B00D8661019A0AB0D016B1A90D7C17AFF986A1900DEA10E",
+      "MQ01PlayerAlias.pex": "5CFC57857984A1AB896023E6F2A9F42818F8F03D59C096341FD45749A981095A",
+      "MQ01Quest.pex": "70E44BA8D1BC673AAFBA2BF74201A27D2A2B9675E70424BD882F37AF738404B5",
+      "MatrixCases.pex": "E1521E943D9590B9E9D6759C551E512230B417F134727DED4BD7D96D1667EC10",
+      "MessageStageAlias.pex": "6181FC05D4D943FB38DC680B7E64110681532E0CCB24151A33888D54AFB973AD",
+      "PlacedPeople.pex": "3FC035215BEE61E5D31485F98C4529271BE370EE17022076F6226C87C2092D29",
+      "PlacedTrial.pex": "BBA3B0E8FBEF634BD0D22AD0BE1192AB642F2DBCABA017EBA113ED201CA76B86",
+      "SQ01Quest.pex": "E5EF5D87542BB85F69DA226B23CCD1BC8CB6005466FF6E46ABBF74DF6DD4CFAA",
+      "SelfTest.pex": "465C9941ED2D2DD363FC8634FAD387348D787494DBDD5B29D4FE43F9281012A0",
+      "WorldCases.pex": "EE92E24FB916D595F17E07F5DB5DB0B00087276DC3572E315485DD03C5C00C31",
+      "WorldEntry.pex": "7D4B1497777C4E165D8382CA8F3EC94E1785CF1E1C22AE1D36279E8AA46A1802",
+      "WorldEntryPlayer.pex": "E21FFFC05BF7274E30716C7D6047EF03A8356680FDF5990EBE33DCB60DA15BD4"
+    },
+    "freshlyCompiled": [
+      "Act1Walk.pex",
+      "MercyBriefing.pex"
+    ]
+  },
   "builderSourceTextSha256": {
     "tools/PluginBuilder/Spec.cs": "668A0D5F481A14E0A6367B54A96C35AFEF34EC7A2583502CDAEA7D2D6D3F39FD",
     "tools/PluginBuilder/SpecAct1.cs": "92022CDCF2A3E9BD982999727F4C9674C206C04F635AE876AB25015575267D36",
@@ -156,13 +187,15 @@
     "textMapping": "docs/design/ACT1_RUNTIME_001_MAPPING.json"
   },
   "recipe": {
-    "what": "How a workspace package of this candidate is built. Steps 2 to 5 need the game's own master and the Papyrus compiler on a licensed PC; none of them has been run for this candidate. Nothing is installed, and no licensed file goes into the repository or the cloud.",
+    "what": "How a workspace package of this candidate is built. Steps 2 to 7 need the game's own master, the Papyrus compiler and the reviewed compiled scripts of the earlier runtime, on a licensed PC; none of them has been run for this candidate. Nothing is installed, and no licensed file goes into the repository or the cloud.",
     "steps": [
-      "1. python3 tools/mercy_briefing_candidate.py verify   (the checkout is this manifest's source)",
+      "1. python3 tools/mercy_briefing_candidate.py verify   (the checkout is this manifest's source; on a working copy made before the end-of-line rules, first write the four earlier manifests again: docs/design/ACT1_RUNTIME_001_LEDGER.md, section 13)",
       "2. dotnet run --project tools/PluginBuilder -- --out <new folder>/plugin --fallout4-esm <Fallout4.esm>   (self-check must pass; read the report: the new quest, book and nine messages, and the ids below)",
       "3. dotnet run --project tools/WorldSliceBuilder -- <Fallout4.esm> <new folder>/world --story-source <new folder>/plugin/TheLastMeridian.esp --natural --private-shelter-detail   (the same exterior options as the Details package; WorldStory refuses a clone whose walk does not point at the master's TLM_MercyBriefing)",
-      "4. Compile all 20 scripts under scripts/Source/User/TLM with the game's Papyrus compiler (tools/win/Build-Scripts.ps1 compiles every .psc there). A fresh compile; no earlier PEX is reused or assumed byte-identical.",
-      "5. python3 tools/mercy_briefing_candidate.py measure <bundle folder>   (prints the measured digests for a build receipt; it changes no pin)"
+      "4. COMPILE PROOF: compile all 20 scripts under scripts/Source/User/TLM afresh with the game's Papyrus compiler into a folder of its own (tools/win/Build-Scripts.ps1 compiles every .psc there). All 20 must compile. Keep the compiler's log and the 20 results with the build receipt.",
+      "5. THE REVIEWED 18: take the compiled scripts of the earlier reviewed runtime (the 19 that tools/win/world-details-artifact.json pins under 'runtime', runtime manifest F8649EE3...). For each of the 18 names under runtimeSelection.reusedReviewedPex, check the file's SHA-256 against the digest recorded there before using it. Step 1 has already shown that their 18 sources are the reviewed text.",
+      "6. THE BUNDLE'S Scripts/TLM: exactly 20 files. The 18 reviewed files of step 5, copied byte for byte; Act1Walk.pex and MercyBriefing.pex from the compile of step 4. Never the freshly compiled 18, whether or not the compiler happened to reproduce them, and not the earlier Act1Walk.pex.",
+      "7. python3 tools/mercy_briefing_candidate.py measure <bundle folder> --fresh-compile <folder of step 4>   (prints the measured digests for the build receipt and says of each script whether it is the reviewed file or one of the two fresh ones; exit 1 if the selection is not the one above; it changes no pin)"
     ],
     "expectedIds": "The eleven records appended to tools/PluginBuilder/formkeys.txt keep their numbers in every build: the allocator reads that file."
   },
@@ -171,8 +204,9 @@
     "worldSha256": null,
     "runtime": null,
     "runtimeManifestSha256": null,
+    "freshCompile": null,
     "measuredBy": null,
     "measuredFrom": null,
-    "note": "To be filled from a real build on a licensed PC, by whoever made it. Until then: pending."
+    "note": "To be filled from a real build on a licensed PC, by whoever made it: the plugin and the exterior as built, the 20 bundled scripts (18 reviewed, 2 fresh), and separately the 20 of the full fresh compile. Until then: pending."
   }
 }

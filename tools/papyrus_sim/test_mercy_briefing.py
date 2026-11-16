@@ -86,7 +86,10 @@ class Asker:
         self.brief = Brief()
         self.with_ledger = with_ledger
         self.add_fails = False
-        self.calls = {"objective shown": 0, "objective completed": 0, "book asked for": 0, "book asked how": []}
+        # SEEDED by a test: what Start does for the briefing's quest. None: what the stand-in does.
+        # Otherwise (what it returns, whether the quest is then running).
+        self.start_does = None
+        self.calls = {"objective shown": 0, "objective completed": 0, "book asked for": 0, "book asked how": [], "starts": 0}
         self._count()
         if finish:
             self.finish()
@@ -130,9 +133,23 @@ class Asker:
                     return None            # SEEDED: the game does not honour the request
             return add(ref, context, form, count, silent)
 
+        start = s.n_quest_start
+
+        def count_start(quest, context):
+            if quest.editor_id != QUEST:
+                return start(quest, context)
+            self.calls["starts"] += 1
+            if self.start_does is None:
+                return start(quest, context)
+            returns, runs = self.start_does                     # SEEDED
+            if runs:
+                s.start_quest(quest)
+            return returns
+
         s.n_quest_setobjectivedisplayed = count_shown
         s.n_quest_setobjectivecompleted = count_completed
         s.n_objectreference_additem = count_add
+        s.n_quest_start = count_start
 
     # ---- what the game holds
     def held(self):
@@ -180,7 +197,8 @@ class Asker:
         return Gates(delivered=50 in mq.done, acknowledged=bool(acknowledged), stage60=60 in mq.done, stage100=100 in mq.done,
                      done=s.get_global("TLM_G_MQ01_Done") == 1, briefer_alive=not self.pritchard.dead,
                      briefer_fighting=self.pritchard.combat_target is not None, player_alive=not s.player.dead,
-                     bound=self.inst is not None and main is not None)
+                     bound=self.inst is not None and main is not None,
+                     startable=self.quest.running or self.start_does is None or self.start_does == (True, True))
 
     def seed(self, gates):
         """SEEDED: somebody dead or in a fight, as the gates say."""
@@ -224,6 +242,28 @@ class Asker:
         else:
             self.test.assertEqual(self.state(), self.model_state(), "after an interrupted visit")
         return got
+
+    def box_returns(self, message, value):
+        """SEEDED: that box comes back with this value, whatever a person could have pressed."""
+        show = self.s.n_message_show
+
+        def fixed(m, context, *floats):
+            if m.editor_id == message:
+                self.s.messages_shown.append(m.editor_id)
+                return value
+            return show(m, context, *floats)
+        self.s.n_message_show = fixed
+
+    def press(self, answers=None):
+        """Presses Pritchard for real, with no model beside it. Returns every message then shown."""
+        s = self.s
+        s.answers = {m: list(b) for m, b in (answers or {}).items()}
+        at = len(s.messages_shown)
+        s.walk_to(REF + "Pritchard")
+        s.press_activate(REF + "Pritchard")
+        self.p.pause(3.0)
+        self.test.assertEqual({m: b for m, b in s.answers.items() if b}, {}, "boxes expected and never seen")
+        return s.messages_shown[at:]
 
     def offer(self, actor=None):
         """Calls the briefing directly, as the console or another script could. For the gates no press reaches."""
@@ -432,27 +472,26 @@ class Interrupted(unittest.TestCase):
         self.assertEqual((a.calls["objective shown"], a.calls["objective completed"]), (1, 1))
 
     def test_a_box_that_gives_no_answer(self):
-        # SEEDED: Show comes back with -1, as [documented] for a message that is not shown as a box.
-        for stale, want_done in ((MB + mb.HUB, False), (MB + mb.RAIL, False), (MB + mb.PIKE, False)):
-            with self.subTest(stale):
-                a = Asker(self)
-                show = a.s.n_message_show
-
-                def no_answer(m, context, *floats, stale=stale, show=show):
-                    if m.editor_id == stale:
-                        a.s.messages_shown.append(m.editor_id)
-                        return -1
-                    return show(m, context, *floats)
-                a.s.n_message_show = no_answer
-                a.s.answers = {BRIEF_HUB: [mb.HUB_PIKE if stale.endswith("Pike") else mb.HUB_RAIL]}
-                if stale == BRIEF_HUB:
-                    a.s.answers = {}
-                a.s.walk_to(REF + "Pritchard")
-                a.s.press_activate(REF + "Pritchard")
-                a.p.pause()
-                self.assertEqual(a.state()["done"], want_done)
-                self.assertEqual((a.held(), a.calls["book asked for"], a.calls["objective completed"]), (0, 0, 0))
-                self.assertFalse(a.state()["busy"])
+        # SEEDED: Show comes back with -1, as [documented] for a message that is not shown as a box, or with
+        # a number that is none of the box's buttons. Neither is an answer: nothing after it is shown, set or given.
+        for stale in (MB + mb.HUB, MB + mb.RAIL, MB + mb.RIVER, MB + mb.PIKE, MB + mb.DOCKET):
+            # The hub has four buttons, 0 to 3; the others one or two.
+            for value in ((-1, 9, 4) if stale == BRIEF_HUB else (-1, 9, 4, 2)):
+                with self.subTest(stale=stale, value=value):
+                    a = Asker(self)
+                    a.box_returns(stale, value)
+                    leaf = stale[len(MB):]
+                    road = {mb.RAIL: mb.HUB_RAIL, mb.RIVER: mb.HUB_RIVER}.get(leaf, mb.HUB_PIKE)
+                    answers = {} if stale == BRIEF_HUB else {BRIEF_HUB: [road]}
+                    if leaf == mb.DOCKET:
+                        answers[MB + mb.PIKE] = [mb.PIKE_ASK_QUILL]
+                    shown = a.press(answers)
+                    self.assertEqual(shown[-1], stale, "nothing is shown after the box that gave no answer")
+                    # The pike's brief was shown and answered before the copy's box gave none: that completes the task.
+                    self.assertEqual(a.state()["done"], leaf == mb.DOCKET)
+                    self.assertEqual((a.held(), a.calls["book asked for"]), (0, 0))
+                    self.assertEqual((a.state()["issued"], a.state()["pending"], a.state()["busy"]), (False, False, False))
+                    self.assertEqual(a.world(), a.before)
 
 
 class TheMenu(unittest.TestCase):
@@ -791,6 +830,167 @@ class TheHandOverFails(unittest.TestCase):
         self.assertLess(a.s.now - started, 3.5)
 
 
+class TheReportBox(unittest.TestCase):
+    """After the chapter, with the side quest's case to report, Pritchard's box has two buttons. 1 is the report.
+    0, and only 0, goes on to the briefing. Anything else closes, and the briefing's quest is not so much as started.
+    Every case here goes through the real Spoken, by pressing him."""
+
+    AFTER = MSG + "PritchardAfterAndMore"
+
+    def setUp(self):
+        need_act1_build(self)
+
+    def untouched(self, a, where):
+        self.assertFalse(a.quest.running, where)
+        self.assertEqual((a.quest.done, a.quest.displayed, a.quest.completed_objectives, a.quest.completed), ([], {}, {}, False), where)
+        self.assertIsNone(a.quest.aliases[0].ref, where)
+        self.assertEqual((a.calls["starts"], a.calls["objective shown"], a.calls["book asked for"], a.held()), (0, 0, 0, 0), where)
+        self.assertEqual(a.state(), a.model_state(), where)
+        self.assertEqual(a.world(), a.before, where)             # the side quest, every global, the caps, everybody
+        a.p.same(where)
+
+    def test_no_answer_and_unsupported_answers_close_and_start_nothing(self):
+        for value in (-1, 9, 2, 3, -7, 100):
+            with self.subTest(value=value):
+                a = Asker(self, with_ledger=True)
+                a.box_returns(self.AFTER, value)                 # SEEDED: no person can press these
+                self.assertEqual(a.press(), [self.AFTER])
+                self.untouched(a, "the report box returned %d" % value)
+                self.assertEqual(a.p.g("TLM_G_SQ01_Outcome"), 0)
+
+    def test_explicit_continue_opens_the_briefing(self):
+        a = Asker(self, with_ledger=True)
+        self.assertEqual(a.press({self.AFTER: [0], BRIEF_HUB: [mb.HUB_NOT_NOW]}), [self.AFTER, BRIEF_HUB])
+        self.assertEqual((a.calls["starts"], a.quest.done, a.calls["objective shown"]), (1, [10], 1))
+        self.assertEqual(a.p.g("TLM_G_SQ01_Outcome"), 0)
+        a.p.same("Continue, then Not now")
+
+    def test_the_report_is_the_report_and_starts_nothing(self):
+        a = Asker(self, with_ledger=True)
+        got = a.p.press("Pritchard", {"PritchardAfterAndMore": [1], "PritchardReported": [0]}, ["sq_report"])
+        self.assertEqual(got, ["PritchardAfterAndMore", "PritchardReported"])
+        self.assertEqual(a.p.g("TLM_G_SQ01_Outcome"), 1)
+        self.assertFalse(a.quest.running)
+        self.assertEqual((a.quest.done, a.calls["starts"], a.held()), ([], 0, 0))
+        self.assertEqual([m for m in a.s.messages_shown if m.startswith(MB) and m != BRIEF_HANDOFF], [])
+
+    def test_the_same_once_the_briefing_is_complete(self):
+        a = Asker(self, with_ledger=True)
+        a.ask(TAKE, first={self.AFTER: [0]})
+        before, world = a.state(), a.world()
+        for value in (-1, 9):
+            a.box_returns(self.AFTER, value)
+            self.assertEqual(a.press(), [self.AFTER])
+            self.assertEqual((a.state(), a.world()), (before, world))
+        self.assertEqual(a.calls["starts"], 1)
+
+    def test_without_a_report_to_make_there_is_no_such_box(self):
+        # No report box, so no button to mistake: the activation itself is the asking.
+        a = Asker(self)
+        self.assertEqual(a.press({BRIEF_HUB: [mb.HUB_NOT_NOW]}), [BRIEF_HUB])
+
+
+class StartingTheQuest(unittest.TestCase):
+    """The briefing's quest is started the first time it is needed. If the game says it did not start, or it is not
+    running afterwards, nothing of the briefing happens and the first section ends as it always did.
+
+    SEEDED throughout: what Start returns and whether the quest then runs. Nobody has seen the game refuse to start
+    a quest of this plugin; these tests say what the script does if it does, not that it will."""
+
+    AFTER = MSG + "PritchardAfter"
+    # (what Start returns, whether the quest is then running)
+    FAILURES = {"Start says no and it is not running": (False, False),
+                "Start says yes and it is not running": (True, False),
+                "Start says no and it is running": (False, True)}
+
+    def setUp(self):
+        need_act1_build(self)
+
+    def said(self, a):
+        return [l for l in a.s.papyrus_log if "TLM_MercyBriefing: its quest" in l]
+
+    def test_first_access_with_a_start_that_fails(self):
+        for name, does in self.FAILURES.items():
+            with self.subTest(name):
+                a = Asker(self)
+                a.start_does = does
+                self.assertFalse(a.gates().open())
+                # Pressed for real: the first section's own last line, and nothing of the briefing.
+                self.assertEqual(a.press({self.AFTER: [0]}), [self.AFTER])
+                self.assertEqual((a.quest.done, a.quest.displayed, a.quest.completed_objectives), ([], {}, {}))
+                self.assertIsNone(a.quest.aliases[0].ref)
+                self.assertEqual((a.held(), a.calls["book asked for"], a.calls["objective shown"], a.calls["starts"]), (0, 0, 0, 1))
+                self.assertEqual(a.state(), a.model_state())
+                self.assertEqual(a.world(), a.before)
+                self.assertEqual([l for l in a.s.papyrus_log if l.startswith("error")], [])
+                said = self.said(a)
+                self.assertEqual(len(said), 1, a.s.papyrus_log[-4:])
+                self.assertIn("Start returned %s" % does[0], said[0].replace("true", "True").replace("false", "False"))
+                self.assertIn("running %s" % does[1], said[0].replace("true", "True").replace("false", "False"))
+                self.assertIn("nothing was shown or changed", said[0])
+                if not does[1]:
+                    # Called directly as well: the same refusal, and Start asked once more and no more.
+                    self.assertEqual(a.offer(), (False, []))
+                    self.assertEqual(a.state(), a.model_state())
+                    self.assertEqual(a.calls["starts"], 2)
+                else:
+                    # That one activation was refused. The quest is in fact running, so the next finds it
+                    # so and needs no Start: an ordinary first visit.
+                    self.assertEqual(a.ask(NOT_NOW), [mb.HUB])
+                    self.assertEqual(a.calls["starts"], 1)
+
+    def test_nothing_is_reset_and_it_works_once_the_quest_starts(self):
+        a = Asker(self)
+        a.start_does = (False, False)
+        a.press({self.AFTER: [0]})
+        a.press({self.AFTER: [0]})
+        self.assertEqual(a.calls["starts"], 2)                    # asked each time; never anything else
+        a.start_does = None
+        self.assertEqual(a.ask(TAKE), [mb.HUB, mb.PIKE, mb.DOCKET])
+        self.assertEqual((a.held(), a.quest.done, a.calls["objective shown"], a.calls["objective completed"]), (1, [10, 20], 1, 1))
+
+    def test_normal_first_access_starts_it_once_and_repeats_do_not_start_it_again(self):
+        a = Asker(self)
+        self.assertEqual(a.calls["starts"], 0)
+        a.ask(NOT_NOW)
+        self.assertEqual((a.calls["starts"], a.quest.running), (1, True))
+        for v in (RAIL, TAKE, TAKE, NOT_NOW, RIVER):
+            a.ask(v)
+        self.assertEqual(a.calls["starts"], 1)
+        self.assertTrue(a.quest.completed and a.quest.running)
+
+    def test_a_completed_briefing_found_stopped_and_not_startable_changes_nothing(self):
+        for name, does in self.FAILURES.items():
+            with self.subTest(name):
+                a = Asker(self)
+                a.ask(TAKE)
+                before, world = a.state(), a.world()
+                a.quest.running = False                           # SEEDED: found stopped
+                a.start_does = does
+                self.assertEqual(a.press({self.AFTER: [0]}), [self.AFTER])
+                self.assertEqual((a.state(), a.world()), (before, world))
+                self.assertEqual(a.quest.done, [10, 20])
+                self.assertEqual((a.held(), a.calls["book asked for"]), (1, 1))
+                self.assertEqual(len(self.said(a)), 1)
+                # The game starting it again later: it goes on, with no second copy and nothing shown twice.
+                a.quest.running = False
+                a.start_does = None
+                self.assertEqual(a.ask(TAKE), [mb.HUB, mb.PIKE, mb.DOCKET_ISSUED, mb.NOTE_ISSUED])
+                self.assertEqual((a.held(), a.calls["book asked for"], a.calls["objective shown"], a.calls["objective completed"]), (1, 1, 1, 1))
+
+    def test_stopped_while_a_box_is_open(self):
+        # SEEDED: the quest stops while the hub is open. What was shown stays shown; nothing after it.
+        a = Asker(self)
+
+        def meanwhile(message):
+            if message == BRIEF_HUB:
+                a.quest.running = False
+        a.s.on_box = meanwhile
+        self.assertEqual(a.press({BRIEF_HUB: [mb.HUB_RAIL]}), [BRIEF_HUB])
+        a.s.on_box = None
+        self.assertEqual((a.quest.done, a.calls["objective completed"], a.held(), a.state()["busy"]), ([10], 0, 0, False))
+
+
 class NotBound(unittest.TestCase):
     """A plugin without the binding, or without the helper's records: the
     first section ends as it always did, and says what is missing."""
@@ -978,11 +1178,84 @@ class WhatTheseTestsCatch(unittest.TestCase):
                 self.assertEqual(good.offer(), (False, []))
 
     def test_the_report_button_taken_for_continue(self):
-        scripts = changed_scripts("Act1Walk.psc", "		If ShowLine(SayPritchardAfterAndMore) == 1\n			Report()\n		Else\n			OfferBriefing(akWho)\n		EndIf\n",
+        scripts = changed_scripts("Act1Walk.psc", "		int after = ShowLine(SayPritchardAfterAndMore)\n		If after == 1\n			Report()\n		ElseIf after == 0\n			OfferBriefing(akWho)\n		EndIf\n",
                                   "		ShowLine(SayPritchardAfterAndMore)\n		OfferBriefing(akWho)\n")
         with self.assertRaises((AssertionError, SimError)):
             a = Asker(self, with_ledger=True, scripts=scripts)
             a.p.press("Pritchard", {"PritchardAfterAndMore": [1], "PritchardReported": [0]}, ["sq_report"])
+
+    # ---- what the review of f649f9b found, put back one at a time
+
+    def test_anything_but_the_report_taken_for_continue(self):
+        # The plain Else that the review found: no answer, or a number that is no button, opened the briefing.
+        scripts = changed_scripts("Act1Walk.psc", "		ElseIf after == 0\n			OfferBriefing(akWho)\n		EndIf\n", "		Else\n			OfferBriefing(akWho)\n		EndIf\n")
+        for value in (-1, 9):
+            with self.subTest(value=value):
+                with self.assertRaises((AssertionError, SimError)):
+                    a = Asker(self, with_ledger=True, scripts=scripts)
+                    a.box_returns(MSG + "PritchardAfterAndMore", value)
+                    self.assertEqual(a.press(), [MSG + "PritchardAfterAndMore"])
+                    self.assertFalse(a.quest.running)
+        # And the repaired script on the same two: closed, nothing started.
+        for value in (-1, 9):
+            a = Asker(self, with_ledger=True)
+            a.box_returns(MSG + "PritchardAfterAndMore", value)
+            self.assertEqual(a.press(), [MSG + "PritchardAfterAndMore"])
+            self.assertFalse(a.quest.running)
+
+    def start_ignored(self, old, new, does):
+        scripts = changed_scripts("MercyBriefing.psc", old, new)
+        a = Asker(self, scripts=scripts)
+        a.start_does = does
+        shown = a.press({MSG + "PritchardAfter": [0]})
+        self.assertEqual(shown, [MSG + "PritchardAfter"])
+        self.assertEqual((a.quest.done, a.held()), ([], 0))
+        self.assertIsNone(a.quest.aliases[0].ref)
+
+    def test_a_failed_start_ignored(self):
+        # As the review found it: Start's result and the running state both ignored.
+        whole = ("		If !started || !running\n			Debug.Trace(\"TLM_MercyBriefing: its quest is not running and could not be started (Start returned \" + started + \", running \" + running + \"); nothing was shown or changed\", 2)\n			Return false\n		EndIf\n")
+        for does in ((False, False), (True, False)):
+            with self.subTest(does=does):
+                with self.assertRaises((AssertionError, SimError)):
+                    # The running state is read again by IsOpen, so both looks have to go for this to get through.
+                    scripts = changed_scripts("MercyBriefing.psc", whole, "")
+                    text = (scripts / "MercyBriefing.psc").read_text()
+                    again = "	If !IsRunning()\n		Return false\n	EndIf\n	If !akBriefer"
+                    self.assertEqual(text.count(again), 1)
+                    (scripts / "MercyBriefing.psc").write_text(text.replace(again, "	If !akBriefer"))
+                    a = Asker(self, scripts=scripts)
+                    a.start_does = does
+                    self.assertEqual(a.press({MSG + "PritchardAfter": [0]}), [MSG + "PritchardAfter"])
+
+    def test_only_half_of_the_start_looked_at(self):
+        # Start's word alone, or the running state alone: each has a case the other is needed for.
+        with self.assertRaises((AssertionError, SimError)):
+            self.start_ignored("		If !started || !running\n", "		If !running\n", (False, True))
+        with self.assertRaises((AssertionError, SimError)):
+            scripts = changed_scripts("MercyBriefing.psc", "		If !started || !running\n", "		If !started\n")
+            text = (scripts / "MercyBriefing.psc").read_text()
+            again = "	If !IsRunning()\n		Return false\n	EndIf\n	If !akBriefer"
+            (scripts / "MercyBriefing.psc").write_text(text.replace(again, "	If !akBriefer"))
+            a = Asker(self, scripts=scripts)
+            a.start_does = (True, False)
+            self.assertEqual(a.press({MSG + "PritchardAfter": [0]}), [MSG + "PritchardAfter"])
+        # The repaired script on all three.
+        for does in ((False, False), (True, False), (False, True)):
+            a = Asker(self)
+            a.start_does = does
+            self.assertEqual(a.press({MSG + "PritchardAfter": [0]}), [MSG + "PritchardAfter"])
+
+    def test_a_number_that_is_no_button_taken_for_a_brief_shown(self):
+        scripts = changed_scripts("MercyBriefing.psc", "presented = RailLine.Show() == LEAF_CONTINUE", "presented = RailLine.Show() >= 0")
+        a = Asker(self, scripts=scripts)
+        a.box_returns(MB + mb.RAIL, 9)
+        a.press({BRIEF_HUB: [mb.HUB_RAIL]})
+        self.assertTrue(a.state()["done"], "the mutation was to let this through")
+        good = Asker(self)
+        good.box_returns(MB + mb.RAIL, 9)
+        good.press({BRIEF_HUB: [mb.HUB_RAIL]})
+        self.assertFalse(good.state()["done"])
 
     def test_the_briefing_offered_before_the_chapter_is_over(self):
         scripts = changed_scripts("Act1Walk.psc", "	If !TLM_MQ01.GetStageDone(100) || TLM_G_MQ01_Done.GetValueInt() != 1\n		Return false\n	EndIf\n	TLM:MercyBriefing brief = Briefing()\n	If !brief\n		Return false\n	EndIf\n	Return brief.Offer(akWho)\n",

@@ -2,6 +2,8 @@
 
 16 November 2026. For independent code and source review. Contract: [ACT1_RUNTIME_001.md](ACT1_RUNTIME_001.md). Receipt, written before any change: [ACT1_RUNTIME_001_RECEIPT.md](ACT1_RUNTIME_001_RECEIPT.md).
 
+**Repaired once after independent review of `f649f9b`: section 13.** Sections 1 to 12 describe the candidate and have been corrected in place where the review found them wrong; the file counts in section 2 are those of `f649f9b`, and the repair's own inventory and results are in section 13.
+
 **What this is:** a source candidate. It was built against generated stand-in masters and run in the project's stand-in engine. **It has not been compiled by the Papyrus compiler, not built against the game's master, and not loaded or played in Fallout 4.** Those are the local gates in section 9, and they are pending.
 
 Branch `feat/act1-runtime-001-mercy-briefing`, made from `2efe2dbbaba543f7976a3df86bb81a96463aaa90`. No reset, rebase, merge or force-push; no pull request opened by this work; draft.
@@ -51,10 +53,10 @@ Properties (all `Auto Const`): `TLM_MQ01`, `TLM_G_MQ01_Done` (read only), `Alias
 
 | Function | Does |
 |---|---|
-| `bool Offer(Actor akBriefer)` | The only way in. False, with nothing shown or changed, unless everything is bound and `IsOpen`. Claims `busy` with no call into the game between the test and the claim. Starts its own quest record first (no stage, no objective) |
-| `bool IsOpen(Actor)` | Reads only: the actor alive and in no fight; the player alive; `TLM_MQ01` stages 50, 60 and 100; `TLM_G_MQ01_Done == 1`; `TLM:MQ01Quest.DeliveryAcknowledged()`. Asked before the hub and again after every box before anything is set or given |
+| `bool Offer(Actor akBriefer)` | The only way in. False, with nothing shown or changed, unless its quest is running, everything is bound and `IsOpen`. If its quest is not running it is started first (no stage, no objective), and **both `Start`'s result and the running state afterwards are required**: otherwise false, with a diagnostic naming both, before `busy` is claimed or anything is touched (repair, finding 2). Claims `busy` with no call into the game between the test and the claim |
+| `bool IsOpen(Actor)` | Reads only: its own quest running; the actor alive and in no fight; the player alive; `TLM_MQ01` stages 50, 60 and 100; `TLM_G_MQ01_Done == 1`; `TLM:MQ01Quest.DeliveryAcknowledged()`. Asked before the hub and again after every box before anything is set or given |
 | `bool Ready()` | Every record it cannot do without is bound; names what is not in the script log |
-| `Brief(Actor)` | One visit: alias, stage 10 and the objective once; the hub; at most one road; for the pike at most `AboutTheCopy`; then `Finish` if a brief was shown and `IsOpen` still holds. No loop |
+| `Brief(Actor)` | One visit: alias, stage 10 and the objective once; the hub; at most one road; for the pike at most `AboutTheCopy`; then `Finish` if a brief was shown and `IsOpen` still holds. A brief counts as shown only when its box returns one of its own buttons; no answer (−1) and any other number are not an answer. No loop |
 | `Finish()` | Once: `SetObjectiveCompleted(10)`, `SetStage(20)` |
 | `AboutTheCopy(Actor)`, `GiveCopy(Actor)`, `Acknowledge(Actor)`, `SayPending(Actor)` | The hand-over, section 4 |
 | `bool HasReviewCopy()` | `player.GetItemCount(ReviewCopy) > 0`, read when asked |
@@ -69,7 +71,7 @@ It has no timer, no `OnInit`, no `OnQuestInit`, no load handler, and calls no `S
 - `Group Preview`: `Quest Property TLM_MercyBriefing Auto Const`, optional.
 - `Spoken` calls `TalkPritchard(akWho)`. `TalkPritchard(Actor akWho = None)`: called with nobody, as two existing tests do, it does what it always did.
 - Before stage 60: one call changed, `ShowLine(HandOffLine())` for `ShowLine(SayPritchardHandOff)`. `HandOffLine()` returns the briefing's hand-off if the briefing is bound, otherwise `SayPritchardHandOff`. Stages 50 and 60, the wait for the acknowledgment and the debrief are untouched.
-- After stage 60: with a report to make, `SayPritchardAfterAndMore` as before; its second button is `Report()` and nothing else, its first goes on to `OfferBriefing`. With none, `OfferBriefing`, and only if that returns false `SayPritchardAfter` as before.
+- After stage 60: with a report to make, `SayPritchardAfterAndMore` as before. Its return is read once: 1 is `Report()` and nothing else; **0, and only 0, goes on to `OfferBriefing`; −1 and every other number close, as they did before this work** (repair, finding 1). With no report to make, `OfferBriefing`, and only if that returns false `SayPritchardAfter` as before.
 - `OfferBriefing(Actor)`: false unless somebody was passed on, stage 100 is set, `TLM_G_MQ01_Done` is 1 and the property holds a quest with `TLM:MercyBriefing`; then the briefing's own `Offer`, which reads everything again itself.
 
 The `talking`/`quiet` guard is as it was: the whole visit runs inside `Spoken`'s claim, and scenario 12 (`quiet`) never reaches it.
@@ -141,10 +143,10 @@ Totals of the plugin against the stand-in master: 6 quests (was 5), 64 messages 
 ## 7. Provenance
 
 - **Scripts: 20.** Eighteen have the source text the Details package pins (`tools/win/world-details-artifact.json`, `sourceTextSha256`). `Act1Walk.psc`: was `72B8A9DB…0C90DD`, is `8311DFB920EEE18B98436AE38DB706AFAB1454E03579FB74C7203A7737587B00`. `MercyBriefing.psc`: new, `A5D284748CF9E6C5CD44E8140C3FD0DE48B2535942B030FA777E6BE91B53FD8C`. (SHA-256 of the text with line ends made LF, as the Details packager reads a source. All twenty are in the candidate's manifest.)
-- **Compiled scripts: none here.** The eighteen unchanged sources say nothing about whether a fresh compile reproduces the pinned PEX bytes, and nothing here assumes it.
+- **Compiled scripts: none here, and which ones a bundle takes is fixed** (repair, finding 4). Two things, kept apart. *Proof that the source compiles:* all 20 scripts compiled afresh, log and results kept. *The runtime selected for the bundle:* the 18 scripts whose source is unchanged are bundled as the **reviewed** compiled files of the earlier runtime (the ones `world-details-artifact.json` pins; runtime manifest `F8649EE3…`), byte for byte, each after its source text and its bytes have been checked against those pins; `Act1Walk.pex` and `MercyBriefing.pex` are bundled from the fresh compile. The freshly compiled 18 are not substituted, and nothing assumes the compiler reproduces the earlier bytes. The candidate's manifest records the 18 by name and pinned digest and the 2 by name (`runtimeSelection`); `verify` checks that against this source and the earlier pins.
 - **Id file:** its earlier 316 lines have SHA-256 `CBCB3388AC93BB3CA63D6FEF410DD95A3AB5BC8D5A7C5B4801B9DA4BA2F18119`, the digest of the whole file at the composition commit; eleven ids, 2206 to 2216, follow. The file comes out the same from builds with and without a master.
 - **Earlier manifests:** `world-details-artifact.json`, `world-natural-artifact.json`, `world-story-artifact.json` and `WorldSliceBuilder/expanded-artifact.json` are byte for byte the composition commit's, and none mentions this candidate. Their packagers refuse this checkout: Details because the script names are no longer the 19, Natural because `Act1Walk.psc` is no longer the pinned text.
-- **The candidate's manifest:** `tools/win/mercy-briefing-candidate.json`. Source only. Its `measured` block (master, exterior, 20 compiled scripts) is empty and is to be filled by whoever builds it, from the build. `python3 tools/mercy_briefing_candidate.py verify` checks the checkout against it; `measure <bundle>` prints a built bundle's digests and changes nothing. The recipe is in the manifest.
+- **The candidate's manifest:** `tools/win/mercy-briefing-candidate.json`. Source only. Its `measured` block (master, exterior, 20 compiled scripts) is empty and is to be filled by whoever builds it, from the build. `python3 tools/mercy_briefing_candidate.py verify` checks the checkout against it; `measure <bundle> --fresh-compile <folder>` prints a built bundle's digests, says of each compiled script whether it is the reviewed file it has to be or one of the two fresh ones, whether the full compile holds all 20 and whether the bundle's two are that compile's, exits 1 if not, and changes nothing. The recipe, in seven steps, is in the manifest.
 - **Writing:** `assets/incoming/act1/story` is the same tree object as at `d142104` (`eb40d971…`); strict intake, the 74 fixtures and the four-packet focused check pass unchanged.
 - **Stand-in builds are not pins.** The plugin built here against a generated master is a different file from one built against the game's; no digest of it is recorded anywhere as a pin.
 
@@ -189,7 +191,7 @@ Trials of the checks themselves: 18 tests put one thing wrong in a script (a sec
 
 **Not run here:**
 
-- The five PowerShell fixtures behind `tools/test_world_story_launcher.py`, and `Test-ScenarioReport.ps1`. From reading: `Test-WorldDetailsPackageSafety.ps1` and `Test-WorldNaturalPackageSafety.ps1` each expected the pinned packager to reach its 19-PEX check; with this source the packager stops earlier, at its frozen-source guard, so both would have failed inside `tools/run_checks.sh` on GitHub. Their one expectation each is changed to require exactly that refusal ("Current source names differ from the reviewed19 scripts" and "Current source differs from reviewed logical source: Act1Walk.psc"). **Those two edits have not been executed.** The other three fixtures read no script source and were not changed; whether they pass with the larger skeleton plugin is expected and unverified.
+- The five PowerShell fixtures behind `tools/test_world_story_launcher.py`, and `Test-ScenarioReport.ps1`. From reading: `Test-WorldDetailsPackageSafety.ps1` and `Test-WorldNaturalPackageSafety.ps1` each expected the pinned packager to reach its 19-PEX check; with this source the packager stops earlier, at its frozen-source guard, so both would have failed inside `tools/run_checks.sh` on GitHub. Their one expectation each is changed to require exactly that refusal ("Current source names differ from the reviewed19 scripts" and "Current source differs from reviewed logical source: Act1Walk.psc"). Not executed by me. **As Maya reports: root ran both changed fixtures under Windows PowerShell 5.1, 15 checks each, all passing.** They and the guards they protect are unchanged by the repair. The other three fixtures read no script source and were not changed; whether they pass with the larger skeleton plugin I have not seen.
 - The Papyrus compiler; the game's master; the game.
 
 ## 9. Pending gates
@@ -199,7 +201,8 @@ Trials of the checks themselves: 18 tests put one thing wrong in a script (a sec
 | The remote run of `tools/run_checks.sh` and the PowerShell fixtures on this branch | whoever opens or updates the pull request | not run; see the unrun edits above |
 | Build against the game's master and read-back: old ids, placements and LAND as they were; the new quest, book and messages; both `TLM_A1` and `TLM_WS_A1` pointing at the helper | Maya | **pending** |
 | Windows compile of all 20 scripts | Maya | **pending** |
-| The candidate's measured digests, in its own manifest | Maya | **pending** |
+| The candidate's measured digests, in its own manifest: plugin, exterior, the 20 bundled scripts (18 reviewed, 2 fresh) and, apart, the 20 of the full compile | root | **pending** |
+| A fresh Windows checkout: `verify` and the new tests | root | **pending**; tried here only in a Linux clone with CRLF conversion switched on (section 13) |
 | Private native QA on a fresh disposable profile | root, after source clearance | **pending** |
 
 ## 10. Unresolved mechanics
@@ -208,8 +211,8 @@ Exact, so that the gates above know what to look for. None was worked around by 
 
 1. **Compile.** Only the compiler can settle: an `Actor` parameter defaulting to `None` (`TalkPritchard`); functions returning `TLM:MercyBriefing` and `Message`; the property `TLM_MercyBriefing` beside the type `TLM:MercyBriefing` (named so on purpose, to keep the two apart).
 2. **A script on a quest that was never started.** `HandOffLineOr` is called at the hand-off, before the helper's quest has ever run. If the game does not give such a script its properties, the first section's own hand-off is shown and a "not bound" line is written to the log; nothing else. `Offer` starts the quest record before it reads anything, so the briefing itself does not depend on this.
-3. **A completed quest that goes on answering.** Seen in the game for `TLM_MQ01` only. The helper never stops itself. If the game were to stop a quest at its completing stage, `Offer` would start it again; the builder flags every quest RunOnce, and what that then does is not known.
-4. **Button places.** That `Show` returns a button's place in the record is documented; no box of this project has been answered by hand in a recorded run.
+3. **A completed quest that goes on answering.** Seen in the game for `TLM_MQ01` only. The helper never stops itself. If the game were to stop a quest at its completing stage, `Offer` would ask it to start again; the builder flags every quest RunOnce, and what `Start` then does is not known. Since the repair that case is closed either way: if `Start` says no, or the quest is not running afterwards, the briefing is refused with a diagnostic, nothing is reset or retried, and he says what he always said. Nobody has seen the game refuse; the tests of it are seeded.
+4. **Button places.** That `Show` returns a button's place in the record is documented. Earlier choices of this project have their own independent game receipts; only the **new** Mercy briefing boxes have not been answered in a recorded game run. (Corrected in the repair: this item first said, wrongly, that no box of the project had been.)
 5. **`AddItem` and the count.** Assumed to be in the inventory by the next `GetItemCount`; the script looks for a second. If the game is slower than that, the tester sees the "unconfirmed" note once and the next visit acknowledges the book. Never a second copy. Whether the game shows its own "added" line (`abSilent` false) has not been seen.
 6. **The book.** Against the stand-in master it takes after a note. That it opens and reads as the document in the game, 629 characters in one piece, has not been seen.
 7. **The journal.** Whether a SideQuests quest's stage text and its objective appear as intended, and the objective's pointer at the alias holding Pritchard, have not been seen. The objective is flagged as displayed; nothing here says it is on the screen.
@@ -228,3 +231,77 @@ The receipt, written first, said the speaker prefix adds 19 characters and the l
 ## 12. Rollback
 
 Revert the implementation commit: the 19 scripts, the spec, the id file and the tests return to the composition commit's, and the earlier packagers accept the source again. Nothing was installed anywhere, and the Details package, its pins and the immutable `b280847` checkout were never touched.
+
+## 13. The repair after independent review
+
+One consolidated repair, on branch `feat/act1-runtime-001-repair`, made from `f649f9b24f6105ac83ab0e0c2ecc7860259a28ed`. Receipt, written first: [ACT1_RUNTIME_001_REPAIR_RECEIPT.md](ACT1_RUNTIME_001_REPAIR_RECEIPT.md). The approved scope is unchanged; no speech, record, id or mapping changed.
+
+### The four findings and what was done
+
+| Finding | What it was | What was done |
+|---|---|---|
+| 1. Explicit Continue only | `Act1Walk` used a plain `Else` after the report box, so −1 or a number that is no button opened the briefing and started its quest | The return is read once: 1 the report, 0 the briefing, anything else nothing. Regressions through the real `Spoken` for −1, 9, 2, 3, −7 and 100, for explicit 0 and for the report's 1, on a fresh and on a completed briefing; after each, the side quest, every global, the caps and everybody placed are compared with what they were |
+| 2. Starting the quest must fail closed | `Offer` ignored `Start`'s result and the running state; with a failed start it reached the alias and raised | Both are required, before `busy` and before anything is touched; otherwise false and a diagnostic naming both. `IsOpen` also requires the quest to be running, so it is read again after every box. Seeded tests: `Start` says no and it is not running; says yes and it is not running; says no and it is running; each on first access and on a completed briefing found stopped; nothing is reset, nothing is given twice, and an ordinary visit works once the quest does start. The `Briefer` alias was not changed: it was already Optional |
+| The same mistake in my own boxes | A brief counted as shown on any return of 0 or more | It counts only on a return that is one of that box's buttons. Tried with −1, 2, 4 and 9 on each of the five boxes |
+| 3. Raw digests and Windows line ends | The four earlier manifests had no end-of-line rule; on Windows they are written with CRLF and no longer hash to the pinned, committed LF bytes | Four exact rules in `.gitattributes`, `text eol=lf`. No byte in the repository changes: the four blobs are the composition commit's, and their SHA-256 are the recorded ones. `verify` still fails on a file with other line ends, and now says that this is what it is; an edit is never called that |
+| 4. Which compiled scripts are bundled | The recipe took all 20 from a fresh compile | The policy of section 7, recorded in the manifest and checked; the recipe rewritten in seven steps; `measure` reports and enforces the selection. Measured digests stay empty |
+
+Also corrected: section 10, item 4, as Maya asked.
+
+### A working copy made before the end-of-line rules
+
+Adding the rules changes how Git writes the four files out; it does not rewrite files that are already there and that Git regards as unchanged. A working copy on a machine that converts line ends, checked out before the rules, therefore keeps those four files with CRLF, and `verify` goes on failing there, saying so, until they are written again. Tried in a clone with conversion on: `git checkout-index --force` leaves them as they are; this does it:
+
+```bash
+git diff --quiet -- tools/win/world-details-artifact.json tools/win/world-natural-artifact.json tools/win/world-story-artifact.json tools/WorldSliceBuilder/expanded-artifact.json
+```
+
+Only if that reports no change (exit status 0), delete those four files and check them out again:
+
+```bash
+git checkout -- tools/win/world-details-artifact.json tools/win/world-natural-artifact.json tools/win/world-story-artifact.json tools/WorldSliceBuilder/expanded-artifact.json
+```
+
+A fresh clone needs none of this. Nothing here touches a Git setting outside the repository's own `.gitattributes`.
+
+### Files changed by the repair
+
+`git diff --numstat f649f9b` at the repair commit.
+
+| File | What |
+|---|---|
+| `scripts/Source/User/TLM/Act1Walk.psc` | Finding 1: six lines of the branch after stage 60 |
+| `scripts/Source/User/TLM/MercyBriefing.psc` | Finding 2, the running state in `IsOpen`, and a brief counted only on one of its buttons |
+| `tools/logic_model/mercy_briefing_model.py`, `test_mercy_briefing_model.py` | The gate "its own quest is running or starts" |
+| `tools/papyrus_sim/test_mercy_briefing.py` | 14 more tests (85): the report box, starting the quest, four trials that put the review's defects back |
+| `.gitattributes` | The four rules |
+| `tools/mercy_briefing_candidate.py`, `tools/win/mercy-briefing-candidate.json` | The selection policy, the recipe, `measure`, the message for line ends; the two scripts' new digests |
+| `tools/papyrus_sim/test_mercy_briefing_candidate.py` | 6 more tests (20), and the line-end tests made independent of the working copy's own line ends |
+| `docs/design/ACT1_RUNTIME_001_LEDGER.md`, `ACT1_RUNTIME_001_REPAIR_RECEIPT.md`, `tools/README.md` | This account |
+
+Not changed by the repair: `SpecMercyBriefing.cs`, `Spec.cs`, `SpecAct1.cs`, `formkeys.txt`, the build report, `WorldStory.cs`, the mapping, the projection tests, `test_act1.py`, the two package-safety fixtures, the four earlier manifests, their packagers and pins, `tools/run_checks.sh`, the workflow, the stand-in engine, the accepted writing, and every script but the two named.
+
+The two scripts' source digests are now `Act1Walk.psc` and `MercyBriefing.psc` as recorded in the manifest's `sourceTextSha256`; the other eighteen are the Details pins' as before.
+
+### Results on the repaired tree
+
+In this container; `tools/run_checks.sh` with the PowerShell-only line left out of a scratch copy, as before.
+
+| Check | Result |
+|---|---|
+| Logic model | 115 tests OK, 8 skipped |
+| Plugin build, self-check, report | unchanged from `f649f9b`: 6 quests, 64 messages; the committed report still equals the build's |
+| Consistency | 20 scripts, 268 functions, 243 properties, no problem |
+| Strict intake; 74 fixtures; four-packet check | 227 lines fit; 74 OK; 33 histories |
+| Eight stand-in masters | passed; id file stable |
+| Stand-in engine tests | 378 OK (was 358): briefing 85, projection 13, candidate 20, and the 260 that were there |
+| Scenarios | 65 of 65, 1628 checks; the same with 60 calls a second |
+| `mercy_briefing_candidate.py verify` | passes |
+
+The regressions for findings 1 and 2 were written first and run against `f649f9b`'s scripts: every report-box case with −1 or an unsupported value failed, and every failed-start case, among them Sam's own ("ForceRefTo … while its quest is not running"). They pass on the repaired scripts. Four trials put the defects back one at a time, and each is noticed for that reason and not another.
+
+**The Windows condition, as far as it can be tried here.** A clone of `f649f9b` with Git's line-end conversion switched on for that clone alone reproduces the report exactly: `verify` fails and 10 of the candidate's 14 tests fail. A fresh clone of the repair made the same way writes the four manifests with LF (and the scripts and other text with CRLF); there `verify` passes and the 21 model tests and 189 stand-in tests of the briefing, the projection, the candidate and the first section pass. Doing that showed one more fault of mine, in a test: it assumed the scripts in the working copy have LF. That is corrected. **This is not a Windows machine:** Python there also writes text files with CRLF, which this did not reproduce. The fresh Windows checkout is root's.
+
+### Still pending
+
+Unchanged by the repair: the remote run on a pull request; root's fresh Windows checkout, build and read-back against the game's master, compile of the 20 scripts and the candidate's measured digests; then private native QA. No licensed input was used, uploaded or asked for.
