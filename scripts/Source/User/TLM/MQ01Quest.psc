@@ -121,7 +121,7 @@ int ANS_BLAME = 4 Const
 int ANS_LYING = 5 Const
 int ANS_SILENT = 9 Const
 
-; The only mutable script state. Not authoritative: stages and globals are.
+; Bookkeeping state. Stages and globals remain the story's authority.
 int handsKilledByPlayer = 0
 ; Development aid, read through StageEventsHandled().
 int handledCount = 0
@@ -139,6 +139,19 @@ int resolutionsAtWork = 0
 int resolutionsBegun = 0
 ; A first resolution has gone ahead. Only one may.
 bool encounterClaimed = false
+
+; Native Kill may return before IsDead acknowledges it. These fields track
+; only this version's in-flight/deferred work, never a replacement outcome.
+Actor requestedDeath
+bool deathUnacknowledged = false
+bool townApplying = false
+bool townDeferred = false
+bool townFinished = false
+bool deliveryApplying = false
+bool deliveryDeferred = false
+bool deliveryFinished = false
+bool deliveryRequestedHere = false
+bool betrayalDeferred = false
 
 ; ------------------------------------------------------------ stage dispatch
 
@@ -176,6 +189,7 @@ Event OnStageSet(int auiStageID, int auiItemID)
 	ElseIf auiStageID == 40
 		ApplyTown()
 	ElseIf auiStageID == 50
+		deliveryRequestedHere = true
 		ApplyDelivered()
 	ElseIf auiStageID == 51
 		ApplyDebriefAnswer(ANS_ADMIT)
@@ -196,6 +210,11 @@ Event OnStageSet(int auiStageID, int auiItemID)
 		resolutionsAtWork -= 1
 	EndIf
 	handledCount += 1
+	If resolutionsAtWork == 0 && (betrayalDeferred || townDeferred || deliveryDeferred)
+		; Resume only a request we deferred before its side effects, not a
+		; fresh stage/outcome or another Kill. Old saves have neither flag.
+		ResumeCaravanConsequences()
+	EndIf
 EndEvent
 
 ; ------------------------------------------------- handlers on other threads
@@ -230,7 +249,11 @@ int Function ResolutionStagesSet()
 	Return n
 EndFunction
 
-Function WaitForResolutions(int aiMine)
+bool Function ResolutionsPending(int aiMine)
+	Return ((Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun) || resolutionsAtWork > aiMine)
+EndFunction
+
+bool Function WaitForResolutions(int aiMine)
 	{Comes back when no resolution of the encounter is half done on another
 	thread: none whose handler is at work, and none whose stage is set while
 	its handler has yet to begin. aiMine is 1 when the caller is itself a
@@ -240,14 +263,71 @@ Function WaitForResolutions(int aiMine)
 	after it. Read first, a handler could begin during the calls that follow
 	and be missed: no longer "yet to begin", and not counted as at work.}
 	int tries = 0
-	While tries < 50 && ((Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun) || resolutionsAtWork > aiMine)
+	bool waiting = ResolutionsPending(aiMine)
+	While tries < 50 && waiting
 		Utility.Wait(0.1)
 		tries += 1
+		If tries < 50
+			waiting = ResolutionsPending(aiMine)
+		EndIf
 	EndWhile
 	If tries > 0
 		; For the test runs: the only sign that this guard did something.
 		Debug.Trace("TLM_MQ01: A24 waited " + tries + " tenths of a second for another resolution to finish")
 	EndIf
+	; Return the inspected snapshot; another native query here would yield and
+	; could turn a newly arriving competing handler into a lost betrayal.
+	Return tries < 50 && !waiting
+EndFunction
+
+bool Function ConsequencesAcknowledged()
+	Return !deathUnacknowledged && (!requestedDeath || (requestedDeath.IsDead() && Alias_CaravanDrover.GetActorReference() == requestedDeath)) && !((Outcome() == OUT_NONE && ResolutionStagesSet() > resolutionsBegun) || resolutionsAtWork > 0)
+EndFunction
+
+bool Function LegacyDeliveryAcknowledged()
+	; Read-only evidence: never replay an old save's reward handler merely
+	; because the new deliveryFinished field defaults false.
+	Return GetStageDone(50) && (GetStageDone(60) || TLM_G_MQ01_Done.GetValueInt() == 1 || (IsObjectiveCompleted(20) && TLM_G_MQ01_DebriefVariant.GetValueInt() > 0))
+EndFunction
+
+bool Function DeliveryAcknowledged()
+	Return !deliveryApplying && !deliveryDeferred && ConsequencesAcknowledged() && (deliveryFinished || LegacyDeliveryAcknowledged())
+EndFunction
+
+Function ResumeCaravanConsequences()
+	; A late native acknowledgment can release ONLY our deferred request.
+	; No Kill, resurrection, protection reset or reward replay on old saves.
+	If requestedDeath && requestedDeath.IsDead() && Alias_CaravanDrover.GetActorReference() == requestedDeath
+		deathUnacknowledged = false
+	EndIf
+	If !ConsequencesAcknowledged()
+		Return
+	EndIf
+	If betrayalDeferred
+		; The stage event already counted its start. Re-enter only its owned
+		; unfinished handler, counted as work while it yields, not a new stage.
+		resolutionsAtWork += 1
+		ApplyBetrayal()
+		resolutionsAtWork -= 1
+		If betrayalDeferred || !ConsequencesAcknowledged()
+			Return
+		EndIf
+	EndIf
+	If townDeferred && !townApplying
+		ApplyTown()
+	EndIf
+	If deliveryDeferred && !deliveryApplying && townFinished
+		ApplyDelivered()
+	EndIf
+EndFunction
+
+bool Function WaitForDeliveryAcknowledgment()
+	int polls = 0
+	While polls < 50 && !DeliveryAcknowledged() && !deathUnacknowledged
+		Utility.Wait(0.1)
+		polls += 1
+	EndWhile
+	Return DeliveryAcknowledged()
 EndFunction
 
 bool Function LeadIsDown()
@@ -478,14 +558,21 @@ Function ApplyBetrayal()
 	even over an earlier Saved or Evaded.}
 	; If another resolution is half done on another thread, let it finish:
 	; this one then replaces its outcome instead of being overwritten by it.
-	WaitForResolutions(1)
+	If !WaitForResolutions(1)
+		betrayalDeferred = true
+		Return
+	EndIf
 	bool firstResolution = (Outcome() == OUT_NONE) && ClaimEncounter()
 	If !firstResolution
 		; Another resolution claimed the encounter while the outcome was being
 		; read just now. It writes its outcome when it gets there; this one
 		; has to write after it.
-		WaitForResolutions(1)
+		If !WaitForResolutions(1)
+			betrayalDeferred = true
+			Return
+		EndIf
 	EndIf
+	betrayalDeferred = false
 	TLM_G_CaravanOutcome.SetValueInt(OUT_EXPLOITED)
 	TLM_G_CaravanMethod.SetValueInt(METHOD_BETRAYAL)
 	If firstResolution
@@ -553,7 +640,17 @@ Function KillByCutters(ReferenceAlias akHand)
 		killer = None
 	EndIf
 	hand.SetProtected(false)
+	requestedDeath = hand
 	hand.Kill(killer)
+	int polls = 0
+	While polls < 40 && !hand.IsDead()
+		Utility.Wait(0.1)
+		polls += 1
+	EndWhile
+	deathUnacknowledged = !hand.IsDead()
+	If deathUnacknowledged
+		Debug.Trace("TLM_MQ01: intended death not acknowledged after bounded wait; town/delivery deferred; no retry")
+	EndIf
 EndFunction
 
 Function LootWagon()
@@ -576,10 +673,19 @@ Function RegisterDemoPresentation(TLM:Act1Walk akWalk)
 EndFunction
 
 Function ApplyTown()
+	If townApplying
+		Return
+	EndIf
+	townApplying = true
+	townDeferred = true
+	townFinished = false
 	; A resolution may be half done on another thread: the player left the
 	; ambush and reached the gate in the same breath. Let it finish, because
 	; what follows asks who is alive.
-	WaitForResolutions(0)
+	If !WaitForResolutions(0)
+		townApplying = false
+		Return
+	EndIf
 	; An encounter the player never resolved is resolved now.
 	If IsArmed()
 		SetStage(34)
@@ -590,14 +696,24 @@ Function ApplyTown()
 	; thread's. If its stage had been set a moment earlier, SetStage above came
 	; straight back; if another resolution claimed the encounter first, the
 	; handler above stood aside. Either way someone else is still at work.
-	WaitForResolutions(0)
-	MoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown)
-	MoveHandToTown(Alias_CaravanDrover, Alias_CaravanDroverInTown)
+	If !WaitForResolutions(0) || !ConsequencesAcknowledged()
+		townApplying = false
+		Return
+	EndIf
+	If !MoveHandToTown(Alias_CaravanMaster, Alias_CaravanMasterInTown) || !MoveHandToTown(Alias_CaravanDrover, Alias_CaravanDroverInTown)
+		; A new resolution may arrive during these native calls. Do not mark
+		; a partial pass complete; the owning handler can resume after it ends.
+		townApplying = false
+		Return
+	EndIf
 	int livingGone = DisableCuttersForTown()
 	UpdateAliveAtMercy()
 	If livingGone > 0 && demoPresentation
 		demoPresentation.CuttersDeparted(livingGone)
 	EndIf
+	townFinished = true
+	townDeferred = false
+	townApplying = false
 EndFunction
 
 int Function DisableCuttersForTown()
@@ -648,11 +764,14 @@ int Function DisableCuttersForTown()
 	Return 0
 EndFunction
 
-Function MoveHandToTown(ReferenceAlias akHand, ReferenceAlias akTownAlias)
+bool Function MoveHandToTown(ReferenceAlias akHand, ReferenceAlias akTownAlias)
 	Actor hand = akHand.GetActorReference()
 	ObjectReference yard = Alias_CaravanYard.GetReference()
-	If !hand || hand.IsDead() || !yard
-		Return
+	If !hand || hand.IsDead()
+		Return true
+	EndIf
+	If !yard || !ConsequencesAcknowledged()
+		Return false
 	EndIf
 	If hand.GetDistance(yard) > 1500.0
 		hand.MoveTo(yard)
@@ -660,6 +779,7 @@ Function MoveHandToTown(ReferenceAlias akHand, ReferenceAlias akTownAlias)
 	; In town the hands are Essential, so "no witness" can only follow a
 	; killing on the road.
 	akTownAlias.ForceRefTo(hand)
+	Return true
 EndFunction
 
 Function UpdateAliveAtMercy()
@@ -673,14 +793,39 @@ EndFunction
 ; ------------------------------------------------------------------ stage 50
 
 Function ApplyDelivered()
+	If deliveryApplying || deliveryFinished || (!deliveryDeferred && LegacyDeliveryAcknowledged())
+		Return
+	EndIf
+	If !deliveryRequestedHere && !deliveryDeferred
+		Debug.Trace("TLM_MQ01: no owned delivery request; partial legacy delivery not replayed")
+		Return
+	EndIf
 	Actor player = Game.GetPlayer()
 	If !GetStageDone(20)
 		Debug.Trace("TLM_MQ01: stage 50 set without stage 20; ignored")
 		Return
 	EndIf
+	deliveryApplying = true
+	deliveryDeferred = true
+	If !WaitForResolutions(0)
+		deliveryApplying = false
+		Return
+	EndIf
 	If !GetStageDone(40)
 		SetStage(40)
 	EndIf
+	int townPolls = 0
+	While townPolls < 50 && !townFinished && !deathUnacknowledged
+		Utility.Wait(0.1)
+		townPolls += 1
+	EndWhile
+	If !townFinished || !ConsequencesAcknowledged()
+		deliveryApplying = false
+		Return
+	EndIf
+	; This lock stays set through every irreversible side effect. Interrupted
+	; application is not blindly replayed by recovery.
+	deliveryDeferred = false
 	; Take the dispatch if the player still has it. If it has gone missing
 	; the delivery stands: stage 20 is the proof they earned it.
 	If player.GetItemCount(DispatchItem) > 0
@@ -724,9 +869,14 @@ Function ApplyDelivered()
 	If variant == V_SAVED
 		TLM_MutualTrust.Mod(1)
 	EndIf
+	deliveryFinished = true
+	deliveryApplying = false
 EndFunction
 
 Function ApplyDebriefAnswer(int aiAnswer)
+	If !DeliveryAcknowledged()
+		Return
+	EndIf
 	If !GetStageDone(50) || GetStageDone(60)
 		Return
 	EndIf
@@ -762,6 +912,9 @@ Function ApplyDebriefAnswer(int aiAnswer)
 EndFunction
 
 Function ApplyDebriefDone()
+	If !DeliveryAcknowledged()
+		Return
+	EndIf
 	If TLM_G_MQ01_DebriefAnswer.GetValueInt() == 0
 		TLM_G_MQ01_DebriefAnswer.SetValueInt(ANS_SILENT)
 	EndIf
@@ -785,6 +938,11 @@ EndFunction
 Function Recover()
 	{Repairs state. Grants nothing the player has not already earned.
 	Stage 900 calls this once; after that use: cqf TLM_MQ01 Recover}
+	ResumeCaravanConsequences()
+	If deathUnacknowledged || deliveryApplying
+		Debug.Trace("TLM_MQ01: recovery deferred; consequence or delivery has no acknowledgment; no retry/reset")
+		Return
+	EndIf
 	Actor player = Game.GetPlayer()
 	If GetStageDone(20) && !GetStageDone(50) && player.GetItemCount(DispatchItem) == 0
 		player.AddItem(DispatchItem, 1, true)
