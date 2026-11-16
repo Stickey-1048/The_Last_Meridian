@@ -1,0 +1,669 @@
+<#
+.SYNOPSIS
+  Runs self-test scenarios in the game one after another, with nobody at the
+  keyboard, and collects the results.
+
+.DESCRIPTION
+  Each scenario needs a fresh game session, because the quests run once. For
+  every scenario in the list this script:
+
+    1. writes the scenario number into the installed copy of the plugin (the
+       value of one global variable, TLM_G_DevScenario: four bytes);
+    2. starts the base game through Mod Organizer in the test profile, as
+       Start-TestGame.ps1 does;
+    3. lets the game enter the test room by itself: the test profile's
+       fallout4custom.ini is given  [General] sStartingConsoleCommand=coc qasmoke
+       for the duration of the run, and  bAlwaysActive=1  so the game keeps
+       running when its window is not in front;
+    4. waits. In the game TLM:Core sees the scenario number, runs that
+       scenario of the self-test a few seconds after the room has loaded, and
+       closes the game (Debug.QuitGame);
+    5. reads the self-test's log and the game's script log for that session.
+
+  At the end the scenario number is put back to 0 and the start-up console
+  command is emptied, so the installed plugin is again identical to the build
+  and a manual session behaves as before.
+
+  WHAT IT CHANGES, all of it this project's own: the installed plugin in the
+  Mod Organizer mod folder (four bytes, restored); the test profile's
+  fallout4custom.ini (two settings, put back afterwards); which profile Mod
+  Organizer has selected.
+
+  IT CLOSES THE GAME IT STARTED if a scenario has not finished in time: first
+  by asking the game's window to close, then, if that does nothing, by ending
+  the process. It only runs if no game and no Mod Organizer was open when it
+  began, so the game it closes is the one it started. No save is involved: the
+  sessions are entered with coc and nothing is saved by hand.
+
+  If the first scenario never starts by itself, the automatic entry does not
+  work on this PC; the script stops there and says how to run the scenarios
+  by hand instead.
+
+  The scenarios (scripts/Source/User/TLM/SelfTest.psc):
+    1  both quests by stage numbers alone, every alias empty
+    2  actors made at run time, put into the main quest's aliases and killed
+    3  distance events, and the main quest's "the player has left" watch
+    4  the main quest played through with a caravan made at run time: evaded
+    5  the same: a fight, the Cutter lead killed, the caravan saved
+    6  the same: the ambush never met, resolved when the player reaches town
+    7  the same: the caravan master killed by the player at the ambush
+    8  the same: the caravan saved, then the caravan master killed
+    9  the same: the Cutter lead's deal taken
+    10 a person, a trigger and an object that the plugin itself places in the
+       test room, and the quest aliases that point at them (the placed-content
+       trial, docs\design\TLM_GRAYBOX_trial.md)
+    11 people the plugin places: whether one stays where it is put, and whether
+       activating it reaches a script (the same trial, part two). 10 and 11
+       use the same quest, which runs once: each needs a session of its own,
+       as every scenario gets here.
+    101 and up   the rows of the two test matrices, generated from the logic
+                 model. tools\matrix_cases.json lists them: which rows each
+                 stands for and the events it plays.
+
+  -Scenarios takes numbers, ranges and names, separated by commas:
+    all      1 to 11 and every matrix case (the default; over an hour at the
+             pace of 2026-11-13)
+    basic    1 to 12
+    matrix   every matrix case
+    main     the matrix cases of the main quest (101 to 199)
+    side     the matrix cases of the side quest (201 to 299)
+    4,104-110,side   and so on
+
+    900      not a scenario: the first section of Act I set up for a person
+             to play (tools\win\Play-Act1.ps1). The game stays open until
+             it is closed, and nothing is scored.
+
+  A scenario that stops inside a call which never comes back is ended by a
+  watchdog in the self-test itself, which writes where it stopped; the time
+  limit here is the second line of defence.
+
+  WHAT THE REPORT COUNTS. Scored scenarios and play sessions are counted
+  apart. A scored scenario is PASSED when the self-test wrote its RESULT line
+  and no FAIL line, and the game then closed by itself; the checks in the
+  totals are those of scored scenarios only. If the RESULT line is there but
+  the time ran out and this script had to close the game, the scenario is
+  TIMED OUT: its checks are counted as they were written, and it is not a
+  pass. A play session is SET UP when the game's script log has the line
+  saying the section was set up, and NOT SET UP otherwise. SET UP is not a
+  pass and is never counted as one: nothing is checked in a play session, and
+  the word does not say that anybody played.
+
+  WHEN IT ENDS WITH 0: everything asked for was run, every scored scenario
+  passed, every play session was set up, AND what the run changed was put
+  back: the scenario number, the two settings, each read back after it was
+  written, and the installed plugin the same file as the build again. If any
+  of that could not be put back, the run ends with 1 whatever the scenarios
+  did, the report says which, and the note of how things were
+  (build\scenario-run.unfinished.json) is kept so that the next run tries
+  again. (Until 2026-11-14 a run whose scenarios all passed ended with 0 even
+  when the putting back had failed, and a scenario that wrote RESULT and then
+  hung was called PASSED after this script had closed the game. No run on
+  record shows either. The one session this script had to close, on
+  2026-11-12, had written no RESULT line and was reported as unfinished; in
+  the reports of 2026-11-14 every session closed itself, everything was put
+  back and the installed plugin was the build again.)
+  (Until 2026-11-14 a set-up was reported as PLAYED and counted into
+  "1 of 1 run: 1 passed" with no checks. Reports written before that carry
+  those words.) The reading of the logs, the word for a session and the
+  totals are in Tlm.psm1 and are tested by tests\Test-ScenarioReport.ps1
+  with stand-in logs. On the PC, under Windows PowerShell 5.1, that test
+  passed on 2026-11-14 with no game started: 81 checks when play sessions
+  were first counted apart, 130 with the timeout and the putting back, and
+  all 140 with results being exactly what was asked for. This script in its
+  changed form ran there the same day in one real session (scenario 12,
+  passed, everything put back, ended with 0: docs\design\VERIFY_LOG.md,
+  the eighteenth run). A play session, a failed putting back and a forced
+  close have not happened in a real session with it.
+
+  Status: ran on the owner's PC under Windows PowerShell 5.1 on 2026-11-12,
+  three times. The chain works there: the game enters the room, starts the
+  scenario and closes by itself, 36 seconds per scenario on average; 58
+  scenarios in a row passed in 35 minutes. In the first run a scenario that
+  never finished was closed by this script after the time limit.
+
+  On 2026-11-13, the first run after the PC had been restarted, the game
+  never appeared: Mod Organizer was started and nothing came of it for three
+  minutes. The likely cause is its question about Steam (see Tlm.psm1,
+  Confirm-SteamForManager). What was added for that: Steam is seen to before
+  anything is started; while the game is awaited the window Mod Organizer
+  shows is watched and named; and if the game never appears, what is running
+  is listed and the Mod Organizer this script started is closed, so that it
+  cannot start the game later with the run's settings already taken away.
+
+  The next run that day, with those changes, passed all 62 scenarios. It
+  took the path "Steam is running" and reported that the game folder holds
+  steam_api64.dll. The other paths (Steam started by the script, Mod
+  Organizer showing a window, the game never appearing, a run cut off and
+  repaired) have only been rehearsed against stand-ins.
+
+.EXAMPLE
+  powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1
+.EXAMPLE
+  powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1 -Scenarios 2
+.EXAMPLE
+  powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1 -Scenarios basic
+.EXAMPLE
+  powershell -ExecutionPolicy Bypass -File tools\win\Run-Scenarios.ps1 -Scenarios 119-121,side
+#>
+[CmdletBinding()]
+param(
+    # Numbers, ranges (101-128) and names (all, basic, matrix, main, side),
+    # separated by commas; see the description.
+    [string]$Scenarios = 'all',
+    # Defaults come from build\install-manifest.json (written by Install-Dev.ps1).
+    [string]$ModOrganizerRoot,
+    [string]$ProfileName,
+    # Optional personal-mod launch; default remains the managed Fallout4.exe.
+    [switch]$UseF4SE,
+    # How long to wait for Fallout4.exe to appear after starting Mod Organizer.
+    [int]$StartTimeoutSeconds = 180,
+    # The same for the first scenario, which also has to wake everything up
+    # (the first start after the PC was restarted is the slowest).
+    [int]$FirstStartTimeoutSeconds = 300,
+    # If Steam is not running and Mod Organizer would stop to ask about it,
+    # this script starts Steam in the background. With this switch it asks the
+    # person to start Steam and waits instead.
+    [switch]$NoSteamStart,
+    # How long to wait for the person to start Steam, in that case.
+    [int]$SteamWaitSeconds = 600,
+    # Steam's folder, if it is not where the registry says (also for testing off Windows).
+    [string]$SteamRoot,
+    # How long one scenario may take, from the game appearing to the game closing.
+    # Fifteen minutes. A scenario normally takes half a minute; the one that moves the player about
+    # (10) took 87 seconds on 2026-11-13, 38 of them in a single move. Its steps that move the
+    # player, and the steps of scenario 11 that move anybody or anything, are allowed 150 seconds
+    # each by the self-test's own watchdog, and scenario 11 has some twenty of those: should
+    # several be slow one after another, this limit must not be what ends the scenario.
+    [int]$ScenarioTimeoutSeconds = 900,
+    # Lines to show at the top of the collected results.
+    [string[]]$Preface = @(),
+    # Overrides for testing off Windows.
+    [string]$DocumentsRoot,
+    [string]$LocalAppDataRoot,
+    [switch]$NoClipboard
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot 'Tlm.psm1') -Force
+
+$repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+$build = Join-Path $repo 'build'
+New-Item -ItemType Directory -Force -Path $build | Out-Null
+$modName = 'TheLastMeridian-Dev'
+$pluginName = 'TheLastMeridian.esp'
+$globalName = 'TLM_G_DevScenario'
+$enterCommand = 'coc qasmoke'
+
+# The matrix cases, generated from the logic model: number -> what it is.
+$caseTitles = @{}
+$matrixNumbers = @()
+$matrixFile = Join-Path (Join-Path $repo 'tools') 'matrix_cases.json'
+if (Test-Path -LiteralPath $matrixFile) {
+    foreach ($c in @((Get-Content -LiteralPath $matrixFile -Raw | ConvertFrom-Json).cases)) {
+        $matrixNumbers += [int]$c.scenario
+        $caseTitles[[int]$c.scenario] = "$(@($c.rows) -join ', '): $($c.title)"
+    }
+}
+$basicNumbers = @(1..12)
+# Not a scenario: with this number the game sets the first section of Act I up for a person and
+# stays open. Nothing is scored, and nothing here ends the game: the person does.
+$playNumber = 900
+$basicTitles = @{
+    1 = 'both quests by stages alone'; 2 = 'actors made at run time, in the aliases, killed'
+    3 = 'distance events and the quest''s "the player has left" watch'; 4 = 'evaded'; 5 = 'saved after a fight'
+    6 = 'missed'; 7 = 'betrayal on the road'; 8 = 'murder after saving'; 9 = 'the deal'
+    10 = 'a person, a trigger and an object placed by the plugin (the placed-content trial)'
+    11 = 'people placed by the plugin: do they stay, can they be activated (the trial, part two)'
+    12 = 'Act I, first section: what the plugin places, checked, and one road walked by its stages'
+    900 = 'Act I, first section, set up for a person to play (nothing is scored)'
+}
+foreach ($k in $basicTitles.Keys) { $caseTitles[[int]$k] = $basicTitles[$k] }
+
+$list = New-Object System.Collections.Generic.List[int]
+foreach ($word in @($Scenarios -split '[,; ]+' | Where-Object { $_ -ne '' })) {
+    $add = @()
+    switch -Regex ($word.ToLowerInvariant()) {
+        '^all$'    { $add = $basicNumbers + $matrixNumbers; break }
+        '^basic$'  { $add = $basicNumbers; break }
+        '^matrix$' { $add = $matrixNumbers; break }
+        '^main$'   { $add = @($matrixNumbers | Where-Object { $_ -ge 100 -and $_ -lt 200 }); break }
+        '^side$'   { $add = @($matrixNumbers | Where-Object { $_ -ge 200 -and $_ -lt 300 }); break }
+        '^(\d+)-(\d+)$' { $add = @([int]$Matches[1]..[int]$Matches[2]); break }
+        '^\d+$'    { $add = @([int]$word); break }
+        default    { throw "Not a scenario number, a range or a set name: $word" }
+    }
+    foreach ($n in $add) { if (-not $list.Contains([int]$n)) { $list.Add([int]$n) } }
+}
+if ($list.Count -eq 0) { throw 'No scenarios to run. (A set name gives nothing if tools\matrix_cases.json is missing.)' }
+foreach ($n in $list) { if ($n -lt 1 -or $n -gt 999) { throw "Not a scenario number: $n" } }
+
+$manifestPath = Join-Path $build 'install-manifest.json'
+$m = $null
+if (Test-Path -LiteralPath $manifestPath) { $m = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json }
+function Get-ManifestValue([string]$name) {
+    if ($m -and ($m.PSObject.Properties.Name -contains $name)) { return $m.$name }
+    return $null
+}
+if (-not $ModOrganizerRoot) { $ModOrganizerRoot = Get-ManifestValue 'ModOrganizerRoot' }
+if (-not $ModOrganizerRoot) { $ModOrganizerRoot = 'C:\Modlists\TMR' }
+if (-not $ProfileName) { $ProfileName = Get-ManifestValue 'ProfileName' }
+if (-not $ProfileName) {
+    $pf = Get-ManifestValue 'ProfileFolder'
+    $ProfileName = if ($pf) { Split-Path -Leaf $pf } else { 'TLM-Dev' }
+}
+if ($ProfileName -notmatch '^[\w .\-]+$') { throw "Unusable profile name: $ProfileName" }
+if (-not $DocumentsRoot) { $DocumentsRoot = [Environment]::GetFolderPath('MyDocuments') }
+$scriptLogs = Join-Path (Join-Path (Join-Path (Join-Path $DocumentsRoot 'My Games') 'Fallout4') 'Logs') 'Script'
+$userLog = Join-Path (Join-Path $scriptLogs 'User') 'TLM.0.log'
+$papyrusLog = Join-Path $scriptLogs 'Papyrus.0.log'
+
+# ------------------------------------------------------------- checks
+$mo = Get-ModOrganizerInfo -Root $ModOrganizerRoot
+if (-not $mo) { throw "No ModOrganizer.ini in $ModOrganizerRoot" }
+$moExe = Join-Path $mo.Root 'ModOrganizer.exe'
+if (-not (Test-Path -LiteralPath $moExe)) { throw "No ModOrganizer.exe in $($mo.Root)" }
+if (-not $mo.GamePath) { throw "ModOrganizer.ini in $($mo.Root) names no game folder." }
+if (Test-FalloutLondonFolder $mo.GamePath) {
+    throw "The folder Mod Organizer manages, $($mo.GamePath), is a Fallout London copy. This project is tested on the base game only; nothing was started."
+}
+$gameExe = Join-Path $mo.GamePath 'Fallout4.exe'
+if (-not (Test-Path -LiteralPath $gameExe)) { throw "No Fallout4.exe in $($mo.GamePath)" }
+$launchExe = Get-ScenarioLaunchExecutable -GameExe $gameExe -UseF4SE:$UseF4SE
+$profileFolder = Join-Path $mo.ProfilesDirectory $ProfileName
+$installHint = 'Run:  powershell -ExecutionPolicy Bypass -File tools\win\Run-FirstBuild.ps1 -Install'
+if (-not (Test-Path -LiteralPath $profileFolder)) { throw "The test profile '$ProfileName' does not exist yet. $installHint" }
+$modOn = [bool](@(@(Read-RawLines (Join-Path $profileFolder 'modlist.txt')) | Where-Object { $_ -ieq "+$modName" }).Count)
+$pluginOn = [bool](@(@(Read-RawLines (Join-Path $profileFolder 'plugins.txt')) | Where-Object { $_ -ieq "*$pluginName" }).Count)
+if (-not $modOn) { throw "The mod '$modName' is not switched on in profile '$ProfileName'. $installHint" }
+if (-not $pluginOn) { throw "$pluginName is not active in profile '$ProfileName'. $installHint" }
+$installedPlugin = Join-Path (Join-Path $mo.ModsDirectory $modName) $pluginName
+if (-not (Test-Path -LiteralPath $installedPlugin)) { throw "The test build is not installed ($installedPlugin is missing). $installHint" }
+# Fails here, before anything is started, if the installed plugin predates the scenario number.
+$valueAtStart = Get-PluginGlobal -Path $installedPlugin -EditorId $globalName
+$customIni = Join-Path $profileFolder 'fallout4custom.ini'
+$alwaysActiveBefore = Get-IniValue $customIni 'General' 'bAlwaysActive'
+
+# A run that never reached its end (the PC shut down, the window was closed) could not
+# put back what it had changed, and this run would then take what it finds for how things
+# were. So a run writes down how things were before it changes anything, and removes the
+# note when it has put them back. A note still there means the run before did not finish:
+# its "before" is the real one.
+$unfinishedPath = Join-Path $build 'scenario-run.unfinished.json'
+$unfinished = $null
+if (Test-Path -LiteralPath $unfinishedPath) {
+    try { $unfinished = Get-Content -LiteralPath $unfinishedPath -Raw | ConvertFrom-Json } catch { $unfinished = $null }
+    $sameProfile = $unfinished -and ($unfinished.PSObject.Properties.Name -contains 'CustomIni') -and (Test-SamePath "$($unfinished.CustomIni)" $customIni)
+    if (-not $sameProfile) { $unfinished = $null }
+}
+if ($unfinished) {
+    $alwaysActiveBefore = $unfinished.AlwaysActiveBefore
+    if ($null -ne $unfinished.ScenarioBefore) { $valueAtStart = [int]$unfinished.ScenarioBefore }
+}
+# A run cut off before these notes existed left none. Its mark is the start-up command
+# itself: every run that ends empties it, so if it is there now, a run did not end. How
+# things were before that run is then not known, and the game's own defaults are put back.
+$cutOffWithoutNote = (-not $unfinished) -and ("$(Get-IniValue $customIni 'General' 'sStartingConsoleCommand')".Trim() -ieq $enterCommand)
+if ($cutOffWithoutNote) {
+    $alwaysActiveBefore = '0'
+    $valueAtStart = 0
+}
+
+if (-not (Wait-GameAndManagerClosed)) { throw 'Mod Organizer or Fallout 4 is still open. Close them, then run this again.' }
+
+# Mod Organizer stops and asks about Steam, for a game folder that holds Steam's library,
+# when Steam is not running. Nobody is there to answer, so see to it first.
+$steam = Confirm-SteamForManager -GameFolder $mo.GamePath -SteamRoot $SteamRoot -NoSteamStart:$NoSteamStart -WaitSeconds $SteamWaitSeconds
+if (-not $steam.Ok) { throw ((@($steam.Lines) -join ' ') -replace '\s+', ' ').Trim() }
+
+# ------------------------------------------------------------- helpers
+$ev = New-Object System.Collections.Generic.List[string]
+foreach ($l in $Preface) { $ev.Add($l) }
+function Say([string]$s = '') { $ev.Add($s); Write-Host $s }
+
+function Close-StartedGame {
+    # Asks the game's window to close; ends the process only if that does nothing.
+    $how = 'asked its window to close'
+    foreach ($p in @(Get-RunningGame)) { try { [void]$p.CloseMainWindow() } catch { } }
+    $deadline = (Get-Date).AddSeconds(20)
+    while (@(Get-RunningGame).Count -and (Get-Date) -lt $deadline) { Start-Sleep -Seconds 1 }
+    if (@(Get-RunningGame).Count) {
+        $how = 'ended its process'
+        foreach ($p in @(Get-RunningGame)) { try { Stop-Process -Id $p.Id -Force } catch { } }
+        $deadline = (Get-Date).AddSeconds(15)
+        while (@(Get-RunningGame).Count -and (Get-Date) -lt $deadline) { Start-Sleep -Seconds 1 }
+    }
+    return $how
+}
+
+function Read-ScenarioLogs([datetime]$since) {
+    # What the game wrote for the session that began at $since (the reading is in Tlm.psm1, where it can be tested).
+    return (Read-ScenarioSessionLogs -UserLog $userLog -PapyrusLog $papyrusLog -Since $since)
+}
+
+# ------------------------------------------------------------- the run
+$results = New-Object System.Collections.Generic.List[object]
+$stoppedEarly = $null
+$restoreNotes = New-Object System.Collections.Generic.List[string]
+# Until the putting back has been seen to work, it has not.
+$restoreFailed = $true
+$runStarted = Get-Date
+$gameFolder = Split-Path -Parent $gameExe
+$freshDemoPlan = if ($list.Contains($playNumber)) { Get-FreshDemoStartupPlan -GameFolder $gameFolder } else { $null }
+$batchToRestore = if ($unfinished -and ($unfinished.PSObject.Properties.Name -contains 'FreshDemoBatch')) { $unfinished.FreshDemoBatch } else { $null }
+try {
+    # Finish cleanup from an interrupted fresh launch before creating a new batch.
+    if ($batchToRestore) {
+        [void](Remove-FreshDemoStartupBatch -Plan $batchToRestore -GameFolder $gameFolder)
+        $batchToRestore = $null
+    }
+    Say '== Unattended scenario run =='
+    Say "Scenarios            : $($list.Count) ($Scenarios)"
+    Write-Host "This takes about $([math]::Max(1, [int][math]::Round($list.Count * 36 / 60))) minutes: $($list.Count) game sessions of roughly half a minute each."
+    Say "Game to start        : $gameExe  (Fallout4.exe $(Get-ExeVersion $gameExe))"
+    Say "Launch executable    : $launchExe  (UseF4SE=$([bool]$UseF4SE))"
+    Say "Through              : $moExe   profile $ProfileName"
+    foreach ($l in @($steam.Lines)) { Say $l }
+    if ($unfinished) {
+        Say "An earlier run did not finish (it began $($unfinished.Began)): the PC was shut down, or its window was closed."
+        Say "  What it had changed in the test profile is still changed. This run puts back what was there before THAT run:"
+        Say "  scenario number $($unfinished.ScenarioBefore), keep-running-without-focus $(if ($null -eq $unfinished.AlwaysActiveBefore -or "$($unfinished.AlwaysActiveBefore)" -eq '') { 'not set' } else { $unfinished.AlwaysActiveBefore }), no start-up command."
+    } elseif ($cutOffWithoutNote) {
+        Say "An earlier run did not finish: its start-up command is still in the test profile, and every run that ends removes it."
+        Say "  It left no note of how things were before it. This run puts back the game's own defaults:"
+        Say "  scenario number 0, keep-running-without-focus 0, no start-up command."
+    }
+    # Written before creating the owned batch or changing any startup setting.
+    # Original values recovered from an interrupted run stay the original values.
+    $note = [ordered]@{
+            Began              = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+            CustomIni          = $customIni
+            AlwaysActiveBefore = $alwaysActiveBefore
+            ScenarioBefore     = $valueAtStart
+            FreshDemoBatch     = $freshDemoPlan
+    }
+    Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
+    if ($freshDemoPlan) {
+        $batchToRestore = $freshDemoPlan
+        Write-FreshDemoStartupBatch -Plan $freshDemoPlan -OnStateChanged ({
+            param($plan)
+            Set-Content -LiteralPath $unfinishedPath -Value ($note | ConvertTo-Json) -Encoding utf8
+        }.GetNewClosure())
+        Say 'Fresh play session 900 startup requests seven base SPECIAL values of 4 on a new COC character; no level or health/AP write. Native results require capture.'
+    }
+    Say "Scenario number in the installed plugin before the run: $valueAtStart"
+    Say "Start-up command for the run: [General] sStartingConsoleCommand=$enterCommand  (in $customIni)"
+    Set-IniValue $customIni 'General' 'sStartingConsoleCommand' $enterCommand
+    # The game stops the clock when its window is not in front. Nobody is
+    # watching this run, so it must keep going whatever else has the focus.
+    Say "Keep running without focus for the run: [General] bAlwaysActive=1  (was: $(if ($null -eq $alwaysActiveBefore) { 'not set' } else { $alwaysActiveBefore }))"
+    Set-IniValue $customIni 'General' 'bAlwaysActive' '1'
+
+    $first = $true
+    foreach ($n in $list) {
+        Write-Host ''
+        Write-Host "---- scenario $n ----"
+        # Only the fresh manual demo gets the preset, never a scored session or
+        # a loaded save. The batch first creates a new character with COC.
+        $sessionEntry = if ($n -eq $playNumber) { $freshDemoPlan.Command } else { $enterCommand }
+        Set-IniValue $customIni 'General' 'sStartingConsoleCommand' $sessionEntry
+        Say "Session $n start-up command: $sessionEntry"
+        [void](Set-PluginGlobal -Path $installedPlugin -EditorId $globalName -Value $n)
+        $since = Get-Date
+        $argLine = '-p "{0}" run "{1}"' -f $ProfileName, $launchExe
+        $moProc = Start-Process -FilePath $moExe -ArgumentList $argLine -WorkingDirectory $mo.Root -PassThru
+        try { $null = $moProc.Handle } catch { }
+
+        # Wait for the game to appear. Started this way Mod Organizer has no window of its
+        # own, so a window it shows meanwhile is a question or a message it is waiting on.
+        $game = $null
+        $waitFor = if ($first) { [math]::Max($StartTimeoutSeconds, $FirstStartTimeoutSeconds) } else { $StartTimeoutSeconds }
+        $deadline = $since.AddSeconds($waitFor)
+        $titlesSeen = New-Object System.Collections.Generic.List[string]
+        $titleNow = ''
+        $toldAbout = ''
+        $lastWord = Get-Date
+        while ((Get-Date) -lt $deadline) {
+            $running = @(Get-RunningGame)
+            if ($running.Count) { $game = $running[0]; break }
+            if ($moProc.HasExited -and -not (Test-ModOrganizerRunning)) { break }
+            $titleNow = Get-MainWindowTitle $moProc
+            if ($titleNow -and -not $titlesSeen.Contains($titleNow)) { $titlesSeen.Add($titleNow) }
+            $waited = [int]((Get-Date) - $since).TotalSeconds
+            if ($titleNow -and $titleNow -ne $toldAbout -and $waited -ge 20) {
+                Write-Host "  Mod Organizer has not started the game yet and is showing a window titled '$titleNow'."
+                Write-Host '  If it is asking something and you are there, answer it; the run carries on when the game appears.'
+                $toldAbout = $titleNow
+            } elseif (((Get-Date) - $lastWord).TotalSeconds -ge 30) {
+                Write-Host "  ... waiting for the game to appear ($waited of at most $waitFor seconds)"
+                $lastWord = Get-Date
+            }
+            Start-Sleep -Milliseconds 500
+        }
+        if (-not $game) {
+            # Why not, as far as it can be seen from outside; and Mod Organizer must not be
+            # left to start the game later, when this run's settings have been taken away.
+            $why = 'the game did not appear after Mod Organizer was started'
+            if ($titlesSeen.Count) { $why += "; Mod Organizer was showing a window titled '$($titlesSeen -join "', then '")', so it was waiting for an answer" }
+            Say ''
+            Say "Scenario ${n}: $why."
+            $others = @(Get-ProgramsOfInterest)
+            if ($others.Count) {
+                Say '  Running at that moment (name, started, file):'
+                foreach ($o in $others) {
+                    Say ("    {0,-18} {1,-9} {2}" -f $o.Name, $(if ($o.Started) { $o.Started.ToString('HH:mm:ss') } else { '?' }), $(if ($o.Path) { $o.Path } else { '(could not be read)' }))
+                }
+            } else { Say '  Neither a game, a launcher, Steam, GOG Galaxy nor Mod Organizer was running at that moment.' }
+            $closed = Close-ManagerStartedSince -Process $moProc -Since $since
+            Say "  $closed."
+            $results.Add([pscustomobject]@{ Scenario = $n; Status = 'NOT STARTED'; Seconds = [int]((Get-Date) - $since).TotalSeconds; Logs = $null; Note = $why })
+            $stoppedEarly = "Scenario ${n}: the game did not start. Nothing further was run."
+            break
+        }
+
+        if ($first) {
+            Start-Sleep -Seconds 4
+            $facts = Get-ProcessFacts $game
+            $startedFrom = $facts.Path
+            if (-not $startedFrom -and (Get-Command Get-CimInstance -ErrorAction SilentlyContinue)) {
+                try { $startedFrom = (Get-CimInstance Win32_Process -Filter "ProcessId = $($game.Id)" -ErrorAction Stop).ExecutablePath } catch { }
+            }
+            $usvfs = @($facts.Modules | Where-Object { $_ -match '(?i)^usvfs' })
+            Say "Game process         : started from $(if ($startedFrom) { $startedFrom } else { '(could not be read)' })"
+            Say "Mod Organizer's file system inside the game : $(if ($usvfs.Count) { 'yes' } elseif ($facts.Modules.Count) { 'NOT DETECTED' } else { 'unknown' })"
+            if ($startedFrom -and -not (Test-SamePath $startedFrom $gameExe)) {
+                Say 'This is NOT the managed base game. Nothing further was run.'
+                Write-Host 'Close that game. If it is still open in two minutes this script closes it, because this run started it.'
+                $until = (Get-Date).AddSeconds(120)
+                while (@(Get-RunningGame).Count -and (Get-Date) -lt $until) { Start-Sleep -Seconds 2 }
+                if (@(Get-RunningGame).Count) { Say "  Nobody closed it, so this script $(Close-StartedGame)." }
+                $results.Add([pscustomobject]@{ Scenario = $n; Status = 'WRONG GAME'; Seconds = [int]((Get-Date) - $since).TotalSeconds; Logs = $null; Note = "started from $startedFrom" })
+                $stoppedEarly = 'The wrong copy of the game started.'
+                break
+            }
+            if ($n -ne $playNumber) {
+                Write-Host 'Do not touch the keyboard or mouse in the game: it enters the test room, runs the scenario and closes by itself.'
+            }
+        }
+        if ($n -eq $playNumber) {
+            Write-Host ''
+            Write-Host 'THE GAME IS YOURS. It enters the test room by itself. Wait there: a line appears in the top-left corner,'
+            Write-Host 'and the people of the first section appear over the next minute or so. Then play: the wreck is to your left,'
+            Write-Host 'the road ahead, Mercy Crossing to your right. Quit the game from its own menu when you have seen enough.'
+            Write-Host 'This window waits for that, however long it takes.'
+        }
+
+        # wait for the game to close itself (or, when a person plays, to be closed)
+        $playing = ($n -eq $playNumber)
+        $deadline = if ($playing) { [datetime]::MaxValue } else { (Get-Date).AddSeconds($ScenarioTimeoutSeconds) }
+        $noteEvery = if ($playing) { 300 } else { 30 }
+        $lastNote = Get-Date
+        while (@(Get-RunningGame).Count -and (Get-Date) -lt $deadline) {
+            if (((Get-Date) - $lastNote).TotalSeconds -ge $noteEvery) {
+                if ($playing) { Write-Host "  ... the game has been open for $([int](((Get-Date) - $since).TotalMinutes)) minutes; this window is waiting for it to be closed" }
+                else { Write-Host "  ... scenario $n running for $([int]((Get-Date) - $since).TotalSeconds) seconds" }
+                $lastNote = Get-Date
+            }
+            Start-Sleep -Seconds 1
+        }
+        $closedBy = if ($playing) { 'the game was closed' } else { 'the game closed itself' }
+        $timedOut = $false
+        if (@(Get-RunningGame).Count) {
+            $timedOut = $true
+            $closedBy = "not finished after $ScenarioTimeoutSeconds seconds; this script $(Close-StartedGame)"
+        }
+        $moDeadline = (Get-Date).AddSeconds(60)
+        while ((Test-ModOrganizerRunning) -and (Get-Date) -lt $moDeadline) { Start-Sleep -Seconds 1 }
+
+        $logs = Read-ScenarioLogs $since
+        $seconds = [int]((Get-Date) - $since).TotalSeconds
+        # One word for the session. A play session is SET UP or NOT SET UP and is never a pass.
+        $verdict = Get-ScenarioSessionStatus -Logs $logs -Playing $playing -ClosedBy $closedBy -TimedOut $timedOut
+        $status = $verdict.Status
+        $note = $verdict.Note
+        $results.Add([pscustomobject]@{ Scenario = $n; Status = $status; Seconds = $seconds; Logs = $logs; Note = $note })
+        if ($playing) { Write-Host "  play session ${n}: $status  (nothing is scored; $seconds seconds; $note)" }
+        else { Write-Host "  scenario ${n}: $status  ($($logs.Passed) passed, $($logs.FailLines.Count) failed, $seconds seconds; $note)" }
+
+        if ($first -and -not $playing -and -not $logs.HasUserLog) {
+            # The chain (enter by itself, start by itself) does not work: no point in repeating it.
+            $stoppedEarly = "Scenario ${n} did not start by itself, so the remaining scenarios were not run."
+            break
+        }
+        $first = $false
+    }
+} catch {
+    Say ''
+    Say "UNEXPECTED ERROR in Run-Scenarios.ps1: $($_.Exception.Message)"
+    foreach ($line in ("$($_.ScriptStackTrace)" -split "`r?`n")) { Say "    $line" }
+} finally {
+    # Put back what the run changed, whatever happened, and know whether it all went back.
+    try {
+        $restore = Restore-ScenarioRunState -InstalledPlugin $installedPlugin -GlobalName $globalName -ValueAtStart $valueAtStart `
+            -CustomIni $customIni -AlwaysActiveBefore $alwaysActiveBefore -BuiltPlugin (Join-Path $build $pluginName) `
+            -UnfinishedPath $unfinishedPath -Unfinished $unfinished -CutOffWithoutNote $cutOffWithoutNote `
+            -FreshDemoBatch $batchToRestore -GameFolder $gameFolder
+        foreach ($l in $restore.Notes) { $restoreNotes.Add($l) }
+        $restoreFailed = [bool]$restore.Failed
+    } catch {
+        $restoreFailed = $true
+        $restoreNotes.Add("COULD NOT put back what the run changed: $($_.Exception.Message)")
+        $restoreNotes.Add('The note of how things were is kept (build\scenario-run.unfinished.json), and the next run will try again.')
+    }
+}
+
+# ------------------------------------------------------------- report
+$out = New-Object System.Collections.Generic.List[string]
+$out.Add("The Last Meridian: unattended scenario run   $(Get-Date -Format 'yyyy-MM-dd HH:mm')")
+try {
+    $head = Invoke-Native -Exe 'git' -Arguments @('-C', $repo, 'log', '--oneline', '-1')
+    if ($head.Found -and $head.ExitCode -eq 0) { $out.Add("Repository commit: $($head.Output | Select-Object -First 1)") }
+} catch { }
+$out.Add("Run began: $($runStarted.ToString('yyyy-MM-dd HH:mm:ss')); took $([int]((Get-Date) - $runStarted).TotalSeconds) seconds")
+$out.Add('')
+foreach ($l in $ev) { $out.Add($l) }
+
+$out.Add('')
+$out.Add('== Scenarios ==')
+# Scored scenarios and play sessions are counted apart: a play session has no checks and is never "passed".
+$summary = Get-ScenarioRunSummary -Results $results.ToArray() -Requested $list.ToArray() -PlayNumber $playNumber -Titles $caseTitles -StoppedEarly $stoppedEarly -RestoreFailed $restoreFailed
+foreach ($l in $summary.Lines) { $out.Add($l) }
+if ($stoppedEarly) {
+    $out.Add('')
+    $out.Add("STOPPED EARLY: $stoppedEarly")
+    $out.Add('To run a scenario by hand instead: powershell -ExecutionPolicy Bypass -File tools\win\Start-TestGame.ps1')
+    $out.Add('and in the game:  coc qasmoke   then   cqf TLM_Core RunSelfTest <number>   (one fresh session per scenario).')
+}
+
+$timing = New-Object System.Collections.Generic.List[string]
+foreach ($r in $results) {
+    if (-not $r.Logs) { continue }
+    foreach ($l in $r.Logs.TimingNotes) { $timing.Add(('  {0,3}  self-test : {1}' -f $r.Scenario, $l)) }
+    foreach ($l in $r.Logs.GuardLines) { $timing.Add(('  {0,3}  script log: {1}' -f $r.Scenario, $l)) }
+}
+if ($timing.Count -or @($results | Where-Object { [int]$_.Scenario -ge 100 -and [int]$_.Scenario -ne $playNumber }).Count) {
+    $out.Add('')
+    $out.Add('== Timing: where a rule about timing decided something (amendments A2, A24, A25) ==')
+    if ($timing.Count) { foreach ($l in $timing) { $out.Add($l) } }
+    else { $out.Add('  nowhere: the main quest wrote no such line in this run, and no case noted an overlap') }
+}
+
+foreach ($r in $results) {
+    if (-not $r.Logs) { continue }
+    # A matrix case that passed with a clean script log has nothing more to say than its row in the table.
+    if ([int]$r.Scenario -ge 100 -and $r.Status -eq 'PASSED' -and -not $r.Logs.Problems.Count) { continue }
+    $out.Add('')
+    $out.Add(@($summary.Rows | Where-Object { $_.Scenario -eq [int]$r.Scenario })[0].SectionTitle)
+    if ([int]$r.Scenario -eq $playNumber) { $out.Add('  nothing is checked in a play session; what follows is what the game''s script log holds of it') }
+    if ($r.Logs.Header) { $out.Add("  $($r.Logs.Header)") }
+    $out.Add("  script log: $(if ($r.Logs.HasScriptLog) { "$($r.Logs.ScriptLogLines) lines" } else { 'none for this session' }); core quest started: $($r.Logs.CoreStarted); stage events: $($r.Logs.MqEvents) main quest, $($r.Logs.SqEvents) side quest")
+    foreach ($l in $r.Logs.FailLines) { $out.Add("  $l") }
+    foreach ($l in $r.Logs.InfoLines) { $out.Add("  $l") }
+    if ($r.Logs.ResultLine) { $out.Add("  $($r.Logs.ResultLine)") }
+    if ($r.Status -ne 'PASSED' -and $r.Logs.HasUserLog) {
+        $out.Add("  last step named in the self-test's log: $(if ($r.Logs.LastStep) { $r.Logs.LastStep } else { '(none)' })")
+        if (-not $r.Logs.ResultLine -and $r.Logs.LastLine) { $out.Add("  last line of the self-test's log      : $($r.Logs.LastLine)") }
+    }
+    if ($r.Logs.Problems.Count) {
+        $out.Add("  errors and warnings in the game's script log that name this project ($($r.Logs.Problems.Count)$(if ($r.Logs.Problems.Count -gt 25) { ', first 25 shown' })):")
+        foreach ($l in ($r.Logs.Problems | Select-Object -First 25)) { $out.Add("    $l") }
+    } else {
+        $out.Add("  errors and warnings in the game's script log that name this project: none")
+    }
+    if ((10, 11) -contains [int]$r.Scenario -or $r.Logs.TrialLines.Count) {
+        if ($r.Logs.TrialLines.Count) {
+            $out.Add("  other lines in the game's script log that name the trial's quest ($($r.Logs.TrialLines.Count)$(if ($r.Logs.TrialLines.Count -gt 40) { ', first 40 shown' })):")
+            foreach ($l in ($r.Logs.TrialLines | Select-Object -First 40)) { $out.Add("    $l") }
+        } elseif ($r.Logs.HasScriptLog) {
+            $out.Add("  other lines in the game's script log that name the trial's quest: none")
+        } else {
+            $out.Add("  other lines in the game's script log that name the trial's quest: not known, there is no script log for this session")
+        }
+    }
+    if ((12, $playNumber) -contains [int]$r.Scenario -or $r.Logs.Act1Lines.Count) {
+        $out.Add("  stages set, in order: main quest $(if ($r.Logs.MqStages.Count) { $r.Logs.MqStages -join ', ' } else { 'none' }); side quest $(if ($r.Logs.SqStages.Count) { $r.Logs.SqStages -join ', ' } else { 'none' })")
+        if ($r.Logs.Act1Lines.Count) {
+            $out.Add("  other lines in the game's script log that name the first section's quest ($($r.Logs.Act1Lines.Count)$(if ($r.Logs.Act1Lines.Count -gt 60) { ', first 60 shown' })):")
+            foreach ($l in ($r.Logs.Act1Lines | Select-Object -First 60)) { $out.Add("    $l") }
+        } elseif ($r.Logs.HasScriptLog) {
+            $out.Add("  other lines in the game's script log that name the first section's quest: none")
+        } else {
+            $out.Add("  other lines in the game's script log that name the first section's quest: not known, there is no script log for this session")
+        }
+    }
+    if ($r.Logs.OtherUserLogs.Count) {
+        $out.Add('  other logs written by scripts in this session:')
+        foreach ($l in $r.Logs.OtherUserLogs) { $out.Add("    $l") }
+    }
+    if ($r.Logs.SlowSteps.Count) {
+        $out.Add('  steps that took ten seconds or more, by the clock on the log''s lines:')
+        foreach ($l in $r.Logs.SlowSteps) { $out.Add("    $l") }
+    }
+}
+
+$out.Add('')
+$out.Add('== Put back after the run ==')
+foreach ($l in $restoreNotes) { $out.Add("  $l") }
+$out.Add("  Mod Organizer now has profile '$ProfileName' selected. Switch back to your own profile before you play.")
+$out.Add('')
+$out.Add('A pass means the scripted rules behaved as predicted in the game for that scenario. It is not a test of the')
+$out.Add('quest as a player would meet it.')
+if ($summary.PlayAsked) {
+    $out.Add('SET UP means only that the game''s script log has the line saying the first section was set up for a person.')
+    $out.Add('It is not a pass: nothing was checked, and it does not say that anybody played or that anything in it works.')
+}
+
+$text = Hide-UserFolder ($out -join [Environment]::NewLine)
+$resultPath = Join-Path $build 'scenario-results.txt'
+Set-Content -LiteralPath $resultPath -Value $text -Encoding utf8
+Write-Host ''
+Write-Host $text
+Write-Host ''
+Write-Host "Written to: $resultPath"
+$copied = $false
+if (-not $NoClipboard -and (Get-Command Set-Clipboard -ErrorAction SilentlyContinue)) {
+    try { Set-Clipboard -Value $text; $copied = $true } catch { }
+}
+if ($copied) { Write-Host 'It is also on your clipboard. Click in the chat and press Ctrl+V to send it.' }
+
+if ($summary.ExitCode) { exit $summary.ExitCode }

@@ -1,0 +1,893 @@
+[
+  {
+    "id": "sheriff",
+    "option": "a",
+    "name": "Owen Pritchard",
+    "sex": "male",
+    "apparent_age": 58,
+    "build": "lean",
+    "height": "tall",
+    "skin_tone": "light weathered",
+    "hair": {
+      "colour": "gray",
+      "length": "short",
+      "style": "combed back"
+    },
+    "facial_hair": "short beard",
+    "eyes": "pale blue",
+    "marks": [
+      "healed split in left eyebrow"
+    ],
+    "clothes": {
+      "head": "brimmed field hat",
+      "body": "patched brown duster",
+      "legs": "dark work trousers",
+      "feet": "worn boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "sheriff star",
+      "old revolver"
+    ],
+    "manner": [
+      "watchful",
+      "dry",
+      "restrained"
+    ],
+    "voice": "Slow Tennessee drawl, never raises his voice"
+  },
+  {
+    "id": "sheriff",
+    "option": "b",
+    "name": "Owen Pritchard",
+    "sex": "male",
+    "apparent_age": 55,
+    "build": "average",
+    "height": "average",
+    "skin_tone": "medium weathered",
+    "hair": {
+      "colour": "salt-and-pepper",
+      "length": "medium",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "dark brown",
+    "marks": [
+      "healed split in left eyebrow",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "dark work trousers",
+      "feet": "worn boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "sheriff star",
+      "old revolver"
+    ],
+    "manner": [
+      "watchful",
+      "dry",
+      "restrained"
+    ],
+    "voice": "Slow Tennessee drawl, never raises his voice"
+  },
+  {
+    "id": "gunsmith",
+    "option": "a",
+    "name": "Ada Pike",
+    "sex": "female",
+    "apparent_age": 38,
+    "build": "sturdy",
+    "height": "short",
+    "skin_tone": "medium brown",
+    "hair": {
+      "colour": "black",
+      "length": "medium",
+      "style": "braid tucked up"
+    },
+    "facial_hair": "none",
+    "eyes": "brown",
+    "marks": [
+      "burn scar on right wrist"
+    ],
+    "clothes": {
+      "head": "none",
+      "body": "oil-stained canvas work coat",
+      "legs": "dark canvas trousers",
+      "feet": "heavy boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "calipers",
+      "folding rule"
+    ],
+    "manner": [
+      "blunt",
+      "wry",
+      "precise"
+    ],
+    "voice": "Low clipped vowels; speaks like measuring a bore"
+  },
+  {
+    "id": "gunsmith",
+    "option": "b",
+    "name": "Ada Pike",
+    "sex": "female",
+    "apparent_age": 42,
+    "build": "lean",
+    "height": "average",
+    "skin_tone": "light brown",
+    "hair": {
+      "colour": "dark brown",
+      "length": "short",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "none",
+    "eyes": "dark brown",
+    "marks": [
+      "burn scar on right wrist",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "dark canvas trousers",
+      "feet": "heavy boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "calipers",
+      "folding rule"
+    ],
+    "manner": [
+      "blunt",
+      "wry",
+      "precise"
+    ],
+    "voice": "Low clipped vowels; speaks like measuring a bore"
+  },
+  {
+    "id": "merchant",
+    "option": "a",
+    "name": "Silas Vane",
+    "sex": "male",
+    "apparent_age": 49,
+    "build": "average",
+    "height": "average",
+    "skin_tone": "olive",
+    "hair": {
+      "colour": "dark brown",
+      "length": "short",
+      "style": "side part"
+    },
+    "facial_hair": "moustache",
+    "eyes": "hazel",
+    "marks": [
+      "one capped tooth"
+    ],
+    "clothes": {
+      "head": "felt cap",
+      "body": "mended striped waistcoat",
+      "legs": "faded slacks",
+      "feet": "well-kept boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "account book",
+      "pencil"
+    ],
+    "manner": [
+      "courteous",
+      "calculating",
+      "unhurried"
+    ],
+    "voice": "Warm courteous speech with precise pauses"
+  },
+  {
+    "id": "merchant",
+    "option": "b",
+    "name": "Silas Vane",
+    "sex": "male",
+    "apparent_age": 46,
+    "build": "sturdy",
+    "height": "tall",
+    "skin_tone": "medium weathered",
+    "hair": {
+      "colour": "salt-and-pepper",
+      "length": "medium",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "dark brown",
+    "marks": [
+      "one capped tooth",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "faded slacks",
+      "feet": "well-kept boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "account book",
+      "pencil"
+    ],
+    "manner": [
+      "courteous",
+      "calculating",
+      "unhurried"
+    ],
+    "voice": "Warm courteous speech with precise pauses"
+  },
+  {
+    "id": "physician",
+    "option": "a",
+    "name": "Miriam Keene",
+    "sex": "female",
+    "apparent_age": 53,
+    "build": "lean",
+    "height": "average",
+    "skin_tone": "dark brown",
+    "hair": {
+      "colour": "silver-gray",
+      "length": "short",
+      "style": "close cropped"
+    },
+    "facial_hair": "none",
+    "eyes": "dark brown",
+    "marks": [
+      "wire spectacles"
+    ],
+    "clothes": {
+      "head": "cloth hair wrap",
+      "body": "washed cotton jacket",
+      "legs": "loose gray trousers",
+      "feet": "flat shoes",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "bandage rolls",
+      "metal forceps"
+    ],
+    "manner": [
+      "impatient",
+      "compassionate",
+      "severe"
+    ],
+    "voice": "Flat voice; gets gentle only with frightened patients"
+  },
+  {
+    "id": "physician",
+    "option": "b",
+    "name": "Miriam Keene",
+    "sex": "female",
+    "apparent_age": 57,
+    "build": "average",
+    "height": "short",
+    "skin_tone": "light brown",
+    "hair": {
+      "colour": "salt-and-pepper",
+      "length": "medium",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "none",
+    "eyes": "hazel",
+    "marks": [
+      "wire spectacles",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "loose gray trousers",
+      "feet": "flat shoes",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "bandage rolls",
+      "metal forceps"
+    ],
+    "manner": [
+      "impatient",
+      "compassionate",
+      "severe"
+    ],
+    "voice": "Flat voice; gets gentle only with frightened patients"
+  },
+  {
+    "id": "deputy",
+    "option": "a",
+    "name": "Jonah Talbot",
+    "sex": "male",
+    "apparent_age": 21,
+    "build": "slight",
+    "height": "tall",
+    "skin_tone": "light freckled",
+    "hair": {
+      "colour": "ginger",
+      "length": "short",
+      "style": "untidy"
+    },
+    "facial_hair": "none",
+    "eyes": "green",
+    "marks": [
+      "large ears"
+    ],
+    "clothes": {
+      "head": "soft brim cap",
+      "body": "oversized deputy vest",
+      "legs": "rolled canvas pants",
+      "feet": "oversize boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "tin whistle",
+      "service carbine"
+    ],
+    "manner": [
+      "earnest",
+      "awkward",
+      "chatty"
+    ],
+    "voice": "Quick clipped voice, runs out of breath"
+  },
+  {
+    "id": "deputy",
+    "option": "b",
+    "name": "Jonah Talbot",
+    "sex": "male",
+    "apparent_age": 18,
+    "build": "lean",
+    "height": "average",
+    "skin_tone": "medium weathered",
+    "hair": {
+      "colour": "dark brown",
+      "length": "medium",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "dark brown",
+    "marks": [
+      "large ears",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "rolled canvas pants",
+      "feet": "oversize boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "tin whistle",
+      "service carbine"
+    ],
+    "manner": [
+      "earnest",
+      "awkward",
+      "chatty"
+    ],
+    "voice": "Quick clipped voice, runs out of breath"
+  },
+  {
+    "id": "freight",
+    "option": "a",
+    "name": "Corwin Haskell",
+    "sex": "male",
+    "apparent_age": 45,
+    "build": "heavy",
+    "height": "short",
+    "skin_tone": "medium tan",
+    "hair": {
+      "colour": "brown",
+      "length": "short",
+      "style": "comb-over"
+    },
+    "facial_hair": "stubble",
+    "eyes": "gray",
+    "marks": [
+      "ink stain on middle finger"
+    ],
+    "clothes": {
+      "head": "flat cap",
+      "body": "dark suspenders and shirt",
+      "legs": "creased brown trousers",
+      "feet": "lace boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "freight book",
+      "string"
+    ],
+    "manner": [
+      "meticulous",
+      "timid",
+      "deadpan"
+    ],
+    "voice": "Thin nasal voice, loves arithmetic"
+  },
+  {
+    "id": "freight",
+    "option": "b",
+    "name": "Corwin Haskell",
+    "sex": "male",
+    "apparent_age": 49,
+    "build": "sturdy",
+    "height": "average",
+    "skin_tone": "light brown",
+    "hair": {
+      "colour": "dark brown",
+      "length": "medium",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "dark brown",
+    "marks": [
+      "ink stain on middle finger",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "creased brown trousers",
+      "feet": "lace boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "freight book",
+      "string"
+    ],
+    "manner": [
+      "meticulous",
+      "timid",
+      "deadpan"
+    ],
+    "voice": "Thin nasal voice, loves arithmetic"
+  },
+  {
+    "id": "caravan_master",
+    "option": "a",
+    "name": "Nell Fenwick",
+    "sex": "female",
+    "apparent_age": 47,
+    "build": "sturdy",
+    "height": "tall",
+    "skin_tone": "light weathered",
+    "hair": {
+      "colour": "auburn",
+      "length": "long",
+      "style": "tied under kerchief"
+    },
+    "facial_hair": "none",
+    "eyes": "gray",
+    "marks": [
+      "scar beneath chin"
+    ],
+    "clothes": {
+      "head": "kerchief",
+      "body": "oilcloth coat",
+      "legs": "muddy work pants",
+      "feet": "high boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "wagon keys",
+      "short knife"
+    ],
+    "manner": [
+      "sharp",
+      "resolute",
+      "grudging"
+    ],
+    "voice": "Rasping alto, always sounds in a hurry"
+  },
+  {
+    "id": "caravan_master",
+    "option": "b",
+    "name": "Nell Fenwick",
+    "sex": "female",
+    "apparent_age": 44,
+    "build": "lean",
+    "height": "average",
+    "skin_tone": "medium weathered",
+    "hair": {
+      "colour": "salt-and-pepper",
+      "length": "short",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "none",
+    "eyes": "dark brown",
+    "marks": [
+      "scar beneath chin",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "muddy work pants",
+      "feet": "high boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "wagon keys",
+      "short knife"
+    ],
+    "manner": [
+      "sharp",
+      "resolute",
+      "grudging"
+    ],
+    "voice": "Rasping alto, always sounds in a hurry"
+  },
+  {
+    "id": "drover",
+    "option": "a",
+    "name": "Abel Rudd",
+    "sex": "male",
+    "apparent_age": 34,
+    "build": "heavy",
+    "height": "tall",
+    "skin_tone": "deep brown",
+    "hair": {
+      "colour": "black",
+      "length": "shaved",
+      "style": "shaved"
+    },
+    "facial_hair": "stubble",
+    "eyes": "dark brown",
+    "marks": [
+      "broken nose"
+    ],
+    "clothes": {
+      "head": "broad straw hat",
+      "body": "sleeveless patched coat",
+      "legs": "heavy twill trousers",
+      "feet": "work boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "harness hook",
+      "rope"
+    ],
+    "manner": [
+      "patient",
+      "literal",
+      "stubborn"
+    ],
+    "voice": "Soft baritone with surprisingly careful diction"
+  },
+  {
+    "id": "drover",
+    "option": "b",
+    "name": "Abel Rudd",
+    "sex": "male",
+    "apparent_age": 38,
+    "build": "sturdy",
+    "height": "average",
+    "skin_tone": "light brown",
+    "hair": {
+      "colour": "dark brown",
+      "length": "short",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "hazel",
+    "marks": [
+      "broken nose",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "heavy twill trousers",
+      "feet": "work boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "harness hook",
+      "rope"
+    ],
+    "manner": [
+      "patient",
+      "literal",
+      "stubborn"
+    ],
+    "voice": "Soft baritone with surprisingly careful diction"
+  },
+  {
+    "id": "cutter_lead",
+    "option": "a",
+    "name": "Reese Dunmore",
+    "sex": "male",
+    "apparent_age": 43,
+    "build": "lean",
+    "height": "average",
+    "skin_tone": "pale sunburnt",
+    "hair": {
+      "colour": "sandy blond",
+      "length": "medium",
+      "style": "swept back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "blue",
+    "marks": [
+      "cut through right eyebrow"
+    ],
+    "clothes": {
+      "head": "old slouch hat",
+      "body": "dark oilskin coat",
+      "legs": "dusty trousers",
+      "feet": "worn riding boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "short revolver",
+      "coin"
+    ],
+    "manner": [
+      "sarcastic",
+      "threatening",
+      "vain"
+    ],
+    "voice": "Smiling drawl that turns cold in one word"
+  },
+  {
+    "id": "cutter_lead",
+    "option": "b",
+    "name": "Reese Dunmore",
+    "sex": "male",
+    "apparent_age": 40,
+    "build": "average",
+    "height": "tall",
+    "skin_tone": "medium weathered",
+    "hair": {
+      "colour": "dark brown",
+      "length": "short",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "dark brown",
+    "marks": [
+      "cut through right eyebrow",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "dusty trousers",
+      "feet": "worn riding boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "short revolver",
+      "coin"
+    ],
+    "manner": [
+      "sarcastic",
+      "threatening",
+      "vain"
+    ],
+    "voice": "Smiling drawl that turns cold in one word"
+  },
+  {
+    "id": "marshal",
+    "option": "a",
+    "name": "Tobias Gantt",
+    "sex": "male",
+    "apparent_age": 62,
+    "build": "sturdy",
+    "height": "average",
+    "skin_tone": "medium brown",
+    "hair": {
+      "colour": "gray",
+      "length": "short",
+      "style": "close cropped"
+    },
+    "facial_hair": "full beard",
+    "eyes": "brown",
+    "marks": [
+      "scar at left temple"
+    ],
+    "clothes": {
+      "head": "rail cap",
+      "body": "rail marshal greatcoat",
+      "legs": "dark uniform trousers",
+      "feet": "high boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "dispatch case",
+      "revolver"
+    ],
+    "manner": [
+      "dutiful",
+      "tired",
+      "careful"
+    ],
+    "voice": "Gravelly cadence recorded in journal notes; deceased"
+  },
+  {
+    "id": "marshal",
+    "option": "b",
+    "name": "Tobias Gantt",
+    "sex": "male",
+    "apparent_age": 66,
+    "build": "lean",
+    "height": "short",
+    "skin_tone": "light brown",
+    "hair": {
+      "colour": "salt-and-pepper",
+      "length": "medium",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "stubble",
+    "eyes": "dark brown",
+    "marks": [
+      "scar at left temple",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "dark uniform trousers",
+      "feet": "high boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "dispatch case",
+      "revolver"
+    ],
+    "manner": [
+      "dutiful",
+      "tired",
+      "careful"
+    ],
+    "voice": "Gravelly cadence recorded in journal notes; deceased"
+  },
+  {
+    "id": "cutter",
+    "option": "a",
+    "name": "Unnamed Tellico Cutter",
+    "sex": "female",
+    "apparent_age": 29,
+    "build": "lean",
+    "height": "short",
+    "skin_tone": "dark olive",
+    "hair": {
+      "colour": "black",
+      "length": "medium",
+      "style": "rough ponytail"
+    },
+    "facial_hair": "none",
+    "eyes": "amber",
+    "marks": [
+      "crooked front tooth"
+    ],
+    "clothes": {
+      "head": "headscarf",
+      "body": "patched brown jacket",
+      "legs": "black work pants",
+      "feet": "rough boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "knife",
+      "small sack"
+    ],
+    "manner": [
+      "suspicious",
+      "fast",
+      "mocking"
+    ],
+    "voice": "Fast hoarse mutter"
+  },
+  {
+    "id": "cutter",
+    "option": "b",
+    "name": "Unnamed Tellico Cutter",
+    "sex": "female",
+    "apparent_age": 26,
+    "build": "average",
+    "height": "average",
+    "skin_tone": "medium weathered",
+    "hair": {
+      "colour": "dark brown",
+      "length": "short",
+      "style": "loosely tied back"
+    },
+    "facial_hair": "none",
+    "eyes": "dark brown",
+    "marks": [
+      "crooked front tooth",
+      "tired eyes"
+    ],
+    "clothes": {
+      "head": "no hat",
+      "body": "patched wool jacket over work shirt",
+      "legs": "black work pants",
+      "feet": "rough boots",
+      "extras": [
+        "well-used belt",
+        "mended stitching"
+      ]
+    },
+    "carries": [
+      "knife",
+      "small sack"
+    ],
+    "manner": [
+      "suspicious",
+      "fast",
+      "mocking"
+    ],
+    "voice": "Fast hoarse mutter"
+  }
+]

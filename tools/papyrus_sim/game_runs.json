@@ -1,0 +1,2946 @@
+{
+  "_note": "What Fallout 4 1.10.163 actually did with this project's scripts on the owner's PC, as reported back (docs/design/VERIFY_LOG.md). tools/papyrus_sim/test_sim.py replays each run in the stand-in engine, with the scripts as they were at that commit, and fails if the stand-in gives a different result. Add a run here only from a real report; never edit a number to make a test pass. From the eleventh run on, a scenario also records the lines the main quest's timing guards wrote to the script log (guard_lines; the report lists them for the whole run, so an empty list is a recorded fact too) and, where a case notes it, whether two handlers overlapped (overlap). A key that begins stand_in_ is not a fact about the game: it tells the replay which of the stand-in's modes to use. Scenario 132 of the eleventh run overlapped in the game, which the stand-in's ordinary mode cannot do at all; it is replayed with every call taking a frame, and the number of tenths waited is then not compared, because that mode provokes overlaps and predicts no timings. A run may carry not_replayed: scenario number, then the key that is not compared, then the reason. It is for lines that came out as they did because of how fast that session of the game happened to run, which the stand-in does not model. The lines themselves are recorded all the same, the replay fails if the stand-in does give them (the exemption is then stale), and everything else about that scenario is compared as usual. From the thirteenth run on a line may also be left out of the replay because it is a place in the game's own test room, which the stand-in does not have; the reason says so. A run may carry scripts_commit: the commit whose scripts are replayed, when that is not the commit the run was made at. It is for a run made on a branch whose commits may not outlive its merge (a merge that squashes or rebases gives them new names): scripts_commit names a commit of the main line that holds the very same scripts, file for file, and the replay checks that they are the same whenever both commits are there.",
+  "runs": [
+    {
+      "name": "fifth run, 2026-11-12: the stages had no items",
+      "commit": "87d04d5",
+      "how": "console",
+      "plugin_fault": "stages_without_items",
+      "scenarios": {
+        "1": {
+          "passed": 26,
+          "failed": 34,
+          "result_line": true,
+          "first_failure": "MQ01 objective 10 displayed: expected true, was false",
+          "main_stage_events": 0,
+          "side_stage_events": 0
+        }
+      }
+    },
+    {
+      "name": "sixth run, 2026-11-12: the self-test passes, by hand",
+      "commit": "63b31d1",
+      "how": "console",
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        }
+      }
+    },
+    {
+      "name": "eighth run, 2026-11-12: the first unattended run",
+      "commit": "1b832da",
+      "how": "unattended",
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": false,
+          "ends_by_itself": false,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: caravan master after Kill(player): dead = True"
+          ]
+        }
+      }
+    },
+    {
+      "name": "ninth run, 2026-11-12: all nine scenarios pass",
+      "commit": "3b73468",
+      "how": "unattended",
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        },
+        "2": {
+          "passed": 14,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: caravan master after Kill(player): dead = True",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "3": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 4,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: distance to the new marker = 0.000000",
+            "probe: distance to the marker after moving it = 2000.000000; the event reported 2000.000000",
+            "probe: distance to the ambush centre = 5000.000000; the quest's evade distance is 4000.000000",
+            "probe: the item with no model was placed; Is3DLoaded = False",
+            "this experiment did not come back, and the scenario was ended here: EXPERIMENT: moving a placed item that has no model by 300 units",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "4": {
+          "passed": 27,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C4: player in combat before the evade timer runs out: False",
+            "C4: caravan master in the town alias, which is flagged Essential: IsEssential = True",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "5": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C5: after StartCombat on the Cutter lead: stage 30 set = True, lead in combat = True, player in combat = True",
+            "C5: player in combat after the rescue: False",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "6": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C6: drover straight after the town stage: dead = True",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "7": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "8": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "9": {
+          "passed": 21,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        }
+      }
+    },
+    {
+      "name": "tenth run, 2026-11-12: the nine scenarios and the 49 matrix cases all pass",
+      "commit": "499104e",
+      "how": "unattended",
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        },
+        "2": {
+          "passed": 14,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: caravan master after Kill(player): dead = True",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "3": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 4,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: distance to the new marker = 0.000000",
+            "probe: distance to the marker after moving it = 2000.000000; the event reported 2000.000000",
+            "probe: distance to the ambush centre = 5000.000000; the quest's evade distance is 4000.000000",
+            "probe: the item with no model was placed; Is3DLoaded = False",
+            "this experiment did not come back, and the scenario was ended here: EXPERIMENT: moving a placed item that has no model by 300 units",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "4": {
+          "passed": 27,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C4: player in combat before the evade timer runs out: False",
+            "C4: caravan master in the town alias, which is flagged Essential: IsEssential = True",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "5": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C5: after StartCombat on the Cutter lead: stage 30 set = True, lead in combat = True, player in combat = True",
+            "C5: player in combat after the rescue: False",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "6": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C6: drover straight after the town stage: dead = True",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "7": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "8": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "9": {
+          "passed": 21,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "101": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "102": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "103": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "104": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "105": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "106": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "107": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "108": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "109": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "110": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "111": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "112": {
+          "passed": 40,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "113": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "114": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "115": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "116": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "117": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "118": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "119": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "120": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "121": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "122": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "123": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "124": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "125": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "126": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "127": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "128": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "201": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "202": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "203": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "204": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "205": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "206": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "207": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "208": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "209": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "210": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "211": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "212": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "213": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "214": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "215": {
+          "passed": 44,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "216": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "217": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "218": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "219": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "220": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        },
+        "221": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true
+        }
+      }
+    },
+    {
+      "name": "eleventh run, 2026-11-12: all 62 scenarios pass with the A24 guards; the tagged commit",
+      "commit": "c1e6d48",
+      "how": "unattended",
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ],
+          "guard_lines": []
+        },
+        "2": {
+          "passed": 14,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: caravan master after Kill(player): dead = True",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ],
+          "guard_lines": []
+        },
+        "3": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 4,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: distance to the new marker = 0.000000",
+            "probe: distance to the marker after moving it = 2000.000000; the event reported 2000.000000",
+            "probe: distance to the ambush centre = 5000.000000; the quest's evade distance is 4000.000000",
+            "probe: the item with no model was placed; Is3DLoaded = False",
+            "this experiment did not come back, and the scenario was ended here: EXPERIMENT: moving a placed item that has no model by 300 units",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ],
+          "guard_lines": []
+        },
+        "4": {
+          "passed": 27,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C4: player in combat before the evade timer runs out: False",
+            "C4: caravan master in the town alias, which is flagged Essential: IsEssential = True",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ],
+          "guard_lines": []
+        },
+        "5": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C5: after StartCombat on the Cutter lead: stage 30 set = True, lead in combat = True, player in combat = True",
+            "C5: player in combat after the rescue: False",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ],
+          "guard_lines": []
+        },
+        "6": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C6: drover straight after the town stage: dead = True",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ],
+          "guard_lines": []
+        },
+        "7": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ],
+          "guard_lines": []
+        },
+        "8": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ],
+          "guard_lines": []
+        },
+        "9": {
+          "passed": 21,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ],
+          "guard_lines": []
+        },
+        "101": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "102": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "103": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "104": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "105": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "106": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "107": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "108": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "109": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "110": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "111": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "112": {
+          "passed": 40,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "113": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "114": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "115": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "116": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "117": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "118": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "119": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "120": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "121": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "122": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "123": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "124": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "125": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "126": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "127": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "128": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "129": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "130": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "131": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "132": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 3 tenths of a second for another resolution to finish"
+          ],
+          "overlap": "True",
+          "stand_in_mode": "calls take a frame"
+        },
+        "201": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "202": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "203": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "204": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "205": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "206": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "207": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "208": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "209": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "210": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "211": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "212": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "213": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "214": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "215": {
+          "passed": 44,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "216": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "217": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "218": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "219": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "220": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "221": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        }
+      }
+    },
+    {
+      "name": "twelfth run, 2026-11-13: all 62 pass with A25 and the lines that say what held the timer back; a slower session",
+      "commit": "11b92ad",
+      "how": "unattended",
+      "not_replayed": {
+        "2": {
+          "guard_lines": "Two resolutions overlapped in this session: the caravan master's death was announced while the rescue before it was still being handled, and the guard waited a tenth of a second. Deaths were announced within a fraction of a second in this session, against about a second before. The stand-in's ordinary mode has no time in it, and with calls taking a frame its deaths are still announced later than that."
+        },
+        "4": {
+          "info": "Straight after the town stage the caravan master, by then in an alias flagged Essential, was reported as not Essential. In the four runs before she was. The stand-in applies an alias's flags at once."
+        },
+        "5": {
+          "info": "The fight did not make the ambush live within eight seconds, though the lead and the player were in combat; it had in the three runs before. The case then set the stage itself, which is its seventh handler. In the stand-in the alias script always hears the fight."
+        },
+        "129": {
+          "guard_lines": "Neither the guard nor the fight rule wrote a line: the timer's function found the ambush already resolved, because the death was announced during the calls this version of the case makes between the kill and the timer. In the stand-in those calls take no time."
+        }
+      },
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ],
+          "guard_lines": []
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ],
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 1 tenths of a second for another resolution to finish"
+          ]
+        },
+        "3": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 4,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: distance to the new marker = 0.000000",
+            "probe: distance to the marker after moving it = 2000.000000; the event reported 2000.000000",
+            "probe: distance to the ambush centre = 5000.000000; the quest's evade distance is 4000.000000",
+            "probe: the item with no model was placed; Is3DLoaded = False",
+            "this experiment did not come back, and the scenario was ended here: EXPERIMENT: moving a placed item that has no model by 300 units",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ],
+          "guard_lines": []
+        },
+        "4": {
+          "passed": 27,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C4: player in combat before the evade timer runs out: False",
+            "C4: caravan master in the town alias, which is flagged Essential: IsEssential = False",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ],
+          "guard_lines": []
+        },
+        "5": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C5: after StartCombat on the Cutter lead: stage 30 set = False, lead in combat = True, player in combat = True",
+            "C5: player in combat after the rescue: False",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ],
+          "guard_lines": []
+        },
+        "6": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C6: drover straight after the town stage: dead = True",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ],
+          "guard_lines": []
+        },
+        "7": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ],
+          "guard_lines": []
+        },
+        "8": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ],
+          "guard_lines": []
+        },
+        "9": {
+          "passed": 21,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ],
+          "guard_lines": []
+        },
+        "101": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "102": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "103": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "104": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "105": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "106": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "107": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "108": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "109": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "110": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "111": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "112": {
+          "passed": 40,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "113": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "114": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "115": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "116": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "117": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "118": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "119": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A2 the evade timer ran out during a fight: it starts over"
+          ]
+        },
+        "120": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "121": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "122": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "123": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "124": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "125": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "126": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "127": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "128": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "129": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "130": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "131": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "132": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 4 tenths of a second for another resolution to finish"
+          ],
+          "overlap": "True",
+          "stand_in_mode": "calls take a frame"
+        },
+        "201": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "202": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "203": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "204": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "205": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "206": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "207": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "208": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "209": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "210": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "211": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "212": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "213": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "214": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "215": {
+          "passed": 44,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "216": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "217": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "218": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "219": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "220": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "221": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        }
+      }
+    },
+    {
+      "name": "thirteenth run, 2026-11-13: the placed-content trial passes; the first run of anything the plugin places",
+      "commit": "3c7ac5f",
+      "how": "unattended",
+      "not_replayed": {
+        "10": {
+          "info": "These lines are places: where the test room's arrival marker is, where the plugin's references went from there, where the player came down after each move and where the settler stood once enabled. The stand-in is given an invented room at other coordinates, has no floor for the player to come down on (in the game the player moved to the middle of a box 100 above the floor was on the floor a moment later, and once on top of something), and keeps the settler where the plugin put it (in the game it stood 489 units away once enabled). The scored checks, the stages and the way the session ended are compared as usual."
+        }
+      },
+      "scenarios": {
+        "10": {
+          "passed": 17,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "trial: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: Start returned True",
+            "trial: the placed person, still disabled, is at (-2110.197998, -1450.065918, 0.000000), 335.410126 from the player; in the player's cell = True",
+            "trial: the placed object is at (-1855.639648, -1492.492432, 20.000000), 162.788223 from the player; 3D loaded = True",
+            "trial: Activate on the placed object returned True",
+            "trial: the placed trigger is at (-2074.842773, -1909.685303, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2074.842773, -1909.685303, 0.000000), 100.000000 from the middle of the placed trigger; things inside it: 1, which is 1 more than before",
+            "trial: the trigger made on the game's own empty trigger is at (-2357.685547, -1626.842529, 100.000000), 640.312439 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2357.685547, -1626.842529, 0.000000), 100.000000 from the middle of the trigger made on the game's own empty trigger; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger made on the game's own empty trigger: stage 11 set = True (it was False before)",
+            "trial: the trigger on the layer L_ACTORZONE is at (-2357.685303, -1061.157227, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2359.730469, -1060.647095, 54.811543), 45.237591 from the middle of the trigger on the layer L_ACTORZONE; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger on the layer L_ACTORZONE: stage 12 set = True (it was False before)",
+            "trial: the player is back at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: the placed person once enabled: 3D loaded = True, at (-1772.862305, -1095.868286, 12.763390), 249.195709 from the player",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ],
+          "guard_lines": []
+        },
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ],
+          "guard_lines": []
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "probe: player in combat straight after Kill(player) on a Cutter, another Cutter standing by = False",
+            "probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = False",
+            "probe: two seconds later: player in combat = False, the one standing by in combat = False",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ],
+          "guard_lines": []
+        },
+        "129": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "130": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "131": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "132": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 3 tenths of a second for another resolution to finish"
+          ],
+          "overlap": "True",
+          "stand_in_mode": "calls take a frame"
+        }
+      }
+    },
+    {
+      "name": "fourteenth run, 2026-11-13: people the plugin places; a person with no packages stays where it is put and can be activated",
+      "commit": "053464e",
+      "how": "unattended",
+      "not_replayed": {
+        "11": {
+          "info": "These lines are places and times in the game's own test room: where the plugin's people were placed, the seats the game's settler was put on and walked between, how long Enable took, how far a wait ran short of the clock. The stand-in is given an invented room at other coordinates, knows no seats, and has one clock. It also printed 'yes' and 'no' where the game, which keeps one spelling of a string whatever its letter case, printed 'Yes' and 'No'. The scored checks, the stages and the way the session ended are compared as usual."
+        },
+        "10": {
+          "info": "These lines are places in the game's own test room, as in the thirteenth run. The scored checks, the stages and the way the session ended are compared as usual."
+        }
+      },
+      "scenarios": {
+        "11": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "people: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "people: Start returned True",
+            "people: the other aliases hold an actor: PersonBare = True, SettlerOnFloor = True, Person = True",
+            "people: the person of the plugin's own was placed at (-2074.842773, -1909.685303, 0.000000), 632.455444 from the player",
+            "people: the person with no default package list was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler on the same spot was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler of scenario 10 was placed at (-2110.197998, -1450.065918, 0.000000); disabled = True",
+            "people: the person of the plugin's own: Enable took 18.433002 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person of the plugin's own, at once (0.181000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, two seconds later (2.000000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, six seconds later (5.499001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the first try: Activate on the person from 632.455444 away returned True; stage 30 set = True",
+            "people: the person of the plugin's own, after it was activated (6.067001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list: Enable took 19.972000 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person with no default package list, at once (0.175003 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, two seconds later (2.026001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, six seconds later (5.493004 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot: Enable took 2.432999 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler on the same spot, at once (0.133003 s on the clock): at (-2022.251953, -1121.817139, 0.000000), 789.621460 from where it was placed (789.621460 seen from above, 0.000000 higher), 319.970612 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, two seconds later (1.965004 s on the clock): at (-1997.380737, -1126.086548, 0.000000), 787.418152 from where it was placed (787.418152 seen from above, 0.000000 higher), 295.465088 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot, six seconds later (5.431999 s on the clock): at (-1661.843506, -1138.659058, 0.000000), 874.671326 from where it was placed (874.671326 seen from above, 0.000000 higher), 246.139175 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10: Enable took 2.067993 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, at once (0.166000 s on the clock): at (-2581.111572, -1112.986572, 0.000000), 579.121826 from where it was placed (579.121826 seen from above, 0.000000 higher), 822.231262 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, two seconds later (1.998001 s on the clock): at (-2566.503906, -1120.063721, -0.000004), 563.130981 from where it was placed (563.130981 seen from above, -0.000004 higher), 800.993774 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, six seconds later (5.465004 s on the clock): at (-2248.767334, -1128.073608, 0.000000), 350.543152 from where it was placed (350.543152 seen from above, 0.000000 higher), 505.207245 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = Yes, the person with no default package list = Yes, the game's settler on the same spot = No, the game's settler of scenario 10 = No",
+            "people: the game's settler on the same spot, moved back to where it was placed, at once (0.102005 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, moved back to where it was placed, three seconds later (2.764000 s on the clock): at (-2093.972656, -1892.437256, 0.000000), 25.757475 from where it was placed (25.757475 seen from above, 0.000000 higher), 621.079590 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: SetRestrained on the game's settler on the same spot returned True",
+            "people: the game's settler on the same spot, restrained and moved back, at once (0.066002 s on the clock): at (-2073.052979, -1907.470825, 0.000000), 2.847328 from where it was placed (2.847328 seen from above, 0.000000 higher), 624.824158 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot, restrained and moved back, three seconds later (2.701004 s on the clock): at (-2028.001709, -1862.843872, 0.000000), 66.243530 from where it was placed (66.243530 seen from above, 0.000000 higher), 569.996277 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, at once (0.065994 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, three seconds later (2.730995 s on the clock): at (-2145.780029, -1464.296021, 0.000000), 38.322014 from where it was placed (38.322014 seen from above, 0.000000 higher), 373.672913 from the player; package = [Package < (00023331)>], sit state = 4, in combat = False",
+            "people: SetRestrained on the game's settler of scenario 10 returned True",
+            "people: the game's settler of scenario 10, restrained and moved back, at once (0.065994 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = [Package < (00023331)>], sit state = 4, in combat = False",
+            "people: the game's settler of scenario 10, restrained and moved back, three seconds later (2.731995 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the marker set down where the game's settler of scenario 10 was placed says it is at (-2110.197998, -1450.065918, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the marker set down where the person of the plugin's own was placed says it is at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the game's settler on the same spot, its AI off and moved back, at once (0.072998 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler on the same spot, its AI off and moved back, three seconds later (2.707001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, at once (0.057007 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, three seconds later (2.690002 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the player now stands at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the game's settler of scenario 10, with the player standing elsewhere: Enable took 1.474998 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, at once (0.126999 s on the clock): at (-2263.749023, -1113.193848, -0.000061), 370.217102 from where it was placed (370.217102 seen from above, -0.000061 higher), 818.586731 from the player; package = [Package < (00023331)>], sit state = 4, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, two seconds later (1.958000 s on the clock): at (-2248.781982, -1120.147827, 0.000000), 357.842804 from where it was placed (357.842804 seen from above, 0.000000 higher), 808.470337 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, six seconds later (5.425003 s on the clock): at (-2371.781738, -1119.579590, -0.000000), 421.482239 from where it was placed (421.482239 seen from above, -0.000000 higher), 846.286804 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ]
+        },
+        "10": {
+          "passed": 17,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "trial: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: Start returned True",
+            "trial: the placed person, still disabled, is at (-2110.197998, -1450.065918, 0.000000), 335.410126 from the player; in the player's cell = True",
+            "trial: the placed object is at (-1855.639648, -1492.492432, 20.000000), 162.788223 from the player; 3D loaded = True",
+            "trial: Activate on the placed object returned True",
+            "trial: the placed trigger is at (-2074.842773, -1909.685303, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2074.842773, -1909.685303, 0.000000), 100.000000 from the middle of the placed trigger; things inside it: 1, which is 1 more than before",
+            "trial: the trigger made on the game's own empty trigger, with no layer is at (-2357.685547, -1626.842529, 100.000000), 640.312439 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2357.685547, -1626.842529, 0.000000), 100.000000 from the middle of the trigger made on the game's own empty trigger, with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger made on the game's own empty trigger, with no layer: stage 11 set = True (it was False before)",
+            "trial: the trigger of the plugin's own with no layer is at (-1678.863037, -1966.253906, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-1678.863159, -1966.253906, 0.000000), 100.000000 from the middle of the trigger of the plugin's own with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger of the plugin's own with no layer: stage 12 set = True (it was False before)",
+            "trial: the player is back at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: the placed person once enabled: 3D loaded = True, at (-2581.111572, -1112.986572, 0.000000), 822.231262 from the player",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ]
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "probe: player in combat straight after Kill(player) on a Cutter, another having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = False",
+            "probe: two seconds later: player in combat = False, the one standing by in combat = False",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        }
+      }
+    },
+    {
+      "name": "fifteenth run, 2026-11-14: the first section of Act I in the game for the first time; four standing by at a killing",
+      "commit": "2675a33",
+      "how": "unattended",
+      "not_replayed": {
+        "12": {
+          "passed": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md.",
+          "failed": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md.",
+          "first_failure": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md.",
+          "main_stage_events": "The game's test room has something standing where the second Cutter was placed, which set her down 66 units off, and the revolver the build found there by its name was a companion's that cannot be picked up, so stage 15 was never set and no rounds were given. The stand-in is given an invented room with nothing in the way and a revolver that can be picked up. Both were put right in the plugin after this run; the three checks that failed are in docs/design/VERIFY_LOG.md."
+        }
+      },
+      "scenarios": {
+        "12": {
+          "passed": 39,
+          "failed": 3,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 8,
+          "side_stage_events": 9,
+          "first_failure": "act1: how many of the living are more than 64 units from where they were placed, six seconds on = 1, expected 0"
+        },
+        "11": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0
+        },
+        "10": {
+          "passed": 17,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "probe: player in combat straight after Kill(player) on a Cutter, another having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = False",
+            "probe: two seconds later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat straight after Kill(player) on a Cutter, four of the quest's people having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False; in combat: the other Cutters = False and False, the caravan hands = False and False",
+            "probe: two seconds after StopCombatAlarm on the player: player in combat = False",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sixteenth run, 2026-11-14: the first section of Act I passes; the revolver is picked up and sets its stage",
+      "commit": "3b28aae",
+      "how": "unattended",
+      "report_sha256": "08F72C0AE4BB03B8C63101724086FB61B813AE6B687782724050030C60565E1F",
+      "not_replayed": {
+        "12": {
+          "info": "These lines are places and times in the game's own test room: where the player arrives, how long the thirteen people took to appear, where the player came down in the two boxes, what the navigation mesh answers a fraction of a unit above the floor. The stand-in is given an invented room at other coordinates, with a level floor, and has its own figure for how long a person takes. The scored checks, the stages and the way the session ended are compared as usual, and 19 of the 40 lines are the same word for word.",
+          "guard_lines": "At the town gate of the first section two resolutions overlapped in the game and the guard of amendment A24 waited a tenth of a second: the town stage was set while the handling of the stage before it had not finished. The stand-in's ordinary mode has no time in it, and with every call taking a frame it does not overlap at this point either. The checks, the stages and the way the session ended are compared as usual."
+        },
+        "11": {
+          "info": "These lines are places and times in the game's own test room: where the plugin's people were placed, the seats the game's settler was put on and walked between, how long Enable took, how far a wait ran short of the clock. The stand-in is given an invented room at other coordinates, knows no seats, and has one clock. It also printed 'yes' and 'no' where the game, which keeps one spelling of a string whatever its letter case, printed 'Yes' and 'No'. The scored checks, the stages and the way the session ended are compared as usual."
+        },
+        "10": {
+          "info": "These lines are places in the game's own test room, as in the thirteenth run. The scored checks, the stages and the way the session ended are compared as usual."
+        }
+      },
+      "scenarios": {
+        "12": {
+          "passed": 42,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 9,
+          "side_stage_events": 9,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "act1: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "act1: Start returned True",
+            "act1: Tobias Gantt was there after 26.483000 seconds",
+            "act1: Nell Fenwick was there after 26.548002 seconds",
+            "act1: Abel Rudd was there after 26.582003 seconds",
+            "act1: Reese Dunmore was there after 26.647001 seconds",
+            "act1: the first Cutter was there after 26.683001 seconds",
+            "act1: the second Cutter was there after 26.747004 seconds",
+            "act1: the third Cutter was there after 25.243002 seconds",
+            "act1: Jonah Talbot was there after 25.274000 seconds",
+            "act1: Owen Pritchard was there after 25.333002 seconds",
+            "act1: Ada Pike was there after 25.381002 seconds",
+            "act1: Silas Vane was there after 25.441000 seconds",
+            "act1: Miriam Keene was there after 25.472002 seconds",
+            "act1: Corwin Haskell was there after 25.533003 seconds",
+            "act1: the player is in combat once everybody is there = False",
+            "act1: Activate on the dispatch from 407.185394 away returned True; the player has 1, stage 20 set = True",
+            "act1: with the maintenance ledger moved to the player, the player has 1",
+            "act1: with the marshal's journal moved to the player, the player has 1",
+            "act1: Activate on the revolver returned True; stage 15 set = True",
+            "act1: rounds for the revolver the player has: 6",
+            "act1: after the move the player is at (-1899.390869, -1679.454224, 166.531357), 74.105995 from the middle of the place the ambush is seen from",
+            "act1: the player is in combat after the killing = False",
+            "act1: after the move the player is at (-2110.092041, -1450.086914, 0.000476), 99.999588 from the middle of the town gate",
+            "act1: the player is in combat at the town gate = False",
+            "act1: the navigation mesh, asked from 150 units above the spot of Tobias Gantt, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Nell Fenwick, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Abel Rudd, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Reese Dunmore, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the first Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the second Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the third Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Jonah Talbot, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Owen Pritchard, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Ada Pike, answers 0.000000 to the side of it and 1.327007 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Silas Vane, answers 0.000000 to the side of it and 0.041576 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Miriam Keene, answers 0.000000 to the side of it and 0.263393 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Corwin Haskell, answers 0.000000 to the side of it and 0.480158 above it",
+            "stage handlers already finished when SetStage returned: 5 of 5"
+          ],
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 1 tenths of a second for another resolution to finish"
+          ]
+        },
+        "11": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "people: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "people: Start returned True",
+            "people: the other aliases hold an actor: PersonBare = True, SettlerOnFloor = True, Person = True",
+            "people: the person of the plugin's own was placed at (-2074.842773, -1909.685303, 0.000000), 632.455444 from the player",
+            "people: the person with no default package list was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler on the same spot was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler of scenario 10 was placed at (-2110.197998, -1450.065918, 0.000000); disabled = True",
+            "people: the person of the plugin's own: Enable took 25.967999 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person of the plugin's own, at once (0.181004 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, two seconds later (2.049004 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, six seconds later (5.551003 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the first try: Activate on the person from 632.455444 away returned True; stage 30 set = True",
+            "people: the person of the plugin's own, after it was activated (6.151001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list: Enable took 1.110001 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person with no default package list, at once (0.159000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, two seconds later (2.020000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, six seconds later (5.520000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot: Enable took 1.834000 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler on the same spot, at once (0.134003 s on the clock): at (-1452.584473, -1547.090698, 0.000000), 720.194580 from where it was placed (720.194580 seen from above, 0.000000 higher), 395.536011 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, two seconds later (1.966999 s on the clock): at (-1452.584473, -1547.090698, 0.000000), 720.194580 from where it was placed (720.194580 seen from above, 0.000000 higher), 395.536011 from the player; package = [Package < (00023331)>], sit state = 4, in combat = False",
+            "people: the game's settler on the same spot, six seconds later (5.499004 s on the clock): at (-1526.821167, -1552.228638, 0.000000), 654.295776 from where it was placed (654.295776 seen from above, 0.000000 higher), 333.012726 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10: Enable took 1.866997 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, at once (0.134003 s on the clock): at (-2581.111572, -1112.986572, 0.000000), 579.121826 from where it was placed (579.121826 seen from above, 0.000000 higher), 822.231262 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, two seconds later (1.999001 s on the clock): at (-2560.290771, -1120.176758, -0.000000), 558.041565 from where it was placed (558.041565 seen from above, -0.000000 higher), 795.184204 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, six seconds later (5.498001 s on the clock): at (-2250.133789, -1128.102783, 0.000000), 351.058807 from where it was placed (351.058807 seen from above, 0.000000 higher), 505.243042 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = Yes, the person with no default package list = Yes, the game's settler on the same spot = No, the game's settler of scenario 10 = No",
+            "people: the game's settler on the same spot, moved back to where it was placed, at once (0.097000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, moved back to where it was placed, three seconds later (2.763000 s on the clock): at (-2015.455322, -1834.370850, 0.000000), 95.912132 from where it was placed (95.912132 seen from above, 0.000000 higher), 533.556763 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: SetRestrained on the game's settler on the same spot returned True",
+            "people: the game's settler on the same spot, restrained and moved back, at once (0.065994 s on the clock): at (-2073.646240, -1906.803223, 0.974421), 3.269186 from where it was placed (3.120589 seen from above, 0.974421 higher), 625.096619 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot, restrained and moved back, three seconds later (2.764999 s on the clock): at (-2026.366577, -1861.209106, -0.000858), 68.555695 from where it was placed (68.555695 seen from above, -0.000858 higher), 567.831787 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, at once (0.065002 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, three seconds later (2.763000 s on the clock): at (-2140.336182, -1411.518311, 0.000000), 48.930851 from where it was placed (48.930851 seen from above, 0.000000 higher), 355.050262 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: SetRestrained on the game's settler of scenario 10 returned True",
+            "people: the game's settler of scenario 10, restrained and moved back, at once (0.067001 s on the clock): at (-2110.197998, -1447.953613, 0.000000), 2.112305 from where it was placed (2.112305 seen from above, 0.000000 higher), 329.835083 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, restrained and moved back, three seconds later (2.765007 s on the clock): at (-2062.735107, -1402.617676, 0.000000), 67.112305 from where it was placed (67.112305 seen from above, 0.000000 higher), 277.008179 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the marker set down where the game's settler of scenario 10 was placed says it is at (-2110.197998, -1450.065918, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the marker set down where the person of the plugin's own was placed says it is at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the game's settler on the same spot, its AI off and moved back, at once (0.057999 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler on the same spot, its AI off and moved back, three seconds later (2.757004 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, at once (0.056999 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, three seconds later (2.723999 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the player now stands at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the game's settler of scenario 10, with the player standing elsewhere: Enable took 1.552002 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, at once (0.131996 s on the clock): at (-2800.438721, -1609.508667, -0.000031), 708.416748 from where it was placed (708.416748 seen from above, -0.000031 higher), 785.235962 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, two seconds later (1.964996 s on the clock): at (-2767.976074, -1609.106812, 0.000000), 676.731873 from where it was placed (676.731873 seen from above, 0.000000 higher), 755.500610 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, six seconds later (5.464996 s on the clock): at (-2517.613037, -1597.100586, -0.000004), 433.135315 from where it was placed (433.135315 seen from above, -0.000004 higher), 535.935730 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ],
+          "guard_lines": []
+        },
+        "10": {
+          "passed": 17,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "trial: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: Start returned True",
+            "trial: the placed person, still disabled, is at (-2110.197998, -1450.065918, 0.000000), 335.410126 from the player; in the player's cell = True",
+            "trial: the placed object is at (-1855.639648, -1492.492432, 20.000000), 162.788223 from the player; 3D loaded = True",
+            "trial: Activate on the placed object returned True",
+            "trial: the placed trigger is at (-2074.842773, -1909.685303, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2074.842773, -1909.685303, 0.000000), 100.000000 from the middle of the placed trigger; things inside it: 1, which is 1 more than before",
+            "trial: the trigger made on the game's own empty trigger, with no layer is at (-2357.685547, -1626.842529, 100.000000), 640.312439 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2357.685547, -1626.842529, 0.000000), 100.000000 from the middle of the trigger made on the game's own empty trigger, with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger made on the game's own empty trigger, with no layer: stage 11 set = True (it was False before)",
+            "trial: the trigger of the plugin's own with no layer is at (-1678.863037, -1966.253906, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-1678.863159, -1966.253906, 0.000000), 100.000000 from the middle of the trigger of the plugin's own with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger of the plugin's own with no layer: stage 12 set = True (it was False before)",
+            "trial: the player is back at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: the placed person once enabled: 3D loaded = True, at (-1536.103760, -2176.010010, 0.000000), 870.437439 from the player",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ],
+          "guard_lines": []
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "probe: player in combat straight after Kill(player) on a Cutter, another having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = False",
+            "probe: two seconds later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat straight after Kill(player) on a Cutter, four of the quest's people having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False; in combat: the other Cutters = False and False, the caravan hands = False and False",
+            "probe: two seconds after StopCombatAlarm on the player: player in combat = False",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ],
+          "guard_lines": []
+        }
+      }
+    },
+    {
+      "name": "seventeenth run, 2026-11-14: all 65 scenarios pass on the commit of the sixteenth; the first full run with what the plugin places and the first section in it",
+      "commit": "3b28aae",
+      "how": "unattended",
+      "report_sha256": "F52E389F961FA62E3E9C140B1BAB85D89FC652F8776BF178384E32F56CCC3901",
+      "not_replayed": {
+        "4": {
+          "info": "Straight after the town stage the caravan master, by then in an alias flagged Essential, was reported as not Essential, as in the twelfth run and unlike the tenth and eleventh. The stand-in applies an alias's flags at once."
+        },
+        "5": {
+          "info": "The fight did not make the ambush live within eight seconds, though the lead and the player were in combat, as in the twelfth run and unlike the tenth and eleventh. The case then set the stage itself, which is its seventh handler. In the stand-in the alias script always hears the fight."
+        },
+        "10": {
+          "info": "These lines are places in the game's own test room, as in the thirteenth run. The scored checks, the stages and the way the session ended are compared as usual."
+        },
+        "11": {
+          "info": "These lines are places and times in the game's own test room: where the plugin's people were placed, the seats the game's settler was put on and walked between, how long Enable took, how far a wait ran short of the clock. The stand-in is given an invented room at other coordinates, knows no seats, and has one clock. It also printed 'yes' and 'no' where the game, which keeps one spelling of a string whatever its letter case, printed 'Yes' and 'No'. The scored checks, the stages and the way the session ended are compared as usual."
+        },
+        "12": {
+          "info": "These lines are places and times in the game's own test room: where the player arrives, how long the thirteen people took to appear, where the player came down in the two boxes, what the navigation mesh answers a fraction of a unit above the floor. The stand-in is given an invented room at other coordinates, with a level floor, and has its own figure for how long a person takes. The scored checks, the stages and the way the session ended are compared as usual, as in the sixteenth run.",
+          "guard_lines": "At the town gate of the first section two resolutions overlapped in the game and the guard of amendment A24 waited a tenth of a second: the town stage was set while the handling of the stage before it had not finished. The stand-in's ordinary mode has no time in it, and with every call taking a frame it does not overlap at this point either. The checks, the stages and the way the session ended are compared as usual."
+        }
+      },
+      "scenarios": {
+        "1": {
+          "passed": 60,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 10,
+          "side_stage_events": 10,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 13 of 13"
+          ]
+        },
+        "2": {
+          "passed": 15,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 5,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: drover in a Protected alias: IsEssential = False",
+            "probe: drover after Kill() with no killer, protection not cleared: dead = False",
+            "probe: drover after SetProtected(false) and Kill(): dead = True",
+            "probe: player in combat straight after Kill(player) on the Cutter lead, nobody standing by = False",
+            "probe: Cutter lead after Kill(player): dead = True",
+            "probe: player in combat once his death has been announced = False",
+            "probe: caravan master after Kill(player): dead = True",
+            "probe: player in combat straight after Kill(player) on a Cutter, another having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat after StopCombat on the one standing by and StopCombatAlarm on the player = False",
+            "probe: two seconds later: player in combat = False, the one standing by in combat = False",
+            "probe: player in combat straight after Kill(player) on a Cutter, four of the quest's people having stood by for three seconds = False",
+            "probe: half a second later: player in combat = False; in combat: the other Cutters = False and False, the caravan hands = False and False",
+            "probe: two seconds after StopCombatAlarm on the player: player in combat = False",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "3": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 4,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "probe: distance to the new marker = 0.000000",
+            "probe: distance to the marker after moving it = 2000.000000; the event reported 2000.000000",
+            "probe: distance to the ambush centre = 5000.000000; the quest's evade distance is 4000.000000",
+            "probe: the item with no model was placed; Is3DLoaded = False",
+            "this experiment did not come back, and the scenario was ended here: EXPERIMENT: moving a placed item that has no model by 300 units",
+            "stage handlers already finished when SetStage returned: 3 of 3"
+          ]
+        },
+        "4": {
+          "passed": 27,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C4: player in combat before the evade timer runs out: False",
+            "C4: caravan master in the town alias, which is flagged Essential: IsEssential = False",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "5": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C5: after StartCombat on the Cutter lead: stage 30 set = False, lead in combat = True, player in combat = True",
+            "C5: player in combat after the rescue: False",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "6": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 8,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "C6: drover straight after the town stage: dead = True",
+            "stage handlers already finished when SetStage returned: 6 of 6"
+          ]
+        },
+        "7": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "8": {
+          "passed": 22,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 10,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 7 of 7"
+          ]
+        },
+        "9": {
+          "passed": 21,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 9,
+          "side_stage_events": 1,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "stage handlers already finished when SetStage returned: 8 of 8"
+          ]
+        },
+        "10": {
+          "passed": 17,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "trial: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: Start returned True",
+            "trial: the placed person, still disabled, is at (-2110.197998, -1450.065918, 0.000000), 335.410126 from the player; in the player's cell = True",
+            "trial: the placed object is at (-1855.639648, -1492.492432, 20.000000), 162.788223 from the player; 3D loaded = True",
+            "trial: Activate on the placed object returned True",
+            "trial: the placed trigger is at (-2074.842773, -1909.685303, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2074.842773, -1909.685303, 0.000000), 100.000000 from the middle of the placed trigger; things inside it: 1, which is 1 more than before",
+            "trial: the trigger made on the game's own empty trigger, with no layer is at (-2357.685547, -1626.842529, 100.000000), 640.312439 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-2357.685547, -1626.842529, 0.000000), 100.000000 from the middle of the trigger made on the game's own empty trigger, with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger made on the game's own empty trigger, with no layer: stage 11 set = True (it was False before)",
+            "trial: the trigger of the plugin's own with no layer is at (-1678.863037, -1966.253906, 100.000000), 640.312378 from the player; things inside it before the move: 0",
+            "trial: after the move the player is at (-1678.863159, -1966.253906, 0.000000), 100.000000 from the middle of the trigger of the plugin's own with no layer; things inside it: 1, which is 1 more than before",
+            "trial: entering the trigger of the plugin's own with no layer: stage 12 set = True (it was False before)",
+            "trial: the player is back at (-1792.000000, -1344.000000, 0.000000)",
+            "trial: the placed person once enabled: 3D loaded = True, at (-1460.083008, -1353.198853, 0.000000), 332.044434 from the player",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ]
+        },
+        "11": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [],
+          "main_stage_events": 0,
+          "side_stage_events": 0,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "people: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "people: Start returned True",
+            "people: the other aliases hold an actor: PersonBare = True, SettlerOnFloor = True, Person = True",
+            "people: the person of the plugin's own was placed at (-2074.842773, -1909.685303, 0.000000), 632.455444 from the player",
+            "people: the person with no default package list was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler on the same spot was placed at (-2074.842773, -1909.685303, 0.000000); disabled = True",
+            "people: the game's settler of scenario 10 was placed at (-2110.197998, -1450.065918, 0.000000); disabled = True",
+            "people: the person of the plugin's own: Enable took 10.434000 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person of the plugin's own, at once (0.179001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, two seconds later (2.049999 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person of the plugin's own, six seconds later (5.550999 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the first try: Activate on the person from 632.455444 away returned True; stage 30 set = True",
+            "people: the person of the plugin's own, after it was activated (6.151001 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list: Enable took 9.266003 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the person with no default package list, at once (0.166000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, two seconds later (2.015999 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the person with no default package list, six seconds later (5.548000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = [Package < (001FEFC1)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot: Enable took 1.434002 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler on the same spot, at once (0.132999 s on the clock): at (-2581.111572, -1112.986572, 0.000000), 943.947571 from where it was placed (943.947571 seen from above, 0.000000 higher), 822.231262 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, two seconds later (1.966000 s on the clock): at (-2563.961914, -1120.172485, -0.000000), 928.745361 from where it was placed (928.745361 seen from above, -0.000000 higher), 798.379272 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot, six seconds later (5.466999 s on the clock): at (-2248.785889, -1128.109741, 0.000000), 800.697571 from where it was placed (800.697571 seen from above, 0.000000 higher), 505.209290 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10: Enable took 2.230999 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, at once (0.133999 s on the clock): at (-2308.984619, -1178.482422, 0.000000), 336.561615 from where it was placed (336.561615 seen from above, 0.000000 higher), 542.834351 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, two seconds later (1.966999 s on the clock): at (-2169.104980, -1173.627441, -0.000000), 282.645111 from where it was placed (282.645111 seen from above, -0.000000 higher), 409.055634 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, six seconds later (5.499001 s on the clock): at (-1849.399170, -1158.394897, 0.000000), 391.264648 from where it was placed (391.264648 seen from above, 0.000000 higher), 192.856384 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: stayed within 64 units of where it was placed for six seconds: the person of the plugin's own = Yes, the person with no default package list = Yes, the game's settler on the same spot = No, the game's settler of scenario 10 = No",
+            "people: the game's settler on the same spot, moved back to where it was placed, at once (0.097000 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler on the same spot, moved back to where it was placed, three seconds later (2.765999 s on the clock): at (-2022.959717, -1831.351929, 0.000000), 93.957268 from where it was placed (93.957268 seen from above, 0.000000 higher), 534.986389 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: SetRestrained on the game's settler on the same spot returned True",
+            "people: the game's settler on the same spot, restrained and moved back, at once (0.067001 s on the clock): at (-2072.362061, -1906.767578, 0.279564), 3.839949 from where it was placed (3.829759 seen from above, 0.279564 higher), 623.583313 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler on the same spot, restrained and moved back, three seconds later (2.733002 s on the clock): at (-2023.905640, -1858.586426, 0.000432), 72.150444 from where it was placed (72.150444 seen from above, 0.000432 higher), 564.428406 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, at once (0.064003 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, moved back to where it was placed, three seconds later (2.762001 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: SetRestrained on the game's settler of scenario 10 returned True",
+            "people: the game's settler of scenario 10, restrained and moved back, at once (0.067001 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, restrained and moved back, three seconds later (2.764999 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the marker set down where the game's settler of scenario 10 was placed says it is at (-2110.197998, -1450.065918, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the game's settler of scenario 10 was placed, is at (-2110.197998, -1450.065918, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the marker set down where the person of the plugin's own was placed says it is at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the nearest place on the navigation mesh, asked from where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the nearest place on the navigation mesh, asked from 150 units above where the person of the plugin's own was placed, is at (-2074.842773, -1909.685303, 0.000000): 0.000000 from the spot seen from above, 0.000000 higher than it",
+            "people: the game's settler on the same spot, its AI off and moved back, at once (0.071999 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler on the same spot, its AI off and moved back, three seconds later (2.754997 s on the clock): at (-2074.842773, -1909.685303, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 632.455444 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, at once (0.054001 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the game's settler of scenario 10, its AI off and moved back, three seconds later (2.720001 s on the clock): at (-2110.197998, -1450.065918, 0.000000), 0.000000 from where it was placed (0.000000 seen from above, 0.000000 higher), 335.410126 from the player; package = None, sit state = 1, in combat = False",
+            "people: the player now stands at (-2074.842773, -1909.685303, 0.000000)",
+            "people: the game's settler of scenario 10, with the player standing elsewhere: Enable took 1.476997 seconds; disabled = False, 3D loaded = True, dead = False, in the player's cell = True",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, at once (0.155998 s on the clock): at (-1475.382568, -1145.341553, 5.999996), 704.190002 from where it was placed (704.164429 seen from above, 5.999996 higher), 971.395813 from the player; package = [Package < (00023331)>], sit state = 3, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, two seconds later (1.988998 s on the clock): at (-1510.880005, -1118.091553, 0.000033), 685.119690 from where it was placed (685.119690 seen from above, 0.000033 higher), 971.943787 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "people: the game's settler of scenario 10, with the player standing elsewhere, six seconds later (5.488998 s on the clock): at (-1507.716919, -1351.775757, 0.000000), 610.446045 from where it was placed (610.446045 seen from above, 0.000000 higher), 795.546875 from the player; package = [Package < (00023331)>], sit state = 0, in combat = False",
+            "stage handlers already finished when SetStage returned: 0 of 0"
+          ]
+        },
+        "12": {
+          "passed": 42,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 1 tenths of a second for another resolution to finish"
+          ],
+          "main_stage_events": 9,
+          "side_stage_events": 9,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "act1: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "act1: Start returned True",
+            "act1: Tobias Gantt was there after 27.864002 seconds",
+            "act1: Nell Fenwick was there after 27.900002 seconds",
+            "act1: Abel Rudd was there after 27.964001 seconds",
+            "act1: Reese Dunmore was there after 28.000004 seconds",
+            "act1: the first Cutter was there after 28.065002 seconds",
+            "act1: the second Cutter was there after 28.100002 seconds",
+            "act1: the third Cutter was there after 28.164001 seconds",
+            "act1: Jonah Talbot was there after 28.200001 seconds",
+            "act1: Owen Pritchard was there after 26.678001 seconds",
+            "act1: Ada Pike was there after 26.739002 seconds",
+            "act1: Silas Vane was there after 26.773003 seconds",
+            "act1: Miriam Keene was there after 26.834003 seconds",
+            "act1: Corwin Haskell was there after 26.874001 seconds",
+            "act1: the player is in combat once everybody is there = False",
+            "act1: Activate on the dispatch from 407.185394 away returned True; the player has 1, stage 20 set = True",
+            "act1: with the maintenance ledger moved to the player, the player has 1",
+            "act1: with the marshal's journal moved to the player, the player has 1",
+            "act1: Activate on the revolver returned True; stage 15 set = True",
+            "act1: rounds for the revolver the player has: 6",
+            "act1: after the move the player is at (-1898.620850, -1675.722290, 173.102936), 73.414909 from the middle of the place the ambush is seen from",
+            "act1: the player is in combat after the killing = False",
+            "act1: after the move the player is at (-2110.067383, -1450.238525, 0.000501), 99.999733 from the middle of the town gate",
+            "act1: the player is in combat at the town gate = False",
+            "act1: the navigation mesh, asked from 150 units above the spot of Tobias Gantt, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Nell Fenwick, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Abel Rudd, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Reese Dunmore, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the first Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the second Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the third Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Jonah Talbot, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Owen Pritchard, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Ada Pike, answers 0.000000 to the side of it and 1.327007 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Silas Vane, answers 0.000000 to the side of it and 0.041576 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Miriam Keene, answers 0.000000 to the side of it and 0.263393 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Corwin Haskell, answers 0.000000 to the side of it and 0.480158 above it",
+            "stage handlers already finished when SetStage returned: 5 of 5"
+          ]
+        },
+        "101": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "102": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "103": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "104": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "105": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "106": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "107": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "108": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "109": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "110": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "111": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "112": {
+          "passed": 40,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "113": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "114": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "115": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "116": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "117": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "118": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "119": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A2 the evade timer ran out during a fight: it starts over"
+          ]
+        },
+        "120": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "121": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "122": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "123": {
+          "passed": 36,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "124": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "125": {
+          "passed": 8,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "126": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "127": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "128": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "129": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "130": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "131": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 the Cutter lead is already dead: a rescue, not an evasion"
+          ]
+        },
+        "132": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 4 tenths of a second for another resolution to finish"
+          ],
+          "overlap": "True",
+          "stand_in_mode": "calls take a frame"
+        },
+        "201": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "202": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "203": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "204": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "205": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "206": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "207": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "208": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "209": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "210": {
+          "passed": 20,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "211": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "212": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "213": {
+          "passed": 12,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "214": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "215": {
+          "passed": 44,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "216": {
+          "passed": 16,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "217": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "218": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "219": {
+          "passed": 24,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "220": {
+          "passed": 32,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        },
+        "221": {
+          "passed": 28,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": []
+        }
+      }
+    },
+    {
+      "name": "eighteenth run, 2026-11-14: scenario 12 again, 42 of 42, the first run with the runner as changed in review",
+      "commit": "9713676",
+      "scripts_commit": "52c97c8",
+      "how": "unattended",
+      "report_sha256": "ED695A47701F97A2F46A2CF4875CA2E0D92C50ED8F650A52B7597C44268B10C9",
+      "not_replayed": {
+        "12": {
+          "info": "These lines are places and times in the game's own test room: where the player arrives, how long the thirteen people took to appear, where the player came down in the two boxes, what the navigation mesh answers a fraction of a unit above the floor. The stand-in is given an invented room at other coordinates, with a level floor, and has its own figure for how long a person takes. The scored checks, the stages and the way the session ended are compared as usual, as in the sixteenth and seventeenth runs.",
+          "guard_lines": "At the town gate of the first section two resolutions overlapped in the game and the guard of amendment A24 waited a tenth of a second: the town stage was set while the handling of the stage before it had not finished. The stand-in's ordinary mode has no time in it, and with every call taking a frame it does not overlap at this point either. The checks, the stages and the way the session ended are compared as usual."
+        }
+      },
+      "scenarios": {
+        "12": {
+          "passed": 42,
+          "failed": 0,
+          "result_line": true,
+          "ends_by_itself": true,
+          "guard_lines": [
+            "TLM_MQ01: A24 waited 1 tenths of a second for another resolution to finish"
+          ],
+          "main_stage_events": 9,
+          "side_stage_events": 9,
+          "info": [
+            "unattended run: the game closes itself when the scenario has finished",
+            "act1: the player begins at (-1792.000000, -1344.000000, 0.000000)",
+            "act1: Start returned True",
+            "act1: Tobias Gantt was there after 29.089003 seconds",
+            "act1: Nell Fenwick was there after 29.137003 seconds",
+            "act1: Abel Rudd was there after 29.183001 seconds",
+            "act1: Reese Dunmore was there after 29.233004 seconds",
+            "act1: the first Cutter was there after 29.292002 seconds",
+            "act1: the second Cutter was there after 29.326002 seconds",
+            "act1: the third Cutter was there after 29.385000 seconds",
+            "act1: Jonah Talbot was there after 29.432001 seconds",
+            "act1: Owen Pritchard was there after 29.493002 seconds",
+            "act1: Ada Pike was there after 29.519003 seconds",
+            "act1: Silas Vane was there after 29.581003 seconds",
+            "act1: Miriam Keene was there after 29.617002 seconds",
+            "act1: Corwin Haskell was there after 29.681002 seconds",
+            "act1: the player is in combat once everybody is there = False",
+            "act1: Activate on the dispatch from 407.185394 away returned True; the player has 1, stage 20 set = True",
+            "act1: with the maintenance ledger moved to the player, the player has 1",
+            "act1: with the marshal's journal moved to the player, the player has 1",
+            "act1: Activate on the revolver returned True; stage 15 set = True",
+            "act1: rounds for the revolver the player has: 6",
+            "act1: after the move the player is at (-1898.533447, -1675.867798, 167.600616), 71.419426 from the middle of the place the ambush is seen from",
+            "act1: the player is in combat after the killing = False",
+            "act1: after the move the player is at (-2110.201660, -1449.737549, 0.000367), 100.000168 from the middle of the town gate",
+            "act1: the player is in combat at the town gate = False",
+            "act1: the navigation mesh, asked from 150 units above the spot of Tobias Gantt, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Nell Fenwick, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Abel Rudd, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Reese Dunmore, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the first Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the second Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of the third Cutter, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Jonah Talbot, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Owen Pritchard, answers 0.000000 to the side of it and 0.000000 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Ada Pike, answers 0.000000 to the side of it and 1.327007 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Silas Vane, answers 0.000000 to the side of it and 0.041576 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Miriam Keene, answers 0.000000 to the side of it and 0.263393 above it",
+            "act1: the navigation mesh, asked from 150 units above the spot of Corwin Haskell, answers 0.000000 to the side of it and 0.480158 above it",
+            "stage handlers already finished when SetStage returned: 5 of 5"
+          ]
+        }
+      }
+    }
+  ]
+}

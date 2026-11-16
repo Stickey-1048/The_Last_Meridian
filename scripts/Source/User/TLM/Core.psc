@@ -1,0 +1,69 @@
+Scriptname TLM:Core extends Quest
+{TLM_Core: start-game-enabled utility quest. No story logic.
+COMPILES. Ran in the game on 2026-11-12: the quest started and OnQuestInit ran
+(its line is in the script log), and with a scenario number in the plugin the
+timer started that scenario of the self-test by itself. Whether the on-screen
+line appeared was not reported (docs/design/VERIFY_LOG.md).}
+
+GlobalVariable Property TLM_G_DataVersion Auto Const Mandatory
+Quest Property TLM_MQ01 Auto Const Mandatory
+GlobalVariable Property TLM_G_DevScenario Auto Const
+{Development only; 0 in every build. The unattended test runner on the PC
+(tools/win/Run-Scenarios.ps1) writes a scenario number into the installed copy
+of the plugin. When it is not 0, the self-test runs that scenario by itself a
+few seconds after this quest starts, and then closes the game.}
+
+Quest Property TLM_A1 Auto Const
+{Development only: the quest of the first section's rough cut. With the
+scenario number 900 in the plugin, TLM:Act1Walk on that quest sets the
+section up for a person to play, and the game stays open
+(tools\win\Play-Act1.ps1). COMPILES in this form (2026-11-14), and the
+unattended scenarios of that day were started through it. The branch for 900
+ran in the game once that day: the set-up only, watched by an agent, played
+by nobody.}
+
+int DATA_VERSION = 1 Const
+; Development only: the scenario number that means "set the first section up
+; and leave the game to a person".
+int SCENARIO_PLAY_ACT1 = 900 Const
+
+; Development only: a few seconds after the quest starts, a line appears in the
+; top-left corner of the screen. Seeing it means the plugin is loaded and this
+; script is running, without opening the console. Remove before any release.
+int TIMER_HELLO = 1 Const
+
+Event OnQuestInit()
+	TLM_G_DataVersion.SetValueInt(DATA_VERSION)
+	; If this line is in the game's script log, the plugin loaded, this script
+	; was found and bound, and the quest started.
+	Debug.Trace("TLM_Core: started, data version " + DATA_VERSION)
+	StartTimer(6.0, TIMER_HELLO)
+EndEvent
+
+Event OnTimer(int aiTimerID)
+	If aiTimerID == TIMER_HELLO
+		Debug.Notification("The Last Meridian test build is loaded.")
+		If TLM_G_DevScenario
+			int scenario = TLM_G_DevScenario.GetValueInt()
+			If scenario == SCENARIO_PLAY_ACT1
+				TLM:Act1Walk walk = TLM_A1 as TLM:Act1Walk
+				If walk
+					walk.Begin()
+				EndIf
+			ElseIf scenario > 0
+				TLM:SelfTest test = (Self as Quest) as TLM:SelfTest
+				If test
+					test.RunUnattended(scenario)
+				EndIf
+			EndIf
+		EndIf
+	EndIf
+EndEvent
+
+Function DevStart()
+	{Development entry point (design decision T1, option a).
+	Console: cqf TLM_Core DevStart}
+	If !TLM_MQ01.GetStageDone(10)
+		TLM_MQ01.SetStage(10)
+	EndIf
+EndFunction

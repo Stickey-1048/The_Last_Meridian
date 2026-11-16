@@ -1,0 +1,2038 @@
+"""A stand-in for the game, enough to run this project's Papyrus scripts.
+
+It reads the scripts (psc.py), the description of the plugin that the builder
+writes (build/TheLastMeridian.json, with the game records it points at in
+TheLastMeridian.vanilla.json), and then plays the game's part: quests, stages,
+aliases, actors, items, timers, distance events, and the order in which the
+game hands events to scripts.
+
+WHAT IT IS FOR. Running the self-test's scenarios on a machine without
+Fallout 4, so that a mistake in a script, in an expected number or in the
+plugin's wiring shows here and does not cost a run on the game PC.
+
+WHAT IT IS NOT. It is not the game. Every rule below about how the game
+behaves is one of three kinds, and says which:
+
+  [seen]        observed in Fallout 4 1.10.163 on the owner's PC
+                (docs/design/VERIFY_LOG.md, from 2026-11-12 on)
+  [documented]  stated on the Creation Kit wiki
+  [assumed]     neither; the simplest behaviour that fits. A scenario that
+                depends on an assumed rule proves nothing about the game.
+
+A pass here means the scripts, the plugin and the expectations agree with
+each other under those rules. Only a run in the game says what the game does.
+"""
+import json
+import math
+import random
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from psc import Function, Script, parse_folder
+
+
+class SimError(Exception):
+    """The stand-in met something it does not model. Never swallowed."""
+
+
+class QuitGame(Exception):
+    pass
+
+
+class _Return(Exception):
+    def __init__(self, value):
+        self.value = value
+
+
+# How long after Kill the game announces the death to scripts. [documented]
+# OnDeath is sent "when the actor finishes dying"; [seen] it arrives within a
+# second or two. The number itself is [assumed].
+DEATH_EVENT_DELAY = 0.7
+COMBAT_EVENT_DELAY = 0.3      # [assumed] number; [seen] that the event arrives
+DISTANCE_EVENT_DELAY = 0.1    # [assumed] number; [seen] within a second
+TRIGGER_EVENT_DELAY = 0.1     # [assumed] number; [seen] that the stage is set within a second of the move
+CONTAINER_EVENT_DELAY = 0.1   # [assumed] number; [seen] that the stage is set within a second of the pick-up
+ACTIVATE_EVENT_DELAY = 0.1    # [assumed] number
+# A placed person that has something to go about does not stay where the
+# plugin put it. [seen] five times on 2026-11-13 for the game's settler,
+# whose one package is a sandbox (DefaultSandboxExteriorEditorLocation,
+# 023331): a tenth of a second after Enable came back it was sitting on a
+# seat of the room, 370 to 790 units from where it had been placed (sit state
+# 3 or 4); two seconds later it had stood up, and after six it had walked
+# some 300 units further. A place in the room, not a place near the player:
+# with the player set down elsewhere it went to the same row of seats. The
+# stand-in knows no seats. It moves such a person by one of the offsets seen
+# (the first: 489 units), before Enable comes back, and leaves it there; it
+# does not walk it on. (A test can make the move take time, or go elsewhere,
+# to see that a scenario which looks more than once catches a slow walk.)
+STRAY_AFTER = 0.0
+STRAY_BY = (337.0, 354.0, 13.0)
+# Put back where it was placed (MoveToMyEditorLocation), such a person is
+# there at once, with no package and still "sitting"; three seconds later it
+# runs its package again and is 26 to 38 units off. [seen] twice. The
+# stand-in has it take one step of that size a second after it is put back.
+PUT_BACK_WALK_AFTER = 1.0
+PUT_BACK_STEP = (-27.0, 2.0, 0.0)
+# How long such a person is "sitting" (sit state 3) after it has been put on
+# its seat or put back. [seen] 3 or 4 at a tenth of a second, 0 at two
+# seconds; the second between is [assumed].
+SIT_SECONDS = 1.0
+# How long Enable takes to come back for a person the plugin places. [seen]
+# on 2026-11-13: 18.4 and 20.0 seconds for the two actors of the plugin's
+# own, the first time each was enabled; 2.4, 2.1 and 1.5 seconds for the
+# game's settler (and once about ten). Why the plugin's own take so long is
+# not known.
+ENABLE_SECONDS = {"own": 19.0, "game": 2.0}
+# The ids the game printed for the packages: the settler's sandbox, and what
+# a person with no package of its own was running. [seen]
+SETTLER_PACKAGE = "00023331"
+NO_PACKAGE_PACKAGE = "001FEFC1"
+FRAME = 1.0 / 60.0
+# How much of an actor counts for a trigger: from its feet this far up. [assumed]
+ACTOR_HEIGHT = 120.0
+# How many elements an array made with "new" may have. [documented] "Arrays
+# can be any size, up to 128 elements. Attempting to create an array larger
+# then that will fail."
+MAX_NEW_ARRAY = 128
+# The room the runner sends the game to (coc qasmoke). [seen]
+START_CELL = "QASmoke"
+# The game's own scripts that the plugin attaches to aliases by name. The
+# stand-in does not have their source; it plays what the Creation Kit wiki says
+# they do. [documented], and [seen] on 2026-11-13 for both, on aliases filled
+# with references the plugin places: the trigger's script set its stage when
+# the player was moved into the box, the object's when the player picked it up.
+DEFAULT_ALIAS_SCRIPTS = ("defaultaliasontriggerenter", "defaultaliasoncontainerchangedto")
+
+
+# ------------------------------------------------------------ game objects
+
+class Form:
+    kind = "Form"
+
+    def __init__(self, editor_id: str, kind: str, has_model: bool = False):
+        self.editor_id = editor_id
+        self.kind = kind
+        self.has_model = has_model
+
+    def __repr__(self):
+        return "[%s <%s>]" % (self.kind, self.editor_id)
+
+
+class GlobalVariable(Form):
+    def __init__(self, editor_id):
+        super().__init__(editor_id, "Global")
+        self.value = 0.0
+
+
+class Message(Form):
+    def __init__(self, editor_id, box, buttons):
+        super().__init__(editor_id, "Message")
+        self.box = box
+        self.buttons = buttons
+
+
+class Faction(Form):
+    def __init__(self, editor_id):
+        super().__init__(editor_id, "Faction")
+        self.player_enemy = False
+
+
+class Cell(Form):
+    def __init__(self, editor_id):
+        super().__init__(editor_id, "Cell")
+
+
+class ObjectReference:
+    count = 0
+
+    def __init__(self, base: Optional[Form], pos=(0.0, 0.0, 0.0)):
+        ObjectReference.count += 1
+        self.id = ObjectReference.count
+        self.base = base
+        self.pos = tuple(pos)
+        self.disabled = False
+        self.deleted = False
+        self.inventory: Dict[Form, int] = {}
+        # Nothing in the stand-in opens a conversation. A test that wants one
+        # sets this, as a person would by talking to the actor.
+        self.talking_to_player = False
+        self.cell: Optional[Cell] = None
+        self.heading = 0.0                       # radians, from north towards east
+        self.editor_id: Optional[str] = None     # for a reference the plugin places
+        # A box around the reference makes it a trigger: how far the box
+        # reaches from its middle on each axis, and its collision layer.
+        self.box: Optional[tuple] = None
+        self.layer: Optional[int] = None
+        self.inside: set = set()                 # ids of the actors inside the box
+        # Who carries it, once it has been picked up or put somewhere.
+        self.container: Optional["ObjectReference"] = None
+        # Where the plugin placed it, and in which cell; None for a reference
+        # made while the game runs.
+        self.editor_pos: Optional[tuple] = None
+        self.editor_cell: Optional[Cell] = None
+
+    def has_3d(self) -> bool:
+        # [seen] a placed copy of an item with no model reports Is3DLoaded false
+        return bool(self.base and self.base.has_model) and not self.disabled
+
+    def __repr__(self):
+        return "[%s #%d of %s]" % (type(self).__name__, self.id, self.base.editor_id if self.base else "?")
+
+
+class Actor(ObjectReference):
+    def __init__(self, base, pos=(0.0, 0.0, 0.0), is_player=False):
+        super().__init__(base, pos)
+        self.is_player = is_player
+        self.dead = False
+        self.protected_override: Optional[bool] = None
+        self.essential_override: Optional[bool] = None
+        self.combat_target: Optional["Actor"] = None
+        # Killed by the player: counts as fighting the player until then.
+        self.fights_player_until = -1.0
+        self.restrained = False
+        self.ai_on = True
+        self.equipped: set = set()
+        # When it was last put on its seat or put back: it "sits" and, put
+        # back, has no package for a moment after.
+        self.sat_at = -100.0
+        self.put_back_at = -100.0
+        # Counts up whenever the actor is enabled, disabled or put somewhere,
+        # so that a walk-off arranged before then does not happen after it.
+        self.stray_serial = 0
+
+
+class Alias:
+    def __init__(self, quest, info):
+        self.quest = quest
+        self.id = info["Id"]
+        self.name = info["Name"]
+        self.flags = set(info["Flags"])
+        self.fill = info.get("Fill")
+        self.ref: Optional[ObjectReference] = None
+        self.scripts: List["Instance"] = []
+        # The game's own scripts on the alias: (name in lower case, its properties).
+        self.default_scripts: List[tuple] = []
+
+    def __repr__(self):
+        return "[alias %s on %s]" % (self.name, self.quest.editor_id)
+
+
+class Quest(Form):
+    def __init__(self, info):
+        super().__init__(info["EditorId"], "Quest")
+        self.flags = set(info["Flags"])
+        self.stages = {s["Index"]: s for s in info["Stages"]}
+        self.objectives = {o["Index"] for o in info["Objectives"]}
+        self.done: List[int] = []
+        self.displayed: Dict[int, bool] = {}
+        self.completed_objectives: Dict[int, bool] = {}
+        self.running = False
+        self.completed = False
+        self.aliases: Dict[int, Alias] = {}
+        self.scripts: List["Instance"] = []
+
+
+class Instance:
+    """One script attached to one game object."""
+
+    def __init__(self, script: Script, obj):
+        self.script = script
+        self.obj = obj
+        self.props: Dict[str, Any] = {}
+        self.vars: Dict[str, Any] = {}
+
+    def __repr__(self):
+        return "[%s on %r]" % (self.script.name, self.obj)
+
+
+class Thread:
+    def __init__(self, gen, name):
+        self.gen = gen
+        self.name = name
+        self.wake = 0.0
+        self.blocked = False
+        self.done = False
+
+
+NATIVE_TYPES = {
+    "scriptobject": object, "form": Form, "quest": Quest, "globalvariable": GlobalVariable,
+    "message": Message, "faction": Faction, "objectreference": ObjectReference, "actor": Actor,
+    "alias": Alias, "referencealias": Alias, "cell": Cell,
+    # base forms the scripts only pass around
+    "miscobject": Form, "book": Form, "actorbase": Form, "static": Form, "package": Form,
+}
+GLOBAL_SCRIPTS = {"game", "debug", "utility", "math"}
+
+
+def unwrap(v):
+    """A script attached to a quest or an alias stands for that quest or alias."""
+    return v.obj if isinstance(v, Instance) else v
+
+
+def to_string(v) -> str:
+    v = unwrap(v)
+    if v is None:
+        return "None"
+    if isinstance(v, bool):
+        return "True" if v else "False"       # [seen] in the self-test's log
+    if isinstance(v, float):
+        return "%f" % v                        # [seen] "2000.000000"
+    return str(v)
+
+
+def truthy(v) -> bool:
+    if v is None:
+        return False
+    if isinstance(v, (bool, int, float)):
+        return bool(v)
+    if isinstance(v, str):
+        return v != ""
+    if isinstance(v, list):
+        return len(v) > 0
+    return True
+
+
+def default_for(type_name: Optional[str]):
+    t = (type_name or "").lower()
+    if t == "int":
+        return 0
+    if t == "float":
+        return 0.0
+    if t == "bool":
+        return False
+    if t == "string":
+        return ""
+    return None
+
+
+def coerce(value, type_name: Optional[str]):
+    """What Papyrus does to a value going into a typed slot."""
+    t = (type_name or "").lower()
+    if t == "int":
+        if isinstance(value, bool):
+            return 1 if value else 0
+        if isinstance(value, (int, float)):
+            return int(value)
+        return 0 if value is None else value
+    if t == "float":
+        if isinstance(value, bool):
+            return 1.0 if value else 0.0
+        if isinstance(value, (int, float)):
+            return float(value)
+        return 0.0 if value is None else value
+    if t == "bool":
+        return truthy(value)
+    if t == "string":
+        return to_string(value)
+    return value
+
+
+_parsed: Dict[tuple, Dict[str, Script]] = {}
+
+
+def parsed(folder) -> Dict[str, Script]:
+    """The scripts of a folder, read once for as long as the files stay as they
+    are. A script's tree is only read by a session, never changed, so sessions
+    can share it."""
+    files = sorted(Path(folder).glob("*.psc"))
+    key = (str(folder),) + tuple((f.name, f.stat().st_mtime_ns, f.stat().st_size) for f in files)
+    if key not in _parsed:
+        _parsed[key] = parse_folder(folder)
+    return _parsed[key]
+
+
+# ---------------------------------------------------------------- session
+
+class Session:
+    """One game session: from the main menu into the test room, until the game closes."""
+
+    def __init__(self, scripts_folder, plugin_json, vanilla_json=None, natives_json=None, older_scripts=False,
+                 native_delay=0.0, shake=None):
+        """older_scripts: the scripts are an earlier version than the plugin
+        description (used to replay a recorded game run). A property the
+        plugin fills and the older script does not declare is then left out
+        instead of stopping the session.
+
+        native_delay: seconds that every call out of a script takes (into the
+        game, or onto another object). 0, the default, is the mode the
+        recorded game runs are replayed in: nothing takes time, so two script
+        threads never overlap. In the game they do: [documented] a script
+        gives other threads a turn at every such call. With a delay of one
+        frame the stand-in lets threads overlap at exactly those points. That
+        is a pessimistic picture, not a measured one: in the game many calls
+        come back within the frame. It is for provoking overlaps, not for
+        predicting timings.
+
+        shake: a number. With it the session is shaken, the same way every
+        time for the same number: every call into the game takes 0 to 3
+        frames, a stage's handlers begin 0 to 3 frames after the stage is
+        marked as set ([assumed] that this can happen; [seen] only that
+        SetStage comes back after them), events arrive up to 3 frames late,
+        and threads that are ready at the same instant run in any order. For
+        hunting interleavings that a fixed timing never produces. It is
+        harsher than the game: there, [documented], a call on the script's
+        own quest or alias does not give other threads a turn; here it may.
+        Only what a script does with no call at all between two steps is
+        left whole."""
+        self.older_scripts = older_scripts
+        self.native_delay = float(native_delay)
+        self.rng = random.Random(shake) if shake is not None else None
+        self.shake_frames = 3
+        # Which of two threads that are ready at the same instant goes first.
+        # The game promises no order; a test of overlapping handlers should
+        # hold either way.
+        self.newest_first = False
+        self.scripts: Dict[str, Script] = parsed(scripts_folder)
+        self.plugin = json.loads(Path(plugin_json).read_text())
+        self.vanilla = json.loads(Path(vanilla_json).read_text()) if vanilla_json and Path(vanilla_json).exists() else []
+        self.natives_doc = json.loads(Path(natives_json).read_text())["natives"] if natives_json else {}
+        self.now = 0.0
+        self.threads: List[Thread] = []
+        self.timers: Dict[tuple, tuple] = {}          # (id(instance), timer id) -> (due, instance)
+        self.pending: List[tuple] = []                # (due, order, name, make generator)
+        self.order = 0
+        self.distance_watches: List[dict] = []
+        self.papyrus_log: List[str] = []
+        self.user_logs: Dict[str, List[str]] = {}
+        self.open_logs = set()
+        self.notifications: List[str] = []
+        self.message_boxes: List[str] = []
+        self.messages_shown: List[str] = []
+        # A message box waits for somebody to press a button. In a scenario
+        # nobody is there, and a box that opens stops the session: in the
+        # game it would stop the run, because neither a script's wait nor a
+        # timer counts time while a menu is open ([documented]). A test that
+        # plays a person puts that person's answers here: for each message,
+        # by EditorID, the buttons to press, in order.
+        self.answers: Dict[str, List[int]] = {}
+        self.boxes_answered: List[tuple] = []          # (message, button)
+        # For a test: something to do while a box is open (it is given the message's EditorID).
+        self.on_box = None
+        # For a test: placed references that EnableNoWait never brings, by EditorID.
+        self.never_arrives: set = set()
+        # What Utility.RandomInt gives. None: the lowest number it may give.
+        self.random_int: Optional[int] = None
+        self.god_mode = False
+        self.ended = None                             # 'quit' | 'idle' | 'timeout'
+        self.unknown_scripts = set()
+        self.calls_on_none = 0
+        self.forms: Dict[str, Form] = {}
+        self.quests: Dict[str, Quest] = {}
+        self.cells: Dict[str, Cell] = {}
+        self.player = Actor(Form("Player", "Npc", has_model=True), is_player=True)
+        self.player.cell = self._cell(START_CELL)
+        self.actors: List[Actor] = [self.player]
+        self.triggers: List[ObjectReference] = []
+        self.placed: Dict[str, ObjectReference] = {}      # EditorID -> a reference the plugin places
+        # For a test: False makes Activate do nothing, as if the game did not
+        # take it for picking the thing up.
+        self.activate_picks_up = True
+        # For a test: whether a placed person walks off once enabled, by the
+        # EditorID of its reference. Without an entry the stand-in's own rule
+        # decides (_has_business). And how long the walk takes.
+        self.stray_override: Dict[str, bool] = {}
+        self.stray_after = STRAY_AFTER
+        self.stray_by = STRAY_BY
+        # How long Enable takes for a placed person ({} for none: a test of
+        # one rule at a time has no use for the wait).
+        self.enable_seconds = dict(ENABLE_SECONDS)
+        # For a test: from how far the game performs an activation of a
+        # person. None: from anywhere, which is [assumed]; what was [seen] is
+        # an item picked up from 163 units. And how long the scripts wait to
+        # hear of one.
+        self.activate_reach: Optional[float] = None
+        self.activate_event_delay = ACTIVATE_EVENT_DELAY
+        # For a test: calls into the game that take long, or never come back.
+        # (the function's name in lower case, on whom) -> seconds, or None for
+        # never. On whom: the EditorID of a reference the plugin places,
+        # "player", or "made at run time". With an entry in slow_from_call,
+        # only from that call on (1 is the first). [seen] on 2026-11-13: one
+        # move of the player took 38 seconds.
+        self.slow_calls: Dict[tuple, Optional[float]] = {}
+        self.slow_from_call: Dict[tuple, int] = {}
+        self._calls_seen: Dict[tuple, int] = {}
+        # What the plugin says of the actors of its own: how many packages, a
+        # default package list or none.
+        self.npc_info = {n["EditorId"]: n for n in self.plugin.get("Npcs", [])}
+        # What GetCurrentPackage answers: the settler's sandbox, and what a
+        # person with no package of its own runs. A script can only print
+        # them, and the game prints "[Package < (id)>]".
+        self.some_package = Form(" (%s)" % SETTLER_PACKAGE, "Package")
+        self.idle_package = Form(" (%s)" % NO_PACKAGE_PACKAGE, "Package")
+        # Where the player arrives in the cells the plugin places things in:
+        # written by the builder beside the plugin's description.
+        arrivals = Path(plugin_json).with_name("TheLastMeridian.arrivals.json")
+        self.arrivals = json.loads(arrivals.read_text()) if arrivals.exists() else []
+        self._build()
+
+    # ---- building the world from the plugin's description
+    def _build(self):
+        # What the plugin's containers hold: "40 of <record>" in its description.
+        self.holds: Dict[str, List[tuple]] = {}
+        for rec in self.plugin["Records"]:
+            for line in rec.get("Holds") or []:
+                count, _, what = line.partition(" of ")
+                self.holds.setdefault(rec["EditorId"], []).append((int(count), what))
+        for rec in self.plugin["Records"]:
+            eid = rec["EditorId"]
+            if rec["Type"] == "Global":
+                self.forms[eid] = GlobalVariable(eid)
+            elif rec["Type"] == "Faction":
+                self.forms[eid] = Faction(eid)
+            else:
+                # An item of the plugin's without a model: [seen] Is3DLoaded
+                # false. One that borrows a model of the game's has one;
+                # whether the game then loads it has not been seen.
+                # An actor of the plugin's own is a copy of one of the game's,
+                # looks included. [assumed] that the game then shows it.
+                self.forms[eid] = Form(eid, rec["Type"], has_model=bool(rec.get("Model")) or rec["Type"] == "Npc")
+        for m in self.plugin["Messages"]:
+            self.forms[m["EditorId"]] = Message(m["EditorId"], m["Box"], m["Buttons"])
+        self.by_formkey: Dict[str, Any] = {}
+        for v in self.vanilla:
+            if v["Kind"] == "Player":
+                self.by_formkey[v["FormKey"]] = self.player
+            else:
+                # The game's own records have models. [seen] for the marker
+                # (MoveTo returns) and the settler (it stands, fights and dies).
+                self.by_formkey[v["FormKey"]] = Form(v["EditorId"], v["Kind"], has_model=True)
+        for q in self.plugin["Quests"]:
+            quest = Quest(q)
+            self.quests[quest.editor_id] = quest
+            self.forms[quest.editor_id] = quest
+            for a in q["Aliases"]:
+                quest.aliases[a["Id"]] = Alias(quest, a)
+        for q in self.plugin["Quests"]:
+            quest = self.quests[q["EditorId"]]
+            for bind in q["Scripts"]:
+                inst = self._attach(bind, quest, quest)
+                if inst:
+                    quest.scripts.append(inst)
+            for a in q["Aliases"]:
+                alias = quest.aliases[a["Id"]]
+                for bind in a["Scripts"]:
+                    if bind["Name"].lower() in DEFAULT_ALIAS_SCRIPTS:
+                        alias.default_scripts.append((bind["Name"].lower(), {p["Name"].lower(): p["Value"] for p in bind["Props"]}))
+                    inst = self._attach(bind, alias, quest)
+                    if inst:
+                        alias.scripts.append(inst)
+        self._place()
+
+    def _cell(self, editor_id: str) -> Cell:
+        key = editor_id.lower()
+        if key not in self.cells:
+            self.cells[key] = Cell(editor_id)
+        return self.cells[key]
+
+    def _place(self):
+        """The references the plugin places in cells of the game (none in a
+        plugin built without the game's master). [seen] on 2026-11-13: the game
+        loads them where the plugin puts them, an initially disabled actor is
+        disabled, and an item with a borrowed model has its 3D. [seen] too:
+        the game's generic settler, placed and then enabled, did not stay
+        where it was placed (see STRAY_AFTER)."""
+        for c in self.plugin.get("Cells", []):
+            cell = self._cell(c["EditorId"] or c["FormKey"])
+            for p in c["Placed"]:
+                base = self._target(p["Base"])
+                made = Actor(base, p["Position"]) if p["Kind"] == "PlacedNpc" else ObjectReference(base, p["Position"])
+                if isinstance(made, Actor):
+                    self.actors.append(made)
+                made.cell = cell
+                made.heading = p["Rotation"][2]
+                made.editor_id = p["EditorId"]
+                made.disabled = p["InitiallyDisabled"]
+                if p.get("StartsDead"):
+                    # [assumed] The record's flag is the one the editor sets
+                    # for "Starts Dead"; whether the game honours it on a
+                    # reference this plugin places has not been seen.
+                    made.dead = True
+                for count, what in self.holds.get(getattr(base, "editor_id", None), []):
+                    made.inventory[self._target(what)] = count
+                made.editor_pos = tuple(p["Position"])
+                made.editor_cell = cell
+                if p["Primitive"] == "Box":
+                    made.box = tuple(p["Box"])
+                    made.layer = p["CollisionLayer"]
+                    self.triggers.append(made)
+                elif p["Primitive"] is not None:
+                    raise SimError("%s: a %s primitive is not modelled" % (p["EditorId"], p["Primitive"]))
+                self.by_formkey[p["FormKey"]] = made
+                self.placed[p["EditorId"]] = made
+        # [seen] on 2026-11-13: the player arrives at the cell's arrival
+        # marker, to the last digit.
+        for a in self.arrivals:
+            if a["Cell"].lower() == START_CELL.lower():
+                self.player.pos = tuple(a["Position"])
+                self.player.heading = a["Heading"]
+        # [assumed] Whoever is inside a trigger when the room loads is inside
+        # it, and nobody is told: no script that could be told is listening
+        # yet, and a quest that starts later with someone already inside is
+        # not told either. (The builder keeps the triggers clear of the spot
+        # where the player arrives, so that this never decides anything.)
+        for trig in self.triggers:
+            trig.inside = {a.id for a in self.actors if self._in_box(trig, a)}
+
+    def _target(self, name: str):
+        if name in self.forms:
+            return self.forms[name]
+        if name in self.by_formkey:
+            return self.by_formkey[name]
+        raise SimError("the plugin points at %s, which the stand-in does not have" % name)
+
+    def _attach(self, bind, obj, quest) -> Optional[Instance]:
+        script = self.scripts.get(bind["Name"].lower())
+        if script is None:
+            # One of the game's own scripts. Two of them are played from their
+            # documentation (DEFAULT_ALIAS_SCRIPTS); any other is not run.
+            if bind["Name"].lower() not in DEFAULT_ALIAS_SCRIPTS:
+                self.unknown_scripts.add(bind["Name"])
+            return None
+        inst = Instance(script, obj)
+        for p in bind["Props"]:
+            low = p["Name"].lower()
+            if low not in script.properties:
+                if self.older_scripts:
+                    continue
+                raise SimError("%s: the plugin fills %s, which the script does not declare" % (script.name, p["Name"]))
+            if p["Kind"] == "object":
+                if p["Alias"] is not None:
+                    inst.props[low] = self.quests[p["Target"]].aliases[p["Alias"]]
+                else:
+                    inst.props[low] = self._target(p["Target"])
+            elif p["Kind"] in ("int[]", "string[]"):
+                inst.props[low] = list(p["Value"])
+            elif p["Kind"] == "object[]":
+                inst.props[low] = [self.quests[o["Target"]].aliases[o["Alias"]] if o["Alias"] is not None else self._target(o["Target"])
+                                   for o in p["Value"]]
+            else:
+                inst.props[low] = p["Value"]
+        for low, prop in script.properties.items():
+            if low not in inst.props:
+                # A property the plugin leaves alone keeps its default. [documented]
+                inst.props[low] = coerce(self._const(prop.default, inst), prop.type) if prop.default is not None else default_for(prop.type)
+        for low, var in script.variables.items():
+            inst.vars[low] = coerce(self._const(var.init, inst), var.type) if var.init is not None else default_for(var.type)
+        return inst
+
+    def _const(self, node, inst):
+        """A default or initial value: a literal, possibly negated."""
+        if node[0] == "lit":
+            return node[1]
+        if node[0] == "unary" and node[1] == "-" and node[2][0] == "lit":
+            return -node[2][1]
+        raise SimError("%s: an initial value that is not a plain literal" % inst.script.name)
+
+    # ---- logs
+    def trace(self, text: str):
+        self.papyrus_log.append(text)
+
+    def papyrus_error(self, text: str, inst: Optional[Instance] = None, line: int = 0):
+        where = " (%s, line %d)" % (inst.script.name, line) if inst else ""
+        self.papyrus_log.append("error: " + text + where)
+
+    # ---- scheduling
+    def spawn(self, gen, name: str):
+        th = Thread(gen, name)
+        th.wake = self.now
+        self.threads.append(th)
+        return th
+
+    def later(self, delay: float, name: str, make, exact: bool = False):
+        self.order += 1
+        if self.rng and not exact:
+            delay += self.rng.randint(0, self.shake_frames) * FRAME
+        self.pending.append((self.now + delay, self.order, name, make))
+
+    def send_event(self, inst: Instance, event: str, args: list, delay: float = 0.0):
+        fn = inst.script.functions.get(event.lower())
+        if fn is None:
+            return
+        self.later(delay, "%s.%s" % (inst.script.name, event), lambda: self.call(inst, fn, args))
+
+    def actor_event(self, actor: Actor, event: str, args: list, delay: float):
+        """[documented] an alias's scripts receive its reference's events; [seen] for OnDeath, OnCombatStateChanged, OnPlayerLoadGame."""
+        self.ref_event(actor, event, args, delay)
+
+    def ref_event(self, ref: ObjectReference, event: str, args: list, delay: float):
+        """An event of a reference, sent to the scripts on every alias that
+        holds it: the project's own, and the two of the game's that the
+        stand-in plays from their documentation."""
+        for quest in self.quests.values():
+            if not quest.running:
+                continue
+            for alias in quest.aliases.values():
+                if alias.ref is ref:
+                    for inst in alias.scripts:
+                        self.send_event(inst, event, args, delay)
+                    for name, props in alias.default_scripts:
+                        self._default_alias_script(alias, name, props, event, args, delay)
+
+    def _default_alias_script(self, alias: Alias, name: str, props: dict, event: str, args: list, delay: float):
+        """What the Creation Kit wiki says the game's own script does.
+          DefaultAliasOnTriggerEnter: "Stage to Set"; "PlayerTriggerOnly: If
+            set to TRUE (DEFAULT) then this stage will only set if Triggered
+            by the player."
+          DefaultAliasOnContainerChangedTo: "Stage to Set"; "PlayerPickupOnly:
+            If set to TRUE (DEFAULT) then the stage will only set if this is
+            picked up by the player."
+        [documented], and [seen] on 2026-11-13 for the player. Only the
+        properties the plugin sets are played; one it does not know stops the
+        session. ShowTraces ("if you want the traces in this script to show up
+        in the log"): [seen] the game takes the property without complaint and
+        writes nothing to the script log, so the stand-in writes none."""
+        known = {"stagetoset", "showtraces"}
+        if set(props) - known:
+            raise SimError("%s on %r: the stand-in does not play its properties %s" % (name, alias, sorted(set(props) - known)))
+        wanted = {"defaultaliasontriggerenter": "ontriggerenter", "defaultaliasoncontainerchangedto": "oncontainerchanged"}[name]
+        if event.lower() != wanted or unwrap(args[0]) is not self.player:
+            return
+        stage = props["stagetoset"]
+        self.later(delay, "%s on %s" % (name, alias.name), lambda: self.n_quest_setstage(alias.quest, None, stage))
+
+    # ---- triggers
+    def _in_box(self, trig: ObjectReference, actor: Actor) -> bool:
+        """Is any of the actor, from its feet up, inside the trigger's box? The
+        box is turned with the reference."""
+        if trig.disabled or trig.deleted or actor.disabled or actor.deleted or trig.cell is not actor.cell:
+            return False
+        dx, dy = actor.pos[0] - trig.pos[0], actor.pos[1] - trig.pos[1]
+        sin, cos = math.sin(trig.heading), math.cos(trig.heading)
+        across, along = dx * cos - dy * sin, dx * sin + dy * cos
+        feet = actor.pos[2] - trig.pos[2]
+        return abs(across) <= trig.box[0] and abs(along) <= trig.box[1] and feet <= trig.box[2] and feet + ACTOR_HEIGHT >= -trig.box[2]
+
+    def check_triggers(self):
+        """After anything has moved, appeared or gone: who has entered or left
+        a trigger. [documented] "Event called when the object reference is a
+        trigger volume and has been entered", and that actors set off a
+        trigger on the layer triggers are typically on.
+
+        [seen] on 2026-11-13: the player moved into the box by script
+        (MoveTo) enters it: the trigger then counted one thing more inside
+        itself and the script on its alias set its stage, for a box on an
+        activator of the plugin's and on the game's own empty trigger, on the
+        layers L_TRIGGER and L_ACTORZONE.
+
+        [assumed] still: that an actor made inside a box, or enabled inside
+        it, enters it; that enabling a trigger with someone inside is that
+        someone entering; and that any actor but the player sets a trigger
+        off as the player does."""
+        for trig in self.triggers:
+            now_inside = {a.id for a in self.actors if self._in_box(trig, a)}
+            entered, left = now_inside - trig.inside, trig.inside - now_inside
+            trig.inside = now_inside
+            # A box that names no collision layer is a trigger like the rest.
+            # [seen], in the game's own data: of 407 of its box triggers
+            # looked at on 2026-11-13, 405 name none. [assumed] that such a
+            # box of this plugin's lets the player set it off as theirs do;
+            # the trial asks.
+            for actor in self.actors:
+                if actor.id in entered:
+                    self.ref_event(trig, "OnTriggerEnter", [actor], TRIGGER_EVENT_DELAY)
+                elif actor.id in left:
+                    self.ref_event(trig, "OnTriggerLeave", [actor], TRIGGER_EVENT_DELAY)
+
+    def run(self, until: float = 900.0) -> str:
+        """Runs until the game is closed by a script, nothing is left that could
+        ever happen ('idle'), or the clock reaches `until` ('timeout').
+
+        Unless the game was closed, the clock then stands at `until`, so that a
+        test which says run(t) and then does something does it at t. (It used
+        to stay at the last thing that had happened, and a test written as if
+        it did not tested nothing.)"""
+        while True:
+            state = self.run_once(until)
+            if state != "running":
+                if state in ("idle", "timeout"):
+                    self.now = max(self.now, float(until))
+                return state
+
+    def run_once(self, until: float) -> str:
+        """Lets every script thread that can run do so, then moves the clock to
+        the next thing due. Returns 'running', or how the session ended."""
+        try:
+            self.run_ready()
+            return self.advance(until)
+        except QuitGame:
+            self.ended = "quit"
+            return self.ended
+
+    def run_ready(self):
+        """Lets every script thread that can run now do so. The clock stands still."""
+        progressed = True
+        while progressed:
+            progressed = False
+            order = list(reversed(self.threads)) if self.newest_first else list(self.threads)
+            if self.rng:
+                self.rng.shuffle(order)
+            for th in order:
+                if th.done or th.blocked or th.wake > self.now + 1e-9:
+                    continue
+                self._step(th)
+                progressed = True
+            self.threads = [t for t in self.threads if not t.done]
+
+    def advance(self, until: float) -> str:
+        """Moves the clock to the next thing due and starts what is due then."""
+        times = [t.wake for t in self.threads if not t.blocked]
+        times += [due for due, _inst in self.timers.values()]
+        times += [p[0] for p in self.pending]
+        if not times:
+            self.ended = "idle"
+            return self.ended
+        nxt = min(times)
+        if nxt > until:
+            self.ended = "timeout"
+            return self.ended
+        self.now = max(self.now, nxt)
+        for key, (due, inst) in sorted(self.timers.items(), key=lambda kv: kv[1][0]):
+            if due <= self.now + 1e-9:
+                del self.timers[key]
+                self.send_event(inst, "OnTimer", [key[1]])
+        due_now = sorted([p for p in self.pending if p[0] <= self.now + 1e-9], key=lambda p: (p[0], p[1]))
+        self.pending = [p for p in self.pending if p[0] > self.now + 1e-9]
+        for _due, _order, name, make in due_now:
+            self.spawn(make(), name)
+        return "running"
+
+    def _step(self, th: Thread):
+        try:
+            req = next(th.gen)
+        except StopIteration:
+            th.done = True
+            return
+        if req[0] == "sleep":
+            th.wake = self.now + max(0.0, float(req[1]))
+        elif req[0] == "block":
+            th.blocked = True
+        else:
+            raise SimError("unknown request from a script thread: %r" % (req,))
+
+    # ---- the interpreter
+    def call(self, inst: Instance, fn: Function, args: list, named: Optional[dict] = None):
+        """Runs one function or event of a script. A generator: it yields when the script has to wait."""
+        scope = {}
+        named = named or {}
+        if len(args) > len(fn.params):
+            raise SimError("%s.%s called with %d arguments, takes %d" % (inst.script.name, fn.name, len(args), len(fn.params)))
+        for i, p in enumerate(fn.params):
+            if i < len(args):
+                value = args[i]
+            elif p.name.lower() in named:
+                value = named[p.name.lower()]
+            elif p.has_default:
+                value = self._const(p.default, inst)
+            else:
+                raise SimError("%s.%s called without its parameter %s" % (inst.script.name, fn.name, p.name))
+            scope[p.name.lower()] = coerce(value, p.type)
+        frame = {"inst": inst, "scopes": [scope], "fn": fn}
+        try:
+            yield from self.block(fn.body, frame)
+        except _Return as r:
+            return coerce(r.value, fn.return_type) if fn.return_type else None
+        return default_for(fn.return_type)
+
+    def block(self, body, frame):
+        frame["scopes"].append({})
+        try:
+            for st in body:
+                yield from self.statement(st, frame)
+        finally:
+            frame["scopes"].pop()
+
+    def statement(self, st, frame):
+        kind = st[0]
+        if kind == "expr":
+            yield from self.ev(st[1], frame)
+        elif kind == "var":
+            _, type_name, name, init, _line = st
+            value = (yield from self.ev(init, frame)) if init is not None else default_for(type_name)
+            frame["scopes"][-1][name.lower()] = coerce(value, type_name)
+        elif kind == "assign":
+            _, target, op, expr, line = st
+            value = yield from self.ev(expr, frame)
+            if op != "=":
+                current = yield from self.ev(target, frame)
+                value = self.binary(op[0], current, value, frame, line)
+            yield from self.assign(target, value, frame, line)
+        elif kind == "if":
+            _, branches, otherwise, _line = st
+            for cond, body in branches:
+                if truthy((yield from self.ev(cond, frame))):
+                    yield from self.block(body, frame)
+                    return
+            if otherwise is not None:
+                yield from self.block(otherwise, frame)
+        elif kind == "while":
+            _, cond, body, line = st
+            turns = 0
+            while truthy((yield from self.ev(cond, frame))):
+                yield from self.block(body, frame)
+                turns += 1
+                if turns > 100000:
+                    raise SimError("%s line %d: a loop that does not end" % (frame["inst"].script.name, line))
+        elif kind == "return":
+            value = (yield from self.ev(st[1], frame)) if st[1] is not None else None
+            raise _Return(value)
+        else:
+            raise SimError("statement %r" % kind)
+
+    def lookup(self, name: str, frame):
+        low = name.lower()
+        for scope in reversed(frame["scopes"]):
+            if low in scope:
+                return True, scope[low]
+        inst = frame["inst"]
+        if low in inst.vars:
+            return True, inst.vars[low]
+        if low in inst.props:
+            return True, inst.props[low]
+        if low == "self":
+            return True, inst
+        return False, None
+
+    def assign(self, target, value, frame, line):
+        inst = frame["inst"]
+        if target[0] == "id":
+            low = target[1].lower()
+            for scope in reversed(frame["scopes"]):
+                if low in scope:
+                    scope[low] = self._keep_type(scope[low], value)
+                    return
+            if low in inst.vars:
+                var = inst.script.variables[low]
+                if var.const:
+                    raise SimError("%s line %d: assignment to the constant %s" % (inst.script.name, line, var.name))
+                inst.vars[low] = coerce(value, var.type)
+                return
+            if low in inst.props:
+                prop = inst.script.properties[low]
+                if "const" in prop.flags:
+                    raise SimError("%s line %d: assignment to the Const property %s" % (inst.script.name, line, prop.name))
+                inst.props[low] = coerce(value, prop.type)
+                return
+            raise SimError("%s line %d: %s is not declared" % (inst.script.name, line, target[1]))
+        if target[0] == "index":
+            arr = yield from self.ev(target[1], frame)
+            idx = yield from self.ev(target[2], frame)
+            if not isinstance(arr, list) or not 0 <= idx < len(arr):
+                self.papyrus_error("Array index %r is out of range" % (idx,), inst, line)
+                return
+            arr[idx] = self._keep_type(arr[idx], value)
+            return
+        raise SimError("%s line %d: this kind of assignment is not understood here" % (inst.script.name, line))
+        yield  # pragma: no cover  (keeps this a generator)
+
+    @staticmethod
+    def _keep_type(old, new):
+        if isinstance(old, bool):
+            return truthy(new)
+        if isinstance(old, int) and isinstance(new, float):
+            return int(new)
+        if isinstance(old, float) and isinstance(new, int) and not isinstance(new, bool):
+            return float(new)
+        return new
+
+    def ev(self, node, frame):
+        kind = node[0]
+        inst = frame["inst"]
+        if kind == "lit":
+            return node[1]
+        if kind == "id":
+            found, value = self.lookup(node[1], frame)
+            if not found:
+                raise SimError("%s line %d: %s is not declared" % (inst.script.name, node[2], node[1]))
+            return value
+        if kind == "unary":
+            value = yield from self.ev(node[2], frame)
+            if node[1] == "!":
+                return not truthy(value)
+            return -value
+        if kind == "binary":
+            op = node[1]
+            left = yield from self.ev(node[2], frame)
+            if op == "&&":
+                return truthy(left) and truthy((yield from self.ev(node[3], frame)))
+            if op == "||":
+                return truthy(left) or truthy((yield from self.ev(node[3], frame)))
+            right = yield from self.ev(node[3], frame)
+            return self.binary(op, left, right, frame, node[4])
+        if kind == "cast":
+            value = yield from self.ev(node[1], frame)
+            return self.cast(value, node[2], frame, node[3])
+        if kind == "member":
+            obj = yield from self.ev(node[1], frame)
+            return self.member(obj, node[2], frame, node[3])
+        if kind == "index":
+            arr = yield from self.ev(node[1], frame)
+            idx = yield from self.ev(node[2], frame)
+            if not isinstance(arr, list) or not 0 <= idx < len(arr):
+                self.papyrus_error("Array index %r is out of range" % (idx,), inst, node[3])
+                return 0
+            return arr[idx]
+        if kind == "call":
+            return (yield from self.call_node(node, frame))
+        if kind == "new":
+            size = yield from self.ev(node[2], frame)
+            if not isinstance(size, int) or isinstance(size, bool) or not 0 < size <= MAX_NEW_ARRAY:
+                # [documented] up to 128 elements; a larger one "will fail".
+                # What the game makes of a size of nothing has not been seen.
+                raise SimError("%s line %d: an array of %r elements" % (inst.script.name, node[3], size))
+            return [default_for(node[1]) for _ in range(size)]
+        raise SimError("expression %r" % kind)
+
+    def binary(self, op, left, right, frame, line):
+        if op in ("==", "!="):
+            a, b = unwrap(left), unwrap(right)
+            if isinstance(a, (int, float, str, bool)) or isinstance(b, (int, float, str, bool)):
+                same = a == b
+            else:
+                same = a is b
+            return same if op == "==" else not same
+        if op == "+" and (isinstance(left, str) or isinstance(right, str)):
+            return to_string(left) + to_string(right)
+        if isinstance(left, bool) or isinstance(right, bool) or left is None or right is None:
+            raise SimError("%s line %d: %r between %r and %r" % (frame["inst"].script.name, line, op, left, right))
+        if op == "+":
+            return left + right
+        if op == "-":
+            return left - right
+        if op == "*":
+            return left * right
+        if op == "/":
+            if isinstance(left, int) and isinstance(right, int):
+                return int(left / right) if right else 0
+            return left / right if right else 0.0
+        if op == "%":
+            return int(math.fmod(left, right)) if right else 0
+        if op == "<":
+            return left < right
+        if op == ">":
+            return left > right
+        if op == "<=":
+            return left <= right
+        if op == ">=":
+            return left >= right
+        raise SimError("operator %r" % op)
+
+    def cast(self, value, type_name: str, frame, line):
+        low = type_name.lower()
+        if low in ("int", "float", "bool", "string"):
+            return coerce(value, low)
+        if low in self.scripts:
+            wanted = self.scripts[low]
+            if isinstance(value, Instance) and value.script is wanted:
+                return value
+            obj = unwrap(value)
+            for inst in getattr(obj, "scripts", []):
+                if inst.script is wanted:
+                    return inst
+            return None
+        if low in NATIVE_TYPES:
+            obj = unwrap(value)
+            if obj is None:
+                return None
+            return obj if isinstance(obj, NATIVE_TYPES[low]) else None
+        raise SimError("%s line %d: cast to %s, a type the stand-in does not know" % (frame["inst"].script.name, line, type_name))
+
+    def member(self, obj, name: str, frame, line):
+        low = name.lower()
+        if isinstance(obj, list) and low == "length":
+            return len(obj)
+        if obj is None and low == "length":
+            return 0                                # [documented] an array that was never made "has a length of 0, and is equal to None"
+        if isinstance(obj, Instance):
+            if low in obj.props:
+                return obj.props[low]
+            raise SimError("%s line %d: %s has no property %s" % (frame["inst"].script.name, line, obj.script.name, name))
+        if obj is None:
+            self.papyrus_error("Cannot access a property of a None object", frame["inst"], line)
+            return None
+        raise SimError("%s line %d: .%s on %r" % (frame["inst"].script.name, line, name, obj))
+
+    def call_node(self, node, frame):
+        _, recv_node, name, arg_nodes, line = node
+        inst = frame["inst"]
+        low = name.lower()
+        args, named = [], {}
+        # a global script: Game.GetPlayer(), Debug.Trace(...), Utility.Wait(...)
+        if recv_node is not None and recv_node[0] == "id" and recv_node[1].lower() in GLOBAL_SCRIPTS:
+            found, _ = self.lookup(recv_node[1], frame)
+            if not found:
+                for arg_name, arg in arg_nodes:
+                    if arg_name:
+                        raise SimError("%s line %d: named arguments to %s are not understood here" % (inst.script.name, line, name))
+                    args.append((yield from self.ev(arg, frame)))
+                return (yield from self.native(recv_node[1].lower(), None, None, name, args, frame, line))
+        if recv_node is None:
+            target = inst
+        else:
+            target = yield from self.ev(recv_node, frame)
+        for arg_name, arg in arg_nodes:
+            value = yield from self.ev(arg, frame)
+            if arg_name:
+                named[arg_name.lower()] = value
+            else:
+                args.append(value)
+        if target is None:
+            # [documented] the game logs this and carries on with a zero value.
+            self.calls_on_none += 1
+            self.papyrus_error("Cannot call %s() on a None object, aborting function call" % name, inst, line)
+            return None
+        if isinstance(target, Instance) and low in target.script.functions:
+            return (yield from self.call(target, target.script.functions[low], args, named))
+        if named:
+            raise SimError("%s line %d: named arguments to %s are not understood here" % (inst.script.name, line, name))
+        context = target if isinstance(target, Instance) else None
+        return (yield from self.native(None, unwrap(target), context, name, args, frame, line))
+
+    # ---- the game's own functions
+    def native(self, global_script, obj, context: Optional[Instance], name, args, frame, line):
+        low = name.lower()
+        self._check_arity(name, len(args), frame, line)
+        if global_script:
+            fn = getattr(self, "g_%s_%s" % (global_script, low), None)
+        else:
+            fn = None
+            for cls in type(obj).__mro__:
+                fn = getattr(self, "n_%s_%s" % (cls.__name__.lower(), low), None)
+                if fn:
+                    break
+            if fn is None:
+                fn = getattr(self, "n_scriptobject_%s" % low, None)
+        if fn is None:
+            who = global_script or type(obj).__name__
+            raise SimError("%s line %d: %s.%s is not modelled by the stand-in" % (frame["inst"].script.name, line, who, name))
+        if self.rng:
+            delay = self.rng.randint(0, self.shake_frames) * FRAME
+            if delay:
+                yield ("sleep", delay)
+        elif self.native_delay and (global_script or obj is not frame["inst"].obj):
+            # a call out of the script: other threads get a turn
+            yield ("sleep", self.native_delay)
+        result = fn(*args) if global_script else fn(obj, context, *args)
+        if hasattr(result, "send"):          # a function that makes the script wait
+            result = yield from result
+        return result
+
+    def _check_arity(self, name, argc, frame, line):
+        if not self.natives_doc:
+            return
+        doc = self.natives_doc.get(name)
+        if doc is None:
+            for key, value in self.natives_doc.items():
+                if key.lower() == name.lower():
+                    doc = value
+                    break
+        if doc is None:
+            raise SimError("%s line %d: %s() is not in tools/papyrus_natives.json" % (frame["inst"].script.name, line, name))
+        if not any(d["min_args"] <= argc <= d["max_args"] for d in doc):
+            raise SimError("%s line %d: %s() called with %d argument(s)" % (frame["inst"].script.name, line, name, argc))
+
+    # Game
+    def g_game_getplayer(self):
+        return self.player
+
+    # Utility
+    def g_utility_wait(self, seconds):
+        yield ("sleep", seconds)
+
+    def g_utility_getcurrentrealtime(self):
+        # [documented] "the number of real-world seconds that have elapsed
+        # since the game has launched". Here: the stand-in's own clock, which
+        # starts when the session does. Only differences mean anything.
+        # [seen] on 2026-11-13: in the game the two clocks do not agree. A
+        # Utility.Wait(2.0) took 1.82 to 1.85 seconds by this one and a
+        # Wait(4.0) 3.47 to 3.50: waits ran about an eighth short. The
+        # stand-in has one clock, so here a wait takes what it says.
+        return float(self.now)
+
+    def g_utility_randomint(self, low=0, high=100):
+        # [documented] "a random integer between the minimum and maximum
+        # values (inclusive)". Here: what a test says, or else the lowest, so
+        # that a session comes out the same every time.
+        if self.random_int is None:
+            return int(low)
+        if not low <= self.random_int <= high:
+            raise SimError("a test asked Utility.RandomInt(%r, %r) for %r" % (low, high, self.random_int))
+        return int(self.random_int)
+
+    # Math
+    def g_math_sqrt(self, value):
+        if value < 0:
+            raise SimError("Math.sqrt of %r" % value)
+        return math.sqrt(value)
+
+    def g_utility_waitmenumode(self, seconds):
+        yield ("sleep", seconds)
+
+    # Debug.  [seen] these work in the game although the wiki calls them debug-only.
+    def g_debug_trace(self, text, severity=0):
+        self.trace(to_string(text))
+
+    def g_debug_openuserlog(self, name):
+        if name in self.open_logs:
+            return False
+        self.open_logs.add(name)
+        self.user_logs.setdefault(name, [])
+        return True
+
+    def g_debug_closeuserlog(self, name):
+        self.open_logs.discard(name)
+
+    def g_debug_traceuser(self, name, text, severity=0):
+        if name not in self.open_logs:
+            return False
+        self.user_logs[name].append(to_string(text))
+        return True
+
+    def g_debug_notification(self, text):
+        self.notifications.append(to_string(text))
+
+    def g_debug_messagebox(self, text):
+        self.message_boxes.append(to_string(text))
+
+    def g_debug_quitgame(self):
+        raise QuitGame()
+
+    def g_debug_setgodmode(self, on):
+        self.god_mode = truthy(on)
+
+    # Quest
+    def start_quest(self, quest: Quest):
+        if quest.running:
+            return
+        quest.running = True
+        for alias in quest.aliases.values():
+            if alias.fill and alias.fill.startswith("forced "):
+                ref = self.by_formkey.get(alias.fill.split(" ", 1)[1])
+                if isinstance(ref, ObjectReference) and ref.disabled and "AllowDisabled" not in alias.flags:
+                    # [assumed] from the editor's description of the flag for
+                    # the earlier games ("allow disabled references to fill
+                    # this alias"); the Fallout 4 wiki does not describe it.
+                    # The cautious reading: without the flag the alias stays
+                    # empty. [seen] on 2026-11-13 only the other half: with
+                    # the flag, an alias takes a reference that is disabled.
+                    ref = None
+                if isinstance(ref, Actor) and ref.dead and "AllowDead" not in alias.flags:
+                    ref = None                      # [assumed] in the same cautious way
+                alias.ref = ref if isinstance(ref, ObjectReference) else None
+        for inst in quest.scripts:
+            self.send_event(inst, "OnQuestInit", [])
+
+    def n_quest_start(self, quest: Quest, context):
+        # [documented] "Starts this quest. Is latent and will not return until
+        # the quest is actually started"; "True if the quest was successfully
+        # started." [seen] on 2026-11-13: it returned True, the quest ran and
+        # its aliases held their references in the next breath. [assumed] true
+        # as well for a quest already running.
+        self.start_quest(quest)
+        return quest.running
+
+    def n_quest_setstage(self, quest: Quest, context, stage):
+        if stage not in quest.stages:
+            self.papyrus_error("%s has no stage %d" % (quest.editor_id, stage))
+            return False
+        if not quest.running:
+            self.start_quest(quest)                 # [seen] SetStage starts a stopped quest
+        if stage in quest.done:
+            return False                            # [documented] a stage is set once
+        quest.done.append(stage)
+        info = quest.stages[stage]
+        if info["CompleteQuest"]:
+            quest.completed = True                  # [seen] the quest goes on running and handling stages
+        if self.rng:
+            # the stage reads as set; its handlers have yet to begin
+            wait = self.rng.randint(0, self.shake_frames) * FRAME
+            if wait:
+                yield ("sleep", wait)
+        # [seen] the game tells the scripts once per stage item, none for a
+        # stage without items; and SetStage returns after the handlers.
+        for item in range(info["Items"]):
+            for inst in quest.scripts:
+                fn = inst.script.functions.get("onstageset")
+                if fn:
+                    yield from self.call(inst, fn, [stage, item])
+        return True
+
+    def n_quest_getstagedone(self, quest, context, stage):
+        return stage in quest.done
+
+    def n_quest_isrunning(self, quest, context):
+        return quest.running
+
+    def n_quest_iscompleted(self, quest, context):
+        return quest.completed
+
+    def _objective(self, quest, index):
+        if index not in quest.objectives:
+            self.papyrus_error("%s has no objective %d" % (quest.editor_id, index))
+
+    def n_quest_setobjectivedisplayed(self, quest, context, index, displayed=True, force=False):
+        self._objective(quest, index)
+        quest.displayed[index] = truthy(displayed)
+
+    def n_quest_setobjectivecompleted(self, quest, context, index, completed=True):
+        self._objective(quest, index)
+        # [seen] an objective completed without ever having been displayed
+        # reads as completed (case 213)
+        quest.completed_objectives[index] = truthy(completed)
+
+    def n_quest_isobjectivedisplayed(self, quest, context, index):
+        return quest.displayed.get(index, False)
+
+    def n_quest_isobjectivecompleted(self, quest, context, index):
+        return quest.completed_objectives.get(index, False)
+
+    # timers and distance events belong to the script that asks. [documented]
+    def _need_context(self, context, what):
+        if context is None:
+            raise SimError("%s called on something that is not a script" % what)
+        return context
+
+    def n_scriptobject_starttimer(self, obj, context, interval, timer_id=0):
+        inst = self._need_context(context, "StartTimer")
+        self.timers[(id(inst), timer_id)] = (self.now + float(interval), inst)   # restarts a running one [documented]
+
+    def n_scriptobject_canceltimer(self, obj, context, timer_id=0):
+        inst = self._need_context(context, "CancelTimer")
+        self.timers.pop((id(inst), timer_id), None)
+
+    def _ref_of(self, thing) -> Optional[ObjectReference]:
+        thing = unwrap(thing)
+        if isinstance(thing, Alias):
+            return thing.ref
+        return thing
+
+    def n_scriptobject_registerfordistancegreaterthanevent(self, obj, context, a, b, distance):
+        inst = self._need_context(context, "RegisterForDistanceGreaterThanEvent")
+        a, b = unwrap(a), unwrap(b)
+        if a is None or b is None:
+            self.papyrus_error("RegisterForDistanceGreaterThanEvent with a None object", inst)
+            return
+        # one registration per script and pair; a new one replaces it [documented]
+        self.distance_watches = [w for w in self.distance_watches
+                                 if not (w["inst"] is inst and {id(w["a"]), id(w["b"])} == {id(a), id(b)})]
+        self.distance_watches.append({"inst": inst, "a": a, "b": b, "distance": float(distance)})
+        self.check_distances()                      # [seen] sent at once when already apart
+
+    def n_scriptobject_unregisterfordistanceevents(self, obj, context, a, b):
+        inst = self._need_context(context, "UnregisterForDistanceEvents")
+        a, b = unwrap(a), unwrap(b)
+        self.distance_watches = [w for w in self.distance_watches
+                                 if not (w["inst"] is inst and {id(w["a"]), id(w["b"])} == {id(a), id(b)})]
+
+    def check_distances(self):
+        for w in list(self.distance_watches):
+            ra, rb = self._ref_of(w["a"]), self._ref_of(w["b"])
+            if ra is None or rb is None:
+                continue
+            d = math.dist(ra.pos, rb.pos)
+            if d > w["distance"]:
+                self.distance_watches.remove(w)     # [documented] a single event per registration
+                self.send_event(w["inst"], "OnDistanceGreaterThan", [ra, rb, d], DISTANCE_EVENT_DELAY)
+
+    # GlobalVariable
+    def n_globalvariable_getvalueint(self, g, context):
+        return int(g.value)
+
+    def n_globalvariable_setvalueint(self, g, context, value):
+        g.value = float(int(value))
+
+    def n_globalvariable_getvalue(self, g, context):
+        return g.value
+
+    def n_globalvariable_setvalue(self, g, context, value):
+        g.value = float(value)
+
+    def n_globalvariable_mod(self, g, context, amount):
+        g.value += float(amount)
+        return g.value
+
+    # Message
+    def n_message_show(self, m, context, *floats):
+        self.messages_shown.append(m.editor_id)
+        if m.box:
+            waiting = self.answers.get(m.editor_id)
+            if not waiting:
+                raise SimError("the message box %s opened and nobody is there to answer it" % m.editor_id)
+            button = waiting.pop(0)
+            if not 0 <= button < len(m.buttons):
+                raise SimError("a test pressed button %r of %s, which has %d" % (button, m.editor_id, len(m.buttons)))
+            if not self._button_shown(m, button):
+                raise SimError("a test pressed button %r of %s, which is not shown as things stand" % (button, m.editor_id))
+            # [documented] "returns the button the user hit". [assumed] that
+            # this is the button's place in the message as the plugin has it,
+            # also when a button before it is hidden by its condition: the
+            # notice board's script counts on that.
+            self.boxes_answered.append((m.editor_id, button))
+            if self.on_box:
+                self.on_box(m.editor_id)
+            # A box is open for a moment at the least: other script threads
+            # get their turn before the answer is back. [assumed]
+            return self._after_a_frame(button)
+        return -1                                   # [documented] not a box: returns -1 at once
+
+    def _after_a_frame(self, value):
+        yield ("sleep", FRAME)
+        return value
+
+    def _button_shown(self, m, index: int) -> bool:
+        """A button's conditions, as the builder describes them: a global
+        compared with a number, or a stage of a quest being done. [documented]
+        a button is shown when all its conditions hold."""
+        compare = {"EqualTo": lambda a, b: a == b, "GreaterThanOrEqualTo": lambda a, b: a >= b}
+        for text in m.buttons[index].get("Conditions") or []:
+            words = text.split()
+            if words[0] == "GetGlobalValue" and len(words) == 4 and words[2] in compare:
+                held = compare[words[2]](self.forms[words[1]].value, float(words[3]))
+            elif words[0] == "GetStageDone" and len(words) == 5 and words[3] in compare:
+                held = compare[words[3]](1.0 if int(words[2]) in self.quests[words[1]].done else 0.0, float(words[4]))
+            else:
+                raise SimError("%s: the stand-in does not understand the condition %r" % (m.editor_id, text))
+            if not held:
+                return False
+        return True
+
+    # Faction
+    def n_faction_setplayerenemy(self, f, context, enemy=True):
+        f.player_enemy = truthy(enemy)
+
+    # Alias
+    def n_alias_getowningquest(self, alias, context):
+        return alias.quest
+
+    def n_alias_getreference(self, alias, context):
+        return alias.ref
+
+    def n_alias_getactorreference(self, alias, context):
+        return alias.ref if isinstance(alias.ref, Actor) else None
+
+    def n_alias_forcerefto(self, alias, context, ref):
+        ref = unwrap(ref)
+        if not alias.quest.running:
+            # [assumed] not tried in the game; the scripts never do it.
+            raise SimError("ForceRefTo on %r while its quest is not running" % alias)
+        alias.ref = ref                             # [seen] holds an actor made by PlaceAtMe
+
+    def n_alias_trytodisable(self, alias, context):
+        if alias.ref is None:
+            return False
+        self._disable(alias.ref)                    # [seen] the aliased actor is disabled, alive or dead
+        return True
+
+    def n_alias_trytostopcombat(self, alias, context):
+        if isinstance(alias.ref, Actor):
+            self._stop_combat(alias.ref)
+            return True
+        return False
+
+    def n_alias_trytoevaluatepackage(self, alias, context):
+        return isinstance(alias.ref, Actor)
+
+    # ObjectReference
+    def n_objectreference_placeatme(self, ref, context, form, count=1, persist=False, disabled=False, delete_when_able=True):
+        form = unwrap(form)
+        if form is None:
+            self.papyrus_error("PlaceAtMe: the form to place is None")
+            return None
+        if form.kind == "Npc":
+            made = Actor(form, ref.pos)             # [seen] a settler made this way stands, fights and dies
+            self.actors.append(made)
+        else:
+            made = ObjectReference(form, ref.pos)   # [seen] a marker and an item
+        made.disabled = truthy(disabled)
+        made.cell = ref.cell
+        self.check_triggers()
+        return made
+
+    def n_objectreference_moveto(self, ref, context, target, x=0.0, y=0.0, z=0.0, match_rotation=True):
+        target = unwrap(target)
+        if target is None:
+            self.papyrus_error("MoveTo: the target is None")
+            return
+        yield from self._slowly("moveto", ref)
+        if not ref.has_3d():
+            # [seen] twice: MoveTo on a placed reference with no model never comes back.
+            while True:
+                yield ("block",)
+        ref.pos = (target.pos[0] + x, target.pos[1] + y, target.pos[2] + z)
+        ref.cell = target.cell
+        self.check_distances()
+        self.check_triggers()
+
+    def _whom(self, ref) -> str:
+        if ref is self.player:
+            return "player"
+        return ref.editor_id or "made at run time"
+
+    def _slowly(self, name: str, ref):
+        """For a test: makes this call take as long as slow_calls says."""
+        key = (name, self._whom(ref))
+        if key not in self.slow_calls:
+            return
+        self._calls_seen[key] = self._calls_seen.get(key, 0) + 1
+        if self._calls_seen[key] < self.slow_from_call.get(key, 1):
+            return
+        seconds = self.slow_calls[key]
+        if seconds is None:
+            while True:
+                yield ("block",)
+        yield ("sleep", seconds)
+
+    def _never_comes_back(self, ref):
+        # [seen] twice for MoveTo on a placed reference with no model. [assumed]
+        # for the other functions that put a reference somewhere and wait for it.
+        while True:
+            yield ("block",)
+
+    def n_objectreference_setposition(self, ref, context, x, y, z):
+        yield from self._slowly("setposition", ref)
+        if not ref.has_3d():
+            yield from self._never_comes_back(ref)
+        # [documented], and [seen] on 2026-11-13 for a marker and for the player.
+        ref.pos = (float(x), float(y), float(z))
+        if isinstance(ref, Actor) and not ref.disabled:
+            self._may_walk_off(ref, put_back=True)
+        self.check_distances()
+        self.check_triggers()
+
+    def n_objectreference_movetomyeditorlocation(self, ref, context):
+        yield from self._slowly("movetomyeditorlocation", ref)
+        if not ref.has_3d():
+            yield from self._never_comes_back(ref)
+        if ref.editor_pos is None:
+            return              # [assumed] a reference made while the game runs has no such place and stays
+        # [documented] "Moves this reference to its original editor location
+        # and orientation." [seen] on 2026-11-13 for the game's settler: it
+        # was there, to the last digit, a tenth of a second later.
+        ref.pos = ref.editor_pos
+        ref.cell = ref.editor_cell
+        if isinstance(ref, Actor) and not ref.disabled:
+            self._may_walk_off(ref, put_back=True)
+        self.check_distances()
+        self.check_triggers()
+
+    def n_objectreference_movetonearestnavmeshlocation(self, ref, context):
+        yield from self._slowly("movetonearestnavmeshlocation", ref)
+        if not ref.has_3d():
+            yield from self._never_comes_back(ref)
+        # [documented] "Moves this reference to the nearest location that's on
+        # a Navmesh that an actor could reach by walking." The stand-in has no
+        # navigation mesh: it takes the room's floor to be one, level with
+        # the spot where the player arrives, so the reference comes straight
+        # down (or up) onto it. [seen] on 2026-11-13 at two spots of the
+        # game's test room: a marker 150 above the floor came straight down
+        # onto it, and one on the floor stayed where it was.
+        floor = 0.0
+        for a in self.arrivals:
+            if ref.cell is not None and a["Cell"].lower() == ref.cell.editor_id.lower():
+                floor = float(a["Position"][2])
+        ref.pos = (ref.pos[0], ref.pos[1], floor)
+        self.check_distances()
+        self.check_triggers()
+
+    def n_objectreference_getdistance(self, ref, context, other):
+        other = unwrap(other)
+        if other is None:
+            self.papyrus_error("GetDistance: the other object is None")
+            return 0.0
+        return math.dist(ref.pos, other.pos)
+
+    def _disable(self, ref):
+        ref.disabled = True
+        if isinstance(ref, Actor):
+            ref.stray_serial += 1
+            self._stop_combat(ref)
+        self.check_triggers()
+
+    # ---- placed people
+    def _has_business(self, actor: Actor) -> bool:
+        """Does this placed person have something to go about, so that it
+        walks off once it is enabled? [seen] once for the game's settler.
+        [assumed] for the rest, and it is what scenario 11 asks the game: a
+        person of the plugin's own with no packages stays, with or without a
+        default package list; one with packages would not."""
+        if actor.editor_pos is None or actor.is_player:
+            return False                         # only people the plugin places
+        if actor.editor_id in self.stray_override:
+            return self.stray_override[actor.editor_id]
+        if actor.base is None or actor.base.kind != "Npc":
+            return False
+        info = self.npc_info.get(actor.base.editor_id)
+        if info is None:
+            return True                          # an actor of the game's
+        # packages of its own, or those of the actor it is modelled on
+        return info["Packages"] > 0 or "AiPackages" in info["TemplateFlags"]
+
+    def _may_walk_off(self, actor: Actor, put_back: bool = False):
+        """Arranges for a placed person to leave its spot, if it is one that
+        would: at once to a seat when it is enabled, by a step a second
+        later when a script has put it back or let it go."""
+        actor.stray_serial += 1
+        serial = actor.stray_serial
+        if not self._has_business(actor):
+            return
+        by = PUT_BACK_STEP if put_back else self.stray_by
+        after = PUT_BACK_WALK_AFTER if put_back else self.stray_after
+        if put_back:
+            actor.put_back_at = self.now
+        actor.sat_at = self.now
+
+        def go():
+            still = (actor.stray_serial == serial and not actor.disabled and not actor.deleted and not actor.dead
+                     and not actor.restrained and actor.ai_on)
+            # What holds a person: [seen] twice that one with its AI off
+            # stays. Restrained: [seen] once that it stays, and once that a
+            # settler already walking went on (66 units in three seconds);
+            # the stand-in lets restraint hold.
+            if still:
+                actor.pos = tuple(a + b for a, b in zip(actor.pos, by))
+                self.check_distances()
+                self.check_triggers()
+
+        def walk_off():
+            go()
+            return
+            yield
+
+        if after <= 0:
+            go()
+        else:
+            self.later(after, "%r walks off" % actor, walk_off, exact=True)
+
+    def n_objectreference_disable(self, ref, context, fade=False):
+        self._disable(ref)
+
+    def n_objectreference_enable(self, ref, context, fade=False):
+        takes = 0.0
+        if ref.disabled and isinstance(ref, Actor) and ref.editor_pos is not None and ref.base is not None:
+            takes = self.enable_seconds.get("own" if ref.base.editor_id in self.npc_info else "game", 0.0)
+        if ("enable", self._whom(ref)) in self.slow_calls or takes > 0:
+            return self._enable_slowly(ref, takes)
+        self._enable(ref)
+
+    def n_objectreference_enablenowait(self, ref, context, fade=False):
+        # [documented] "This function will return immediately and not wait
+        # for the object to be enabled". [seen] on 2026-11-14: thirteen
+        # people of the plugin's own, asked for one after another without
+        # waiting, were all there together 39 seconds later (the first at
+        # 39.35, the last at 39.96). So they come in side by side, and the
+        # stand-in has each take what Enable takes. How long that is in the
+        # game is not steady: 18, 20 and 30 seconds for one person, and once
+        # under three.
+        takes = 0.0
+        if ref.disabled and isinstance(ref, Actor) and ref.editor_pos is not None and ref.base is not None:
+            takes = self.enable_seconds.get("own" if ref.base.editor_id in self.npc_info else "game", 0.0)
+        if self._whom(ref) in self.never_arrives:
+            return                                  # only when a test says so
+        if takes <= 0:
+            self._enable(ref)
+            return
+
+        def arrive():
+            self._enable(ref)
+            return
+            yield
+
+        self.later(takes, "%r is switched on" % ref, arrive, exact=True)
+
+    def _enable_slowly(self, ref, takes=0.0):
+        yield from self._slowly("enable", ref)
+        if takes > 0:
+            yield ("sleep", takes)                  # [seen] see ENABLE_SECONDS
+        self._enable(ref)
+
+    def _enable(self, ref):
+        was_disabled = ref.disabled
+        ref.disabled = False
+        if was_disabled and isinstance(ref, Actor):
+            self._may_walk_off(ref)
+        self.check_triggers()
+
+    def n_objectreference_getparentcell(self, ref, context):
+        # [documented] "the Cell the object is currently in". [seen] on
+        # 2026-11-13 for the player, a placed item, a placed actor still
+        # disabled and the same actor enabled: all the same cell.
+        return ref.cell
+
+    def n_objectreference_getpositionx(self, ref, context):
+        return float(ref.pos[0])
+
+    def n_objectreference_getpositiony(self, ref, context):
+        return float(ref.pos[1])
+
+    def n_objectreference_getpositionz(self, ref, context):
+        return float(ref.pos[2])
+
+    def n_objectreference_gettriggerobjectcount(self, ref, context):
+        if ref.box is None:
+            # [documented] "only works if this is actually a trigger and will error otherwise"
+            self.papyrus_error("GetTriggerObjectCount on %r, which is not a trigger" % ref)
+            return 0
+        # [documented] "the number of objects currently inside the trigger
+        # volume". The stand-in knows only of actors; in the game a trigger
+        # may count loose things of any kind its layer lets in, so the number
+        # there can be larger. What a script may rely on is the change.
+        return len(ref.inside)
+
+    def _into_container(self, ref: ObjectReference, container: Optional[ObjectReference]):
+        """A reference goes into a container, with what that tells the scripts
+        on its aliases. [documented] OnContainerChanged: the container it
+        enters, the one it left (None: it was picked up from the world)."""
+        old = ref.container
+        if old is not None:
+            old.inventory[ref.base] = old.inventory.get(ref.base, 0) - 1
+        ref.container = container
+        if container is not None:
+            container.inventory[ref.base] = container.inventory.get(ref.base, 0) + 1
+        self.ref_event(ref, "OnContainerChanged", [container, old], CONTAINER_EVENT_DELAY)
+
+    def n_objectreference_activate(self, ref, context, activator, default_only=False):
+        activator = unwrap(activator)
+        if isinstance(ref, Actor):
+            if truthy(default_only):
+                raise SimError("Activate on %r with default processing only is not modelled" % ref)
+            if ref.disabled or ref.deleted or ref.is_player:
+                return False                        # [assumed] nobody there to activate
+            if self.activate_reach is not None and math.dist(ref.pos, activator.pos) > self.activate_reach:
+                return False                        # only when a test says so
+            # [documented] Activate sends OnActivate to the scripts unless it
+            # is told to do default processing only, and an alias's scripts
+            # receive its reference's events. [seen] on 2026-11-13 for a
+            # placed person of the plugin's own, activated by the player from
+            # 632 units off: Activate returned True, and the project's script
+            # on the person's alias had set its stage within the second.
+            self.ref_event(ref, "OnActivate", [activator], self.activate_event_delay)
+            return True
+        if ref.base is not None and ref.base.kind == "Book":
+            # [documented] OnRead: "received when the player activates a book
+            # object in the world ... it is sent when the book UI opens a
+            # book". A book that a script activates opens, and nobody is
+            # there to close it. A person does it with press_activate.
+            raise SimError("Activate on %r: a book opens to be read, and nobody is there to close it" % ref)
+        if ref.base is None or ref.base.kind not in ("MiscItem", "Weapon"):
+            raise SimError("Activate on %r: only picking up an item or activating a person is modelled" % ref)
+        if not isinstance(activator, Actor):
+            raise SimError("Activate on %r by %r: only an actor picking it up is modelled" % (ref, activator))
+        if not self.activate_picks_up or ref.disabled or ref.deleted or ref.container is not None:
+            return False                            # [assumed] nothing to pick up
+        # [documented] "normal processing (i.e. picking up the object, opening
+        # the door, etc)"; returns "True if default activation processing was
+        # performed (and succeeded)". [seen] on 2026-11-13 for a placed item
+        # 163 units from the player: True, and the player then had it.
+        self._into_container(ref, activator)
+        return True
+
+    def n_objectreference_delete(self, ref, context):
+        ref.deleted = True
+
+    def n_objectreference_isdisabled(self, ref, context):
+        return ref.disabled
+
+    def n_objectreference_is3dloaded(self, ref, context):
+        return ref.has_3d()
+
+    def n_objectreference_additem(self, ref, context, form, count=1, silent=False):
+        form = unwrap(form)
+        if form is None:
+            self.papyrus_error("AddItem: the item is None")
+            return
+        if isinstance(form, ObjectReference):
+            # [documented] "If it is a reference, it will move/remove it from
+            # its place/container to this container." Not seen.
+            if form.container is not ref:
+                self._into_container(form, ref)
+            return
+        ref.inventory[form] = ref.inventory.get(form, 0) + int(count)
+
+    def n_objectreference_removeitem(self, ref, context, form, count=1, silent=False, other=None):
+        form = unwrap(form)
+        have = ref.inventory.get(form, 0)
+        take = min(have, int(count))
+        if take:
+            ref.inventory[form] = have - take
+            if other is not None:
+                unwrap(other).inventory[form] = unwrap(other).inventory.get(form, 0) + take
+
+    def n_objectreference_getitemcount(self, ref, context, form=None):
+        form = unwrap(form)
+        if form is None:
+            return sum(ref.inventory.values())
+        return ref.inventory.get(form, 0)
+
+    def n_objectreference_removeallitems(self, ref, context, transfer_to=None, keep_ownership=False):
+        ref.inventory = {}                          # [seen] through the wagon alias
+
+    # Actor
+    def aliases_holding(self, actor):
+        return [a for q in self.quests.values() if q.running for a in q.aliases.values() if a.ref is actor]
+
+    def is_essential(self, actor) -> bool:
+        if actor.essential_override is not None:
+            return actor.essential_override
+        return any("Essential" in a.flags for a in self.aliases_holding(actor))     # [seen] IsEssential true in such an alias
+
+    def is_protected(self, actor) -> bool:
+        if actor.protected_override is not None:
+            return actor.protected_override                                           # [seen] SetProtected(false) wins over the alias
+        return any("Protected" in a.flags for a in self.aliases_holding(actor))
+
+    def player_in_combat(self) -> bool:
+        return any((a.combat_target is self.player and not a.dead and not a.disabled)
+                   or a.fights_player_until > self.now + 1e-9 for a in self.actors)
+
+    def _stop_combat(self, actor: Actor):
+        actor.fights_player_until = -1.0
+        if actor.combat_target is not None:
+            actor.combat_target = None
+            self.actor_event(actor, "OnCombatStateChanged", [None, 0], COMBAT_EVENT_DELAY)
+
+    def n_actor_kill(self, actor, context, killer=None):
+        killer = unwrap(killer)
+        if actor.dead:
+            return
+        if self.is_essential(actor):
+            return                                  # [seen] Kill(player) does not kill an actor in an Essential alias
+        if self.is_protected(actor) and not (killer is not None and killer.is_player):
+            return                                  # [seen] with no killer; [documented] only the player may kill
+        actor.dead = True                           # [seen] IsDead is true at once
+        actor.combat_target = None
+        for other in self.actors:
+            if other.combat_target is actor:
+                self._stop_combat(other)
+        # Who stands by: the living people of running quests who are the game's
+        # own actors. Not the plugin's own (copies with no packages, in
+        # factions of the plugin's): twelve of those stood by on 2026-11-14.
+        bystanders = [a for a in self.actors
+                      if a is not actor and not a.is_player and not a.dead and not a.disabled
+                      and self.aliases_holding(a)
+                      and not (a.base is not None and a.base.editor_id in self.npc_info)]
+        if killer is not None and killer.is_player and len(bystanders) >= 5:
+            # When is a killing by the player a fight? What is [seen]:
+            #  - nobody else alive (twelfth run, scenario 2): no fight;
+            #  - one other of the quest's people, put into its alias in the
+            #    same breath (thirteenth run): no fight;
+            #  - one other who had stood there three seconds (fourteenth and
+            #    fifteenth runs): no fight;
+            #  - four of the game's settlers, in the quest's aliases, who had
+            #    stood there three seconds (fifteenth run, scenario 2): no
+            #    fight, and none of the four in combat half a second later;
+            #  - twelve people of the plugin's own at a live ambush, three of
+            #    them of the dead man's faction (fifteenth run, scenario 12):
+            #    no fight, then or at the town gate;
+            #  - indirectly, case 129 in the eleventh run: the evade timer's
+            #    function, called straight after Kill(player) on the Cutter
+            #    lead at a live ambush with seven of the game's settlers
+            #    standing by, found the player in combat. No other path
+            #    through the script gives what that case gave.
+            # What made that one a fight is NOT KNOWN. The stand-in keeps a
+            # rule that gives all six: a fight when five or more of the
+            # game's own actors stand by. [assumed], and it has been wrong
+            # about this five times; it is kept only so that the eleventh
+            # run replays as the game gave it.
+            # [assumed] too that it lasts until the death is announced and no
+            # longer (two seconds later the player was out of combat:
+            # scenario 5), and that StopCombatAlarm ends it like any other
+            # fight ([documented] "Stops all combat and alarms against this
+            # actor").
+            actor.fights_player_until = self.now + DEATH_EVENT_DELAY
+        self.actor_event(actor, "OnDeath", [killer], DEATH_EVENT_DELAY)
+
+    def n_actor_getcurrentpackage(self, actor, context):
+        # [documented] "the Package this actor is currently running". [seen]
+        # on 2026-11-13: the game's settler runs its sandbox; a placed person
+        # with no package of its own runs one all the same (001FEFC1, the
+        # same for both of the plugin's actors); with its AI off a person
+        # runs none; and put back by a script it runs none at first.
+        if actor.disabled or actor.dead or not actor.ai_on:
+            return None
+        if self._has_business(actor):
+            return None if self.now - actor.put_back_at < PUT_BACK_WALK_AFTER else self.some_package
+        if actor.editor_pos is not None and not actor.is_player:
+            return self.idle_package
+        return None                                 # [assumed] for an actor made while the game runs: never asked
+
+    def n_actor_getsitstate(self, actor, context):
+        # [documented] 0 not sitting, 1 wants to sit, 2 sitting down, 3
+        # sitting, 4 sitting and wants to stand. [seen] on 2026-11-13: the
+        # settler 3 or 4 at once after Enable and 3 at once after being put
+        # back, 0 from two seconds on; 1 with its AI off; a person with no
+        # package 0 throughout.
+        if actor.disabled or actor.dead or not self._has_business(actor):
+            return 0
+        if not actor.ai_on:
+            return 1
+        return 3 if self.now - actor.sat_at < SIT_SECONDS else 0
+
+    def n_actor_setrestrained(self, actor, context, restrained=True):
+        if actor.dead:
+            return False                            # [documented] "You cannot set/clear the restrained state on a dead actor."
+        was = actor.restrained
+        actor.restrained = truthy(restrained)
+        if was and not actor.restrained and not actor.disabled:
+            self._may_walk_off(actor, put_back=True)    # [assumed] let go, it walks on
+        return True
+
+    def n_actor_enableai(self, actor, context, enable=True, pause_voice=False):
+        was = actor.ai_on
+        actor.ai_on = truthy(enable)
+        if actor.ai_on and not was and not actor.disabled:
+            self._may_walk_off(actor, put_back=True)    # [assumed] as above
+
+    def n_actor_equipitem(self, actor, context, form, prevent_removal=False, silent=False):
+        # [documented] "Forces this actor to equip the specified item". The
+        # stand-in only notes it.
+        form = unwrap(form)
+        if form is None:
+            self.papyrus_error("EquipItem: the item is None")
+            return
+        actor.equipped.add(form)
+
+    def n_actor_isdead(self, actor, context):
+        return actor.dead
+
+    def n_objectreference_isindialoguewithplayer(self, ref, context):
+        # [documented] "Is this actor or talking activator currently talking
+        # to the player?" [assumed] not once it is dead or disabled. Not seen
+        # in the game either way: the project has no dialogue yet.
+        return bool(ref.talking_to_player) and not getattr(ref, "dead", False) and not ref.disabled
+
+    def n_actor_isessential(self, actor, context):
+        return self.is_essential(actor)
+
+    def n_actor_setprotected(self, actor, context, protected=True):
+        actor.protected_override = truthy(protected)
+
+    def n_actor_isincombat(self, actor, context):
+        if actor.is_player:
+            return self.player_in_combat()          # [seen] true while an actor fights the player, false after it dies
+        return actor.combat_target is not None
+
+    def n_actor_startcombat(self, actor, context, target, preferred=False):
+        target = unwrap(target)
+        if actor.dead or actor.disabled or target is None:
+            return
+        actor.combat_target = target
+        # [seen] the alias script hears it, with the player as target
+        self.actor_event(actor, "OnCombatStateChanged", [target, 1], COMBAT_EVENT_DELAY)
+
+    def n_actor_stopcombat(self, actor, context):
+        # [documented] "Removes this actor from combat." [seen] together with
+        # StopCombatAlarm on the player: the player was out of combat
+        # afterwards and stayed out (case 121). Which of the two calls did it
+        # was not told apart.
+        self._stop_combat(actor)
+
+    def n_actor_stopcombatalarm(self, actor, context):
+        # [documented] "Stops all combat and alarms against this actor."
+        for other in self.actors:
+            if other.combat_target is actor:
+                self._stop_combat(other)
+            if actor.is_player:
+                other.fights_player_until = -1.0    # [assumed]: see n_actor_kill
+
+    # ---- what a person or the runner does from outside the scripts
+    def set_global(self, editor_id: str, value: float):
+        self.forms[editor_id].value = float(value)
+
+    def get_global(self, editor_id: str) -> int:
+        return int(self.forms[editor_id].value)
+
+    def press_activate(self, editor_id: str):
+        """A person looks at something the plugin places and presses the
+        button. [assumed] throughout: by hand nothing of this has been seen;
+        by script, activating a placed person reached the script on its
+        alias, and activating a placed item picked it up.
+          a living person, an activator, a container: the scripts on its
+            aliases hear OnActivate;
+          a dead person: its pockets open, and no script of this project's hears;
+          an item, a weapon, a book: it goes to the player (a book opens to
+            be read first, and the person closes it), and the scripts hear
+            both."""
+        ref = self.placed[editor_id]
+        if ref.disabled or ref.deleted or ref.container is not None:
+            raise SimError("%s is not there to be activated" % editor_id)
+        if isinstance(ref, Actor):
+            if not ref.dead:
+                self.ref_event(ref, "OnActivate", [self.player], self.activate_event_delay)
+            return
+        kind = ref.base.kind if ref.base is not None else None
+        self.ref_event(ref, "OnActivate", [self.player], self.activate_event_delay)
+        if kind in ("MiscItem", "Weapon", "Book"):
+            self._into_container(ref, self.player)
+
+    def walk_to(self, editor_id: str):
+        """A person walks the player to something the plugin places. The
+        stand-in sets the player down there: on the floor under a box, a step
+        short of anything else."""
+        ref = self.placed[editor_id]
+        floor = self.player.pos[2]
+        if ref.box is not None:
+            self.player.pos = (ref.pos[0], ref.pos[1], floor)
+        else:
+            self.player.pos = (ref.pos[0] - 50.0, ref.pos[1], floor)
+        self.player.cell = ref.cell
+        self.check_distances()
+        self.check_triggers()
+
+    def enter_game(self):
+        """Main menu, then the test room: quests flagged to start with the game start."""
+        for quest in self.quests.values():
+            if "StartGameEnabled" in quest.flags:
+                self.start_quest(quest)
+
+    def console_cqf(self, quest_id: str, function: str, args: list):
+        """The console's  cqf <quest> <function> [arguments].  [seen] it finds a function on any script of the quest."""
+        quest = self.quests[quest_id]
+        for inst in quest.scripts:
+            fn = inst.script.functions.get(function.lower())
+            if fn:
+                # [documented] missing parameters are filled with zero or None, not the script's defaults
+                full = list(args) + [default_for(p.type) for p in fn.params[len(args):]]
+                self.spawn(self.call(inst, fn, full), "cqf %s %s" % (quest_id, function))
+                return
+        raise SimError("cqf: no script on %s has a function %s" % (quest_id, function))
+
+
+    def invoke(self, quest_id: str, function: str, args: list, until: float = 900.0):
+        """Calls a function of a script on a quest and runs the session until it
+        has come back. Returns what it returned. For tests."""
+        quest = self.quests[quest_id]
+        for inst in quest.scripts:
+            fn = inst.script.functions.get(function.lower())
+            if fn:
+                box = {}
+
+                def body():
+                    box["value"] = yield from self.call(inst, fn, list(args))
+                th = self.spawn(body(), "invoke %s.%s" % (quest_id, function))
+                limit = self.now + until
+                try:
+                    while True:
+                        self.run_ready()
+                        # The clock must not run on once the function is back:
+                        # whatever is due later belongs to what happens next.
+                        if th.done or th.blocked:
+                            break
+                        if self.advance(limit) in ("idle", "timeout"):
+                            break
+                except QuitGame:
+                    self.ended = "quit"
+                if "value" not in box:
+                    raise SimError("%s.%s did not come back" % (quest_id, function))
+                return box["value"]
+        raise SimError("no script on %s has a function %s" % (quest_id, function))
+
+
+def run_scenario(scenario: int, scripts_folder, plugin_json, vanilla_json=None, natives_json=None,
+                 until: float = 900.0, older_scripts: bool = False, native_delay: float = 0.0, shake=None) -> Session:
+    """What tools/win/Run-Scenarios.ps1 does with the game: the scenario number
+    goes into the plugin's global, the game enters the test room, and the
+    self-test runs by itself until it closes the game."""
+    s = Session(scripts_folder, plugin_json, vanilla_json, natives_json, older_scripts, native_delay, shake)
+    s.set_global("TLM_G_DevScenario", scenario)
+    s.enter_game()
+    s.run(until)
+    return s

@@ -22,12 +22,12 @@ TLM_MQ01:
 - 0 Unstarted
 - 10 Awaken at wreck / dispatch acquired
 - 20 Locate Mercy Crossing
-- 30 Speak with Owen Pritchard
+- 30 Speak with Sheriff Owen Pritchard
 - 40 Caravan encounter resolved
 - 100 Completed
 - 900 Recovery stage (missing alias/objective fallback)
 
-This is a DESIGN stage table, not tested Papyrus code. It is superseded by the full stage table in [quests/TLM_MQ01-six-rounds-to-mercy.md](quests/TLM_MQ01-six-rounds-to-mercy.md), which also maps these six numbers to the new ones. Avoid hardcoding scripts until quest aliases and conditions are built in CK.
+This is a DESIGN stage table, not tested Papyrus code. Avoid hardcoding scripts until quest aliases and conditions are built in CK.
 
 ## Testing checklist
 New game, reload from each stage, skip optional NPC, kill/disable nonessential NPC, reject dialogue, reach town before collecting dispatch, walk away mid-encounter, retest quest objectives and map markers. Avoid compulsory quest NPC deaths that soft-lock the campaign.

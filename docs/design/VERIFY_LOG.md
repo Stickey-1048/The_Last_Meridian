@@ -1,0 +1,983 @@
+# Verification log
+
+**Dates:** 2026-11-11 to 2026-11-14. **Sources:** the Fallout 4 Creation Kit wiki (falloutck.uesp.net), read through its API; the build runs on the owner's PC; the owner's report of the first attempt in the game; and Mod Organizer's source on GitHub.
+**Not checked:** anything inside the Creation Kit editor. In the running game (all on 2026-11-12): the plugin loads, its scripts run, and 62 scripted scenarios pass all 1,560 of their checks with nobody at the keyboard. 49 of them are the rows of the two quests' test matrices, played with actors and markers made at run time and compared with the logic model after every event; four more do two things at once. The commit that did this, `c1e6d48`, carries the tag `mq01-logic-proof`. Nothing is placed in the world, so nothing that needs a built place, dialogue, a save or a player has been tested: triggers, pickups and conversations are stood in for by stage numbers, and ten rows of the matrices cannot be played this way at all.
+
+## Results from the game PC
+
+First run of `tools/win/Run-FirstBuild.ps1` on the owner's PC, 2026-11-11, commit `f9ec406`, Windows PowerShell 5.1. Reported by screenshot of its output.
+
+| What | Result |
+|---|---|
+| Game under test | GOG Fallout 4 GOTY, `Fallout4.exe` 1.10.163.0 |
+| Creation Kit | 1.11.246.0, in the Steam library's `Fallout 4` folder (installed without the Steam copy of the game, which was still downloading) |
+| Fallout London | found as a separate install; the scripts refuse to copy into it |
+| Mod Organizer | an instance at `C:\Modlists\TMR` manages the GOG game; selected profile "The Midnight Ride Extended" with its own settings |
+| **Scripts compile** | **Yes: 7 succeeded, 0 failed**, Papyrus Compiler 2.8.0.4, against the Creation Kit's own script sources in `Data\Scripts\Source\Base`. This is a compile only; nothing has run in the game |
+| Plugin build against the real `Fallout4.esm` | Passed: 10,053 bytes, header version 0.95, lowest FormID 0x800, file read back matches the spec |
+| `Caps001` looked up by EditorID | Resolved to `00000F:Fallout4.esm` |
+| `PlayerRef` looked up by EditorID | **Not found.** Cause reproduced off the PC: the untyped lookup is case-sensitive, and the master evidently spells it differently. Fixed (typed, case-insensitive lookup, with a fallback to id 0x14 that is only accepted if it places the actor `Player`). The fix is tested on stand-in masters and awaits a re-run on the PC |
+| Scan bug | It reported that no Creation Kit was found, because it only counted folders containing `Fallout4.exe`. Fixed |
+
+Second run, same day, commit `59b917c`, after the Steam copy of the game finished installing. Reported as the pasted log.
+
+| What | Result |
+|---|---|
+| Steam copy of the game | `Fallout4.exe` 1.11.240.0, beside Creation Kit 1.11.246.0; base game only, no story DLC |
+| GOG base game folder | clean: no mods in `Data`, no F4SE, all six DLC masters |
+| Scripts compile | Again 7 of 7 |
+| `PlayerRef` | **Still not found.** The typed, case-insensitive lookup finds no placed actor with that EditorID in the 1.10.163 master, and record `000014` is not visible to the library as a placed actor placing `Player`. The builder now also accepts `000014` when at least ten vanilla quest aliases named like "Player" force that reference; tested on stand-in masters, awaiting a third run |
+| Settings and load order | One Fallout 4 settings folder and one active-plugin list on the PC, and that list holds Fallout London's plugins. Any copy of the game started directly shares them |
+| Mod Organizer | 2.5.2 at `C:\Modlists\TMR`, two profiles, each with its own settings and saves |
+| Vortex | installed, with a staged mod library that is not deployed into any of the three game folders. Not used by this project |
+
+What follows: the first in-game test goes through a separate Mod Organizer profile, so that nothing shared with Fallout London is read or written (TEST_RUNBOOK.md, steps 4 and 5).
+
+Third run, same day, commit `859f468`, with `-Install`. Reported as the pasted log.
+
+| What | Result |
+|---|---|
+| `PlayerRef` | **Resolved.** Record `000014` is still not visible to the library as a placed actor, but 13 vanilla quest aliases force that reference and all 13 are named like "Player" (for example quest `RESceneKMK02`, alias `Player`), which meets the builder's threshold of ten. The player alias is now filled with `000014:Fallout4.esm` |
+| Scripts compile | 8 of 8, including the new self-test script, on its first compile |
+| Plugin | 10,692 bytes; 31 items still not wired (all of them placed references and the location, which need the test cell) |
+| Install as a Mod Organizer mod | Passed: 17 files in `C:\Modlists\TMR\mods\TheLastMeridian-Dev` |
+| Test profile | Created as `TLM-Dev` from the selected profile, with that profile's 109 enabled mods switched off in the copy. Not yet opened by Mod Organizer |
+
+Checklist item 5 below is now done for `Caps001` and `PlayerRef`.
+
+### First attempt in the game, 2026-11-12
+
+Build of the third run, started by the owner from Mod Organizer's window. Reported by screenshots and in the owner's words. Which entry of the Run list was used is not known; "Fallout Launcher" was the one selected in the screenshots taken just before.
+
+| What | Result |
+|---|---|
+| Mod Organizer and the script-made profile | **Works.** Mod Organizer 2.5.2 listed the profile `TLM-Dev` and showed `TheLastMeridian.esp` active beside the base game's seven master files (8 active) |
+| What the game showed | The **Fallout London** main menu, in a small window. Then a loading screen in a layout that is not the base game's, carrying base-game text, and the base game's test room after `coc qasmoke` |
+| `cqf TLM_Core RunSelfTest` | The console answered "Compiled script not saved!"; in the owner's words it said the quest was not found. The quest was therefore not among the data the running game had loaded |
+| Reading | The game that ran was using Fallout London's files, so it was not the base game with Mod Organizer's files in view. **Not established:** which copy of the game ran and why, and whether the plugin loads when the right copy runs |
+| `coc qasmoke` from the main menu | Works (in whichever copy that was) |
+
+Read afterwards in Mod Organizer's own source, release 2.5.2 unless marked (this is reading, not a test):
+
+| Fact | Where |
+|---|---|
+| The enabled mods are mapped onto the Data folder of the managed game only. Another copy of the game started from Mod Organizer does not see them | `src/organizercore.cpp`, `fileMapping` |
+| The profile's `plugins.txt` is mapped onto the shared `%LOCALAPPDATA%\Fallout4\plugins.txt`, and the game's own master files are left out of it | game plugin `gamefallout4.cpp`, `mappings`; `creationgameplugins.cpp`, `writePluginList` (both read from the current development branch, not the 2.5.2 tag) |
+| When an instance is created, the game folder is taken from the registry value `Bethesda Softworks\Fallout4\Installed Path`. On this PC that value names the Fallout London folder | `gamegamebryo.cpp`, `identifyGamePath` (development branch); the scan of 2026-11-11 |
+| Entries of the Run list are kept as stored and only missing ones are added, so an entry can point at a different folder from the managed one | `src/executableslist.cpp`, `load` |
+| `ModOrganizer.exe -p <profile> run <program>` runs one program inside the virtual file system, in that profile, waits for it and exits. If Mod Organizer is already open with a different profile it refuses | `src/commandline.cpp`, `RunCommand`; `src/main.cpp`; `src/moapplication.cpp` |
+| Which file was started is written to Mod Organizer's log only at log level Debug | `src/spawn.cpp`, `logSpawning` |
+| Before it starts any program of a game whose folder holds `steam_api.dll` or `steam_api64.dll`, it looks for a running `Steam.exe` or `SteamService.exe`. If there is none it shows a window titled "Launch Steam" ("This program requires Steam": Start Steam / Continue without starting Steam / Cancel) and waits for an answer; after "Start Steam" it shows a second one ("Please press OK once you're logged into steam"). Only then is the program started | `src/spawn.cpp`, `checkSteam`, `startSteam` (read 2026-11-13) |
+
+Not verified at all: forum reports that the game's launcher starts the copy named in the registry rather than the one in its own folder. That would explain both the owner's impression that the GOG game "just runs London" and this attempt, if the launcher entry was the one used.
+
+What was changed in response (tested against stand-ins only; not yet run on the PC):
+
+- `tools/win/Start-TestGame.ps1` starts `Fallout4.exe` in the managed folder by its full path through Mod Organizer's `run` command, then reads from the running process which file it is and whether Mod Organizer's file-system library is loaded in it.
+- `tools/win/Get-TestResults.ps1` now also reports which file each Run-list entry starts, the registry's game folder, whether either game folder holds Fallout London files, the settings the test profile hands the game, and marks logs older than the session.
+- `TLM:Core` writes `TLM_Core: started` to the game's script log when its quest starts, and shows "The Last Meridian test build is loaded." on screen a few seconds later (development only).
+
+Fourth run, 2026-11-11 21:41 by the PC's clock, commit `c2bfd36`, with `-Install -Play`. Reported as the pasted log.
+
+| What | Result |
+|---|---|
+| Scripts compile | 8 of 8, including the changed `TLM:Core` (timer and on-screen line) |
+| Plugin | Unchanged: 10,692 bytes, player alias forced to `000014:Fallout4.esm` |
+| Install | **Failed, through a fault in this project's script:** "The source profile and the new profile are the same." The test profile was by then the one selected in Mod Organizer, and the script took the selected profile as the one to copy from even though the test profile already existed and only needed refreshing. The stand-in tests had never put the stand-in Mod Organizer in that state. The build had already been copied into the mod folder when the step stopped, although the summary said nothing was installed; no profile and no game folder was changed |
+| In-game test | Not started, because the install did not pass |
+| Scan | The test profile shows 1 mod and 1 plugin switched on, with its own settings and saves and script logging on. A game script log now exists in the shared settings folder, where there was none before the first attempt in the game |
+
+Reading of that last line: script logging is off in the shared settings and on in the test profile only, so the session that showed the Fallout London menu ran with the test profile's settings in effect. That fits a Fallout London copy of the game started inside Mod Organizer's file system. It is an inference; the log itself has not been read yet.
+
+Fixed after the fourth run (tested against stand-ins only): an existing test profile is refreshed without any source profile; a new one is copied from the selected profile or, if that cannot serve, the first other profile; the record of copied files is written before the profile step; the summary no longer claims nothing was installed when the install stopped part-way; the stand-in Mod Organizer now remembers the profile it was started with, as the real one does; and every part of the results report is collected on its own, so a failure in one part cannot keep the rest from the clipboard.
+
+### First run in the right game, 2026-11-12
+
+Fifth run, 06:57 to 08:17 by the PC's clock, commit `87d04d5`, with `-Install -Play`. Reported as the pasted results and a screenshot of the self-test's message box.
+
+| What | Result |
+|---|---|
+| Install | Passed: the existing test profile was refreshed |
+| Starting the game by command | **Works.** `ModOrganizer.exe -p "TLM-Dev" run "<game folder>\Fallout4.exe"` started the base game. Read from the running process: started from `...\Fallout 4 GOTY\Fallout4.exe`, by Mod Organizer, with `usvfs_x64.dll` loaded and no F4SE |
+| The plugin loads (game 1.10.163, GOG) | **Yes.** `TLM_Core` started and its script wrote `TLM_Core: started, data version 1` to the game's script log |
+| The scripts bind and run | **Yes.** No error or warning in the game's log names this project's scripts. Scripts compiled by the 1.11 Creation Kit's compiler run on game 1.10.163 |
+| `cqf TLM_Core RunSelfTest` | Works, including finding the function on the second of two scripts attached to the quest |
+| `coc qasmoke` from the main menu | Works in the base game |
+| `SetStage`, `GetStageDone`, `IsRunning`, `IsObjectiveDisplayed`, `GetItemCount`, `GetValueInt` | Behave as the wiki says. `SetStage` on a quest that is not running starts it |
+| Self-test | **26 passed, 34 failed.** Exactly the checks that depend on a stage handler failed; every other check passed |
+| Cause | No `OnStageSet` event reached the quest scripts. The stages were set, silently. In the plugin as built, no stage had an item (a "log entry") as the game reads the file: the subrecord that starts an item (QSDT) was only written when its flags were not zero, which was true of one stage per quest |
+| Why the checks did not catch it | The library that writes the plugin also reads it back, and it reads a stage's text without that subrecord as an item. The read-back self-check therefore passed. Nothing in the repository looked at the bytes |
+
+What supports that reading, besides the result itself (none of it is a test; the next run is):
+
+- xEdit's record definitions for Fallout 4 (`wbDefinitionsFO4.pas`, record QUST): a log entry is a group that begins with QSDT; the NEXT marker between the quest's two condition lists is marked required.
+- UESP's description of the same record in Skyrim: "Each QSDT field marks the start of a log entry."
+- The wiki's own signature, `OnStageSet(int auiStageID, int auiItemID)`: the event names an item.
+- A modders' forum report found by search: OnStageSet does not fire for a stage that has no log entry.
+
+Also settled by this run: why the first attempt showed Fallout London.
+
+| Fact | Source |
+|---|---|
+| In this Mod Organizer the entry "Fallout 4" is hidden from the Run list. Of the entries shown, only "F4SE" and "Fallout Launcher" start a game, and the F4SE loader does not exist in the managed folder | `ModOrganizer.ini`, read by the results script |
+| The Windows registry names the Fallout London folder as the Fallout 4 install | the results script |
+| A preloader that exists only in the Fallout London folder wrote its log at 20:42 on 2026-11-11, during that attempt, and the game's script logs of that evening exist although script logging is on in the test profile only | file times in the shared settings folder |
+
+So the launcher, the only usable entry, was started inside Mod Organizer with the test profile's settings, and the game that came up was the Fallout London copy. That the launcher picks its game from the registry is still an inference from these facts, not something read in its code.
+
+**Correction to the second run's table:** the base game folder is not clean. The scans counted plugin files only. Its Data folder holds loose files in more than 24 folders: F4SE plugins, MCM settings, 362 files under Scripts, meshes, materials, sounds, interface files. They are left from mods installed straight into the game, without their plugins. The game loads loose files in every Mod Organizer profile that has loose files switched on, the test profile included, because Mod Organizer can add files to Data but cannot hide files that are really there. Nothing in this run points at them, but a test in that folder is not a test of the plain game. The scan now reports them.
+
+Fixed after the fifth run (checks pass; not yet re-tested in the game):
+
+- The builder writes exactly one item, with its flags subrecord, for every stage; the NEXT marker for every quest; flags for every objective; and the display time for messages that are not boxes. The plugin is 10,989 bytes in skeleton mode (10,692 with the real master before the change).
+- The builder's self-check now fails if a stage has no item or an item lacks its flags.
+- `tools/check_plugin_layout.py` reads the plugin's raw records without the library and checks the same things. Run on the plugin as it was tested in the game it reports 77 problems. `tools/run_checks.sh` runs it, with four kinds of deliberate damage that must each be caught.
+- With the real master supplied, the builder prints how the game's own quests are laid out (how many stages have no item, how many items lack flags) beside this plugin's, so the claim "the Creation Kit always writes this" is checked against the game's data on the PC.
+- `TLM:MQ01Quest` and `TLM:SQ01Quest` write one line to the script log for every stage event they receive, and the results script counts them.
+- The results script reports a finished self-test even when a second attempt in the same session was refused.
+- The self-test also reports, without scoring it, how often a stage's handler had already finished when `SetStage` returned. The wiki says `SetStage` waits for the stage's fragment "and event if any"; the quest scripts depend on that wherever a handler sets another stage and then reads what it changed (for example the delivery forcing the town stage), so the next run measures it.
+
+### The self-test passes, 2026-11-12
+
+Sixth run, 08:58 to 09:16 by the PC's clock, commit `63b31d1`, with `-Install -Play`. Reported as the pasted results.
+
+| What | Result |
+|---|---|
+| Scripts compile | 8 of 8, with the changes |
+| How the game's own quests are laid out (`Fallout4.esm`, build 1.10.163) | 1,336 quests, every one with the condition marker. 8,680 stages, 63 of them (0.73%) with no item. 9,058 stage items, every one with its flags subrecord. 1,198 objectives, every one with flags. So the Creation Kit always writes the three things this plugin had left out, and the comparison now reads "present in all" for this plugin on each line |
+| Stage events | **Arrive.** During the self-test 10 reached the main quest's script and 10 the side quest's, each logged as "item 0" |
+| `SetStage` and the handler | **In 13 of 13 cases the stage's handler had finished when `SetStage` returned.** That includes stages set from inside a handler: the log shows stage 50's event, then stage 40's, before the checks that follow the delivery; likewise 60 then 100, and in the side quest 10 then 20, 13 then 25, 43 then 50 then 100 |
+| Self-test | **60 passed, 0 failed**, in a fresh session entered with `coc qasmoke` |
+
+What the 60 checks cover: one scenario. In the main quest the start, the dispatch, the ambush going live, "saved", a second outcome being ignored, the delivery forcing the town stage, a debrief answer the variant does not offer being ignored, the hand-off and completion. In the side quest a clue examined before the ledger, the ledger, the journal, the posting that names the Yard Office, and a second decision being ignored. They read stages, objectives, globals and one item given to the player. Every alias was empty.
+
+What they do not cover: anything with an actor or an object in the world, the evade timer and distance watch, dialogue, the message boxes, the four other caravan outcomes, the five other side-quest outcomes, and saving and loading.
+
+Seen by accident in the same session, before the self-test: the owner first loaded a save made during the fifth run, in which the faulty plugin had left the quests with stages set and nothing applied.
+
+| What | Result |
+|---|---|
+| The alias on the player | The script on the main quest's player alias received `OnPlayerLoadGame`. So the alias forced to record `000014` is filled with the player, and an alias receives its reference's events (checklist item 6, the last part) |
+| Recovery on load | The side quest's `OnGameLoaded` ran: it logged "ledger was missing; replaced", gave the ledger, recomputed the evidence and set stages 20 and 25, whose events arrived. That is the designed recovery path running on a state only the old fault could produce. Whether what it did was right for a player has not been judged |
+| The self-test in that session | Refused to run, as designed, because the quests had already been started |
+
+Also read from the fifth run's log after the fact: that session too began by loading a save, not with `coc`. Three seconds before `TLM_Core` started, the game warned about a Fallout London variable "loaded from save". The test profile's own saves folder holds saves the Fallout London copy made during the first attempt, and "Continue" loads the newest. It does not change the cause of that run's 34 failures. **For testing, always enter with `coc qasmoke` from the main menu; never "Continue" or "Load" in the test profile.**
+
+The managed game's Data folder has one loose compiled script directly under `Scripts`, and it is not one of the game's own base scripts; the several hundred other files under `Scripts` are in subfolders. So the leftovers there do not replace the game's base scripts.
+
+Prepared for the next run, and unverified until it has happened (it has: see "The first unattended run" below):
+
+- `tools/win/Run-Scenarios.ps1` runs scenarios one game session each, unattended. It depends on three things not yet seen in the game: `sStartingConsoleCommand=coc qasmoke` in the profile's settings entering the test room at start-up (forum reports say the setting works, some that it is ignored under a mod manager); `TLM:Core` then starting the scenario by itself from its timer; and `Debug.QuitGame()` closing the game. The last is listed on the wiki as a debug-only function; the other debug-only functions the scripts use (`Trace`, `TraceUser`, `OpenUserLog`) do work in this game when the scripts are compiled as they are now.
+- Self-test scenario 2, `TLM:FixtureProbe`, spawns the game's generic settler (`WorkshopNPC`, looked up when the plugin is built; if the name is not in `Fallout4.esm` the probe says so and stops), forces the actors into three of the quest's aliases and kills them. It answers checklist items 6 and 7 as far as they can be answered without a placed world, and decides whether the test matrix can be run with actors made at run time (owner decision D8).
+
+### A refused pull, 2026-11-12
+
+The seventh run did not happen. Reported by screenshot: `git pull` stopped with "Your local changes to the following files would be overwritten by merge: tools/PluginBuilder/formkeys.txt", and the command that followed it on the same line then ran the older `Run-FirstBuild.ps1`, which stopped at an option it did not know. Nothing was built or run.
+
+Cause, reproduced in a scratch clone: the PC's copy of the repository was cloned before `.gitattributes` pinned `formkeys.txt` to LF line endings, so its working copy had Windows line endings. Since commit `1eeca6b` the plugin builder rewrote that file with LF "whenever it differed", and a difference in line endings counted. The rewrite changed the file's size and nothing else. Git compares sizes before contents, so it reported the file as modified although `git diff` showed no difference, and it refused the first pull that had to update the file. The change that was meant to keep builds from marking the file as changed is what marked it. It never showed on Linux, where the file has LF to begin with.
+
+Fixed (reproduced and tested in scratch clones; not yet run on the PC):
+
+- The builder compares the file without regard to line endings and leaves it alone unless its content really differs.
+- `tools/win/Update-And-Run.ps1` updates the folder and then runs the build, and stops if it cannot update. A file git reports as changed whose content is identical is refreshed in git's index (nothing is staged, nothing discarded); a file whose content really differs is listed and left alone.
+- `Run-FirstBuild.ps1` stops at once if the folder is behind GitHub, instead of running older scripts.
+
+The one-time remedy on the PC is `git add tools/PluginBuilder/formkeys.txt`, which makes git look at the content again, followed by `git pull`. It worked: the next run was at the current commit.
+
+### The first unattended run, 2026-11-12
+
+Eighth run, 10:18 to 10:22 by the PC's clock, commit `1b832da`. The command given was the one-time remedy above followed by `tools\win\Update-And-Run.ps1 -Install -Unattended`; only the results of the scenario run were sent back, as pasted text. Nobody touched the game.
+
+| What | Result |
+|---|---|
+| Scripts compile | 9 of 9, the new `TLM:FixtureProbe` on its first compile |
+| Entering the test room by itself | **Works.** With `sStartingConsoleCommand=coc qasmoke` in the test profile's `fallout4custom.ini`, the game started through Mod Organizer went into the room without a key being pressed |
+| Starting the scenario by itself | **Works.** `TLM:Core` read the scenario number from the plugin and started the scenario from its timer |
+| The game closing itself | **Works.** `Debug.QuitGame()` ended the game; the results were complete on disk |
+| Scenario 1 (both quests by stages alone) | **60 passed, 0 failed, 32 seconds** from starting Mod Organizer to the game being gone. The same result as the run by hand |
+| Scenario 2 (actors made at run time) | **Did not finish: 15 passed, 0 failed, no result line.** The script stopped in its last part. The runner closed the game after its limit of 240 seconds by asking the window to close, which the game obeyed |
+| Afterwards | The scenario number, the start-up command and the keep-running setting were put back; the installed plugin was again identical to the build |
+| The game's script log | No error or warning naming this project in either session |
+
+What scenario 2 showed before it stopped. The settler is the game's `WorkshopNPC`, found in `Fallout4.esm` when the plugin was built, and spawned next to the player with `PlaceAtMe`.
+
+| What | Result |
+|---|---|
+| An actor made at run time, put into an alias with `ForceRefTo` | The alias holds it, and the quest script's own test for "alive" sees it |
+| An actor in an alias flagged Protected | `IsEssential()` is false. `Kill()` with no killer **does not kill it**. `Kill(player)` kills it. `SetProtected(false)` and then `Kill()` kills it |
+| The Cutter alias script | Heard the death of the actor forced into the lead's alias (`OnDeath`), and the quest set stage 31 and the outcome "saved" |
+| The caravan hand alias script | Heard the death of the actor forced into the caravan master's alias with the player as killer; the quest set stage 35, and "exploited" replaced "saved" (amendment A3) |
+| A hand's death with no player as killer | Not treated as a betrayal: stage 35 stayed unset |
+| A timer on a quest script | Fired |
+| `PlaceAtMe` of this plugin's item, which has no model | Returned a reference |
+
+So the quest's rules that hang on an alias and a death can be tested with actors made at run time. The quest's `KillByCutters` clears the protection before it kills; the second row shows that it has to whenever the Cutter lead is not there to be named as the killer.
+
+Where it stopped. After the fifteenth check the script registered for a distance event between the player and the placed item, called `MoveTo` on the item to put it 3000 units away, and waited three seconds; the line that follows the wait was never written. Which of those calls did not come back is not established. `MoveTo` is the likeliest: the wiki lists it among the functions that suspend the script until the game has done the work, and the item has no model, so nothing of it is ever loaded.
+
+What was changed because of it (not yet compiled, not yet run):
+
+- The self-test has a watchdog. Every step of a scenario is named and given a number of seconds; if the step does not come back in time, the self-test writes where it stopped, writes the result and closes the game. The runner's own limit stays as the second line of defence, and its report now shows the last step named in the log.
+- Scenario 2 keeps the 14 checks about actors and loses the distance part.
+- Scenario 3 is new: distance events between the player and one of the game's plain markers (`XMarker`, looked up when the plugin is built), registering while already apart, and the main quest's own "the player has left" watch with the marker as the centre of the ambush. It ends with two experiments that repeat what stopped scenario 2, apart and in order; if one does not come back, the watchdog reports that as a fact and the scenario still counts.
+- Scenarios 4 to 9 are new (`TLM:WorldCases`): the main quest played from start to hand-off with a caravan made at run time, one case for each way the encounter can end. Every expected number comes from the logic model; `tools/logic_model/test_worldcases_expectations.py` replays the six sequences and fails if a number, a yes/no check or a stage in the script differs.
+
+| Scenario | Case | Events in the logic model | Matrix rows it stands for |
+|---|---|---|---|
+| 4 | evaded | start, take_dispatch, goto_ambush, evade_timer, goto_town, pritchard_handover, debrief_admit, pritchard_handoff | T09, and the "evaded" debrief with "admit" |
+| 5 | saved after a fight | start, take_dispatch, goto_ambush, attack_cutter, player_kills_lead, goto_town, pritchard_handover, pritchard_handoff | T06, and the "saved" debrief |
+| 6 | missed | start, take_dispatch, goto_town, pritchard_handover, pritchard_handoff | T10b |
+| 7 | betrayal on the road | start, take_dispatch, goto_ambush, player_kills_nell, goto_town, pritchard_handover, pritchard_handoff | T12 |
+| 8 | murder after saving | start, take_dispatch, goto_ambush, player_kills_lead, player_kills_nell, goto_town, pritchard_handover, debrief_confess, pritchard_handoff | T12c, and the "witness" debrief with "confess" |
+| 9 | the deal | start, take_dispatch, goto_ambush, dunmore_deal, goto_town, pritchard_handover, debrief_blame, pritchard_handoff | T11, and the "witness" debrief with "blame" |
+
+With scenario 1 (the debrief for a caravan master lost to something other than the player) these reach all four caravan outcomes and all six debrief variants. They are six paths through the rules, not the matrix: T01 to T28 has other rows, and the side quest's S01 to S24 are untouched.
+
+What scenarios 4 to 9 stand in for, and what they leave out: the dispatch, the triggers and the conversation with the sheriff are stage numbers set by the test; the function the evade timer calls when it runs out is called directly, the 90 seconds are not waited for; the deal is its stage number, set as the conversation would set it; the wagon's cargo is three items in a fourth settler's pockets. The stand-ins are settlers with their own AI and guns, so the player is made invulnerable for the length of the case.
+
+### All nine scenarios pass, 2026-11-12
+
+Ninth run, 11:51 to 11:56 by the PC's clock, commit `3b73468`, started with `tools\win\Update-And-Run.ps1 -Install -Unattended`. Reported as the pasted results. Nobody touched the game. Nine game sessions took 335 seconds.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed, the new `TLM:WorldCases` and the changed `TLM:SelfTest`, `TLM:FixtureProbe` and `TLM:MQ01Quest` on their first compile |
+| Looked up in `Fallout4.esm` | `WorkshopNPC` is `020593` (the settler the stand-ins are made from); `XMarker` is `00003B` |
+| **The nine scenarios** | **All passed: 220 checks, 0 failed** |
+| The game's script log | No error or warning naming this project in any of the nine sessions |
+| `SetStage` and the handler | The handler had finished when `SetStage` returned in 61 of 61 cases across the nine sessions |
+| Afterwards | Everything put back; the installed plugin identical to the build |
+
+| # | Scenario | Passed | Seconds |
+|---|---|---|---|
+| 1 | both quests by stages alone | 60 | 32 |
+| 2 | actors made at run time, in the aliases, killed | 14 | 61 |
+| 3 | distance events and the quest's "the player has left" watch | 8 | 46 |
+| 4 | evaded | 27 | 33 |
+| 5 | saved after a fight | 24 | 35 |
+| 6 | missed | 22 | 31 |
+| 7 | betrayal on the road | 22 | 31 |
+| 8 | murder after saving | 22 | 36 |
+| 9 | the deal | 21 | 31 |
+
+The seconds run from starting Mod Organizer to Mod Organizer being gone again. Scenario 2 took about half a minute longer than the others after its result was written; why is not known.
+
+What the game showed, beyond the numbers the logic model predicted:
+
+| What | Result |
+|---|---|
+| **The cause of the eighth run's stop** | **`MoveTo` on a placed reference that has no model does not come back.** Scenario 3 placed a copy of this plugin's item (`Is3DLoaded` = false), called `MoveTo` to put it 300 units away, and the call had not returned when the watchdog ended the scenario. No distance event and no long distance were involved this time, so it was the `MoveTo`. The two experiments that were to follow could not run |
+| The watchdog | Worked. It fired 17 seconds after the step began (its limit was 20, counted by the game's timer), wrote where the scenario was, wrote the result and closed the game. So a timer event on a script does get in while another call into that script is suspended |
+| `MoveTo` on the game's plain marker | Returns. The marker was 2000 units away afterwards, and 5000 in the second test |
+| Distance events | None while the two references were together; one event after the marker was moved away, reporting 2000 units; and one at once when registering while already apart |
+| The main quest's "the player has left" watch | With a marker as the centre of a live ambush moved 5000 units away (the evade distance is 4000), the quest set stage 32 and the outcome "evaded" |
+| An alias flagged Essential | The actor forced into it reports `IsEssential()` = true, and `Kill(player)` did not kill it (scenario 4, the caravan master in the town alias). Amendment A10 holds for a kill by script; a player's weapon has not been tried |
+| A Cutter who turns on the player | `StartCombat(player)` on the actor in the Cutter lead's alias: the alias script received `OnCombatStateChanged` with the player as target and the quest set stage 30 by itself. The lead and the player were both in combat. After the lead's death and stage 31 the player was out of combat |
+| `IsDead()` straight after `Kill` | True. In the town stage the quest kills the drover and in the same breath decides who goes to the caravan yard; the drover was dead by then and stayed out of the town alias (scenario 6) |
+| `TryToDisable` on an aliased actor | The actor is disabled afterwards, alive (scenarios 4, 6, 7) or dead (scenario 5) |
+| `RemoveAllItems` through the wagon alias | Emptied the stand-in's pockets |
+| The evade timer running out with no fight | With the player not in combat, `EvadeTimerElapsed` set stage 32; the drover, killed by script with the Cutter lead named as killer, was dead and his death was not counted as a betrayal |
+
+Which rows of the main quest's matrix this stands for, with stage numbers in place of triggers, pickups and talk: T06 (saved by killing the lead), T09 (evaded when the timer runs out), T09b (evaded by leaving, without a caravan), T10b (missed), T11 (the deal), T12 (betrayal with no witness), T12c (murder after saving), T12d (no killing in town, by script), T21 (the caravan master lost to something else, in scenario 1), T26 (completion), five of the six reputation cases of T23, and three of the seven metric cases of T24 (saved; evaded and admitted; the deal and blaming the Cutters), with "confess" seen on a different route to the same debrief.
+
+Not run in the game: T05 and T05b (the three unnamed Cutters), T07 and T08 (the speech check), T10a, T12b, T14 to T14c (no early "evaded" during a fight), T17 to T19c (the dispatch taken late, lost, repaired), T25, T26b and T26c; the rows the model cannot express (T13, T15, T16, T20, T22, T27, T28); and every row of the side quest's matrix except the one path of scenario 1.
+
+What the game was seen to do in these runs is now also written down as rules in `tools/papyrus_sim`, a stand-in for the game that runs the project's real scripts on a machine without Fallout 4. Replaying the four recorded runs in it, with the scripts as they were at each commit, gives what the game gave each time (`tools/papyrus_sim/game_runs.json`, checked by `tools/run_checks.sh`). That makes it a fair rehearsal for a script change before it goes to the PC. It is not evidence about the game: where a rule in it is marked "assumed", only the game can say.
+
+### Prepared for the next run: the test matrix as cases
+
+Written after the ninth run, before any of it had been compiled or run. It has since run: see "The test matrix passes in the game" below.
+
+The rows of the two test matrices are now cases the game can play with nobody at the keyboard: 49 cases, 309 events, 1,236 checks (self-test scenarios 101 to 128 for the main quest, 201 to 221 for the side quest). A case is a list of the logic model's events. For each event `TLM:CaseDriver` does what stands for it in the game, then compares everything it can see of both quests with the state the model reaches after that event: every stage of both quests, the outcome, method and reputation, the debrief variant and answer, both pairs of objectives, the four counters, who is alive, who is in the town aliases, whether the Cutters are disabled, the cargo, the three quest items, the evidence count and level, the side quest's outcome and its three flags, Haskell, and the caps from a sale. The cases themselves (`TLM:MatrixCases`) are written by `tools/gen_matrix_cases.py` from the model, so no expected value is typed by hand. `tools/matrix_cases.json` lists each case, the rows it stands for and its events.
+
+Three kinds of step: an event the model allows; an *attempt* at an event the model does not allow, where the guard is in the quest script and nothing may change (a second debrief answer, the evade timer during a fight, killing a caravan hand in town, a decision without evidence, a second decision, recovery with nothing to recover); and one place where the script turns a request into another one (naming Haskell when he is dead posts the pages with no name).
+
+What stands for what, as before: a trigger, a pickup or a line of dialogue is its stage number; picking up the dispatch, the ledger or the journal also gives the item; a kill by the player is `Kill` with the player named; leaving the ambush is moving its centre marker away; the timer running out is a direct call. Eight settlers and two markers are made for every case.
+
+Rows no case stands for, and why:
+
+| Row | Why not |
+|---|---|
+| T13 | ownership and theft: needs a placed container |
+| T15, T16, S16 | need a save and a load |
+| T20 | the sheriff's Essential flag: needs the placed actor |
+| T22 | arrival at night: packages and time of day |
+| T27 | clean plugin load: seen in every run, not a case |
+| T28 | unrelated saves |
+| S14, S20 | Pike dead, Vane dead: the guards are dialogue conditions, and there is no dialogue yet |
+| T29, T29b | added 2026-11-13 (amendment A25): the timer during the conversation with the Cutter lead. There is no dialogue yet, and nothing else makes the game say he is talking to the player |
+
+Also left out: the one attempt in T08 whose only guard is a dialogue condition (the deal after a fight has started).
+
+Two places where the logic model and the scripts disagreed came out of this, and the model was the one that was wrong both times (DESIGN_AMENDMENTS_v0.2.md, test matrix changes): the hand-over does not set stage 900 when the dispatch is missing, and deciding with a lost ledger does not give the ledger back.
+
+All 49 cases, and the nine older scenarios, pass when the real scripts are run in the stand-in engine. Its tests also show the checks bite: a changed rule in either quest script, a stage the model does not expect, and each single expected value changed in turn (46 of them) are all reported. One hole was found that way and closed: the first version of the driver read any expected value below zero as "not looked at", and the counters do go below zero.
+
+What only the game can say, and the next run will: whether eight settlers at once behave; whether stage 37 (the Cutters turning on the player) puts the player in combat; whether `StopCombat` on the Cutters and `StopCombatAlarm` on the player end it (case 121; the stand-in engine simply assumes so); and everything else the stand-in engine marks as assumed.
+
+One thing the stand-in engine could not show, found by an independent read of the driver before it went to the PC: in the stand-in nothing takes time, so two script threads never overlap. In the game they do. When the player leaves a live ambush, the quest sets stage 32 on a thread of its own, and the stage reads as done while its handler is still at work; the handler kills the drover last. The driver waited only for the stage, so its next step, the town stage, could arrive first, find the drover alive and put him in the town alias, where he cannot be killed. Four cases would have failed for that reason and not for anything in the rules. The driver now waits for the handler to have finished. With an engine copy that charges time for every call into the game, those cases failed before the change at some timings and none fail after it.
+
+**Open, in the quest itself** (closed since: see "After the matrix: time" below): the same overlap is possible in play if the town stage follows a distance-triggered "evaded" within a fraction of a second, which needs something like fast travel from a live ambush to a spot inside the town gate's trigger. The result would be a drover alive in town who should be dead; no counter or outcome depends on it.
+
+### The test matrix passes in the game, 2026-11-12
+
+Tenth run, 14:07 to 14:42 by the PC's clock, commit `499104e`, started with `tools\win\Update-And-Run.ps1 -Install -Unattended`. Reported as the pasted results. Nobody touched the game. 58 game sessions took 2,097 seconds, 36 seconds each on average.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed: `TLM:CaseDriver`, the generated `TLM:MatrixCases` (2,665 lines) and the changed `TLM:SelfTest` on their first compile |
+| **All 58 scenarios** | **Passed: 1,456 checks, 0 failed.** Every session closed itself |
+| The nine earlier scenarios | The same passes, the same reported lines and the same stage-event counts as in the ninth run |
+| The 49 matrix cases | Each passed exactly as many checks as the generator wrote for it (four per event) |
+| The game's script log | No error or warning naming this project in any of the 58 sessions (the report lists them for every session that has any) |
+| Afterwards | Everything put back; the installed plugin identical to the build |
+
+So for every row of the two matrices that can be played without a built place, a save or dialogue, the quest scripts did in the game what the logic model says, at every step, in everything the driver can see. That is 28 cases for the main quest (rows T01 to T12d, T14 to T14c, T17 to T19c, T21, T23 to T26c) and 21 for the side quest (S01 to S13, S15, S17 to S19, S21 to S24).
+
+What the game showed that had only been assumed:
+
+| What | Result |
+|---|---|
+| Eight settlers made at once and forced into aliases | Behaved; no case was disturbed by them |
+| Stage 37, the Cutters turning on the player | The player was in combat afterwards, and survived four attackers for the seconds the case lasts (case 106). Whether that was `Debug.SetGodMode` or luck is not known |
+| Ending a fight by script | After `StopCombat` on the four Cutters and `StopCombatAlarm` on the player, the player was out of combat, and the evade timer's function then resolved the ambush (case 121). Which of the two calls did it is not known |
+| The evade timer during a fight | Did not resolve the ambush (case 119) |
+| An objective completed without ever having been shown | Reads as completed (case 213, the side quest's second objective after "destroy") |
+| A caravan hand in the town alias | Neither could be killed with the player named as killer (case 118) |
+| The three unnamed Cutters | Their deaths alone did not resolve the ambush; the lead's then did (case 103) |
+| Recovery | Stage 900 gave back a lost dispatch and a lost ledger once, and gave nothing unearned (cases 124, 125, 218) |
+| The hand-over without the dispatch | Stood, and did not set stage 900 (case 126) |
+| Naming Haskell when he is dead | Posted the pages with no name (case 217) |
+| The sale | Took the ledger and the journal and gave 120 caps (case 212) |
+| Leaving a live ambush with the caravan there, then the town stage | The drover was dead and out of the town alias in all four cases that do this (110, 120, 122, 123), with the driver waiting for the evade handler to finish first |
+
+The stand-in engine (`tools/papyrus_sim`) had given the same 58 results beforehand, check for check. This run is now the fifth recorded in `tools/papyrus_sim/game_runs.json`.
+
+What this is not. No trigger was walked into, nothing was picked up from the world, no line was spoken, nothing was saved or loaded, no AI package ran, and there is no place. A stage number stood for each of those. The ten rows listed above remain unplayed. And one fault is known in the quest script that no case provokes yet: the overlap described under "Prepared for the next run".
+
+### After the matrix: time
+
+Written after the tenth run and before the eleventh, when none of it had been compiled or run in the game; what the game then did with it is in the next section but one ("The guards in the game"). Everything in this section was found and checked in the stand-in engine, which is not the game.
+
+The logic model has no time in it: an event is over before the next begins, and the 49 cases that passed play it that way, waiting after each step. The game does not keep to that, in two ways already seen in it. A death is announced about a second after it happens (`OnDeath` comes "when the actor has finished dying", while `IsDead` is true at once). And every handler runs on a thread of its own and gives other threads a turn at each call it makes into the game.
+
+Looking for what that does to the quest script found three faults in the version that passed the matrix (amendment A24):
+
+| What happens | What the script as tested does | What it should do |
+|---|---|---|
+| The player kills the Cutter lead, and within the next second the evade timer runs out, the player gets beyond the evade distance, or the town stage is set | Records "evaded": the drover is killed by script and the wagon looted, though the player has just saved them | A rescue |
+| The town stage is set while "evaded" is still being handled on another thread | Puts the still-living drover into the town alias, where the kill that follows cannot touch him | The drover dead and not in town |
+| Two resolutions are being handled at once | Can leave a mixture (the outcome of one, the bodies of the other), or let "evaded" overwrite a betrayal | One of them whole; a betrayal always stands |
+
+None of these needs more than ordinary play: the first needs a quiet kill of the lead near the end of the timer, or leaving at once; the second something like fast travel from the ambush to the gate.
+
+Three guards were added to `TLM:MQ01Quest`; no rule changed. How they were checked, without the game:
+
+- The stand-in engine got a second mode in which every call out of a script takes a frame, so that threads overlap where the game lets them. It is a way of provoking overlaps, not a measurement.
+- Four cases were added that do two things with no time between them (scenarios 129 to 132). With the quest script as it was at `499104e`, the first three fail in the ordinary mode and the fourth fails when calls take time, each with the fault in the table above. With the guards all four pass in both modes, and so do all 62 scenarios at 30, 60 and 144 calls a second.
+- Two more tests set two resolutions going a few frames apart, 100 and 100 ways. With the guards the result is always one of them whole, and a betrayal always stands; with the old script it is not.
+
+**The guards as first written were not enough.** They were given to an independent reader (a second session with no part in writing them, working from the code and the stand-in engine). It found nothing that should fail to compile and no change to ordinary play, and three gaps, each of which still let a fault from the table above through under some timing:
+
+| Gap | What could still happen | Closed by |
+|---|---|---|
+| `WaitForResolutions` read the number of handlers at work first and then called into the game to count the stages. A handler could begin during those calls: no longer "set and yet to begin", and not counted as at work | The town stage goes ahead beside an "evaded" that has just begun: the drover alive in town | Reading the number of handlers at work last, with no call after it |
+| The town stage waited before the resolution it asks for itself, but not after it | When the distance watch resolves the ambush at the same moment, the town stage's own request stands aside, and it moves the hands while the other handler is still killing and looting | A second wait after its own resolution |
+| A betrayal that saw no outcome yet, and then lost the claim to a resolution that began in that instant, wrote at once | The other resolution writes its outcome afterwards: a betrayal lost | A betrayal that is not the first resolution waits again before it writes |
+
+The same reading showed two weaknesses in the tests: nothing in them could tell the first or the third gap from a sound script, and cases 129 and 130 would pass without the guard having done anything if the death happened to be announced first. So:
+
+- The guards now write a line to the game's script log when they change what happens (`TLM_MQ01: A24 ...`). The runner's report lists those lines under "Timing", with what case 132 notes about the overlap. A pass with no such line means the game's timing never asked the guard to act; it does not mean the guard works.
+- The stand-in engine got a third mode, in which the timing is shaken: every call into the game takes 0 to 3 frames, a stage's handler begins 0 to 3 frames after the stage reads as set, events arrive up to 3 frames late, and threads that are ready in the same instant run in any order; differently for each of any number of seeds. This is harsher than the game is documented to be (there a call on the script's own quest gives no other thread a turn). `python3 tools/papyrus_sim --shake 5 all` runs scenarios this way.
+
+Four pairs of things happening at once were then run under that shaking (`tools/papyrus_sim/test_overlap.py`, class `Shaken`). The number of runs that ended in a state the logic model does not allow (measured again on 2026-11-13, after the later changes to the script and to the stand-in; one figure moved, from 7 to 11, which is all a different shaking means):
+
+| The quest script | Leaving, and the gate (760 runs) | Saved, and evaded (240) | A betrayal, and the timer (2,600) | The lead dead, and the gate (120) |
+|---|---|---|---|---|
+| Before the guards (`499104e`, the version that passed the matrix in the game) | 626 | 10 | 223 | 120 |
+| The guards as first written (`8b94566`) | 522 | 0 | 95 | 0 |
+| As it is now, with the first gap opened again | 8 | 0 | 0 | 0 |
+| As it is now, with the second gap opened again | 191 | 0 | 0 | 0 |
+| As it is now, with the third gap opened again | 0 | 0 | 11 | 0 |
+| **As it is now** | **0** | **0** | **0** | **0** |
+
+These numbers say nothing about how often any of it would happen in the game, where the timing is far gentler. They show that each of the three corrections is needed, and that the tests now notice when one is missing: each row but the last is a test that must find at least one wrong ending. All 62 scenarios also pass under the shaking, each three ways.
+
+**Any two things at once.** Those four pairs were chosen by hand, and the reading had just shown what hand-picked pairs miss. So every ordered pair out of twelve things that can happen at a live ambush was run as well: the lead, another Cutter or either caravan hand killed by the player; Nell dead by nobody's hand; the timer; leaving; the gate; the three ways the conversation with the lead can end; a fight beginning. The second was fired zero to seven frames after the first, each 40 shakings: 42,240 runs. Asked of each: is the end one that the logic model gives for those two events in one order or the other? With the script as it is, every time. With the script before the guards, and with the guards as first written, not. The test suite keeps a smaller sweep for the script as it is, and two smaller still that must catch the older versions (`test_overlap.py`, class `AnyTwoThingsAtOnce`); since 2026-11-13 it has a thirteenth thing in it, the conversation with the lead being open (3,120 runs). This does not say which of two near-simultaneous things ought to win. It says the result is never a mixture of both, and a betrayal is never lost.
+
+One thing the sweep does not look at, on purpose: when two resolution stages are set in the same instant, both read as set afterwards though only one was applied. Nothing reads those flags today; amendment A24 records what that means for the log entries still to be written.
+
+What the next run can show: that the changed quest script compiles and still passes everything it passed, and cases 129 to 131. Whether the guard acted in those three, and whether the overlap of case 132 happened at all in the game, is in the "Timing" part of the report; a case that passes without its guard having acted has shown nothing about the guard, and the report now says which it was.
+
+### The guards in the game, 2026-11-12
+
+Eleventh run, 20:06 to 20:45 by the PC's clock, commit `c1e6d48`, started with `tools\win\Update-And-Run.ps1 -Install -Unattended`. Reported as the pasted results. Nobody touched the game. 62 game sessions took 2,344 seconds, 38 seconds each on average.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed: the changed `TLM:MQ01Quest` (the guards of A24 with the three corrections), `TLM:CaseDriver` with its four new actions, and the regenerated `TLM:MatrixCases`, on their first compile |
+| **All 62 scenarios** | **Passed: 1,560 checks, 0 failed.** Every session closed itself |
+| The 58 scenarios of the tenth run | Each the same number of passes as then; for the nine older ones the same reported lines and stage-event counts as well. So the guards changed nothing where one thing happens at a time |
+| Cases 129 to 132 | Passed: 28, 28, 24 and 24 checks |
+| The game's script log | No error or warning naming this project in any of the 62 sessions |
+| Afterwards | Everything put back; the installed plugin identical to the build |
+
+What the "Timing" part of the report showed, which is the part that says whether a guard did anything:
+
+| Case | In the game |
+|---|---|
+| 130: the lead killed, and the player gone before his death is announced | The guard acted: "the Cutter lead is already dead: a rescue, not an evasion" |
+| 131: the lead killed, and the town stage before his death is announced | The guard acted, with the same line |
+| 132: leaving a live ambush and reaching the gate in the same breath | The overlap happened: the town stage was set while the evade stage's handler was still at work. The town stage waited "3 tenths of a second for another resolution to finish", and the drover was dead and out of the town alias, as the model says |
+| 129: the lead killed, and the timer runs out before his death is announced | Passed, with no line from the guard. Only one path through the script gives that: the timer's function found the player in combat straight after `Kill(player)` and started the timer over, and the death, announced a second later, made it a rescue. So the game takes a kill by the player for a fight, and on the timer's path the fight rule (A2) got there before the guard could |
+
+So, of what amendment A24 lists: the town stage arriving beside a half-finished "evaded" was provoked in the game and the guard held; a rescue mistaken for an evasion was provoked on two of its three paths and the guard made it a rescue; on the third path, the timer, the case as written showed nothing about the guard.
+
+What follows from case 129:
+
+- A fact about the game, seen indirectly: straight after `Kill` with the player named as the killer, the player is in combat. How long, and whether it needs the three other Cutters standing by, is not known. Two seconds after such a kill the player was out of combat again (scenario 5, every run).
+- The stand-in engine had it wrong. It gave the same 62 results beforehand, check for check, and the same lines for 130, 131 and 132 (132 only in its mode where calls take a frame, and there the same three tenths, which is a coincidence and not a prediction: that mode is for provoking overlaps). For 129 it had the guard acting. Its rule now says a kill by the player counts as a fight with the player until the death is announced, marked as seen indirectly and assumed in its details. The run is the sixth recorded in `tools/papyrus_sim/game_runs.json`, with the lines the guards wrote, so the replay fails if the stand-in gives 129 any other way.
+- Case 129 is changed so that the next run can show the guard on the timer's path: the kill is made a quiet one (the three Cutters still standing are told to stand down and the alarm against the player is ended, as after "break_combat") before the timer's function is called. Whether that is enough to end the fight in the game is reported in two INFO lines; the case passes either way. Scenario 2 reports the same question with nobody standing by. Not yet compiled.
+- From now on the quest script also says in the script log when the evade timer was held back and by what: `TLM_MQ01: A2 ...` for a fight, `TLM_MQ01: A25 ...` for the conversation. With that line in the eleventh run, case 129 would have explained itself.
+
+### The tag `mq01-logic-proof`
+
+Owner decision, 2026-11-13: the commit that passed the eleventh run is to carry the tag `mq01-logic-proof`. That also settles what was left of decision D8. The runbook had called this milestone the test matrix played in a built test cell; the tag now stands for the scripted proof with actors and markers made at run time, and playing the matrix in a built cell is still to do.
+
+What the tag says, in full, is in [`tags/mq01-logic-proof.txt`](tags/mq01-logic-proof.txt): what passed, what that covers, and what it does not (ten rows of the matrices, anything in a built place, dialogue, saving and loading, the Creation Kit, the quest as a player would meet it).
+
+State of the tag itself: **on GitHub since 2026-11-13.** The owner created and pushed it from the PC with `tools\win\Push-MilestoneTag.ps1` (08:32 by the PC's clock; the script's message came back by the clipboard). Checked from the session that wrote this record: it is an annotated tag, it points at `c1e6d48`, and its text is the text of `tags/mq01-logic-proof.txt` to the letter.
+
+How it got there. The session that wrote this record is allowed to push the branch but not tags: the push of the tag was refused three times, the last after the owner had reconnected GitHub to it, while a push of the branch went through each time. So the tag had to come from the PC. (After the first version of that script was handed over, the owner's next paste was the eleventh run's report again: the script printed its message but did not copy it to the clipboard, as every other script here does. It does now, and it can be started through the usual command.)
+
+First run of the script on the PC, 2026-11-12 22:06 by its clock: it read the text, found the commit, asked GitHub (no tag there), and stopped when git refused to create the tag, because git on that PC had no name and e-mail to put on it. Nothing was created and nothing was pushed, and the message came back by the clipboard. The script now proposes the name and GitHub no-reply address that most of the repository's own commits already carry, and leaves out of its message the Windows account and PC name that git prints in that error. With that identity set for the folder, the second run created the tag and pushed it.
+
+### A run that never started, 2026-11-13
+
+The first run after the owner's PC had applied an update and restarted. Reported by a screenshot of the end of the runner's report and in the owner's words; the top of the report, with the commit, was not in the screenshot.
+
+| What | Result |
+|---|---|
+| Seen in the report | Scenario 1: NOT STARTED after 181 seconds, "the game did not appear after Mod Organizer was started". No other scenario was run. Everything was put back (scenario number 0, start-up command emptied, keep-running setting back to 0, which it had been before: so no earlier run had been cut off by the restart) |
+| In the owner's words | "It got to the Fallout 4 start screen, but nothing happened. It ran Steam Fallout 4, whereas your scenarios run through GOG." |
+| Not known | Which copy of the game that was, and what came before it on the screen. The runner saw no process called Fallout4 for three minutes, so whatever reached a start screen did so after the runner had given up and taken its start-up command away again; a game that starts then sits at its menu and does nothing |
+
+Reading, not established: Mod Organizer stopped on its question about Steam. It asks that question for a game whose folder holds Steam's library file when Steam is not running (the fact from its source in the table further up), and Steam does not survive a restart of the PC unless it starts with Windows. Every earlier run was made on the two days when Steam had just been used to install the game and the Creation Kit. With nobody answering, the game does not start; answered three minutes late, it starts with nothing to do. That fits the report and the owner's "it ran Steam". What it needs, and what is not confirmed, is that the GOG game's folder holds `steam_api64.dll`. The next run's report says so in its "Steam" line; if the file is not there, this reading is wrong.
+
+Reproduced off the PC: with the runner as it was, a stand-in Mod Organizer that asks that question, and a stand-in game folder holding the file, the report is the one in the screenshot, and the stand-in game then starts by itself with no start-up command.
+
+What was changed (rehearsed against stand-ins in ten situations; not yet run on the PC):
+
+- Before anything is started, the runner and the hand-started test look for that file in the managed game folder. If it is there and Steam is not running, they start Steam in the background (`steam.exe -silent`, which is what answering "Start Steam" does) and leave it running; `-NoSteamStart` makes them ask the person and wait instead. If Steam cannot be had, nothing is started and nothing is changed.
+- While the game is awaited, the window Mod Organizer is showing is read. Started for one program it has no window of its own, so a title there is a question or a message. After twenty seconds the runner names it on the screen, and if the game never appears the report names it.
+- If the game never appears, the report lists what was running at that moment (any copy of the game or its launcher, the script extender's loader, Steam, GOG Galaxy, Mod Organizer, each with the file it was started from), and the runner closes the Mod Organizer it started, so that it cannot start the game later with the run's settings already taken away.
+- The first scenario is given five minutes to appear instead of three: the first start after a restart is the slowest.
+- A wrong copy of the game that nobody closes is closed by the runner after two minutes; before, it waited for ever with the test profile's settings still changed.
+
+### The timer and the conversation, 2026-11-13
+
+Not yet compiled and not yet run in the game. Owner decision D9: the evade timer is to be held while the player is talking to the Cutter lead (amendment A25).
+
+The fault it removes was in the design, not in the script: 90 seconds after the ambush goes live the timer resolved it as "evaded" unless the player was fighting, and a hold-up conversation is not a fight. A player still choosing a line in the 91st second had the drover killed and the wagon looted under the conversation, and the line then chosen was silently refused.
+
+What was done, in the order the project asks for:
+
+| Where | What |
+|---|---|
+| Logic model | A state "the conversation is open", two events (it opens; it is left without a line being chosen), and the rule: the timer does nothing while it is open. The conversation closes by itself whenever the lead can no longer be talked to. Two matrix rows, T29 and T29b. The exhaustive search finds no violation under the amended rules, and finds the fault under the v0.1 rules |
+| `TLM:MQ01Quest` | One condition in `EvadeTimerElapsed`: if the lead `IsInDialogueWithPlayer`, the timer starts over, as it does during a fight. No flag is kept; the game is asked each time. When the timer is held back the script writes which rule did it to the script log (`TLM_MQ01: A2 ...` for a fight, `TLM_MQ01: A25 ...` for the conversation) |
+| Plugin | Nothing: no record changes |
+| Stand-in engine | A switch on an actor, "is talking to the player", that only a test flips. Nine tests (`tools/papyrus_sim/test_conversation.py`) with the real 90-second timer: it does not run out on a conversation of any length, and the script says so; a deal taken afterwards is a deal; after the conversation it runs out on its next turn; a fight holds it back and is reported as a fight; leaving, each line and a killing are not held back; an empty alias is not asked; and with the script as it was before the rule the deal is lost. The conversation is also one of the thirteen things in the sweep of pairs, which cannot see the rule itself (either order of "talks" and "the timer runs out" is allowed there) but would see anything else being held back |
+
+What "held" means here. It is not a stopwatch that stops and goes on. The timer is looked at when it runs out: if the conversation is open at that moment it starts over with its whole 90 seconds, as it does for a fight. A conversation that is over before the 90 seconds are up does not lengthen them; one that is open when they run out buys a whole new 90. What is guaranteed is only that the ambush is never resolved under an open conversation. The logic model has no time in it and cannot tell the two readings apart; if the owner wants a true pause, that is a change to the script alone.
+
+An independent read of this change found no fault in the rule or the script, and three in my tests of it, all corrected before any run. The model's test for row T29 had slipped under another row's "skip" mark and never ran. One stand-in test did not happen when it said it did, because the engine's clock stayed where the last event had left it, so it tested nothing; the engine's `run` now leaves the clock where it was told to, and that test fails if the guard of A24 is taken out. And a third compared nothing that the failed speech check changes. The same read asked for the line the script now writes when it holds the timer back, without which a held timer in the game could not be told from a fight.
+
+What the game can say today, and what it cannot. The plugin has no dialogue, so nothing can make the game answer "yes, he is talking to the player". The next run shows only that the question compiles and is answered "no" when nobody is talking: scenario 2 asks it outright (one check more, 15), and every case in which the timer resolves the ambush depends on that answer (if the game counted a settler's greeting as a conversation, those cases would fail, and the `A25` line would say why). Rows T29 and T29b stay unplayed in the game until the hold-up conversation exists. Whether the game's answer is "yes" for the whole of a conversation, the player's turn to choose included, is checklist item 10a.
+
+### The twelfth run, 2026-11-13
+
+Twelfth run, 09:36 to 10:44 by the PC's clock, commit `11b92ad`, started with the usual command. Reported as the pasted build log and results. Nobody touched the game; the owner used the PC for other things meanwhile. 62 game sessions took 4,093 seconds, 66 seconds each. That is 28 seconds more per session than the day before, all of it before the scenario begins; why is not known.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed, 12 of 12, on their first compile: `TLM:MQ01Quest` with the rule of A25 and the two lines that say what held the timer back, the changed action in `TLM:CaseDriver`, the new lines in `TLM:FixtureProbe` |
+| **All 62 scenarios** | **Passed: 1,561 checks, 0 failed** (one more than before: the new check in scenario 2). Every session closed itself. No error or warning naming this project in any session |
+| The runner's new parts | Ran on the PC: the Steam line, the Timing part with the new lines, the note of how things were before the run (written, then removed). Everything put back |
+
+What it settled:
+
+| Question | Answer |
+|---|---|
+| Does the GOG game's folder hold Steam's library file? | Yes: `steam_api64.dll`. So Mod Organizer does ask about Steam for this game when Steam is not running, which is the reading given above for the run that never started. In this run Steam was running and Mod Organizer asked nothing |
+| `IsInDialogueWithPlayer` on an actor nobody is talking to | False (scenario 2's new check). Every case in which the timer resolves the ambush passed as well, so for the test's actors, alive or just killed, the answer was "no" |
+| What holds the timer back in case 119 | The script log now says: `A2 the evade timer ran out during a fight` |
+| Is a kill by the player a fight? | With nobody else alive: no. In scenario 2 the player was not in combat straight after `Kill(player)`, nor once the death had been announced. With others standing by it is still only the inference from the eleventh run: the lines case 129 wrote about it were not in the report, which showed a passed case's notes only when they were about an overlap. It shows all of them now |
+
+What it showed that was not expected:
+
+| What | Seen |
+|---|---|
+| How soon a death is announced | In scenario 2, two kills, both announcements and the checks between them carry the same second. On 2026-11-12 each announcement took about a second. So "about a second" was that day's pace, not a rule of the game |
+| The wait guard acting where nothing was arranged | Scenario 2: `A24 waited 1 tenths of a second for another resolution to finish`. The caravan master's death was announced while the rescue before it was still being handled, so two resolutions were at work at once in a scenario not built for that, and the betrayal waited for the rescue to finish. The result would have been right without the guard here; it is the first sign from the game that such overlaps happen without being arranged |
+| Case 132 | The overlap happened again; the town stage waited 4 tenths of a second this time |
+| Case 129 | Passed, again with no line from its guard, and this time with none from the fight rule either: the timer's function found the ambush already resolved. The calls the case now made between the kill and the timer took longer than the death took to be announced. The guard on the timer's path has still not been seen to act in the game |
+| The Essential flag in town | Scenario 4 reported the caravan master as not Essential straight after the town stage had put her into the alias that is flagged so. In the four runs before she was. Case 118 still passed: a little later the hands in town could not be killed. So the flag is not always in force the instant the alias is filled |
+| A fight making the ambush live | Scenario 5: eight seconds after `StartCombat` the lead and the player were in combat and stage 30 was still not set. In the three runs before it was. The case then set the stage itself, as it is written to, and passed. The Cutter alias script's fallback (a fight makes the ambush live) is therefore not dependable; the sight trigger and a death are the other two ways, and the trigger is the one the design relies on |
+
+Four of those lines came out as they did because of how that session happened to run, and the stand-in engine does not model pace. The run is the seventh recorded in `tools/papyrus_sim/game_runs.json`; those four lines are recorded with it, each marked as not replayed and with the reason, and the replay fails if the stand-in ever does give them, so that the mark cannot go stale. Everything else about the run the stand-in gives as the game did.
+
+Changed after this run (checks pass; none of it compiled or run in the game):
+
+- **Case 129.** The lead now dies with nobody named as his killer, which the game does not take for a fight, and the timer's function is called in the next breath, as the town stage is in case 131, where the guard has acted twice. The quest does not ask who killed a Cutter.
+- **Scenario 2** has an experiment, reported and not scored: one Cutter killed as the player while another stands by; is the player in combat then, and does `StopCombatAlarm` end it.
+- **The report's Timing part** lists every note a matrix case writes about one of its steps, not only the ones about an overlap.
+- **The stand-in engine's rule** about a kill by the player: a fight only while somebody else stands by.
+
+Still not done anywhere: opening the plugin in the Creation Kit, anything in a built place, any test of the quest as a player would meet it.
+
+### Prepared for the next run: things the plugin places, 2026-11-13
+
+Branch `feat/tlm-mq01-graybox`. **None of this had been compiled or run in the game when this was written; the next section is the run.** The design, the reasons, how to read the result and how to take it out again are in [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md).
+
+Everything seen in the game so far was made at run time by a test script. A place a player can walk through needs people, triggers and objects that are in the plugin, placed in a cell, with quest aliases pointing at them. The builder now writes a first few into the game's own test room, and scenario 10 asks the game whether they work:
+
+| What the plugin gains | |
+|---|---|
+| Its own copy of the record of the cell `QASmoke`, with five persistent references under it | A settler (initially disabled), a box trigger on an activator of the plugin's, two more for comparison (the same box on the game's own empty trigger, and on another collision layer), and an item that borrows the bottle cap's world model. Placed from the room's arrival marker, which the builder reads from the master |
+| A quest of its own, `TLM_Trial` | Five aliases forced to those references; the game's `DefaultAliasOnTriggerEnter` and `DefaultAliasOnContainerChangedTo` on four of them; stages 10, 11, 12, 20 and 100. The two real quests are not touched |
+| Scenario 10 (`TLM:PlacedTrial`) | 17 scored checks: the aliases hold what was placed; the person starts disabled and can be enabled; picking the object up sets a stage; entering the trigger sets a stage. Positions, distances and the two comparison triggers are reported |
+
+What was found out on the way, without the game:
+
+| What | Found |
+|---|---|
+| The size of a trigger's box | The library that writes the plugin takes the **whole** size of the box and writes half of it, which is what the file holds. The first trigger written here came out half as large as specified. Seen in the written bytes; the builder now hands over twice the reach, and `tools/check_plugin_layout.py` reads the bytes back |
+| Reading a display name | `GetDisplayName` is a script-extender function. Without one a script cannot read the name an alias gives its reference, so the name is not checked by scenario 10; a person has to look |
+| The id file | Ids for the placed references are given out even when nothing is placed, so `formkeys.txt` is the same with and without the master. `tools/run_checks.sh` now fails if a build against a master changes it |
+| The name of a cell | The game's master keeps its text apart, in strings files. A plugin's copy of a cell's record replaces the game's while the plugin is loaded, name included, so the copy has to carry the name as text. The builder had never read text out of the master before. It now reads the name once, says what it read, and carries on without one if the strings cannot be read. Rehearsed against a stand-in master with strings files and with them taken away; the real ones have not been read |
+| A second set of numbers on a box | The format notes for the game before this one give a boxed reference its reach twice (the primitive, and the reference's bound) and say the editor refuses a box where they differ. Whether a plain trigger carries the bound is not known, so the builder counts the game's own box triggers and does as most of them do |
+| An independent review before the first run | It found nothing that would stop the build, the compile or the start, and five things that would have made the result easy to misread: the comparison trigger was entered from another spot and over another distance than the scored one; a trigger's count of things inside it is of things of any kind, and the settler stood near; the note on reading the result named the wrong status for a plugin the game does not take; the room's name could be lost without a word; and an error's own stack lines were listed as if the game's scripts had written them. All five are corrected |
+
+Checks: `tools/run_checks.sh` passes. 63 scenarios pass on the stand-in engine, 1,578 checks (the 62 from before unchanged, at 1,561). The written plugin is read back through the library and, separately, from its bytes, where sixteen kinds of deliberate damage to the cell, its references and the aliases that point at them are each caught. The Windows chain ran against the stand-in PC.
+
+**What that is worth.** Less than the same sentence was worth before. The stand-in engine's other rules each rest on something seen in the game. Its rules for placed references, triggers and picking things up rest on the wiki and, where the wiki is silent, on a cautious guess; they are marked so in `sim.py` and in `test_placed.py`. And five of the eight names the builder looks up for this (`QASmoke`, `COCMarkerHeading`, `L_TRIGGER`, `L_ACTORZONE`, `DefaultEmptyTrigger`) have never been looked up in the real master. The run on the PC is the test.
+
+### The thirteenth run, 2026-11-13: what the plugin places works
+
+Thirteenth run, 14:40 to 14:45 by the PC's clock, commit `3c7ac5f`, branch `feat/tlm-mq01-graybox`, started with the command given, which first moved the folder onto that branch. Reported as the pasted results. Nobody touched the game. Seven sessions took 295 seconds: 30 to 37 seconds each, the pace of 2026-11-12 again, and 87 for scenario 10.
+
+| What | Result |
+|---|---|
+| Scripts compile | Passed, on their first compile: `TLM:PlacedTrial`, `TLM:SelfTest` with scenario 10, and what had been changed after the twelfth run (case 129's action in `TLM:CaseDriver`, the experiment in `TLM:FixtureProbe`) |
+| The builder against the real master, for the first time with a cell | It found everything it looked up: the cell `QASmoke` (an interior cell, filed where its id asks), the room's arrival marker, the settler, the bottle cap's model, both collision layers, the game's empty trigger. It read the room's name, 'Tunnels', out of the game's strings files. Its read-back check passed |
+| The game with the plugin's copy of a cell's record and five references under it | Loaded and ran, seven sessions out of seven |
+| **Scenario 10, the placed-content trial** | **Passed: 17 checks, 0 failed**, and both comparison triggers set their stages |
+| Scenario 1 | Passed, 60: the two real quests behave as before with the larger plugin |
+| Scenarios 2 and 129 to 132 | Passed: 15, 28, 28, 24, 24. No error or warning naming this project in any session |
+
+What it settled:
+
+| Question | Answer |
+|---|---|
+| Does the game take a plugin that places things in one of its cells this way? | Yes. The room loaded with the plugin's copy of its record, and every reference was where the builder had put it, to the last digit the game prints |
+| A quest that is not Start Game Enabled, started by `Start()` | `Start` returned True, the quest was running, and its aliases held their references in the next breath |
+| An alias forced to a reference the plugin places | Holds it: five of five. The one whose reference starts disabled has Allow Disabled; whether it would have filled without is not known |
+| A placed actor that starts disabled | Disabled; not dead; in the player's cell even while disabled; enabled by `Enable`; its 3D loads. Where it then stands is another matter (below) |
+| A placed item that borrows the path of one of the game's models | Its 3D was loaded. `Activate` by the player returned True and the player had it. The game's `DefaultAliasOnContainerChangedTo` on its alias set its stage within the second |
+| A placed box trigger | The player, moved into it by script, was counted (0 inside before, 1 after) and the game's `DefaultAliasOnTriggerEnter` on its alias set its stage within about a second. So a move by script is "entering". All three recipes worked: the plugin's activator on `L_TRIGGER`, the game's empty trigger on `L_TRIGGER`, the plugin's activator on `L_ACTORZONE` |
+| Where does the player arrive? | At the room's arrival marker, (-1792, -1344, 0), exactly. The builder's arithmetic from that marker and its heading is right: the game gives the person as 335.41 from the player, the object 162.79 and each trigger 640.31, the distances planned |
+| The guard on the timer's path (case 129) | Acted, at last: `A24 the Cutter lead is already dead: a rescue, not an evasion`. With 130 and 131, which wrote the same line again, and 132, where the overlap happened again and the town stage waited three tenths of a second, all four of the A24 cases have now been seen to act in the game |
+
+What it showed that was not expected:
+
+| What | Seen |
+|---|---|
+| The game's own box triggers name no collision layer | Of 407 of them in the first 160 interior cells, 405 name none and two name `L_NONCOLLIDABLE`. None carries its reach a second time as a bound. So "typically L_TRIGGER" is not how the game's own data is written: a trigger there is a box on an activator and nothing more. Ours named a layer and worked. The two comparison triggers now leave the layer out, one on each activator |
+| The settler did not stay where it was placed | Placed at (-2110, -1450, 0) and seen there while disabled. Once enabled it was at (-1773, -1096, 13), within the same second: 489 units away, behind and to the right of where the player arrives. Why is not known. The game's settler carries the workshop system's packages and script; an actor whose package has it use a piece of furniture can begin there, and the room is full of furniture. A place to walk through needs people who stand where they are put, so this is the next thing to find out |
+| A move of the player by script ends on the floor | Moved to the middle of a box 100 above the floor, the player was at height 0 a moment later, at the box's own x and y, twice. The third time the player was at height 54.8 and two units to the side: on top of something. That spot (200 ahead of the arrival point, 600 to its right) is not open floor |
+| How long such a move takes | Five moves of the player. Three took between one and five seconds. The move back from the second trigger took about 38, and the move into the third about 11. The self-test allowed a step 45 seconds, so the scenario came within seven seconds of being ended by its own watchdog. Why one move took so long is not known |
+| `ShowTraces` on the game's default scripts | The game took the property without complaint. Nothing was written to the script log and no other log appeared |
+| The bystander experiment (scenario 2) | No fight: with another Cutter standing by, the player was not in combat straight after the kill, and neither was the one standing by two seconds later. But that one had been made in the same breath as the killing. It had not been there to see anything, which is the likeliest reason, and means the experiment did not ask its question |
+| Scenario 2 | No line from the wait guard this time; in the twelfth run there was one |
+
+The stand-in engine gave these seven scenarios as the game did, check for check, the guards' lines and case 132's overlap included, with two exceptions. It had the bystander line wrong (a fight, where the game had none), and its rule is corrected: one who stands by counts only once it has been there a while. And scenario 10's reported lines are places in the game's own room, which the stand-in does not have; they are recorded and marked as not replayed, with the reason. The run is the eighth recorded in `tools/papyrus_sim/game_runs.json`.
+
+Changed after this run (checks pass; none of it compiled or run in the game):
+
+- **The trial's two comparison triggers** leave the collision layer out, as the game's own do: one on the game's empty trigger, one on the plugin's activator. The third box moved to the other side, where the floor was open. `ShowTraces` is not set any more.
+- **Steps that move the player** are allowed 150 seconds; the runner allows a scenario seven minutes; and the report lists every step that took ten seconds or more.
+- **The bystander experiment** makes the bystander first and waits three seconds.
+- **The stand-in engine**: the rules for placed references, triggers, picking up and the two default scripts are marked as seen; a bystander has to have been there a second; a box that names no layer is a trigger.
+
+Still not done anywhere: opening the plugin in the Creation Kit, people who stay where they are placed, dialogue, saves and loads, anything in a place built for the purpose, any test of the quest as a player would meet it.
+
+### Prepared for the next run: people the plugin places, 2026-11-13
+
+Branch `feat/tlm-mq01-graybox`. **None of this has been compiled or run in the game.** The design, the reasons, how to read the result and how to take it out again are in [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two.
+
+The thirteenth run left one thing open: the game's settler, placed and enabled, did not stay where it was put. Scenario 11 asks the game whether a person does stay when it has nothing to go about, and whether activating such a person reaches a script:
+
+| What the plugin gains | |
+|---|---|
+| Two actors of its own, `TLM_NPC_TrialPerson` and `TLM_NPC_TrialPersonBare` | The builder makes each when the plugin is built, as a copy of the game's settler without its packages and scripts, and clears both the template flags and the template actors that would fetch either. The first keeps the settler's default package list; the second has none. The copy is a record, made on the PC from that PC's own master and present only in the built plugin, which is not in this repository |
+| Three more placed people in `QASmoke`, all initially disabled and all on one spot known to be open floor | One of each actor, and a second copy of the game's settler: on one spot, so that they differ in the actor and in nothing else |
+| Stage 30 and three aliases on `TLM_Trial` | The alias of the first person carries the project's `TLM:MessageStageAlias`: activated by the player, it shows a line and sets stage 30 |
+| Scenario 11 (`TLM:PlacedPeople`) | 8 scored checks, all written before anything that is only reported: the person of the plugin's own is there, starts disabled, can be enabled, **is within 64 units of its spot six seconds later, height included**, and activating it sets stage 30 (from where the player stands, or failing that from close by). Then, reported for all four people, each enabled alone: where it is at once, after two seconds and after six, how far from the player, what package it runs, whether it sits or fights; what holds a person that did not stay; where the navigation mesh is under each spot; and whether the settler goes to a place in the room or to the player |
+
+What was found out on the way, without the game:
+
+| What | Found |
+|---|---|
+| A template can bring back what was taken away, in two ways | An actor can take its packages, its scripts and its default package list from the actor it is modelled on. Its record says so twice: by a flag for each thing, and by naming an actor for each thing. Emptying the copy's own lists is not enough, and clearing the flags left the named actors in place; which of the two the game goes by is not known. Both are cleared now for what the copy gives up, and both are checked, through the library and in the bytes. The second half was found by the independent review |
+| A person on a base of the plugin's own | Is written as a placed actor, not a placed object. The builder decided that by whether the base was looked up in the master as an actor, which a base of the plugin's own never is. Found by the builder's own read-back check on the first build |
+| The library writes a plugin only under its own name | The first trial write of a copied actor, to a file with a name of its own, was refused. Seen because the builder caught it, left the actors out and carried on, which is what it is meant to do when a copy fails |
+| One wiki page leaves out a word | *GetCurrentRealTime - Utility* gives the function without `global`. The Utility Script page lists it among the global functions, and its own example calls it so. Noted in `tools/papyrus_natives.json` |
+| What is scored has to come first | The first version wrote two of its eight checks after steps that were not about them: the quest's last stage after three other people had been watched, the activation after the player had been walked back. A hang in any of those would have cost a check that had passed. Found by the independent review, with the stand-in told to hang there |
+| "Stayed" has a height | Measured from above only, a person that fell through the floor had stayed. Found by the independent review |
+| The stand-in engine did not let a placed person move | It now moves a placed person that has something to go about by what the game showed (489 units, 13 up), as early as that can have happened (before `Enable` comes back), and leaves one with nothing to go about where it is. That the settler moved is seen, once; when it moved is assumed; that a person with no packages stays is the guess the scenario tests |
+
+Checks: `tools/run_checks.sh` passes. 64 scenarios pass on the stand-in engine, 1,586 checks (the 63 from before unchanged, at 1,578). 148 tests of the stand-in, 42 of them new. The written plugin's actors are read back through the library and from the bytes, where ten kinds of deliberate damage to them are each caught, 30 in all. By hand, with scripts that are not in the repository: ten faults put into the builder's actor-making code are each refused by the builder itself; eighteen put into the scenario's script each show, sixteen in the score and two in what is reported; and the Windows chain ran against the stand-in PC with scenarios 11, 10 and 2.
+
+An independent review read the change before the first run. It found nothing that would stop the compile or the build, and what it did find is in the table above and in the design note.
+
+**What that is worth.** That the script, the plugin and the stand-in agree. On the one question that matters, whether a person with no packages stays, the stand-in knows nothing: it says yes because it was told to. Nine functions are called here that this project has never compiled a call to (`GetCurrentPackage`, `GetSitState`, `SetRestrained`, `EnableAI`, `SetPosition`, `MoveToMyEditorLocation`, `MoveToNearestNavmeshLocation`, `Utility.GetCurrentRealTime`, `Math.sqrt`); all are on the wiki with their signatures, and a compile error would stop the run before the game starts. The real settler has never been copied by the library; if that fails the build says so and carries on without the two actors.
+
+### The fourteenth run, 2026-11-13: a placed person who stays, and can be spoken to
+
+`tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 11,10,2`, commit `053464e`, 18:27 to 18:32, 264 seconds, nobody at the keyboard. **3 of 3 passed, 40 checks, 0 failed.**
+
+| Scenario | Checks | Seconds | |
+|---|---|---|---|
+| 11, people the plugin places | 8 of 8 | 163 | First run. Every experiment came back |
+| 10, the placed-content trial | 17 of 17 | 67 | Second run, with the two comparison triggers naming no collision layer |
+| 2, actors made at run time | 15 of 15 | 34 | With the bystander made three seconds before the killing |
+
+Everything compiled, on its first compile: `PlacedPeople.psc`, the changed `SelfTest.psc`, `PlacedTrial.psc` and `FixtureProbe.psc`, and with them nine functions the project had never called. The builder copied the game's settler twice without complaint, and the plugin read back as specified.
+
+**The two things the run was for:**
+
+| Asked | Seen |
+|---|---|
+| Does a person on a base of the plugin's own, with no packages and no script, stay where it is placed? | **Yes.** At once, two seconds later and six seconds later it stood on its spot to the last digit the game prints: 0.000000 away, 0.000000 higher. So did the second such person. Not sitting, not fighting |
+| Does activating that person reach a script on its alias? | **Yes.** `Activate` by the player, from 632 units off, returned True, and `TLM:MessageStageAlias` on the person's alias had set stage 30 within the second. It is that script's first run in the game. No second try was needed |
+
+**Why the settler moved**, which is what the rest of the scenario was for:
+
+| Seen | So |
+|---|---|
+| The game's settler has one package, `DefaultSandboxExteriorEditorLocation` (`023331`), no default package list, and the script `workshopnpcscript`. It takes its looks, stats, inventory and keywords from the leveled list `LCharWorkshopNPC` | (From the build.) A sandbox package sends an actor to things it can use near where it belongs |
+| A tenth of a second after `Enable` came back, each settler was **sitting** (sit state 3) on a seat of the room, 790 and 579 units from where it had been placed. Two seconds later it had stood up; after six it had walked some 300 units further along the same row | It does not walk off: the game puts it straight onto the seat its package chose. That is the 489 units of the thirteenth run |
+| The settler on the spot of the plugin's own people went as far as the one on its old spot | It is the actor, not the spot |
+| A marker set down on each spot stayed there when asked for the nearest place on the navigation mesh, and one set down 150 units above came straight down onto it | Both spots are on the mesh. The mesh is not the reason either |
+| With the player set down 630 units away, the settler went to the same row of seats, 819 units from the player | A place in the room, not a place near the player |
+| Moved back to where it was placed, the settler was there at once, with no package and still "sitting"; three seconds later it ran its package again and was 26 and 38 units off | Putting it back does not hold it |
+| Restrained and moved back: one settler stayed; the other, which had been walking, was 66 units off three seconds later | Restraint is not a way to hold a person |
+| With its AI off and moved back, each settler stayed exactly (package none, sit state 1) | That holds, and freezes the person |
+
+**What it also showed:**
+
+| What | Seen | So |
+|---|---|---|
+| A person with no package of its own | Runs a package all the same: `001FEFC1`, the same for both persons. The game gives it one | The next build looks the id up and says its name |
+| `Enable` on a person of the plugin's own | Took **18.4 and 20.0 seconds** to come back, where the game's settler took 2.4, 2.1 and 1.5 (and once about ten) | Not explained. A person switched on in the middle of play would appear late. It may be that the game has to make something for an actor record it has never seen; that is a guess. Steps that enable somebody now get 150 seconds |
+| A trigger with no collision layer | Both comparison triggers set their stages: on the game's own empty trigger and on the plugin's activator | **A trigger needs nothing but its box.** The walk-through's triggers will be written as the game writes its own |
+| The floor | The player came down at height 0 at a third spot (360 ahead, 520 to the left of the arrival point) | Three spots of open floor are known. The seats the settlers used lie in a row along y = -1113 to -1139, between x = -2581 and -1662 |
+| A scripted move of the player | One took 29 seconds again | As before: fine for a test, nothing for a player to wait on |
+| A kill by the player with one of the quest's people standing by for three seconds | No fight: the player not in combat straight after, half a second later or two seconds later; the bystander never | See below |
+| `Utility.Wait` and the clock | A wait of 2 seconds took 1.82 to 1.85 by `Utility.GetCurrentRealTime`, one of 4 took 3.47 to 3.50, and the times on the log's lines agree | In that session waits ran about an eighth short. Anything timed for a player (the 90 seconds of the evade timer) cannot be taken as wall-clock seconds. Why is not known; the game is known to run fast at high frame rates |
+| Letter case | The script wrote "yes" and "no"; the log says "Yes" and "No" | The game keeps one spelling of a string whatever its letter case. Never compare or rely on the case of a string a script made |
+| The settler of scenario 10, enabled at the end of that scenario | Stood at (-2581.1, -1113.0, 0), the seat it took in scenario 11 | The same choice from the same place, in two sessions |
+
+**The stand-in engine against the game.** All three scenarios scored as it predicted: 8, 17 and 15. What it reports without scoring it had wrong or did not know, and has been corrected from this run:
+
+- **A kill by the player with a bystander.** It said a fight; the game said none. That is the fourth time it has been wrong about when a kill is a fight. What is now seen: nobody standing by, no fight; one of the quest's people standing by, made in the same breath or three seconds before, no fight. And once, indirectly, a fight: case 129 of the eleventh run, with seven stand-ins about at a live ambush. What made that one a fight is not known. The stand-in now takes it to be the number (two or more of a running quest's people), which is a guess, and scenario 2 has a new experiment that asks the game with four standing by.
+- **How long `Enable` takes**: nothing, it had said. It now takes 19 seconds for a person of the plugin's own and 2 for the game's settler.
+- **Where the settler goes**: one offset, and there it stayed. It is still one offset (the stand-in knows no seats), but the person is now "sitting" at first, and put back it is at its spot at once and takes a step a second later.
+- **What a person with no packages runs**: none, it had said. It now answers with the package the game named.
+- **"yes" and "no"**: the script now writes them as the game printed them.
+
+Still not done anywhere: opening the plugin in the Creation Kit, a look at anything by eye, dialogue, saves and loads, anything in a place built for the purpose, any test of the quest as a player would meet it.
+
+### Prepared for the next run: Act I, first section, 2026-11-14
+
+Not a result: what has been built since the fourteenth run and has **not been compiled and not run in the game**. The design is [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md).
+
+What it is: the first chapter and its side matter as something a person can walk through, in the game's test room. Thirteen named people (copies of the settler with nothing to go about, each pointed at one settler of the game's own list for its looks, each in a faction of the plugin's own, none of whom starts a fight), the dispatch, the revolver, the two papers, the two pieces of evidence, the wagon's cargo, the notice board, the stove, two boxes and two markers. A development quest (`TLM_A1`) holds them and puts each into the alias of the two real quests that is meant for it. What people say is shown as boxes whose buttons set the quests' stages. The two quests' rules and records are unchanged.
+
+Two ways to run it:
+
+| | Command | What comes back |
+|---|---|---|
+| Scenario 12, nobody at the keyboard | `powershell -ExecutionPolicy Bypass -File tools\win\Update-And-Run.ps1 -Install -Unattended -Scenarios 12,11,10,2` | 42 checks for scenario 12, and its INFO lines: how long each person took to appear, whether anybody strayed, whether the player was in a fight after the killing, what the navigation mesh says of each spot |
+| Played by hand | `powershell -ExecutionPolicy Bypass -File tools\win\Play-Act1.ps1` | Nothing scored. The stages set, in order, and what the script log says of the section. And what a person saw |
+
+Scenario 12 first: it says whether the scripts compile, whether the plugin's new records load, and whether everybody is there. If it does not pass there is little point in playing.
+
+New here and so never seen in the game: see "What the game has not been asked yet" in the design. In short: script properties that are lists; arrays made by a script; `EnableNoWait`, `RandomInt`, `EquipItem`; `ForceRefTo` for things; a placed actor that starts dead; the copies' looks, factions and temper; a placed book, weapon and container; activators with an item's model; a message box with buttons; and every record found by the name a player sees.
+
+What was checked on this side (none of it a compile or a game test): the build against eight stand-in masters with its read-back and its byte check (35 kinds of deliberate damage caught); scenario 12 on the stand-in engine, 42 of 42, with eight faults put in on purpose; every road through the chapter played by its buttons, 31 roads, compared with the logic model after every step; six faults put into the talk on purpose; the Windows scripts on a stand-in PC for both commands. An independent review was started and was cut off before it reported: it is still owed.
+
+Scenarios 11, 10 and 2 go along because their scripts changed after the fourteenth run (longer time limits; the experiment with four standing by at a killing, which has not run yet).
+
+### The fifteenth run, 2026-11-14: the first section of Act I in the game
+
+Commit `2675a33`. Scenarios 12, 11, 10, 2, unattended: **3 of 4 passed; 79 checks passed, 3 failed**, all three in scenario 12. Everything compiled, the two new scripts included, and the script log named no error of this project's in any of the four sessions.
+
+**Scenario 12: 39 of 42.** What the game showed for the first time, all as hoped:
+
+| Asked | The game's answer |
+|---|---|
+| Script properties that are lists of aliases (some of another quest) and lists of text; arrays made by a script | Work: the quest held all 26 references, and all 26 aliases of the two real quests held what was put into them |
+| `ForceRefTo` for a thing, and the game's own alias scripts on an alias filled that way | Work: the dispatch set stage 20, the ledger and journal the side quest's 10 and 13, the two boxes stages 30 and 40 |
+| A placed actor that starts dead, held by an alias | The marshal was dead when the section was set up |
+| `EnableNoWait` for thirteen people | All there together, 39.4 to 40.0 seconds after being asked for: side by side, not one after another |
+| The copies' looks, factions and temper | Twelve of thirteen stood exactly where they were placed. Nobody was in a fight: not when everybody was there, not after the player killed the Cutter lead with twelve standing by (three of them of his faction), not at the town gate |
+| The navigation mesh at each person's spot | Every spot is on it (the four furthest into the town a fraction of a unit above the floor) |
+| The road walked by its stages | Main quest 10, 20, 30, 31, 40, 50, 60, 100; side quest 5, 10, 13, 20, 14, 25, 41, 50, 100. The guard of amendment A24 acted once at the town gate ("waited 1 tenths of a second") |
+
+The three that failed, and what was done:
+
+1. **The second Cutter was 66 units from her spot**, 43 up and 50 to the side: something of the room's stands at 420 ahead, 60 to the left, and the game set her down on it. Moved to 560 ahead, 140 to the left, among three who stayed.
+2. **The revolver did not set stage 15**, and 3. **no rounds were given.** The game has no weapon a player sees under the exact name ".44 Pistol". The build went on to the next name and took the first of two "Pipe Revolver"s, which is a companion's (`CompValentinePipeRevolver`, firing `CompanionAmmo45Caliber`): `Activate` returned True and nothing was picked up. The builder now passes over weapons a player cannot have, looks for the record the game itself calls `44` when the name finds nothing, and lists the names near the one it was asked for. The scenario now also tries the second way of getting the revolver to the player, as it does for the dispatch.
+
+What the build found by the names a player sees: Folder, Hubcap, Connecting Rod, Clipboard, Hot Plate and Wooden Crate, each at the first try. The settler's list offers 44 settlers, 22 men and 22 women, so everybody has a face of their own. The papers take after `DN074_QuannapowittFlyer` (`Props\Note_LowPoly.nif`, the model of 117 of the game's 327 books). `Pipboy` is there. The package a person with none of its own runs is the game's `DefaultPackage`.
+
+One line of the report was nonsense and is put right: the distance to the dispatch was asked after it had been picked up.
+
+**Scenario 2: 15 of 15, and the experiment with four standing by.** A kill by the player with four of the game's settlers in the quest's aliases, there for three seconds: no fight, and none of the four in combat half a second later. With scenario 12 that makes five times the stand-in's rule about killings was wrong. What made case 129 of the eleventh run a fight is still not known; the stand-in now keeps the least rule that fits everything seen (five or more of the game's own actors standing by) and says it is kept only so that the eleventh run replays.
+
+**Scenarios 11 and 10: 8 of 8 and 17 of 17**, as before. `Enable` took 30.2 seconds for the first person of the plugin's own this time and 2.8 for the second (18.4 and 20.0 on 2026-11-13): it is not steady, and not explained.
+
+Not yet done: the section played by a person. Nothing by eye, no box with buttons, no paper read, no fight fought.
+
+### The sixteenth run, 2026-11-14: the first section of Act I passes
+
+Commit `3b28aae`, run on the owner's PC by a coordinator acting for the owner, ending 10:47. The report's SHA-256 is `08F72C0AE4BB03B8C63101724086FB61B813AE6B687782724050030C60565E1F`. Build, compile of all 16 scripts and install passed. Scenarios 12, 11, 10, 2, unattended: **4 of 4 passed; 82 checks passed, 0 failed** (42, 8, 17, 15). The script log named no error of this project's in any session. What the run had changed was put back.
+
+**Scenario 12: 42 of 42**, in 76 seconds. The two things changed after the fifteenth run, now seen in the game:
+
+| Changed | The game's answer |
+|---|---|
+| The second Cutter moved to 560 ahead, 140 to the left | She stayed: nobody was more than 64 units from where they were placed |
+| The revolver looked up by the name the game uses inside | The build found `44` (`0CE97D`), which a player sees as **".44"** (not ".44 Pistol"), firing `Ammo44` (`09221C`). In the game `Activate` on it returned True and **stage 15 was set by that pick-up**: the line for the second way of getting it to the player is not in the report, so that way was never taken. The player then had six rounds |
+
+So a weapon the plugin places can be picked up, the game's own script on an alias filled by `ForceRefTo` hears it, and the project's script on the first section's own alias hears it too (the rounds).
+
+The rest as in the fifteenth run: all 26 references held, all 26 aliases of the two quests filled, the marshal dead, nobody in a fight at any of the three points, every spot on the navigation mesh, the road walked by its stages (main quest 10, 20, 15, 30, 31, 40, 50, 60, 100; side quest 5, 10, 13, 20, 14, 25, 41, 50, 100), the guard of amendment A24 acting once at the town gate. The distance to the dispatch now reads 407 units. The thirteen people were there together after 25.2 to 26.7 seconds (39 to 40 in the fifteenth run).
+
+**Scenarios 11, 10 and 2: 8, 17 and 15**, as before. `Enable` took 26.0 seconds for the first person of the plugin's own and 1.1 for the second. Four standing by at a killing: no fight, again.
+
+**What this is and is not.** It is the unattended check passing in the game: what the plugin places is there, in the right aliases, and the chapter can be walked by its stages. It is **not a playtest**: nobody has looked at it, no box with buttons has opened in the game, no paper has been read, no fight has been fought, and none of what people say has been seen on a screen. Scenario 12 picks things up by script; that a person can pick up the revolver or the dispatch by hand has not been seen either, though the same pick-up by script worked.
+
+### The seventeenth run, 2026-11-14: all 65 scenarios, on the same commit
+
+Commit `3b28aae` again, nothing changed since the sixteenth run. Run on the owner's PC by the same coordinator acting for the owner, 10:50:31 to 11:40, 3,003 seconds, nobody at the keyboard. The report's SHA-256 is `F52E389F961FA62E3E9C140B1BAB85D89FC652F8776BF178384E32F56CCC3901`, checked against the file as it arrived. Build, compile (16 of 16 scripts, by the coordinator's reading of the build log) and install passed.
+
+| What | Result |
+|---|---|
+| **All 65 scenarios** | **Passed: 1,628 checks, 0 failed.** Scenarios 1 to 12: 288 checks. The main quest's matrix, 101 to 132: 856. The side quest's, 201 to 221: 484. Every session closed itself |
+| Errors and warnings naming this project in the game's script log | None, in each of the twelve sessions the report prints in full |
+| Put back after the run | The scenario number, the start-up command and the keep-running setting; the installed plugin identical to the build again |
+
+It is the first run of everything since the twelfth (62 scenarios, commit `11b92ad`), and the first with what the plugin places in it. What it adds to the sixteenth run is that the two quests' rules, played as the 53 cases of their test matrices, still hold in a plugin that now also carries the trial, the people trial and the first section of Act I: 26 placed references, thirteen people, a third quest that casts them into the two quests' aliases.
+
+**Scenario 4 was slow to start, and passed.** That session took 442 seconds; no other took more than 101, and the 64 others took 40 seconds each on average. The coordinator saw the game standing on its loading screen. The scenario itself, by the clock on its own lines, ran from 10:59:40 to 10:59:48 and gave 27 passed, 0 failed. The runner's limit for a session is 900 seconds and was not reached, so nothing was cut short and nothing was run twice. Why the game took seven minutes to load that once is not known. It is not a failure and not a timeout.
+
+**Scenario 12: 42 of 42 again**, in 79 seconds. `Activate` on the revolver returned True and stage 15 was set by that pick-up; the line of the second way of getting it to the player is again not in the report. Six rounds. The thirteen people were there together after 26.7 to 28.2 seconds. Stages in the same order as before. The guard of amendment A24 acted once at the town gate (a tenth of a second), as in the sixteenth run.
+
+**Scenario 11:** `Enable` took 10.4 seconds for the first person of the plugin's own and 9.3 for the second (26.0 and 1.1 an hour before, 30.2 and 2.8 before that, 18.4 and 20.0 on 2026-11-13). It is between one and thirty seconds, differently every time, and still not explained. **Scenario 2:** no fight with nobody, one or four standing by at a killing.
+
+**Timing.** Case 119: the evade timer ran out during a fight and started over (A2). Cases 129, 130 and 131: the Cutter lead was already dead, so a rescue and not an evasion (A24). Case 132: the two handlers overlapped and the guard waited four tenths of a second.
+
+**Two lines that came out as in the twelfth run and not as in the tenth and eleventh**, both reported and not scored. In scenario 4, straight after the town stage, the caravan master in an alias flagged Essential read as not Essential. In scenario 5 the fight did not make the ambush live within eight seconds and the case set the stage itself. Both depend on how fast the session runs; this was the session after the slow load and the one after it.
+
+**Against the stand-in engine.** The run is in `tools/papyrus_sim/game_runs.json`, taken from the report itself, and is replayed with the others. For all 65 scenarios the stand-in gives the same number of checks passed and failed, the same end, and for 60 of them the same guard lines and reported lines word for word. What is not compared is named there with its reason: the two lines above, the places and times in the game's test room (scenarios 10, 11, 12), and the tenth of a second at the town gate, which the stand-in does not produce. The sixteenth run's record now carries its timing lines as well, which had been left out of it.
+
+**Review.** The coordinator read the repair between `2675a33` and `3b28aae`, the set-up, the unattended check and the talk routes of `TLM:Act1Walk`, `TLM:Act1Talk`, the choice of weapon and ammunition, the actor templates and the runner's time limit and putting back, and found nothing that blocks. By the coordinator's own words that is a review of that scope, not a second reader's certification of all the code since the tag. The second reading of everything is still owed.
+
+**What this is and is not.** It is the scripted rules behaving in the game as predicted, in every scenario there is, on one commit. It is **not a playtest**, by a person or by an agent: nobody has looked at the first section, no box has opened in the game, no paper has been read, nothing has been picked up by hand, no fight has been fought. Scenario 900, which sets the section up for somebody to play, has never been started.
+
+### The first section set up for play, watched by an agent, 2026-11-14
+
+Not a scenario run and not a playtest. After the seventeenth run the coordinator started play mode (number 900) once, on the build already installed from `3b28aae`, with no pull and no rebuild, and had an agent that can see the screen watch it. Recorded here as the coordinator reported it; the runner's report and the screenshots are kept by the coordinator and were not seen by whoever wrote this entry. It is not in `tools/papyrus_sim/game_runs.json`, which holds scored runs taken from a report in hand.
+
+| What | As reported |
+|---|---|
+| When | 11:43:57 to 11:45:43, 106 seconds |
+| Set-up, from the script log | Began 11:44:19, complete 11:44:57: 38 seconds. Aliases left empty: 0. People not there: 0. Main quest at stage 10, side quest at stage 5 |
+| On the screen | The main quest's start, "Six Rounds to Mercy", and its first objective, "Find the marshal's dispatch case". People standing in the test room |
+| Also on the screen | A large globe that belongs to the room stands near where the player arrives and hides much of the first view. Several black and yellow patches in the picture; what causes them is not established |
+| Keys and clicks sent by the agent | The console key, Escape and a click to give the window focus produced nothing that could be seen. Alt+F4 closed the game |
+| Afterwards | The settings changed for the session were put back; the installed plugin was identical to the build |
+
+**What it shows.** `TLM:Core`'s branch for 900 and `TLM:Act1Walk.Begin` run in the game: the section sets itself up for a player, complete, in 38 seconds, and the quest announces itself. Until now `Begin` had run only in the stand-in engine.
+
+**What it does not show.** Anything a player does. No key reached the game, so nobody walked, spoke to anybody, opened or answered a box, picked anything up, read a paper, made a choice or fought. No line of what people say has been on a screen. Whether the Pip-Boy was on the player's arm and whether the opening notice appeared was not looked at. It is an agent's look at the set-up, **not a person playing**, and item 3j below is still to do.
+
+**The runner's wording was wrong for this, and has been put right since.** In that run's report play mode is written `PLAYED` and the session is counted into "1 of 1 run: 1 passed", with 0 checks. Nothing was checked and nothing passed: the word meant only that the script log has the line saying the section was set up. That report stands as it was written. From the commit after this entry the runner writes `SET UP` or `NOT SET UP` for a play session, counts play sessions on a line of their own apart from the scored scenarios, adds no checks for them, and never counts a set-up as a pass; a run with a scored scenario and a play session (`12,900`) keeps the two apart. The counting is in `tools/win/Tlm.psm1` and is tested with stand-in logs by `tools/win/tests/Test-ScenarioReport.ps1`; the changed runner has been rehearsed on Linux against stand-ins for Mod Organizer and the game (a set-up alone, a scenario and a set-up, a set-up that did not happen, a failed scenario beside a set-up, a run in which the game never started). The test, as it stood then (81 checks), passed on the PC under Windows PowerShell 5.1.26100.9818 on 2026-11-14, run by the coordinator in a checkout of its own with no game started. The changed runner itself first ran on the PC in the eighteenth run, below, with a scored scenario; a play session has not yet been run with it there.
+
+**Do the scripts hold the player's controls?** No, as far as reading them can tell. Nothing in `scripts/Source/User/TLM/` calls `DisablePlayerControls`, makes an input layer, sets the player AI-driven or restrains the player. `Debug.SetGodMode` is in the drivers of the matrix cases and `SetRestrained` and `EnableAI` are used on a settler in scenario 11; none of those runs in play mode. The set-up opens no box: its opening line (`TLM_MSG_A1_Begin`) is a notice in the corner, and the first box comes only when the player activates somebody. For the session the runner changes two settings, the start-up console command and `bAlwaysActive=1` (the game keeps running without focus), and neither is about input. That Alt+F4 worked and the game's own keys did not would fit a game that does not read keys sent to it by another program the way it reads a keyboard, since closing a window is done by Windows and not by the game; that is a guess, not a finding, and nothing is changed on the strength of it. A person at the keyboard settles it.
+
+### Found in review, 2026-11-14: two ways the runner could report a success that was none
+
+Not a run. The coordinator had the runner for the PC, `tools/win/Run-Scenarios.ps1`, read by a second reader, who found two faults in how a run is judged. Both are older than the reporting of play sessions above, and both are put right in the same change.
+
+| The fault | What the runner did | What it does now |
+|---|---|---|
+| What the run changed is not put back | The scenario number in the installed plugin and the two settings of the test profile are put back at the end. When that failed, the report said `COULD NOT ...`, and the command still ended as a success if every scenario had passed. The same when the installed plugin was then not the same file as the build | Each thing is read back after it is written. If anything could not be put back, or the installed plugin is not the build, the run ends as failed whatever the scenarios did, the report says which, and the run's note of how things were is kept so that the next run tries again |
+| A scenario writes its RESULT line and then never closes the game | When the time ran out the runner closed the game, and then read the RESULT line and called the scenario `PASSED` | `TIMED OUT`. Its checks are counted as they were written; it is not a pass, and the run ends as failed |
+
+**No run on record is changed by this, and none is re-read as failed.** The one session the runner had to close (2026-11-12, the first unattended run) had written no RESULT line and was reported as not finished. In the sixteenth and seventeenth runs every session closed itself, scenario 4's slow one included, and the reports show everything put back and the installed plugin identical to the build.
+
+**How it was tried.** Not on the PC. With stand-in files, by `tools/win/tests/Test-ScenarioReport.ps1`: a stand-in plugin holding the global, a stand-in settings file, the run's note; a clean putting back, a plugin the number cannot be written into, a plugin that is gone, a settings file that cannot be written, an installed plugin that is not the build, each alone and each failing the run and keeping the note; a passing RESULT with a forced close. And with the real runner against stand-ins for Mod Organizer and the game, on Linux: the installed plugin damaged while the game ran, the settings file made unwritable while the game ran, the build changed, a game that wrote RESULT and stayed open, and the run after each, which put things back and removed the note. On the PC, under Windows PowerShell 5.1.26100.9818, the test with these cases in it passed on 2026-11-14: 130 checks, run by the coordinator in a checkout of its own, no game started. The runner itself first ran there in this form in the eighteenth run, below: a clean session, so the paths for a failed putting back and a forced close have still only run on stand-ins.
+
+**A third thing, small, from the same reading.** The run's totals took a run for complete when there were as many results as scenarios asked for. Two results for one scenario could then have stood in for a scenario that never ran. The runner's loop gives each scenario one result, so this could not happen as the runner is; the totals now require the results to be exactly the scenarios asked for, each once, and say which is missing, which is there twice and which nobody asked for. The ten checks for this passed on the PC as well, with the rest (140 in all), on the day of the eighteenth run.
+
+### The eighteenth run, 2026-11-14: scenario 12 once more, with the runner as changed in review
+
+Commit `9713676` of the branch `ci/portable-checks-2026-11-14`, run on the owner's PC by the coordinator, 13:59:50 to 14:01:08, nobody at the keyboard. The report's SHA-256 is `ED695A47701F97A2F46A2CF4875CA2E0D92C50ED8F650A52B7597C44268B10C9`, checked against the file as it arrived. The seventeenth run above, all 65 scenarios on `3b28aae`, stands as its own record and is not touched by this one.
+
+| What | Result |
+|---|---|
+| Build, compile, install | Passed. All 16 scripts compiled, by the coordinator's reading of the build log. The built plugin is byte for byte the one of the earlier runs (SHA-256 `08B33167694D791D8C24DF9E71115A5AE1E58E1E38542DE318980BA8CE57E841`, as the coordinator reports) |
+| **Scenario 12** | **Passed: 42 of 42**, in 78 seconds; the game closed itself. No error or warning naming this project in the script log |
+| The revolver | `Activate` returned True and stage 15 was set by that pick-up; the line of the second way of getting it to the player is not in the report. Six rounds |
+| The thirteen people | There together after 29.1 to 29.7 seconds |
+| The road | Stages as before: main quest 10, 20, 15, 30, 31, 40, 50, 60, 100; side quest 5, 10, 13, 20, 14, 25, 41, 50, 100. The guard of amendment A24 acted once at the town gate (a tenth of a second) |
+| Put back | The scenario number back to 0, the start-up command emptied, the keep-running setting back to 0, the installed plugin identical to the build; the command ended with 0 |
+| `tools\win\tests\Test-ScenarioReport.ps1` | 140 checks passed under Windows PowerShell 5.1.26100.9818, as the coordinator reports |
+
+**What is new in it.** Nothing the game loads differs in behaviour from the sixteenth and seventeenth runs: the scripts at this commit are those of `3b28aae` with corrected header notes, and the plugin is the same file. What is new is the runner. This is the first session on the PC run by `Run-Scenarios.ps1` as it is after the review of 2026-11-14: its totals read "Scored scenarios: 1 of 1 run: 1 passed, 0 did not. Checks: 42 passed, 0 failed.", and what it changed was put back by the function that now reads each thing back and compares the installed plugin with the build. It is also the first compile and run of the scripts with their corrected header notes; the earlier caution that a compile of them might differ from the tested files in that text is settled by their having run.
+
+**What it does not show.** The runner's other paths on the PC: a play session in the new words, a putting back that fails, a session it has to close. Those have run with stand-in files there (the 140 checks) and against stand-ins for Mod Organizer and the game on Linux, not in a real session. And as before: **nobody has played the section**. No box, no paper, no pick-up by hand, no fight.
+
+**In the record.** `tools/papyrus_sim/game_runs.json` holds the run, taken from the report itself, and it is replayed. The scored results, the stages and the way the session ended agree with the stand-in; the places and times in the game's room and the tenth of a second at the town gate are named there as not compared, with the reasons. The run was made on a branch whose commits may get new names when it is merged, so the record also names `52c97c8`, the commit of the main line that holds the very same scripts, and the replay reads them from there.
+
+### Playtest feedback from the owner, 2026-11-14: "unclear what to do"
+
+Feedback from a person, and one play session's log. Not a scored run, not manual QA: in play mode (number 900) nothing is checked, and nobody else watched. It is kept apart from the unattended runs above, none of which it changes.
+
+**What the owner reported.** That they tried the section, that it was unclear what to do, and that a cue to look around on the ground, to investigate, would help (issue 3). Nothing more: no account of what was done or seen.
+
+**What the runner's report holds.** Its SHA-256 is `FE89CE4B13298238EE28430A4FE14124791D6112FDBB38B31BBC61BD42A3337F`, checked against the file as it arrived.
+
+| What | In the report |
+|---|---|
+| Build | The development branch at `0cfe4ee`; plugin build, script compile and install passed |
+| When | Began 15:52:28; the play session lasted 273 seconds |
+| Totals | "Scored scenarios: none were asked for. Checks: 0 passed, 0 failed." One play session started, one set up: `900  SET UP`, with no numbers of checks. `SET UP` is not a pass |
+| Set-up, from the script log | Began 15:52:48, complete 15:52:54. Aliases left empty: 0. People not there: 0 |
+| Stages recorded, in order | Main quest 10, 40, 34. Side quest 5, 12, 11, 10, 20, 13, 25, 14, 41, 50, 100 |
+| Not recorded | Main quest stage 20, which the dispatch being picked up sets, and stage 15, which the revolver being picked up sets |
+| Errors and warnings naming this project | None; the script log had 1,163 lines |
+| Put back | The scenario number, the start-up command, the keep-running setting; installed plugin identical to the build |
+
+**What may be read from the stages, and with what warrant.** Only this is fact: the game's script log recorded those stages in that order, and recorded no stage 20. Everything beyond it is inference from the design. By the design the side-quest stages are the ones set by examining the draw-bar and the brake shoes (12, 11), by the ledger and the journal coming into the player's hands (10, 13), by an answer in Ada Pike's box (14) and by the report to Owen Pritchard (41), after which the quest completes (50, 100); main-quest stage 40 is the town reached and 34 the ambush never met. That reading is consistent with the stages, and the stand-in engine, given those actions, sets the same stages in the same order. But nobody watched the session, the owner's report does not describe these actions, and a stage can also be set in other ways (the console, for one). So **no interaction is verified by this**: not that anything was seen, picked up by hand, read, or answered, and not that the side quest was played through. Item 3j below stays open.
+
+**A hypothesis for the next play, not a finding.** If the reading above is right, the journal, which lies some sixty units from the dispatch, came into the player's hands, and the dispatch and the revolver beside the same body did not. That would fit unclear guidance, which is what the owner said; it would also fit those two things being hard to see where they lie (a folder and a revolver on the floor; the unattended check picks them up by script and so says nothing about whether they can be seen). Nothing was moved. Somebody should look for exactly this before anything is.
+
+**What was changed for the feedback** (task DEMO-ONBOARD-001, issue 3; amendment A26). Two texts and nothing else. The notice that comes up when everybody is there now reads "Look around the wreck to your left. Investigate the ground for the marshal's dispatch case and anything useful." (it named the three directions before). The main quest's first objective now reads "Investigate the wreck: search the ground for the marshal's dispatch case" (it read "Find the marshal's dispatch case"); its number, its target and the stages that display and complete it are as they were. That objective is the persistent one: it is flagged as displayed at stage 10 and completed at stage 20; completion does not clear its display flag. Whether it shows on the HUD depends on the quest being tracked, which the scripts do not set and no run has checked. Nothing is picked up for the player and no choice is added. In the stand-in engine the actions read from the stages above set the same stages in the same order for both quests, the objective is still flagged as displayed at the end, and the dispatch can still be fetched and handed over from there (`tools/papyrus_sim/test_act1.py`, `TheOpeningCue`). **The two new texts have not been seen in the game.** Whether a notice of 111 characters shows whole at the edge of the screen is not known (the one before had 97); the objective carries the instruction for that case.
+
+Each `[VERIFY]` tag in the v0.1 designs ends up in one of three states:
+
+- **Documented** — the wiki states it. Good enough to write code against; behaviour still has to be seen in the game.
+- **Corrected** — the wiki contradicts or improves on the v0.1 assumption. The amendment is in [DESIGN_AMENDMENTS_v0.2.md](DESIGN_AMENDMENTS_v0.2.md).
+- **Needs the game** — the wiki is silent, or the item is a fact about the installed build. Listed again at the end as the checklist for the game PC.
+
+Native signatures used by the scripts are recorded in [`tools/papyrus_natives.json`](../../tools/papyrus_natives.json) with the page each came from, and are enforced by `tools/check_consistency.py`.
+
+## Papyrus
+
+| Item | State | What the wiki says |
+|---|---|---|
+| `StartTimer` / `OnTimer` on a quest script | Seen in the game | `Function StartTimer(float afInterval, int aiTimerID = 0)`, `Event OnTimer(int aiTimerID)`, members of ScriptObject. Starting a timer whose ID is already running resets it. Time only counts outside menus and follows the global time modifier (VATS, Jet). Quests and aliases cancel their timers when the quest stops. On 2026-11-12 a one-second timer fired, and a timer event was handled while another call into the same script was suspended. |
+| Do timers survive a save and load? | Needs the game | Not stated. The scripts do not rely on it: the evade timer and distance watch are re-armed on every load. |
+| `GlobalVariable.SetValue` | Documented | `SetValue(float)`, plus `SetValueInt(int)`, `GetValueInt()`, and `Mod(float)` which is thread-safe. The scripts use `Mod` for all increments. |
+| Quest stage fragments are unavoidable | Corrected | `Event OnStageSet(int auiStageID, int auiItemID)` exists on Quest and runs alongside any fragment. The scripts use it for everything, so there are no fragments (A12). |
+| `OnStageSet` for a stage with no item | Seen in the game | The wiki does not say. In the game on 2026-11-12, stages without an item were set and no event arrived (A22). With one item on every stage the event arrives, as item 0. |
+| `SetStage` waits for the stage's handler | Seen in the game | The wiki says it waits for the fragment "and event if any". In the game the handler had finished in 13 of 13 cases when `SetStage` returned, including stages set from inside a handler. |
+| An alias on the player receives `OnPlayerLoadGame` | Seen in the game | Once, on 2026-11-12, when a save was loaded. |
+| Setting a stage twice | Corrected | "SetStage has no effect after it is called the first time for any stage on a running quest" unless Allow Repeated Stages is on. v0.1's repeatable stage 15 (SQ01) and stage 900 could not work as written (A12, A15). |
+| Alias scripts before the quest starts | Corrected | Aliases receive their reference's events as part of a running quest. SQ01 must already be running for clue scripts to fire (A8). |
+| `OnContainerChanged` | Documented | `Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldContainer)`. Once an object is in a container it "ceases to exist in most cases". |
+| `OnTriggerEnter` | Seen in the game | `Event OnTriggerEnter(ObjectReference akActionRef)`. Can arrive out of order with `OnTriggerLeave`; the trigger's collision layer "(typically L_TRIGGER)" decides what fires it: "actors do, statics don't". On 2026-11-13 the player, moved into a placed box by script, set it off, on `L_TRIGGER` and on `L_ACTORZONE`: the game's default script on the trigger's alias set its stage. The game's own box triggers name no layer at all (405 of 407 looked at). *Needs the game:* a box of ours that names none; an actor other than the player. |
+| `Activate` | Documented | `bool Function Activate(ObjectReference akActivator, bool abDefaultProcessingOnly = false)`: "normal processing (i.e. picking up the object, opening the door, etc)"; returns whether that was performed. Scenario 10 uses it to have the player pick up a placed item. **Seen in the game** on 2026-11-13: True, and the player had the item, from 163 units away. |
+| `Quest.Start` | Documented | `bool Function Start() native`, latent: "will not return until the quest is actually started". Used by scenario 10 for a quest that is not Start Game Enabled. Until now every quest of the project was started by `SetStage`. **Seen in the game** on 2026-11-13: True, the quest running and its aliases filled at once. |
+| `GetTriggerObjectCount` | Seen in the game | How many things are inside a trigger; "will error otherwise". On 2026-11-13: 0 before the player was moved into each of three boxes, 1 after. Nothing loose was counted in those three spots. |
+| `GetParentCell`, `GetPositionX/Y/Z` | Seen in the game | The cell a reference is in; its position. On 2026-11-13 a placed item, a placed actor still disabled and the same actor enabled were all in the player's cell, and the positions were the ones the builder wrote. |
+| `Enable` on a placed settler | Seen in the game | Latent: "will wait for the enable to happen and 3d to load". On 2026-11-13 the placed copy of the game's settler was enabled and its 3D loaded, and it was then 489 units from where it had been placed. *Needs the game:* why, and what makes a placed person stay. |
+| `GetDisplayName` | Not usable | A script-extender (F4SE) function. The project uses no script extender, so the name an alias gives its reference cannot be read by a script. |
+| `OnDeath` | Seen in the game | `Event OnDeath(Actor akKiller)`, "when the actor finishes dying". `OnDying` fires at the start. On 2026-11-12 the scripts on two aliases received it for actors forced into them, with the killer passed to `Kill`. How long "finishes dying" takes is not fixed: about a second on 2026-11-12, well under a second on 2026-11-13 (two kills and both announcements within one second). |
+| `OnPlayerLoadGame` | Documented | Sent only to the player actor; fires "for the first time on the next load". An alias pointing at the player should receive it, since aliases get their reference's events. *That last step needs the game.* |
+| The player "in combat" after `Kill(player)` | Seen in the game, in part | Not on the wiki. With nobody else alive: not in combat, straight after the kill and after the death was announced (2026-11-13, scenario 2). With others standing by: only inferred. In the eleventh run (2026-11-12, case 129) the evade timer's function, called straight after `Kill` with the player named as killer, did not resolve the ambush and wrote no guard line; with five other actors alive it can only have found the player in combat. Two seconds after such a kill the player is out of combat (scenario 5). Asked outright in scenario 2 in the thirteenth run (2026-11-13), with one actor standing by: not in combat. But that actor had been made in the same breath as the killing, and one that was not there to see cannot be a witness. Asked again in the fourteenth run (2026-11-13) with the bystander, one of the quest's people, made three seconds before: still not in combat, then or two seconds later, and the bystander never. So one of the quest's people standing by does not make a kill a fight, and what did in case 129 (the number of them, who they were, or the ambush being live) is not known. *Needs the game:* the same with four standing by (scenario 2, part 4b), and whether `StopCombatAlarm` ends the fight if there is one. |
+| `OnCombatStateChanged` | Seen in the game, not dependable | `Event OnCombatStateChanged(Actor akTarget, int aeCombatState)`. On 2026-11-12, in three runs, an alias script received it, with the player as target, when `StartCombat(player)` was called on its actor. On 2026-11-13 the stage that event sets had not been set eight seconds after `StartCombat`, though the actor and the player were both in combat (scenario 5). Nothing in the quest may depend on it alone. |
+| `IsInDialogueWithPlayer` | Documented | `bool Function IsInDialogueWithPlayer() native`, a member of ObjectReference: "Is this actor or talking activator currently talking to the player?" Used by A25 on the Cutter lead's actor. **Seen in the game for the answer "no"** (2026-11-13): false for an actor nobody is talking to, in scenario 2 and in every case where the timer runs out. *Still needs the game:* that it answers "yes" for the whole of a conversation, which cannot be seen until there is one. |
+| `OnHit` | Documented | Needs `RegisterForHitEvent` first and fires once per registration. The scripts use `OnCombatStateChanged` instead. |
+| Distance polling | Corrected | `RegisterForDistanceGreaterThanEvent(ScriptObject, ScriptObject, float)` and `Event OnDistanceGreaterThan(...)` exist and the wiki recommends them over polling `GetDistance`. One event per registration; "if the objects are already that far apart, the event will be sent immediately". **Seen in the game** on 2026-11-12, all three statements. |
+| Calling an event like a function | Documented, not used | "Calling events is identical to calling a function." Nothing in the project relies on it: the evade timer's handler is a function of its own (`EvadeTimerElapsed`), which the timer event and the self-test both call. |
+| `Message.Show` return value | Documented | "If the message displays a message box to the user, it returns the button the user hit. If it doesn't, it will return -1 immediately." |
+| Does a hidden button shift the returned index? | Needs the game | Not stated. |
+| `RemoveItem` | Documented | `RemoveItem(Form akItemToRemove, int aiCount = 1, bool abSilent = false, ObjectReference akOtherContainer = None)`. |
+| `Kill`, protection | Documented | `Kill(Actor akKiller = None)`; `SetProtected(bool abProtected = true)`; `SetEssential` then overrides alias flags. Protected: "The Player is the only one allowed to kill a Protected Actor." |
+| Does `Kill` work on a Protected actor? | Seen in the game | Not stated on the wiki. In the game on 2026-11-12, for an actor in an alias flagged Protected: `Kill()` with no killer did nothing; `Kill(player)` killed; `SetProtected(false)` then `Kill()` killed. The scripts clear the flag first. |
+| `ForceRefTo` with an actor made by `PlaceAtMe` | Seen in the game | The alias holds the actor and its script receives the actor's events (2026-11-12). The alias's flags are not always in force the instant the call returns: on 2026-11-13 an actor just put into an alias flagged Essential reported `IsEssential` false straight afterwards; in four earlier runs it reported true. |
+| `MoveTo` | Seen in the game | Listed among the latent functions: the script is suspended until the game has moved the reference. On 2026-11-12, twice, a script that called it on a placed item with no model never continued; the second time nothing else was involved. On the game's plain marker it returns at once. **Nothing without a model may be moved by script** (A23). On the player (2026-11-13, five moves of about 640 units inside the test room): the player ends on the floor under the target, or on whatever stands there; and the call took between about a second and 38 seconds, for no reason that could be seen. A step that moves the player needs a generous limit. |
+| An alias flagged Essential | Seen in the game | The wiki's alias page is empty. In the game on 2026-11-12 the actor forced into such an alias reported `IsEssential()` = true and `Kill(player)` did not kill it. |
+| `IsDead()` straight after `Kill` | Seen in the game | True at once (2026-11-12), not only when the actor has finished dying. `OnDeath` still arrives later. |
+| `Debug` functions in the game | Seen in the game | The wiki calls them debug-only. `Trace`, `TraceUser`, `OpenUserLog` and `QuitGame` have visibly worked in game build 1.10.163 with the scripts compiled as they are. `SetGodMode` compiles and is called without an error; its effect has not been looked at. |
+| Removing an NPC without a dangling alias | Partly seen | `Disable()` is documented; the alias stays filled. In the game on 2026-11-12 `TryToDisable` left the aliased actor disabled, alive or dead. Whether anything is left dangling has not been looked at. |
+| Property flags | Documented | `Auto Const`, `Mandatory`, `AutoReadOnly`, and `Const` variables are all valid Fallout 4 Papyrus. |
+| Default scripts | Seen in the game, two of them | The base game ships `DefaultAliasOnContainerChangedTo`, `DefaultAliasOnTriggerEnter`, `DefaultAliasOnDeath`, `DefaultTopicInfoSetStage`, `DefaultShowMessageOnActivateAlias` and others, each taking a `StageToSet`. Pickups, triggers and dialogue can set stages with no project code. On 2026-11-13 the first two each set their stage, on aliases filled with references the plugin places. Their `ShowTraces` property is taken without complaint and writes nothing. |
+
+## Creation Kit
+
+| Item | State | What the wiki says |
+|---|---|---|
+| Quest Data labels | Documented | Priority, Event, Start Game Enabled, Run Once, Warn on alias fill failure, Allow repeated stages, Type. "If aliases fail to fill, the entire quest will fail." |
+| Quest type for SQ01 | Corrected | "Miscellaneous quests ... do not display objective descriptions and summaries" (A18). |
+| Stage and objective fields | Documented | Stage index 0–65535, log entries with Complete Quest / Fail Quest; objectives have an index, display text and alias targets. |
+| Alias flag labels and fill types | Needs the game | The wiki's alias page is empty. The flag names in the plugin come from the file format (Quest Object, Essential, Protected, Allow Dead, Allow Disabled, Optional). |
+| Message form | Documented | Message Box checkbox; Menu Buttons, each with its own conditions. No button limit is stated. "For Text Overrides, fill in the Title and leave the Message Text blank": that is how a message serves as the display name of an alias (`TLM_MSG_TrialPersonName`). *Needs the game, and a person to look.* |
+| A reference placed in a cell of the game by a plugin | Seen in the game | Not on the wiki. The plugin carries its own copy of the cell's record with its references under it; the layout is the library's, checked byte by byte against what is known of the format (`tools/check_plugin_layout.py`). On 2026-11-13 the game loaded it: a placed actor, three box triggers and an item were each where the builder had put them. Not opened in the Creation Kit. |
+| A forced-reference alias; Allow Disabled | Seen in the game | The wiki's alias page is empty. On 2026-11-13 five aliases each took the reference they are forced to, the one whose reference starts disabled among them; it has the Allow Disabled flag. *Needs the game:* whether it would fill without. |
+| Dialogue: four options, speech checks, unvoiced lines | Needs the game | The wiki has no usable dialogue pages. |
+| Papyrus compiler | Documented | `<game>\Papyrus Compiler\PapyrusCompiler.exe`; flags file `Institute_Papyrus_Flags.flg`; project files (`.ppj`) with import folders `Data\Scripts\Source\User` and `...\Base`. |
+| Unpacking the base script sources | Needs the game | Not described on the pages read. |
+| Loose files | Documented | Compiled scripts are ignored unless `Fallout4Custom.ini` has `[Archive] bInvalidateOlderFiles=1` and `sResourceDataDirsFinal=` (empty). |
+| Papyrus logging | Documented | `[Papyrus] bEnableLogging=1`, `bEnableTrace=1`, `bLoadDebugInformation=1`; log at `Documents\My Games\Fallout4\Logs\Script\Papyrus.0.log`. |
+| Where to get the Creation Kit | Needs the game | The wiki still describes the retired Bethesda.net Launcher. |
+
+## Console
+
+| Item | State | What the wiki says |
+|---|---|---|
+| `cqf` (CallQuestFunction) | Seen in the game | `CQF <quest> <function> [params]`. Missing parameters are filled with zero or None, not with the script's defaults. Worked on 2026-11-12 for a function on the second of two scripts on the quest. |
+| `sqv` (ShowQuestVars) | Documented | `SQV <QuestID> [filter]` shows variables, aliases and quest state. |
+| `coc` | Seen in the game | `coc qasmoke` typed at the main menu loaded the test room (2026-11-12). The same command given as `[General] sStartingConsoleCommand` in the profile's settings entered the room at start-up, with no key pressed. The player arrives exactly at the room's arrival marker (2026-11-13). |
+| `startquest`, `setstage`, `getstage`, `sqs`, `sqt`, `prid`, `kill`, `tgm`, `player.additem` | Needs the game | No page on the wiki. |
+
+## Checklist for the game PC
+
+1. Game build, Creation Kit build, install paths → `BUILD_ENV.md` (`tools/win/Get-BuildEnv.ps1`). **Done 2026-11-11.** The file stays on the PC (git-ignored); the facts the build depends on are in the tables above.
+2. Base script sources: where they are and how they unpack. **Done:** `Data\Scripts\Source\Base` in the Creation Kit folder.
+3. All scripts compile with the real compiler (`tools/win/Build-Scripts.ps1`). **Done 2026-11-11: 8 of 8**, again after the change to `TLM:Core`.
+3a. The plugin loads in the game and the core quest starts (`tools/win/Start-TestGame.ps1`). **Done 2026-11-12** on the second attempt.
+3b. Stage events reach the quest scripts and the self-test passes. **Done 2026-11-12: 60 of 60**, after a first run failed 34 because the stages had no items.
+3c. The self-test runs with nobody at the keyboard (`tools/win/Run-Scenarios.ps1`). **Done 2026-11-12: nine scenarios, 220 checks, 0 failed.**
+3d. The rows of the two test matrices that need no built place, save or dialogue, played in the game and compared with the logic model after every event. **Done 2026-11-12: 49 cases, 1,236 checks, 0 failed**, and again, with the four cases of the guards added (**53 cases, 1,340 checks, 0 failed**), in the eleventh and twelfth runs and in the seventeenth on 2026-11-14, in a plugin that by then also carried the first section of Act I.
+3e. The guards against late deaths and overlapping handlers (A24) in the game. **Done: all four cases.** 130, 131 and 132 on 2026-11-12 (the guard was seen to act; in 132 the overlap itself was seen). Case 129, the timer's path, on 2026-11-13 in the thirteenth run, with a death with nobody named as the killer: twice before something else had got there first (the fight rule on 2026-11-12, the death's announcement in the twelfth run). In the twelfth run the wait guard also acted in scenario 2, where nothing was arranged.
+3f. What the plugin itself places in a cell works in the game: a person, a trigger and an object in the test room, with aliases pointing at them (scenario 10, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md)). **Done 2026-11-13: 17 of 17**, for the trigger and the object without reservation. The person is there and can be enabled, but did not stay where it was placed.
+3g. A placed person who stays where the plugin puts it, and can be activated (scenario 11, [TLM_GRAYBOX_trial.md](TLM_GRAYBOX_trial.md), part two). **Done 2026-11-13: 8 of 8.** A person with no packages stands exactly where it is placed, and activating it reached the project's script on its alias. Open: why `Enable` takes as long as it does for such a person, and so unevenly: between 1 and 30 seconds in the four runs so far.
+3h. A trigger with no collision layer. **Done 2026-11-13**: both comparison triggers of scenario 10 set their stages.
+3i. The first section of Act I as the plugin places it: thirteen people, the things, the boxes, put into the two quests' aliases and walked once by their stages (scenario 12, [TLM_ACT1_first_section.md](TLM_ACT1_first_section.md)). **Done 2026-11-14: 42 of 42** in the sixteenth run, again in the seventeenth, the run of all 65 scenarios, and in the eighteenth, the first with the changed runner, after 39 of 42 in the fifteenth (a spot that was not open floor, and a revolver nobody can pick up; both put right).
+3j. The same played by a person (`tools\win\Play-Act1.ps1`): can everybody be seen and told apart, do the boxes open and their buttons do what they say, can the papers be read, does a fight stay between those it concerns. **Still to do.** The owner tried the section once on 2026-11-14 and reported that it was unclear what to do; that session's stage lists are under "Playtest feedback from the owner". They verify no interaction: none of these questions has been answered by somebody watching.
+4. The generated plugin opens in the Creation Kit without errors, and the quest, stages, aliases and script properties look as intended. Since the placed-content trial it also has a cell and references to look at.
+5. Vanilla EditorIDs: `Caps001` **done**; `PlayerRef` **done** (as record `000014`, vouched for by the game's own quests); the .44 revolver and its ammo **done 2026-11-14**: the weapon is `44` (`0CE97D`), which a player sees as ".44", and it fires `Ammo44` (`09221C`).
+6. Alias behaviour: Create Reference to Object — In (still to do); the Essential flag and the Protected flag (**done 2026-11-12** for kills by script, see the Papyrus table); alias on the player receiving `OnPlayerLoadGame` (**done 2026-11-12**).
+7. `Kill` on a Protected actor (**done 2026-11-12**); `Disable` on an aliased actor (**done 2026-11-12**).
+8. Message box with a hidden button: which index comes back.
+9. Distance events (**done 2026-11-12**). Timers and distance registrations across a save and load (still to do).
+10. Dialogue: option count, speech checks, unvoiced lines, and whether an actor in a hold-up will talk (A11).
+10a. Once the hold-up conversation exists: does `IsInDialogueWithPlayer` on the Cutter lead read true from the first line to the last, the player's turn to choose included (A25)? Stand in the conversation past the 90th second and look in the script log for `TLM_MQ01: A25 the evade timer ran out during the conversation`. The ambush still being live is not enough by itself: a fight gives the same (the log then says `A2`), and so would a timer that does not count while a conversation is open. Rows T29 and T29b.
+11. The remaining console commands.
