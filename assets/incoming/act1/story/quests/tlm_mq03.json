@@ -19,11 +19,11 @@
   {"n": 40, "set_by": "The courier reaching the long table. Armed only after the player has arrived on the camp-ground and been given the fair's choices; never fired from an unvisited map", "log": "A courier came across the meadow at a dead run with a tin case on her wrist. She was three steps from Pritchard when the shot came off the meeting shed roof."},
   {"n": 41, "set_by": "The button '(Search the roof and landing)'", "log": "You searched the meeting-shed roof and the river landing for the shooter's trail. A skiff was already pulling away in the distance."},
   {"n": 42, "set_by": "The button '(Stay with the courier)'", "log": "You stayed with her. She said: lights on Blackstone ridge. Trains on the dead line. Then a number, twice, and nothing else."},
-  {"n": 43, "set_by": "The button '(Stand between the rifles and the crowd)'", "log": "Brigg's line had their rifles up and four hundred people in front of them. You walked into the middle and stood there. Nobody fired."},
+  {"n": 43, "set_by": "Brigg accepting those limits after the public exchange, not merely the player's first click.", "log": "The delegates and local witnesses backed the Decoration Day truce. Brigg accepted a limited search instead of taking the camp-ground."},
   {"n": 44, "set_by": "The button '(Take the case and go)'", "log": "You cut the case off her wrist and went out through the burying ground while everybody was looking at the roof."},
   {"n": 50, "set_by": "Reaching the bell-rail on the meeting shed roof", "log": "One empty case, silver, standing on end on the bell-rail where it would be found. Edda Flint was already there. She put it on her string."},
   {"n": 60, "set_by": "Opening the tin case, alone or on Pritchard's desk", "log": "The courier's case holds a strip of brass punched with holes, a sketch of a ridge with lamps drawn on it, and one line of writing: a ledger number, in Silas Vane's hand."},
-  {"n": 70, "set_by": "Brigg's own order after the shot, with his demand and the chance to intervene shown to the player first. Never set because the player was elsewhere. Not set if stage 43 is", "log": "The Dominion holds the camp-ground. Brigg says it is for the public safety and will be for as long as the public is unsafe."},
+  {"n": 70, "set_by": "Brigg's own order after the shot. Brigg's living presence, the visible demand (the line brigg_demand) and a real response opportunity are prerequisites. Never set because the player was elsewhere. Not set if stage 43 is", "log": "The Dominion holds the camp-ground. Brigg says it is for the public safety and will be for as long as the public is unsafe."},
   {"n": 100, "set_by": "Pritchard reading the line in the case, or the player reading it if the case was taken", "log": "Pritchard read the number twice and sat down. He has eaten supper with Silas Vane for twenty years.", "completes": true}
  ],
  "objectives": [
@@ -36,7 +36,7 @@
   {"at": 40, "options": [
    {"label": "(Search the roof and landing)", "sets": 41, "now": "A silver case on the bell-rail and evidence of a prepared escape. No promised chance to catch or kill a target who is made invulnerable.", "later": "You have useful observations of the route. Flint is willing to compare evidence. The crowd is left to Brigg."},
    {"label": "(Stay with the courier)", "sets": 42, "now": "You hear her last words and keep the case out of other hands", "later": "You alone know the number she carried in her head as well as on paper. The shooter is a rumour"},
-   {"label": "(Stand between the rifles and the crowd)", "sets": 43, "now": "Brigg's men lower their rifles. He does not take the camp-ground", "later": "The valley remembers who stood there. So does Brigg. The case may be in anybody's hands by nightfall"},
+   {"label": "(Call the delegates to uphold the truce)", "now": "The player asks living delegates and local officers to challenge Brigg's occupation claim in public. The supporting dialogue is shown; this is not a body-block against automatic rifles.", "later": "Brigg accepts a limited local search under public witnesses and holds back the occupation. The truce, not the player's immunity to bullets, is the reason."},
    {"label": "(Take the case and go)", "sets": 44, "now": "You have the case and nobody knows it", "later": "Every flag wants what you carry. You can sell it, read it or burn it. Pritchard learns who took it"}
   ]}
  ],
@@ -51,12 +51,12 @@
   "Stay with the courier and carry what she said to Pritchard.",
   "Take the case and read it alone; the chapter completes on reading the line."
  ],
- "cannot_break": "Arm the courier scene after the player arrives and has been given the fair's choices. Do not fire the shot from an unvisited map or auto-occupy because the player was elsewhere. Brigg's occupation is his decision, distinct from arranging the assassination; the demand and opportunity to intervene must be visible. Do not impose chapter-long immunity on every interactable delegate as an unexplained substitute for a fallback design. If Pritchard is absent the case is opened by Talbot.",
+ "cannot_break": "Arm the courier scene after the player arrives and has been given the fair's choices. Do not fire the shot from an unvisited map or auto-occupy because the player was elsewhere. Brigg's occupation is his decision, distinct from arranging the assassination; the demand and opportunity to intervene must be visible. Do not impose chapter-long immunity on every interactable delegate as an unexplained substitute for a fallback design. Brigg's living presence, the visible demand and a real response opportunity are prerequisites to occupation70. Never populate support with dead/absent delegates. If Brigg is dead/absent, do not silently invent a replacement commander or set his occupation order. If witnesses/authority needed for the truce route are unavailable, preserve the other three courier choices and return the exact technical fallback for review; do not force43 or impose whole-cast immortality. If Pritchard is absent the case is opened by Talbot.",
  "new_flags": [
   {"name": "beef_won", "meaning": "The player won the beef shoot"},
   {"name": "saw_the_shooter", "meaning": "The player observed a distant departing figure and the prepared route, not a confirmed face or identity."},
   {"name": "courier_heard", "meaning": "The player heard the courier's last words"},
-  {"name": "crowd_spared", "meaning": "The player stood between Brigg's rifles and the crowd; the Dominion did not take the camp-ground"},
+  {"name": "crowd_spared", "meaning": "Living witnesses and local authority secured a limited search instead of Dominion occupation during this scene; no general immunity or guarantee of all civilians' survival."},
   {"name": "case_taken", "meaning": "The player took the courier's case for themselves"},
   {"name": "brigg_holds_fair", "meaning": "The Dominion has occupied the camp-ground and has not left"},
   {"name": "flint_talks", "meaning": "Edda Flint is willing to compare evidence with the player"}
@@ -64,8 +64,11 @@
  "open_questions": [
   "Resolved 2026-11-16: the assassin is a distant departing figure only; no close cameo, no name, and no chase that cannot be won (decisions 4 and 21).",
   "Resolved 2026-11-16: every recognition cue is deferred (decision 5).",
-  "UNREVISED, needs text from Iris: stage 43, its choice and Brigg's reply still have the player stand in front of the rifles, which decision 18 rules out.",
-  "Not yet authored, returned to Iris: the visible demand Brigg makes before occupying the camp-ground.",
-  "Not yet designed: what happens if a delegate is attacked or killed at the fair. The supplied rule forbids blanket immunity as the substitute."
+  "Resolved by packet 2: the truce is called for in public and spoken by the living; Brigg's order is a line of his own; stage 43 is his concession, not the player's click.",
+  "Open, returned for review: the truce is offered only when Whitcomb, Belden and Grey are all alive and either Pritchard or Talbot is. With any of them dead the other three courses remain and the truce is not offered. What a truce with fewer voices looks like is not written.",
+  "Open, returned for review: with Brigg dead there is no order and so no line that carries the three remaining courses. The format has no narrator to carry them.",
+  "Unresolved runtime mapping: brigg_demand has to be put on the screen after the shot. In this format a boxed line is said only when its speaker is spoken to.",
+  "Unresolved: 'present' cannot be asked. A condition can ask whether a person is alive, not whether they are on the camp-ground.",
+  "WITHHELD: packet 2's text for whitcomb_rates uses the word 'charter', which no line of Act I may use. The line is as it was."
  ]
 }
