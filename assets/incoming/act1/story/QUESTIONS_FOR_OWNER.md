@@ -1,5 +1,7 @@
 # Questions for the owner
 
+**Resolution, 16 November 2026:** the owner delegated these decisions to the creative team. The adopted answers are in [the canon decision amendment](../../../../docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md). The original questions below are preserved as proposal history. The submitted JSON still needs the required writing/continuity revisions before it is accepted for construction.
+
 Everything in this folder that is yours to decide. Nothing here is canon until you say so, and nothing is built from a file you have not accepted. Start with the five under "Decide first": the rest follow from them.
 
 ## Decide first

@@ -1,5 +1,7 @@
 # Story material for Act I, waiting to be taken in
 
+**16 November creative decision update:** [the canon amendment](../../../../docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md) resolves the proposal's owner questions under delegated creative authority. The JSON below is still the original, unaccepted writing proposal; revise its recognition, names, causality, choice labels and outcome rules before construction. No new chapter is implemented by this decision pass.
+
 Characters, quests, talk and papers written outside the repository. The format is
 [docs/design/STORY_INTAKE.md](../../../../docs/design/STORY_INTAKE.md); a worked example is in
 `docs/design/story_intake_example/`.
