@@ -165,6 +165,17 @@ class DeathAcknowledgment(unittest.TestCase):
         self.assertEqual(p.g('TLM_G_Rep_MercyCrossing'),before+1)
         self.assertFalse(p.s.invoke('TLM_MQ01','DeliveryAcknowledged',[]))
 
+    def test_overlapping_owned_delivery_calls_commit_reward_once(self):
+        p=self.person();self.rapid(p);s=p.s;i=self.inst(p)
+        before=p.g('TLM_G_Rep_MercyCrossing')
+        i.vars['deliveryrequestedhere']=True;s.quests['TLM_MQ01'].done.append(50)
+        s.native_delay=.01
+        for _ in range(3):s.spawn(s.call(i,i.script.functions['applydelivered'],[]),'overlapping owned delivery')
+        s.run(s.now+15)
+        self.assertEqual(p.g('TLM_G_Rep_MercyCrossing'),before+1)
+        self.assertEqual(p.has(s.forms['TLM_MISC_Dispatch']),0)
+        self.assertTrue(s.invoke('TLM_MQ01','DeliveryAcknowledged',[]))
+
     def test_late_ack_of_replaced_actor_does_not_resume_wrong_caravan(self):
         p=self.person(None);self.rapid(p)
         q=p.s.quests['TLM_MQ01'];next(a for a in q.aliases.values() if a.name=='CaravanDrover').ref=None
