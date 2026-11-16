@@ -44,8 +44,10 @@ class DemoGuide(unittest.TestCase):
         p.press('Dispatch', events=['take_dispatch'])
         before = list(p.s.quests['TLM_MQ01'].done)
         text = self.read(p, 'GuideWreck')
-        self.assertIn('marked route', text)
-        self.assertIn('eastern marked route bypasses', text)
+        self.assertIn('timber gateway', text)
+        self.assertIn('wooden road posts', text)
+        self.assertIn('keep east', text)
+        self.assertNotIn('marked route', text)
         self.assertNotIn('timber posts', text)
         self.assertEqual(p.s.quests['TLM_MQ01'].done, before)
 
