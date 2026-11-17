@@ -2079,7 +2079,7 @@
     },
     {
       "record": "TLM_MSG_FF_Shot",
-      "text": "[Staged shooting representation]\n\nJuno and her original case have reached the courier station. This notice represents the shot and wound; no firearm effect or forced death is claimed.",
+      "text": "[Staged shooting representation]\n\nJuno is at the courier station. Keep the original case where it is, including in your custody. This notice represents the shot and wound; no firearm effect or forced death is claimed.",
       "buttons": [
         "Witness the staged scene",
         "Pause the scene"
@@ -2446,5 +2446,12 @@
       32
     ],
     "approach": "192-unit upright clearance sampled from4000,3100to3920,3100; east of the unchanged yard fence. Full actual-master scenery AABBs remain a packaging gate, no native collision/walking claim."
+  },
+  "sceneRecovery": {
+    "evidence": "Same immutable original beside original Juno on ordinary ground OR actually held by captured/current player",
+    "ack": "Explicit Ready plus current Shot/DeadCourier acknowledgement; no40/44/60 from pickup",
+    "guard": "Captured original/Juno/player/holder; container read after native context reads, generation last at display and commit",
+    "inventory": "No operation added; held reference not enabled/reissued/moved/dropped",
+    "scope": "F1 consolidated order; no accepted NPC words or source IDs changed"
   }
 }

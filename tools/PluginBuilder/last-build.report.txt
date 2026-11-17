@@ -2165,7 +2165,7 @@ The four offer stations are available. Start the staged courier encounter now? Y
           button 1: "Not yet"
   000C83  TLM_MSG_FF_Shot  [box]  "[Staged shooting representation]
 
-Juno and her original case have reached the courier station. This notice represents the shot and wound; no firearm effect or forced death is claimed."
+Juno is at the courier station. Keep the original case where it is, including in your custody. This notice represents the shot and wound; no firearm effect or forced death is claimed."
           button 0: "Witness the staged scene"
           button 1: "Pause the scene"
   000C84  TLM_MSG_FF_DeadCourier  [box]  "[Courier found dead]

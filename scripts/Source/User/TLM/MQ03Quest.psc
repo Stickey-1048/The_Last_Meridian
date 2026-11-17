@@ -286,9 +286,10 @@ bool Function RecordOpportunities(int capturedEpoch)
 	Return true
 EndFunction
 
-bool Function BeginEncounter(Actor courier, ObjectReference original, int capturedEpoch)
+bool Function BeginEncounter(Actor courier, ObjectReference original, Actor player, int capturedEpoch)
 	bool eligible = GetStageDone(10) && !GetStageDone(40) && opportunitiesShown && courier && original && !courier.IsInCombat() && !courier.IsInDialogueWithPlayer() && !courier.IsInScene() && Local() && At(Game.GetPlayer(),courier,2048.0)
-	If !eligible || original != originalCaseIdentity || Person(8) != courier || Alias_OriginalCase.GetReference() != original || capturedEpoch != generation
+	bool currentPlayer = player && !player.IsDead() && !player.IsInCombat() && !player.IsInScene() && player == playerIdentity && player == Game.GetPlayer() && Alias_Player.GetActorReference() == player
+	If !eligible || !currentPlayer || original != originalCaseIdentity || Person(8) != courier || Alias_OriginalCase.GetReference() != original || capturedEpoch != generation
 		Return false
 	EndIf
 	If sceneArmed
@@ -300,9 +301,28 @@ bool Function BeginEncounter(Actor courier, ObjectReference original, int captur
 	Return true
 EndFunction
 
-bool Function FinishEncounter(Actor courier, ObjectReference original, bool foundDead, int capturedEpoch)
-	bool eligible = sceneArmed && !GetStageDone(40) && Local() && courier && original && !courier.IsDisabled() && !courier.IsInCombat() && !courier.IsInDialogueWithPlayer() && !courier.IsInScene() && courier.IsDead() == foundDead && !original.IsDisabled() && At(Game.GetPlayer(),courier,2048.0) && At(original,courier,128.0) && !original.GetContainer()
-	If !eligible || courier != sceneCourier || original != sceneCase || Person(8) != courier || Alias_OriginalCase.GetReference() != original || capturedEpoch != generation
+bool Function EncounterContext(Actor courier, ObjectReference original, Actor player, ObjectReference holder, bool foundDead, int capturedEpoch)
+	; Only the captured original on ordinary ground or held by this player.
+	; No inventory operation, base copy, acquisition credit or inferred shot.
+	bool eligible = sceneArmed && !GetStageDone(40) && Local() && player && !player.IsDead() && !player.IsInCombat() && !player.IsInScene() && player == playerIdentity && player == Game.GetPlayer() && Alias_Player.GetActorReference() == player && courier && !courier.IsDisabled() && !courier.IsInCombat() && !courier.IsInDialogueWithPlayer() && !courier.IsInScene() && courier.IsDead() == foundDead && At(player,courier,2048.0)
+	bool identities = courier == sceneCourier && original == sceneCase && original == originalCaseIdentity && Person(8) == courier && Alias_OriginalCase.GetReference() == original
+	bool custody = original != None
+	If holder
+		custody = custody && holder == player
+	Else
+		custody = custody && original && !original.IsDisabled() && At(original,courier,128.0)
+	EndIf
+	; Container is read after all yielding participant/identity/position reads.
+	; Generation is the final non-yielding check, including load during it.
+	custody = custody && original.GetContainer() == holder
+	If !custody || !eligible || !identities || capturedEpoch != generation
+		Return false
+	EndIf
+	Return true
+EndFunction
+
+bool Function FinishEncounter(Actor courier, ObjectReference original, Actor player, ObjectReference holder, bool foundDead, int capturedEpoch)
+	If !EncounterContext(courier,original,player,holder,foundDead,capturedEpoch)
 		Return false
 	EndIf
 	SetStage(40)

@@ -1534,6 +1534,7 @@ Function CourierScene(int capturedEpoch)
 	EndIf
 	Actor courier = Road().Person(8)
 	ObjectReference original = Ref(Alias_OriginalCase)
+	Actor player = Game.GetPlayer()
 	If !courier || !original || !LocalCurrent(Ref(Alias_Ready),capturedEpoch)
 		Return
 	EndIf
@@ -1542,14 +1543,19 @@ Function CourierScene(int capturedEpoch)
 	EndIf
 	; Before enabling, disabled original Juno still occupies her own placed
 	; station. Neither a replacement nor a dead actor is made to run or die.
-	If !Road().BeginEncounter(courier,original,capturedEpoch)
+	If !Road().BeginEncounter(courier,original,player,capturedEpoch)
 		Return
 	EndIf
 	courier.Enable()
-	original.Enable()
+	ObjectReference holder = original.GetContainer()
+	If !Road().BeginEncounter(courier,original,player,capturedEpoch)
+		Return
+	EndIf
+	If !holder
+		original.Enable()
+	EndIf
 	bool foundDead = courier.IsDead()
-	bool sceneHere = !courier.IsDisabled() && !original.IsDisabled() && Road().At(original,courier,128.0) && Road().At(Game.GetPlayer(),courier,2048.0)
-	If !sceneHere || courier != Road().Person(8) || original != Ref(Alias_OriginalCase) || !Road().Current(capturedEpoch)
+	If !Road().EncounterContext(courier,original,player,holder,foundDead,capturedEpoch)
 		Return
 	EndIf
 	int witnessed = -1
@@ -1558,7 +1564,7 @@ Function CourierScene(int capturedEpoch)
 	Else
 		witnessed = Shot.Show()
 	EndIf
-	If witnessed == 0 && Road().FinishEncounter(courier,original,foundDead,capturedEpoch)
+	If witnessed == 0 && Road().FinishEncounter(courier,original,player,holder,foundDead,capturedEpoch)
 		PresentCourses(capturedEpoch)
 	EndIf
 EndFunction

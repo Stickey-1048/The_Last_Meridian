@@ -12,6 +12,22 @@ class FourFlagsMutations(unittest.TestCase):
         except (AssertionError,SimError):return
         self.fail('actual behavior accepted the damaged source: '+old)
 
+    def test_held_scene_recovery_and_changed_custody_regressions_detect_broken_source(self):
+        from test_four_flags_recovery import pickup,retry
+        def recovery(scripts):
+            a=Fair(self,scripts=scripts);a.use('Ready',Ready=0,Shot=1)
+            original=pickup(a);retry(a)
+            self.assertIn(40,a.q.done);self.assertIs(original.container,a.s.player)
+            self.assertNotIn(44,a.q.done)
+        self.caught('MQ03Quest.psc','\t\tcustody = custody && holder == player\n','\t\tcustody = false\n',recovery)
+
+        def changed_holder(scripts):
+            a=Fair(self,scripts=scripts);a.use('Ready',Ready=0,Shot=1)
+            original=pickup(a)
+            a.hook('Shot',lambda:a.s.n_objectreference_additem(a.originals[0],None,original,1,True))
+            retry(a);self.assertNotIn(40,a.q.done);self.assertIs(original.container,a.originals[0])
+        self.caught('MQ03Quest.psc','\tcustody = custody && original.GetContainer() == holder\n','',changed_holder)
+
     def test_original_reference_effect_and_receipt_mutations_are_detected(self):
         def take(scripts):
             a=Fair(self,scripts=scripts);a.scene(3,Occupation=0,OccupationSeen=0,Take=0)
