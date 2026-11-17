@@ -189,6 +189,44 @@ class TheDeparture(Base):
         self.assertEqual(use(a, "Regulator", {"AskRegulator": [1]}), ["AskRegulator"])
 
 
+class TheWayHome(Base):
+    def test_not_arrived_at_mercy_completes_nothing(self):
+        """SEEDED: the move to Mercy does nothing. A road is complete when the player has left, not when
+        they asked to."""
+        a = at_the_cut(self)
+        a.billie("back")
+        a.refuse_call("moveto", "player")
+        self.assertEqual(use(a, "Exit", {"AskLeaveResolved": [0]}, more=LONG), ["AskLeaveResolved"])
+        self.assertEqual((a.where(), a.road.completed, 100 in a.road.done), (nm.YARD, False, False))
+        free(self, a, "a leaving not seen")
+        a.allow_calls()
+        a.leave()
+        self.assertTrue(a.road.completed)
+
+    def test_unanswered_or_stay_leaves_nobody(self):
+        for value in NO_ANSWER + (1,):
+            with self.subTest(answer=value):
+                a = at_the_cut(self)
+                a.billie("back")
+                a.box_returns(G + "AskLeaveResolved", value)
+                use(a, "Exit")
+                closed(a)
+                self.assertEqual((a.where(), a.road.completed), (nm.YARD, False))
+
+    def test_the_fall_catcher_sets_the_player_back_and_records_nothing(self):
+        a = at_the_cut(self)
+        before = a.facts()
+        a.s.answers = {G + "NoteFall": [0]}
+        fall = a.s.placed[R + "Fall"]
+        a.s.player.pos = (3500.0, 300.0, fall.pos[2])               # SEEDED: off the edge and down into the box
+        a.s.check_triggers()
+        a.p.pause(3.0)
+        self.assertEqual(a.s.messages_shown[-1], G + "NoteFall")
+        self.assertEqual(a.where(), nm.CUT)
+        self.assertTrue(a.player_at("CutArrival"))
+        self.assertEqual(a.facts(), before)
+
+
 class TheRun(Base):
     def test_the_cargo_not_seen_delivered(self):
         """SEEDED: the delivered cargo does not come on. The player is at the platform; no mail got through."""
@@ -866,11 +904,10 @@ class Idempotency(Base):
     def test_two_uses_at_once_are_one(self):
         """SEEDED: a second activation arrives while the first one's box is open."""
         a = at_the_cut(self)
+        a.s.activate_event_delay = 0.0                              # SEEDED: heard at once, under the open box
         said = use(a, "Dole", SELL, also=("DoleShare", lambda: a.s.press_activate(R + "Regulator")))
-        self.assertEqual(said[:3], ["DoleSermon", "DoleShare", "NoteSold"])
-        # The second one is either dropped (the first still held the claim) or taken after it, when there is
-        # nothing left to do with the train. It never runs beside the first.
-        self.assertIn(said[3:], ([], ["NoteTrainNothing"]))
+        # The second one is dropped: the first holds the claim. It never runs beside the first.
+        self.assertEqual(said, ["DoleSermon", "DoleShare", "NoteSold"])
         self.assertEqual((a.count(a.caps) - a.caps_before, a.asked["caps"], a.g("Outcome")), (150, 1, 43))
 
 

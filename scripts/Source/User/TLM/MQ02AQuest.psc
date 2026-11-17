@@ -353,7 +353,7 @@ int Function PendingAtYard()
 	Return YardPending
 EndFunction
 
-int Function Mark()
+int Function RoadMark()
 	{The road's exclusive state as one number: the course claimed and recorded,
 	the mail, the train, what is pending, whether the road is complete. Read
 	before a box and again after it: two readings that differ mean that

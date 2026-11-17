@@ -817,13 +817,13 @@ Function BackToYard(TLM:MQ02AQuest akRiver)
 	If !yard
 		Return
 	EndIf
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	If ShowBox(AskBackToYard) != 0
 		Return
 	EndIf
 	Actor player = Game.GetPlayer()
 	yard = Piece(Alias_YardArrival)
-	If !player || !yard || !akRiver.RoadOpen() || akRiver.Mark() != mark
+	If !player || !yard || !akRiver.RoadOpen() || akRiver.RoadMark() != mark
 		Return
 	EndIf
 	player.MoveTo(yard)
@@ -880,7 +880,7 @@ Function Gate(TLM:MQ02AQuest akRiver, int aiGreet)
 	{Her gate greeting and the job. Its buttons are put back into the places of
 	the plain greeting's: 0 the job, 1 who chalks the hymns, 2 who passes the
 	trains, 3 not tonight.}
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	int pick = -1
 	If aiGreet == NM_GREET_ALERTED
 		pick = ShowBox(SayLockridgeGateAlerted)
@@ -896,13 +896,13 @@ Function Gate(TLM:MQ02AQuest akRiver, int aiGreet)
 		If !Said(SayLockridgeGateA)
 			Return
 		EndIf
-		If !akRiver.RoadOpen() || akRiver.Mark() != mark || !akRiver.LockridgeCanSpeak()
+		If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !akRiver.LockridgeCanSpeak()
 			Return
 		EndIf
 		pick = ShowBox(SayLockridgeGateB)
 	EndIf
 	; Her question is answered to her: alive, present and in no fight after it as before it.
-	If !akRiver.RoadOpen() || akRiver.Mark() != mark || !akRiver.LockridgeCanSpeak()
+	If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !akRiver.LockridgeCanSpeak()
 		Return
 	EndIf
 	If pick == 0
@@ -949,7 +949,7 @@ Function AfterSale(TLM:MQ02AQuest akRiver)
 		ShowBox(NoteSaleStatus)
 		Return
 	EndIf
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	int pick = ShowBox(AskBillieReport)
 	If pick != 0
 		If pick == 1
@@ -957,7 +957,7 @@ Function AfterSale(TLM:MQ02AQuest akRiver)
 		EndIf
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || akRiver.Mark() != mark || !akRiver.BillieReportDue()
+	If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !akRiver.BillieReportDue()
 		Return
 	EndIf
 	MoveBillie(akRiver, Alias_BillieYard)
@@ -1264,11 +1264,11 @@ Function AtDepart(TLM:MQ02AQuest akRiver)
 			Return
 		EndIf
 		; Nobody at the yard can give it: the labelled way to take it on.
-		int mark = akRiver.Mark()
+		int mark = akRiver.RoadMark()
 		If ShowBox(AskBoard) != 0
 			Return
 		EndIf
-		If !akRiver.RoadOpen() || akRiver.Mark() != mark || !akRiver.BoardUnassigned()
+		If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !akRiver.BoardUnassigned()
 			Return
 		EndIf
 		go = akRiver.GoOffered()
@@ -1289,11 +1289,11 @@ Function Depart(TLM:MQ02AQuest akRiver)
 		Return
 	EndIf
 	If akRiver.Pending() != NM_SCENE_DEPART
-		int mark = akRiver.Mark()
+		int mark = akRiver.RoadMark()
 		If ShowBox(AskDepartScene) != 0
 			Return
 		EndIf
-		If !akRiver.RoadOpen() || akRiver.Mark() != mark || !Piece(Alias_CutArrival) || !Piece(Alias_Lanterns)
+		If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !Piece(Alias_CutArrival) || !Piece(Alias_Lanterns)
 			Return
 		EndIf
 		If !akRiver.BeginDepart()
@@ -1332,13 +1332,13 @@ Function Rejoin(TLM:MQ02AQuest akRiver, Message akAsk)
 	If !cut
 		Return
 	EndIf
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	If ShowBox(akAsk) != 0
 		Return
 	EndIf
 	Actor player = Game.GetPlayer()
 	cut = Piece(Alias_CutArrival)
-	If !player || !cut || !akRiver.RoadOpen() || akRiver.Mark() != mark
+	If !player || !cut || !akRiver.RoadOpen() || akRiver.RoadMark() != mark
 		Return
 	EndIf
 	player.MoveTo(cut)
@@ -1386,9 +1386,9 @@ Function AtTrain(TLM:MQ02AQuest akRiver)
 	If at == NM_AT_OPEN
 		InCut(akRiver, akRiver.BillieCanSpeak())
 	ElseIf at == NM_AT_CLEAR
-		int mark = akRiver.Mark()
+		int mark = akRiver.RoadMark()
 		int pick = ShowBox(AskAfterDefeat)
-		If !akRiver.RoadOpen() || akRiver.Mark() != mark
+		If !akRiver.RoadOpen() || akRiver.RoadMark() != mark
 			Return
 		EndIf
 		If pick == 0
@@ -1405,14 +1405,14 @@ Function InCut(TLM:MQ02AQuest akRiver, bool abHers)
 	{At the lanterns: run, get down, or back out. Billie's line if she is alive,
 	present and in no fight to say it; if not, this build's own box at the
 	regulator with the same three answers.}
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	int pick = -1
 	If abHers
 		pick = ShowBox(SayBillieInCut)
 	Else
 		pick = ShowBox(AskRegulator)
 	EndIf
-	If !akRiver.RoadOpen() || akRiver.Mark() != mark
+	If !akRiver.RoadOpen() || akRiver.RoadMark() != mark
 		Return
 	EndIf
 	If abHers && !akRiver.BillieCanSpeak()
@@ -1435,11 +1435,11 @@ Function Run(TLM:MQ02AQuest akRiver)
 		ShowBox(NoteSceneStuck)
 		Return
 	EndIf
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	If ShowBox(AskRunScene) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || akRiver.Mark() != mark || !Piece(Alias_PlatformArrival)
+	If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !Piece(Alias_PlatformArrival)
 		Return
 	EndIf
 	If !akRiver.BeginRun()
@@ -1491,11 +1491,11 @@ Function Reverse(TLM:MQ02AQuest akRiver)
 		ShowBox(NoteSceneStuck)
 		Return
 	EndIf
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	If ShowBox(AskReverseScene) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || akRiver.Mark() != mark || !Piece(Alias_YardFootplate)
+	If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !Piece(Alias_YardFootplate)
 		Return
 	EndIf
 	If !akRiver.BeginReverse()
@@ -1551,11 +1551,11 @@ Function Forward(TLM:MQ02AQuest akRiver)
 		ShowBox(NoteSceneStuck)
 		Return
 	EndIf
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	If ShowBox(AskForwardScene) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || akRiver.Mark() != mark || !Piece(Alias_PlatformArrival)
+	If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !Piece(Alias_PlatformArrival)
 		Return
 	EndIf
 	If !akRiver.BeginForward()
@@ -1599,11 +1599,11 @@ Function CarryBack(TLM:MQ02AQuest akRiver)
 		ShowBox(NoteSceneStuck)
 		Return
 	EndIf
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	If ShowBox(AskCarryBackScene) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || akRiver.Mark() != mark || !Piece(Alias_YardFootplate)
+	If !akRiver.RoadOpen() || akRiver.RoadMark() != mark || !Piece(Alias_YardFootplate)
 		Return
 	EndIf
 	If !akRiver.BeginCarryBack()
@@ -1642,11 +1642,11 @@ EndFunction
 bool Function StillHis(TLM:MQ02AQuest akRiver, int aiMark)
 	{After one of Dole's boxes: the player alive on a road that stands as it stood, and Dole alive,
 	present and in no fight to have said it.}
-	Return akRiver.RoadOpen() && akRiver.Mark() == aiMark && akRiver.DoleCanSpeak()
+	Return akRiver.RoadOpen() && akRiver.RoadMark() == aiMark && akRiver.DoleCanSpeak()
 EndFunction
 
 Function Sermon(TLM:MQ02AQuest akRiver)
-	int mark = akRiver.Mark()
+	int mark = akRiver.RoadMark()
 	int pick = ShowBox(SayDoleSermon)
 	If pick < 0 || pick > 3 || !StillHis(akRiver, mark)
 		Return

@@ -24,7 +24,7 @@ import copy
 import json
 import sys
 
-from sim import Actor, GlobalVariable, unwrap
+from sim import Actor, GlobalVariable, SimError, unwrap
 from test_sim import PLUGIN, ROOT, SCRIPTS
 from test_act1 import BRIEF_HUB, MSG, REF, Person
 
@@ -38,6 +38,13 @@ ROAD = "TLM_MQ02A"
 STAGE = "TLM_NM"
 CELL = "TLM_CELL_NightMail"
 OBJECTIVES = nm.OBJECTIVES
+
+# The scripts a Rider plays unless it is given others. A mutation trial points this at a changed copy, so
+# that the tests as they are written are what is asked whether they notice.
+SCRIPTS_NOW = SCRIPTS
+# A fight started again from every event the last start raised never ends. More calls than this in one
+# game is that, and stops the game at once.
+STORM = 400
 
 YES_NO = {True: 0, False: 1}
 INDEX = {
@@ -69,12 +76,12 @@ FLOORS = {nm.YARD: (-128, 1152), nm.CUT: (2944, 4736), nm.PLATFORM: (6016, 6784)
 
 
 class Rider:
-    def __init__(self, test, scripts=SCRIPTS, travel=True, finish=True, with_ledger=False, refuse=(), sheriff=True,
+    def __init__(self, test, scripts=None, travel=True, finish=True, with_ledger=False, refuse=(), sheriff=True,
                  person=None, sq01=None):
         """person: a first section already played to its end by another harness in the same session.
         sq01: how the side quest is to have ended, played for real before the road: "reported" or "sold"."""
         self.test = test
-        self.p = person or Person(test, scripts=scripts)
+        self.p = person or Person(test, scripts=scripts or SCRIPTS_NOW)
         self.s = s = self.p.s
         self.road = s.quests[ROAD]
         self.stage = s.quests[STAGE]
@@ -110,17 +117,24 @@ class Rider:
 
     # ---------------------------------------------------------------- set-up
     def finish_chapter(self, sq01=None):
-        """The first section, played to its end; and, if asked, the side quest ended for real through
-        Pritchard's own report box or Vane's offer, as test_act1.py plays them."""
+        """The first section, played to its end; and, if asked, the side quest ended for real, as
+        test_act1.py plays it: "reported" through Pritchard's own report box, "sold" by Vane's offer, "posted"
+        on the notice board naming the yard office."""
         p = self.p
         p.press("Dispatch", events=["take_dispatch"])
         if self.with_ledger:
             p.press("Ledger", events=["take_ledger"])
-            p.press("BrakeShoes", boxes={"TLM_MSG_E1": [0]}, events=["examine_e1"])
+            if sq01 in ("sold", "posted"):
+                p.press("Journal", events=["take_journal"])
+            else:
+                p.press("BrakeShoes", boxes={"TLM_MSG_E1": [0]}, events=["examine_e1"])
         p.to_town()
         if sq01 == "sold":
             p.press("Vane", {"VaneOffer": [0]}, ["sq_sell"])
-        p.hand_over("DebriefMissed", more=self.with_ledger and sq01 != "sold")
+        elif sq01 == "posted":
+            p.press("Pike", {"PikeBook": [0]}, ["pike_parts_book"])
+            p.press("NoticeBoard", boxes={"TLM_MSG_PublishChoice": [1]}, events=["sq_post_yard"])
+        p.hand_over("DebriefMissed", more=self.with_ledger and sq01 not in ("sold", "posted"))
         if sq01 == "reported":
             p.press("Pritchard", {"PritchardAfterAndMore": [1], "PritchardReported": [0]}, ["sq_report"])
         self.test.assertEqual(p.g("TLM_G_MQ01_Done"), 1)
@@ -138,6 +152,9 @@ class Rider:
         def wrapped(kind, native):
             def call(ref, context, *args):
                 key = (kind, s._whom(ref))
+                if len(self.calls) > STORM * 10 or len([c for c in self.calls if c[0] == "startcombat"]) > STORM:
+                    raise SimError("a storm of calls into the game: %d, %d of them StartCombat" % (
+                        len(self.calls), len([c for c in self.calls if c[0] == "startcombat"])))
                 if key in self.before_call:
                     self.before_call[key]()
                 left = self.refused_calls.get(key, 0)
