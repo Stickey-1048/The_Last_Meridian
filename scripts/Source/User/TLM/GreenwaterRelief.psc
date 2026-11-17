@@ -7,6 +7,7 @@ inventory-count reconciliation is claimed safe.}
 Quest Property TLM_MQ02B Auto Const Mandatory
 ReferenceAlias Property Alias_Stores Auto Const Mandatory
 ReferenceAlias Property Alias_Supply Auto Const Mandatory
+ReferenceAlias Property Alias_Player Auto Const Mandatory
 Form Property Corn Auto Const
 Form Property Caps Auto Const
 Message Property NotReady Auto Const
@@ -31,6 +32,7 @@ Message Property NoStock Auto Const
 Message Property ConfirmStep Auto Const
 Message Property StepDone Auto Const
 Message Property CompleteNotice Auto Const
+Message Property CompleteMenu Auto Const
 
 bool initialized = false
 int cargoUnitsAtStart = -1
@@ -51,6 +53,8 @@ int requestStep = 0
 int requestQuantity = 0
 int beforeFood = 0
 int beforeCaps = 0
+int observedFood = -1
+int observedCaps = -1
 Actor requestActor = None
 ObjectReference requestControl = None
 bool removalAsked = false
@@ -69,6 +73,9 @@ bool Function OpenControls(Quest akOwner, ObjectReference akStores, ObjectRefere
 		If !started || !IsRunning()
 			Return false
 		EndIf
+	EndIf
+	If !Alias_Player || Alias_Player.GetReference() != Game.GetPlayer() || !Game.GetPlayer()
+		Return false
 	EndIf
 	If controlsOwner && controlsOwner != akOwner
 		Return false
@@ -93,7 +100,7 @@ bool Function LocalControl(int aiKind, ObjectReference akControl)
 	ElseIf aiKind == 2
 		expected = Alias_Supply.GetReference()
 	EndIf
-	If !IsRunning() || !controlsOwner || !controlsOwner.IsRunning() || !expected || expected != akControl || expected.IsDisabled() || !player || player.IsDead() || player.IsInCombat()
+	If !IsRunning() || !controlsOwner || !controlsOwner.IsRunning() || !expected || expected != akControl || expected.IsDisabled() || !player || !Alias_Player || Alias_Player.GetReference() != player || player.IsDead() || player.IsInCombat()
 		Return false
 	EndIf
 	Return player.GetParentCell() == expected.GetParentCell() && player.GetDistance(expected) <= 256.0
@@ -157,19 +164,29 @@ int Function Box(Message akMessage)
 EndFunction
 
 Function Use(int aiKind, ObjectReference akControl)
-	If menuBusy || !LocalControl(aiKind, akControl)
+	If menuBusy
 		Return
 	EndIf
 	menuBusy = true
 	int useEpoch = loadEpoch
+	If !LocalControl(aiKind, akControl) || useEpoch != loadEpoch
+		If useEpoch == loadEpoch
+			menuBusy = false
+		EndIf
+		Return
+	EndIf
 	If !Initialize()
 		Box(NotReady)
 	ElseIf useEpoch != loadEpoch
 		; A pre-load activation cannot become fresh consent after resumption.
-		menuBusy = false
+		Return
 	ElseIf pendingOperation != 0
 		; Status is safe even when no new inventory/step request is allowed.
-		If Box(Blocked) == 0 && LocalControl(aiKind, akControl)
+		If Box(Blocked) == 0 && useEpoch == loadEpoch && LocalControl(aiKind, akControl)
+			ShowStatus(aiKind, akControl)
+		EndIf
+	ElseIf completionLatched
+		If Box(CompleteMenu) == 0 && useEpoch == loadEpoch && LocalControl(aiKind, akControl)
 			ShowStatus(aiKind, akControl)
 		EndIf
 	ElseIf aiKind == 2
@@ -191,17 +208,20 @@ Function Use(int aiKind, ObjectReference akControl)
 			EndIf
 		EndIf
 	EndIf
-	menuBusy = false
+	If useEpoch == loadEpoch
+		menuBusy = false
+	EndIf
 EndFunction
 
 Function ShowStatus(int aiKind, ObjectReference akControl)
-	If !LocalControl(aiKind, akControl)
+	int useEpoch = loadEpoch
+	If useEpoch != loadEpoch || !LocalControl(aiKind, akControl)
 		Return
 	EndIf
 	If !Status || Status.Show(stepIndex, Reserve(), Shortfall(), RemainingDemand(), donatedUnits) != 0
 		Return
 	EndIf
-	If !LocalControl(aiKind, akControl)
+	If useEpoch != loadEpoch || !LocalControl(aiKind, akControl)
 		Return
 	EndIf
 	int pick = -1
@@ -210,27 +230,36 @@ Function ShowStatus(int aiKind, ObjectReference akControl)
 	Else
 		pick = Box(ForecastNeeded)
 	EndIf
-	If pick == 0 && LocalControl(aiKind, akControl) && everShortfall
+	If pick == 0 && useEpoch == loadEpoch && LocalControl(aiKind, akControl) && everShortfall
 		Box(PastHunger)
 	EndIf
 EndFunction
 
-bool Function BeginRequest(int aiOperation, int aiKind, ObjectReference akControl, int aiQuantity)
+bool Function BeginRequest(int aiOperation, int aiKind, ObjectReference akControl, int aiQuantity, int aiEpoch)
 	{Single operation owner; intent and exact snapshots precede effects.}
-	If pendingOperation != 0 || uncertain || !initialized || !LocalControl(aiKind, akControl) || requestNonce >= 1000000
+	; No native calls between testing and claiming the persisted operation.
+	If pendingOperation != 0 || uncertain || !initialized || aiEpoch != loadEpoch || requestNonce >= 1000000
 		Return false
 	EndIf
 	pendingOperation = aiOperation
 	requestNonce += 1
-	requestEpoch = loadEpoch
+	requestEpoch = aiEpoch
 	requestStep = stepIndex
 	requestQuantity = aiQuantity
-	requestActor = Game.GetPlayer()
 	requestControl = akControl
-	beforeFood = requestActor.GetItemCount(Corn)
-	beforeCaps = requestActor.GetItemCount(Caps)
 	removalAsked = false
 	deliveryAsked = false
+	beforeFood = -1
+	beforeCaps = -1
+	observedFood = -1
+	observedCaps = -1
+	requestActor = Game.GetPlayer()
+	If !requestActor
+		BlockRequest()
+		Return false
+	EndIf
+	beforeFood = requestActor.GetItemCount(Corn)
+	beforeCaps = requestActor.GetItemCount(Caps)
 	If !RequestCurrent(aiOperation, aiKind)
 		BlockRequest()
 		Return false
@@ -239,13 +268,16 @@ bool Function BeginRequest(int aiOperation, int aiKind, ObjectReference akContro
 EndFunction
 
 bool Function RequestCurrent(int aiOperation, int aiKind)
-	Return pendingOperation == aiOperation && !uncertain && requestEpoch == loadEpoch && requestStep == stepIndex && requestActor == Game.GetPlayer() && LocalControl(aiKind, requestControl)
+	bool samePlayer = requestActor == Game.GetPlayer()
+	bool local = LocalControl(aiKind, requestControl)
+	; Native checks may yield. Epoch/owner facts are read LAST, after them.
+	Return pendingOperation == aiOperation && !uncertain && requestEpoch == loadEpoch && requestStep == stepIndex && samePlayer && local
 EndFunction
 
 Function BlockRequest()
 	uncertain = true
-	Debug.Trace("TLM_GW_Relief: BLOCKED request=" + requestNonce + " kind=" + pendingOperation + " step=" + requestStep + " quantity=" + requestQuantity + " beforeCorn=" + beforeFood + " beforeCaps=" + beforeCaps + " removalAsked=" + removalAsked + " deliveryAsked=" + deliveryAsked, 2)
-	If Game.GetPlayer() && !Game.GetPlayer().IsDead()
+	Debug.Trace("TLM_GW_Relief: BLOCKED request=" + requestNonce + " kind=" + pendingOperation + " step=" + requestStep + " quantity=" + requestQuantity + " actor=" + requestActor + " control=" + requestControl + " epoch=" + requestEpoch + "/" + loadEpoch + " beforeCorn=" + beforeFood + " afterCorn=" + observedFood + " beforeCaps=" + beforeCaps + " afterCaps=" + observedCaps + " removalAsked=" + removalAsked + " deliveryAsked=" + deliveryAsked, 2)
+	If requestEpoch == loadEpoch && Game.GetPlayer() && !Game.GetPlayer().IsDead()
 		Box(Unavailable)
 	EndIf
 EndFunction
@@ -296,7 +328,7 @@ Function Donate(ObjectReference akControl)
 	If !ConfirmDonate || ConfirmDonate.Show(quantity, clearDebt, 10 * quantity - clearDebt) != 0
 		Return
 	EndIf
-	If useEpoch != loadEpoch || stepIndex != oldStep || completionLatched || !LocalControl(1, akControl) || player != Game.GetPlayer() || player.GetItemCount(Corn) < quantity || donatedUnits > LIMIT_UNITS - 10 * quantity || !BeginRequest(1, 1, akControl, quantity)
+	If useEpoch != loadEpoch || stepIndex != oldStep || completionLatched || !LocalControl(1, akControl) || player != Game.GetPlayer() || player.GetItemCount(Corn) < quantity || donatedUnits > LIMIT_UNITS - 10 * quantity || !BeginRequest(1, 1, akControl, quantity, useEpoch)
 		Return
 	EndIf
 	If beforeFood < quantity
@@ -307,7 +339,9 @@ Function Donate(ObjectReference akControl)
 	requestActor.RemoveItem(Corn, quantity, true)
 	; Immediate bounded active-request receipt only: no poll/wait, later count
 	; inference, reissue or automatic load reconciliation.
-	If !RequestCurrent(1, 1) || requestActor.GetItemCount(Corn) != beforeFood - quantity
+	int foodAfter = requestActor.GetItemCount(Corn)
+	observedFood = foodAfter
+	If !RequestCurrent(1, 1) || foodAfter != beforeFood - quantity
 		BlockRequest()
 		Return
 	EndIf
@@ -317,8 +351,8 @@ Function Donate(ObjectReference akControl)
 		SetStage(20)
 	EndIf
 	MaybeComplete()
-	If LocalControl(1, akControl)
-		If Box(Donated) == 0 && completionLatched && LocalControl(1, akControl)
+	If requestEpoch == loadEpoch && LocalControl(1, akControl)
+		If Box(Donated) == 0 && requestEpoch == loadEpoch && completionLatched && LocalControl(1, akControl)
 			Box(CompleteNotice)
 		EndIf
 	EndIf
@@ -343,7 +377,7 @@ Function Shop(ObjectReference akControl)
 	If !LocalControl(2, akControl) || pendingOperation != 0
 		Return
 	EndIf
-	If purchasedThisStep > 20 || player.GetItemCount(Caps) < 20
+	If purchasedThisStep > 20 || player.GetItemCount(Caps) < 20 || player.GetItemCount(Corn) > 99990
 		Box(NoStock)
 		Return
 	EndIf
@@ -351,28 +385,32 @@ Function Shop(ObjectReference akControl)
 	If Box(ConfirmPurchase) != 0
 		Return
 	EndIf
-	If useEpoch != loadEpoch || stepIndex != oldStep || !LocalControl(2, akControl) || player != Game.GetPlayer() || purchasedThisStep > 20 || player.GetItemCount(Caps) < 20 || !BeginRequest(2, 2, akControl, 10)
+	If useEpoch != loadEpoch || stepIndex != oldStep || !LocalControl(2, akControl) || player != Game.GetPlayer() || purchasedThisStep > 20 || player.GetItemCount(Caps) < 20 || player.GetItemCount(Corn) > 99990 || !BeginRequest(2, 2, akControl, 10, useEpoch)
 		Return
 	EndIf
-	If beforeCaps < 20
+	If beforeCaps < 20 || beforeFood > 99990
 		pendingOperation = 0
 		Return
 	EndIf
 	removalAsked = true
 	requestActor.RemoveItem(Caps, 20, true)
-	If !RequestCurrent(2, 2) || requestActor.GetItemCount(Caps) != beforeCaps - 20
+	int capsAfter = requestActor.GetItemCount(Caps)
+	observedCaps = capsAfter
+	If !RequestCurrent(2, 2) || capsAfter != beforeCaps - 20
 		BlockRequest()
 		Return
 	EndIf
 	deliveryAsked = true
 	requestActor.AddItem(Corn, 10, true)
-	If !RequestCurrent(2, 2) || requestActor.GetItemCount(Corn) != beforeFood + 10
+	int foodAfter = requestActor.GetItemCount(Corn)
+	observedFood = foodAfter
+	If !RequestCurrent(2, 2) || foodAfter != beforeFood + 10
 		BlockRequest()
 		Return
 	EndIf
 	purchasedThisStep += 10
 	CommitRequest()
-	If LocalControl(2, akControl)
+	If requestEpoch == loadEpoch && LocalControl(2, akControl)
 		Box(Purchased)
 	EndIf
 EndFunction
@@ -393,7 +431,7 @@ Function Advance(ObjectReference akControl)
 	If !ConfirmStep || ConfirmStep.Show(nextReserve, nextDebt) != 0
 		Return
 	EndIf
-	If useEpoch != loadEpoch || stepIndex != oldStep || stepIndex >= 6 || !BeginRequest(3, 1, akControl, 150)
+	If useEpoch != loadEpoch || stepIndex != oldStep || stepIndex >= 6 || !BeginRequest(3, 1, akControl, 150, useEpoch)
 		Return
 	EndIf
 	If !RequestCurrent(3, 1)
@@ -412,8 +450,8 @@ Function Advance(ObjectReference akControl)
 		SetStage(30)
 	EndIf
 	MaybeComplete()
-	If LocalControl(1, akControl)
-		If Box(StepDone) == 0 && completionLatched && LocalControl(1, akControl)
+	If requestEpoch == loadEpoch && LocalControl(1, akControl)
+		If Box(StepDone) == 0 && requestEpoch == loadEpoch && completionLatched && LocalControl(1, akControl)
 			Box(CompleteNotice)
 		EndIf
 	EndIf
@@ -433,5 +471,9 @@ Function Loaded()
 	If pendingOperation != 0
 		uncertain = true
 		Debug.Trace("TLM_GW_Relief: load preserved blocked request " + requestNonce, 2)
+	EndIf
+	TLM:GreenwaterWalk controller = controlsOwner as TLM:GreenwaterWalk
+	If controller
+		controller.ReliefLoaded()
 	EndIf
 EndFunction

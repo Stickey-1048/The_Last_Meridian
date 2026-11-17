@@ -48,8 +48,10 @@ class GettingThere(unittest.TestCase):
         self.assertTrue(a.stage.running)
         self.assertFalse(a.road.running)
         self.assertTrue(a.on("MercyTravel"))
+        self.assertTrue(a.on("ReliefSupply"))  # separate gated service; no relief initialized yet
+        self.assertFalse(a.s.quests['TLM_GW_Relief'].scripts[0].vars['initialized'])
         for name, ref in a.s.placed.items():
-            if name.startswith(R) and name != R + "MercyTravel":
+            if name.startswith(R) and name not in (R + "MercyTravel", R + "ReliefSupply"):
                 self.assertTrue(ref.disabled, name)
 
     def test_no_travel_before_the_chapter_is_over(self):
@@ -514,7 +516,7 @@ class TheCastThatIsNotThere(unittest.TestCase):
         self.assertEqual(a.g("Hatcher"), gw.RV_H_FREE)
         a.pilot()
         a.dock()
-        self.assertEqual(a.opal(judge="release"), [G + "OpalAfterWonNoSheriff", G + "OpalDenied"])
+        self.assertEqual(a.opal(judge="release"), [G + "OpalAfterWonNoSheriff", G + "ConfirmRelease", G + "OpalDenied"])
         a.leave()
         self.assertTrue(a.road.completed)
         self.assertEqual(a.press(REF + "Pritchard"), [])           # a dead man hears no report
@@ -570,7 +572,7 @@ class SomebodyChangesWhileABoxIsOpen(unittest.TestCase):
         a.s.on_box = self.dies(a, "opal", "HatcherLost")
         shown = a.press(R + "Table", {G + "HatcherTable": [0], G + "HatcherLost": [0]})
         a.s.on_box = None
-        self.assertEqual(shown[-1], "NoteJudgmentFailed")
+        self.assertEqual(shown[-1], "HatcherLost")  # stale recipient: no confirmation or transfer
         self.assertFalse(a.who["hatcher"].dead)
         self.assertEqual((a.g("Hatcher"), 60 in a.road.done, a.g("HatcherHanged")), (gw.RV_H_FREE, False, 0))
 
@@ -580,7 +582,7 @@ class SomebodyChangesWhileABoxIsOpen(unittest.TestCase):
         a.s.on_box = self.dies(a, "sheriff", "HatcherLost")
         shown = a.press(R + "Table", {G + "HatcherTable": [0], G + "HatcherLost": [1]})
         a.s.on_box = None
-        self.assertEqual(shown[-1], "NoteJudgmentFailed")
+        self.assertEqual(shown[-1], "HatcherLost")  # stale recipient: no confirmation or transfer
         self.assertEqual((a.g("Hatcher"), 61 in a.road.done), (gw.RV_H_FREE, False))
         self.assertTrue(a.near("hatcher", "Hatcher", 1.0))        # he was not sent anywhere
 
@@ -810,8 +812,8 @@ class OnceAndOnlyOnce(unittest.TestCase):
         a.s.on_box = meanwhile
         shown = a.press(R + "Table", {G + "HatcherTable": [1], G + "HatcherShare": [0]})
         a.s.on_box = None
-        self.assertEqual(shown, ["HatcherTable", "HatcherShare"])
-        self.assertEqual(extra, [G + "HatcherTable", G + "HatcherShare"])
+        self.assertEqual(shown, ["HatcherTable", "HatcherShare", "ConfirmShare", "NoteSharePaid"])
+        self.assertEqual(extra, [G + "HatcherTable", G + "HatcherShare", G + "ConfirmShare", G + "NoteSharePaid"])
         self.assertEqual((a.count(a.caps) - a.caps_before, a.asked["caps"], a.g("Outcome")), (200, 1, 44))
         self.assertFalse(a.s.invoke(ROAD, "TakeShare", []))        # and asked for directly afterwards: no
         self.assertEqual((a.count(a.caps) - a.caps_before, a.asked["caps"]), (200, 1))
@@ -1138,7 +1140,7 @@ class TheNumbers(unittest.TestCase):
                 "Strongbox": "STRONGBOX", "Chain": "CHAIN", "Pilot": "PILOT", "FireControl": "FIRE", "ReturnDock": "DOCK", "Exit": "EXIT",
                 "Belden": "BELDEN", "Crew1": "CREW1", "Crew2": "CREW2", "LabelLanding": "LABEL_LANDING", "LabelQueen": "LABEL_QUEEN",
                 "LabelChute": "LABEL_CHUTE", "CargoLashed": "CARGO", "CargoWhole": "CARGO", "CargoReduced": "CARGO", "Steeple": "STEEPLE",
-                "Burnt": "BURNT"}
+                "Burnt": "BURNT", "ReliefStores": "RELIEF_STORES", "ReliefSupply": "RELIEF_SUPPLY"}
         self.assertEqual(on_aliases, {alias: walk[who] for alias, who in want.items()})
 
     def test_every_message_is_bound_and_used(self):
@@ -1165,7 +1167,7 @@ class TheNumbers(unittest.TestCase):
         self.assertNotIn("StartGameEnabled", road["Flags"])
         self.assertEqual([a["Flags"] for a in road["Aliases"]], [["Optional"]] * 11)
         self.assertEqual(sorted(q["EditorId"] for q in self.data["Quests"]),
-                         sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", ROAD, STAGE, "TLM_MQ02A", "TLM_NM", "TLM_MQ02C", "TLM_RH"]))
+                         sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", ROAD, STAGE, "TLM_MQ02A", "TLM_NM", "TLM_MQ02C", "TLM_RH", "TLM_GW_Relief"]))
         for other in ("TLM_MQ02", "TLM_MQ03", "TLM_MQ04"):
             self.assertNotIn(other, [q["EditorId"] for q in self.data["Quests"]])
 

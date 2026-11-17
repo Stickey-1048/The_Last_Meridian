@@ -18,7 +18,7 @@ class RedHollowClone(unittest.TestCase):
         self.assertEqual(sum(a['owner']=='TheLastMeridian.esp' for a in aliases),95)
         self.assertEqual(next(a for a in aliases if a['name']=='Condemned')['reference'],'script-filled')
         self.assertEqual(next(a for a in aliases if a['name']=='Player')['owner'],'Fallout4.esm')
-        self.assertEqual(self.out['persistentReferences'],64)
+        self.assertEqual(self.out['persistentReferences'],66)
         for a in exterior.values():self.assertEqual([a['x'],a['y'],a['z']],self.out['redHollowSites'][a['name']])
         self.assertEqual(self.out['firstSection']['forms']['TLM_RedHollow'],'TLM_WS_RH')
         self.assertEqual(q['forms']['TLM_MQ02C'],'TLM_MQ02C in TheLastMeridian.esp')
@@ -35,4 +35,4 @@ class RedHollowClone(unittest.TestCase):
                 got=clone(damage);self.assertEqual(got.returncode,1,got.stdout+got.stderr);self.assertIn('REFUSED',got.stderr)
     def test_previous_night_mail_composition_still_clones(self):
         got=clone('source-without-red-hollow');self.assertEqual(got.returncode,0,got.stdout+got.stderr)
-        out=json.loads(got.stdout);self.assertFalse(out['redHollow']['present']);self.assertTrue(out['nightMail']['present']);self.assertEqual(out['persistentReferences'],62)
+        out=json.loads(got.stdout);self.assertFalse(out['redHollow']['present']);self.assertTrue(out['nightMail']['present']);self.assertEqual(out['persistentReferences'],64)

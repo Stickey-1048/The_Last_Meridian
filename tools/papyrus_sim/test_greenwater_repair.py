@@ -295,7 +295,7 @@ def not_hanged(t, a, alive=True, what=""):
 def hanging_as_chosen(t, scripts=SCRIPTS):
     a = beaten(t, scripts)
     shown = choose_hanging(a)
-    t.assertEqual(shown, ["HatcherTable", "HatcherLost"])
+    t.assertEqual(shown, ["HatcherTable", "CardStakes", "HatcherLost", "ConfirmHang"])
     t.assertTrue(a.who["hatcher"].dead)
     t.assertTrue(a.near("hatcher", "Steeple", 256.0), "he was not hanged at the steeple")
     t.assertEqual((a.road.done.count(60), a.g("Hatcher"), a.g("HatcherHanged"), a.rules.vars["hangintent"]), (1, gw.RV_H_HANGED, 1, 3))
@@ -315,13 +315,13 @@ def no_ring_no_hanging(t, scripts=SCRIPTS):
         else:
             a.s.placed[R + "Steeple"].disabled = True              # SEEDED
         shown = choose_hanging(a)
-        t.assertEqual(shown, ["HatcherTable", "HatcherLost", "NoteJudgmentFailed"], how)
+        t.assertEqual(shown, ["HatcherTable", "CardStakes", "HatcherLost", "ConfirmHang", "NoteJudgmentFailed"], how)
         not_hanged(t, a, what="the ring " + how)
         t.assertEqual(where(a.who["hatcher"]), at_table, "he was moved with the ring " + how)
         t.assertEqual((a.asked_of("moveto", "hatcher"), a.asked_of("kill", "hatcher")), (0, 0), how)
         t.assertEqual(a.g("Hatcher"), gw.RV_H_FREE)
         # The other two judgments, and the grain, are as they were.
-        t.assertEqual(a.press(R + "Table", {G + "HatcherLost": [1]}), ["HatcherLost"])
+        t.assertEqual(a.press(R + "Table", {G + "HatcherLost": [1]}), ["HatcherLost", "ConfirmCustody"])
         t.assertEqual((61 in a.road.done, a.g("Hatcher")), (True, gw.RV_H_CUSTODY))
         a.press(R + "Pilot")
         a.press(R + "ReturnDock", enter=True)
@@ -340,7 +340,7 @@ def not_at_the_ring_no_kill(t, scripts=SCRIPTS):
     t.assertEqual((a.asked_of("moveto", "hatcher"), a.asked_of("kill", "hatcher")), (1, 0))
     closed(a)
     # Chosen again with the move working: carried out.
-    t.assertEqual(a.press(R + "Table", {G + "HatcherLost": [0]}), ["HatcherLost"])
+    t.assertEqual(a.press(R + "Table", {G + "HatcherLost": [0]}), ["HatcherLost", "ConfirmHang"])
     t.assertEqual((a.road.done.count(60), a.g("Hatcher"), a.asked_of("kill", "hatcher")), (1, gw.RV_H_HANGED, 1))
 
 
@@ -372,7 +372,7 @@ def fighting_when_the_verdict_is_given(t, scripts=SCRIPTS):
         at = len(a.s.messages_shown)
         a.press(R + "Table", {G + "HatcherTable": [0], G + "HatcherLost": [pick]})
         closed(a)
-        t.assertEqual([m[len(G):] for m in a.s.messages_shown[at:]], ["HatcherTable", "HatcherLost"], pick)
+        t.assertEqual([m[len(G):] for m in a.s.messages_shown[at:]], ["HatcherTable", "CardStakes", "HatcherLost"], pick)
         not_hanged(t, a, what="a fight under his question, button %d" % pick)
         t.assertEqual((a.g("Hatcher"), 61 in a.road.done, a.g("HatcherFriend"), where(a.who["hatcher"])), (gw.RV_H_FREE, False, 0, at_table), pick)
         t.assertEqual((a.asked_of("moveto", "hatcher"), a.asked_of("kill", "hatcher")), (0, 0))
@@ -403,7 +403,7 @@ def the_death_comes_late(t, scripts=SCRIPTS):
     a = beaten(t, scripts)
     a.dies_late("hatcher", 0.5)                                    # SEEDED
     shown = choose_hanging(a)
-    t.assertEqual(shown, ["HatcherTable", "HatcherLost"])
+    t.assertEqual(shown, ["HatcherTable", "CardStakes", "HatcherLost", "ConfirmHang"])
     t.assertTrue(a.who["hatcher"].dead)
     t.assertEqual((a.road.done.count(60), a.g("Hatcher"), a.g("HatcherHanged"), a.asked_of("kill", "hatcher")), (1, gw.RV_H_HANGED, 1, 1))
     free(t, a, "a late death")
@@ -777,7 +777,7 @@ def her_question_answered_to_her(t, scripts=SCRIPTS):
         t.assertEqual((a.g("Hatcher"), 60 in a.road.done, 61 in a.road.done, a.g("HatcherFriend"), a.who["hatcher"].dead), (gw.RV_H_FREE, False, False, 0, False), pick)
         free(t, a, "her question unanswered to her")
         # At his table what can still be done is done: Pritchard, alive.
-        t.assertEqual(a.press(R + "Table", {G + "HatcherLostNoOpal": [0]}), ["HatcherLostNoOpal"])
+        t.assertEqual(a.press(R + "Table", {G + "HatcherLostNoOpal": [0]}), ["HatcherLostNoOpal", "ConfirmCustody"])
         t.assertEqual((61 in a.road.done, a.g("Hatcher")), (True, gw.RV_H_CUSTODY))
 
 
@@ -1134,9 +1134,18 @@ class WhatTheRepairProbesCatch(unittest.TestCase):
             self.assertIsNotNone(self.caught(probe, "MQ02BQuest.psc", "	If !there || !still\n		HangIntent = RV_HANG_NONE\n", "	If false\n		HangIntent = RV_HANG_NONE\n"))
 
     def test_a_fighting_man_judged(self):
-        self.assertIsNotNone(self.caught(fighting_when_the_verdict_is_given, "GreenwaterWalk.psc",
-                                         "	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.HatcherCanBeJudged()\n		Return\n	EndIf\n	Judge(akRiver, verdict)\n",
-                                         "	Judge(akRiver, verdict)\n"))
+        # The original pre-question mutant is also exercised unchanged on the
+        # accepted Git export. This current probe covers the added local page.
+        def probe(t, scripts=SCRIPTS):
+            a = beaten(t, scripts)
+            while_open(a, "ConfirmHang", lambda: setattr(a.who["hatcher"], "combat_target", a.who["crew1"]))
+            shown = choose_hanging(a)
+            t.assertEqual(shown, ["HatcherTable", "CardStakes", "HatcherLost", "ConfirmHang"])
+            not_hanged(t, a)
+        probe(self)
+        old = '\tIf confirmed != 0 || !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged() || !LocalSpeaker(speaker, speakerAlias)\n'
+        self.assertIsNotNone(self.caught(probe, "GreenwaterWalk.psc", old,
+                                        '\tIf confirmed != 0 || !akRiver.RoadOpen()\n'))
 
     def test_a_death_looked_for_once(self):
         self.assertIsNotNone(self.caught(the_death_comes_late, "MQ02BQuest.psc", "int RV_DEATH_POLLS = 30 Const", "int RV_DEATH_POLLS = 0 Const"))
@@ -1176,13 +1185,18 @@ class WhatTheRepairProbesCatch(unittest.TestCase):
                                          "		LieTold = true\n		TLM_G_MQ02B_GrainSold.SetValueInt(1)\n", "		LieTold = true\n"))
 
     def test_her_thanks_from_a_dead_woman(self):
+        # Both independent boundaries must be removed for the old bad reply
+        # commit to return. The original single mutation remains historical.
         self.assertIsNotNone(self.caught(the_lie_delivered_is_kept, "MQ02BQuest.psc",
-                                         "	If !RoadOpen() || !LieTold || !CanSpeak(Alias_Opal)\n", "	If !RoadOpen() || !LieTold\n"))
+                                         "\tIf !RoadOpen() || !LieTold || !CanSpeak(Alias_Opal)\n", "\tIf !RoadOpen() || !LieTold\n",
+                                         also=("GreenwaterWalk.psc", "\tIf LocalSpeaker(opal, Alias_Opal) && akRiver.LieWasHeard()\n", "\tIf akRiver.LieWasHeard()\n")))
 
     def test_her_question_answered_after_her(self):
         old = ("	; Her question is answered to her: alive, present and in no fight after it as before it.\n"
                "	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak()\n		Return\n	EndIf\n")
-        self.assertIsNotNone(self.caught(her_question_answered_to_her, "GreenwaterWalk.psc", old, ""))
+        old += "\tIf !LocalSpeaker(opal, Alias_Opal)\n\t\tReturn\n\tEndIf\n"
+        self.assertIsNotNone(self.caught(her_question_answered_to_her, "GreenwaterWalk.psc", old, "",
+                                         also=("GreenwaterWalk.psc", "\tIf !LocalSpeaker(speaker, speakerAlias)\n\t\tReturn false\n\tEndIf\n", "")))
 
     def test_a_report_not_answered_falling_through(self):
         self.assertIsNotNone(self.caught(report_not_answered_closes, "GreenwaterWalk.psc",

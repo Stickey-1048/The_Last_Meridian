@@ -20,10 +20,17 @@ public static partial class WorldStory
         foreach(var alias in aliases){
             if(alias.ForcedReference.IsNull||!references.TryGetValue(alias.ForcedReference.FormKey,out var original)||original is not IPlacedObjectGetter obj||obj.EditorID!="TLM_REF_GW_"+alias.Name)
                 throw new InvalidDataException("Relief source control identity mismatch: "+alias.Name);
+            var control=source.Activators.SingleOrDefault(a=>a.FormKey==obj.Base.FormKey)
+                ??throw new InvalidDataException("Relief control must be its own source activator");
+            var lo=control.ObjectBounds.First;var hi=control.ObjectBounds.Second;
+            var model=control.Model?.File?.ToString();
+            if(string.IsNullOrWhiteSpace(model)||lo.X < -64||hi.X>64||lo.Y < -64||hi.Y>64||lo.Z < -4||hi.Z>24)
+                throw new InvalidDataException("Relief paper-control model/bounds require a new audited placement: "+alias.Name);
             var at=GreenwaterSites[alias.Name!];var placed=obj.Duplicate(mod.GetNextFormKey());
             placed.EditorID="TLM_WS_ST_GW_"+alias.Name;placed.Position=new P3Float(at.X,at.Y,at.Z);placed.Rotation=new P3Float(0,0,0);placed.MajorRecordFlagsRaw|=0xC00;
             world.TopCell!.Persistent.Add(placed);alias.ForcedReference.SetTo(placed.FormKey);
-            rows.Add(new{alias=alias.Name,source=original.FormKey.ToString(),reference=placed.FormKey.ToString(),x=at.X,y=at.Y,z=at.Z});
+            rows.Add(new{alias=alias.Name,source=original.FormKey.ToString(),reference=placed.FormKey.ToString(),x=at.X,y=at.Y,z=at.Z,
+                model,min=new[]{(int)lo.X,lo.Y,lo.Z},max=new[]{(int)hi.X,hi.Y,hi.Z}});
         }
         return new{policy="Appended after every accepted scenery ID; one master ledger, zero copied ledgers",references=rows};
     }

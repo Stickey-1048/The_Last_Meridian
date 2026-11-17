@@ -24,7 +24,7 @@ public static class StoryCloneCheck
         // Not damage: a source as it was before the road existed (neither quest, no binding). It must clone as it did.
         "source-without-greenwater","night-mail-binding-removed","night-mail-binding-to-another-quest","night-mail-binding-as-alias",
         "night-mail-alias-dropped","night-mail-placement-missing","night-mail-placement-substituted","night-mail-road-missing",
-        "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail","red-hollow-binding-removed","red-hollow-binding-to-another-quest","red-hollow-alias-dropped","red-hollow-placement-missing","red-hollow-road-missing","red-hollow-cell-missing","red-hollow-prisoner-forced","source-without-red-hollow"};
+        "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail","red-hollow-binding-removed","red-hollow-binding-to-another-quest","red-hollow-alias-dropped","red-hollow-placement-missing","red-hollow-road-missing","red-hollow-cell-missing","red-hollow-prisoner-forced","source-without-red-hollow","relief-ledger-missing","relief-control-substituted","relief-model-missing","relief-model-oversized","relief-ledger-binding-wrong"};
 
     static IFallout4ModGetter Damaged(string story,string damage)
     {
@@ -70,6 +70,13 @@ public static class StoryCloneCheck
                 var own=cells.Single(c=>c.EditorID=="TLM_CELL_NightMail");var piece=own.Persistent.First(r=>r.EditorID=="TLM_REF_NM_Lockridge");
                 own.Persistent.Remove(piece);cells.Single(c=>c.EditorID=="QASmoke").Persistent.Add(piece);break;
             case "source-without-night-mail":RemoveNightMail();break;
+            case "relief-ledger-missing":bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_GW_Relief").FormKey);break;
+            case "relief-control-substituted":
+                var storeAlias=gw.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="ReliefStores");
+                storeAlias.ForcedReference.SetTo(gw.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="ReliefSupply").ForcedReference.FormKey);break;
+            case "relief-model-missing":bad.Activators.Single(a=>a.EditorID=="TLM_ACTI_GW_ReliefStores").Model=null;break;
+            case "relief-model-oversized":bad.Activators.Single(a=>a.EditorID=="TLM_ACTI_GW_ReliefStores").ObjectBounds.First=new P3Int16(-1000,-1000,0);break;
+            case "relief-ledger-binding-wrong":gw.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:GreenwaterWalk").Properties.OfType<ScriptObjectProperty>().Single(p=>p.Name=="TLM_Relief").Object.SetTo(gw.FormKey);break;
             default:throw new ArgumentException("unknown damage: "+damage+"; one of "+string.Join(", ",Damages));
         }
         return bad;

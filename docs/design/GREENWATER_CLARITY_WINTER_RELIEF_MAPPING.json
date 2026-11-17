@@ -1,0 +1,539 @@
+{
+  "schema": 1,
+  "what": "Derived owner-approved technical relief and scene/choice clarity mapping; source/synthetic readback, never native acceptance",
+  "baseline": "1cdd4666b12e3b40f0c3bf5a3e877f561c7b8d83",
+  "authority": {
+    "clarityPacketSha256": "37F98343B56482F223D623CC658E1A6402172C933FEBD5DE0435C2FA5D713905",
+    "winterContractSha256": "DA8164F20D30678CD94899A79DF3BE54A669EFB76BEFC241C8259F600EB42379",
+    "samFeasibilitySha256": "532668DD2A6974542CD207E2DD883C308159AA09B276CC5F9B8DEDC19A91CDB3"
+  },
+  "ledger": {
+    "quest": "TLM_GW_Relief",
+    "script": "TLM:GreenwaterRelief",
+    "owner": "TheLastMeridian.esp only; never copied to exterior",
+    "aliases": [
+      {
+        "Id": 0,
+        "Name": "Stores",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 1,
+        "Name": "Supply",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 2,
+        "Name": "Player",
+        "Kind": "reference",
+        "Flags": [],
+        "Fill": "forced 000856:Fallout4.esm",
+        "Scripts": [
+          {
+            "Name": "TLM:GreenwaterTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 0
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      }
+    ],
+    "stages": [
+      {
+        "Index": 10,
+        "Log": "The completed river cargo account was recorded once.",
+        "Note": null,
+        "CompleteQuest": false,
+        "Items": 1,
+        "ItemsWithFlags": 1
+      },
+      {
+        "Index": 20,
+        "Log": "An actual Corn contribution was credited.",
+        "Note": null,
+        "CompleteQuest": false,
+        "Items": 1,
+        "ItemsWithFlags": 1
+      },
+      {
+        "Index": 30,
+        "Log": "The first explicit local provision step was recorded.",
+        "Note": null,
+        "CompleteQuest": false,
+        "Items": 1,
+        "ItemsWithFlags": 1
+      },
+      {
+        "Index": 90,
+        "Log": "Six provision steps and outstanding shortfall are accounted for.",
+        "Note": null,
+        "CompleteQuest": true,
+        "Items": 1,
+        "ItemsWithFlags": 1
+      }
+    ],
+    "sourceScripts": 30,
+    "sourceIdenticalReviewedRuntime": 17,
+    "freshRuntime": 13
+  },
+  "controls": [
+    {
+      "alias": "ReliefStores",
+      "controllerAliasId": 31,
+      "source": "TLM_REF_GW_ReliefStores",
+      "exterior": "TLM_WS_ST_GW_ReliefStores",
+      "worldPosition": [
+        2180,
+        850,
+        12
+      ],
+      "approach": "192-unit continuous east approach from (2400,850)",
+      "allocation": "deferred until after ALL existing exterior scenery"
+    },
+    {
+      "alias": "ReliefSupply",
+      "controllerAliasId": 32,
+      "source": "TLM_REF_GW_ReliefSupply",
+      "exterior": "TLM_WS_ST_GW_ReliefSupply",
+      "worldPosition": [
+        3050,
+        3620,
+        12
+      ],
+      "approach": "192-unit continuous approach from existing rear supply street (3050,3558), north of preserved YardBack fence",
+      "allocation": "deferred until after ALL existing exterior scenery"
+    }
+  ],
+  "food": {
+    "policy": "strict typed EDID and exact display name, no permissive Meal fallback",
+    "corn": {
+      "type": "Ingestible",
+      "editorId": "Corn",
+      "displayName": "Corn",
+      "ownedMasterExpectedFormKeyFromCoordinator": "0330F8:Fallout4.esm"
+    },
+    "caps": {
+      "type": "MiscItem",
+      "editorId": "Caps001",
+      "displayName": "Bottlecap",
+      "ownedMasterExpectedFormKeyFromCoordinator": "00000F:Fallout4.esm"
+    },
+    "qualification": "Owned-master keys are coordinator-provided prior evidence, not measured by this synthetic author run."
+  },
+  "ui": [
+    {
+      "record": "TLM_MSG_GR_NotReady",
+      "property": "NotReady",
+      "shownWhen": "Use: completed tuple/strict bindings unavailable; no transaction",
+      "text": "[Winter relief unavailable]\n\nFinish the Greenwater road first. Relief also needs verified Corn and caps records and a consistent completed cargo account. No food, money or river result was changed.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_Unavailable",
+      "property": "Unavailable",
+      "shownWhen": "BlockRequest: immediate request could not be acknowledged, same epoch only",
+      "text": "[Food request unavailable]\n\nThis request could not be safely confirmed. It will not be retried or refunded automatically. Other relief changes are blocked; you can still inspect the ledger. Keep this save for diagnosis.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_Blocked",
+      "property": "Blocked",
+      "shownWhen": "Use: persisted unresolved operation; inspection permitted, effects forbidden",
+      "text": "[Relief request held]\n\nAn earlier request is unresolved. No further donation, purchase or local step can run. Inspect the current ledger?",
+      "buttons": [
+        "Inspect ledger",
+        "Close"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_Stores",
+      "property": "Stores",
+      "shownWhen": "Use: steps0..5, no pending operation",
+      "text": "[Winter relief]\n\nYour river decision remains unchanged. Bring real Corn here or buy a finite batch at Mercy's supply shelter. Nothing runs down while you are away.",
+      "buttons": [
+        "Inspect reserve",
+        "Donate Corn",
+        "Advance local 15-day step",
+        "Close"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_StoresFinal",
+      "property": "StoresFinal",
+      "shownWhen": "Use: six steps with unresolved shortfall; no advance",
+      "text": "[Six relief steps accounted for]\n\nNo seventh step or new stock period exists. Outstanding need can still be cleared with real Corn. Earlier hunger remains in the record.",
+      "buttons": [
+        "Inspect reserve",
+        "Donate Corn",
+        "Close"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_Supply",
+      "property": "Supply",
+      "shownWhen": "Shop: finite current-period stock; buying is not donation",
+      "text": "[Mercy relief supply]\n\nBuy 10 Corn for 20 caps. Stock this period: %g Corn of 30. Buying is NOT a donation; carry it to Greenwater. Scavenged or grown Corn works too.",
+      "buttons": [
+        "Buy one batch",
+        "Inspect relief ledger",
+        "Close"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_Status",
+      "property": "Status",
+      "shownWhen": "ShowStatus: step/reserve/debt/remaining demand/donated units",
+      "text": "[Current relief stores]\n\nStep %g of 6. Reserve: %g units. Shortfall: %g. Remaining demand: %g. Donated: %g units. Each planned step costs 150. Ten units represent one provisioning day; this is a simplified ledger.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_ForecastCovered",
+      "property": "ForecastCovered",
+      "shownWhen": "ShowStatus: balance covers remaining demand including debt",
+      "text": "[Relief forecast]\n\nCovered for the remaining planned steps. This is the bounded ledger's forecast, not a promise of universal town prosperity or erased past hunger.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_ForecastNeeded",
+      "property": "ForecastNeeded",
+      "shownWhen": "ShowStatus: balance below remaining demand",
+      "text": "[Food still needed]\n\nMore food is needed before winter is covered. Shortfall means unmet need, not a recorded death toll. You can return with Corn. Nothing runs down by waiting or leaving.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_PastHunger",
+      "property": "PastHunger",
+      "shownWhen": "ShowStatus: everShortfall latched by an actual local step",
+      "text": "[Earlier hunger remains]\n\nA previous local step recorded a shortage. Aid clears current shortfall first, but cannot undo earlier hunger. No famine deaths have been inferred.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_DonateMany",
+      "property": "DonateMany",
+      "shownWhen": "Donate: real inventory >=10; quantity1/5/10/cancel",
+      "text": "[Choose Corn quantity]\n\nOnly actual Corn removed from your inventory is credited. Each Corn adds 10 relief units; you keep the rest.",
+      "buttons": [
+        "Give 1 Corn",
+        "Give 5 Corn",
+        "Give 10 Corn",
+        "Cancel"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_DonateFive",
+      "property": "DonateFive",
+      "shownWhen": "Donate: inventory5..9; quantity1/5/cancel",
+      "text": "[Choose Corn quantity]\n\nEach Corn adds 10 relief units. You do not currently hold 10 Corn.",
+      "buttons": [
+        "Give 1 Corn",
+        "Give 5 Corn",
+        "Cancel"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_DonateOne",
+      "property": "DonateOne",
+      "shownWhen": "Donate: inventory1..4; quantity1/cancel",
+      "text": "[Choose Corn quantity]\n\nYou have fewer than 5 Corn. One actual Corn can add 10 relief units.",
+      "buttons": [
+        "Give 1 Corn",
+        "Cancel"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_NoFood",
+      "property": "NoFood",
+      "shownWhen": "Donate: no actual Corn inventory",
+      "text": "[No Corn to donate]\n\nNo Corn is available in your inventory. Gather, grow or bring Corn later; buying food is optional. Nothing was taken.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_ConfirmDonate",
+      "property": "ConfirmDonate",
+      "shownWhen": "Donate: exact quantity/clear-debt/new-reserve before persisted request/effect",
+      "text": "[Donate food?]\n\nGive %g Corn from your inventory to the town stores. Each item is consumed once. This clears %g shortfall and adds %g reserve units. You keep the rest.",
+      "buttons": [
+        "Donate this food",
+        "Cancel"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_Donated",
+      "property": "Donated",
+      "shownWhen": "Donate: immediate active-request exact decrease and one committed credit",
+      "text": "[Food received]\n\nYour actual Corn contribution was consumed and credited once. Inspect the reserve to see current need. Your earlier river decision and any past hunger remain unchanged.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_ConfirmPurchase",
+      "property": "ConfirmPurchase",
+      "shownWhen": "Shop: real20caps/finite10Corn; before persisted request/debit",
+      "text": "[Buy relief food?]\n\nPay 20 real caps for 10 actual Corn. This uses 10 of the current period's finite 30 stock. The town receives nothing until you donate the food at Greenwater.",
+      "buttons": [
+        "Pay 20 caps; receive 10 Corn",
+        "Cancel"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_Purchased",
+      "property": "Purchased",
+      "shownWhen": "Shop: immediate acknowledged debit AND delivery; no donation credit",
+      "text": "[Food purchased]\n\n20 caps paid; 10 Corn received. Town reserves did not change. Carry the food to Greenwater's separate winter-relief stores control to contribute it.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_NoStock",
+      "property": "NoStock",
+      "shownWhen": "Shop: insufficient finite stock/caps or checked Corn inventory ceiling",
+      "text": "[Purchase unavailable]\n\nStock or caps are insufficient, or your Corn inventory is at this prototype's safety limit. Nothing was taken. Gathered and grown Corn remain valid donations.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_ConfirmStep",
+      "property": "ConfirmStep",
+      "shownWhen": "Advance: explicit local-only15day accounting; exact projected reserve/debt",
+      "text": "[Advance local relief step?]\n\nThis accounts for 15 days of town provisions only; it does NOT move the game's clock. Demand: 150 units. Projected reserve: %g; shortfall: %g. Nothing advances unless you confirm.",
+      "buttons": [
+        "Advance one relief step",
+        "Keep gathering"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_StepDone",
+      "property": "StepDone",
+      "shownWhen": "Advance: one committed local150unit step; stock renews only1..5",
+      "text": "[Local relief step recorded]\n\nOne 15-day provision step was accounted for. No global time or other quest changed. Inspect the ledger for current need; real Corn can clear a shortage later.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_CompleteNotice",
+      "property": "CompleteNotice",
+      "shownWhen": "Donate/Advance: after newly completed six-step/debt-clear ledger and acknowledgement",
+      "text": "[Bounded winter relief covered]\n\nAll six local steps are accounted for and outstanding shortfall is clear. Earlier hunger, the original grain outcome and any lie remain part of the record. Coverage does not mean nobody suffered.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_GR_CompleteMenu",
+      "property": "CompleteMenu",
+      "shownWhen": "Use: completed bounded season; inspection only, no new effects",
+      "text": "[Winter relief ledger covered]\n\nAll six local steps and current shortfall are covered. This bounded season has no further donation, purchase or advance. Earlier hunger and your original river decision remain in the record.",
+      "buttons": [
+        "Inspect ledger",
+        "Close"
+      ]
+    }
+  ],
+  "allocation": {
+    "acceptedPrefixLines": 2036,
+    "append": [
+      {
+        "record": "TLM_MSG_GW_ArrivalBrief",
+        "id": 3066
+      },
+      {
+        "record": "TLM_MSG_GW_Goal",
+        "id": 3067
+      },
+      {
+        "record": "TLM_MSG_GW_Stakes",
+        "id": 3068
+      },
+      {
+        "record": "TLM_MSG_GW_ConfirmShare",
+        "id": 3069
+      },
+      {
+        "record": "TLM_MSG_GW_NoteSharePaid",
+        "id": 3070
+      },
+      {
+        "record": "TLM_MSG_GW_LabelShareHeld",
+        "id": 3071
+      },
+      {
+        "record": "TLM_MSG_GW_LabelLandingLayout",
+        "id": 3072
+      },
+      {
+        "record": "TLM_MSG_GW_CardStakes",
+        "id": 3073
+      },
+      {
+        "record": "TLM_MSG_GW_ConfirmHang",
+        "id": 3074
+      },
+      {
+        "record": "TLM_MSG_GW_ConfirmCustody",
+        "id": 3075
+      },
+      {
+        "record": "TLM_MSG_GW_ConfirmRelease",
+        "id": 3076
+      },
+      {
+        "record": "TLM_ACTI_GW_ReliefStores",
+        "id": 3077
+      },
+      {
+        "record": "TLM_ACTI_Mercy_ReliefSupply",
+        "id": 3078
+      },
+      {
+        "record": "TLM_GW_Relief",
+        "id": 3079
+      },
+      {
+        "record": "TLM_MSG_GR_NotReady",
+        "id": 3080
+      },
+      {
+        "record": "TLM_MSG_GR_Unavailable",
+        "id": 3081
+      },
+      {
+        "record": "TLM_MSG_GR_Blocked",
+        "id": 3082
+      },
+      {
+        "record": "TLM_MSG_GR_Stores",
+        "id": 3083
+      },
+      {
+        "record": "TLM_MSG_GR_StoresFinal",
+        "id": 3084
+      },
+      {
+        "record": "TLM_MSG_GR_Supply",
+        "id": 3085
+      },
+      {
+        "record": "TLM_MSG_GR_Status",
+        "id": 3086
+      },
+      {
+        "record": "TLM_MSG_GR_ForecastCovered",
+        "id": 3087
+      },
+      {
+        "record": "TLM_MSG_GR_ForecastNeeded",
+        "id": 3088
+      },
+      {
+        "record": "TLM_MSG_GR_PastHunger",
+        "id": 3089
+      },
+      {
+        "record": "TLM_MSG_GR_DonateMany",
+        "id": 3090
+      },
+      {
+        "record": "TLM_MSG_GR_DonateFive",
+        "id": 3091
+      },
+      {
+        "record": "TLM_MSG_GR_DonateOne",
+        "id": 3092
+      },
+      {
+        "record": "TLM_MSG_GR_NoFood",
+        "id": 3093
+      },
+      {
+        "record": "TLM_MSG_GR_ConfirmDonate",
+        "id": 3094
+      },
+      {
+        "record": "TLM_MSG_GR_Donated",
+        "id": 3095
+      },
+      {
+        "record": "TLM_MSG_GR_ConfirmPurchase",
+        "id": 3096
+      },
+      {
+        "record": "TLM_MSG_GR_Purchased",
+        "id": 3097
+      },
+      {
+        "record": "TLM_MSG_GR_NoStock",
+        "id": 3098
+      },
+      {
+        "record": "TLM_MSG_GR_ConfirmStep",
+        "id": 3099
+      },
+      {
+        "record": "TLM_MSG_GR_StepDone",
+        "id": 3100
+      },
+      {
+        "record": "TLM_MSG_GR_CompleteNotice",
+        "id": 3101
+      },
+      {
+        "record": "TLM_REF_GW_ReliefStores",
+        "id": 3102
+      },
+      {
+        "record": "TLM_REF_GW_ReliefSupply",
+        "id": 3103
+      },
+      {
+        "record": "TLM_MSG_GR_CompleteMenu",
+        "id": 3104
+      }
+    ]
+  },
+  "measuredNative": {
+    "compiler": null,
+    "ownedMasterBuild": null,
+    "inventory": null,
+    "controllerClarity": null,
+    "healthyReload": null
+  }
+}

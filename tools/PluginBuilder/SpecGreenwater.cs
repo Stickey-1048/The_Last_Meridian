@@ -129,7 +129,7 @@ public static class Greenwater
     // NIGHT-MAIL-STORY-001: in the composed candidate two roads are playable. The 016b source keeps the one-road wording.
     public const string UiOnlyGreenwater = "Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not.";
     public const string UiRoadComplete = "Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.";
-    public const string UiShareInterim = "You accepted Hatcher's share. The grain remains aboard the Queen.";
+    public const string UiShareInterim = "You accepted Hatcher's payment. The grain remains on his barge beside the Queen; Greenwater did not receive it.";
     public const string UiObjectiveReturn = "Use the barge's pilot lever and bring the grain to the landing";
     public const string UiObjectiveLeave = "Take the skiff back to Mercy Crossing";
     const string GoOn = "Continue";
@@ -375,11 +375,11 @@ public static class Greenwater
 
         // ---- This build speaking.
         Ui("ArrivalBrief", "[Greenwater: your task]", "Opal Starnes needs the town's winter grain back. Find her at the landing. Hatcher holds the grain barge beside the Queen, his occupied gambling boat. The Queen is NOT the grain barge. Signs identify both areas.", "Find Opal at the landing"),
-        Ui("Goal", "[Your choices concern the grain]", "Opal needs the winter grain held beside Hatcher's Queen. Negotiate at his table or investigate the barge with Rafferty. Taking Hatcher's money leaves the grain with him. This note chooses no route."),
+        Ui("Goal", "[Your choices concern the grain]", "Opal needs the grain beside the Queen. The card table is on the occupied boat; the separate barge is by chain and pilot lever. Taking Hatcher's money leaves the grain with him. This note chooses no route."),
         Ui("Stakes", "[Who is affected]", "Greenwater needs grain for winter. Hatcher's payment helps you; he keeps the grain. The Chute risks cargo loss. Burning the Queen endangers people and grain. Hatcher's fate is a separate decision if you win.", "I understand the stakes"),
         Ui("ConfirmShare", "[Accept Hatcher's deal?]", "Receive 200 caps and leave the grain aboard Hatcher's barge. This settles your cargo choice; Greenwater does not get its grain back through this deal. Telling Opal a false story remains a separate choice.", "Accept 200 caps; leave the grain", "Cancel; make no deal"),
         Ui("NoteSharePaid", "[Hatcher's payment]", "200 caps received. The grain remains with Hatcher. You have not told Opal anything yet."),
-        Ui("LabelShareHeld", "[Greenwater grain: Hatcher retained it]", "You accepted Hatcher's payment. The grain remains with him; Greenwater did not receive it."),
+        Ui("LabelShareHeld", "[Greenwater grain: Hatcher retained it]", "You accepted Hatcher's payment. Greenwater did not receive the grain through that deal; the original barge remains beside the Queen."),
         Ui("LabelLandingLayout", "[Greenwater landing]", "The food stores and Mercy return point are here. The Queen is Hatcher's gambling boat; its separate grain-barge area is beside the chain and pilot lever. These are staged areas, not moving boats."),
         Ui("CardStakes", "[Play for the grain barge?]", "The stake is the grain barge. Winning gives you a chance to bring Greenwater's winter food home; delivery still requires the pilot lever and return dock. A lost hand is not a death sentence or an automatic deal.", "Play the hand", "Cancel"),
         Ui("ConfirmHang", "[Give Hatcher to Opal?]", "This hands the living Hatcher over for hanging at the steeple. It is an execution decision, separate from bringing the grain home.", "Confirm hanging", "Cancel"),
@@ -432,9 +432,9 @@ public static class Greenwater
         Ui("LabelSteeple", "[Greybox: the steeple's mooring ring]", "The steeple stands out of the lake here. Boats tie up to its ring."),
         Ui("LabelBurnt", "[Greybox: the Queen, burned]", "This marker stands for the burned boat."),
         Ui("LabelCargoLashed", "[Grain barge - separate cargo boat]", "These crates stand for Greenwater's winter grain aboard the barge tied beside the Queen. This is the cargo Opal needs. It is separate from Hatcher's occupied gambling boat."),
-        Ui("LabelCargoWhole", "[Grain barge]", "At the landing, whole: 12 of 12 measures."),
-        Ui("LabelCargoPiloted", "[Grain barge]", "At the landing, with part of its cargo: 8 of 12 measures."),
-        Ui("LabelCargoAlone", "[Grain barge]", "At the landing, with part of its cargo: 6 of 12 measures."),
+        Ui("LabelCargoWhole", "[Original grain delivery]", "The whole barge reached the landing: 12 of 12 measures. This is cargo history. Complete the river journey, then inspect current reserves at the separate winter-relief stores."),
+        Ui("LabelCargoPiloted", "[Original grain delivery]", "Part of the cargo reached the landing: 8 of 12 measures. This is cargo history. Complete the river journey, then inspect current reserves at the separate winter-relief stores."),
+        Ui("LabelCargoAlone", "[Original grain delivery]", "Part of the cargo reached the landing: 6 of 12 measures. This is cargo history. Complete the river journey, then inspect current reserves at the separate winter-relief stores."),
     }.Concat(Document("Board", BoardTitle, BoardText)).Concat(Document("Letter", LetterTitle, LetterText)).ToArray();
 
     // ------------------------------------------------------------ the quests

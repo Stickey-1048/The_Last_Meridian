@@ -188,7 +188,7 @@ public static class SelfCheck
                 Expect(ga.Scripts.Select(s => s.Name).SequenceEqual(a.Scripts.Select(s => s.Script)), $"{q.EditorId} alias {a.Name}: scripts differ");
                 foreach (var bind in a.Scripts)
                     if (ga.Scripts.FirstOrDefault(s => s.Name == bind.Script) is { } gs)
-                        CheckProps($"{q.EditorId} alias {a.Name}", q, bind, gs, problems);
+                        CheckProps($"{q.EditorId} alias {a.Name}", q, bind, gs, problems, builder);
                 if (a.Fill == Fill.CreateIn)
                     Expect(ga.Fill != null && ga.Fill.StartsWith($"create {a.CreateItem} In alias {Array.FindIndex(q.Aliases, x => x.Name == a.CreateInAlias)}"),
                         $"{q.EditorId} alias {a.Name}: create-in fill differs ({ga.Fill})");
@@ -210,14 +210,14 @@ public static class SelfCheck
             {
                 var gs = got.Scripts.FirstOrDefault(s => s.Name == bind.Script);
                 if (gs == null) { problems.Add($"{q.EditorId}: script {bind.Script} not attached"); continue; }
-                CheckProps(q.EditorId, q, bind, gs, problems);
+                CheckProps(q.EditorId, q, bind, gs, problems, builder);
             }
         }
         return problems;
     }
 
     /// <summary>The properties of one attached script, as read back, against what the spec gives it.</summary>
-    static void CheckProps(string where, QuestSpec q, ScriptBind bind, Report.ScriptInfo gs, List<string> problems)
+    static void CheckProps(string where, QuestSpec q, ScriptBind bind, Report.ScriptInfo gs, List<string> problems, Builder builder)
     {
         void Expect(bool ok, string message) { if (!ok) problems.Add(message); }
         int AliasOf(string? questId, string alias) =>
@@ -229,6 +229,16 @@ public static class SelfCheck
             // Absent without the game's master, by design.
             if (p is VanillaProp or VanillaNamedProp or AmmoOfWeaponNamedProp) continue;
             var gp = gs.Props.FirstOrDefault(x => x.Name == p.Name);
+            if (p is StrictVanillaProp)
+            {
+                if (!builder.StrictBindings.TryGetValue($"{q.EditorId}/{bind.Script}/{p.Name}", out var expected))
+                    problems.Add($"{where}.{p.Name}: strict lookup receipt missing");
+                else if (expected.IsNull)
+                    Expect(gp == null, $"{where}.{p.Name}: unavailable strict input acquired a fallback property");
+                else
+                    Expect(gp != null && gp.Kind == "object" && gp.Alias == null && gp.Target == expected.ToString(), $"{where}.{p.Name}: strict binding differs from its actual typed lookup");
+                continue;
+            }
             if (gp == null) { problems.Add($"{where}: property {p.Name} not written"); continue; }
             switch (p)
             {

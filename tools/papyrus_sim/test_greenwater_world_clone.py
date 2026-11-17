@@ -98,14 +98,14 @@ class TheClone(unittest.TestCase):
         self.assertTrue(g["present"])
         self.assertEqual(g["script"], "TLM:GreenwaterWalk")
         sites = self.out["sites"]
-        self.assertEqual(len(g["aliases"]), 31)
+        self.assertEqual(len(g["aliases"]), 33)
         self.assertEqual(sorted(a["name"] for a in g["aliases"]), sorted(sites))
         for a in g["aliases"]:
             self.assertEqual([a["x"], a["y"], a["z"]], sites[a["name"]], a["name"])
             self.assertEqual(a["reference"], "TLM_WS_ST_GW_" + a["name"])
             self.assertEqual(a["flags"] & 0xC00, 0xC00, a["name"] + " is not persistent and initially disabled")
             self.assertEqual(a["actor"], a["name"] in PEOPLE, a["name"])
-        self.assertEqual(self.out["persistentReferences"], 29 + 31 + 2 + 2)
+        self.assertEqual(self.out["persistentReferences"], 29 + 31 + 2 + 2 + 2)
 
     def test_the_greyboxs_bindings_point_where_they_must(self):
         g = self.out["greenwater"]
@@ -116,12 +116,12 @@ class TheClone(unittest.TestCase):
             self.assertTrue(where.endswith("TheLastMeridian.esp"), "%s points at %s" % (name, where))
         for name, where in g["ownAliases"].items():
             self.assertTrue(where.startswith("TLM_WS_GW alias "), "%s points at %s" % (name, where))
-        self.assertEqual(len(g["ownAliases"]), 19)
+        self.assertEqual(len(g["ownAliases"]), 21)
         for name in ("ZoneOn", "CastFrom"):
             self.assertTrue(all(item.startswith("TLM_WS_GW alias ") for item in g["lists"][name]), name)
         self.assertTrue(all(item.startswith("TLM_MQ02B in TheLastMeridian.esp alias ") for item in g["lists"]["CastInto"]))
         self.assertEqual((len(g["lists"]["CastFrom"]), len(g["lists"]["CastInto"]), len(g["lists"]["ZoneOn"])), (11, 11, 26))
-        self.assertEqual(len(g["aliasScripts"]), 27)
+        self.assertEqual(len(g["aliasScripts"]), 29)
         self.assertTrue(all(s["on"] == "TLM_WS_GW" and s["scripts"] == ["TLM:GreenwaterTalk"] for s in g["aliasScripts"]))
 
     def test_the_road_stays_in_the_story_master(self):
@@ -172,21 +172,21 @@ class TheSites(unittest.TestCase):
 
     def test_the_exterior_builder_and_the_plugin_spec_give_the_same_sites(self):
         self.assertEqual(self.sites, spec_sites())
-        self.assertEqual(len(self.sites), 31)
+        self.assertEqual(len(self.sites), 33)
 
     def test_greenwater_stands_on_ground_the_expansion_leaves_free(self):
         scenery = [(m.group(1), float(m.group(2)), float(m.group(3)))
                    for m in re.finditer(r'Place\("(\w+)","\w+",(\d+),(\d+)', EXPANSION.read_text())]
         self.assertGreater(len(scenery), 15)
         for name, (x, y, z) in self.sites.items():
-            if name.startswith("Mercy"):
+            if name.startswith("Mercy") or name in ("ReliefStores", "ReliefSupply"):
                 continue
             self.assertTrue(1250 <= x <= 2850 and 200 <= y <= 700, name)
             near = min((math.hypot(x - sx, y - sy), prop) for prop, sx, sy in scenery)
             self.assertGreaterEqual(near[0], 600, "%s is %d from %s" % (name, near[0], near[1]))
         # The bypass road's nearest stretch, (1200,1200)-(2200,1000)-(2700,1700), with its posts 144 to either side.
         for name, (x, y, z) in self.sites.items():
-            if not name.startswith("Mercy"):
+            if not name.startswith("Mercy") and name not in ("ReliefStores", "ReliefSupply"):
                 self.assertLessEqual(y, 700, name)
 
     def cabin_floor(self):
@@ -234,13 +234,20 @@ class TheSites(unittest.TestCase):
         was = {m.group(1): [float(m.group(2)), float(m.group(3)), float(m.group(4))]
                for m in re.finditer(r'\["(\w+)"\]=\((\d+),(\d+),(\d+)\)', before)}
         self.assertEqual(was["MercyReturn"], [3150.0, 2700.0, 0.0])
-        self.assertEqual({k: v for k, v in self.sites.items() if k != "MercyReturn"}, {k: v for k, v in was.items() if k != "MercyReturn"})
+        self.assertEqual({k: v for k, v in self.sites.items() if k not in ("MercyReturn", "ReliefStores", "ReliefSupply")}, {k: v for k, v in was.items() if k != "MercyReturn"})
         # The first section's 29 sites and the cabin itself: the same text as at the reviewed commit.
         now = STORY.read_text()
         old = subprocess.run(["git", "show", REVIEWED + ":tools/WorldSliceBuilder/WorldStory.cs"], cwd=ROOT, capture_output=True, text=True).stdout
         cut = lambda text: text.split("var sites=new Dictionary<string,(float X,float Y,float Z)>")[1].split("};")[0]
         self.assertEqual(cut(now), cut(old))
-        for name in ("tools/WorldSliceBuilder/Program.cs", "tools/WorldSliceBuilder/Expansion.cs", "tools/WorldSliceBuilder/ShelterDetails.cs"):
+        program = PROGRAM.read_text()
+        old_program = subprocess.run(["git", "show", "1cdd466:tools/WorldSliceBuilder/Program.cs"], cwd=ROOT,capture_output=True,check=True).stdout.decode().replace("\r\n","\n")
+        for tag in ("APPEND","REPORT"):
+            pattern=r"// GREENWATER_RELIEF_"+tag+r"_BEGIN\n.*?// GREENWATER_RELIEF_"+tag+r"_END\n"
+            self.assertEqual(len(re.findall(pattern,program,re.S)),1)
+            program=re.sub(pattern,"",program,flags=re.S)
+        self.assertEqual(program,old_program,"every accepted terrain/scenery allocation remains exact")
+        for name in ("tools/WorldSliceBuilder/Expansion.cs", "tools/WorldSliceBuilder/ShelterDetails.cs"):
             self.assertEqual(subprocess.run(["git", "diff", "--quiet", REVIEWED, "--", name], cwd=ROOT).returncode, 0, name)
 
     def test_mercys_two_pieces_stand_in_the_yard_clear_of_what_is_there(self):

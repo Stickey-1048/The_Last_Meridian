@@ -94,7 +94,7 @@ Book (5)
   00089E  TLM_BOOK_Docket2298  "Mercy Road Case: 2298 Review Copy"
   0008D2  TLM_BOOK_LetterOfHire  "A Letter of Hire"
   00098A  TLM_BOOK_HymnalFlyleaf  "Flyleaf of a Hymnal"
-Activator (100)
+Activator (102)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
   000834  TLM_TRIG_TownGate
@@ -110,22 +110,24 @@ Activator (100)
   0008B9  TLM_TRIG_GW_ReturnDock
   0008BA  TLM_ACTI_GW_Exit  "Skiff to Mercy"
   0008BB  TLM_TRIG_GW_Landing
-  0008BC  TLM_ACTI_GW_LabelLanding  "Greybox: Greenwater landing and cook-shed"
+  0008BC  TLM_ACTI_GW_LabelLanding  "Greenwater landing - find Opal"
   0008BD  TLM_ACTI_GW_CargoWhole  "Grain barge (whole, at the landing)"
   0008BE  TLM_ACTI_GW_CargoReduced  "Grain barge (part of its cargo, at the landing)"
   0008BF  TLM_ACTI_GW_Steeple  "Greybox: steeple mooring ring"
   0008C0  TLM_ACTI_GW_RationBoard  "Ration Board, Greenwater"
   0008C1  TLM_ACTI_GW_Skiff  "Rafferty's skiff (to the Queen's off side)"
   0008C2  TLM_TRIG_GW_Gangway
-  0008C3  TLM_ACTI_GW_LabelQueen  "Greybox: the Queen of Tellico's deck"
-  0008C4  TLM_ACTI_GW_Table  "Faro table"
+  0008C3  TLM_ACTI_GW_LabelQueen  "Queen gambling boat - Hatcher and crew"
+  0008C4  TLM_ACTI_GW_Table  "Hatcher's card table - grain or payment"
   0008C5  TLM_ACTI_GW_Strongbox  "Hatcher's strongbox"
   0008C6  TLM_ACTI_GW_FireControl  "Boiler firebox"
   0008C7  TLM_ACTI_GW_Burnt  "Greybox: the Queen, burned"
   0008C8  TLM_TRIG_GW_OffSide
-  0008C9  TLM_ACTI_GW_CargoLashed  "Grain barge (lashed to the Queen)"
-  0008CA  TLM_ACTI_GW_Chain  "Anchor chain and barge lashing"
-  0008CB  TLM_ACTI_GW_Pilot  "Barge pilot lever"
+  0008C9  TLM_ACTI_GW_CargoLashed  "Opal's grain barge - tied to the Queen"
+  0008CA  TLM_ACTI_GW_Chain  "Grain barge lashing - inspect choices"
+  0008CB  TLM_ACTI_GW_Pilot  "Grain barge pilot - move freed cargo"
+  000C05  TLM_ACTI_GW_ReliefStores  "Greenwater winter relief - stores"
+  000C06  TLM_ACTI_Mercy_ReliefSupply  "Greenwater relief food - 10 Corn for 20 caps"
   000964  TLM_ACTI_NM_Travel  "Iron Junction story test"
   000965  TLM_ACTI_NM_Rules  "Rules of the Yard"
   000966  TLM_ACTI_NM_LabelYard  "Greybox: Iron Junction yard"
@@ -199,7 +201,7 @@ Container (3)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
   000AA8  TLM_CONT_RH_Rope  "Rope attachment: projectile target"
   000AA9  TLM_CONT_RH_TollBox  "Court payment box"
-Message (378)
+Message (412)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -460,6 +462,55 @@ Message (378)
   0008F6  TLM_MSG_GW_ReportUnknown  [box]  "Owen Pritchard: "If you haven't been to Greenwater, ask me the way. If you have, tell me what became of the grain and how you learned it.""  title: "Owen Pritchard"
           button 0: "[Report on Greenwater]"
           button 1: "[Later]"
+  000BFA  TLM_MSG_GW_ArrivalBrief  [box]  "[Greenwater: your task]
+
+Opal Starnes needs the town's winter grain back. Find her at the landing. Hatcher holds the grain barge beside the Queen, his occupied gambling boat. The Queen is NOT the grain barge. Signs identify both areas."
+          button 0: "Find Opal at the landing"
+  000BFB  TLM_MSG_GW_Goal  [box]  "[Your choices concern the grain]
+
+Opal needs the grain beside the Queen. The card table is on the occupied boat; the separate barge is by chain and pilot lever. Taking Hatcher's money leaves the grain with him. This note chooses no route."
+          button 0: "Continue"
+  000BFC  TLM_MSG_GW_Stakes  [box]  "[Who is affected]
+
+Greenwater needs grain for winter. Hatcher's payment helps you; he keeps the grain. The Chute risks cargo loss. Burning the Queen endangers people and grain. Hatcher's fate is a separate decision if you win."
+          button 0: "I understand the stakes"
+  000BFD  TLM_MSG_GW_ConfirmShare  [box]  "[Accept Hatcher's deal?]
+
+Receive 200 caps and leave the grain aboard Hatcher's barge. This settles your cargo choice; Greenwater does not get its grain back through this deal. Telling Opal a false story remains a separate choice."
+          button 0: "Accept 200 caps; leave the grain"
+          button 1: "Cancel; make no deal"
+  000BFE  TLM_MSG_GW_NoteSharePaid  [box]  "[Hatcher's payment]
+
+200 caps received. The grain remains with Hatcher. You have not told Opal anything yet."
+          button 0: "Continue"
+  000BFF  TLM_MSG_GW_LabelShareHeld  [box]  "[Greenwater grain: Hatcher retained it]
+
+You accepted Hatcher's payment. Greenwater did not receive the grain through that deal; the original barge remains beside the Queen."
+          button 0: "Continue"
+  000C00  TLM_MSG_GW_LabelLandingLayout  [box]  "[Greenwater landing]
+
+The food stores and Mercy return point are here. The Queen is Hatcher's gambling boat; its separate grain-barge area is beside the chain and pilot lever. These are staged areas, not moving boats."
+          button 0: "Continue"
+  000C01  TLM_MSG_GW_CardStakes  [box]  "[Play for the grain barge?]
+
+The stake is the grain barge. Winning gives you a chance to bring Greenwater's winter food home; delivery still requires the pilot lever and return dock. A lost hand is not a death sentence or an automatic deal."
+          button 0: "Play the hand"
+          button 1: "Cancel"
+  000C02  TLM_MSG_GW_ConfirmHang  [box]  "[Give Hatcher to Opal?]
+
+This hands the living Hatcher over for hanging at the steeple. It is an execution decision, separate from bringing the grain home."
+          button 0: "Confirm hanging"
+          button 1: "Cancel"
+  000C03  TLM_MSG_GW_ConfirmCustody  [box]  "[Deliver Hatcher alive?]
+
+Place the living Hatcher in Sheriff Pritchard's custody. This is a living-prisoner transfer, separate from the grain."
+          button 0: "Confirm living custody"
+          button 1: "Cancel"
+  000C04  TLM_MSG_GW_ConfirmRelease  [box]  "[Release Hatcher?]
+
+Let the living Hatcher keep his boat. This releases him; it does not promise future friendliness or change the grain's location."
+          button 0: "Confirm release"
+          button 1: "Cancel"
   0008F7  TLM_MSG_GW_AskTravel  [box]  "[Greenwater story test]
 
 Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
@@ -500,14 +551,14 @@ Not yet. Find out who and what is aboard first: the anchor chain, where the barg
 
 Nothing is burning. The order is given at the boiler firebox on the Queen's deck, and cannot be taken back."
           button 0: "Continue"
-  000900  TLM_MSG_GW_AskFire  [box]  "[Boiler firebox]
+  000900  TLM_MSG_GW_AskFire  [box]  "[Burn the occupied Queen?]
 
-Thirty people are aboard and the winter grain is lashed alongside. This cannot be undone."
+Thirty people are aboard the Queen, and Greenwater's grain is tied beside it. Fire endangers them and destroys the cargo. This cannot be undone."
           button 0: "Burn the occupied Queen."
           button 1: "Not yet."
   000901  TLM_MSG_GW_NoteFireScene  [box]  "[Greybox]
 
-The occupied Queen burns with the grain lashed alongside. The fire is shown by the marker on her deck. Nobody's death is counted here."
+The occupied Queen burns with the grain lashed alongside. The fire is shown by the marker on her deck. People were endangered; this build has not established an exact death toll."
           button 0: "Continue"
   000902  TLM_MSG_GW_NoteFireFailed  [box]  "[Greenwater story test]
 
@@ -557,11 +608,11 @@ Part of the cargo came through the Chute: 8 of 12 measures. The count is this bu
 
 Part of the cargo came through the Chute: 6 of 12 measures. The count is this build's bookkeeping."
           button 0: "Continue"
-  00090A  TLM_MSG_GW_AskLie  [box]  "[Greenwater story test]
+  00090A  TLM_MSG_GW_AskLie  [box]  "[Lie to Opal?]
 
-Opal Starnes has not heard what became of the barge."
-          button 0: "Tell her the Chute took it"
-          button 1: "Say nothing of it"
+The grain is still aboard Hatcher's barge. Tell Opal it was lost in the Chute instead?"
+          button 0: "[Lie] Say the Chute took it"
+          button 1: "Do not tell that story"
   00090B  TLM_MSG_GW_NoteShareFailed  [box]  "[Greenwater story test]
 
 No share was paid and no deal was made. See the script log."
@@ -619,7 +670,7 @@ The occupied Queen burned with the grain lashed alongside. None of it was recove
           button 0: "Continue"
   000918  TLM_MSG_GW_ReportSold  [box]  "[River report]
 
-You accepted Hatcher's share. The grain remains aboard the Queen."
+You accepted Hatcher's payment. The grain remains on his barge beside the Queen; Greenwater did not receive it."
           button 0: "Continue"
   000919  TLM_MSG_GW_ReportEndKnown  [box]  "[River report]
 
@@ -633,13 +684,13 @@ You did not learn why Hatcher held the grain.
 
 Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not."
           button 0: "Continue"
-  00091B  TLM_MSG_GW_LabelLanding  [box]  "[Greybox: Greenwater landing and cook-shed]
+  00091B  TLM_MSG_GW_LabelLanding  [box]  "[Greenwater landing]
 
-Opal Starnes keeps the stores here. The ration board, Rafferty's skiff and the skiff back to Mercy are close by. The gangway to the Queen leads on from here."
+Opal Starnes keeps the food stores here. Her winter grain is held beside Hatcher's Queen, not at this landing. Speak to Opal, then to Mose Rafferty about reaching the boats. The Mercy return point is nearby."
           button 0: "Continue"
-  00091C  TLM_MSG_GW_LabelQueen  [box]  "[Greybox: the Queen of Tellico's deck]
+  00091C  TLM_MSG_GW_LabelQueen  [box]  "[Queen of Tellico - occupied boat]
 
-Flat ground stands for the deck: the faro table, the strongbox and the boiler firebox. On her off side: the barge, its chain and its pilot lever."
+This area stands for Hatcher's gambling boat: the card table, strongbox and firebox. The separate grain barge is off this deck, beside the chain and pilot lever. Fire threatens both people and grain."
           button 0: "Continue"
   00091D  TLM_MSG_GW_LabelChute  [box]  "[Greybox: Hangman's Chute]
 
@@ -653,21 +704,21 @@ The steeple stands out of the lake here. Boats tie up to its ring."
 
 This marker stands for the burned boat."
           button 0: "Continue"
-  000920  TLM_MSG_GW_LabelCargoLashed  [box]  "[Grain barge]
+  000920  TLM_MSG_GW_LabelCargoLashed  [box]  "[Grain barge - separate cargo boat]
 
-Greenwater's winter grain, lashed to the Queen's off side."
+These crates stand for Greenwater's winter grain aboard the barge tied beside the Queen. This is the cargo Opal needs. It is separate from Hatcher's occupied gambling boat."
           button 0: "Continue"
-  000921  TLM_MSG_GW_LabelCargoWhole  [box]  "[Grain barge]
+  000921  TLM_MSG_GW_LabelCargoWhole  [box]  "[Original grain delivery]
 
-At the landing, whole: 12 of 12 measures."
+The whole barge reached the landing: 12 of 12 measures. This is cargo history. Complete the river journey, then inspect current reserves at the separate winter-relief stores."
           button 0: "Continue"
-  000922  TLM_MSG_GW_LabelCargoPiloted  [box]  "[Grain barge]
+  000922  TLM_MSG_GW_LabelCargoPiloted  [box]  "[Original grain delivery]
 
-At the landing, with part of its cargo: 8 of 12 measures."
+Part of the cargo reached the landing: 8 of 12 measures. This is cargo history. Complete the river journey, then inspect current reserves at the separate winter-relief stores."
           button 0: "Continue"
-  000923  TLM_MSG_GW_LabelCargoAlone  [box]  "[Grain barge]
+  000923  TLM_MSG_GW_LabelCargoAlone  [box]  "[Original grain delivery]
 
-At the landing, with part of its cargo: 6 of 12 measures."
+Part of the cargo reached the landing: 6 of 12 measures. This is cargo history. Complete the river journey, then inspect current reserves at the separate winter-relief stores."
           button 0: "Continue"
   000924  TLM_MSG_GW_BoardPage1  [box]  "[Ration Board, Greenwater, page 1 of 4]
 
@@ -1643,6 +1694,116 @@ We were paid to watch for the marshal's pouch if his freight was held up. Silver
 
 We were paid in square-stamped silver to watch for the marshal's pouch if his freight was held up. I don't know who paid. The wagon wasn't in the order."
           button 0: "Continue"
+  000C08  TLM_MSG_GR_NotReady  [box]  "[Winter relief unavailable]
+
+Finish the Greenwater road first. Relief also needs verified Corn and caps records and a consistent completed cargo account. No food, money or river result was changed."
+          button 0: "Continue"
+  000C09  TLM_MSG_GR_Unavailable  [box]  "[Food request unavailable]
+
+This request could not be safely confirmed. It will not be retried or refunded automatically. Other relief changes are blocked; you can still inspect the ledger. Keep this save for diagnosis."
+          button 0: "Continue"
+  000C0A  TLM_MSG_GR_Blocked  [box]  "[Relief request held]
+
+An earlier request is unresolved. No further donation, purchase or local step can run. Inspect the current ledger?"
+          button 0: "Inspect ledger"
+          button 1: "Close"
+  000C0B  TLM_MSG_GR_Stores  [box]  "[Winter relief]
+
+Your river decision remains unchanged. Bring real Corn here or buy a finite batch at Mercy's supply shelter. Nothing runs down while you are away."
+          button 0: "Inspect reserve"
+          button 1: "Donate Corn"
+          button 2: "Advance local 15-day step"
+          button 3: "Close"
+  000C0C  TLM_MSG_GR_StoresFinal  [box]  "[Six relief steps accounted for]
+
+No seventh step or new stock period exists. Outstanding need can still be cleared with real Corn. Earlier hunger remains in the record."
+          button 0: "Inspect reserve"
+          button 1: "Donate Corn"
+          button 2: "Close"
+  000C0D  TLM_MSG_GR_Supply  [box]  "[Mercy relief supply]
+
+Buy 10 Corn for 20 caps. Stock this period: %g Corn of 30. Buying is NOT a donation; carry it to Greenwater. Scavenged or grown Corn works too."
+          button 0: "Buy one batch"
+          button 1: "Inspect relief ledger"
+          button 2: "Close"
+  000C0E  TLM_MSG_GR_Status  [box]  "[Current relief stores]
+
+Step %g of 6. Reserve: %g units. Shortfall: %g. Remaining demand: %g. Donated: %g units. Each planned step costs 150. Ten units represent one provisioning day; this is a simplified ledger."
+          button 0: "Continue"
+  000C0F  TLM_MSG_GR_ForecastCovered  [box]  "[Relief forecast]
+
+Covered for the remaining planned steps. This is the bounded ledger's forecast, not a promise of universal town prosperity or erased past hunger."
+          button 0: "Continue"
+  000C10  TLM_MSG_GR_ForecastNeeded  [box]  "[Food still needed]
+
+More food is needed before winter is covered. Shortfall means unmet need, not a recorded death toll. You can return with Corn. Nothing runs down by waiting or leaving."
+          button 0: "Continue"
+  000C11  TLM_MSG_GR_PastHunger  [box]  "[Earlier hunger remains]
+
+A previous local step recorded a shortage. Aid clears current shortfall first, but cannot undo earlier hunger. No famine deaths have been inferred."
+          button 0: "Continue"
+  000C12  TLM_MSG_GR_DonateMany  [box]  "[Choose Corn quantity]
+
+Only actual Corn removed from your inventory is credited. Each Corn adds 10 relief units; you keep the rest."
+          button 0: "Give 1 Corn"
+          button 1: "Give 5 Corn"
+          button 2: "Give 10 Corn"
+          button 3: "Cancel"
+  000C13  TLM_MSG_GR_DonateFive  [box]  "[Choose Corn quantity]
+
+Each Corn adds 10 relief units. You do not currently hold 10 Corn."
+          button 0: "Give 1 Corn"
+          button 1: "Give 5 Corn"
+          button 2: "Cancel"
+  000C14  TLM_MSG_GR_DonateOne  [box]  "[Choose Corn quantity]
+
+You have fewer than 5 Corn. One actual Corn can add 10 relief units."
+          button 0: "Give 1 Corn"
+          button 1: "Cancel"
+  000C15  TLM_MSG_GR_NoFood  [box]  "[No Corn to donate]
+
+No Corn is available in your inventory. Gather, grow or bring Corn later; buying food is optional. Nothing was taken."
+          button 0: "Continue"
+  000C16  TLM_MSG_GR_ConfirmDonate  [box]  "[Donate food?]
+
+Give %g Corn from your inventory to the town stores. Each item is consumed once. This clears %g shortfall and adds %g reserve units. You keep the rest."
+          button 0: "Donate this food"
+          button 1: "Cancel"
+  000C17  TLM_MSG_GR_Donated  [box]  "[Food received]
+
+Your actual Corn contribution was consumed and credited once. Inspect the reserve to see current need. Your earlier river decision and any past hunger remain unchanged."
+          button 0: "Continue"
+  000C18  TLM_MSG_GR_ConfirmPurchase  [box]  "[Buy relief food?]
+
+Pay 20 real caps for 10 actual Corn. This uses 10 of the current period's finite 30 stock. The town receives nothing until you donate the food at Greenwater."
+          button 0: "Pay 20 caps; receive 10 Corn"
+          button 1: "Cancel"
+  000C19  TLM_MSG_GR_Purchased  [box]  "[Food purchased]
+
+20 caps paid; 10 Corn received. Town reserves did not change. Carry the food to Greenwater's separate winter-relief stores control to contribute it."
+          button 0: "Continue"
+  000C1A  TLM_MSG_GR_NoStock  [box]  "[Purchase unavailable]
+
+Stock or caps are insufficient, or your Corn inventory is at this prototype's safety limit. Nothing was taken. Gathered and grown Corn remain valid donations."
+          button 0: "Continue"
+  000C1B  TLM_MSG_GR_ConfirmStep  [box]  "[Advance local relief step?]
+
+This accounts for 15 days of town provisions only; it does NOT move the game's clock. Demand: 150 units. Projected reserve: %g; shortfall: %g. Nothing advances unless you confirm."
+          button 0: "Advance one relief step"
+          button 1: "Keep gathering"
+  000C1C  TLM_MSG_GR_StepDone  [box]  "[Local relief step recorded]
+
+One 15-day provision step was accounted for. No global time or other quest changed. Inspect the ledger for current need; real Corn can clear a shortage later."
+          button 0: "Continue"
+  000C1D  TLM_MSG_GR_CompleteNotice  [box]  "[Bounded winter relief covered]
+
+All six local steps are accounted for and outstanding shortfall is clear. Earlier hunger, the original grain outcome and any lie remain part of the record. Coverage does not mean nobody suffered."
+          button 0: "Continue"
+  000C20  TLM_MSG_GR_CompleteMenu  [box]  "[Winter relief ledger covered]
+
+All six local steps and current shortfall are covered. This bounded season has no further donation, purchase or advance. Earlier hunger and your original river decision remain in the record."
+          button 0: "Inspect ledger"
+          button 1: "Close"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
   script TLM:Core
@@ -2128,7 +2289,7 @@ Quest TLM_MQ02B  0008D3  "The Queen of Tellico"  type=MainQuest priority=55 flag
   stage   41  "You took the barge off Lyle Hatcher with his own deck. He stood the house a round and called it the best hand he ever lost."
   stage   42  "The grain barge reached Greenwater through Hangman's Chute. Some cargo was lost in the rapids."
   stage   43  "The occupied Queen burned with the grain lashed alongside. People tried to reach the water. The cargo is lost; the crew's account still needs witnesses."
-  stage   44  "You accepted Hatcher's share. The grain remains aboard the Queen."
+  stage   44  "You accepted Hatcher's payment. The grain remains on his barge beside the Queen; Greenwater did not receive it."
   stage   45  "Lyle Hatcher won your gun on the turn of a card and gave it back with a bow. He says you may still buy in."
   stage   46  "You told Greenwater the barge went down in the Chute. Hatcher counted your share onto the felt, and Opal Starnes thanked you for trying."
   stage   50  "There is a letter in Hatcher's strongbox. He was paid in stamped silver to hold the grain past first frost. Selling it back was his own idea."
@@ -2155,6 +2316,7 @@ Quest TLM_MQ02B  0008D3  "The Queen of Tellico"  type=MainQuest priority=55 flag
 
 Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:GreenwaterWalk
+           TLM_Relief = TLM_GW_Relief
            TLM_MQ02B = TLM_MQ02B
            TLM_MQ01 = TLM_MQ01
            TLM_G_MQ01_Done = TLM_G_MQ01_Done
@@ -2181,6 +2343,8 @@ Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  typ
            Alias_Pilot = alias 30 on TLM_GW
            Alias_FireControl = alias 24 on TLM_GW
            Alias_Burnt = alias 25 on TLM_GW
+           Alias_ReliefStores = alias 31 on TLM_GW
+           Alias_ReliefSupply = alias 32 on TLM_GW
            SayOpalDefault = TLM_MSG_GW_OpalDefault
            SayOpalFirst = TLM_MSG_GW_OpalFirst
            SayOpalWants = TLM_MSG_GW_OpalWants
@@ -2215,6 +2379,17 @@ Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  typ
            SayBeldenRelief = TLM_MSG_GW_BeldenRelief
            SayReportKnown = TLM_MSG_GW_ReportKnown
            SayReportUnknown = TLM_MSG_GW_ReportUnknown
+           ArrivalBrief = TLM_MSG_GW_ArrivalBrief
+           Goal = TLM_MSG_GW_Goal
+           Stakes = TLM_MSG_GW_Stakes
+           ConfirmShare = TLM_MSG_GW_ConfirmShare
+           NoteSharePaid = TLM_MSG_GW_NoteSharePaid
+           LabelShareHeld = TLM_MSG_GW_LabelShareHeld
+           LabelLandingLayout = TLM_MSG_GW_LabelLandingLayout
+           CardStakes = TLM_MSG_GW_CardStakes
+           ConfirmHang = TLM_MSG_GW_ConfirmHang
+           ConfirmCustody = TLM_MSG_GW_ConfirmCustody
+           ConfirmRelease = TLM_MSG_GW_ConfirmRelease
            AskTravel = TLM_MSG_GW_AskTravel
            AskTravelAgain = TLM_MSG_GW_AskTravelAgain
            NoteTravelNotYet = TLM_MSG_GW_NoteTravelNotYet
@@ -2358,6 +2533,12 @@ Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  typ
   alias 30 Pilot  (reference) [Optional, AllowDisabled]
            script TLM:GreenwaterTalk
                     Who = 13
+  alias 31 ReliefStores  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 26
+  alias 32 ReliefSupply  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 27
 
 Quest TLM_MQ02A  00098B  "The Night Mail"  type=MainQuest priority=56 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:MQ02AQuest
@@ -3220,7 +3401,47 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
            script TLM:RedHollowTalk
                     Who = -1
 
-Not wired yet (812):
+Quest TLM_GW_Relief  000C07  "Greenwater winter relief (local ledger)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:GreenwaterRelief
+           TLM_MQ02B = TLM_MQ02B
+           Alias_Stores = alias 0 on TLM_GW_Relief
+           Alias_Supply = alias 1 on TLM_GW_Relief
+           Alias_Player = alias 2 on TLM_GW_Relief
+           NotReady = TLM_MSG_GR_NotReady
+           Unavailable = TLM_MSG_GR_Unavailable
+           Blocked = TLM_MSG_GR_Blocked
+           Stores = TLM_MSG_GR_Stores
+           StoresFinal = TLM_MSG_GR_StoresFinal
+           Supply = TLM_MSG_GR_Supply
+           Status = TLM_MSG_GR_Status
+           ForecastCovered = TLM_MSG_GR_ForecastCovered
+           ForecastNeeded = TLM_MSG_GR_ForecastNeeded
+           PastHunger = TLM_MSG_GR_PastHunger
+           DonateMany = TLM_MSG_GR_DonateMany
+           DonateFive = TLM_MSG_GR_DonateFive
+           DonateOne = TLM_MSG_GR_DonateOne
+           NoFood = TLM_MSG_GR_NoFood
+           ConfirmDonate = TLM_MSG_GR_ConfirmDonate
+           Donated = TLM_MSG_GR_Donated
+           ConfirmPurchase = TLM_MSG_GR_ConfirmPurchase
+           Purchased = TLM_MSG_GR_Purchased
+           NoStock = TLM_MSG_GR_NoStock
+           ConfirmStep = TLM_MSG_GR_ConfirmStep
+           StepDone = TLM_MSG_GR_StepDone
+           CompleteNotice = TLM_MSG_GR_CompleteNotice
+           CompleteMenu = TLM_MSG_GR_CompleteMenu
+  structure: 4 of 4 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  stage   10  "The completed river cargo account was recorded once."
+  stage   20  "An actual Corn contribution was credited."
+  stage   30  "The first explicit local provision step was recorded."
+  stage   90 [complete]  "Six provision steps and outstanding shortfall are accounted for."
+  alias  0 Stores  (reference) [Optional, AllowDisabled]
+  alias  1 Supply  (reference) [Optional, AllowDisabled]
+  alias  2 Player  (reference) [Optional]
+           script TLM:GreenwaterTalk
+                    Who = 0
+
+Not wired yet (821):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -3252,6 +3473,8 @@ Not wired yet (812):
   - TLM_ACTI_GW_CargoLashed: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_GW_Chain: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_GW_Pilot: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_ReliefStores: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_Mercy_ReliefSupply: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NM_Travel: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NM_Rules: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NM_LabelYard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
@@ -3447,6 +3670,8 @@ Not wired yet (812):
   - TLM_REF_GW_CargoLashed: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_GW_Chain: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_GW_Pilot: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_ReliefStores: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_ReliefSupply: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_NM_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_NM_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_RH_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
@@ -3882,6 +4107,8 @@ Not wired yet (812):
   - TLM_GW alias CargoLashed: its reference TLM_REF_GW_CargoLashed is not placed
   - TLM_GW alias Chain: its reference TLM_REF_GW_Chain is not placed
   - TLM_GW alias Pilot: its reference TLM_REF_GW_Pilot is not placed
+  - TLM_GW alias ReliefStores: its reference TLM_REF_GW_ReliefStores is not placed
+  - TLM_GW alias ReliefSupply: its reference TLM_REF_GW_ReliefSupply is not placed
   - TLM_MQ02A script TLM:MQ02AQuest.Caps: needs 'Caps001' from Fallout4.esm
   - TLM_NM alias MercyTravel: its reference TLM_REF_NM_MercyTravel is not placed
   - TLM_NM alias MercyReturn: its reference TLM_REF_NM_MercyReturn is not placed
@@ -4033,3 +4260,6 @@ Not wired yet (812):
   - TLM_RH alias Cage11: its reference TLM_REF_RH_Cage11 is not placed
   - TLM_RH alias Surface11: its reference TLM_REF_RH_Surface11 is not placed
   - TLM_RH alias Player: needs PlayerRef from Fallout4.esm
+  - STRICT relief unavailable: Corn requires exact Ingestible Corn named 'Corn'; property omitted, ledger fails closed
+  - STRICT relief unavailable: Caps requires exact MiscItem Caps001 named 'Bottlecap'; property omitted, ledger fails closed
+  - TLM_GW_Relief alias Player: needs PlayerRef from Fallout4.esm

@@ -291,6 +291,8 @@ bool talking = false
 bool ranSaid = false
 bool burnedSaid = false
 bool arrivalBriefRead = false
+bool reliefActivation = false
+int useGeneration = 0
 
 ; ================================================================== set-up
 
@@ -524,12 +526,14 @@ Function Used(int aiWho)
 		Return
 	EndIf
 	talking = true
+	int activationGeneration = useGeneration
 	TLM:MQ02BQuest river = Road()
 	If !river
 		Debug.Trace("TLM_GW: TLM_MQ02B does not carry TLM:MQ02BQuest; nothing can be used", 2)
 	ElseIf aiWho == GW_TRAVEL
 		Travel(river)
 	ElseIf aiWho == GW_RELIEF_STORES || aiWho == GW_RELIEF_SUPPLY
+		reliefActivation = true
 		If BindRelief()
 			TLM:GreenwaterRelief ledger = TLM_Relief as TLM:GreenwaterRelief
 			If aiWho == GW_RELIEF_STORES
@@ -581,7 +585,20 @@ Function Used(int aiWho)
 	ElseIf aiWho == GW_CARGO
 		LookAtCargo(river)
 	EndIf
-	talking = false
+	If activationGeneration == useGeneration
+		talking = false
+		reliefActivation = false
+	EndIf
+EndFunction
+
+Function ReliefLoaded()
+	{Only a relief activation may release its interrupted outer claim.
+	A resumed older activation cannot release a newer conversation's claim.}
+	If reliefActivation
+		useGeneration += 1
+		reliefActivation = false
+		talking = false
+	EndIf
 EndFunction
 
 Function Entered(int aiWho)
@@ -1468,7 +1485,7 @@ Function LandingOverview(TLM:MQ02BQuest akRiver)
 		ShowBox(LabelShareHeld)
 	ElseIf akRiver.Cargo() == RV_CARGO_HOME_WHOLE || akRiver.Cargo() == RV_CARGO_HOME_REDUCED
 		LookAtCargo(akRiver)
-	ElseIf akRiver.OpalCanSpeak() && akRiver.Outcome() == RV_NONE
+	ElseIf akRiver.OpalCanSpeak() && akRiver.RaffertyCanSpeak() && akRiver.Outcome() == RV_NONE
 		ShowBox(LabelLanding)
 	Else
 		ShowBox(LabelLandingLayout)

@@ -42,6 +42,9 @@ public sealed class Builder
     public List<string> VanillaNotes { get; } = new();
     /// <summary>Game records found in Fallout4.esm: the name asked for, the record, and its kind.</summary>
     public List<Report.VanillaInfo> VanillaFound { get; } = new();
+    // Strict inventory bindings: null key means the feature must remain
+    // unavailable and the output property must be absent, never a fallback.
+    public Dictionary<string, FormKey> StrictBindings { get; } = new();
 
     /// <summary>The references this build placed in cells of the game, by EditorID. Empty without Fallout4.esm.</summary>
     public IReadOnlyDictionary<string, FormKey> PlacedKeys => _placed;
@@ -1646,6 +1649,7 @@ public sealed class Builder
                         else if (strict.Kind == "MiscItem" && _vanilla!.TryResolve<IMiscItemGetter>(strictKey, out var misc))
                             strictOk = misc.EditorID == strict.EditorId && misc.Name?.String == strict.DisplayName;
                     }
+                    StrictBindings[$"{spec.EditorId}/{bind.Script}/{strict.Name}"] = strictOk ? strictKey : FormKey.Null;
                     if (strictOk)
                     {
                         entry.Properties.Add(new ScriptObjectProperty { Name = strict.Name, Flags = ScriptProperty.Flag.Edited,

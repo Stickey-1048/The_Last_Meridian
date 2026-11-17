@@ -98,6 +98,7 @@ class River:
     hire_heard: bool = False
     ran_said: bool = False
     burned_said: bool = False
+    arrival_brief_read: bool = False
     hatcher_in_irons: bool = False
 
     # ---- what the player was given, and what the game was asked for
@@ -174,6 +175,9 @@ class River:
         shown = ["AskTravelAgain" if self.done(100) else "AskTravel"]
         if go:
             self.zones_up = True
+            if not self.arrival_brief_read and self.outcome == RV_NONE and not self.done(20) and self.opal:
+                shown.append("ArrivalBrief")
+                self.arrival_brief_read = True
         return shown
 
     def step_onto_landing(self) -> None:
@@ -262,6 +266,7 @@ class River:
                 self._tick(10)
                 if not self.done(30):
                     self._show(20)
+                shown += ["Goal", "Stakes"]
             elif first == "guns":
                 shown.append("OpalGuns")
             elif first == "bowl":
@@ -378,6 +383,7 @@ class River:
         return ["HatcherDefault"]
 
     def _deal(self, shown, then, done, judge):
+        shown.append("CardStakes")
         if not self.charisma_bound:
             return
         if self.charisma >= RV_CARD_THRESHOLD:
@@ -406,6 +412,7 @@ class River:
         if not self.share_offered():
             shown.append("NoteShareFailed")
             return
+        shown.append("ConfirmShare")
         self.claim = RV_SHARE
         self.share_pending = True
         self.asked["caps"] = self.asked.get("caps", 0) + 1
@@ -419,6 +426,7 @@ class River:
         self.outcome = RV_SHARE
         self.stages.add(44)
         self._course_taken()
+        shown.append("NoteSharePaid")
 
     def _judge_at_table(self, shown, judge):
         if not self.hatcher_at_table() or not self.hatcher_to_judge():
@@ -439,6 +447,10 @@ class River:
             self._judge(verdict, shown)
 
     def _judge(self, verdict: int, shown) -> bool:
+        if self.road_open() and self.hatcher_to_judge():
+            if verdict == 60 and self.opal:shown.append("ConfirmHang")
+            elif verdict == 61 and self.sheriff:shown.append("ConfirmCustody")
+            elif verdict == 1:shown.append("ConfirmRelease")
         ok = False
         if self.road_open() and self.hatcher_to_judge():
             if verdict == 60 and self.opal:
