@@ -2452,6 +2452,7 @@
     "ack": "Explicit Ready plus current Shot/DeadCourier acknowledgement; no40/44/60 from pickup",
     "guard": "Captured original/Juno/player/holder; container read after native context reads, generation last at display and commit",
     "inventory": "No operation added; held reference not enabled/reissued/moved/dropped",
-    "scope": "F1 consolidated order; no accepted NPC words or source IDs changed"
+    "scope": "F1 consolidated order; no accepted NPC words or source IDs changed",
+    "enableBoundary": "Complete yielding eligibility first; sample disabled then actual container and final generation. Enable only a necessary initial disabled ground original; already-enabled or held originals are never enabled."
   }
 }

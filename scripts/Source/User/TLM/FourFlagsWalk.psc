@@ -1547,11 +1547,17 @@ Function CourierScene(int capturedEpoch)
 		Return
 	EndIf
 	courier.Enable()
-	ObjectReference holder = original.GetContainer()
 	If !Road().BeginEncounter(courier,original,player,capturedEpoch)
 		Return
 	EndIf
-	If !holder
+	; Finish yielding eligibility reads before sampling the effect boundary.
+	; An already-enabled paused original needs no Enable, held or otherwise.
+	bool needsEnable = original.IsDisabled()
+	ObjectReference holder = original.GetContainer()
+	If capturedEpoch != Road().Epoch()
+		Return
+	EndIf
+	If needsEnable && !holder
 		original.Enable()
 	EndIf
 	bool foundDead = courier.IsDead()

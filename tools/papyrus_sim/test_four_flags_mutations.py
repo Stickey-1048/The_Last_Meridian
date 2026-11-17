@@ -12,6 +12,39 @@ class FourFlagsMutations(unittest.TestCase):
         except (AssertionError,SimError):return
         self.fail('actual behavior accepted the damaged source: '+old)
 
+    def test_late_pickup_probe_detects_the_historical_stale_holder_enable_program(self):
+        from test_four_flags_late_custody import observe_late_pickup
+        def guarded(scripts):
+            a=Fair(self,scripts=scripts);a.use('Ready',Ready=0,Shot=1)
+            original,fired,enabled=observe_late_pickup(a)
+            self.assertEqual(len(fired),1);self.assertNotIn(True,enabled)
+            self.assertEqual(enabled,[]);self.assertIs(original.container,a.s.player)
+        safe='''\tcourier.Enable()
+\tIf !Road().BeginEncounter(courier,original,player,capturedEpoch)
+\t\tReturn
+\tEndIf
+\t; Finish yielding eligibility reads before sampling the effect boundary.
+\t; An already-enabled paused original needs no Enable, held or otherwise.
+\tbool needsEnable = original.IsDisabled()
+\tObjectReference holder = original.GetContainer()
+\tIf capturedEpoch != Road().Epoch()
+\t\tReturn
+\tEndIf
+\tIf needsEnable && !holder
+\t\toriginal.Enable()
+\tEndIf
+'''
+        broken='''\tcourier.Enable()
+\tObjectReference holder = original.GetContainer()
+\tIf !Road().BeginEncounter(courier,original,player,capturedEpoch)
+\t\tReturn
+\tEndIf
+\tIf !holder
+\t\toriginal.Enable()
+\tEndIf
+'''
+        self.caught('FourFlagsWalk.psc',safe,broken,guarded)
+
     def test_held_scene_recovery_and_changed_custody_regressions_detect_broken_source(self):
         from test_four_flags_recovery import pickup,retry
         def recovery(scripts):
