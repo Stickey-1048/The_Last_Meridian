@@ -51,7 +51,12 @@ class RedHollowProjection(unittest.TestCase):
         q=next(q for q in self.plugin['Quests'] if q['EditorId']=='TLM_MQ02C');self.assertEqual(q['Stages'],self.map['stages']);self.assertEqual(q['Objectives'],self.map['objectives'])
         old=subprocess.run(['git','show','4624ee9:tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
         ids=(ROOT/'tools/PluginBuilder/formkeys.txt').read_text().splitlines();self.assertEqual(ids[:len(old)],old)
-        self.assertEqual({ids[i]:int(ids[i+1]) for i in range(len(old),len(ids),2)},self.map['allocation']['new'])
+        accepted=subprocess.run(['git','show','1cdd466:tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
+        self.assertEqual(ids[:len(accepted)],accepted,'the complete accepted Red Hollow prefix remains exact')
+        self.assertEqual({ids[i]:int(ids[i+1]) for i in range(len(old),len(accepted),2)},self.map['allocation']['new'])
+        # The later relief candidate separately verifies its exact39-record
+        # contiguous append; do not misattribute it to the old Hollow ledger.
+        self.assertEqual(len(ids)-len(accepted),78)
         roles=[n for n in self.map['allocation']['new'] if n.startswith('TLM_NPC_RH_')];self.assertEqual(len(roles),15);self.assertFalse(any('Dunmore' in n or 'Cutter' in n for n in roles))
     def test_five_labels_and_every_own_reference_has_supported_floor(self):
         cell=next(c for c in self.plugin['Cells'] if c['EditorId']=='TLM_CELL_RedHollow');self.assertTrue(cell['OfThisPlugin'])

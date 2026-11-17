@@ -210,7 +210,7 @@ class TheFourCourses(unittest.TestCase):
         self.assertEqual(a.count(a.caps) - a.caps_before, 0)
         a.table(["share"])
         self.assertEqual((a.count(a.caps) - a.caps_before, a.g("Outcome"), a.g("Cargo"), a.g("GrainSold")), (200, 44, gw.RV_CARGO_LASHED, 0))
-        self.assertEqual(a.road.stages[44]["Log"], "You accepted Hatcher's share. The grain remains aboard the Queen.")
+        self.assertEqual(a.road.stages[44]["Log"], "You accepted Hatcher's payment. The grain remains on his barge beside the Queen; Greenwater did not receive it.")
         self.assertTrue(a.on("CargoLashed") and a.on("Belden"))
         a.table()                                                  # the table again: nothing more to sell
         a.opal(lie=False)

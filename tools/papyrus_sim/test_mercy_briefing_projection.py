@@ -201,7 +201,7 @@ class Projection(unittest.TestCase):
         self.assertEqual(quest["Objectives"][0]["TargetAliases"], [0])
         self.assertEqual([s["Name"] for s in quest["Scripts"]], ["TLM:MercyBriefing"])
         ids = {q["EditorId"] for q in self.plugin["Quests"]}
-        self.assertEqual(ids, {"TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", "TLM_MQ02A", "TLM_MQ02B", "TLM_GW", "TLM_MQ02C", "TLM_RH", "TLM_NM"})
+        self.assertEqual(ids, {"TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", "TLM_MQ02A", "TLM_MQ02B", "TLM_GW", "TLM_MQ02C", "TLM_RH", "TLM_NM", "TLM_GW_Relief"})
         for later in entry["not_a_stage_of"]:
             # TLM_MQ02B now exists (GREENWATER-STORY-001): the briefing is still no stage of it.
             if later != "TLM_MQ02b":
