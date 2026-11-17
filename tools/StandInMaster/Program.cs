@@ -57,7 +57,7 @@ var variant = args.Length > 1 ? args[1] : "default";
 var mod = new Fallout4Mod(ModKey.FromNameAndExtension("Fallout4.esm"), Fallout4Release.Fallout4);
 FormKey Key(uint id) => new(mod.ModKey, id);
 
-var room = variant is "default" or "localized" or "plain-triggers" or "bare-room" or "relief-no-corn" or "relief-wrong-corn-name";
+var room = variant is "default" or "localized" or "plain-triggers" or "bare-room" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model";
 if (variant == "localized") mod.UsingLocalization = true;
 var lowIds = !room;
 var caps = new MiscItem(lowIds ? Key(0xF) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Caps001", Name = "Bottlecap" };
@@ -249,6 +249,13 @@ if (room)
     // is read from the owner's master when the plugin is built there.
     var floorTile = mod.Statics.AddNew("workshop_ShackMidFloor01B");
     floorTile.ObjectBounds = new ObjectBounds { First = new P3Int16(-128, -128, -8), Second = new P3Int16(128, 128, 0) };
+    // New opt-in synthetic audit fixtures only. Historical default is exact.
+    // Paths/bounds are supplied model inputs, not real meshes/native proof.
+    if(variant.StartsWith("four-flags-floor",StringComparison.Ordinal)){
+        floorTile.ObjectBounds=new ObjectBounds{First=new P3Int16(-128,-128,-14),Second=new P3Int16(128,128,0)};
+        if(variant!="four-flags-floor-no-model")floorTile.Model=new Model{File="Synthetic\\FourFlagsFloor.nif"};
+        if(variant=="four-flags-floor-bounds")floorTile.ObjectBounds.First=new P3Int16(-96,-128,-14);
+    }
     // Synthetic records for DEMO-ORIENT-002 lookup/placement/enable tests.
     // These paths are deliberately fake: this is not geometry or visual proof.
     foreach (var id in new[] { "StoneWallOldRubble", "ExtRubble_BricksLrg_Clump01", "FenceWIBollardPost01", "FenceWoodPost01", "ModernDomesticTableLrg01" })
@@ -278,7 +285,7 @@ if (room)
     qaSmoke.Persistent.Add(Put(clutter.ToLink(), -300, 40, 0));
     cells.Add(qaSmoke);
 
-    if (variant is "default" or "localized" or "plain-triggers" or "relief-no-corn" or "relief-wrong-corn-name")
+    if (variant is "default" or "localized" or "plain-triggers" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model")
     {
         // Two more things in far corners, so that the room is large enough to
         // hold what the builder places in it.
@@ -357,6 +364,9 @@ switch (variant)
     case "default":
     case "relief-no-corn":
     case "relief-wrong-corn-name":
+    case "four-flags-floor":
+    case "four-flags-floor-bounds":
+    case "four-flags-floor-no-model":
     case "localized":
     case "plain-triggers":
     case "bare-room":

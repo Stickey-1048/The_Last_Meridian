@@ -18,7 +18,10 @@ import json
 import sys
 import unittest
 
-from test_sim import PLUGIN, ROOT, need_build
+from test_sim import ROOT as LIVE_ROOT, need_build
+from source_snapshot import snapshot,built_greenwater_relief,GREENWATER_RELIEF
+ROOT=snapshot(GREENWATER_RELIEF)
+PLUGIN=built_greenwater_relief()
 from test_mercy_briefing_projection import BARRED, ESP, book_texts
 
 MAPPING = ROOT / "docs" / "design" / "GREENWATER_STORY_001_MAPPING.json"

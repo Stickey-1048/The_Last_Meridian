@@ -127,8 +127,8 @@ public static class Greenwater
     // This build speaking, never a character. In square brackets on the screen.
     public const string UiTravelName = "Greenwater story test";
     // NIGHT-MAIL-STORY-001: in the composed candidate two roads are playable. The 016b source keeps the one-road wording.
-    public const string UiOnlyGreenwater = "Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not.";
-    public const string UiRoadComplete = "Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.";
+    public const string UiOnlyGreenwater = "Three roads are playable. Four Flags entry is available after the first section.";
+    public const string UiRoadComplete = "Greenwater road complete. The other roads and Four Flags entry remain available.";
     public const string UiShareInterim = "You accepted Hatcher's payment. The grain remains on his barge beside the Queen; Greenwater did not receive it.";
     public const string UiObjectiveReturn = "Use the barge's pilot lever and bring the grain to the landing";
     public const string UiObjectiveLeave = "Take the skiff back to Mercy Crossing";
@@ -506,6 +506,7 @@ public static class Greenwater
         Script: new ScriptBind("TLM:GreenwaterWalk", new Prop[]
         {
             new FormProp("TLM_Relief", GreenwaterRelief.QuestId),
+            new FormProp("TLM_FourFlags", FourFlags.QuestId),
             new FormProp("TLM_MQ02B", QuestId),
             new FormProp("TLM_MQ01", "TLM_MQ01"),
             new FormProp("TLM_G_MQ01_Done", "TLM_G_MQ01_Done"),

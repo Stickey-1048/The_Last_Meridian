@@ -34,6 +34,7 @@ NOT COMPILED. NOT RUN IN THE GAME. It runs in the project's stand-in engine
 
 Group Quests
 	Quest Property TLM_Relief Auto Const
+	Quest Property TLM_FourFlags Auto Const
 	Quest Property TLM_MQ02B Auto Const Mandatory
 	Quest Property TLM_MQ01 Auto Const Mandatory
 	{Read only.}
@@ -300,6 +301,10 @@ TLM:MQ02BQuest Function Road()
 	Return TLM_MQ02B as TLM:MQ02BQuest
 EndFunction
 
+bool Function CanVisitFairBelden()
+	Return !talking && Road().BeldenVisitSafe()
+EndFunction
+
 ObjectReference Function Piece(ReferenceAlias akAlias)
 	If !akAlias
 		Return None
@@ -520,6 +525,9 @@ EndFunction
 
 Function Used(int aiWho)
 	{Called by TLM:GreenwaterTalk when the player uses a person or a piece.}
+	If aiWho == GW_BELDEN && TLM_FourFlags && (TLM_FourFlags as TLM:FourFlagsWalk).IsVisiting(Alias_Belden.GetActorReference())
+		Return
+	EndIf
 	; Nothing between the test and the claim calls into the game, so two
 	; activations cannot both pass.
 	If talking

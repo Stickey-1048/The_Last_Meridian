@@ -45,6 +45,8 @@ reached the game.}
 Group Quests
 	Quest Property TLM_MQ01 Auto Const Mandatory
 	Quest Property TLM_SQ01 Auto Const Mandatory
+	Quest Property TLM_FourFlags Auto Const
+	Quest Property TLM_FourFlagsEntry Auto Const
 EndGroup
 
 Group Globals
@@ -265,6 +267,7 @@ Function Begin()
 	OpenGreenwater()
 	OpenNightMail()
 	OpenRedHollow()
+	OpenFourFlags()
 	Debug.Trace("TLM_A1: the first section is set up; aliases left empty: " + unfilled + ", people not there: " + missing)
 	If SayBegin
 		SayBegin.Show()
@@ -393,6 +396,9 @@ EndFunction
 
 Function Spoken(int aiWho, Actor akWho)
 	{Called by TLM:Act1Talk when the player activates somebody.}
+	If TLM_FourFlags && (TLM_FourFlags as TLM:FourFlagsWalk).IsVisiting(akWho)
+		Return
+	EndIf
 	; The same living earlier-road actor can be staged at Red Hollow. Its new
 	; alias owns that activation there; neither old encounter nor alias is reset.
 	If TLM_RedHollow && (TLM_RedHollow as TLM:RedHollowWalk).BorrowsActor(akWho)
@@ -662,6 +668,51 @@ bool Function AfterTheChapter(Actor akWho)
 	EndIf
 	; Nothing was offered, or each was explicitly left for later: the briefing, as before.
 	Return OfferBriefing(akWho)
+EndFunction
+
+bool Function CanVisitFair()
+	Return begun && IsRunning() && !quiet && !talking
+EndFunction
+
+Actor Function FairActor(int role)
+	int index = 18
+	If role == 1
+		index = 17
+	ElseIf role == 2
+		index = 19
+	ElseIf role != 0
+		Return None
+	EndIf
+	If !Everything || Everything.Length <= index || !Everything[index]
+		Return None
+	EndIf
+	Return Everything[index].GetActorReference()
+EndFunction
+
+bool Function FairActorAvailable(Actor who)
+	If !CanVisitFair() || !who
+		Return false
+	EndIf
+	If who == FairActor(0)
+		TLM:GreenwaterWalk river = Greenwater()
+		If river && !river.Road().SheriffVisitSafe()
+			Return false
+		EndIf
+		If TLM_RedHollow
+			TLM:RedHollowWalk hollow = TLM_RedHollow as TLM:RedHollowWalk
+			If hollow && hollow.Road().CourtPending() != 0
+				Return false
+			EndIf
+		EndIf
+	EndIf
+	Return true
+EndFunction
+
+Function OpenFourFlags()
+	TLM:FourFlagsEntry adapter = TLM_FourFlagsEntry as TLM:FourFlagsEntry
+	If adapter
+		adapter.OpenFrom(Self)
+	EndIf
 EndFunction
 
 TLM:GreenwaterWalk Function Greenwater()

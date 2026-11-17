@@ -687,6 +687,12 @@ Function Loaded()
 	StartTimer(1.0, 1)
 EndFunction
 
+Function FairTransitGap()
+	{Invalidate only the sample prime; keep seconds, warning and every intent.}
+	lastSample = -1.0
+	lastArea = 0
+EndFunction
+
 bool Function SetUp()
 	If !IsRunning() || !Road().Commissioned()
 		Return false

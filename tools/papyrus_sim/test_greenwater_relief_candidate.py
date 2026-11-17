@@ -9,7 +9,9 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from test_sim import ROOT
+from test_sim import ROOT as LIVE_ROOT
+from source_snapshot import snapshot,GREENWATER_RELIEF
+ROOT=snapshot(GREENWATER_RELIEF)
 sys.path.insert(0,str(ROOT/'tools'))
 import greenwater_relief_candidate as candidate
 
@@ -24,13 +26,14 @@ def source_copy():
 class GreenwaterReliefCandidate(unittest.TestCase):
     def test_exact_source_with_frozen_prior_candidates(self):
         self.assertEqual(candidate.problems(),[])
+        self.assertTrue(candidate.problems(LIVE_ROOT),"frozen relief verifier rejects later composition")
         m=json.loads(candidate.MANIFEST.read_text());self.assertEqual(m['scripts'],30)
         for name in candidate.FROZEN:
-            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
+            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
             self.assertEqual((ROOT/name).read_text(),old,name)
         self.assertTrue(all(v is None for v in m['measured'].values()))
         self.assertEqual((len(m['runtimeSelection']['reusedReviewedPex']),len(m['runtimeSelection']['freshlyCompiled'])),(17,13))
-        old=json.loads(subprocess.run(['git','show',candidate.BASELINE+':tools/win/red-hollow-story-candidate.json'],cwd=ROOT,capture_output=True,check=True).stdout)
+        old=json.loads(subprocess.run(['git','show',candidate.BASELINE+':tools/win/red-hollow-story-candidate.json'],cwd=LIVE_ROOT,capture_output=True,check=True).stdout)
         self.assertEqual(m['baselineSourceTextSha256'],old['sourceTextSha256'])
 
     def test_repinning_cannot_waive_an_unrelated_accepted_script_change(self):

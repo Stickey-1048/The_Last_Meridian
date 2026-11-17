@@ -138,8 +138,8 @@ public static class NightMail
     // ------------------------------------------------------------------ UI
     // This build speaking, never a character. In square brackets on the screen.
     public const string UiTravelName = "Iron Junction story test";
-    public const string UiBothRoads = "Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not.";
-    public const string UiRoadComplete = "Night Mail road complete. Greenwater and Red Hollow remain playable; the fair is not.";
+    public const string UiBothRoads = "Three roads are playable. Four Flags entry is available after the first section.";
+    public const string UiRoadComplete = "Night Mail road complete. The other roads and Four Flags entry remain available.";
     // The contract's neutral journal text, each on a stage of this build's own (never on an accepted one's number
     // except 62, whose accepted text claims a night that is not shown).
     public const string UiJob = "You agreed to ride the Night Mail with the payroll and fever medicine.";

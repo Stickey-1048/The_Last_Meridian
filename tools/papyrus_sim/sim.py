@@ -1804,6 +1804,17 @@ class Session:
             return sum(ref.inventory.values())
         return ref.inventory.get(form, 0)
 
+    def n_objectreference_getcontainer(self, ref, context):
+        # [SDK] ObjectReference.psc:413, ObjectReference GetContainer(), native.
+        # Existing exact-reference _into_container bookkeeping supplies this
+        # synthetic observation. No real inventory/save receipt is implied.
+        return ref.container
+
+    def n_actor_isinscene(self, ref, context):
+        # [SDK] Actor.psc:397 bool IsInScene(), native. No baseline stand-in
+        # scene runs; adverse tests explicitly seed this separate state.
+        return bool(getattr(ref, 'in_scene', False))
+
     # Actor values (GREENWATER-STORY-001: the card check reads the player's Charisma).
     def _actor_value(self, ref, av, base: bool) -> float:
         """[documented, from memory of the wiki; see tools/papyrus_natives.json] GetValue "gets the current

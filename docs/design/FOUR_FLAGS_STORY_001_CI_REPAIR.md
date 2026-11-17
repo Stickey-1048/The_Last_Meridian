@@ -1,0 +1,13 @@
+# Four Flags clean-checkout fixture repair
+
+The complete local portable run on14c31eb20bc4fd8211b6fc9a7c9c222f5a2ee94b passed956tests in745.115s and both65-scenario/1628-check replays, including60calls/second. Its source verifier and five package refusals also passed. This is source/synthetic evidence only, never native acceptance.
+
+Exact remote run44171553839/job134351697109 failed after956tests/844.542s with precisely three subcase failures in the floor metadata projection. Each attempted to read nonexistent build/sim/TheLastMeridian.esp. Fresh portable checks deliberately provide the simulator's JSON descriptions there; an adjacent ESP is not part of that fixture contract. A manually generated local ESP masked the test's undeclared dependency. Complete remote diagnostics are preserved outside source at build/checks/four-flags/remote-44171553839-failed.txt, SHA2562DEC52092D91F1BED80E30A524694E2327FFC73ADBB513E51C4F37DB5672F0EC.
+
+The floor check now uses stand_in_story(), the existing canonical helper's actually generated synthetic story binary. The floor audit itself is unchanged: its positive typed-model/exact-bounds case must succeed and its wrong-bounds/missing-model cases must return the actual REFUSED result. No negative case is skipped or accepted merely for failing to find an input.
+
+A fresh JSON-only regression explicitly supplies a new simulator-description folder with no sibling ESP and an empty canonical build cache, then executes all three real floor audit cases. It verifies that no sibling binary is created or required. Both targeted methods pass18.068s, including the positive and both substantive negative cases in each setup. This is a fixture correction, with no PSC, runtime, C# audit, geometry, earlier manifest, workflow, licensed/compiler/native/install or owner-state change.
+
+The preceding complete local evidence remains preserved at14c31eb. Appropriate final projection/candidate checks and a new exact remote CI run are required on this repair; source acceptance still requires the independently activated Sam/Nora whole-feature reviews. No blind rerun or workflow/time-limit waiver is used.
+
+Actual repair validation: all11projection methods PASS39.794s and all6candidate methods PASS30.650s. This includes full old-record preservation, exact61-node projection, fresh JSON-only binary setup, all substantive floor refusals and candidate mutation/refusal checks. Only this receipt, the projection test and own manifest pins change from14c31eb; every runtime PSC and builder source remains identical. The complete new-head remote run remains the final portable gate before independent review.

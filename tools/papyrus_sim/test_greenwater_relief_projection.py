@@ -4,9 +4,18 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
-from test_sim import ROOT,PLUGIN
-from test_greenwater_world_clone import clone
-from source_snapshot import snapshot,built_red_hollow,RED_HOLLOW
+from test_sim import ROOT as LIVE_ROOT
+
+from source_snapshot import snapshot,built_red_hollow,RED_HOLLOW,built_greenwater_relief,GREENWATER_RELIEF
+ROOT=snapshot(GREENWATER_RELIEF)
+PLUGIN=built_greenwater_relief()
+
+def clone(damage=None):
+    args=["dotnet","run","--project",str(ROOT/"tools/WorldSliceBuilder"),"--","--story-clone-check",str(PLUGIN.with_suffix(".esp")),str(Path(tempfile.mkdtemp(prefix="tlm-relief-clone-")))]
+    if damage:args += ["--damage",damage]
+    got=subprocess.run(args,cwd=ROOT,capture_output=True,text=True)
+    if got.returncode==0 and "{" in got.stdout:got.stdout=got.stdout[got.stdout.index("{"):]
+    return got
 
 
 class ReliefProjection(unittest.TestCase):
@@ -67,7 +76,7 @@ class ReliefProjection(unittest.TestCase):
         self.assertEqual(world['greenwater']['forms']['TLM_Relief'],'TLM_GW_Relief in TheLastMeridian.esp')
         self.assertEqual([a['name'] for a in world['greenwater']['aliases'][-2:]],['ReliefStores','ReliefSupply'])
     def test_all_new_ids_are_a_precise_contiguous_append(self):
-        old=subprocess.run(['git','show',RED_HOLLOW+':tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
+        old=subprocess.run(['git','show',RED_HOLLOW+':tools/PluginBuilder/formkeys.txt'],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().splitlines()
         now=(ROOT/'tools/PluginBuilder/formkeys.txt').read_text().splitlines();self.assertEqual(now[:len(old)],old)
         rest=now[len(old):];self.assertEqual(len(rest),78)
         actual=[{'record':rest[i],'id':int(rest[i+1])} for i in range(0,len(rest),2)]

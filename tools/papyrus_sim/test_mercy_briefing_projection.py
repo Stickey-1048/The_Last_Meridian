@@ -20,14 +20,17 @@ import json
 import sys
 import unittest
 
-from test_sim import PLUGIN, ROOT, need_build
+from test_sim import ROOT as LIVE_ROOT, need_build
+from source_snapshot import snapshot,built_greenwater_relief,GREENWATER_RELIEF
+ROOT=snapshot(GREENWATER_RELIEF)
+PLUGIN=built_greenwater_relief()
 
 sys.path.insert(0, str(ROOT / "tools"))
 from check_plugin_layout import records, subrecords                # noqa: E402
 
 MAPPING = ROOT / "docs" / "design" / "ACT1_RUNTIME_001_MAPPING.json"
 SPEC = ROOT / "tools" / "PluginBuilder" / "SpecMercyBriefing.cs"
-ESP = ROOT / "build" / "TheLastMeridian.esp"
+ESP = PLUGIN.with_suffix(".esp")
 PREFIX = "TLM_MSG_MB_"
 # Act I's barred words (docs/design/STORY_INTAKE.md), as the first section's own lines are held to.
 BARRED = ("deep", "meridian", "rider", "charter", "open ledger", "vault")

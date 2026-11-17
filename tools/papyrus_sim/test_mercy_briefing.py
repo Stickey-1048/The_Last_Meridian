@@ -633,7 +633,7 @@ class TheTask(unittest.TestCase):
         for v in (NOT_NOW, RAIL, RIVER, PIKE, ASK, TAKE, TAKE):
             a.ask(v)                       # each compares the whole world outside the briefing with what it was
         # (TLM_MQ02B and TLM_GW are GREENWATER-STORY-001's; the briefing sets nothing on them either: see a.world().)
-        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_GW", "TLM_GW_Relief", "TLM_MQ01", "TLM_MQ02A", "TLM_MQ02B", "TLM_MQ02C", "TLM_MercyBriefing", "TLM_NM", "TLM_RH", "TLM_SQ01", "TLM_Trial"])
+        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_FF_Entry", "TLM_GW", "TLM_GW_Relief", "TLM_MQ01", "TLM_MQ02A", "TLM_MQ02B", "TLM_MQ02C", "TLM_MQ03", "TLM_MercyBriefing", "TLM_NM", "TLM_RH", "TLM_SQ01", "TLM_Trial"])
         self.assertEqual((a.s.quests["TLM_MQ02B"].running, a.s.quests["TLM_MQ02B"].done), (False, []))
         self.assertEqual(a.s.quests['TLM_GW_Relief'].done,[])
         self.assertFalse(a.s.quests['TLM_GW_Relief'].scripts[0].vars['initialized'])

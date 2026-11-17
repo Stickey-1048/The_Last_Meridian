@@ -9,8 +9,8 @@ public static class RedHollow
 {
     public const string RoadId="TLM_MQ02C", StageId="TLM_RH", CellId="TLM_CELL_RedHollow", Prefix="TLM_MSG_RH_";
     public const string LampId="TLM_MISC_RH_Lamp", KeyId="TLM_MISC_RH_FiringKey", ReceiptId="TLM_MISC_RH_Receipt";
-    public const string Available="Greenwater, Iron Junction and Red Hollow are playable. The fair is not.";
-    public const string Complete="Red Hollow road complete. All three roads remain playable; the fair is not.";
+    public const string Available="Three roads are playable. Four Flags entry is available after the first section.";
+    public const string Complete="Red Hollow road complete. Three roads and Four Flags entry remain available.";
     public const int Limit=240;
     public static readonly string[] ClockMenus={"LoadingMenu","Console","LevelUpMenu","MessageBoxMenu","ContainerMenu","ExamineMenu","CookingMenu","ExamineConfirmMenu","RobotModMenu","PowerArmorModMenu","WorkshopMenu","PromptMenu","SitWaitMenu","SleepWaitMenu","DialogueMenu","BarterMenu","LockpickingMenu","BookMenu","SPECIALMenu","FavoritesMenu","PauseMenu","VATSMenu","PipboyMenu","PipboyHolotapeMenu","TerminalMenu","LooksMenu"};
     static string StoryRoot(){var d=new DirectoryInfo(AppContext.BaseDirectory);while(d!=null){var p=Path.Combine(d.FullName,"assets/incoming/act1/story");if(Directory.Exists(p))return p;d=d.Parent;}throw new InvalidDataException("Accepted story inputs missing");}

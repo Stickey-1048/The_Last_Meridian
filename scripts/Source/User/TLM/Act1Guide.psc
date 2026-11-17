@@ -30,7 +30,7 @@ Event OnActivate(ObjectReference akActionRef)
 	; set 40/34 without the dispatch's stage20 ever having happened.
 	If TLM_MQ01.GetStageDone(60)
 		; NIGHT-MAIL-STORY-001 (its order): in this candidate Greenwater and Iron Junction are playable.
-		next = "Greenwater, Iron Junction and Red Hollow are available at their story test points. The fair is not playable. Optional Mercy evidence and briefs remain available."
+		next = "Greenwater, Iron Junction and Red Hollow are available at their story test points. Use the Four Flags entry point to qualify for the camp-ground. Optional Mercy evidence and briefs remain available."
 	ElseIf !TLM_MQ01.GetStageDone(20)
 		If Place == 1
 			next = "Next: search the ground here beside the marshal for the dispatch case. Other papers are optional evidence; this guide is only help."

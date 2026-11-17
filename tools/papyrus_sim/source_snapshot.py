@@ -58,3 +58,17 @@ def built_red_hollow():
             if got.returncode:
                 raise AssertionError("Frozen 1cdd stand-in build failed:\n" + got.stdout + got.stderr)
     return out
+
+
+GREENWATER_RELIEF = "a31b5eded170dac81cd1d4f5d70a19a758c942e8"
+
+def built_greenwater_relief():
+    root = snapshot(GREENWATER_RELIEF)
+    out = root / "build/sim/TheLastMeridian.json"
+    if not out.exists():
+        for args in (["tools/StandInMaster", "build/standin/Fallout4.esm", "default"],
+                     ["tools/PluginBuilder", "--out", "build/sim", "--fallout4-esm", "build/standin/Fallout4.esm"]):
+            got = subprocess.run(["dotnet", "run", "--project", args[0], "--"] + args[1:], cwd=root, capture_output=True, text=True)
+            if got.returncode:
+                raise AssertionError("Frozen a31 stand-in build failed:\n" + got.stdout + got.stderr)
+    return out

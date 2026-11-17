@@ -24,7 +24,8 @@ public static class StoryCloneCheck
         // Not damage: a source as it was before the road existed (neither quest, no binding). It must clone as it did.
         "source-without-greenwater","night-mail-binding-removed","night-mail-binding-to-another-quest","night-mail-binding-as-alias",
         "night-mail-alias-dropped","night-mail-placement-missing","night-mail-placement-substituted","night-mail-road-missing",
-        "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail","red-hollow-binding-removed","red-hollow-binding-to-another-quest","red-hollow-alias-dropped","red-hollow-placement-missing","red-hollow-road-missing","red-hollow-cell-missing","red-hollow-prisoner-forced","source-without-red-hollow","relief-ledger-missing","relief-control-substituted","relief-model-missing","relief-model-oversized","relief-ledger-binding-wrong"};
+        "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail","red-hollow-binding-removed","red-hollow-binding-to-another-quest","red-hollow-alias-dropped","red-hollow-placement-missing","red-hollow-road-missing","red-hollow-cell-missing","red-hollow-prisoner-forced","source-without-red-hollow","relief-ledger-missing","relief-control-substituted","relief-model-missing","relief-model-oversized","relief-ledger-binding-wrong",
+        "fair-binding-removed","fair-ledger-missing","fair-cell-missing","fair-entry-substituted","fair-case-alias-substituted","fair-original-cast-forced","fair-dedicated-cast-substituted","fair-case-model-missing"};
 
     static IFallout4ModGetter Damaged(string story,string damage)
     {
@@ -35,9 +36,27 @@ public static class StoryCloneCheck
         var gw=bad.Quests.Single(q=>q.EditorID=="TLM_GW");
         var nm=bad.Quests.SingleOrDefault(q=>q.EditorID=="TLM_NM");
         var rh=bad.Quests.SingleOrDefault(q=>q.EditorID=="TLM_RH");
-        void RemoveRedHollow(){if(rh==null)return;walk.Properties.Remove(Prop("TLM_RedHollow"));bad.Quests.Remove(rh.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02C").FormKey);}
+        void RemoveFair(){
+            var fair=bad.Quests.SingleOrDefault(q=>q.EditorID=="TLM_MQ03");if(fair==null)return;
+            walk.Properties.Remove(Prop("TLM_FourFlags"));walk.Properties.Remove(Prop("TLM_FourFlagsEntry"));
+            bad.Quests.Remove(fair.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_FF_Entry").FormKey);
+            gw.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:GreenwaterWalk").Properties.RemoveAll(p=>p.Name=="TLM_FourFlags");
+        }
+        void RemoveRedHollow(){RemoveFair();if(rh==null)return;walk.Properties.Remove(Prop("TLM_RedHollow"));bad.Quests.Remove(rh.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02C").FormKey);}
         void RemoveNightMail(){RemoveRedHollow();walk.Properties.Remove(Prop("TLM_NightMail"));bad.Quests.Remove(nm!.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);}
         switch(damage){
+            case "fair-binding-removed":walk.Properties.Remove(Prop("TLM_FourFlagsEntry"));break;
+            case "fair-ledger-missing":bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ03").FormKey);break;
+            case "fair-cell-missing":foreach(var b in bad.Cells.Records)foreach(var s in b.SubBlocks)s.Cells.RemoveAll(c=>c.EditorID=="TLM_CELL_FourFlags");break;
+            case "fair-entry-substituted":bad.Quests.Single(q=>q.EditorID=="TLM_FF_Entry").Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="Entry").ForcedReference.SetTo(bad.Quests.Single(q=>q.EditorID=="TLM_FF_Entry").Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="MercyReturn").ForcedReference.FormKey);break;
+            case "fair-case-alias-substituted":
+                var fairQuest=bad.Quests.Single(q=>q.EditorID=="TLM_MQ03");
+                fairQuest.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="OriginalCase").ForcedReference.SetTo(fairQuest.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="OriginalSilver").ForcedReference.FormKey);break;
+            case "fair-original-cast-forced":bad.Quests.Single(q=>q.EditorID=="TLM_MQ03").Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="Pritchard").ForcedReference.SetTo(((QuestReferenceAlias)a1.Aliases![18]).ForcedReference.FormKey);break;
+            case "fair-dedicated-cast-substituted":
+                var fairCast=bad.Quests.Single(q=>q.EditorID=="TLM_MQ03").Aliases!.OfType<QuestReferenceAlias>().ToArray();
+                fairCast.Single(a=>a.Name=="Brigg").ForcedReference.SetTo(fairCast.Single(a=>a.Name=="Grey").ForcedReference.FormKey);break;
+            case "fair-case-model-missing":bad.Books.Single(b=>b.EditorID=="TLM_BOOK_FF_CourierCase").Model=null;break;
             case "red-hollow-binding-removed":walk.Properties.Remove(Prop("TLM_RedHollow"));break;
             case "red-hollow-binding-to-another-quest":Prop("TLM_RedHollow").Object.SetTo(gw.FormKey);break;
             case "red-hollow-alias-dropped":rh!.Aliases!.RemoveAt(0);break;
@@ -101,7 +120,7 @@ public static class StoryCloneCheck
         world.SubCells.Add(block);block.Items.Add(sub);
         var cell=new Cell(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_WS_Clearing",Grid=new CellGrid{Point=new P2Int(0,0)}};
         sub.Items.Add(cell);
-        try{WorldStory.Add(mod,world,cell,template);WorldStory.CompleteReliefControls(mod,world,template);}
+        try{WorldStory.Add(mod,world,cell,template);WorldStory.CompleteReliefControls(mod,world,template);WorldStory.CompleteFourFlagsEntry(mod,world,template);}
         catch(InvalidDataException e){Console.Error.WriteLine("REFUSED: "+e.Message);return 1;}
         var plugin=Path.Combine(output,"TLMWorldSlice.esp");
         mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(ModKey.FromNameAndExtension("Fallout4.esm"),template.ModKey).Write();
@@ -135,6 +154,7 @@ public static class StoryCloneCheck
             quests=read.Quests.Select(q=>q.EditorID).ToArray(),
             persistentReferences=persistent.Count,
             firstSection=Quest("TLM_WS_A1"),greenwater=Quest("TLM_WS_GW"),nightMail=Quest("TLM_WS_NM"),redHollow=Quest("TLM_WS_RH"),
+            fourFlags=Quest("TLM_WS_FF_Entry"),fourFlagsSites=WorldStory.FourFlagsSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z}),
             redHollowSites=WorldStory.RedHollowSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z}),
             nightMailSites=WorldStory.NightMailSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z}),
             sites=WorldStory.GreenwaterSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z})},new JsonSerializerOptions{WriteIndented=true}));
