@@ -65,7 +65,7 @@ class RedHollowProjection(unittest.TestCase):
         self.assertGreater(len(self.map['composedAvailability']),5)
         for name,want in self.map['composedAvailability'].items():
             self.assertEqual(self.msg[name]['Text'],want['text']);self.assertEqual([b['Text'] for b in self.msg[name]['Buttons']],want['buttons'])
-            self.assertIn('Red Hollow',want['text']);self.assertIn('fair is not',want['text'])
+            self.assertTrue('Red Hollow' in want['text'] or 'All three roads playable' in want['text']);self.assertTrue('fair is not' in want['text'] or 'fair unavailable' in want['text'])
         guide=(ROOT/'scripts/Source/User/TLM/Act1Guide.psc').read_text();self.assertIn('Greenwater, Iron Junction and Red Hollow are available',guide)
     def test_unsupported_compound_quotes_have_no_route(self):
         source=(ROOT/'scripts/Source/User/TLM/RedHollowWalk.psc').read_text()

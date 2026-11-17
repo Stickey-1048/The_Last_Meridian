@@ -793,19 +793,19 @@
   ],
   "composedAvailability": {
     "TLM_MSG_A1_PritchardHandOff": {
-      "text": "Owen Pritchard: \"Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three.\"\n\n[Opening complete. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]",
+      "text": "Owen Pritchard: \"Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three.\"\n\n[Opening complete. All three roads playable; fair unavailable.]",
       "buttons": [
         "Continue"
       ]
     },
     "TLM_MSG_A1_PritchardAfter": {
-      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]",
+      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. All three roads playable; fair unavailable.]",
       "buttons": [
         "Continue"
       ]
     },
     "TLM_MSG_A1_PritchardAfterAndMore": {
-      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]",
+      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. All three roads playable; fair unavailable.]",
       "buttons": [
         "Continue",
         "There's something else from that train."

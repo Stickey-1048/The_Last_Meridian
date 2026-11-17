@@ -158,7 +158,7 @@ public static class Act1
         // garbage after~255characters. Keep the complete boundary well below
         // that observed failure point; this is not a general engine-limit claim.
         // GREENWATER-STORY-001 (order, item 1): in this candidate one later road is playable.
-        return message with { Text = message.Text + "\n\n[Opening complete. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]" };
+        return message with { Text = message.Text + "\n\n[Opening complete. All three roads playable; fair unavailable.]" };
     }
 
     const string Dunmore = "Reese Dunmore", Nell = "Nell Fenwick", Abel = "Abel Rudd", Cutter = "Tellico Cutter",

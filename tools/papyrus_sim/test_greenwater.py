@@ -1073,7 +1073,7 @@ class AtMercy(unittest.TestCase):
         shown = a.report()
         self.assertEqual(shown, [G + "ReportKnown", G + "ReportReduced", G + "ReportEndKnown"])
         texts = {m["EditorId"]: m["Text"] for m in json.loads(PLUGIN.read_text())["Messages"]}
-        self.assertTrue(texts[G + "ReportEndKnown"].endswith("Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not."))
+        self.assertTrue(texts[G + "ReportEndKnown"].endswith("Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not."))
         self.assertIn("Who paid is not known", texts[G + "ReportEndKnown"])
         self.assertNotIn("fair", texts[G + "ReportKnown"])
         # He is not moved, not put into an alias of the road, and the two earlier quests are as they were.
@@ -1089,7 +1089,7 @@ class AtMercy(unittest.TestCase):
                 self.assertNotIn(phrase, text, name)
         self.assertTrue(texts["TLM_MSG_MB_Hub"].endswith("[Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]"))
         self.assertTrue(texts["TLM_MSG_MB_HandOff"].endswith("[Opening complete. Ask for briefings or use a story test point.]"))
-        self.assertTrue(texts[MSG + "PritchardAfter"].endswith("[Opening complete. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]"))
+        self.assertTrue(texts[MSG + "PritchardAfter"].endswith("[Opening complete. All three roads playable; fair unavailable.]"))
         self.assertIn("Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not.", texts[G + "AskTravel"])
         briefing = [q for q in json.loads(PLUGIN.read_text())["Quests"] if q["EditorId"] == "TLM_MercyBriefing"][0]
         self.assertEqual([s["Log"] for s in briefing["Stages"]],
@@ -1166,7 +1166,7 @@ class TheNumbers(unittest.TestCase):
         self.assertEqual([a["Flags"] for a in road["Aliases"]], [["Optional"]] * 11)
         self.assertEqual(sorted(q["EditorId"] for q in self.data["Quests"]),
                          sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", ROAD, STAGE, "TLM_MQ02A", "TLM_NM", "TLM_MQ02C", "TLM_RH"]))
-        for other in ("TLM_MQ02", "TLM_MQ02C", "TLM_MQ03", "TLM_MQ04"):
+        for other in ("TLM_MQ02", "TLM_MQ03", "TLM_MQ04"):
             self.assertNotIn(other, [q["EditorId"] for q in self.data["Quests"]])
 
     def test_every_name_a_script_uses_is_one_it_declares(self):
