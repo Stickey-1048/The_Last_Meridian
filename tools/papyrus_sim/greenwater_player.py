@@ -72,6 +72,7 @@ class Player:
         self.refuse = set(refuse)
         self.asked = {"caps": 0, "letter": 0, "food": 0}
         self._count()
+        self._seed_calls()
         refused = set(self.refuse) - {"food"}
         if "food" in self.refuse:
             refused |= {"bowl", "cup", "relief"}
@@ -114,6 +115,86 @@ class Player:
             return add(ref, context, form, count, silent)
         s.n_objectreference_additem = count_add
 
+    # --------------------------------------------- calls the game does not carry out
+    def _seed_calls(self):
+        """SEEDED, for a test, and off unless a test asks: a call into the game that does nothing, something
+        that happens just before a call, or a death that comes late. These are NOT rules about the game. They
+        are ways a call could fail to do what was asked, which the scripts must not take for its having been
+        done. Every call of these kinds is counted, refused or not: enable, disable, moveto, kill, startcombat."""
+        s = self.s
+        self.refused_calls = {}                    # (kind, who or what) -> None: every time; a number: that many more times
+        self.before_call = {}                      # (kind, who or what) -> something to do just before that call
+        self.late_death = {}                       # who -> seconds after Kill at which the death happens
+        self.calls = []                            # (kind, who or what, carried out)
+        self._kill = kill = s.n_actor_kill
+
+        def wrapped(kind, native):
+            def call(ref, context, *args):
+                key = (kind, s._whom(ref))
+                if key in self.before_call:
+                    self.before_call[key]()
+                left = self.refused_calls.get(key, 0)
+                if key in self.refused_calls and (left is None or left > 0):
+                    if left is not None:
+                        self.refused_calls[key] = left - 1
+                    self.calls.append(key + (False,))
+                    return None                                   # SEEDED: asked, and nothing happens
+                self.calls.append(key + (True,))
+                return native(ref, context, *args)
+            return call
+        s.n_objectreference_enable = wrapped("enable", s.n_objectreference_enable)
+        s.n_objectreference_enablenowait = wrapped("enable", s.n_objectreference_enablenowait)
+        s.n_objectreference_disable = wrapped("disable", s.n_objectreference_disable)
+        s.n_objectreference_moveto = wrapped("moveto", s.n_objectreference_moveto)
+        s.n_actor_startcombat = wrapped("startcombat", s.n_actor_startcombat)
+
+        def late_or_not(actor, context, killer=None):
+            whom = s._whom(actor)
+            seconds = self.late_death.get(whom)
+            if seconds is None:
+                return kill(actor, context, killer)
+
+            def die():
+                kill(actor, None, killer)
+                return
+                yield
+            s.later(seconds, "SEEDED: the death of %s, %s seconds after Kill" % (whom, seconds), die, exact=True)
+            return None
+        s.n_actor_kill = wrapped("kill", late_or_not)
+
+    def _key(self, kind, what):
+        if what in self.who:
+            return (kind, self.s._whom(self.who[what]))
+        return (kind, what if what.startswith("TLM_") else R + what)
+
+    def refuse_call(self, kind, what, times=None):
+        """SEEDED: "enable", "disable", "moveto" or "kill" on that person or piece does nothing: every time, or
+        the next `times` times."""
+        self.refused_calls[self._key(kind, what)] = times
+
+    def allow_calls(self):
+        self.refused_calls.clear()
+        self.before_call.clear()
+        self.late_death.clear()
+
+    def just_before(self, kind, what, do):
+        """SEEDED: `do` happens just before that call is carried out."""
+        self.before_call[self._key(kind, what)] = do
+
+    def dies_late(self, who, seconds):
+        """SEEDED: Kill on that person takes effect only that many seconds later."""
+        self.late_death[self.s._whom(self.who[who])] = seconds
+
+    def asked_of(self, kind, what):
+        """How often that call was made on that person or piece, carried out or not."""
+        key = self._key(kind, what)
+        return len([c for c in self.calls if c[:2] == key])
+
+    def alias(self, name, quest=None):
+        """The alias of that name on the greybox's quest (or on the road's)."""
+        q = quest or self.stage
+        return [a for a in q.aliases.values() if a.name == name][0]
+
     def kill(self, who, by_player=None):
         """SEEDED death, as the stand-in's own tests of the first section do it. The town's people are protected,
         so only the player can kill them; Hatcher and his crew die by other hands unless a test says otherwise."""
@@ -124,7 +205,7 @@ class Player:
             return
         if by_player is None:
             by_player = who in ("opal", "rafferty", "belden")
-        self.s.n_actor_kill(actor, None, self.s.player if by_player else None)
+        self._kill(actor, None, self.s.player if by_player else None)         # the game's own: no seed applies
         self.p.pause()
         self.test.assertTrue(actor.dead, who + " did not die")
         if who == "hatcher":
@@ -160,7 +241,7 @@ class Player:
             "caps": self.count(self.caps) - self.caps_before, "food": self.count(self.meal), "letters": self.count(self.letter),
             "asked for caps": self.asked["caps"], "asked for the letter": self.asked["letter"], "asked for food": self.asked["food"],
             "complete": q.completed, "hatcher alive": not self.who["hatcher"].dead,
-            "busy": bool(self.walk.vars["talking"]) or bool(v["judging"]),
+            "busy": bool(self.walk.vars["talking"]) or bool(v["judging"]) or v["hangintent"] in (1, 2),
         }
 
     def model_facts(self):
@@ -337,7 +418,9 @@ class Player:
     def box_returns(self, message, value):
         """SEEDED: that box comes back with this value, whatever a person could have pressed. None: undo."""
         if message is None:
-            self.s.n_message_show = self._show
+            if getattr(self, "_show", None) is not None:
+                self.s.n_message_show = self._show
+                self._show = None
             return
         self._show = show = self.s.n_message_show
 

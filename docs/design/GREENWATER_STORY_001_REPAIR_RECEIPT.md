@@ -72,6 +72,34 @@ Not touched: the accepted writing; `MQ01Quest`, `SQ01Quest`, `MercyBriefing`, `C
 - The number of freshly compiled scripts stays 6 and the reviewed 17 stay the same 17: no reviewed script's source is to change.
 - A simulated press is not a native pass. Every regression added here runs the real scripts on the stand-in engine and proves nothing about the game.
 
-## 6. What was done
+## 6. Addendum received while the work was under way
 
-To be completed when the work is finished.
+Sections 1 to 5 are as they were committed in `07d4ae0`; nothing in them was edited. This section and the next were added afterwards.
+
+**Finding 9, from the coordinator, 17 November, for this same repair** (an independent cloud QA comment on company issue 5, checked by the coordinator against `7e05c6b`): `tools/win/Build-Greenwater.ps1` checks only the script sources and the reviewed compiled scripts before it creates its output folder and runs the two builds from the checkout's C#. It never checks the builder's own sources, the id file, the documents or the frozen earlier files, and never runs `tools/greenwater_story_candidate.py verify`, which does. A changed builder, document or id file would pass the packager's check though the verifier refuses it. A finding by reading; no unsafe package was built, and root's diagnostic build was preceded by the full verifier.
+
+Confirmed by reading `7e05c6b`: the packager's source check walks `sourceTextSha256` (the 23 scripts) and nothing else; its first write is the `New-Item` of the output folder; `dotnet run` follows.
+
+**Planned for it:** the packager runs the full verifier after the output folder's own rules and before anything is created or built, and stops unless it exits 0 and makes its own statement; an interpreter that is absent or cannot be run stops it; `-Python` names the interpreter (nothing is installed, no path or policy is changed). Its existing checks stay. A new fixture, `tools/win/tests/Test-GreenwaterPackageSafety.ps1`, runs the packager on a copy of the files (never the checkout) with a builder source, the exterior builder, the id file, a document, a frozen packager and an earlier manifest changed in turn, and requires the verifier's refusal, its reason, no output and no build each time. **Neither file can be run here.** What can be: each of the fixture's six changes is made in Python on a copy of the tree and the real verifier must refuse it in the words the fixture expects.
+
+Fresh compiled file names do not prove which source they were compiled from. The packager says so; the compile log and root's review of it stay required.
+
+## 7. What was done
+
+Added when the work was finished, 17 November 2026.
+
+All nine findings were repaired as planned in sections 3 and 6. The account, finding by finding, with what was run, is `GREENWATER_STORY_001_LEDGER.md`, section 13.
+
+**Found here, beyond the nine, and repaired in the same commit:**
+
+- `GreenwaterWalk.psc` used `RV_RETURN_NONE`, which only `MQ02BQuest.psc` declared. My own mistake in this repair, caught by the stand-in engine on the first run: a compile error in the game. Declared. A test now requires every constant, alias and message a road script uses to be one that script declares; it fails with the line removed.
+- **The crew's retaliation fed on itself.** `FightBack` called `StartCombat` for everybody who lives, and it is called from every one of their combat events; on the stand-in every `StartCombat` raises such an event, so the calls multiplied without end. It was in `7e05c6b`, where the tests ended before it showed. Whether the game raises a combat event for a fight already under way is not known. `FightBack` now leaves alone anybody already fighting, so each of the crew is set on the player once whichever way the game answers that.
+
+**Where the work differs from this receipt:**
+
+- Section 4 named `sim.py` for the seeded refusals and delays. They went into the test harness (`greenwater_player.py`) instead, which wraps the engine's calls for one test at a time; the engine is unchanged.
+- `tools/greenwater_story_candidate.py` was not changed. `tools/win/tests/Test-GreenwaterPackageSafety.ps1` and `tools/papyrus_sim/test_greenwater_repair.py` are new.
+- `NoteJudgmentFailed` now ends "Nothing is recorded." where it said "Nothing was changed.": after a hanging that stops at the ring, Hatcher has been moved.
+- The declared bound on a hanging: a death more than 3 seconds after the one `Kill` is recorded as a death otherwise, not as a hanging. Both the wait and the death event agree on that. It is a declared number, not a measured one.
+
+**Not done, and not claimed:** a Papyrus compile of the repaired source; a build against the game's master; any PowerShell run (the corrected Natural fixture, the new Greenwater fixture, the packager); the launcher test; anything in the game. Root's diagnostics were of `7e05c6b` and are not this source's.

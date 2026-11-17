@@ -94,7 +94,7 @@
       "text": "whole",
       "buttons": "node",
       "shown_when": "Outcome 41 AND the cargo home whole (actually delivered) AND Hatcher alive, present and still free (not released, not in custody, not hanged); Opal alive, present and in no fight; Pritchard alive, present and in no fight.",
-      "then": "0 -> Hang; 1 -> Custody, then her starnes_denied; 2 -> Release, then her starnes_denied. Each asks again for the people it needs (read again after the box closes, before anything is written).",
+      "then": "Only if, after the box, the player is alive on the road and Opal is still alive, present and in no fight (her question is answered to her; otherwise nothing is carried out and nothing more is said): 0 -> Hang; 1 -> Custody, then her starnes_denied; 2 -> Release, then her starnes_denied. Each asks again for the people it needs (read again after the box closes, before anything is written), Hatcher in no fight among them.",
       "not_imported": [
         "The effects 'mq02b set 60' and 'mq02b set 61' as button effects: 60 and 61 are set only by Hang and Custody once the hanging or the hand-over is seen to have happened.",
         "Its condition as written (41 done, 60 and 61 not, Hatcher alive) alone: the order adds actual whole delivery."
@@ -168,7 +168,7 @@
       "text": "whole",
       "buttons": "node",
       "shown_when": "Stage 44 AND the share actually paid AND the lie explicitly told on the AskLie box (LieTold) AND not heard before; Opal alive, present and in no fight.",
-      "then": "Answered: LieWasHeard -> grain_sold, stage 46 (which carries the accepted journal text of 44), and one food item, once, if she is still alive, present and in no fight.",
+      "then": "Answered with its one button, and Opal still alive, present and in no fight after it: LieWasHeard -> stage 46 (which carries the accepted journal text of 44), and one food item, once. Not answered, or she is dead, gone or fighting by then: nothing more; grain_sold, earned when the lie was told, is kept, and her answer can be heard when she is next spoken to (the lie is not asked for again).",
       "not_imported": [
         "Its condition as written (44 done) alone: payment is not the lie, and the lie is not her answer."
       ]
@@ -199,7 +199,7 @@
       "text": "whole",
       "buttons": "node",
       "shown_when": "Stage 20 set, stage 30 not, no course taken; Rafferty alive, present and in no fight.",
-      "then": "0 the gangway: nothing (the player walks it). 1 the off side: the skiff (the player, and Rafferty, are set down by the barge; boarding is crossing the box there). 2: pruitt_confess.",
+      "then": "Only if Rafferty is still alive, present and in no fight after the box: 0 the gangway: nothing (the player walks it). 1 the off side: the skiff's notice (NoteSkiffScene), and on its one button the move. 2: pruitt_confess.",
       "not_imported": [
         "Its condition as a gate on boarding: the gangway and the skiff are usable without it, with Opal dead and stage 20 never set (order, item 10)."
       ]
@@ -225,7 +225,7 @@
       "text": "whole",
       "buttons": "node",
       "shown_when": "The anchor chain is used, or Rafferty is spoken to aboard: stage 30 set, no course taken, no escape pending; Rafferty alive, present and in no fight.",
-      "then": "0 -> CutChain: the escape-pending lock, and nothing else. 1 -> WarnOfFire: the warning is recorded as delivered; nothing burns until the confirmation at the firebox. 2: nothing.",
+      "then": "Only if Rafferty is still alive, present and in no fight after the box (his line is answered to him; the chain can be used again without him, as AskChain): 0 -> CutChain: the escape-pending lock, and nothing else. 1 -> WarnOfFire: the warning is recorded as delivered; nothing burns until the confirmation at the firebox. 2: nothing.",
       "not_imported": [
         "The effects 'mq02b set 42' and 'mq02b set 43' as button effects: 42 is the Chute actually run to the return dock, 43 the fire ordered at the fire control and staged.",
         "Its targets pruitt_ran and pruitt_burned as immediate continuations: each is shown after the thing happened, to a living Rafferty."
@@ -306,7 +306,7 @@
       "text": "whole",
       "buttons": "node",
       "shown_when": "The hand was won (stage 41), or the table is used later with him alive, present, free and unjudged; Opal alive, present and in no fight; Pritchard alive, present and in no fight.",
-      "then": "0 -> Hang. 1 -> Custody. 2 -> Release. Each asks again for the people it needs (read again after the box closes, before anything is written).",
+      "then": "Only if, after the box, the player is alive on the road and Hatcher is still at his table, alive, present and in no fight, beaten and unjudged (otherwise nothing is carried out and nothing more is said): 0 -> Hang. 1 -> Custody. 2 -> Release. Each asks again for the people it needs (read again after the box closes, before anything is written).",
       "not_imported": [
         "The effects 'mq02b set 60' / 'mq02b set 61' as button effects (see OpalAfterWon)."
       ]
@@ -450,8 +450,8 @@
           "button": 0
         }
       ],
-      "shown_when": "HatcherPaidA was answered.",
-      "then": "Answered: LearnHire (admission) -> stage 50, silver_river. Then his table box again, as the writing has it, if he can still deal."
+      "shown_when": "HatcherPaidA was answered with its one button AND after it the player is alive on the road, no course is taken and Hatcher is still at his table, alive, present and in no fight.",
+      "then": "Answered with its one button, and Hatcher still at his table, alive, present and in no fight, after it: LearnHire (admission) -> stage 50, silver_river. Otherwise nothing is learned by it (the letter is another way and does not need him; what was already learned is kept). Then his table box again, as the writing has it, if he can still deal."
     },
     {
       "record": "TLM_MSG_GW_BeldenRelief",
@@ -482,7 +482,7 @@
         }
       ],
       "shown_when": "At Mercy, in Pritchard's own conversation (TLM:Act1Walk), after the side quest's report box: TLM_MQ01 complete; TLM_MQ02B stage 100; not reported before; the hire known (stage 50); Pritchard alive and in no fight.",
-      "then": "0 -> GiveReport (Pritchard and the player alive, read again after the box closes, before anything is written): TLM_G_MQ02B_Reported, then the two River report boxes. 1 or no answer: nothing; the Mercy briefing follows as before.",
+      "then": "After the box, Pritchard alive, present and in no fight, the player alive, the road still complete and unreported (read again after the box closes, before anything is written); if not, the conversation is closed. Then: 0 -> GiveReport: TLM_G_MQ02B_Reported, then the two River report boxes. 1, the explicit [Later]: nothing is recorded and the Mercy briefing follows as before. Any other answer (none, or a button the box does not have): nothing is recorded and the conversation is closed: no briefing and no other line follows in it.",
       "not_imported": [
         "Its condition 'mq02 done 100' and 'flag silver_river': no fair has happened and TLM_MQ02 does not exist. Only the text is used, under the native condition above.",
         "The pre-fair nodes pritchard_hears_river / _unknown, which say Opal sent a boy and go on to call the fair."
@@ -604,7 +604,7 @@
           "Burn the occupied Queen.",
           "Not yet."
         ],
-        "shown_when": "The firebox, warned, no course taken, no escape pending. Its two buttons are pruitt_chain's second and third. 0 -> OrderFire, then the fire staged, then stage 43 only if the burned marker is seen on and the lashed cargo seen gone."
+        "shown_when": "The firebox, warned, no course taken, no escape pending, and the burned Queen's marker placed. Its two buttons are pruitt_chain's second and third. 0, with the player alive on a road that stands as it stood before the box -> OrderFire, then the fire staged, then stage 43 only if the road itself sees the burned marker on and the lashed cargo off (FireDone is handed both)."
       },
       {
         "record": "TLM_MSG_GW_NoteFireScene",
@@ -613,7 +613,7 @@
         "buttons": [
           "Continue"
         ],
-        "shown_when": "Stage 43 just recorded."
+        "shown_when": "Stage 43 just recorded. On its one button, with the player alive on the road, the player (and Rafferty) are set down at the landing; otherwise nobody is moved and the record stands."
       },
       {
         "record": "TLM_MSG_GW_NoteFireFailed",
@@ -622,7 +622,43 @@
         "buttons": [
           "Continue"
         ],
-        "shown_when": "The fire was ordered and could not be seen staged: nothing is recorded; the firebox stages it again."
+        "shown_when": "The fire was ordered and was not seen staged: nothing is recorded, the marker is switched off again and the cargo is as the facts have it; the firebox, seen to be switched on, stages it again. The fire stays ordered and exclusive."
+      },
+      {
+        "record": "TLM_MSG_GW_NoteFireNoMarker",
+        "property": "NoteFireNoMarker",
+        "text": "[Greenwater story test]\n\nThe fire cannot be shown in this build: its marker is missing. No order was given and nothing is changed. Report this to the tester.",
+        "buttons": [
+          "Continue"
+        ],
+        "shown_when": "The firebox, warned, with the burned Queen's marker not placed: no order is taken and nothing is changed."
+      },
+      {
+        "record": "TLM_MSG_GW_NoteFireStuck",
+        "property": "NoteFireStuck",
+        "text": "[Greenwater story test]\n\nThe fire was ordered and cannot be shown: a piece of this build is missing or cannot be switched on. Nothing is recorded and no other course is open. Report this to the tester.",
+        "buttons": [
+          "Continue"
+        ],
+        "shown_when": "The fire was ordered and cannot be shown: its marker is not placed, or it was not seen and the firebox is missing or cannot be switched on. Nothing is recorded; no instruction to use the firebox is given."
+      },
+      {
+        "record": "TLM_MSG_GW_NoteCargoFailed",
+        "property": "NoteCargoFailed",
+        "text": "[Greenwater story test]\n\nThe cargo could not be shown at the landing, so nothing is recorded. Use the barge's pilot lever again, then walk to the return dock.",
+        "buttons": [
+          "Continue"
+        ],
+        "shown_when": "The return dock reached with a return pending, and the cargo was not seen at the landing (its piece not on, or the lashed one not off): nothing is recorded, the pieces are put back as the facts stand, the return and the chain lock stay pending."
+      },
+      {
+        "record": "TLM_MSG_GW_NoteCargoStuck",
+        "property": "NoteCargoStuck",
+        "text": "[Greenwater story test]\n\nThe cargo cannot be shown at the landing: a piece of this build is missing. Nothing is recorded. Report this to the tester.",
+        "buttons": [
+          "Continue"
+        ],
+        "shown_when": "The return dock reached with a return pending, and the cargo's piece at the landing is not placed: nothing is recorded; the return stays pending."
       },
       {
         "record": "TLM_MSG_GW_NotePilotNothing",
@@ -640,7 +676,7 @@
         "buttons": [
           "Continue"
         ],
-        "shown_when": "The pilot lever with an escape pending: the player is set down at the head of the strip. Stage 42 is not set here."
+        "shown_when": "The pilot lever with an escape pending. Only on its one button, and with the player alive on a road that stands as it stood before the box and the head of the Chute placed: the return is begun (BeginReturn) and the player is set down at the head of the strip. Otherwise nobody is moved and nothing is begun; a return begun before stays begun. Stage 42 is not set here."
       },
       {
         "record": "TLM_MSG_GW_NoteTowScene",
@@ -649,7 +685,7 @@
         "buttons": [
           "Continue"
         ],
-        "shown_when": "The pilot lever with the barge won at cards and not yet home."
+        "shown_when": "The pilot lever with the barge won at cards and not yet home. As NoteChuteScene."
       },
       {
         "record": "TLM_MSG_GW_NoteSkiffScene",
@@ -658,7 +694,7 @@
         "buttons": [
           "Continue"
         ],
-        "shown_when": "The skiff to the Queen's off side."
+        "shown_when": "The skiff to the Queen's off side. Only on its one button, and with the player alive on a road that stands as it stood before the box: the player, and Rafferty if he is alive and present, are set down there. Otherwise nobody is moved."
       },
       {
         "record": "TLM_MSG_GW_NoteHomeWhole",
@@ -667,7 +703,7 @@
         "buttons": [
           "Continue"
         ],
-        "shown_when": "The return dock reached with the won barge: cargo home whole."
+        "shown_when": "The return dock reached with the won barge, and the whole cargo's piece seen on at the landing and the lashed one off: cargo home whole."
       },
       {
         "record": "TLM_MSG_GW_NoteHomePiloted",
@@ -676,7 +712,7 @@
         "buttons": [
           "Continue"
         ],
-        "shown_when": "The return dock reached with an escape pending and Rafferty alive and present: stage 42, 8 of 12."
+        "shown_when": "The return dock reached with an escape begun, the reduced cargo's piece seen on at the landing and the lashed one off, and Rafferty alive and present: stage 42, 8 of 12."
       },
       {
         "record": "TLM_MSG_GW_NoteHomeAlone",
@@ -695,7 +731,7 @@
           "Tell her the Chute took it",
           "Say nothing of it"
         ],
-        "shown_when": "Opal used with stage 44 set, the share paid and the lie not yet told; Opal alive, present and in no fight. 0 -> TellLie, then her starnes_after_share. 1 or no answer: nothing, and no thanks."
+        "shown_when": "Opal used with stage 44 set, the share paid and the lie not yet told; Opal alive, present and in no fight. 0, with Opal still alive, present and in no fight after the box -> TellLie: the lie is told and grain_sold is set, there and then; then her starnes_after_share. 1 or no answer, or Opal dead, gone or fighting by then: nothing: no lie, no flag and no thanks."
       },
       {
         "record": "TLM_MSG_GW_NoteShareFailed",
@@ -736,11 +772,11 @@
       {
         "record": "TLM_MSG_GW_NoteJudgmentFailed",
         "property": "NoteJudgmentFailed",
-        "text": "[Greenwater story test]\n\nThat could not be carried out. Nothing was changed.",
+        "text": "[Greenwater story test]\n\nThat could not be carried out. Nothing is recorded.",
         "buttons": [
           "Continue"
         ],
-        "shown_when": "A judgment was chosen and could not be carried out (somebody it needs is no longer there, or the hanging or hand-over was not seen to happen)."
+        "shown_when": "A judgment was chosen and could not be carried out: somebody it needs is no longer there; the steeple's ring is missing or switched off; Hatcher was not seen at the ring, or beside Pritchard, after the move; or he was not seen dead within the wait after the one Kill. Nothing is recorded. (He may have been moved.)"
       },
       {
         "record": "TLM_MSG_GW_AskLeaveResolved",
@@ -1000,12 +1036,12 @@
       {
         "n": 42,
         "log": "stage 42",
-        "set_when": "CompleteReturn: the player is inside the return dock's box with an escape pending and the pilot lever used. Cargo home reduced: 8 of 12 with Rafferty alive and present, 6 without."
+        "set_when": "CompleteReturn: the player is inside the return dock's box with an escape pending and the pilot lever's notice confirmed, AND the road itself sees the reduced cargo's piece on at the landing and the lashed one off. Cargo home reduced: 8 of 12 with Rafferty alive and present, 6 without."
       },
       {
         "n": 43,
         "log": "stage 43",
-        "set_when": "FireDone: the warning delivered, the order confirmed at the firebox with no course taken and no escape pending, and the fire seen staged."
+        "set_when": "FireDone: the warning delivered, the order confirmed at the firebox with no course taken and no escape pending, AND the road itself sees the burned marker on and the lashed cargo off."
       },
       {
         "n": 44,
@@ -1022,23 +1058,23 @@
         "n": 46,
         "native_only": true,
         "log": "stage 44",
-        "set_when": "LieWasHeard: 44, paid, the lie explicitly told, and Opal's starnes_after_share shown and answered.",
+        "set_when": "LieWasHeard: 44, paid, the lie explicitly told, and Opal's starnes_after_share shown and answered with Opal alive, present and in no fight after it.",
         "why": "Carries the accepted journal text of 44 at the moment it becomes true."
       },
       {
         "n": 50,
         "log": "stage 50",
-        "set_when": "LearnHire: the letter read through to its last page, or Hatcher's admission heard to its end."
+        "set_when": "LearnHire: the letter read through to its last page, or Hatcher's admission heard to its end from Hatcher at his table, alive, present and in no fight between its halves and after its last."
       },
       {
         "n": 60,
         "log": "stage 60",
-        "set_when": "Hang: 41; Hatcher alive, present and free; Opal alive, present and in no fight; the explicit button; Hatcher moved to the steeple and seen dead."
+        "set_when": "RecordHanging, reached only from Hang or from Hatcher's death event while an execution is under way. Hang: 41; Hatcher alive, present, in no fight and free; Opal alive, present and in no fight; the steeple's ring placed and switched on; the explicit button. He is moved, SEEN at the ring (same cell, within 256 units) and everybody asked for again BEFORE one Kill; then seen dead within the wait (30 looks a tenth of a second apart). A death with no execution under way, or after the wait gave up, is a death otherwise (4)."
       },
       {
         "n": 61,
         "log": "stage 61",
-        "set_when": "Custody: 41; Hatcher alive, present and free; Pritchard alive, present and in no fight; the explicit button; Hatcher seen alive in Pritchard's cell, within reach of him; then restrained."
+        "set_when": "Custody: 41; Hatcher alive, present, in no fight and free; Pritchard alive, present and in no fight; the explicit button; Hatcher seen alive in Pritchard's cell, within reach of him, and everybody asked for again after the move; then restrained."
       },
       {
         "n": 100,
@@ -1092,12 +1128,12 @@
     {
       "flag": "grain_home",
       "global": "TLM_G_MQ02B_GrainHome",
-      "set_when": "CompleteReturn only: the cargo actually at the landing, whole (after a card win and the tow) or reduced (after the Chute). Never by 41 alone."
+      "set_when": "CompleteReturn only: the cargo SEEN at the landing by the road itself (its piece on, the lashed one off), whole (after a card win and the tow) or reduced (after the Chute). Never by 41 alone, and never by reaching the dock alone."
     },
     {
       "flag": "grain_sold",
       "global": "TLM_G_MQ02B_GrainSold",
-      "set_when": "LieWasHeard only: the share paid AND the lie told AND her answer heard. A paid share with Opal dead, or with the lie never told, finishes the road without it."
+      "set_when": "TellLie only: the share paid AND the lie explicitly told to Opal alive, present and in no fight (repair, finding 5). It is kept whatever she then answers and whatever becomes of her; her thanks in the journal (stage 46) and her cup wait for her answer. A paid share with Opal dead, gone or fighting before the lie, or with the lie never told, finishes the road without it."
     },
     {
       "flag": "queen_burned",
@@ -1107,12 +1143,12 @@
     {
       "flag": "hatcher_hanged",
       "global": "TLM_G_MQ02B_HatcherHanged",
-      "set_when": "Hang only, with stage 60."
+      "set_when": "RecordHanging only, with stage 60."
     },
     {
       "flag": "hatcher_friend",
       "global": "TLM_G_MQ02B_HatcherFriend",
-      "set_when": "Release only: the explicit 'Let him keep his boat.' with Hatcher alive, present and free after a card win."
+      "set_when": "Release only: the explicit 'Let him keep his boat.' with Hatcher alive, present, in no fight and free after a card win."
     },
     {
       "flag": "hatcher_hunting",
@@ -1141,6 +1177,7 @@
       "FireWarned / Burning": "The warning delivered; the order given and not yet recorded.",
       "HireRead / HireHeard": "How the hire was learned.",
       "Judging": "A hanging or hand-over is in progress.",
+      "HangIntent": "0 none; 1 Hatcher is being moved to the ring; 2 an execution is under way (he was seen at the ring; from here until he is seen dead or the wait is over his death is the hanging); 3 recorded. Kept by a save.",
       "LetterPending/Given, BowlPending/Given, CupPending/Given, ReliefPending/Given": "Each one-time item's intent and acknowledgment."
     }
   },

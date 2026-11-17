@@ -81,7 +81,7 @@ Activator (31)
   0008CB  TLM_ACTI_GW_Pilot  "Barge pilot lever"
 Container (1)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
-Message (151)
+Message (155)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -395,6 +395,22 @@ The occupied Queen burns with the grain lashed alongside. The fire is shown by t
 
 The fire could not be shown, so nothing is recorded. Use the firebox again."
           button 0: "Continue"
+  00094B  TLM_MSG_GW_NoteFireNoMarker  [box]  "[Greenwater story test]
+
+The fire cannot be shown in this build: its marker is missing. No order was given and nothing is changed. Report this to the tester."
+          button 0: "Continue"
+  00094C  TLM_MSG_GW_NoteFireStuck  [box]  "[Greenwater story test]
+
+The fire was ordered and cannot be shown: a piece of this build is missing or cannot be switched on. Nothing is recorded and no other course is open. Report this to the tester."
+          button 0: "Continue"
+  00094D  TLM_MSG_GW_NoteCargoFailed  [box]  "[Greenwater story test]
+
+The cargo could not be shown at the landing, so nothing is recorded. Use the barge's pilot lever again, then walk to the return dock."
+          button 0: "Continue"
+  00094E  TLM_MSG_GW_NoteCargoStuck  [box]  "[Greenwater story test]
+
+The cargo cannot be shown at the landing: a piece of this build is missing. Nothing is recorded. Report this to the tester."
+          button 0: "Continue"
   000903  TLM_MSG_GW_NotePilotNothing  [box]  "[Barge pilot lever]
 
 The barge is still lashed to the Queen."
@@ -446,7 +462,7 @@ No food item is built into this candidate. Nothing was given."
           button 0: "Continue"
   00090F  TLM_MSG_GW_NoteJudgmentFailed  [box]  "[Greenwater story test]
 
-That could not be carried out. Nothing was changed."
+That could not be carried out. Nothing is recorded."
           button 0: "Continue"
   000910  TLM_MSG_GW_AskLeaveResolved  [box]  "[Skiff to Mercy]
 
@@ -1169,6 +1185,10 @@ Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  typ
            AskFire = TLM_MSG_GW_AskFire
            NoteFireScene = TLM_MSG_GW_NoteFireScene
            NoteFireFailed = TLM_MSG_GW_NoteFireFailed
+           NoteFireNoMarker = TLM_MSG_GW_NoteFireNoMarker
+           NoteFireStuck = TLM_MSG_GW_NoteFireStuck
+           NoteCargoFailed = TLM_MSG_GW_NoteCargoFailed
+           NoteCargoStuck = TLM_MSG_GW_NoteCargoStuck
            NotePilotNothing = TLM_MSG_GW_NotePilotNothing
            NoteChuteScene = TLM_MSG_GW_NoteChuteScene
            NoteTowScene = TLM_MSG_GW_NoteTowScene

@@ -197,7 +197,10 @@ public static class Greenwater
         // ---- Mercy Crossing: the one way there, and where the skiff sets the player down again.
         new("MercyTravel", "the Mercy travel point", "TLM_ACTI_GW_Travel", 3150, 2620, 12, WhoTravel, OnAtSetUp: false,
             Label: UiTravelName, LooksLike: Paper, Use: "Travel"),
-        new("MercyReturn", "where the skiff from Greenwater lands", "XMarker", 3150, 2700),
+        // Z 32, not 0: in the owner's exterior (3150, 2700) lies inside the footprint of the cabin's floor tiles
+        // (x 2664 to 3432, y 2672 to 3184), whose surface the exterior builder gives as Z 16. 16 units above it,
+        // to settle: the height that builder's own arrival marker uses. Not seen in the game.
+        new("MercyReturn", "where the skiff from Greenwater lands", "XMarker", 3150, 2700, 32),
         // ---- The Chute: a short strip, west of the landing, ending at the return dock.
         new("ChuteStart", "the head of the Chute", "XMarker", 1300, 480),
         new("LabelChute", "the Chute's label", "TLM_ACTI_GW_LabelChute", 1380, 580, 12, WhoLabelChute,
@@ -376,6 +379,10 @@ public static class Greenwater
         Ui("AskFire", "[Boiler firebox]", "Thirty people are aboard and the winter grain is lashed alongside. This cannot be undone.", Labels["pruitt_chain"][1], Labels["pruitt_chain"][2]),
         Ui("NoteFireScene", Greybox, "The occupied Queen burns with the grain lashed alongside. The fire is shown by the marker on her deck. Nobody's death is counted here."),
         Ui("NoteFireFailed", Test, "The fire could not be shown, so nothing is recorded. Use the firebox again."),
+        Ui("NoteFireNoMarker", Test, "The fire cannot be shown in this build: its marker is missing. No order was given and nothing is changed. Report this to the tester."),
+        Ui("NoteFireStuck", Test, "The fire was ordered and cannot be shown: a piece of this build is missing or cannot be switched on. Nothing is recorded and no other course is open. Report this to the tester."),
+        Ui("NoteCargoFailed", Test, "The cargo could not be shown at the landing, so nothing is recorded. Use the barge's pilot lever again, then walk to the return dock."),
+        Ui("NoteCargoStuck", Test, "The cargo cannot be shown at the landing: a piece of this build is missing. Nothing is recorded. Report this to the tester."),
         Ui("NotePilotNothing", "[Barge pilot lever]", "The barge is still lashed to the Queen."),
         Ui("NoteChuteScene", Greybox, "Hangman's Chute is a short walk in this build. Walk to the return dock: the run counts when you reach it."),
         Ui("NoteTowScene", Greybox, "The barge you won is brought round to the landing. Walk to the return dock: the grain is home when you reach it."),
@@ -388,7 +395,7 @@ public static class Greenwater
         Ui("NoteTableEmpty", "[Faro table]", "Nobody is dealing here."),
         Ui("NoteHatcherCustody", Test, "Lyle Hatcher is in Sheriff Pritchard's custody."),
         Ui("NoteNoMeal", Test, "No food item is built into this candidate. Nothing was given."),
-        Ui("NoteJudgmentFailed", Test, "That could not be carried out. Nothing was changed."),
+        Ui("NoteJudgmentFailed", Test, "That could not be carried out. Nothing is recorded."),
         Ui("AskLeaveResolved", "[Skiff to Mercy]", "Leave Greenwater? The road is complete once you are back at Mercy Crossing.", "Leave for Mercy", "Stay"),
         Ui("AskLeaveUnresolved", "[Skiff to Mercy]", "Nothing is settled at Greenwater. Leaving settles nothing; you can come back.", "Leave for Mercy", "Stay"),
         Ui("AskLeaveAgain", "[Skiff to Mercy]", "Leave Greenwater?", "Leave for Mercy", "Stay"),

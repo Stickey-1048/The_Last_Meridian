@@ -671,7 +671,9 @@ class BoxesThatGiveNoAnswer(unittest.TestCase):
         self.assertEqual(a.g("Reported"), 0)
         for value in (-1, 7):
             a.box_returns(G + "ReportUnknown", value)
-            a.press(REF + "Pritchard", {BRIEF_HUB: [3]})
+            # Shown and not answered: not given, and nothing else is shown in that conversation
+            # (test_greenwater_repair.py, Report, has the rest).
+            self.assertEqual(a.press(REF + "Pritchard", {BRIEF_HUB: [3]}), ["ReportUnknown"])
             a.box_returns(None, None)
             self.assertEqual(a.g("Reported"), 0)
         a.report()
@@ -1167,6 +1169,22 @@ class TheNumbers(unittest.TestCase):
         for other in ("TLM_MQ02", "TLM_MQ02A", "TLM_MQ02C", "TLM_MQ03", "TLM_MQ04"):
             self.assertNotIn(other, [q["EditorId"] for q in self.data["Quests"]])
 
+    def test_every_name_a_script_uses_is_one_it_declares(self):
+        """A constant, an alias or a message used in a script and declared in another one is a compile error the
+        consistency check does not see (found in this repair: the walk used RV_RETURN_NONE, which only the road
+        declared). Each of the road's scripts must declare every such name it uses."""
+        for name in ("MQ02BQuest.psc", "GreenwaterWalk.psc", "GreenwaterTalk.psc", "Act1Walk.psc"):
+            text = re.sub(r"\{[^}]*\}", "", (SCRIPTS / name).read_text())      # documentation first: it may hold a semicolon
+            text = "\n".join(line.split(";")[0] for line in text.splitlines())
+            text = re.sub(r'"[^"\n]*"', '""', text)
+            declared = {m.lower() for m in re.findall(r"^\s*(?:int|float|bool|string)\s+(\w+)\s*=", text, re.M)}
+            declared |= {m.lower() for m in re.findall(r"\bProperty\s+(\w+)", text)}
+            # Not a name reached through another script's object (mainScript.Alias_CutterA): that one is the other's.
+            used = set(re.findall(r"(?<![.\w])((?:RV|GW|BOARD|RIVER|TABLE|ARRIVE|SEEN)_[A-Z0-9_]+|Alias_\w+|(?:Say|Note|Ask|Label|Report|BoardPage|LetterPage)[A-Z]\w*)\b", text))
+            functions = {m.lower() for m in re.findall(r"\bFunction\s+(\w+)", text)}
+            missing = sorted(u for u in used if u.lower() not in declared and u.lower() not in functions)
+            self.assertEqual(missing, [], name + " uses names it does not declare")
+
     def test_the_rules_script_shows_nothing_and_resets_nothing(self):
         code = "\n".join(l.split(";")[0] for l in (SCRIPTS / "MQ02BQuest.psc").read_text().split("}", 1)[1].splitlines())
         for forbidden in (".Show(", "StartTimer", "RegisterFor", "OnInit", "OnPlayerLoadGame", "OnQuestInit", "Stop()", "Reset()",
@@ -1260,8 +1278,8 @@ class WhatTheseTestsCatch(unittest.TestCase):
             a.gangway()
             a.chain("cut")
             a.pilot()
-        self.assertIsNotNone(self.broken("MQ02BQuest.psc", "	If EscapePending && !GetStageDone(42)\n		ReturnPending = RV_RETURN_ESCAPE\n",
-                                         "	If EscapePending && !GetStageDone(42)\n		ReturnPending = RV_RETURN_ESCAPE\n		SetStage(42)\n", play))
+        self.assertIsNotNone(self.broken("MQ02BQuest.psc", "	ReturnPending = aiKind\n	Return aiKind\n",
+                                         "	ReturnPending = aiKind\n	SetStage(42)\n	Return aiKind\n", play))
 
     def test_the_whole_cargo_after_the_chute(self):
         self.assertIsNotNone(self.broken("MQ02BQuest.psc", "		int units = RV_UNITS_ALONE\n", "		int units = RV_UNITS_WHOLE\n",
@@ -1346,8 +1364,9 @@ class WhatTheseTestsCatch(unittest.TestCase):
         def play(a):
             self.chute(a)
             a.report(give=False)
-        self.assertIsNotNone(self.broken("GreenwaterWalk.psc", "	If pick != 0\n		Return false\n	EndIf\n	Actor player = Game.GetPlayer()\n	If akSheriff.IsDead()",
-                                         "	Actor player = Game.GetPlayer()\n	If akSheriff.IsDead()", play))
+        self.assertIsNotNone(self.broken("GreenwaterWalk.psc",
+                                         "	If pick == 1\n		Return GW_REPORT_LATER\n	EndIf\n	If pick != 0\n		Return GW_REPORT_CLOSED\n	EndIf\n	If !river.GiveReport()",
+                                         "	If !river.GiveReport()", play))
 
 
 if __name__ == "__main__":

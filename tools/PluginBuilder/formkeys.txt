@@ -660,3 +660,11 @@ TLM_REF_GW_Chain
 2377
 TLM_REF_GW_Pilot
 2378
+TLM_MSG_GW_NoteFireNoMarker
+2379
+TLM_MSG_GW_NoteFireStuck
+2380
+TLM_MSG_GW_NoteCargoFailed
+2381
+TLM_MSG_GW_NoteCargoStuck
+2382

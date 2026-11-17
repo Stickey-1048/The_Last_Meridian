@@ -33,11 +33,14 @@ try {
     $new=Join-Path $root 'new-package'
     $reason=''
     try { & $builder @args -OutputDirectory $new } catch { $reason=$_.Exception.Message }
-    # ACT1-RUNTIME-001 candidate checkout: the runtime source here is no longer the reviewed19 (Act1Walk changed,
-    # MercyBriefing added). This pinned packager must refuse it at its own frozen-source guard, before it looks at
-    # any runtime input and without creating output. The guard and the pins are unchanged; the immutable b280
-    # checkout keeps the earlier expectation (the19-PEX check is reached) and still builds the old package.
-    if ($reason -notlike '*Current source differs from reviewed logical source: Act1Walk.psc*') { throw "Pinned packager did not refuse the changed candidate source at its frozen-source guard: $reason" };$checks++
+    # GREENWATER-STORY-001 candidate checkout: the runtime source here is no longer the reviewed19 (Act1Guide and
+    # Act1Walk changed; MercyBriefing and the three Greenwater scripts added). This pinned packager must refuse it
+    # at its own frozen-source guard, before it looks at any runtime input and without creating output. That guard
+    # walks its pinned sources in the order of world-natural-artifact.json and stops at the first whose text differs,
+    # which in this checkout is Act1Guide.psc (it comes before Act1Walk.psc there). The exact script is still
+    # required: no other refusal counts. The guard and the pins are unchanged; the immutable b280 checkout keeps
+    # the earlier expectation (the19-PEX check is reached) and still builds the old package.
+    if ($reason -notlike '*Current source differs from reviewed logical source: Act1Guide.psc*') { throw "Pinned packager did not refuse the changed candidate source at its frozen-source guard: $reason" };$checks++
     if (Test-Path $new) { throw 'Refused package created output before validating runtime.' };$checks++
     if ((Get-Content $master -Raw).Trim() -ne 'input sentinel') { throw 'Input master changed.' };$checks++
     $empty=Join-Path $root 'empty';[void](New-Item -ItemType Directory $empty)

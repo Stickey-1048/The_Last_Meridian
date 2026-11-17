@@ -12,7 +12,9 @@ test_greenwater.py plays the real scripts and compares after every action.
 
 Its rules, in the order's words:
   - winning at cards (41) is not the grain at the landing;
-  - the paid share (44), the lie and Opal's thanks (46) are three things;
+  - the paid share (44), the lie and Opal's thanks (46) are three things:
+    grain_sold is the paid share and the lie delivered to her alive; her
+    thanks in the journal (46) and her cup wait for her answer;
   - a cut chain is an escape pending: no cards, no share and no fire after it,
     only the pilot lever, however often;
   - nobody dead speaks, is handed a prisoner or hands anything over, and no
@@ -293,10 +295,12 @@ class River:
             shown.append("AskLie")
             if not lie:
                 return shown
+            # The paid deal and the lie delivered to her, alive: that is grain_sold, and it is kept.
             self.lie_told = True
+            self.grain_sold = True
+        # Her answer is another thing: the journal's thanks (46) and her cup wait for it.
         shown.append("OpalAfterShare")
         self.lie_heard = True
-        self.grain_sold = True
         self.stages.add(46)
         self._portion("cup", shown)
         return shown
@@ -614,8 +618,10 @@ class River:
             out.append("caps paid other than once: %d, asked %d times" % (self.caps, self.asked.get("caps", 0)))
         if self.grain_home != (self.cargo in (RV_CARGO_HOME_WHOLE, RV_CARGO_HOME_REDUCED)):
             out.append("grain_home does not say what is at the landing")
-        if self.grain_sold != (46 in s) or (46 in s and not (44 in s and self.share_paid and self.lie_told and self.lie_heard)):
-            out.append("grain_sold without the paid deal, the lie told and her answer heard")
+        if self.grain_sold != self.lie_told or (self.grain_sold and not (44 in s and self.share_paid)):
+            out.append("grain_sold is not the paid deal and the lie told")
+        if (46 in s) != self.lie_heard or (46 in s and not self.grain_sold):
+            out.append("her thanks in the journal without the lie told and her answer heard")
         if self.hatcher_hanged != (60 in s) or (60 in s and (self.fate != RV_H_HANGED or self.hatcher or 41 not in s)):
             out.append("a hanging that is not a hanged man after a card win")
         if 61 in s and (self.fate != RV_H_CUSTODY or 41 not in s):

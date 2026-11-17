@@ -230,7 +230,9 @@ class Projection(unittest.TestCase):
         self.assertEqual(len(set(mapped.values())), 7)
         source = (ROOT / "scripts" / "Source" / "User" / "TLM" / "MQ02BQuest.psc").read_text()
         # Each is written in one function only: grain_home in CompleteReturn (its two arrivals), the rest once each.
-        setter = {"grain_home": "CompleteReturn", "grain_sold": "LieWasHeard", "queen_burned": "FireDone", "hatcher_hanged": "Hang",
+        # grain_sold in TellLie: the paid deal and the lie delivered to her alive (repair, finding 5), not her answer.
+        # hatcher_hanged in RecordHanging, which the wait in Hang and his death event both go through (finding 2).
+        setter = {"grain_home": "CompleteReturn", "grain_sold": "TellLie", "queen_burned": "FireDone", "hatcher_hanged": "RecordHanging",
                   "hatcher_friend": "Release", "hatcher_hunting": "CompleteReturn", "silver_river": "LearnHire"}
         bodies = {}
         for piece in source.split("Function ")[1:]:
