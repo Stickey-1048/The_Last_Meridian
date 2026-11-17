@@ -9,7 +9,9 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from test_sim import ROOT
+from test_sim import ROOT as LIVE_ROOT
+from source_snapshot import snapshot
+ROOT=snapshot("1cdd4666b12e3b40f0c3bf5a3e877f561c7b8d83")
 sys.path.insert(0,str(ROOT/'tools'))
 import red_hollow_story_candidate as candidate
 
@@ -24,9 +26,10 @@ def source_copy():
 class RedHollowCandidate(unittest.TestCase):
     def test_exact_source_with_frozen_prior_candidates(self):
         self.assertEqual(candidate.problems(),[])
+        self.assertTrue(candidate.problems(LIVE_ROOT),'the frozen Red Hollow verifier must reject this later composition')
         m=json.loads(candidate.MANIFEST.read_text());self.assertEqual(m['scripts'],29)
         for name in candidate.FROZEN:
-            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
+            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
             self.assertEqual((ROOT/name).read_text(),old,name)
         self.assertTrue(all(v is None for v in m['measured'].values()))
         self.assertEqual((len(m['runtimeSelection']['reusedReviewedPex']),len(m['runtimeSelection']['freshlyCompiled'])),(17,12))

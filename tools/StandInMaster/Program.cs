@@ -57,7 +57,7 @@ var variant = args.Length > 1 ? args[1] : "default";
 var mod = new Fallout4Mod(ModKey.FromNameAndExtension("Fallout4.esm"), Fallout4Release.Fallout4);
 FormKey Key(uint id) => new(mod.ModKey, id);
 
-var room = variant is "default" or "localized" or "plain-triggers" or "bare-room";
+var room = variant is "default" or "localized" or "plain-triggers" or "bare-room" or "relief-no-corn" or "relief-wrong-corn-name";
 if (variant == "localized") mod.UsingLocalization = true;
 var lowIds = !room;
 var caps = new MiscItem(lowIds ? Key(0xF) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Caps001", Name = "Bottlecap" };
@@ -278,7 +278,7 @@ if (room)
     qaSmoke.Persistent.Add(Put(clutter.ToLink(), -300, 40, 0));
     cells.Add(qaSmoke);
 
-    if (variant is "default" or "localized" or "plain-triggers")
+    if (variant is "default" or "localized" or "plain-triggers" or "relief-no-corn" or "relief-wrong-corn-name")
     {
         // Two more things in far corners, so that the room is large enough to
         // hold what the builder places in it.
@@ -355,6 +355,8 @@ switch (variant)
         }
         break;
     case "default":
+    case "relief-no-corn":
+    case "relief-wrong-corn-name":
     case "localized":
     case "plain-triggers":
     case "bare-room":
@@ -395,6 +397,13 @@ foreach (var c in cells)
     sub.Cells.Add(c);
 }
 
+// New strict relief form appended after every historical synthetic allocation.
+// The older display-name Corn remains unchanged for existing Meal lookups.
+if (room && variant != "relief-no-corn")
+{
+    var strictCorn = mod.Ingestibles.AddNew("Corn");
+    strictCorn.Name = variant == "relief-wrong-corn-name" ? "Not Corn" : "Corn";
+}
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
 // Real masters use ids below 0x800; a stand-in may too.
 mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();

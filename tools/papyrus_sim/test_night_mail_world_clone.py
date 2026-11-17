@@ -28,7 +28,7 @@ class NightMailClone(unittest.TestCase):
             if a["name"] not in exterior:
                 self.assertEqual(a["owner"], "TheLastMeridian.esp")
                 self.assertEqual(a["reference"], "TLM_REF_NM_" + a["name"])
-        self.assertEqual(self.out["persistentReferences"], 64)
+        self.assertEqual(self.out["persistentReferences"], 66)
 
     def test_binding_ownership_and_road_identity(self):
         n = self.out["nightMail"]
@@ -77,7 +77,7 @@ class NightMailClone(unittest.TestCase):
         out = json.loads(got.stdout)
         self.assertFalse(out["nightMail"]["present"])
         self.assertNotIn("TLM_NightMail", out["firstSection"]["forms"])
-        self.assertEqual(out["persistentReferences"], 60)
+        self.assertEqual(out["persistentReferences"], 62)
         self.assertEqual(out["quests"], ["TLM_WS_A1", "TLM_WS_Entry", "TLM_WS_GW"])
 
 

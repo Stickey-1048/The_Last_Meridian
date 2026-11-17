@@ -171,6 +171,7 @@ bool LieHeard = false
 bool DeniedSaid = false
 bool Judging = false
 int HangIntent = 0
+Actor HangActor = None
 bool Burning = false
 int Approach = 0
 bool HireRead = false
@@ -301,6 +302,32 @@ EndFunction
 
 int Function Recovered()
 	Return TLM_G_MQ02B_Recovered.GetValueInt()
+EndFunction
+
+int Function ReliefStartingReserve()
+	{Read-only normalized completed cargo tuple. -1 means inconsistent/unready;
+	never substitutes an enum for delivered measures or rewrites river history.}
+	If !IsRunning() || !GetStageDone(100) || !CanComplete() || ReturnPending != RV_RETURN_NONE || EscapePending || Burning || Claim != Outcome()
+		Return -1
+	EndIf
+	int course = Outcome()
+	int cargoState = Cargo()
+	int units = Recovered()
+	int home = TLM_G_MQ02B_GrainHome.GetValueInt()
+	If course == RV_CARDS && GetStageDone(41) && !GetStageDone(42) && !GetStageDone(43) && !GetStageDone(44) && cargoState == RV_CARGO_HOME_WHOLE && units == 12 && home == 1 && !SharePaid && !SharePending
+		Return 900
+	ElseIf course == RV_CHUTE && GetStageDone(42) && !GetStageDone(41) && !GetStageDone(43) && !GetStageDone(44) && cargoState == RV_CARGO_HOME_REDUCED && home == 1 && !SharePaid && !SharePending
+		If units == 8
+			Return 630
+		ElseIf units == 6
+			Return 495
+		EndIf
+	ElseIf course == RV_FIRE && GetStageDone(43) && !GetStageDone(41) && !GetStageDone(42) && !GetStageDone(44) && cargoState == RV_CARGO_DESTROYED && units == 0 && home == 0 && !SharePaid && !SharePending
+		Return 90
+	ElseIf course == RV_SHARE && GetStageDone(44) && !GetStageDone(41) && !GetStageDone(42) && !GetStageDone(43) && cargoState == RV_CARGO_LASHED && units == 0 && home == 0 && SharePaid && !SharePending
+		Return 90
+	EndIf
+	Return -1
 EndFunction
 
 int Function Stamp()
@@ -807,7 +834,36 @@ EndFunction
 
 ; ------------------------------------------------------------------ judgments
 
-bool Function Hang()
+bool Function JudgmentContext(int aiVerdict, Actor akHatcher, Actor akRecipient, ObjectReference akRing, Actor akSpeaker, ReferenceAlias akSpeakerAlias, int aiStamp)
+	{Captured consent identities, never a newly eligible substitute. Native
+	eligibility reads precede the final authoritative identity comparisons.}
+	If !akHatcher || !akSpeaker || !akSpeakerAlias || !RoadOpen() || Stamp() != aiStamp || !HatcherCanBeJudged()
+		Return false
+	EndIf
+	If akHatcher.IsDead() || akHatcher.IsDisabled() || akHatcher.IsInCombat() || akSpeaker.IsDead() || akSpeaker.IsDisabled() || akSpeaker.IsInCombat()
+		Return false
+	EndIf
+	If aiVerdict == 60
+		If !akRecipient || !akRing || akRecipient.IsDead() || akRecipient.IsDisabled() || akRecipient.IsInCombat() || akRing.IsDisabled()
+			Return false
+		EndIf
+		If Person(Alias_Opal) != akRecipient || !Alias_Steeple || Alias_Steeple.GetReference() != akRing
+			Return false
+		EndIf
+	ElseIf aiVerdict == 61
+		If !akRecipient || akRecipient.IsDead() || akRecipient.IsDisabled() || akRecipient.IsInCombat() || Person(Alias_MercySheriff) != akRecipient
+			Return false
+		EndIf
+	ElseIf aiVerdict != 1
+		Return false
+	EndIf
+	If akSpeaker != akHatcher && Person(Alias_Opal) != akSpeaker
+		Return false
+	EndIf
+	Return akSpeakerAlias.GetActorReference() == akSpeaker && Person(Alias_Hatcher) == akHatcher && Stamp() == aiStamp
+EndFunction
+
+bool Function Hang(Actor akHatcher, Actor akOpal, ObjectReference akRing, Actor akSpeaker, ReferenceAlias akSpeakerAlias, int aiStamp)
 	{"He's yours, Opal." Hatcher beaten, free, alive, present and in no fight;
 	Opal alive, present and in no fight; the steeple's ring there and switched
 	on. He is taken to the ring and SEEN at it, and everybody is asked for
@@ -815,14 +871,11 @@ bool Function Hang()
 	hanging is recorded only when he is seen dead after that, by this
 	function's wait or by his alias's death event, whichever is first.
 	False, with nothing recorded and no second Kill, in every other case.}
-	If !RoadOpen() || !HatcherCanBeJudged() || !CanSpeak(Alias_Opal)
+	If !JudgmentContext(60, akHatcher, akOpal, akRing, akSpeaker, akSpeakerAlias, aiStamp)
 		Return false
 	EndIf
-	Actor hatcher = Person(Alias_Hatcher)
-	ObjectReference ring = None
-	If Alias_Steeple
-		ring = Alias_Steeple.GetReference()
-	EndIf
+	Actor hatcher = akHatcher
+	ObjectReference ring = akRing
 	If !ring || ring.IsDisabled()
 		Debug.Trace("TLM_MQ02B: no hanging: the steeple's ring is missing or switched off. Nothing was done to Hatcher and nothing is recorded", 2)
 		Return false
@@ -833,12 +886,14 @@ bool Function Hang()
 	EndIf
 	Judging = true
 	HangIntent = RV_HANG_MOVING
+	HangActor = hatcher
 	hatcher.MoveTo(ring)
 	; Where he is, and whether what the choice needed is still so. Nothing has been done to him yet but the move.
 	bool there = !hatcher.IsDead() && !hatcher.IsDisabled() && hatcher.GetParentCell() == ring.GetParentCell() && hatcher.GetDistance(ring) <= RV_GALLOWS_REACH
-	bool still = RoadOpen() && CanSpeak(Alias_Opal) && !hatcher.IsInCombat() && !ring.IsDisabled() && TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE
+	bool still = JudgmentContext(60, hatcher, akOpal, ring, akSpeaker, akSpeakerAlias, aiStamp)
 	If !there || !still
 		HangIntent = RV_HANG_NONE
+		HangActor = None
 		Judging = false
 		Debug.Trace("TLM_MQ02B: no hanging: Hatcher at the ring " + there + ", everybody and everything still as the choice needs " + still + ". He was not killed and nothing is recorded", 2)
 		Return false
@@ -866,7 +921,7 @@ EndFunction
 bool Function RecordHanging()
 	{The one place a hanging is written down. True if it is recorded, now or
 	before. Only while an execution is under way and with Hatcher seen dead.}
-	Actor hatcher = Person(Alias_Hatcher)
+	Actor hatcher = HangActor
 	bool dead = false
 	If hatcher
 		dead = hatcher.IsDead()
@@ -885,14 +940,14 @@ bool Function RecordHanging()
 	Return true
 EndFunction
 
-bool Function Custody()
+bool Function Custody(Actor akHatcher, Actor akSheriff, Actor akSpeaker, ReferenceAlias akSpeakerAlias, int aiStamp)
 	{"He goes to Pritchard, alive." Hatcher alive and free, Pritchard alive and
 	there: Hatcher is taken to him. Recorded only if he is then alive beside him.}
-	If !RoadOpen() || !HatcherCanBeJudged() || !SheriffCanReceive()
+	If !JudgmentContext(61, akHatcher, akSheriff, None, akSpeaker, akSpeakerAlias, aiStamp)
 		Return false
 	EndIf
-	Actor hatcher = Person(Alias_Hatcher)
-	Actor sheriff = Person(Alias_MercySheriff)
+	Actor hatcher = akHatcher
+	Actor sheriff = akSheriff
 	; No call into the game between this test and the claim.
 	If Judging || HangIntent != RV_HANG_NONE
 		Return false
@@ -901,22 +956,26 @@ bool Function Custody()
 	hatcher.MoveTo(sheriff, 96.0, 96.0, 0.0)
 	bool arrived = !hatcher.IsDead() && !sheriff.IsDead() && hatcher.GetParentCell() == sheriff.GetParentCell() && hatcher.GetDistance(sheriff) < RV_CUSTODY_REACH
 	; And whether what the choice needed is still so, asked again after the move.
-	bool still = RoadOpen() && SheriffCanReceive() && !hatcher.IsDisabled() && !hatcher.IsInCombat() && TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE
+	bool still = JudgmentContext(61, hatcher, sheriff, None, akSpeaker, akSpeakerAlias, aiStamp)
 	If !arrived || !still
 		Judging = false
 		Debug.Trace("TLM_MQ02B: no custody: Hatcher alive beside Pritchard " + arrived + ", everybody still as the choice needs " + still + "; nothing is recorded", 2)
 		Return false
 	EndIf
 	hatcher.SetRestrained(true)
+	If !JudgmentContext(61, hatcher, sheriff, None, akSpeaker, akSpeakerAlias, aiStamp)
+		Judging = false
+		Return false
+	EndIf
 	TLM_G_MQ02B_Hatcher.SetValueInt(RV_H_CUSTODY)
 	SetStage(61)
 	Judging = false
 	Return true
 EndFunction
 
-bool Function Release()
+bool Function Release(Actor akHatcher, Actor akSpeaker, ReferenceAlias akSpeakerAlias, int aiStamp)
 	{"Let him keep his boat." Hatcher alive and free.}
-	If !RoadOpen() || !HatcherCanBeJudged()
+	If !JudgmentContext(1, akHatcher, None, None, akSpeaker, akSpeakerAlias, aiStamp)
 		Return false
 	EndIf
 	; No call into the game between this test and the claim.
@@ -928,15 +987,20 @@ bool Function Release()
 	Return true
 EndFunction
 
-Function HatcherDied()
+Function HatcherDied(Actor akDead)
 	{Heard from his alias. While an execution is under way this death is the
 	hanging, and is written by the same function as the wait in Hang uses, so
 	that the two cannot disagree. Any other death is a death otherwise.}
-	If HangIntent == RV_HANG_EXECUTING
-		RecordHanging()
+	If !akDead || !akDead.IsDead()
 		Return
 	EndIf
-	If Judging
+	If HangIntent == RV_HANG_EXECUTING
+		If akDead == HangActor
+			RecordHanging()
+		EndIf
+		Return
+	EndIf
+	If Judging || Person(Alias_Hatcher) != akDead
 		Return
 	EndIf
 	int fate = TLM_G_MQ02B_Hatcher.GetValueInt()

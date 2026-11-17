@@ -295,6 +295,10 @@ class Player:
         said. mercy: full ids of other boxes to answer at Mercy (the first section's and the briefing's)."""
         s = self.s
         answers = {m: [0] * 40 for m, n in self.buttons.items() if m.startswith(G) and n == 1}
+        # Existing route helpers model explicit acceptance of the new local
+        # confirmations. Adverse/cancel tests supply their own exact responses.
+        for box in ('ConfirmShare','CardStakes','ConfirmHang','ConfirmCustody','ConfirmRelease'):
+            if box in want:answers[G+box]=[0]*40
         explicit = {}
         queues = {box: list(v) if isinstance(v, (list, tuple)) else [v] for box, v in (picks or {}).items()}
         for box in want:
@@ -435,6 +439,8 @@ class Player:
         """Uses a piece with no model beside it. Returns the Greenwater messages then shown."""
         s = self.s
         base = {m: [0] * 40 for m, n in self.buttons.items() if m.startswith(G) and n == 1}
+        for box in ('ConfirmShare','CardStakes','ConfirmHang','ConfirmCustody','ConfirmRelease'):
+            base[G+box]=[0]*40
         base.update({m: list(b) for m, b in (answers or {}).items()})
         s.answers = base
         at = len(s.messages_shown)

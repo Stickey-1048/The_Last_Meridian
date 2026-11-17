@@ -185,7 +185,7 @@ class Projection(unittest.TestCase):
                 longest = max(longest, len(text))
                 for b in m["Buttons"]:
                     self.assertLessEqual(len(b["Text"]), 48, name)
-        self.assertEqual(longest, 236)                               # measured: Rafferty's line at the chain, with his name
+        self.assertEqual(longest, 240)  # measured candidate maximum; old speech still unchanged
 
     def test_nothing_names_what_act_one_does_not_know(self):
         for name, m in self.messages.items():
@@ -211,7 +211,7 @@ class Projection(unittest.TestCase):
         # Every accepted stage is there, under its own number.
         self.assertEqual(sorted(accepted), sorted(n for n in built if n != 46))
         # 44 does not say what payment has not earned; 46 says it.
-        self.assertEqual(built[44], "You accepted Hatcher's share. The grain remains aboard the Queen.")
+        self.assertEqual(built[44], "You accepted Hatcher's payment. The grain remains on his barge beside the Queen; Greenwater did not receive it.")
         self.assertEqual(built[46], accepted[44])
         self.assertIn("thanked you", built[46])
         objectives = {o["n"]: o["text"] for o in self.quest["objectives"]}

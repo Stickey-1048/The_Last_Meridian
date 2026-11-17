@@ -47,7 +47,7 @@ class GettingThere(unittest.TestCase):
         r.step_onto_landing()
         self.assertEqual(r.talk_opal(first="guns"), ["OpalFirst", "OpalGuns"])
         self.assertNotIn(20, r.stages)
-        self.assertEqual(r.talk_opal(first="wants"), ["OpalFirst", "OpalWants"])
+        self.assertEqual(r.talk_opal(first="wants"), ["OpalFirst", "OpalWants", "Goal", "Stakes"])
         self.assertEqual((r.stages, r.fate, r.outcome), ({10, 20}, gw.RV_H_FREE, gw.RV_NONE))
 
     def test_boarding_never_waits_on_opal(self):
@@ -64,7 +64,7 @@ class GettingThere(unittest.TestCase):
 class Cards(unittest.TestCase):
     def test_a_loss_is_not_a_course_and_takes_nothing(self):
         r = aboard(charisma=4)
-        self.assertEqual(r.use_table(["deal"], then="leave"), ["HatcherTable", "HatcherWon"])
+        self.assertEqual(r.use_table(["deal"], then="leave"), ["HatcherTable", "CardStakes", "HatcherWon"])
         self.assertEqual((r.claim, r.outcome, r.card, 45 in r.stages), (gw.RV_NONE, gw.RV_NONE, gw.RV_CARD_LOST, True))
         self.assertFalse(r.can_complete())
         # Another course is still open.
@@ -72,7 +72,7 @@ class Cards(unittest.TestCase):
 
     def test_a_win_yields_the_barge_and_does_not_deliver_it(self):
         r = aboard(charisma=5)
-        self.assertEqual(r.use_table(["deal"], judge="release"), ["HatcherTable", "HatcherLost"])
+        self.assertEqual(r.use_table(["deal"], judge="release"), ["HatcherTable", "CardStakes", "HatcherLost", "ConfirmRelease"])
         self.assertEqual((r.cargo, r.grain_home, r.recovered), (gw.RV_CARGO_YIELDED, False, 0))
         self.assertFalse(r.can_complete())
         self.assertEqual(r.talk_opal(), ["OpalDefault"])        # nothing she says of it waits for anything but the barge
@@ -95,14 +95,14 @@ class Cards(unittest.TestCase):
     def test_nobody_dead_is_offered_a_prisoner(self):
         r = aboard(charisma=5)
         r.opal = False
-        self.assertEqual(r.use_table(["deal"], judge="hang"), ["HatcherTable", "HatcherLostNoOpal"])
+        self.assertEqual(r.use_table(["deal"], judge="hang"), ["HatcherTable", "CardStakes", "HatcherLostNoOpal"])
         self.assertEqual((r.fate, r.hatcher), (gw.RV_H_FREE, True))
         r = aboard(charisma=5, sheriff=False)
-        self.assertEqual(r.use_table(["deal"], judge="custody"), ["HatcherTable", "HatcherLostNoSheriff"])
+        self.assertEqual(r.use_table(["deal"], judge="custody"), ["HatcherTable", "CardStakes", "HatcherLostNoSheriff"])
         self.assertEqual(r.fate, gw.RV_H_FREE)
         r = aboard(charisma=5, sheriff=False)
         r.opal = False
-        self.assertEqual(r.use_table(["deal"], judge="release"), ["HatcherTable", "HatcherLostAlone"])
+        self.assertEqual(r.use_table(["deal"], judge="release"), ["HatcherTable", "CardStakes", "HatcherLostAlone", "ConfirmRelease"])
         self.assertEqual(r.fate, gw.RV_H_RELEASED)
 
     def test_opals_reactions_wait_for_the_barge(self):
@@ -112,14 +112,14 @@ class Cards(unittest.TestCase):
         self.assertEqual(r.fate, gw.RV_H_FREE)
         r.use_pilot()
         r.reach_dock()
-        self.assertEqual(r.talk_opal(judge="custody"), ["OpalAfterWon", "OpalDenied"])
+        self.assertEqual(r.talk_opal(judge="custody"), ["OpalAfterWon", "ConfirmCustody", "OpalDenied"])
         self.assertEqual(r.talk_opal(), ["OpalDefault"])
 
 
 class TheShare(unittest.TestCase):
     def test_payment_the_lie_and_her_thanks_are_three_things(self):
         r = aboard()
-        self.assertEqual(r.use_table(["share"]), ["HatcherTable", "HatcherShare"])
+        self.assertEqual(r.use_table(["share"]), ["HatcherTable", "HatcherShare", "ConfirmShare", "NoteSharePaid"])
         self.assertEqual((r.caps, r.share_paid, 44 in r.stages, 46 in r.stages, r.grain_sold, r.lie_told), (200, True, True, False, False, False))
         self.assertEqual(r.talk_opal(lie=False), ["AskLie"])
         self.assertEqual((r.lie_told, r.grain_sold), (False, False))
@@ -143,7 +143,7 @@ class TheShare(unittest.TestCase):
 
     def test_a_payment_the_game_does_not_honour_is_no_deal(self):
         r = aboard(refused={"caps"})
-        self.assertEqual(r.use_table(["share"]), ["HatcherTable", "HatcherShare", "NoteShareFailed"])
+        self.assertEqual(r.use_table(["share"]), ["HatcherTable", "HatcherShare", "ConfirmShare", "NoteShareFailed"])
         self.assertEqual((r.caps, r.share_paid, r.share_pending, r.claim, 44 in r.stages), (0, False, True, gw.RV_NONE, False))
         self.assertEqual(r.use_table(["share"]), ["HatcherTableNoShare"])       # never offered again
         self.assertEqual(r.asked["caps"], 1)

@@ -1,0 +1,23 @@
+# Greenwater clarity and winter relief: consolidated source repair
+
+Prior reviewed source `1e5f4ff577663dbda42cde6c0c6d8d513d0da2f6`, PR40. Sam's whole-feature SOURCE HOLD report SHA256 `5F4D165E578B02B7613346A77D18611D7984A47DFFFFD29B6FDF93C10203904B` and Nora's report `E4240C7E35ABDB3831E6FCCF1065AF332584004DBD70F71D2113F90C9CCCAD4B` were read in full with their actual saved probes/results before editing. The coordinator's consolidated two-group repair order was read in full. Original source, signed reports, probes and green 894-test/remote run remain historical evidence; those passes did not cover the two defects.
+
+## N1: judgment consent follows captured identities
+
+Both Opal and table entry paths capture the actual Hatcher, initiating speaker, required Opal/Sheriff recipient, steeple object and road stamp BEFORE the first judgment choice. These values travel through the explicit confirmation to the actual rules call. A shared rules guard checks eligibility and authoritative alias agreement; action functions use the passed actors/objects rather than reacquiring replacement targets. Missing, rebound, dead, disabled, fighting or stale participants close the activation. Required identities are checked again after yielding movement, and custody after its actual restraint call before recording61. No replacement victim or fallback recipient is introduced.
+
+The hanging intent retains its actual execution actor. Its bounded wait and death receipt inspect that actor, never whichever actor later occupies Hatcher's rules alias. A dead substitute cannot make an unsuccessful Kill a hanging. A genuinely observed death of the captured execution actor remains earned even if an alias changes after the irreversible Kill. Ordinary death forwarding supplies the actual controller actor; a live or mismatched death report records nothing. Actual issued movement/restraint is not silently undone when later acknowledgment fails. Opal's later denial reply likewise retains her initiating identity; failure notices are withheld when the original context is no longer eligible.
+
+## N2: later relief pages retain their activation generation
+
+Each activation's captured epoch is passed into donation, supply, step and status functions. `UseCurrent` performs native control/player reads FIRST, then compares that captured epoch LAST. Later result, forecast, hunger, completion, blocked/status and supply-status pages use it; no result page borrows mutable requestEpoch from a newer request. A resumed old activation cannot clear a newer menu claim. Initialization and insufficient-food/stock boundaries also close after a load during their native reads.
+
+This does not change inventory accounting, earned stage facts, finite stock/debt rules, ambiguous-request holds or request effects. There is no rollback, refund, reissue, later-count inference or new transaction framework.
+
+## Focused evidence and preservation
+
+New actual-PSC adverse checks cover both judgment origins and all three verdicts; target/recipient/object changes during both choices; cancellation, stale state, unavailable cast, movement/restraint acknowledgment; valid original participant success; and genuine versus substituted death receipts. Seeded post-commit native reads inject Loaded and a newer ordinary donation, purchase or step before the older frame resumes. They verify one current result page, retained real accounting and no old result. Status/forecast/hunger/completion/blocked chains have corresponding native-read interruption probes. Two deliberately broken actual PSC programs reproduce the missing authoritative-target guard and stale result page, showing the new checks detect the relevant failures.
+
+Current older repair checks now assert the earlier close on a missing ring/participant, explicitly seed the actual hanging actor and supply actual death-event identity. Redundant old single-guard mutants remove the relevant current independent guards together; no case is skipped. All original63 Greenwater repair/mutation checks continue unchanged on the actual accepted historical Git export. No frozen verifier, earlier pin, accepted prose, canon, reference/ID allocation, other road, normal stat, workflow or package is changed.
+
+Exact final source checks, remote CI and narrow signed rereview results belong in the coordinator handback. This remains source/synthetic evidence only: no licensed compilation/build, native game/UI, install, profile/save/auth/provider/security/workflow or merge action occurred. Root retains full30-script compilation, owned-master artifact and ordinary-controller/native inventory/load gates. Fresh-game/fresh-save limitation remains.

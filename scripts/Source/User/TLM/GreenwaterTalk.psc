@@ -22,6 +22,15 @@ Event OnActivate(ObjectReference akActionRef)
 	EndIf
 EndEvent
 
+Event OnPlayerLoadGame()
+	; The master relief quest's player alias alone forwards load invalidation.
+	; Ordinary Greenwater aliases own no reserve and cannot reconcile inventory.
+	TLM:GreenwaterRelief relief = GetOwningQuest() as TLM:GreenwaterRelief
+	If relief
+		relief.Loaded()
+	EndIf
+EndEvent
+
 Event OnTriggerEnter(ObjectReference akActionRef)
 	If akActionRef == Game.GetPlayer()
 		TLM:GreenwaterWalk greybox = Walk()

@@ -24,7 +24,8 @@ public static partial class WorldStory
         ["GangwaySight"]=(2450,500,100),["LabelQueen"]=(2520,600,12),["Table"]=(2600,540,12),["Hatcher"]=(2650,600,0),
         ["Strongbox"]=(2700,520,12),["Crew1"]=(2560,660,0),["Crew2"]=(2740,660,0),["FireControl"]=(2760,440,12),
         ["Burnt"]=(2620,440,12),["OffSideArrival"]=(2560,230,0),["OffSideSight"]=(2620,370,100),
-        ["CargoLashed"]=(2680,300,12),["Chain"]=(2740,300,12),["Pilot"]=(2790,340,12)
+        ["CargoLashed"]=(2680,300,12),["Chain"]=(2740,300,12),["Pilot"]=(2790,340,12),
+        ["ReliefStores"]=(2180,850,12),["ReliefSupply"]=(3050,3620,12)
     };
     const string GreenwaterQuest="TLM_GW";const string GreenwaterClone="TLM_WS_GW";const string RoadQuest="TLM_MQ02B";
     static readonly ModKey StoryMaster=ModKey.FromNameAndExtension("TheLastMeridian.esp");
@@ -51,6 +52,9 @@ public static partial class WorldStory
         var mapping=new List<object>();
         foreach(var a in aliases.Cast<QuestReferenceAlias>()){
             if(a.ForcedReference.IsNull||!sourceRefs.TryGetValue(a.ForcedReference.FormKey,out var old))throw new InvalidDataException("Missing Greenwater source placement: "+a.Name);
+            // These two new refs must be allocated AFTER accepted exterior
+            // scenery, not inserted before Night Mail/Red Hollow/scenery IDs.
+            if(a.Name is "ReliefStores" or "ReliefSupply")continue;
             var at=GreenwaterSites[a.Name!];var key=mod.GetNextFormKey();IPlaced placed;
             if(old is IPlacedNpcGetter npc){var p=npc.Duplicate(key);p.Position=new P3Float(at.X,at.Y,at.Z);p.Rotation=new P3Float(0,0,MathF.PI);p.EditorID="TLM_WS_ST_GW_"+a.Name;placed=p;}
             else if(old is IPlacedObjectGetter obj){var p=obj.Duplicate(key);p.Position=new P3Float(at.X,at.Y,at.Z);p.Rotation=new P3Float(0,0,0);p.EditorID="TLM_WS_ST_GW_"+a.Name;placed=p;}
@@ -103,6 +107,7 @@ public static partial class WorldStory
             }
         }
         if(addon.Quests.Any(q=>q.EditorID==RoadQuest))throw new InvalidDataException("The road quest was copied into the addon");
+        if(addon.Quests.Any(q=>q.EditorID=="TLM_GW_Relief"))throw new InvalidDataException("Relief ledger duplicated into exterior");
     }
     public static void Validate(IFallout4ModGetter addon)
     {
