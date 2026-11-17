@@ -135,6 +135,17 @@ Group Pages
 EndGroup
 
 Group Technical
+	Message Property ArrivalBrief Auto Const
+	Message Property Goal Auto Const
+	Message Property Stakes Auto Const
+	Message Property ConfirmShare Auto Const
+	Message Property NoteSharePaid Auto Const
+	Message Property LabelShareHeld Auto Const
+	Message Property LabelLandingLayout Auto Const
+	Message Property CardStakes Auto Const
+	Message Property ConfirmHang Auto Const
+	Message Property ConfirmCustody Auto Const
+	Message Property ConfirmRelease Auto Const
 	Message Property AskTravel Auto Const
 	{Buttons: travel, not now.}
 	Message Property AskTravelAgain Auto Const
@@ -274,6 +285,7 @@ bool zonesUp = false
 bool talking = false
 bool ranSaid = false
 bool burnedSaid = false
+bool arrivalBriefRead = false
 
 ; ================================================================== set-up
 
@@ -501,7 +513,7 @@ Function Used(int aiWho)
 	ElseIf !river.RoadOpen()
 		; Before the landing was stepped onto, or with the player dead: the label and nothing else.
 		If aiWho == GW_LABEL_LANDING
-			ShowBox(LabelLanding)
+			LandingOverview(river)
 		EndIf
 	ElseIf aiWho == GW_OPAL
 		TalkOpal(river)
@@ -524,7 +536,7 @@ Function Used(int aiWho)
 	ElseIf aiWho == GW_BELDEN
 		TalkBelden(river)
 	ElseIf aiWho == GW_LABEL_LANDING
-		ShowBox(LabelLanding)
+		LandingOverview(river)
 	ElseIf aiWho == GW_LABEL_QUEEN
 		ShowBox(LabelQueen)
 	ElseIf aiWho == GW_LABEL_CHUTE
@@ -629,6 +641,18 @@ Function Travel(TLM:MQ02BQuest akRiver)
 	EndIf
 	Refresh()
 	player.MoveTo(arrival)
+	If !player || player.IsDead() || player.GetParentCell() != arrival.GetParentCell() || player.GetDistance(arrival) > ARRIVE_REACH
+		Return
+	EndIf
+	If !arrivalBriefRead && akRiver.Outcome() == RV_NONE && !akRiver.GetStageDone(20) && akRiver.OpalCanSpeak()
+		If ShowBox(ArrivalBrief) != 0
+			Return
+		EndIf
+		If player.IsDead() || player.GetParentCell() != arrival.GetParentCell() || player.GetDistance(arrival) > ARRIVE_REACH || akRiver.Outcome() != RV_NONE || !akRiver.OpalCanSpeak()
+			Return
+		EndIf
+		arrivalBriefRead = true
+	EndIf
 EndFunction
 
 Function Leave(TLM:MQ02BQuest akRiver)
@@ -711,7 +735,14 @@ Function FirstMeeting(TLM:MQ02BQuest akRiver)
 	If pick == 0
 		; Heard out: the stage is hers to have said, and the player's to have answered.
 		If Said(SayOpalWants)
-			akRiver.HearOpal()
+			If akRiver.HearOpal() && akRiver.RoadOpen() && akRiver.OpalCanSpeak()
+				If ShowBox(Goal) != 0
+					Return
+				EndIf
+				If akRiver.RoadOpen() && akRiver.OpalCanSpeak() && akRiver.Outcome() == RV_NONE
+					ShowBox(Stakes)
+				EndIf
+			EndIf
 		EndIf
 	ElseIf pick == 1
 		ShowBox(SayOpalGuns)
@@ -941,6 +972,12 @@ Function TableTalk(TLM:MQ02BQuest akRiver)
 EndFunction
 
 Function DealCards(TLM:MQ02BQuest akRiver)
+	If ShowBox(CardStakes) != 0
+		Return
+	EndIf
+	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+		Return
+	EndIf
 	int hand = akRiver.PlayCards()
 	If hand == RV_CARD_WON
 		Refresh()
@@ -962,14 +999,26 @@ Function DealCards(TLM:MQ02BQuest akRiver)
 EndFunction
 
 Function BuyShare(TLM:MQ02BQuest akRiver)
+	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled() || !akRiver.IsShareOffered()
+		Return
+	EndIf
 	If ShowBox(SayHatcherShare) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled() || !akRiver.IsShareOffered()
+		Return
+	EndIf
+	If ShowBox(ConfirmShare) != 0
+		Return
+	EndIf
+	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled() || !akRiver.IsShareOffered()
 		Return
 	EndIf
 	If akRiver.TakeShare()
 		Refresh()
+		If akRiver.RoadOpen() && !akRiver.IsLieTold()
+			ShowBox(NoteSharePaid)
+		EndIf
 	Else
 		ShowBox(NoteShareFailed)
 	EndIf
@@ -1027,6 +1076,20 @@ EndFunction
 
 bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict)
 	{60 the steeple, 61 Pritchard, 1 his boat. Whoever it needs is asked for again by the road itself.}
+	If !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged()
+		Return false
+	EndIf
+	int confirmed = -1
+	If aiVerdict == 60 && akRiver.OpalCanSpeak()
+		confirmed = ShowBox(ConfirmHang)
+	ElseIf aiVerdict == 61 && akRiver.SheriffCanReceive()
+		confirmed = ShowBox(ConfirmCustody)
+	ElseIf aiVerdict == 1
+		confirmed = ShowBox(ConfirmRelease)
+	EndIf
+	If confirmed != 0 || !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged()
+		Return false
+	EndIf
 	bool done = false
 	If aiVerdict == 60
 		done = akRiver.Hang()
@@ -1315,9 +1378,30 @@ EndFunction
 
 ; ==================================================================== labels
 
+Function LandingOverview(TLM:MQ02BQuest akRiver)
+	If !Game.GetPlayer() || Game.GetPlayer().IsDead()
+		Return
+	EndIf
+	If akRiver.Cargo() == RV_CARGO_DESTROYED
+		ShowBox(LabelBurnt)
+	ElseIf akRiver.Outcome() == RV_SHARE && akRiver.IsSharePaid()
+		ShowBox(LabelShareHeld)
+	ElseIf akRiver.Cargo() == RV_CARGO_HOME_WHOLE || akRiver.Cargo() == RV_CARGO_HOME_REDUCED
+		LookAtCargo(akRiver)
+	ElseIf akRiver.OpalCanSpeak() && akRiver.Outcome() == RV_NONE
+		ShowBox(LabelLanding)
+	Else
+		ShowBox(LabelLandingLayout)
+	EndIf
+EndFunction
+
 Function LookAtCargo(TLM:MQ02BQuest akRiver)
 	int lashing = akRiver.Cargo()
-	If lashing == RV_CARGO_HOME_WHOLE
+	If lashing == RV_CARGO_DESTROYED
+		ShowBox(LabelBurnt)
+	ElseIf akRiver.Outcome() == RV_SHARE && akRiver.IsSharePaid()
+		ShowBox(LabelShareHeld)
+	ElseIf lashing == RV_CARGO_HOME_WHOLE
 		ShowBox(LabelCargoWhole)
 	ElseIf lashing == RV_CARGO_HOME_REDUCED
 		If akRiver.Recovered() == RV_UNITS_PILOTED
