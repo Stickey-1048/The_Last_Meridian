@@ -205,14 +205,14 @@ public static class Spec
         // installed copy of the plugin; TLM:Core then runs that scenario of
         // the self-test by itself and closes the game. Remove before release.
         "TLM_G_DevScenario",
-    }.Concat(Greenwater.Globals).Concat(NightMail.Globals).ToArray();
+    }.Concat(Greenwater.Globals).Concat(NightMail.Globals).Concat(RedHollow.Globals).ToArray();
 
     public static readonly string[] Factions = new[]
     {
         "TLM_Fac_Cutters",
         "TLM_Fac_Caravan",
         "TLM_Fac_MercyCrossing",
-    }.Concat(Greenwater.Factions).Concat(NightMail.Factions).ToArray();
+    }.Concat(Greenwater.Factions).Concat(NightMail.Factions).Concat(RedHollow.Factions).ToArray();
 
     public static readonly MiscSpec[] MiscItems = new MiscSpec[]
     {
@@ -223,15 +223,15 @@ public static class Spec
         new("TLM_MISC_TornTransitPass", "Torn Transit Pass"),
         // Development only (the placed-content trial). Looks like a bottle cap.
         new("TLM_MISC_TrialObject", "Trial Object", ModelFrom: "Caps001"),
-    }.Concat(NightMail.MiscItems).ToArray();
+    }.Concat(NightMail.MiscItems).Concat(RedHollow.MiscItems).ToArray();
 
     public static readonly ActivatorSpec[] Activators = new ActivatorSpec[]
     {
         // Development only (the placed-content trial).
         new("TLM_ACTI_TrialTrigger"),
-    }.Concat(Act1.Activators).Concat(Greenwater.Activators).Concat(NightMail.Activators).ToArray();
+    }.Concat(Act1.Activators).Concat(Greenwater.Activators).Concat(NightMail.Activators).Concat(RedHollow.Activators).ToArray();
 
-    public static readonly ContainerSpec[] Containers = Act1.Containers;
+    public static readonly ContainerSpec[] Containers = Act1.Containers.Concat(RedHollow.Containers).ToArray();
 
     /// <summary>
     /// Records of the game's that a run in the game named only by their id,
@@ -254,7 +254,7 @@ public static class Spec
         // placeholders, not characters.
         new("TLM_NPC_TrialPerson", "Second Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: true),
         new("TLM_NPC_TrialPersonBare", "Third Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: false),
-    }.Concat(Act1.Npcs).Concat(Greenwater.Npcs).Concat(NightMail.Npcs).ToArray();
+    }.Concat(Act1.Npcs).Concat(Greenwater.Npcs).Concat(NightMail.Npcs).Concat(RedHollow.Npcs).ToArray();
 
     // ------------------------------------------------- placed references
     // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
@@ -311,11 +311,11 @@ public static class Spec
         new("TLM_REF_TrialPersonOwn", TrialCell, "TLM_NPC_TrialPerson", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialSettlerOnFloor", TrialCell, "WorkshopNPC", "Npc", Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialPersonBare", TrialCell, "TLM_NPC_TrialPersonBare", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
-    }.Concat(Act1.Placed).Concat(Greenwater.Placed).Concat(NightMail.Placed).ToArray();
+    }.Concat(Act1.Placed).Concat(Greenwater.Placed).Concat(NightMail.Placed).Concat(RedHollow.Placed).ToArray();
 
     // NIGHT-MAIL-STORY-001: cells of this plugin's own. A reference placed in one is placed by the cell's own
     // coordinates: PlacedSpec.Ahead is its y (north), Right its x (east), Up its z, from the cell's origin.
-    public static readonly OwnCellSpec[] OwnCells = NightMail.Cells;
+    public static readonly OwnCellSpec[] OwnCells = NightMail.Cells.Concat(RedHollow.Cells).ToArray();
 
     // Both take after one of the game's notes, so that they can lie in the
     // world and be read there (the first section's rough cut places them).
@@ -360,7 +360,7 @@ public static class Spec
         // Development only (scenario 11): what is shown when the person of the
         // plugin's own is activated. Not a box: nobody is there to answer one.
         new("TLM_MSG_TrialTalk", null, "The second trial settler has nothing to say yet.", Box: false),
-    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).Concat(Greenwater.Messages).Concat(NightMail.Messages).ToArray();
+    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).Concat(Greenwater.Messages).Concat(NightMail.Messages).Concat(RedHollow.Messages).ToArray();
 
     // --------------------------------------------------------------- core
     public static readonly QuestSpec Core = new(
@@ -702,5 +702,5 @@ public static class Spec
                 new VanillaProp("MarkerBase", "XMarker", "Static")),
         });
 
-    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest, Greenwater.Road, Greenwater.Stage, NightMail.Road, NightMail.Stage };
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest, Greenwater.Road, Greenwater.Stage, NightMail.Road, NightMail.Stage, RedHollow.Road, RedHollow.Stage };
 }

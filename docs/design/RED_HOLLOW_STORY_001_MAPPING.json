@@ -1,0 +1,3671 @@
+{
+  "schema": 1,
+  "candidate": "RED-HOLLOW-STORY-001",
+  "baseline": "4624ee90844e34d20db0124b109837798256e8c7",
+  "source": {
+    "folder": "assets/incoming/act1/story",
+    "files": {
+      "quests/tlm_mq02c.json": "E5197C079DF220F8DD143D5B3CD4D7E0886815032C0DCC1C29E284C651715A1C",
+      "talk/tlm_mq02c.json": "E11DA3F7915C514B1E8D5AC98A9C0E0B27699CD288F2289E1FC93B9AD1801278",
+      "talk/tlm_mq02.json": "03D498B770753E877C0A7826ADE6EE3B06D787821F404AC6C57BF22BCF9FA338",
+      "documents.json": "8A223936F4DA547CD7BFCA02DE96319DF8E613661D85F8CBF550C75943C2E8F1",
+      "characters.json": "44A7AC1927ADBA4888063220F4BDAD1F418C858D6022D060057F4653EB0315D0"
+    },
+    "canon": {
+      "path": "docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md",
+      "sha256": "9F6F5E6FE60937DE30F25191ABCEDC27C02D901CD59848FA8B287BFA33F954B7"
+    }
+  },
+  "speech": [
+    {
+      "record": "TLM_MSG_RH_S_quill_default_1",
+      "node": "quill_default",
+      "page": 1,
+      "speaker": "Esther Quill",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_quill_court_1",
+      "node": "quill_court",
+      "page": 1,
+      "speaker": "Esther Quill",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_quill_court_docket_1",
+      "node": "quill_court_docket",
+      "page": 1,
+      "speaker": "Esther Quill",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_quill_fine_1",
+      "node": "quill_fine",
+      "page": 1,
+      "speaker": "Esther Quill",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_quill_shamed_1",
+      "node": "quill_shamed",
+      "page": 1,
+      "speaker": "Esther Quill",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_quill_after_shot_1",
+      "node": "quill_after_shot",
+      "page": 1,
+      "speaker": "Esther Quill",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_quill_after_drop_1",
+      "node": "quill_after_drop",
+      "page": 1,
+      "speaker": "Esther Quill",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dunmore_rope_1",
+      "node": "dunmore_rope",
+      "page": 1,
+      "speaker": "Reese Dunmore",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dunmore_rope_missed_1",
+      "node": "dunmore_rope_missed",
+      "page": 1,
+      "speaker": "Reese Dunmore",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dunmore_tells_1",
+      "node": "dunmore_tells",
+      "page": 1,
+      "speaker": "Reese Dunmore",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_cutter_rope_1",
+      "node": "cutter_rope",
+      "page": 1,
+      "speaker": "Tellico Cutter",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_cutter_rope_2",
+      "node": "cutter_rope",
+      "page": 2,
+      "speaker": "Tellico Cutter",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_cutter_rope_missed_1",
+      "node": "cutter_rope_missed",
+      "page": 1,
+      "speaker": "Tellico Cutter",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dunmore_freed_1",
+      "node": "dunmore_freed",
+      "page": 1,
+      "speaker": "Reese Dunmore",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dunmore_freed_fine_1",
+      "node": "dunmore_freed_fine",
+      "page": 1,
+      "speaker": "Reese Dunmore",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_default_1",
+      "node": "roark_default",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_mouth_1",
+      "node": "roark_mouth",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_deadline_warning_1",
+      "node": "roark_deadline_warning",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_why_1",
+      "node": "roark_why",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_back_1",
+      "node": "roark_back",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_cage_1",
+      "node": "roark_cage",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_greer_default_1",
+      "node": "greer_default",
+      "page": 1,
+      "speaker": "Hobart Blevins",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_greer_first_1",
+      "node": "greer_first",
+      "page": 1,
+      "speaker": "Hobart Blevins",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_greer_first_2",
+      "node": "greer_first",
+      "page": 2,
+      "speaker": "Hobart Blevins",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_greer_first_heard_1",
+      "node": "greer_first_heard",
+      "page": 1,
+      "speaker": "Hobart Blevins",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_greer_first_heard_2",
+      "node": "greer_first_heard",
+      "page": 2,
+      "speaker": "Hobart Blevins",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_greer_knock_1",
+      "node": "greer_knock",
+      "page": 1,
+      "speaker": "Hobart Blevins",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_greer_lamp_1",
+      "node": "greer_lamp",
+      "page": 1,
+      "speaker": "Hobart Blevins",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dorn_default_1",
+      "node": "dorn_default",
+      "page": 1,
+      "speaker": "Helga Dorn",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dorn_door_1",
+      "node": "dorn_door",
+      "page": 1,
+      "speaker": "Helga Dorn",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dorn_terms_1",
+      "node": "dorn_terms",
+      "page": 1,
+      "speaker": "Helga Dorn",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dorn_who_1",
+      "node": "dorn_who",
+      "page": 1,
+      "speaker": "Helga Dorn",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dorn_no_head_1",
+      "node": "dorn_no_head",
+      "page": 1,
+      "speaker": "Helga Dorn",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dorn_sworn_1",
+      "node": "dorn_sworn",
+      "page": 1,
+      "speaker": "Helga Dorn",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_dorn_lamp_1",
+      "node": "dorn_lamp",
+      "page": 1,
+      "speaker": "Helga Dorn",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_after_line_1",
+      "node": "roark_after_line",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_after_line_2",
+      "node": "roark_after_line",
+      "page": 2,
+      "speaker": "Dinah Roark",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_after_break_1",
+      "node": "roark_after_break",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_after_fire_1",
+      "node": "roark_after_fire",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_roark_after_deadline_1",
+      "node": "roark_after_deadline",
+      "page": 1,
+      "speaker": "Dinah Roark",
+      "routing": "stored; withheld",
+      "source": "talk/tlm_mq02c.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_pritchard_hears_pike_after_fair_1",
+      "node": "pritchard_hears_pike_after_fair",
+      "page": 1,
+      "speaker": "Owen Pritchard",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02.json"
+    },
+    {
+      "record": "TLM_MSG_RH_S_pritchard_hears_pike_after_fair_unknown_1",
+      "node": "pritchard_hears_pike_after_fair_unknown",
+      "page": 1,
+      "speaker": "Owen Pritchard",
+      "routing": "context guarded",
+      "source": "talk/tlm_mq02.json"
+    }
+  ],
+  "documents": [
+    {
+      "record": "TLM_MSG_RH_D_toll_board_1",
+      "document": "toll_board",
+      "page": 1
+    },
+    {
+      "record": "TLM_MSG_RH_D_toll_board_2",
+      "document": "toll_board",
+      "page": 2
+    },
+    {
+      "record": "TLM_MSG_RH_D_toll_board_3",
+      "document": "toll_board",
+      "page": 3
+    },
+    {
+      "record": "TLM_MSG_RH_D_quill_docket_1",
+      "document": "quill_docket",
+      "page": 1
+    },
+    {
+      "record": "TLM_MSG_RH_D_quill_docket_2",
+      "document": "quill_docket",
+      "page": 2
+    },
+    {
+      "record": "TLM_MSG_RH_D_quill_docket_3",
+      "document": "quill_docket",
+      "page": 3
+    },
+    {
+      "record": "TLM_MSG_RH_D_docket_2298_1",
+      "document": "docket_2298",
+      "page": 1
+    },
+    {
+      "record": "TLM_MSG_RH_D_docket_2298_2",
+      "document": "docket_2298",
+      "page": 2
+    },
+    {
+      "record": "TLM_MSG_RH_D_docket_2298_3",
+      "document": "docket_2298",
+      "page": 3
+    },
+    {
+      "record": "TLM_MSG_RH_D_docket_2298_4",
+      "document": "docket_2298",
+      "page": 4
+    },
+    {
+      "record": "TLM_MSG_RH_D_chalk_message_1",
+      "document": "chalk_message",
+      "page": 1
+    },
+    {
+      "record": "TLM_MSG_RH_D_chalk_message_2",
+      "document": "chalk_message",
+      "page": 2
+    }
+  ],
+  "transcripts": [
+    {
+      "record": "TLM_MSG_RH_T_dunmore_tells_1",
+      "node": "dunmore_tells",
+      "page": 1,
+      "projection": "whole"
+    },
+    {
+      "record": "TLM_MSG_RH_T_dunmore_tells_2",
+      "node": "dunmore_tells",
+      "page": 2,
+      "projection": "whole"
+    },
+    {
+      "record": "TLM_MSG_RH_T_cutter_rope_1",
+      "node": "cutter_rope",
+      "page": 1,
+      "projection": "from:We were paid"
+    },
+    {
+      "record": "TLM_MSG_RH_T_cutter_rope_missed_1",
+      "node": "cutter_rope_missed",
+      "page": 1,
+      "projection": "from:We were paid"
+    }
+  ],
+  "ui": [
+    {
+      "record": "TLM_MSG_RH_Travel",
+      "text": "[Red Hollow story test]\n\nGreenwater, Iron Junction and Red Hollow are playable. The fair is not. Travel to the gap?",
+      "buttons": [
+        "Travel",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_StageTravel",
+      "text": "[Staged travel]\n\nThe supported markers represent the path, not a regional landscape. Continue?",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Descend",
+      "text": "[Staged hoist]\n\nThe cage journey is represented by relocation to supported floor. No lift physics or four-minute wait. Continue?",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Rescue",
+      "text": "[Bring the shift up]\n\nEvery living unfinished miner must reach the cage and surface. This is a staged batch; incomplete arrivals remain pending. Continue?",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Resolve",
+      "text": "[Rescue and break]\n\nChoose only what is represented. A pending blast is not completed by rescue.",
+      "buttons": [
+        "Leave the break alone",
+        "Plan the inner-break blast",
+        "Resolve observed casualties",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Blast",
+      "text": "[Inner-break blast]\n\nThis closes the gallery break, not the Mouth. Every survivor must already be safe and nobody may remain in the blast area. Continue?",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Seal",
+      "text": "[Seal the Mouth]\n\nYou heard the knocking. All eleven are still below. This is your explicit order to entomb the shift. Continue?",
+      "buttons": [
+        "Give the order",
+        "Do not fire"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Final",
+      "text": "[Deadline final call]\n\nThe warned active-time deadline has expired. The cage brings you out before Blevins fires. Continue acknowledges the warning; it is not your order.",
+      "buttons": [
+        "Continue",
+        "Pause the scene"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Clock",
+      "text": "[Local deadline]\n\n600 active seconds; 30 after expired-warning renewal. Loaded Mouth/Nine/gallery play only. Standard menu edges, dialogue, transit, absence and load gaps pause. Detected menu uncertainty blocks; renew warning to resume.",
+      "buttons": [
+        "Accept local deadline",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_HoistBelow",
+      "text": "[Staged hoist]\n\nBring the shift up, or return alone. Return alone does not rescue anybody.",
+      "buttons": [
+        "Bring the shift up",
+        "Return alone",
+        "Stay"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_NoWarning",
+      "text": "[Rescue fallback]\n\nNo warned rescue deadline has been accepted. You can operate the staged hoist without arming one.",
+      "buttons": [
+        "Start rescue without deadline",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_ReportFacts",
+      "text": "[Current Red Hollow facts]\n\nCourt %g; mine %g; safe survivors %g; observed deaths %g (player %g; known nonplayer %g; unknown %g). Entombment is separate.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_ReportEvidence",
+      "text": "[Evidence and undertaking]\n\nCourt-payment testimony %g; mine silver %g; personal undertaking %g; terms actually delivered %g. No town ratification is claimed.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_ReportLamp",
+      "text": "[Lamp and custody]\n\nLamp origin %g (1 gallery, 2 cot); presently held %g; 2298 copy presently held %g; entombed %g. Acquisition and current custody are distinct.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_NoOperator",
+      "text": "[Rescue control]\n\nBlevins cannot operate the firing control. No deadline is armed. The hoist remains available for rescue.",
+      "buttons": [
+        "Start rescue",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Court",
+      "text": "[Court scene]\n\nOptional court controls are independent of the mine. The bypass is a supported walk around the gate.",
+      "buttons": [
+        "Talk to Quill",
+        "Watch local execution scene",
+        "Record/pay rope fine",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Watch",
+      "text": "[Local gallows scene]\n\nThe drop follows 15 active seconds here, after a final warning. Menus, absence or intervention pause/prevent it. Watch?",
+      "buttons": [
+        "Watch here",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Drop",
+      "text": "[Imminent drop]\n\nThe local sentence is about to be carried out. Continue acknowledges witnessing; cancellation prevents the drop.",
+      "buttons": [
+        "Continue watching",
+        "Stop watching"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Referral",
+      "text": "[Court referral]\n\nThe current docket and the held 2298 review copy will be entered together for review. This is not a pardon. Confirm the represented referral?",
+      "buttons": [
+        "Refer both dockets",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Receipt",
+      "text": "[Court receipt]\n\nSixty caps received; the receipt is in your inventory. Release still requires the living prisoner to reach the supported safe position.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Report",
+      "text": "[Red Hollow report]\n\nReport current court, miner, mine, evidence and lamp facts. No fair or town-wide agreement is implied.",
+      "buttons": [
+        "Report",
+        "Later"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Status",
+      "text": "[Red Hollow]\n\nUse the labelled controls. Missing effects remain unfinished; no failed move, missing actor or unacknowledged choice is a success.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Failed",
+      "text": "[Unfinished scene]\n\nThe required arrival, item or visible effect was not observed. Nothing further is recorded. Use the same control to retry only unfinished work.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Unavailable",
+      "text": "[Court unavailable]\n\nNo eligible surviving earlier-road prisoner is available. Nobody is replaced or resurrected. The bypass and mine remain open.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_NoTranscript",
+      "text": "[Court record]\n\nNo eligible prisoner's statement has been recorded here. The mine does not require this optional evidence.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Rope",
+      "text": "[Rope attachment]\n\nUse a real player projectile on the visible attachment target. Activating this control does not count as shooting or release.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Freed",
+      "text": "[Rope release]\n\nThe rope is broken. The prisoner is alive and free. The forty-yard quotation is withheld; recording and payment of any rope fine are separate.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Fine",
+      "text": "[Rope record]\n\nQuill records the shot and a four-cap rope fine. A recorded fine is not a paid fine.",
+      "buttons": [
+        "Record damage",
+        "Pay recorded four caps",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Knocking",
+      "text": "[Knocking stand-in]\n\nThis labelled listening interaction represents the authored hoist-code knocking and its slower reply. It supplies no voice or audio acceptance.",
+      "buttons": [
+        "Listen",
+        "Not now"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Prisoner",
+      "text": "[Prisoner record]\n\nOnly the actual earlier-road actor is bound here. Freedom, living review custody and death are separate facts.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_MineStatus",
+      "text": "[Mine status]\n\nRead the counted facts in the notifications. The shift, current survivors, observed deaths and entombment are separate.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Lamp",
+      "text": "[Lamp proof]\n\nA world stand-in and one inventory item represent the lamp. No working carried light or later sale is claimed.",
+      "buttons": [
+        "Take the lamp",
+        "Leave it"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Silver",
+      "text": "[Hoist-house desk]\n\nYou found stamped silver and an instruction to keep the Mouth shut through winter.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_Exit",
+      "text": "[Return to Mercy]\n\nUnsettled work remains unsettled. Return now?",
+      "buttons": [
+        "Return",
+        "Stay"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_End",
+      "text": "[Red Hollow]\n\nRed Hollow road complete. All three roads remain playable; the fair is not.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_LabelGap",
+      "text": "[Greybox: toll and court]\n\nCourt, receipt, rope target and evidence are optional. A supported path goes around the labelled gate to the mine route.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_LabelMouth",
+      "text": "[Greybox: the Mouth]\n\nHoist, warning, firing control and desk evidence. The board represents current entrance status; no whole settlement crowd is simulated.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_LabelCage",
+      "text": "[Greybox: cage staging]\n\nSupported surface/below markers represent the hoist. Transit pauses the deadline. Every miner arrival must be observed.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_LabelNine",
+      "text": "[Greybox: the Nine level]\n\nEleven separate unnamed roles stand at the break. One represents the already authored Pell relationship without a new name or speaking part.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_LabelGallery",
+      "text": "[Greybox: sealed gallery]\n\nDorn's bounded gallery and lamp. No passage beyond the stone door, player-origin answer or town-wide allegiance is available.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_PendingRescue",
+      "text": "[Unfinished rescue]\n\nRetry the remaining survivors, or return below to inspect unfinished fates. Delivered miners stay safe; the unfinished rescue still pauses the deadline.",
+      "buttons": [
+        "Retry survivors",
+        "Inspect below",
+        "Not now"
+      ],
+      "projection": "technical pending rescue recovery; no new attributed prose"
+    }
+  ],
+  "composedAvailability": {
+    "TLM_MSG_A1_PritchardHandOff": {
+      "text": "Owen Pritchard: \"Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three.\"\n\n[Opening complete. All three roads playable; fair unavailable.]",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    "TLM_MSG_A1_PritchardAfter": {
+      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. All three roads playable; fair unavailable.]",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    "TLM_MSG_A1_PritchardAfterAndMore": {
+      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. All three roads playable; fair unavailable.]",
+      "buttons": [
+        "Continue",
+        "There's something else from that train."
+      ]
+    },
+    "TLM_MSG_MB_Hub": {
+      "text": "Owen Pritchard: \"Which road do you want to ask about? Tell me what you know, or ask what to look for.\"\n\n[Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]",
+      "buttons": [
+        "The rail.",
+        "The river.",
+        "Red Hollow.",
+        "Not now."
+      ]
+    },
+    "TLM_MSG_GW_AskTravel": {
+      "text": "[Greenwater story test]\n\nGreenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: flat ground and labelled stand-ins. Travel there now?",
+      "buttons": [
+        "Travel to Greenwater",
+        "Not now"
+      ]
+    },
+    "TLM_MSG_GW_ReportEndKnown": {
+      "text": "[River report]\n\nYou learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.\n\nGreenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    "TLM_MSG_GW_ReportEndUnknown": {
+      "text": "[River report]\n\nYou did not learn why Hatcher held the grain.\n\nGreenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    "TLM_MSG_NM_AskTravel": {
+      "text": "[Iron Junction story test]\n\nGreenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: floors and labelled stand-ins. Travel there now?",
+      "buttons": [
+        "Travel to Iron Junction",
+        "Not now"
+      ]
+    },
+    "TLM_MSG_NM_NoteRoadComplete": {
+      "text": "[Iron Junction story test]\n\nNight Mail road complete. Greenwater and Red Hollow remain playable; the fair is not. Sheriff Pritchard will hear what became of the Night Mail.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    "TLM_MSG_NM_ReportEnd": {
+      "text": "[Rail report]\n\nNight Mail road complete. Greenwater and Red Hollow remain playable; the fair is not.",
+      "buttons": [
+        "Continue"
+      ]
+    }
+  },
+  "stages": [
+    {
+      "Index": 10,
+      "Log": "You reached the Dominion toll-gate.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 11,
+      "Log": "The rope is broken. The prisoner is alive and free.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 12,
+      "Log": "You bought a man off the gallows for sixty caps. Judge Quill gave you a receipt.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 13,
+      "Log": "Quill adjourned after you presented the 2298 review copy. The current accused remains alive under review; this is not a pardon.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 14,
+      "Log": "The court carried out the sentence while you remained at the wagon.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 15,
+      "Log": "You heard how the Cutters were paid to watch for Gantt's delayed freight and seize his pouch.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 16,
+      "Log": "Pritchard gave you his review of the 2298 hanging, with the court's receipt for the evidence. Quill can be asked to enter it alongside the current case.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 20,
+      "Log": "You reached the chained Mouth at Red Hollow.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 30,
+      "Log": "You accepted the warned local rescue deadline. The shift is still below.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 40,
+      "Log": "You reached the Nine level by the cage.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 45,
+      "Log": "You found eleven miners alive at the break in the rock.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 50,
+      "Log": "You reached the cut gallery and its sealed stone door.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 51,
+      "Log": "The shift is up. You promised to respect the gallery line on your own passage and carry the House's terms to the mine. Red Hollow has not yet ratified a town-wide agreement.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 52,
+      "Log": "The eleven miners reached the surface. You then blasted the break closed.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 53,
+      "Log": "You ordered the Mouth sealed with the shift below. Blevins carried out the order.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 54,
+      "Log": "You have a lamp that burns without smoke and a place to say it came from. That will be worth something to somebody with a flag.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 56,
+      "Log": "The warned local deadline expired. Blevins sealed the Mouth with the shift below. You gave no order.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 57,
+      "Log": "The eleven miners reached the surface. You made no gallery undertaking and did not blast the break.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 58,
+      "Log": "The observed casualty count and safe survivors are recorded separately. No all-eleven rescue is claimed.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 60,
+      "Log": "You found stamped silver and an instruction to keep the Mouth shut through winter.",
+      "Note": null,
+      "CompleteQuest": false,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    },
+    {
+      "Index": 100,
+      "Log": null,
+      "Note": null,
+      "CompleteQuest": true,
+      "Items": 1,
+      "ItemsWithFlags": 1
+    }
+  ],
+  "objectives": [
+    {
+      "Index": 10,
+      "Text": "Get past the toll-gate at the gap",
+      "TargetAliases": [],
+      "HasFlags": true
+    },
+    {
+      "Index": 20,
+      "Text": "Find out why Red Hollow chained its own mine",
+      "TargetAliases": [],
+      "HasFlags": true
+    },
+    {
+      "Index": 30,
+      "Text": "Decide what happens at the Mouth",
+      "TargetAliases": [],
+      "HasFlags": true
+    },
+    {
+      "Index": 45,
+      "Text": "Find out what is on the other side of the break",
+      "TargetAliases": [],
+      "HasFlags": true
+    }
+  ],
+  "aliases": {
+    "TLM_MQ02C": [
+      {
+        "Id": 0,
+        "Name": "Quill",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 1,
+        "Name": "Blevins",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 2,
+        "Name": "Roark",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 3,
+        "Name": "Dorn",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 4,
+        "Name": "Condemned",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 5,
+        "Name": "Miner01",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 6,
+        "Name": "Miner02",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 7,
+        "Name": "Miner03",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 8,
+        "Name": "Miner04",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 9,
+        "Name": "Miner05",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 10,
+        "Name": "Miner06",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 11,
+        "Name": "Miner07",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 12,
+        "Name": "Miner08",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 13,
+        "Name": "Miner09",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 14,
+        "Name": "Miner10",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 15,
+        "Name": "Miner11",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      }
+    ],
+    "TLM_RH": [
+      {
+        "Id": 0,
+        "Name": "MercyTravel",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B14:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 1
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 1,
+        "Name": "MercyReturn",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B15:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 2,
+        "Name": "GapArrival",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B17:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 3,
+        "Name": "MouthArrival",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B18:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 4,
+        "Name": "CageSurface",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B19:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 5,
+        "Name": "CageBelow",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B1A:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 6,
+        "Name": "GalleryArrival",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B1B:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 7,
+        "Name": "Gallows",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B1C:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 8,
+        "Name": "Released",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B1D:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 9,
+        "Name": "Custody",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B1E:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 10,
+        "Name": "DornWithdraw",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B1F:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 11,
+        "Name": "Quill",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B20:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 2
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 12,
+        "Name": "Roark",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B21:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 3
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 13,
+        "Name": "Blevins",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B22:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 4
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 14,
+        "Name": "Dorn",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B23:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 5
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 15,
+        "Name": "Rope",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B24:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 6
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 16,
+        "Name": "RopeBroken",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B25:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 17,
+        "Name": "CourtRecord",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B26:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 7
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 18,
+        "Name": "ReferralSent",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B27:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 7
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 19,
+        "Name": "TollBoard",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B28:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 8
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 20,
+        "Name": "Docket",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B29:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 9
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 21,
+        "Name": "Transcript",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B2A:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 10
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 22,
+        "Name": "TollBox",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B2B:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 11
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 23,
+        "Name": "Bypass",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B2C:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 12
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 24,
+        "Name": "Watch",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B2D:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 13
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 25,
+        "Name": "ToMouth",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B2E:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 14
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 26,
+        "Name": "ToGap",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B2F:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 15
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 27,
+        "Name": "CageControl",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B30:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 16
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 28,
+        "Name": "BelowControl",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B31:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 17
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 29,
+        "Name": "FiringControl",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B32:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 18
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 30,
+        "Name": "BreakControl",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B33:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 19
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 31,
+        "Name": "Roster",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B34:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 32,
+        "Name": "Gallery",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B35:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 21
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 33,
+        "Name": "FromGallery",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B36:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 22
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 34,
+        "Name": "GalleryLamp",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B37:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 23
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 35,
+        "Name": "CotLamp",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B38:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 24
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 36,
+        "Name": "Silver",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B39:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 25
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 37,
+        "Name": "Shovel",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B3A:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 26
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 38,
+        "Name": "Knocking",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B3B:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 27
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 39,
+        "Name": "MouthOpen",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B3C:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 40,
+        "Name": "MouthClosed",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B3D:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 41,
+        "Name": "BreakOpen",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B3E:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 42,
+        "Name": "BreakClosed",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B3F:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 43,
+        "Name": "StoneDoor",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B40:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 28
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 44,
+        "Name": "Exit",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B41:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 29
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 45,
+        "Name": "Resolve",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B42:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 30
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 46,
+        "Name": "BodyKey",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B43:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 31
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 47,
+        "Name": "LabelGap",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B44:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 40
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 48,
+        "Name": "LabelMouth",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B45:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 41
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 49,
+        "Name": "LabelCage",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B46:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 42
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 50,
+        "Name": "LabelNine",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B47:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 43
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 51,
+        "Name": "LabelGallery",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B48:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 44
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 52,
+        "Name": "Fall",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B49:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 45
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 53,
+        "Name": "Miner01",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B4A:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 101
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 54,
+        "Name": "Miner02",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B4B:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 102
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 55,
+        "Name": "Miner03",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B4C:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 103
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 56,
+        "Name": "Miner04",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B4D:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 104
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 57,
+        "Name": "Miner05",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B4E:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 105
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 58,
+        "Name": "Miner06",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B4F:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 106
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 59,
+        "Name": "Miner07",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B50:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 107
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 60,
+        "Name": "Miner08",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B51:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 108
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 61,
+        "Name": "Miner09",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B52:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 109
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 62,
+        "Name": "Miner10",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B53:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 110
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 63,
+        "Name": "Miner11",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B54:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 111
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 64,
+        "Name": "Below01",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B55:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 65,
+        "Name": "Cage01",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B56:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 66,
+        "Name": "Surface01",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B57:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 67,
+        "Name": "Below02",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B58:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 68,
+        "Name": "Cage02",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B59:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 69,
+        "Name": "Surface02",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B5A:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 70,
+        "Name": "Below03",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B5B:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 71,
+        "Name": "Cage03",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B5C:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 72,
+        "Name": "Surface03",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B5D:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 73,
+        "Name": "Below04",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B5E:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 74,
+        "Name": "Cage04",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B5F:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 75,
+        "Name": "Surface04",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B60:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 76,
+        "Name": "Below05",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B61:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 77,
+        "Name": "Cage05",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B62:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 78,
+        "Name": "Surface05",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B63:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 79,
+        "Name": "Below06",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B64:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 80,
+        "Name": "Cage06",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B65:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 81,
+        "Name": "Surface06",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B66:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 82,
+        "Name": "Below07",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B67:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 83,
+        "Name": "Cage07",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B68:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 84,
+        "Name": "Surface07",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B69:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 85,
+        "Name": "Below08",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B6A:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 86,
+        "Name": "Cage08",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B6B:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 87,
+        "Name": "Surface08",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B6C:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 88,
+        "Name": "Below09",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B6D:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 89,
+        "Name": "Cage09",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B6E:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 90,
+        "Name": "Surface09",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B6F:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 91,
+        "Name": "Below10",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B70:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 92,
+        "Name": "Cage10",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B71:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 93,
+        "Name": "Surface10",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B72:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 94,
+        "Name": "Below11",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B73:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 95,
+        "Name": "Cage11",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B74:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 96,
+        "Name": "Surface11",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000B75:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 97,
+        "Name": "Condemned",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDead",
+          "AllowDisabled"
+        ],
+        "Fill": null,
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 32
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 98,
+        "Name": "Player",
+        "Kind": "reference",
+        "Flags": [],
+        "Fill": "forced 000856:Fallout4.esm",
+        "Scripts": [
+          {
+            "Name": "TLM:RedHollowTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": -1
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      }
+    ]
+  },
+  "allocation": {
+    "baselineLines": 1236,
+    "baselineLastId": 2665,
+    "new": {
+      "TLM_G_MQ02C_Court": 2666,
+      "TLM_G_MQ02C_Mine": 2667,
+      "TLM_G_MQ02C_PrisonerRole": 2668,
+      "TLM_G_MQ02C_Survivors": 2669,
+      "TLM_G_MQ02C_ObservedDeaths": 2670,
+      "TLM_G_MQ02C_Entombed": 2671,
+      "TLM_G_MQ02C_Reported": 2672,
+      "TLM_G_MQ02C_DeadlineArmed": 2673,
+      "TLM_G_MQ02C_DeadlineRemaining": 2674,
+      "TLM_G_MQ02C_MinePending": 2675,
+      "TLM_G_MQ02C_RopeShot": 2676,
+      "TLM_G_MQ02C_NeckOwed": 2677,
+      "TLM_G_MQ02C_QuillShamed": 2678,
+      "TLM_G_MQ02C_SilverRoad": 2679,
+      "TLM_G_MQ02C_ShiftSaved": 2680,
+      "TLM_G_MQ02C_HollowLine": 2681,
+      "TLM_G_MQ02C_BreakBlown": 2682,
+      "TLM_G_MQ02C_MouthShut": 2683,
+      "TLM_G_MQ02C_LampTaken": 2684,
+      "TLM_G_MQ02C_Docket2298Held": 2685,
+      "TLM_G_MQ02C_SilverMine": 2686,
+      "TLM_Fac_RH_Staging": 2687,
+      "TLM_MISC_RH_Lamp": 2688,
+      "TLM_MISC_RH_FiringKey": 2689,
+      "TLM_MISC_RH_Receipt": 2690,
+      "TLM_ACTI_RH_MercyTravel": 2691,
+      "TLM_ACTI_RH_RopeBroken": 2692,
+      "TLM_ACTI_RH_CourtRecord": 2693,
+      "TLM_ACTI_RH_ReferralSent": 2694,
+      "TLM_ACTI_RH_TollBoard": 2695,
+      "TLM_ACTI_RH_Docket": 2696,
+      "TLM_ACTI_RH_Transcript": 2697,
+      "TLM_ACTI_RH_Bypass": 2698,
+      "TLM_ACTI_RH_Watch": 2699,
+      "TLM_ACTI_RH_ToMouth": 2700,
+      "TLM_ACTI_RH_ToGap": 2701,
+      "TLM_ACTI_RH_CageControl": 2702,
+      "TLM_ACTI_RH_BelowControl": 2703,
+      "TLM_ACTI_RH_FiringControl": 2704,
+      "TLM_ACTI_RH_BreakControl": 2705,
+      "TLM_ACTI_RH_Roster": 2706,
+      "TLM_ACTI_RH_Gallery": 2707,
+      "TLM_ACTI_RH_FromGallery": 2708,
+      "TLM_ACTI_RH_GalleryLamp": 2709,
+      "TLM_ACTI_RH_CotLamp": 2710,
+      "TLM_ACTI_RH_Silver": 2711,
+      "TLM_ACTI_RH_Shovel": 2712,
+      "TLM_ACTI_RH_Knocking": 2713,
+      "TLM_ACTI_RH_MouthOpen": 2714,
+      "TLM_ACTI_RH_MouthClosed": 2715,
+      "TLM_ACTI_RH_BreakOpen": 2716,
+      "TLM_ACTI_RH_BreakClosed": 2717,
+      "TLM_ACTI_RH_StoneDoor": 2718,
+      "TLM_ACTI_RH_Exit": 2719,
+      "TLM_ACTI_RH_Resolve": 2720,
+      "TLM_ACTI_RH_BodyKey": 2721,
+      "TLM_ACTI_RH_LabelGap": 2722,
+      "TLM_ACTI_RH_LabelMouth": 2723,
+      "TLM_ACTI_RH_LabelCage": 2724,
+      "TLM_ACTI_RH_LabelNine": 2725,
+      "TLM_ACTI_RH_LabelGallery": 2726,
+      "TLM_ACTI_RH_Fall": 2727,
+      "TLM_CONT_RH_Rope": 2728,
+      "TLM_CONT_RH_TollBox": 2729,
+      "TLM_NPC_RH_Quill": 2730,
+      "TLM_NPC_RH_Blevins": 2731,
+      "TLM_NPC_RH_Roark": 2732,
+      "TLM_NPC_RH_Dorn": 2733,
+      "TLM_NPC_RH_Miner01": 2734,
+      "TLM_NPC_RH_Miner02": 2735,
+      "TLM_NPC_RH_Miner03": 2736,
+      "TLM_NPC_RH_Miner04": 2737,
+      "TLM_NPC_RH_Miner05": 2738,
+      "TLM_NPC_RH_Miner06": 2739,
+      "TLM_NPC_RH_Miner07": 2740,
+      "TLM_NPC_RH_Miner08": 2741,
+      "TLM_NPC_RH_Miner09": 2742,
+      "TLM_NPC_RH_Miner10": 2743,
+      "TLM_NPC_RH_Miner11": 2744,
+      "TLM_MQ02C": 2745,
+      "TLM_RH": 2746,
+      "TLM_MSG_RH_S_quill_default_1": 2747,
+      "TLM_MSG_RH_S_quill_court_1": 2748,
+      "TLM_MSG_RH_S_quill_court_docket_1": 2749,
+      "TLM_MSG_RH_S_quill_fine_1": 2750,
+      "TLM_MSG_RH_S_quill_shamed_1": 2751,
+      "TLM_MSG_RH_S_quill_after_shot_1": 2752,
+      "TLM_MSG_RH_S_quill_after_drop_1": 2753,
+      "TLM_MSG_RH_S_dunmore_rope_1": 2754,
+      "TLM_MSG_RH_S_dunmore_rope_missed_1": 2755,
+      "TLM_MSG_RH_S_dunmore_tells_1": 2756,
+      "TLM_MSG_RH_S_cutter_rope_1": 2757,
+      "TLM_MSG_RH_S_cutter_rope_2": 2758,
+      "TLM_MSG_RH_S_cutter_rope_missed_1": 2759,
+      "TLM_MSG_RH_S_dunmore_freed_1": 2760,
+      "TLM_MSG_RH_S_dunmore_freed_fine_1": 2761,
+      "TLM_MSG_RH_S_roark_default_1": 2762,
+      "TLM_MSG_RH_S_roark_mouth_1": 2763,
+      "TLM_MSG_RH_S_roark_deadline_warning_1": 2764,
+      "TLM_MSG_RH_S_roark_why_1": 2765,
+      "TLM_MSG_RH_S_roark_back_1": 2766,
+      "TLM_MSG_RH_S_roark_cage_1": 2767,
+      "TLM_MSG_RH_S_greer_default_1": 2768,
+      "TLM_MSG_RH_S_greer_first_1": 2769,
+      "TLM_MSG_RH_S_greer_first_2": 2770,
+      "TLM_MSG_RH_S_greer_first_heard_1": 2771,
+      "TLM_MSG_RH_S_greer_first_heard_2": 2772,
+      "TLM_MSG_RH_S_greer_knock_1": 2773,
+      "TLM_MSG_RH_S_greer_lamp_1": 2774,
+      "TLM_MSG_RH_S_dorn_default_1": 2775,
+      "TLM_MSG_RH_S_dorn_door_1": 2776,
+      "TLM_MSG_RH_S_dorn_terms_1": 2777,
+      "TLM_MSG_RH_S_dorn_who_1": 2778,
+      "TLM_MSG_RH_S_dorn_no_head_1": 2779,
+      "TLM_MSG_RH_S_dorn_sworn_1": 2780,
+      "TLM_MSG_RH_S_dorn_lamp_1": 2781,
+      "TLM_MSG_RH_S_roark_after_line_1": 2782,
+      "TLM_MSG_RH_S_roark_after_line_2": 2783,
+      "TLM_MSG_RH_S_roark_after_break_1": 2784,
+      "TLM_MSG_RH_S_roark_after_fire_1": 2785,
+      "TLM_MSG_RH_S_roark_after_deadline_1": 2786,
+      "TLM_MSG_RH_S_pritchard_hears_pike_after_fair_1": 2787,
+      "TLM_MSG_RH_S_pritchard_hears_pike_after_fair_unknown_1": 2788,
+      "TLM_MSG_RH_Travel": 2789,
+      "TLM_MSG_RH_StageTravel": 2790,
+      "TLM_MSG_RH_Descend": 2791,
+      "TLM_MSG_RH_Rescue": 2792,
+      "TLM_MSG_RH_Resolve": 2793,
+      "TLM_MSG_RH_Blast": 2794,
+      "TLM_MSG_RH_Seal": 2795,
+      "TLM_MSG_RH_Final": 2796,
+      "TLM_MSG_RH_Clock": 2797,
+      "TLM_MSG_RH_NoOperator": 2798,
+      "TLM_MSG_RH_Court": 2799,
+      "TLM_MSG_RH_Watch": 2800,
+      "TLM_MSG_RH_Drop": 2801,
+      "TLM_MSG_RH_Referral": 2802,
+      "TLM_MSG_RH_Receipt": 2803,
+      "TLM_MSG_RH_Report": 2804,
+      "TLM_MSG_RH_Status": 2805,
+      "TLM_MSG_RH_Failed": 2806,
+      "TLM_MSG_RH_Unavailable": 2807,
+      "TLM_MSG_RH_NoTranscript": 2808,
+      "TLM_MSG_RH_Rope": 2809,
+      "TLM_MSG_RH_Freed": 2810,
+      "TLM_MSG_RH_Fine": 2811,
+      "TLM_MSG_RH_Knocking": 2812,
+      "TLM_MSG_RH_Prisoner": 2813,
+      "TLM_MSG_RH_MineStatus": 2814,
+      "TLM_MSG_RH_Lamp": 2815,
+      "TLM_MSG_RH_Silver": 2816,
+      "TLM_MSG_RH_Exit": 2817,
+      "TLM_MSG_RH_End": 2818,
+      "TLM_MSG_RH_LabelGap": 2819,
+      "TLM_MSG_RH_LabelMouth": 2820,
+      "TLM_MSG_RH_LabelCage": 2821,
+      "TLM_MSG_RH_LabelNine": 2822,
+      "TLM_MSG_RH_LabelGallery": 2823,
+      "TLM_MSG_RH_D_toll_board_1": 2824,
+      "TLM_MSG_RH_D_toll_board_2": 2825,
+      "TLM_MSG_RH_D_toll_board_3": 2826,
+      "TLM_MSG_RH_D_quill_docket_1": 2827,
+      "TLM_MSG_RH_D_quill_docket_2": 2828,
+      "TLM_MSG_RH_D_quill_docket_3": 2829,
+      "TLM_MSG_RH_D_docket_2298_1": 2830,
+      "TLM_MSG_RH_D_docket_2298_2": 2831,
+      "TLM_MSG_RH_D_docket_2298_3": 2832,
+      "TLM_MSG_RH_D_docket_2298_4": 2833,
+      "TLM_MSG_RH_D_chalk_message_1": 2834,
+      "TLM_MSG_RH_D_chalk_message_2": 2835,
+      "TLM_REF_RH_MercyTravel": 2836,
+      "TLM_REF_RH_MercyReturn": 2837,
+      "TLM_CELL_RedHollow": 2838,
+      "TLM_REF_RH_GapArrival": 2839,
+      "TLM_REF_RH_MouthArrival": 2840,
+      "TLM_REF_RH_CageSurface": 2841,
+      "TLM_REF_RH_CageBelow": 2842,
+      "TLM_REF_RH_GalleryArrival": 2843,
+      "TLM_REF_RH_Gallows": 2844,
+      "TLM_REF_RH_Released": 2845,
+      "TLM_REF_RH_Custody": 2846,
+      "TLM_REF_RH_DornWithdraw": 2847,
+      "TLM_REF_RH_Quill": 2848,
+      "TLM_REF_RH_Roark": 2849,
+      "TLM_REF_RH_Blevins": 2850,
+      "TLM_REF_RH_Dorn": 2851,
+      "TLM_REF_RH_Rope": 2852,
+      "TLM_REF_RH_RopeBroken": 2853,
+      "TLM_REF_RH_CourtRecord": 2854,
+      "TLM_REF_RH_ReferralSent": 2855,
+      "TLM_REF_RH_TollBoard": 2856,
+      "TLM_REF_RH_Docket": 2857,
+      "TLM_REF_RH_Transcript": 2858,
+      "TLM_REF_RH_TollBox": 2859,
+      "TLM_REF_RH_Bypass": 2860,
+      "TLM_REF_RH_Watch": 2861,
+      "TLM_REF_RH_ToMouth": 2862,
+      "TLM_REF_RH_ToGap": 2863,
+      "TLM_REF_RH_CageControl": 2864,
+      "TLM_REF_RH_BelowControl": 2865,
+      "TLM_REF_RH_FiringControl": 2866,
+      "TLM_REF_RH_BreakControl": 2867,
+      "TLM_REF_RH_Roster": 2868,
+      "TLM_REF_RH_Gallery": 2869,
+      "TLM_REF_RH_FromGallery": 2870,
+      "TLM_REF_RH_GalleryLamp": 2871,
+      "TLM_REF_RH_CotLamp": 2872,
+      "TLM_REF_RH_Silver": 2873,
+      "TLM_REF_RH_Shovel": 2874,
+      "TLM_REF_RH_Knocking": 2875,
+      "TLM_REF_RH_MouthOpen": 2876,
+      "TLM_REF_RH_MouthClosed": 2877,
+      "TLM_REF_RH_BreakOpen": 2878,
+      "TLM_REF_RH_BreakClosed": 2879,
+      "TLM_REF_RH_StoneDoor": 2880,
+      "TLM_REF_RH_Exit": 2881,
+      "TLM_REF_RH_Resolve": 2882,
+      "TLM_REF_RH_BodyKey": 2883,
+      "TLM_REF_RH_LabelGap": 2884,
+      "TLM_REF_RH_LabelMouth": 2885,
+      "TLM_REF_RH_LabelCage": 2886,
+      "TLM_REF_RH_LabelNine": 2887,
+      "TLM_REF_RH_LabelGallery": 2888,
+      "TLM_REF_RH_Fall": 2889,
+      "TLM_REF_RH_Miner01": 2890,
+      "TLM_REF_RH_Miner02": 2891,
+      "TLM_REF_RH_Miner03": 2892,
+      "TLM_REF_RH_Miner04": 2893,
+      "TLM_REF_RH_Miner05": 2894,
+      "TLM_REF_RH_Miner06": 2895,
+      "TLM_REF_RH_Miner07": 2896,
+      "TLM_REF_RH_Miner08": 2897,
+      "TLM_REF_RH_Miner09": 2898,
+      "TLM_REF_RH_Miner10": 2899,
+      "TLM_REF_RH_Miner11": 2900,
+      "TLM_REF_RH_Below01": 2901,
+      "TLM_REF_RH_Cage01": 2902,
+      "TLM_REF_RH_Surface01": 2903,
+      "TLM_REF_RH_Below02": 2904,
+      "TLM_REF_RH_Cage02": 2905,
+      "TLM_REF_RH_Surface02": 2906,
+      "TLM_REF_RH_Below03": 2907,
+      "TLM_REF_RH_Cage03": 2908,
+      "TLM_REF_RH_Surface03": 2909,
+      "TLM_REF_RH_Below04": 2910,
+      "TLM_REF_RH_Cage04": 2911,
+      "TLM_REF_RH_Surface04": 2912,
+      "TLM_REF_RH_Below05": 2913,
+      "TLM_REF_RH_Cage05": 2914,
+      "TLM_REF_RH_Surface05": 2915,
+      "TLM_REF_RH_Below06": 2916,
+      "TLM_REF_RH_Cage06": 2917,
+      "TLM_REF_RH_Surface06": 2918,
+      "TLM_REF_RH_Below07": 2919,
+      "TLM_REF_RH_Cage07": 2920,
+      "TLM_REF_RH_Surface07": 2921,
+      "TLM_REF_RH_Below08": 2922,
+      "TLM_REF_RH_Cage08": 2923,
+      "TLM_REF_RH_Surface08": 2924,
+      "TLM_REF_RH_Below09": 2925,
+      "TLM_REF_RH_Cage09": 2926,
+      "TLM_REF_RH_Surface09": 2927,
+      "TLM_REF_RH_Below10": 2928,
+      "TLM_REF_RH_Cage10": 2929,
+      "TLM_REF_RH_Surface10": 2930,
+      "TLM_REF_RH_Below11": 2931,
+      "TLM_REF_RH_Cage11": 2932,
+      "TLM_REF_RH_Surface11": 2933,
+      "TLM_REF_RH_Floor_A00": 2934,
+      "TLM_REF_RH_Floor_A01": 2935,
+      "TLM_REF_RH_Floor_A02": 2936,
+      "TLM_REF_RH_Floor_A03": 2937,
+      "TLM_REF_RH_Floor_A10": 2938,
+      "TLM_REF_RH_Floor_A11": 2939,
+      "TLM_REF_RH_Floor_A12": 2940,
+      "TLM_REF_RH_Floor_A13": 2941,
+      "TLM_REF_RH_Floor_A20": 2942,
+      "TLM_REF_RH_Floor_A21": 2943,
+      "TLM_REF_RH_Floor_A22": 2944,
+      "TLM_REF_RH_Floor_A23": 2945,
+      "TLM_REF_RH_Floor_A30": 2946,
+      "TLM_REF_RH_Floor_A31": 2947,
+      "TLM_REF_RH_Floor_A32": 2948,
+      "TLM_REF_RH_Floor_A33": 2949,
+      "TLM_REF_RH_Floor_A40": 2950,
+      "TLM_REF_RH_Floor_A41": 2951,
+      "TLM_REF_RH_Floor_A42": 2952,
+      "TLM_REF_RH_Floor_A43": 2953,
+      "TLM_REF_RH_Floor_A50": 2954,
+      "TLM_REF_RH_Floor_A51": 2955,
+      "TLM_REF_RH_Floor_A52": 2956,
+      "TLM_REF_RH_Floor_A53": 2957,
+      "TLM_REF_RH_Floor_A60": 2958,
+      "TLM_REF_RH_Floor_A61": 2959,
+      "TLM_REF_RH_Floor_A62": 2960,
+      "TLM_REF_RH_Floor_A63": 2961,
+      "TLM_REF_RH_Floor_B00": 2962,
+      "TLM_REF_RH_Floor_B01": 2963,
+      "TLM_REF_RH_Floor_B02": 2964,
+      "TLM_REF_RH_Floor_B03": 2965,
+      "TLM_REF_RH_Floor_B04": 2966,
+      "TLM_REF_RH_Floor_B05": 2967,
+      "TLM_REF_RH_Floor_B10": 2968,
+      "TLM_REF_RH_Floor_B11": 2969,
+      "TLM_REF_RH_Floor_B12": 2970,
+      "TLM_REF_RH_Floor_B13": 2971,
+      "TLM_REF_RH_Floor_B14": 2972,
+      "TLM_REF_RH_Floor_B15": 2973,
+      "TLM_REF_RH_Floor_B20": 2974,
+      "TLM_REF_RH_Floor_B21": 2975,
+      "TLM_REF_RH_Floor_B22": 2976,
+      "TLM_REF_RH_Floor_B23": 2977,
+      "TLM_REF_RH_Floor_B24": 2978,
+      "TLM_REF_RH_Floor_B25": 2979,
+      "TLM_REF_RH_Floor_B30": 2980,
+      "TLM_REF_RH_Floor_B31": 2981,
+      "TLM_REF_RH_Floor_B32": 2982,
+      "TLM_REF_RH_Floor_B33": 2983,
+      "TLM_REF_RH_Floor_B34": 2984,
+      "TLM_REF_RH_Floor_B35": 2985,
+      "TLM_REF_RH_Floor_B40": 2986,
+      "TLM_REF_RH_Floor_B41": 2987,
+      "TLM_REF_RH_Floor_B42": 2988,
+      "TLM_REF_RH_Floor_B43": 2989,
+      "TLM_REF_RH_Floor_B44": 2990,
+      "TLM_REF_RH_Floor_B45": 2991,
+      "TLM_REF_RH_Floor_B50": 2992,
+      "TLM_REF_RH_Floor_B51": 2993,
+      "TLM_REF_RH_Floor_B52": 2994,
+      "TLM_REF_RH_Floor_B53": 2995,
+      "TLM_REF_RH_Floor_B54": 2996,
+      "TLM_REF_RH_Floor_B55": 2997,
+      "TLM_REF_RH_Floor_B60": 2998,
+      "TLM_REF_RH_Floor_B61": 2999,
+      "TLM_REF_RH_Floor_B62": 3000,
+      "TLM_REF_RH_Floor_B63": 3001,
+      "TLM_REF_RH_Floor_B64": 3002,
+      "TLM_REF_RH_Floor_B65": 3003,
+      "TLM_REF_RH_Floor_C00": 3004,
+      "TLM_REF_RH_Floor_C01": 3005,
+      "TLM_REF_RH_Floor_C02": 3006,
+      "TLM_REF_RH_Floor_C03": 3007,
+      "TLM_REF_RH_Floor_C10": 3008,
+      "TLM_REF_RH_Floor_C11": 3009,
+      "TLM_REF_RH_Floor_C12": 3010,
+      "TLM_REF_RH_Floor_C13": 3011,
+      "TLM_REF_RH_Floor_C20": 3012,
+      "TLM_REF_RH_Floor_C21": 3013,
+      "TLM_REF_RH_Floor_C22": 3014,
+      "TLM_REF_RH_Floor_C23": 3015,
+      "TLM_REF_RH_Floor_C30": 3016,
+      "TLM_REF_RH_Floor_C31": 3017,
+      "TLM_REF_RH_Floor_C32": 3018,
+      "TLM_REF_RH_Floor_C33": 3019,
+      "TLM_REF_RH_Floor_C40": 3020,
+      "TLM_REF_RH_Floor_C41": 3021,
+      "TLM_REF_RH_Floor_C42": 3022,
+      "TLM_REF_RH_Floor_C43": 3023,
+      "TLM_REF_RH_Floor_C50": 3024,
+      "TLM_REF_RH_Floor_C51": 3025,
+      "TLM_REF_RH_Floor_C52": 3026,
+      "TLM_REF_RH_Floor_C53": 3027,
+      "TLM_REF_RH_Floor_C60": 3028,
+      "TLM_REF_RH_Floor_C61": 3029,
+      "TLM_REF_RH_Floor_C62": 3030,
+      "TLM_REF_RH_Floor_C63": 3031,
+      "TLM_REF_RH_Floor_D00": 3032,
+      "TLM_REF_RH_Floor_D01": 3033,
+      "TLM_REF_RH_Floor_D02": 3034,
+      "TLM_REF_RH_Floor_D03": 3035,
+      "TLM_REF_RH_Floor_D10": 3036,
+      "TLM_REF_RH_Floor_D11": 3037,
+      "TLM_REF_RH_Floor_D12": 3038,
+      "TLM_REF_RH_Floor_D13": 3039,
+      "TLM_REF_RH_Floor_D20": 3040,
+      "TLM_REF_RH_Floor_D21": 3041,
+      "TLM_REF_RH_Floor_D22": 3042,
+      "TLM_REF_RH_Floor_D23": 3043,
+      "TLM_REF_RH_Floor_D30": 3044,
+      "TLM_REF_RH_Floor_D31": 3045,
+      "TLM_REF_RH_Floor_D32": 3046,
+      "TLM_REF_RH_Floor_D33": 3047,
+      "TLM_REF_RH_Floor_D40": 3048,
+      "TLM_REF_RH_Floor_D41": 3049,
+      "TLM_REF_RH_Floor_D42": 3050,
+      "TLM_REF_RH_Floor_D43": 3051,
+      "TLM_REF_RH_Floor_D50": 3052,
+      "TLM_REF_RH_Floor_D51": 3053,
+      "TLM_REF_RH_Floor_D52": 3054,
+      "TLM_REF_RH_Floor_D53": 3055,
+      "TLM_MSG_RH_HoistBelow": 3056,
+      "TLM_MSG_RH_NoWarning": 3057,
+      "TLM_MSG_RH_ReportFacts": 3058,
+      "TLM_MSG_RH_ReportEvidence": 3059,
+      "TLM_MSG_RH_ReportLamp": 3060,
+      "TLM_MSG_RH_T_dunmore_tells_1": 3061,
+      "TLM_MSG_RH_T_dunmore_tells_2": 3062,
+      "TLM_MSG_RH_T_cutter_rope_1": 3063,
+      "TLM_MSG_RH_T_cutter_rope_missed_1": 3064,
+      "TLM_MSG_RH_PendingRescue": 3065
+    }
+  },
+  "clockMenuCoverage": {
+    "sdk": "Local Base/ScriptObject.psc109,301 named registration/event; no wildcard",
+    "primaryNameSources": [
+      "Local Base/TutorialScript.psc MenuNames; AudioContainerNoAnimScript.psc; SurgeonScript.psc; VRWorkshopParentScript.psc",
+      "https://github.com/ianpatt/f4se/blob/master/f4se/GameMenus.h#L106-L137"
+    ],
+    "names": [
+      "LoadingMenu",
+      "Console",
+      "LevelUpMenu",
+      "MessageBoxMenu",
+      "ContainerMenu",
+      "ExamineMenu",
+      "CookingMenu",
+      "ExamineConfirmMenu",
+      "RobotModMenu",
+      "PowerArmorModMenu",
+      "WorkshopMenu",
+      "PromptMenu",
+      "SitWaitMenu",
+      "SleepWaitMenu",
+      "DialogueMenu",
+      "BarterMenu",
+      "LockpickingMenu",
+      "BookMenu",
+      "SPECIALMenu",
+      "FavoritesMenu",
+      "PauseMenu",
+      "VATSMenu",
+      "PipboyMenu",
+      "PipboyHolotapeMenu",
+      "TerminalMenu",
+      "LooksMenu"
+    ],
+    "scope": "26 standard interactive/load menu names; HUD/PowerArmorHUD/Vignette/Cursor/Fader always-open overlays deliberately excluded. F4SE is a name reference only, not a runtime dependency.",
+    "uncertainty": "Any unexpected delivered name or sampled unaccounted menu mode blocks timing until renewed explicit warning. There is no universal unnamed-menu observer: additional/mod menu inventories and actual callback scheduling need the separate native host gate."
+  }
+}

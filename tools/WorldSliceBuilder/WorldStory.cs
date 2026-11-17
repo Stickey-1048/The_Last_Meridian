@@ -137,6 +137,7 @@ public static partial class WorldStory
         if(playerProperty.Object.FormKey!=entry.FormKey||playerProperty.Alias!=0)throw new InvalidDataException("Missing guarded player-alias property");
         ValidateGreenwater(addon,section);
         ValidateNightMail(addon,section);
+        ValidateRedHollow(addon,section);
     }
     public static object Add(Fallout4Mod mod, Worldspace world, Cell clearing, IFallout4ModGetter source)
     {
@@ -215,6 +216,7 @@ public static partial class WorldStory
         // first section's 29 references and both quests keep the ids they had.
         var greenwater=AddGreenwater(mod,world,source,sourceRefs,adapter);
         var nightMail=AddNightMail(mod,world,source,sourceRefs,adapter);
-        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,greenwater,nightMail,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
+        var redHollow=AddRedHollow(mod,world,source,sourceRefs,adapter);
+        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,greenwater,nightMail,redHollow,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
     }
 }

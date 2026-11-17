@@ -105,7 +105,7 @@ class TheClone(unittest.TestCase):
             self.assertEqual(a["reference"], "TLM_WS_ST_GW_" + a["name"])
             self.assertEqual(a["flags"] & 0xC00, 0xC00, a["name"] + " is not persistent and initially disabled")
             self.assertEqual(a["actor"], a["name"] in PEOPLE, a["name"])
-        self.assertEqual(self.out["persistentReferences"], 29 + 31 + 2)
+        self.assertEqual(self.out["persistentReferences"], 29 + 31 + 2 + 2)
 
     def test_the_greyboxs_bindings_point_where_they_must(self):
         g = self.out["greenwater"]
@@ -125,7 +125,7 @@ class TheClone(unittest.TestCase):
         self.assertTrue(all(s["on"] == "TLM_WS_GW" and s["scripts"] == ["TLM:GreenwaterTalk"] for s in g["aliasScripts"]))
 
     def test_the_road_stays_in_the_story_master(self):
-        self.assertEqual(self.out["quests"], ["TLM_WS_A1", "TLM_WS_Entry", "TLM_WS_GW", "TLM_WS_NM"])
+        self.assertEqual(self.out["quests"], ["TLM_WS_A1", "TLM_WS_Entry", "TLM_WS_GW", "TLM_WS_NM", "TLM_WS_RH"])
         self.assertEqual(self.out["masters"], ["Fallout4.esm", "TheLastMeridian.esp"])
 
 

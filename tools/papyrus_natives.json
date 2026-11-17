@@ -1225,6 +1225,79 @@
     "source": "falloutck.uesp.net/wiki/OnTriggerEnter_-_ObjectReference",
     "unverified": "GREENWATER-STORY-001, 2026-11-17: written from memory of the Creation Kit wiki page named; the wiki refused automated fetches in this session, so the page was NOT read again. To be confirmed by the compiler."
    }
+  ],
+  "RegisterForHitEvent": [
+   {
+    "global": false,
+    "kind": "function",
+    "owner": "ScriptObject",
+    "min_args": 1,
+    "max_args": 9,
+    "returns": "none",
+    "params": [
+     "ScriptObject",
+     "ScriptObject",
+     "Form",
+     "Form",
+     "int",
+     "int",
+     "int",
+     "int",
+     "bool"
+    ],
+    "source": "Read-only local Creation Kit Base/ScriptObject.psc line 97; single-shot registered OnHit, native runtime gate pending"
+   }
+  ],
+  "OnHit": [
+   {
+    "global": false,
+    "kind": "event",
+    "owner": "ScriptObject",
+    "min_args": 9,
+    "max_args": 9,
+    "returns": "none",
+    "params": [
+     "ObjectReference",
+     "ObjectReference",
+     "Form",
+     "Projectile",
+     "bool",
+     "bool",
+     "bool",
+     "bool",
+     "string"
+    ],
+    "source": "Read-only local Creation Kit Base/ScriptObject.psc line 282; no native delivery claim"
+   }
+  ],
+  "RegisterForMenuOpenCloseEvent": [
+   {
+    "global": false,
+    "kind": "function",
+    "owner": "ScriptObject",
+    "min_args": 1,
+    "max_args": 1,
+    "params": [
+     "string"
+    ],
+    "returns": "none",
+    "source": "Read-only local Creation Kit Base/ScriptObject.psc line109; named registration only, no wildcard API"
+   }
+  ],
+  "OnMenuOpenCloseEvent": [
+   {
+    "global": false,
+    "kind": "event",
+    "owner": "ScriptObject",
+    "min_args": 2,
+    "max_args": 2,
+    "params": [
+     "string",
+     "bool"
+    ],
+    "returns": "none",
+    "source": "Read-only local Creation Kit Base/ScriptObject.psc line301; open and close both invalidate clock prime"
+   }
   ]
  }
 }

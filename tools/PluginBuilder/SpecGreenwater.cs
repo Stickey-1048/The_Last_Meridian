@@ -127,8 +127,8 @@ public static class Greenwater
     // This build speaking, never a character. In square brackets on the screen.
     public const string UiTravelName = "Greenwater story test";
     // NIGHT-MAIL-STORY-001: in the composed candidate two roads are playable. The 016b source keeps the one-road wording.
-    public const string UiOnlyGreenwater = "Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not.";
-    public const string UiRoadComplete = "Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not.";
+    public const string UiOnlyGreenwater = "Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not.";
+    public const string UiRoadComplete = "Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.";
     public const string UiShareInterim = "You accepted Hatcher's share. The grain remains aboard the Queen.";
     public const string UiObjectiveReturn = "Use the barge's pilot lever and bring the grain to the landing";
     public const string UiObjectiveLeave = "Take the skiff back to Mercy Crossing";

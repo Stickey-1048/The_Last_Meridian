@@ -30,3 +30,17 @@ def built_greenwater():
             if got.returncode:
                 raise AssertionError("Frozen 016b stand-in build failed:\n" + got.stdout + got.stderr)
     return out
+
+
+NIGHT_MAIL = "4624ee90844e34d20db0124b109837798256e8c7"
+
+def built_night_mail():
+    root = snapshot(NIGHT_MAIL)
+    out = root / "build/sim/TheLastMeridian.json"
+    if not out.exists():
+        for args in (["tools/StandInMaster", "build/standin/Fallout4.esm", "default"],
+                     ["tools/PluginBuilder", "--out", "build/sim", "--fallout4-esm", "build/standin/Fallout4.esm"]):
+            got = subprocess.run(["dotnet", "run", "--project", args[0], "--"] + args[1:], cwd=root, capture_output=True, text=True)
+            if got.returncode:
+                raise AssertionError("Frozen 4624 stand-in build failed:\n" + got.stdout + got.stderr)
+    return out

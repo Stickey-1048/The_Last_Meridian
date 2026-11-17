@@ -1,6 +1,6 @@
 TheLastMeridian.esp  (masters: Fallout4.esm; header version 0.95; lowest FormID 0x800)
 
-Global (49)
+Global (70)
   000800  TLM_G_DataVersion
   000801  TLM_G_CaravanOutcome
   000802  TLM_G_CaravanMethod
@@ -50,7 +50,28 @@ Global (49)
   00095E  TLM_G_MQ02A_LockridgeStamping
   00095F  TLM_G_MQ02A_LockridgeSigned
   000960  TLM_G_MQ02A_LockridgeReported
-Faction (7)
+  000A6A  TLM_G_MQ02C_Court
+  000A6B  TLM_G_MQ02C_Mine
+  000A6C  TLM_G_MQ02C_PrisonerRole
+  000A6D  TLM_G_MQ02C_Survivors
+  000A6E  TLM_G_MQ02C_ObservedDeaths
+  000A6F  TLM_G_MQ02C_Entombed
+  000A70  TLM_G_MQ02C_Reported
+  000A71  TLM_G_MQ02C_DeadlineArmed
+  000A72  TLM_G_MQ02C_DeadlineRemaining
+  000A73  TLM_G_MQ02C_MinePending
+  000A74  TLM_G_MQ02C_RopeShot
+  000A75  TLM_G_MQ02C_NeckOwed
+  000A76  TLM_G_MQ02C_QuillShamed
+  000A77  TLM_G_MQ02C_SilverRoad
+  000A78  TLM_G_MQ02C_ShiftSaved
+  000A79  TLM_G_MQ02C_HollowLine
+  000A7A  TLM_G_MQ02C_BreakBlown
+  000A7B  TLM_G_MQ02C_MouthShut
+  000A7C  TLM_G_MQ02C_LampTaken
+  000A7D  TLM_G_MQ02C_Docket2298Held
+  000A7E  TLM_G_MQ02C_SilverMine
+Faction (8)
   000812  TLM_Fac_Cutters
   000813  TLM_Fac_Caravan
   000814  TLM_Fac_MercyCrossing
@@ -58,18 +79,22 @@ Faction (7)
   0008B6  TLM_Fac_QueenCrew
   000961  TLM_Fac_IronJunction
   000962  TLM_Fac_BlackRail
-MiscItem (4)
+  000A7F  TLM_Fac_RH_Staging
+MiscItem (7)
   000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
   000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
   000823  TLM_MISC_TrialObject  "Trial Object"
   000963  TLM_MISC_OstranderStamp  "Inspector's Stamp"
+  000A80  TLM_MISC_RH_Lamp  "Smokeless lamp (greybox proof)"
+  000A81  TLM_MISC_RH_FiringKey  "Blevins's firing key"
+  000A82  TLM_MISC_RH_Receipt  "Sixty-cap court receipt"
 Book (5)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
   00089E  TLM_BOOK_Docket2298  "Mercy Road Case: 2298 Review Copy"
   0008D2  TLM_BOOK_LetterOfHire  "A Letter of Hire"
   00098A  TLM_BOOK_HymnalFlyleaf  "Flyleaf of a Hymnal"
-Activator (63)
+Activator (100)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
   000834  TLM_TRIG_TownGate
@@ -133,9 +158,48 @@ Activator (63)
   000981  TLM_ACTI_NM_PlatformExit  "Road to Mercy Crossing"
   000982  TLM_ACTI_NM_BackFromPlatform  "Line Back to Iron Junction"
   000983  TLM_TRIG_NM_Fall
-Container (1)
+  000A83  TLM_ACTI_RH_MercyTravel  "Red Hollow story test"
+  000A84  TLM_ACTI_RH_RopeBroken  "Broken rope attachment"
+  000A85  TLM_ACTI_RH_CourtRecord  "Court recording board"
+  000A86  TLM_ACTI_RH_ReferralSent  "Both dockets referred (court record)"
+  000A87  TLM_ACTI_RH_TollBoard  "Tolls at the Gap"
+  000A88  TLM_ACTI_RH_Docket  "Docket of the Circuit"
+  000A89  TLM_ACTI_RH_Transcript  "Recorded prisoner testimony"
+  000A8A  TLM_ACTI_RH_Bypass  "Walk around the toll-gate"
+  000A8B  TLM_ACTI_RH_Watch  "Watch the local court scene"
+  000A8C  TLM_ACTI_RH_ToMouth  "Path to the Mouth"
+  000A8D  TLM_ACTI_RH_ToGap  "Path to the gap"
+  000A8E  TLM_ACTI_RH_CageControl  "Hoist: descend, return or rescue"
+  000A8F  TLM_ACTI_RH_BelowControl  "Cage: bring the shift up"
+  000A90  TLM_ACTI_RH_FiringControl  "Mouth firing key control"
+  000A91  TLM_ACTI_RH_BreakControl  "Inner-break charge control"
+  000A92  TLM_ACTI_RH_Roster  "Find and muster the night shift"
+  000A93  TLM_ACTI_RH_Gallery  "Path to the sealed gallery"
+  000A94  TLM_ACTI_RH_FromGallery  "Return to the Nine level"
+  000A95  TLM_ACTI_RH_GalleryLamp  "Gallery lamp"
+  000A96  TLM_ACTI_RH_CotLamp  "Lamp under Blevins's cot"
+  000A97  TLM_ACTI_RH_Silver  "Inspect the hoist-house desk"
+  000A98  TLM_ACTI_RH_Shovel  "Chalk on a Shovel Blade"
+  000A99  TLM_ACTI_RH_Knocking  "Listen at the Mouth (knocking stand-in)"
+  000A9A  TLM_ACTI_RH_MouthOpen  "Mouth open (stand-in)"
+  000A9B  TLM_ACTI_RH_MouthClosed  "Sealed Mouth rubble (stand-in)"
+  000A9C  TLM_ACTI_RH_BreakOpen  "Inner break open"
+  000A9D  TLM_ACTI_RH_BreakClosed  "Collapsed inner break (stand-in)"
+  000A9E  TLM_ACTI_RH_StoneDoor  "Sealed stone door: no passage beyond"
+  000A9F  TLM_ACTI_RH_Exit  "Return to Mercy Crossing"
+  000AA0  TLM_ACTI_RH_Resolve  "Rescue outcome and pending break plan"
+  000AA1  TLM_ACTI_RH_BodyKey  "Blevins's body key / hoist fallback"
+  000AA2  TLM_ACTI_RH_LabelGap  "Greybox: toll and gallows"
+  000AA3  TLM_ACTI_RH_LabelMouth  "Greybox: the Mouth"
+  000AA4  TLM_ACTI_RH_LabelCage  "Greybox: supported cage staging"
+  000AA5  TLM_ACTI_RH_LabelNine  "Greybox: the Nine level"
+  000AA6  TLM_ACTI_RH_LabelGallery  "Greybox: sealed gallery"
+  000AA7  TLM_ACTI_RH_Fall  "Supported-floor return"
+Container (3)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
-Message (279)
+  000AA8  TLM_CONT_RH_Rope  "Rope attachment: projectile target"
+  000AA9  TLM_CONT_RH_TollBox  "Court payment box"
+Message (378)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -239,15 +303,15 @@ Message (279)
           button 0: "Continue"
   000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
 
-[Opening complete. Greenwater and Iron Junction are playable.]"  title: "Owen Pritchard"
+[Opening complete. All three roads playable; fair unavailable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[Opening complete. Greenwater and Iron Junction are playable.]"  title: "Owen Pritchard"
+[Opening complete. All three roads playable; fair unavailable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[Opening complete. Greenwater and Iron Junction are playable.]"  title: "Owen Pritchard"
+[Opening complete. All three roads playable; fair unavailable.]"  title: "Owen Pritchard"
           button 0: "Continue"
           button 1: "There's something else from that train."
   00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Pike. I fix what shoots. Forty-fours are scarce, so make yours count.""  title: "Ada Pike"
@@ -280,7 +344,7 @@ Message (279)
           button 0: "Continue"
   0008A0  TLM_MSG_MB_Hub  [box]  "Owen Pritchard: "Which road do you want to ask about? Tell me what you know, or ask what to look for."
 
-[Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not.]"  title: "Owen Pritchard"
+[Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]"  title: "Owen Pritchard"
           button 0: "The rail."
           button 1: "The river."
           button 2: "Red Hollow."
@@ -398,7 +462,7 @@ Message (279)
           button 1: "[Later]"
   0008F7  TLM_MSG_GW_AskTravel  [box]  "[Greenwater story test]
 
-Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
+Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
           button 0: "Travel to Greenwater"
           button 1: "Not now"
   0008F8  TLM_MSG_GW_AskTravelAgain  [box]  "[Greenwater story test]
@@ -561,13 +625,13 @@ You accepted Hatcher's share. The grain remains aboard the Queen."
 
 You learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.
 
-Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not."
+Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not."
           button 0: "Continue"
   00091A  TLM_MSG_GW_ReportEndUnknown  [box]  "[River report]
 
 You did not learn why Hatcher held the grain.
 
-Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not."
+Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not."
           button 0: "Continue"
   00091B  TLM_MSG_GW_LabelLanding  [box]  "[Greybox: Greenwater landing and cook-shed]
 
@@ -742,7 +806,7 @@ The bearer does not know."
           button 1: "[Later]"
   0009AA  TLM_MSG_NM_AskTravel  [box]  "[Iron Junction story test]
 
-Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: floors and labelled stand-ins. Travel there now?"
+Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: floors and labelled stand-ins. Travel there now?"
           button 0: "Travel to Iron Junction"
           button 1: "Not now"
   0009AB  TLM_MSG_NM_AskTravelAgain  [box]  "[Iron Junction story test]
@@ -962,7 +1026,7 @@ Leave Iron Junction?"
           button 1: "Stay"
   0009DA  TLM_MSG_NM_NoteRoadComplete  [box]  "[Iron Junction story test]
 
-Night Mail road complete. Greenwater remains playable; Red Hollow and the fair are not. Sheriff Pritchard will hear what became of the Night Mail."
+Night Mail road complete. Greenwater and Red Hollow remain playable; the fair is not. Sheriff Pritchard will hear what became of the Night Mail."
           button 0: "Continue"
   0009DB  TLM_MSG_NM_NoteLeftUnresolved  [box]  "[Iron Junction story test]
 
@@ -1090,7 +1154,7 @@ You did not learn who Preacher Dole is or what he is paid in."
           button 0: "Continue"
   0009FA  TLM_MSG_NM_ReportEnd  [box]  "[Rail report]
 
-Night Mail road complete. Greenwater remains playable; Red Hollow and the fair are not."
+Night Mail road complete. Greenwater and Red Hollow remain playable; the fair is not."
           button 0: "Continue"
   0009FB  TLM_MSG_NM_AskHandOver  [box]  "[Inspector's stamp]
 
@@ -1168,6 +1232,416 @@ May he find us always in good order."
 
 Reuben. You were right about the trestle.
 I ran it anyway. A."
+          button 0: "Continue"
+  000ABB  TLM_MSG_RH_S_quill_default_1  [box]  "Esther Quill: "Court is not sitting. When court is not sitting I am a private woman with a headache.""  title: "Esther Quill"
+          button 0: "Continue"
+  000ABC  TLM_MSG_RH_S_quill_court_1  [box]  "Esther Quill: "Order. Circuit court of the Dominion, the Honourable Esther Quill, sitting on a wagon. The prisoner robbed upon the highway and hangs at noon. You have the look of somebody with an observation. Make it grammatical.""  title: "Esther Quill"
+          button 0: "What's the fine for a neck?"
+          button 1: "(Step back)"
+  000ABD  TLM_MSG_RH_S_quill_court_docket_1  [box]  "Esther Quill: "Order. Circuit court of the Dominion, the Honourable Esther Quill, sitting on a wagon. The prisoner robbed upon the highway and hangs at noon. You have the look of somebody with an observation. Make it grammatical.""  title: "Esther Quill"
+          button 0: "What's the fine for a neck?"
+          button 1: "Show the 2298 docket. Demand a hearing."
+          button 2: "(Step back)"
+  000ABE  TLM_MSG_RH_S_quill_fine_1  [box]  "Esther Quill: "Sixty. The Dominion values a road-agent at the price of a milk brahmin, and I have never seen cause to revise it. You will want a receipt. Everybody wants a receipt and nobody keeps them.""  title: "Esther Quill"
+          button 0: "Sixty. Cut him down."
+          button 1: "Too rich for me."
+  000ABF  TLM_MSG_RH_S_quill_shamed_1  [box]  "Esther Quill: "The court will adjourn. This docket goes with the old one for review, and the accused stays alive to answer it. If you mean to put Owen Pritchard on that bench, bring him as well.""  title: "Esther Quill"
+          button 0: "Continue"
+  000AC0  TLM_MSG_RH_S_quill_after_shot_1  [box]  "Esther Quill: "You shot my rope. That is destruction of Dominion property, obstruction of a lawful sentence, and a very pretty piece of work at forty yards. Fined four caps, for the rope. I have written your name down. I write clearly.""  title: "Esther Quill"
+          button 0: "Continue"
+  000AC1  TLM_MSG_RH_S_quill_after_drop_1  [box]  "Esther Quill: "Noon exactly. I do like a thing done on time. You watched it very steadily; most people look at their boots. His statement is on the bench, if you read. The Dominion has no further use for it.""  title: "Esther Quill"
+          button 0: "Continue"
+  000AC2  TLM_MSG_RH_S_dunmore_rope_1  [box]  "Reese Dunmore: "Partner! Well, look who the road brought. You owe me nothing and I know it. But I know why we were on the Tellico road that morning, and it was not for any wagon. Get this off my neck and it's yours.""  title: "Reese Dunmore"
+          button 0: "Talk first."
+          button 1: "(Step back)"
+  000AC3  TLM_MSG_RH_S_dunmore_rope_missed_1  [box]  "Reese Dunmore: "You there. Reese Dunmore. We watched the Tellico road for square-stamped silver. The order was for a marshal's pouch if his freight was held up. Nobody named a wreck. Hear the rest before they drop me.""  title: "Reese Dunmore"
+          button 0: "Go on."
+  000AC4  TLM_MSG_RH_S_dunmore_tells_1  [box]  "Reese Dunmore: "Silver. Square stamp. We watched the Tellico road for Gantt's freight if it was held up, and took his pouch if he came through. Nobody named a wreck or a passenger. The wagon was my own improvement.""  title: "Reese Dunmore"
+          button 0: "Go on."
+  000AC5  TLM_MSG_RH_S_cutter_rope_1  [box]  "Tellico Cutter: "You. You were on the Tellico road. Reese is dead and they'll hang me for his notion. We were paid to watch for the marshal's pouch if his freight was held up. Silver with a square on it. The wagon wasn't in the bargain.""  title: "Tellico Cutter"
+          button 0: "Continue"
+  000AC6  TLM_MSG_RH_S_cutter_rope_2  [box]  "Tellico Cutter: "That's what I know.""  title: "Tellico Cutter"
+          button 0: "Go on."
+  000AC7  TLM_MSG_RH_S_cutter_rope_missed_1  [box]  "Tellico Cutter: "Reese is dead. They'll hang me for the gang's work. We were paid in square-stamped silver to watch for the marshal's pouch if his freight was held up. I don't know who paid. The wagon wasn't in the order.""  title: "Tellico Cutter"
+          button 0: "Go on."
+  000AC8  TLM_MSG_RH_S_dunmore_freed_1  [box]  "Reese Dunmore: "I'm in your book now, partner, and I hate it. One time. You whistle one time and Reese Dunmore comes running, and then we're square and I never knew you. Don't spend it on anything small.""  title: "Reese Dunmore"
+          button 0: "Continue"
+  000AC9  TLM_MSG_RH_S_dunmore_freed_fine_1  [box]  "Reese Dunmore: "I'm in your book now, partner, and I hate it. One time. You whistle one time and Reese Dunmore comes running, and then we're square and I never knew you. Don't spend it on anything small.""  title: "Reese Dunmore"
+          button 0: "Continue"
+  000ACA  TLM_MSG_RH_S_roark_default_1  [box]  "Dinah Roark: "I'm listening to something. Say it quiet.""  title: "Dinah Roark"
+          button 0: "Continue"
+  000ACB  TLM_MSG_RH_S_roark_mouth_1  [box]  "Dinah Roark: "Hear that? Hoist code. Eleven alive below, my Pell among them. Captain Blevins is making ready to fire. I can work the cage. Decide whether you're starting the rescue before he gives the final warning.""  title: "Dinah Roark"
+          button 0: "Lower the cage. I'll go down."
+          button 1: "Why would he chain it?"
+          button 2: "What's knocking back?"
+  000ACC  TLM_MSG_RH_S_roark_deadline_warning_1  [box]  "Dinah Roark: "Captain Blevins is making ready to fire. When his preparations are finished, he turns the key with eleven people below. Start the rescue or stop him before then.""  title: "Dinah Roark"
+          button 0: "Start the rescue. Lower the cage."
+          button 1: "I'll speak to Captain Blevins."
+          button 2: "Not yet. I need to prepare."
+  000ACD  TLM_MSG_RH_S_roark_why_1  [box]  "Dinah Roark: "He won't say. He sent the cage down for them three nights back and it came up with nobody in it. Only something he wrapped in his coat before any of us could see. He's not slept since. He sits with that key.""  title: "Dinah Roark"
+          button 0: "Continue"
+  000ACE  TLM_MSG_RH_S_roark_back_1  [box]  "Dinah Roark: "...You hear that too. Good. I thought it was me. Same code, slow, a beat behind. Like something learning its letters. It started the second night. I've been answering. I don't know what I'm saying yes to.""  title: "Dinah Roark"
+          button 0: "Continue"
+  000ACF  TLM_MSG_RH_S_roark_cage_1  [box]  "Dinah Roark: "Stand in the middle. Don't touch the sides. If your lamp burns blue, breathe shallow. If it goes out, don't breathe. Four minutes down. Four minutes up, the second you ring. Give Pell my... no. Tell him yourself.""  title: "Dinah Roark"
+          button 0: "Continue"
+  000AD0  TLM_MSG_RH_S_greer_default_1  [box]  "Hobart Blevins: "For the good of the Hollow, I'd ask you to stand back from the Mouth.""  title: "Hobart Blevins"
+          button 0: "Continue"
+  000AD1  TLM_MSG_RH_S_greer_first_1  [box]  "Hobart Blevins: "You're from Pritchard. Then you'll want reasons. The Nine level is flooding and the air's gone; those men were dead the first night. Open the Mouth and the damp comes up into the town. For the good of the Hollow, I fire at""  title: "Hobart Blevins"
+          button 0: "Continue"
+  000AD2  TLM_MSG_RH_S_greer_first_2  [box]  "Hobart Blevins: "dawn.""  title: "Hobart Blevins"
+          button 0: "They're knocking. They're alive."
+          button 1: "What came up in the cage?"
+          button 2: "(Leave him)"
+  000AD3  TLM_MSG_RH_S_greer_first_heard_1  [box]  "Hobart Blevins: "You're from Pritchard. Then you'll want reasons. The Nine level is flooding and the air's gone; those men were dead the first night. Open the Mouth and the damp comes up into the town. For the good of the Hollow, I fire at""  title: "Hobart Blevins"
+          button 0: "Continue"
+  000AD4  TLM_MSG_RH_S_greer_first_heard_2  [box]  "Hobart Blevins: "dawn.""  title: "Hobart Blevins"
+          button 0: "They're knocking. They're alive."
+          button 1: "What came up in the cage?"
+          button 2: "Seal it. Leave the shift below."
+          button 3: "(Leave him)"
+  000AD5  TLM_MSG_RH_S_greer_knock_1  [box]  "Hobart Blevins: "Rock knocks. Water knocks. Timber knocks when it takes weight. Thirty years; I know what a mine sounds like. And I know what that is not. Don't ask me again. Please.""  title: "Hobart Blevins"
+          button 0: "Continue"
+  000AD6  TLM_MSG_RH_S_greer_lamp_1  [box]  "Hobart Blevins: "...A lamp. Burning. No oil in it, no wick, no smoke. Set in the middle of the cage floor, neat, the way you'd leave a thing on a doorstep. We broke into somebody's house down there. And they sent our knock back.""  title: "Hobart Blevins"
+          button 0: "Continue"
+  000AD7  TLM_MSG_RH_S_dorn_default_1  [box]  "Helga Dorn: "The door is shut. That is its whole purpose.""  title: "Helga Dorn"
+          button 0: "Continue"
+  000AD8  TLM_MSG_RH_S_dorn_door_1  [box]  "Helga Dorn: "Stand. Let me look at you. ...You are not one of the eleven. You came down on purpose. Good. I am Dorn, warden of this gallery. Your people broke my wall with powder. I have fed them three days. Are you the one who can swear?""  title: "Helga Dorn"
+          button 0: "Swear to what?"
+          button 1: "Who are you people?"
+          button 2: "They come up. Then I blow the break."
+          button 3: "(Take the lamp)"
+  000AD9  TLM_MSG_RH_S_dorn_terms_1  [box]  "Helga Dorn: "A line, where your powder met my wall. I answer for this gallery; you for yourself. Keep your passage above it and carry our terms to the mine. I'll get the shift to the cage. Your people can answer when the eleven are home.""  title: "Helga Dorn"
+          button 0: "I'll keep the line and carry your terms."
+          button 1: "What can I promise for myself?"
+          button 2: "They come up. Then I blow the break."
+  000ADA  TLM_MSG_RH_S_dorn_who_1  [box]  "Helga Dorn: "We are the House that cut this stone. That will do for a first meeting. Tell me instead who knocks so patiently, up there. Four nights she has taught me your code. I should like to send her a lamp that she may keep.""  title: "Helga Dorn"
+          button 0: "Continue"
+  000ADB  TLM_MSG_RH_S_dorn_no_head_1  [box]  "Helga Dorn: "Then don't swear for them. One honest name is enough for a passage. Bring their answer back when they have one.""  title: "Helga Dorn"
+          button 0: "For my own passage, I swear it."
+          button 1: "No. I blow the break."
+  000ADC  TLM_MSG_RH_S_dorn_sworn_1  [box]  "Helga Dorn: "Take your eleven. They eat like forgemen and complain like children. My House will hold its side while the mine hears the terms. And tell the one who knocks: thank you is three, a rest, and one.""  title: "Helga Dorn"
+          button 0: "Continue"
+  000ADD  TLM_MSG_RH_S_dorn_lamp_1  [box]  "Helga Dorn: "That is a warden's lamp. You are taking it to show to someone. I see. Then here is what I swear, alone: the next people who come down in that cage will not be fed.""  title: "Helga Dorn"
+          button 0: "Continue"
+  000ADE  TLM_MSG_RH_S_roark_after_line_1  [box]  "Dinah Roark: "Three, a rest, and one. I sent it. And it came back quick, like laughing. Pell's asleep in the kitchen with his boots on. I don't know what you did down there. I know there's somebody under my house, and I'm not afraid of""  title: "Dinah Roark"
+          button 0: "Continue"
+  000ADF  TLM_MSG_RH_S_roark_after_line_2  [box]  "Dinah Roark: "her.""  title: "Dinah Roark"
+          button 0: "Continue"
+  000AE0  TLM_MSG_RH_S_roark_after_break_1  [box]  "Dinah Roark: "They're up. All eleven. Pell says there was a woman, and a light, and then you, and then the roof came in. He says she fed them. What did we just do to somebody who fed them?""  title: "Dinah Roark"
+          button 0: "Continue"
+  000AE1  TLM_MSG_RH_S_roark_after_fire_1  [box]  "Dinah Roark: "It stopped a little before noon. I was listening. I'll always know the hour. You heard them, and you told him to fire. I've the baby to feed, or I'd do it now. But you look behind you, on the road. You look behind you.""  title: "Dinah Roark"
+          button 0: "Continue"
+  000AE2  TLM_MSG_RH_S_roark_after_deadline_1  [box]  "Dinah Roark: "It stopped a little before noon. Blevins turned the key. I looked for help until there was nobody left to ask. If you come back through this town, don't tell me you never heard the knocking.""  title: "Dinah Roark"
+          button 0: "Continue"
+  000AE3  TLM_MSG_RH_S_pritchard_hears_pike_after_fair_1  [box]  "Owen Pritchard: "You have a payment lead about Red Hollow. Say how you learned it. If you've been to the Mouth, tell me that account separately.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  000AE4  TLM_MSG_RH_S_pritchard_hears_pike_after_fair_unknown_1  [box]  "Owen Pritchard: "If Red Hollow is still ahead of you, ask me the way. If you've been, tell me what happened at the Mouth. Leave the payment column blank unless you've learned it.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  000AE5  TLM_MSG_RH_Travel  [box]  "[Red Hollow story test]
+
+Greenwater, Iron Junction and Red Hollow are playable. The fair is not. Travel to the gap?"
+          button 0: "Travel"
+          button 1: "Not now"
+  000AE6  TLM_MSG_RH_StageTravel  [box]  "[Staged travel]
+
+The supported markers represent the path, not a regional landscape. Continue?"
+          button 0: "Continue"
+          button 1: "Not now"
+  000AE7  TLM_MSG_RH_Descend  [box]  "[Staged hoist]
+
+The cage journey is represented by relocation to supported floor. No lift physics or four-minute wait. Continue?"
+          button 0: "Continue"
+          button 1: "Not now"
+  000AE8  TLM_MSG_RH_Rescue  [box]  "[Bring the shift up]
+
+Every living unfinished miner must reach the cage and surface. This is a staged batch; incomplete arrivals remain pending. Continue?"
+          button 0: "Continue"
+          button 1: "Not now"
+  000AE9  TLM_MSG_RH_Resolve  [box]  "[Rescue and break]
+
+Choose only what is represented. A pending blast is not completed by rescue."
+          button 0: "Leave the break alone"
+          button 1: "Plan the inner-break blast"
+          button 2: "Resolve observed casualties"
+          button 3: "Not now"
+  000AEA  TLM_MSG_RH_Blast  [box]  "[Inner-break blast]
+
+This closes the gallery break, not the Mouth. Every survivor must already be safe and nobody may remain in the blast area. Continue?"
+          button 0: "Continue"
+          button 1: "Not now"
+  000AEB  TLM_MSG_RH_Seal  [box]  "[Seal the Mouth]
+
+You heard the knocking. All eleven are still below. This is your explicit order to entomb the shift. Continue?"
+          button 0: "Give the order"
+          button 1: "Do not fire"
+  000AEC  TLM_MSG_RH_Final  [box]  "[Deadline final call]
+
+The warned active-time deadline has expired. The cage brings you out before Blevins fires. Continue acknowledges the warning; it is not your order."
+          button 0: "Continue"
+          button 1: "Pause the scene"
+  000AED  TLM_MSG_RH_Clock  [box]  "[Local deadline]
+
+600 active seconds; 30 after expired-warning renewal. Loaded Mouth/Nine/gallery play only. Standard menu edges, dialogue, transit, absence and load gaps pause. Detected menu uncertainty blocks; renew warning to resume."
+          button 0: "Accept local deadline"
+          button 1: "Not now"
+  000BF9  TLM_MSG_RH_PendingRescue  [box]  "[Unfinished rescue]
+
+Retry the remaining survivors, or return below to inspect unfinished fates. Delivered miners stay safe; the unfinished rescue still pauses the deadline."
+          button 0: "Retry survivors"
+          button 1: "Inspect below"
+          button 2: "Not now"
+  000BF0  TLM_MSG_RH_HoistBelow  [box]  "[Staged hoist]
+
+Bring the shift up, or return alone. Return alone does not rescue anybody."
+          button 0: "Bring the shift up"
+          button 1: "Return alone"
+          button 2: "Stay"
+  000BF1  TLM_MSG_RH_NoWarning  [box]  "[Rescue fallback]
+
+No warned rescue deadline has been accepted. You can operate the staged hoist without arming one."
+          button 0: "Start rescue without deadline"
+          button 1: "Not now"
+  000BF2  TLM_MSG_RH_ReportFacts  [box]  "[Current Red Hollow facts]
+
+Court %g; mine %g; safe survivors %g; observed deaths %g (player %g; known nonplayer %g; unknown %g). Entombment is separate."
+          button 0: "Continue"
+  000BF3  TLM_MSG_RH_ReportEvidence  [box]  "[Evidence and undertaking]
+
+Court-payment testimony %g; mine silver %g; personal undertaking %g; terms actually delivered %g. No town ratification is claimed."
+          button 0: "Continue"
+  000BF4  TLM_MSG_RH_ReportLamp  [box]  "[Lamp and custody]
+
+Lamp origin %g (1 gallery, 2 cot); presently held %g; 2298 copy presently held %g; entombed %g. Acquisition and current custody are distinct."
+          button 0: "Continue"
+  000AEE  TLM_MSG_RH_NoOperator  [box]  "[Rescue control]
+
+Blevins cannot operate the firing control. No deadline is armed. The hoist remains available for rescue."
+          button 0: "Start rescue"
+          button 1: "Not now"
+  000AEF  TLM_MSG_RH_Court  [box]  "[Court scene]
+
+Optional court controls are independent of the mine. The bypass is a supported walk around the gate."
+          button 0: "Talk to Quill"
+          button 1: "Watch local execution scene"
+          button 2: "Record/pay rope fine"
+          button 3: "Not now"
+  000AF0  TLM_MSG_RH_Watch  [box]  "[Local gallows scene]
+
+The drop follows 15 active seconds here, after a final warning. Menus, absence or intervention pause/prevent it. Watch?"
+          button 0: "Watch here"
+          button 1: "Not now"
+  000AF1  TLM_MSG_RH_Drop  [box]  "[Imminent drop]
+
+The local sentence is about to be carried out. Continue acknowledges witnessing; cancellation prevents the drop."
+          button 0: "Continue watching"
+          button 1: "Stop watching"
+  000AF2  TLM_MSG_RH_Referral  [box]  "[Court referral]
+
+The current docket and the held 2298 review copy will be entered together for review. This is not a pardon. Confirm the represented referral?"
+          button 0: "Refer both dockets"
+          button 1: "Not now"
+  000AF3  TLM_MSG_RH_Receipt  [box]  "[Court receipt]
+
+Sixty caps received; the receipt is in your inventory. Release still requires the living prisoner to reach the supported safe position."
+          button 0: "Continue"
+  000AF4  TLM_MSG_RH_Report  [box]  "[Red Hollow report]
+
+Report current court, miner, mine, evidence and lamp facts. No fair or town-wide agreement is implied."
+          button 0: "Report"
+          button 1: "Later"
+  000AF5  TLM_MSG_RH_Status  [box]  "[Red Hollow]
+
+Use the labelled controls. Missing effects remain unfinished; no failed move, missing actor or unacknowledged choice is a success."
+          button 0: "Continue"
+  000AF6  TLM_MSG_RH_Failed  [box]  "[Unfinished scene]
+
+The required arrival, item or visible effect was not observed. Nothing further is recorded. Use the same control to retry only unfinished work."
+          button 0: "Continue"
+  000AF7  TLM_MSG_RH_Unavailable  [box]  "[Court unavailable]
+
+No eligible surviving earlier-road prisoner is available. Nobody is replaced or resurrected. The bypass and mine remain open."
+          button 0: "Continue"
+  000AF8  TLM_MSG_RH_NoTranscript  [box]  "[Court record]
+
+No eligible prisoner's statement has been recorded here. The mine does not require this optional evidence."
+          button 0: "Continue"
+  000AF9  TLM_MSG_RH_Rope  [box]  "[Rope attachment]
+
+Use a real player projectile on the visible attachment target. Activating this control does not count as shooting or release."
+          button 0: "Continue"
+  000AFA  TLM_MSG_RH_Freed  [box]  "[Rope release]
+
+The rope is broken. The prisoner is alive and free. The forty-yard quotation is withheld; recording and payment of any rope fine are separate."
+          button 0: "Continue"
+  000AFB  TLM_MSG_RH_Fine  [box]  "[Rope record]
+
+Quill records the shot and a four-cap rope fine. A recorded fine is not a paid fine."
+          button 0: "Record damage"
+          button 1: "Pay recorded four caps"
+          button 2: "Not now"
+  000AFC  TLM_MSG_RH_Knocking  [box]  "[Knocking stand-in]
+
+This labelled listening interaction represents the authored hoist-code knocking and its slower reply. It supplies no voice or audio acceptance."
+          button 0: "Listen"
+          button 1: "Not now"
+  000AFD  TLM_MSG_RH_Prisoner  [box]  "[Prisoner record]
+
+Only the actual earlier-road actor is bound here. Freedom, living review custody and death are separate facts."
+          button 0: "Continue"
+  000AFE  TLM_MSG_RH_MineStatus  [box]  "[Mine status]
+
+Read the counted facts in the notifications. The shift, current survivors, observed deaths and entombment are separate."
+          button 0: "Continue"
+  000AFF  TLM_MSG_RH_Lamp  [box]  "[Lamp proof]
+
+A world stand-in and one inventory item represent the lamp. No working carried light or later sale is claimed."
+          button 0: "Take the lamp"
+          button 1: "Leave it"
+  000B00  TLM_MSG_RH_Silver  [box]  "[Hoist-house desk]
+
+You found stamped silver and an instruction to keep the Mouth shut through winter."
+          button 0: "Continue"
+  000B01  TLM_MSG_RH_Exit  [box]  "[Return to Mercy]
+
+Unsettled work remains unsettled. Return now?"
+          button 0: "Return"
+          button 1: "Stay"
+  000B02  TLM_MSG_RH_End  [box]  "[Red Hollow]
+
+Red Hollow road complete. All three roads remain playable; the fair is not."
+          button 0: "Continue"
+  000B03  TLM_MSG_RH_LabelGap  [box]  "[Greybox: toll and court]
+
+Court, receipt, rope target and evidence are optional. A supported path goes around the labelled gate to the mine route."
+          button 0: "Continue"
+  000B04  TLM_MSG_RH_LabelMouth  [box]  "[Greybox: the Mouth]
+
+Hoist, warning, firing control and desk evidence. The board represents current entrance status; no whole settlement crowd is simulated."
+          button 0: "Continue"
+  000B05  TLM_MSG_RH_LabelCage  [box]  "[Greybox: cage staging]
+
+Supported surface/below markers represent the hoist. Transit pauses the deadline. Every miner arrival must be observed."
+          button 0: "Continue"
+  000B06  TLM_MSG_RH_LabelNine  [box]  "[Greybox: the Nine level]
+
+Eleven separate unnamed roles stand at the break. One represents the already authored Pell relationship without a new name or speaking part."
+          button 0: "Continue"
+  000B07  TLM_MSG_RH_LabelGallery  [box]  "[Greybox: sealed gallery]
+
+Dorn's bounded gallery and lamp. No passage beyond the stone door, player-origin answer or town-wide allegiance is available."
+          button 0: "Continue"
+  000B08  TLM_MSG_RH_D_toll_board_1  [box]  "[Tolls at the Gap, page 1 of 3]
+
+BY ORDER OF THE DOMINION
+Col. A. Brigg, commanding
+
+THIS ROAD IS KEPT. THE KEEPING IS PAID FOR.
+
+Person on foot                      2 caps
+Person with pack                    3"
+          button 0: "Continue"
+  000B09  TLM_MSG_RH_D_toll_board_2  [box]  "[Tolls at the Gap, page 2 of 3]
+
+caps
+Pack brahmin, the head              4 caps
+Wagon, the wheel                    3 caps
+Drove stock, the score              10 caps
+Arms carried openly                 no"
+          button 0: "Continue"
+  000B0A  TLM_MSG_RH_D_toll_board_3  [box]  "[Tolls at the Gap, page 3 of 3]
+
+charge. Recorded
+Arms carried otherwise              forfeit
+
+Road-agents taken on the pike are tried at this gate.
+Court sits at noon.
+The beam is inspected weekly."
+          button 0: "Continue"
+  000B0B  TLM_MSG_RH_D_quill_docket_1  [box]  "[Docket of the Circuit, page 1 of 3]
+
+CIRCUIT COURT OF THE DOMINION
+The Hon. E. Quill
+
+TODAY
+
+1. The Dominion against a road-agent of the Tellico Cutters.
+   Robbery upon the highway. Plea: not asked.
+   Sentence at"
+          button 0: "Continue"
+  000B0C  TLM_MSG_RH_D_quill_docket_2  [box]  "[Docket of the Circuit, page 2 of 3]
+
+noon.
+
+2. Applications for mercy will be heard from persons able
+   to state them in complete sentences.
+
+3. Fines are payable to the clerk. Receipts are given.
+   The court does"
+          button 0: "Continue"
+  000B0D  TLM_MSG_RH_D_quill_docket_3  [box]  "[Docket of the Circuit, page 3 of 3]
+
+not make change.
+
+Persons interfering with the rope will be charged for the rope."
+          button 0: "Continue"
+  000B0E  TLM_MSG_RH_D_docket_2298_1  [box]  "[Mercy Road Case: 2298 Review Copy, page 1 of 4]
+
+MERCY ROAD CASE: SPRING 2298
+Retained review copy. Not a pardon in any current case.
+
+The carrier's dated receipt and two sworn accounts place the condemned man away from the road"
+          button 0: "Continue"
+  000B0F  TLM_MSG_RH_D_docket_2298_2  [box]  "[Mercy Road Case: 2298 Review Copy, page 2 of 4]
+
+at the hour alleged. Copies were entered with Magistrate Esther Quill before sentence was carried out.
+
+I received the warrant and carried it out. I later checked the accounts"
+          button 0: "Continue"
+  000B10  TLM_MSG_RH_D_docket_2298_3  [box]  "[Mercy Road Case: 2298 Review Copy, page 3 of 4]
+
+against the receiving ledger. We hanged an innocent man. I have kept the rope; it is not an answer. The finding should have gone into the court record then. I am making this copy"
+          button 0: "Continue"
+  000B11  TLM_MSG_RH_D_docket_2298_4  [box]  "[Mercy Road Case: 2298 Review Copy, page 4 of 4]
+
+available now.
+
+Owen Pritchard, Sheriff
+Attached: entry receipt bearing E. Quill's court mark."
+          button 0: "Continue"
+  000B12  TLM_MSG_RH_D_chalk_message_1  [box]  "[Chalk on a Shovel Blade, page 1 of 2]
+
+WE ARE 11. ALL LIVING.
+AIR BAD AT THE FACE. WATER TO THE KNEE.
+BROKE THROUGH AT THE END OF 9.
+IT IS NOT ROCK BEHIND. IT IS A ROOM.
+SOMEBODY CUT IT.
+
+WE KNOCKED FOR YOU.
+SOMETHING"
+          button 0: "Continue"
+  000B13  TLM_MSG_RH_D_chalk_message_2  [box]  "[Chalk on a Shovel Blade, page 2 of 2]
+
+KNOCKED BACK
+AND IT WAS NOT YOU.
+
+SEND THE CAGE.
+PELL"
+          button 0: "Continue"
+  000BF5  TLM_MSG_RH_T_dunmore_tells_1  [box]  "[Recorded prisoner statement, page 1 of 2]
+
+Silver. Square stamp. We watched the Tellico road for Gantt's freight if it was held up, and took his pouch if he came through. Nobody named a wreck or a passenger. The wagon was"
+          button 0: "Continue"
+  000BF6  TLM_MSG_RH_T_dunmore_tells_2  [box]  "[Recorded prisoner statement, page 2 of 2]
+
+my own improvement."
+          button 0: "Continue"
+  000BF7  TLM_MSG_RH_T_cutter_rope_1  [box]  "[Recorded prisoner statement, page 1 of 1]
+
+We were paid to watch for the marshal's pouch if his freight was held up. Silver with a square on it. The wagon wasn't in the bargain. That's what I know."
+          button 0: "Continue"
+  000BF8  TLM_MSG_RH_T_cutter_rope_missed_1  [box]  "[Recorded prisoner statement, page 1 of 1]
+
+We were paid in square-stamped silver to watch for the marshal's pouch if his freight was held up. I don't know who paid. The wagon wasn't in the order."
           button 0: "Continue"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
@@ -1448,6 +1922,7 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            TLM_MercyBriefing = TLM_MercyBriefing
            TLM_Greenwater = TLM_GW
            TLM_NightMail = TLM_NM
+           TLM_RedHollow = TLM_RH
            TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
            TLM_G_CaravanMethod = TLM_G_CaravanMethod
            TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
@@ -1615,8 +2090,8 @@ Quest TLM_MercyBriefing  00089F  "Mercy briefing"  type=SideQuests priority=35 f
            CopyPendingNote = TLM_MSG_MB_CopyPendingNote
            HandOffLine = TLM_MSG_MB_HandOff
   structure: 2 of 2 stages have one item with its flags subrecord; 1 of 1 objectives have flags; condition marker present
-  stage   10  "Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not."
-  stage   20 [complete]  "Mercy briefing complete. Greenwater and Iron Junction are playable; Red Hollow and the fair are not."
+  stage   10  "Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not."
+  stage   20 [complete]  "Mercy briefing complete. Greenwater, Iron Junction and Red Hollow are playable; the fair is not."
   objective 10: "Ask Pritchard about the three roads."  -> alias 0
   alias  0 Briefer  (reference) [Optional]
 
@@ -2254,11 +2729,505 @@ Quest TLM_NM  00098C  "The Last Meridian (Night Mail greybox: development)"  typ
            script TLM:NightMailTalk
                     Who = 31
 
-Not wired yet (436):
+Quest TLM_MQ02C  000AB9  "What Knocks in Red Hollow"  type=MainQuest priority=56 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MQ02CQuest
+           TLM_MQ01 = TLM_MQ01
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           DocketItem = TLM_BOOK_Docket2298
+           LampItem = TLM_MISC_RH_Lamp
+           KeyItem = TLM_MISC_RH_FiringKey
+           ReceiptItem = TLM_MISC_RH_Receipt
+           Alias_Sheriff = alias 4 on TLM_MQ01
+           Miners = [alias 5 on TLM_MQ02C, alias 6 on TLM_MQ02C, alias 7 on TLM_MQ02C, alias 8 on TLM_MQ02C, alias 9 on TLM_MQ02C, alias 10 on TLM_MQ02C, alias 11 on TLM_MQ02C, alias 12 on TLM_MQ02C, alias 13 on TLM_MQ02C, alias 14 on TLM_MQ02C, alias 15 on TLM_MQ02C]
+           Alias_Quill = alias 0 on TLM_MQ02C
+           Alias_Blevins = alias 1 on TLM_MQ02C
+           Alias_Roark = alias 2 on TLM_MQ02C
+           Alias_Dorn = alias 3 on TLM_MQ02C
+           Alias_Condemned = alias 4 on TLM_MQ02C
+           TLM_G_MQ02C_Court = TLM_G_MQ02C_Court
+           TLM_G_MQ02C_Mine = TLM_G_MQ02C_Mine
+           TLM_G_MQ02C_PrisonerRole = TLM_G_MQ02C_PrisonerRole
+           TLM_G_MQ02C_Survivors = TLM_G_MQ02C_Survivors
+           TLM_G_MQ02C_ObservedDeaths = TLM_G_MQ02C_ObservedDeaths
+           TLM_G_MQ02C_Entombed = TLM_G_MQ02C_Entombed
+           TLM_G_MQ02C_Reported = TLM_G_MQ02C_Reported
+           TLM_G_MQ02C_DeadlineArmed = TLM_G_MQ02C_DeadlineArmed
+           TLM_G_MQ02C_DeadlineRemaining = TLM_G_MQ02C_DeadlineRemaining
+           TLM_G_MQ02C_MinePending = TLM_G_MQ02C_MinePending
+           TLM_G_MQ02C_RopeShot = TLM_G_MQ02C_RopeShot
+           TLM_G_MQ02C_NeckOwed = TLM_G_MQ02C_NeckOwed
+           TLM_G_MQ02C_QuillShamed = TLM_G_MQ02C_QuillShamed
+           TLM_G_MQ02C_SilverRoad = TLM_G_MQ02C_SilverRoad
+           TLM_G_MQ02C_ShiftSaved = TLM_G_MQ02C_ShiftSaved
+           TLM_G_MQ02C_HollowLine = TLM_G_MQ02C_HollowLine
+           TLM_G_MQ02C_BreakBlown = TLM_G_MQ02C_BreakBlown
+           TLM_G_MQ02C_MouthShut = TLM_G_MQ02C_MouthShut
+           TLM_G_MQ02C_LampTaken = TLM_G_MQ02C_LampTaken
+           TLM_G_MQ02C_Docket2298Held = TLM_G_MQ02C_Docket2298Held
+           TLM_G_MQ02C_SilverMine = TLM_G_MQ02C_SilverMine
+  structure: 21 of 21 stages have one item with its flags subrecord; 4 of 4 objectives have flags; condition marker present
+  stage   10  "You reached the Dominion toll-gate."
+  stage   11  "The rope is broken. The prisoner is alive and free."
+  stage   12  "You bought a man off the gallows for sixty caps. Judge Quill gave you a receipt."
+  stage   13  "Quill adjourned after you presented the 2298 review copy. The current accused remains alive under review; this is not a pardon."
+  stage   14  "The court carried out the sentence while you remained at the wagon."
+  stage   15  "You heard how the Cutters were paid to watch for Gantt's delayed freight and seize his pouch."
+  stage   16  "Pritchard gave you his review of the 2298 hanging, with the court's receipt for the evidence. Quill can be asked to enter it alongside the current case."
+  stage   20  "You reached the chained Mouth at Red Hollow."
+  stage   30  "You accepted the warned local rescue deadline. The shift is still below."
+  stage   40  "You reached the Nine level by the cage."
+  stage   45  "You found eleven miners alive at the break in the rock."
+  stage   50  "You reached the cut gallery and its sealed stone door."
+  stage   51  "The shift is up. You promised to respect the gallery line on your own passage and carry the House's terms to the mine. Red Hollow has not yet ratified a town-wide agreement."
+  stage   52  "The eleven miners reached the surface. You then blasted the break closed."
+  stage   53  "You ordered the Mouth sealed with the shift below. Blevins carried out the order."
+  stage   54  "You have a lamp that burns without smoke and a place to say it came from. That will be worth something to somebody with a flag."
+  stage   56  "The warned local deadline expired. Blevins sealed the Mouth with the shift below. You gave no order."
+  stage   57  "The eleven miners reached the surface. You made no gallery undertaking and did not blast the break."
+  stage   58  "The observed casualty count and safe survivors are recorded separately. No all-eleven rescue is claimed."
+  stage   60  "You found stamped silver and an instruction to keep the Mouth shut through winter."
+  stage  100 [complete]  (no log)
+  objective 10: "Get past the toll-gate at the gap"
+  objective 20: "Find out why Red Hollow chained its own mine"
+  objective 30: "Decide what happens at the Mouth"
+  objective 45: "Find out what is on the other side of the break"
+  alias  0 Quill  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  1 Blevins  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  2 Roark  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  3 Dorn  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  4 Condemned  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  5 Miner01  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  6 Miner02  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  7 Miner03  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  8 Miner04  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  9 Miner05  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 10 Miner06  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 11 Miner07  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 12 Miner08  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 13 Miner09  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 14 Miner10  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 15 Miner11  (reference) [Optional, AllowDead, AllowDisabled]
+
+Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:RedHollowWalk
+           TLM_MQ02C = TLM_MQ02C
+           TLM_MQ01 = TLM_MQ01
+           TLM_MercyBriefing = TLM_MercyBriefing
+           Alias_Condemned = alias 97 on TLM_RH
+           CastFrom = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH]
+           CastInto = [alias 0 on TLM_MQ02C, alias 2 on TLM_MQ02C, alias 1 on TLM_MQ02C, alias 3 on TLM_MQ02C, alias 5 on TLM_MQ02C, alias 6 on TLM_MQ02C, alias 7 on TLM_MQ02C, alias 8 on TLM_MQ02C, alias 9 on TLM_MQ02C, alias 10 on TLM_MQ02C, alias 11 on TLM_MQ02C, alias 12 on TLM_MQ02C, alias 13 on TLM_MQ02C, alias 14 on TLM_MQ02C, alias 15 on TLM_MQ02C]
+           ClockMenus = ["LoadingMenu", "Console", "LevelUpMenu", "MessageBoxMenu", "ContainerMenu", "ExamineMenu", "CookingMenu", "ExamineConfirmMenu", "RobotModMenu", "PowerArmorModMenu", "WorkshopMenu", "PromptMenu", "SitWaitMenu", "SleepWaitMenu", "DialogueMenu", "BarterMenu", "LockpickingMenu", "BookMenu", "SPECIALMenu", "FavoritesMenu", "PauseMenu", "VATSMenu", "PipboyMenu", "PipboyHolotapeMenu", "TerminalMenu", "LooksMenu"]
+           ZoneOn = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 15 on TLM_RH, alias 17 on TLM_RH, alias 19 on TLM_RH, alias 20 on TLM_RH, alias 21 on TLM_RH, alias 22 on TLM_RH, alias 23 on TLM_RH, alias 24 on TLM_RH, alias 25 on TLM_RH, alias 26 on TLM_RH, alias 27 on TLM_RH, alias 28 on TLM_RH, alias 29 on TLM_RH, alias 30 on TLM_RH, alias 31 on TLM_RH, alias 32 on TLM_RH, alias 33 on TLM_RH, alias 34 on TLM_RH, alias 35 on TLM_RH, alias 36 on TLM_RH, alias 37 on TLM_RH, alias 38 on TLM_RH, alias 39 on TLM_RH, alias 41 on TLM_RH, alias 43 on TLM_RH, alias 44 on TLM_RH, alias 45 on TLM_RH, alias 46 on TLM_RH, alias 47 on TLM_RH, alias 48 on TLM_RH, alias 49 on TLM_RH, alias 50 on TLM_RH, alias 51 on TLM_RH, alias 52 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH]
+           Alias_MercyTravel = alias 0 on TLM_RH
+           Alias_MercyReturn = alias 1 on TLM_RH
+           Alias_GapArrival = alias 2 on TLM_RH
+           Alias_MouthArrival = alias 3 on TLM_RH
+           Alias_CageSurface = alias 4 on TLM_RH
+           Alias_CageBelow = alias 5 on TLM_RH
+           Alias_GalleryArrival = alias 6 on TLM_RH
+           Alias_Gallows = alias 7 on TLM_RH
+           Alias_Released = alias 8 on TLM_RH
+           Alias_Custody = alias 9 on TLM_RH
+           Alias_DornWithdraw = alias 10 on TLM_RH
+           Alias_Quill = alias 11 on TLM_RH
+           Alias_Roark = alias 12 on TLM_RH
+           Alias_Blevins = alias 13 on TLM_RH
+           Alias_Dorn = alias 14 on TLM_RH
+           Alias_Rope = alias 15 on TLM_RH
+           Alias_RopeBroken = alias 16 on TLM_RH
+           Alias_CourtRecord = alias 17 on TLM_RH
+           Alias_ReferralSent = alias 18 on TLM_RH
+           Alias_TollBoard = alias 19 on TLM_RH
+           Alias_Docket = alias 20 on TLM_RH
+           Alias_Transcript = alias 21 on TLM_RH
+           Alias_TollBox = alias 22 on TLM_RH
+           Alias_Bypass = alias 23 on TLM_RH
+           Alias_Watch = alias 24 on TLM_RH
+           Alias_ToMouth = alias 25 on TLM_RH
+           Alias_ToGap = alias 26 on TLM_RH
+           Alias_CageControl = alias 27 on TLM_RH
+           Alias_BelowControl = alias 28 on TLM_RH
+           Alias_FiringControl = alias 29 on TLM_RH
+           Alias_BreakControl = alias 30 on TLM_RH
+           Alias_Roster = alias 31 on TLM_RH
+           Alias_Gallery = alias 32 on TLM_RH
+           Alias_FromGallery = alias 33 on TLM_RH
+           Alias_GalleryLamp = alias 34 on TLM_RH
+           Alias_CotLamp = alias 35 on TLM_RH
+           Alias_Silver = alias 36 on TLM_RH
+           Alias_Shovel = alias 37 on TLM_RH
+           Alias_Knocking = alias 38 on TLM_RH
+           Alias_MouthOpen = alias 39 on TLM_RH
+           Alias_MouthClosed = alias 40 on TLM_RH
+           Alias_BreakOpen = alias 41 on TLM_RH
+           Alias_BreakClosed = alias 42 on TLM_RH
+           Alias_StoneDoor = alias 43 on TLM_RH
+           Alias_Exit = alias 44 on TLM_RH
+           Alias_Resolve = alias 45 on TLM_RH
+           Alias_BodyKey = alias 46 on TLM_RH
+           Alias_LabelGap = alias 47 on TLM_RH
+           Alias_LabelMouth = alias 48 on TLM_RH
+           Alias_LabelCage = alias 49 on TLM_RH
+           Alias_LabelNine = alias 50 on TLM_RH
+           Alias_LabelGallery = alias 51 on TLM_RH
+           Alias_Fall = alias 52 on TLM_RH
+           Alias_Miner01 = alias 53 on TLM_RH
+           Alias_Miner02 = alias 54 on TLM_RH
+           Alias_Miner03 = alias 55 on TLM_RH
+           Alias_Miner04 = alias 56 on TLM_RH
+           Alias_Miner05 = alias 57 on TLM_RH
+           Alias_Miner06 = alias 58 on TLM_RH
+           Alias_Miner07 = alias 59 on TLM_RH
+           Alias_Miner08 = alias 60 on TLM_RH
+           Alias_Miner09 = alias 61 on TLM_RH
+           Alias_Miner10 = alias 62 on TLM_RH
+           Alias_Miner11 = alias 63 on TLM_RH
+           Alias_Below01 = alias 64 on TLM_RH
+           Alias_Cage01 = alias 65 on TLM_RH
+           Alias_Surface01 = alias 66 on TLM_RH
+           Alias_Below02 = alias 67 on TLM_RH
+           Alias_Cage02 = alias 68 on TLM_RH
+           Alias_Surface02 = alias 69 on TLM_RH
+           Alias_Below03 = alias 70 on TLM_RH
+           Alias_Cage03 = alias 71 on TLM_RH
+           Alias_Surface03 = alias 72 on TLM_RH
+           Alias_Below04 = alias 73 on TLM_RH
+           Alias_Cage04 = alias 74 on TLM_RH
+           Alias_Surface04 = alias 75 on TLM_RH
+           Alias_Below05 = alias 76 on TLM_RH
+           Alias_Cage05 = alias 77 on TLM_RH
+           Alias_Surface05 = alias 78 on TLM_RH
+           Alias_Below06 = alias 79 on TLM_RH
+           Alias_Cage06 = alias 80 on TLM_RH
+           Alias_Surface06 = alias 81 on TLM_RH
+           Alias_Below07 = alias 82 on TLM_RH
+           Alias_Cage07 = alias 83 on TLM_RH
+           Alias_Surface07 = alias 84 on TLM_RH
+           Alias_Below08 = alias 85 on TLM_RH
+           Alias_Cage08 = alias 86 on TLM_RH
+           Alias_Surface08 = alias 87 on TLM_RH
+           Alias_Below09 = alias 88 on TLM_RH
+           Alias_Cage09 = alias 89 on TLM_RH
+           Alias_Surface09 = alias 90 on TLM_RH
+           Alias_Below10 = alias 91 on TLM_RH
+           Alias_Cage10 = alias 92 on TLM_RH
+           Alias_Surface10 = alias 93 on TLM_RH
+           Alias_Below11 = alias 94 on TLM_RH
+           Alias_Cage11 = alias 95 on TLM_RH
+           Alias_Surface11 = alias 96 on TLM_RH
+           BelowSlots = [alias 64 on TLM_RH, alias 67 on TLM_RH, alias 70 on TLM_RH, alias 73 on TLM_RH, alias 76 on TLM_RH, alias 79 on TLM_RH, alias 82 on TLM_RH, alias 85 on TLM_RH, alias 88 on TLM_RH, alias 91 on TLM_RH, alias 94 on TLM_RH]
+           CageSlots = [alias 65 on TLM_RH, alias 68 on TLM_RH, alias 71 on TLM_RH, alias 74 on TLM_RH, alias 77 on TLM_RH, alias 80 on TLM_RH, alias 83 on TLM_RH, alias 86 on TLM_RH, alias 89 on TLM_RH, alias 92 on TLM_RH, alias 95 on TLM_RH]
+           SurfaceSlots = [alias 66 on TLM_RH, alias 69 on TLM_RH, alias 72 on TLM_RH, alias 75 on TLM_RH, alias 78 on TLM_RH, alias 81 on TLM_RH, alias 84 on TLM_RH, alias 87 on TLM_RH, alias 90 on TLM_RH, alias 93 on TLM_RH, alias 96 on TLM_RH]
+           S_quill_default_1 = TLM_MSG_RH_S_quill_default_1
+           S_quill_court_1 = TLM_MSG_RH_S_quill_court_1
+           S_quill_court_docket_1 = TLM_MSG_RH_S_quill_court_docket_1
+           S_quill_fine_1 = TLM_MSG_RH_S_quill_fine_1
+           S_quill_shamed_1 = TLM_MSG_RH_S_quill_shamed_1
+           S_quill_after_shot_1 = TLM_MSG_RH_S_quill_after_shot_1
+           S_quill_after_drop_1 = TLM_MSG_RH_S_quill_after_drop_1
+           S_dunmore_rope_1 = TLM_MSG_RH_S_dunmore_rope_1
+           S_dunmore_rope_missed_1 = TLM_MSG_RH_S_dunmore_rope_missed_1
+           S_dunmore_tells_1 = TLM_MSG_RH_S_dunmore_tells_1
+           S_cutter_rope_1 = TLM_MSG_RH_S_cutter_rope_1
+           S_cutter_rope_2 = TLM_MSG_RH_S_cutter_rope_2
+           S_cutter_rope_missed_1 = TLM_MSG_RH_S_cutter_rope_missed_1
+           S_dunmore_freed_1 = TLM_MSG_RH_S_dunmore_freed_1
+           S_dunmore_freed_fine_1 = TLM_MSG_RH_S_dunmore_freed_fine_1
+           S_roark_default_1 = TLM_MSG_RH_S_roark_default_1
+           S_roark_mouth_1 = TLM_MSG_RH_S_roark_mouth_1
+           S_roark_deadline_warning_1 = TLM_MSG_RH_S_roark_deadline_warning_1
+           S_roark_why_1 = TLM_MSG_RH_S_roark_why_1
+           S_roark_back_1 = TLM_MSG_RH_S_roark_back_1
+           S_roark_cage_1 = TLM_MSG_RH_S_roark_cage_1
+           S_greer_default_1 = TLM_MSG_RH_S_greer_default_1
+           S_greer_first_1 = TLM_MSG_RH_S_greer_first_1
+           S_greer_first_2 = TLM_MSG_RH_S_greer_first_2
+           S_greer_first_heard_1 = TLM_MSG_RH_S_greer_first_heard_1
+           S_greer_first_heard_2 = TLM_MSG_RH_S_greer_first_heard_2
+           S_greer_knock_1 = TLM_MSG_RH_S_greer_knock_1
+           S_greer_lamp_1 = TLM_MSG_RH_S_greer_lamp_1
+           S_dorn_default_1 = TLM_MSG_RH_S_dorn_default_1
+           S_dorn_door_1 = TLM_MSG_RH_S_dorn_door_1
+           S_dorn_terms_1 = TLM_MSG_RH_S_dorn_terms_1
+           S_dorn_who_1 = TLM_MSG_RH_S_dorn_who_1
+           S_dorn_no_head_1 = TLM_MSG_RH_S_dorn_no_head_1
+           S_dorn_sworn_1 = TLM_MSG_RH_S_dorn_sworn_1
+           S_dorn_lamp_1 = TLM_MSG_RH_S_dorn_lamp_1
+           S_roark_after_line_1 = TLM_MSG_RH_S_roark_after_line_1
+           S_roark_after_line_2 = TLM_MSG_RH_S_roark_after_line_2
+           S_roark_after_break_1 = TLM_MSG_RH_S_roark_after_break_1
+           S_roark_after_fire_1 = TLM_MSG_RH_S_roark_after_fire_1
+           S_roark_after_deadline_1 = TLM_MSG_RH_S_roark_after_deadline_1
+           S_pritchard_hears_pike_after_fair_1 = TLM_MSG_RH_S_pritchard_hears_pike_after_fair_1
+           S_pritchard_hears_pike_after_fair_unknown_1 = TLM_MSG_RH_S_pritchard_hears_pike_after_fair_unknown_1
+           Travel = TLM_MSG_RH_Travel
+           StageTravel = TLM_MSG_RH_StageTravel
+           Descend = TLM_MSG_RH_Descend
+           Rescue = TLM_MSG_RH_Rescue
+           Resolve = TLM_MSG_RH_Resolve
+           Blast = TLM_MSG_RH_Blast
+           Seal = TLM_MSG_RH_Seal
+           Final = TLM_MSG_RH_Final
+           Clock = TLM_MSG_RH_Clock
+           PendingRescue = TLM_MSG_RH_PendingRescue
+           HoistBelow = TLM_MSG_RH_HoistBelow
+           NoWarning = TLM_MSG_RH_NoWarning
+           ReportFacts = TLM_MSG_RH_ReportFacts
+           ReportEvidence = TLM_MSG_RH_ReportEvidence
+           ReportLamp = TLM_MSG_RH_ReportLamp
+           NoOperator = TLM_MSG_RH_NoOperator
+           Court = TLM_MSG_RH_Court
+           Watch = TLM_MSG_RH_Watch
+           Drop = TLM_MSG_RH_Drop
+           Referral = TLM_MSG_RH_Referral
+           Receipt = TLM_MSG_RH_Receipt
+           Report = TLM_MSG_RH_Report
+           Status = TLM_MSG_RH_Status
+           Failed = TLM_MSG_RH_Failed
+           Unavailable = TLM_MSG_RH_Unavailable
+           NoTranscript = TLM_MSG_RH_NoTranscript
+           Rope = TLM_MSG_RH_Rope
+           Freed = TLM_MSG_RH_Freed
+           Fine = TLM_MSG_RH_Fine
+           Knocking = TLM_MSG_RH_Knocking
+           Prisoner = TLM_MSG_RH_Prisoner
+           MineStatus = TLM_MSG_RH_MineStatus
+           Lamp = TLM_MSG_RH_Lamp
+           Silver = TLM_MSG_RH_Silver
+           Exit = TLM_MSG_RH_Exit
+           End = TLM_MSG_RH_End
+           LabelGap = TLM_MSG_RH_LabelGap
+           LabelMouth = TLM_MSG_RH_LabelMouth
+           LabelCage = TLM_MSG_RH_LabelCage
+           LabelNine = TLM_MSG_RH_LabelNine
+           LabelGallery = TLM_MSG_RH_LabelGallery
+           D_toll_board_1 = TLM_MSG_RH_D_toll_board_1
+           D_toll_board_2 = TLM_MSG_RH_D_toll_board_2
+           D_toll_board_3 = TLM_MSG_RH_D_toll_board_3
+           D_quill_docket_1 = TLM_MSG_RH_D_quill_docket_1
+           D_quill_docket_2 = TLM_MSG_RH_D_quill_docket_2
+           D_quill_docket_3 = TLM_MSG_RH_D_quill_docket_3
+           D_docket_2298_1 = TLM_MSG_RH_D_docket_2298_1
+           D_docket_2298_2 = TLM_MSG_RH_D_docket_2298_2
+           D_docket_2298_3 = TLM_MSG_RH_D_docket_2298_3
+           D_docket_2298_4 = TLM_MSG_RH_D_docket_2298_4
+           D_chalk_message_1 = TLM_MSG_RH_D_chalk_message_1
+           D_chalk_message_2 = TLM_MSG_RH_D_chalk_message_2
+           T_dunmore_tells_1 = TLM_MSG_RH_T_dunmore_tells_1
+           T_dunmore_tells_2 = TLM_MSG_RH_T_dunmore_tells_2
+           T_cutter_rope_1 = TLM_MSG_RH_T_cutter_rope_1
+           T_cutter_rope_missed_1 = TLM_MSG_RH_T_cutter_rope_missed_1
+  structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  alias  0 MercyTravel  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 1
+  alias  1 MercyReturn  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  2 GapArrival  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  3 MouthArrival  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  4 CageSurface  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  5 CageBelow  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  6 GalleryArrival  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  7 Gallows  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  8 Released  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  9 Custody  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 10 DornWithdraw  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 11 Quill  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 2
+  alias 12 Roark  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 3
+  alias 13 Blevins  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 4
+  alias 14 Dorn  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 5
+  alias 15 Rope  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 6
+  alias 16 RopeBroken  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 17 CourtRecord  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 7
+  alias 18 ReferralSent  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 7
+  alias 19 TollBoard  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 8
+  alias 20 Docket  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 9
+  alias 21 Transcript  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 10
+  alias 22 TollBox  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 11
+  alias 23 Bypass  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 12
+  alias 24 Watch  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 13
+  alias 25 ToMouth  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 14
+  alias 26 ToGap  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 15
+  alias 27 CageControl  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 16
+  alias 28 BelowControl  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 17
+  alias 29 FiringControl  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 18
+  alias 30 BreakControl  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 19
+  alias 31 Roster  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 20
+  alias 32 Gallery  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 21
+  alias 33 FromGallery  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 22
+  alias 34 GalleryLamp  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 23
+  alias 35 CotLamp  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 24
+  alias 36 Silver  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 25
+  alias 37 Shovel  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 26
+  alias 38 Knocking  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 27
+  alias 39 MouthOpen  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 40 MouthClosed  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 41 BreakOpen  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 42 BreakClosed  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 43 StoneDoor  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 28
+  alias 44 Exit  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 29
+  alias 45 Resolve  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 30
+  alias 46 BodyKey  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 31
+  alias 47 LabelGap  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 40
+  alias 48 LabelMouth  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 41
+  alias 49 LabelCage  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 42
+  alias 50 LabelNine  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 43
+  alias 51 LabelGallery  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 44
+  alias 52 Fall  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 45
+  alias 53 Miner01  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 101
+  alias 54 Miner02  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 102
+  alias 55 Miner03  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 103
+  alias 56 Miner04  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 104
+  alias 57 Miner05  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 105
+  alias 58 Miner06  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 106
+  alias 59 Miner07  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 107
+  alias 60 Miner08  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 108
+  alias 61 Miner09  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 109
+  alias 62 Miner10  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 110
+  alias 63 Miner11  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 111
+  alias 64 Below01  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 65 Cage01  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 66 Surface01  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 67 Below02  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 68 Cage02  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 69 Surface02  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 70 Below03  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 71 Cage03  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 72 Surface03  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 73 Below04  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 74 Cage04  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 75 Surface04  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 76 Below05  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 77 Cage05  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 78 Surface05  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 79 Below06  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 80 Cage06  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 81 Surface06  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 82 Below07  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 83 Cage07  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 84 Surface07  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 85 Below08  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 86 Cage08  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 87 Surface08  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 88 Below09  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 89 Cage09  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 90 Surface09  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 91 Below10  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 92 Cage10  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 93 Surface10  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 94 Below11  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 95 Cage11  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 96 Surface11  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 97 Condemned  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 32
+  alias 98 Player  (reference) [Optional]
+           script TLM:RedHollowTalk
+                    Who = -1
+
+Not wired yet (812):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
   - TLM_MISC_OstranderStamp: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_MISC_RH_Lamp: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_MISC_RH_FiringKey: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_MISC_RH_Receipt: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_BrakeShoes: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_DrawBar: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NoticeBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
@@ -2314,8 +3283,48 @@ Not wired yet (436):
   - TLM_ACTI_NM_EngineDamaged: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NM_PlatformExit: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NM_BackFromPlatform: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_MercyTravel: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_RopeBroken: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_CourtRecord: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_ReferralSent: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_TollBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Docket: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Transcript: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Bypass: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Watch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_ToMouth: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_ToGap: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_CageControl: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_BelowControl: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_FiringControl: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_BreakControl: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Roster: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Gallery: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_FromGallery: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_GalleryLamp: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_CotLamp: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Silver: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Shovel: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Knocking: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_MouthOpen: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_MouthClosed: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_BreakOpen: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_BreakClosed: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_StoneDoor: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Exit: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_Resolve: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_BodyKey: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_LabelGap: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_LabelMouth: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_LabelCage: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_LabelNine: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_RH_LabelGallery: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: empty (it holds 'Caps001', which needs Fallout4.esm)
+  - TLM_CONT_RH_Rope: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
+  - TLM_CONT_RH_Rope: empty (it holds 'Caps001', which needs Fallout4.esm)
+  - TLM_CONT_RH_TollBox: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
+  - TLM_CONT_RH_TollBox: empty (it holds 'Caps001', which needs Fallout4.esm)
   - TLM_NPC_TrialPerson: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_TrialPersonBare: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_SHERIFF_MERCY: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
@@ -2343,6 +3352,21 @@ Not wired yet (436):
   - TLM_NPC_BLACKRAIL_01: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_BLACKRAIL_02: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_BLACKRAIL_03: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Quill: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Blevins: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Roark: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Dorn: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner01: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner02: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner03: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner04: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner05: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner06: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner07: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner08: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner09: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner10: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_RH_Miner11: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_MarshalLog: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_Docket2298: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
@@ -2425,6 +3449,8 @@ Not wired yet (436):
   - TLM_REF_GW_Pilot: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_NM_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_NM_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_RH_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_RH_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_NM_YardArrival: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_Rules: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_LabelYard: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
@@ -2519,6 +3545,223 @@ Not wired yet (436):
   - TLM_REF_NM_Floor_C20: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_Floor_C21: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_Floor_C22: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_GapArrival: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_MouthArrival: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_CageSurface: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_CageBelow: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_GalleryArrival: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Gallows: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Released: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Custody: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_DornWithdraw: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Quill: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Roark: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Blevins: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Dorn: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Rope: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_RopeBroken: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_CourtRecord: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_ReferralSent: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_TollBoard: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Docket: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Transcript: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_TollBox: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Bypass: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Watch: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_ToMouth: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_ToGap: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_CageControl: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_BelowControl: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_FiringControl: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_BreakControl: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Roster: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Gallery: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_FromGallery: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_GalleryLamp: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_CotLamp: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Silver: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Shovel: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Knocking: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_MouthOpen: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_MouthClosed: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_BreakOpen: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_BreakClosed: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_StoneDoor: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Exit: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Resolve: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_BodyKey: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_LabelGap: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_LabelMouth: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_LabelCage: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_LabelNine: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_LabelGallery: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Fall: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner04: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner05: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner06: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner07: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner08: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner09: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Miner11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below04: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage04: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface04: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below05: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage05: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface05: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below06: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage06: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface06: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below07: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage07: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface07: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below08: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage08: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface08: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below09: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage09: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface09: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Below11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Cage11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Surface11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A00: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A12: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A13: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A20: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A21: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A22: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A23: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A30: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A31: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A32: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A33: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A40: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A41: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A42: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A43: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A50: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A51: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A52: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A53: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A60: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A61: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A62: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_A63: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B00: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B04: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B05: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B12: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B13: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B14: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B15: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B20: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B21: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B22: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B23: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B24: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B25: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B30: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B31: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B32: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B33: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B34: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B35: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B40: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B41: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B42: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B43: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B44: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B45: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B50: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B51: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B52: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B53: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B54: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B55: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B60: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B61: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B62: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B63: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B64: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_B65: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C00: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C12: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C13: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C20: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C21: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C22: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C23: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C30: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C31: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C32: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C33: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C40: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C41: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C42: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C43: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C50: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C51: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C52: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C53: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C60: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C61: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C62: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_C63: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D00: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D01: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D02: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D03: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D10: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D11: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D12: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D13: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D20: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D21: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D22: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D23: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D30: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D31: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D32: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D33: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D40: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D41: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D42: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D43: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D50: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D51: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D52: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_RH_Floor_D53: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -2691,3 +3934,102 @@ Not wired yet (436):
   - TLM_NM alias PlatformExit: its reference TLM_REF_NM_PlatformExit is not placed
   - TLM_NM alias BackFromPlatform: its reference TLM_REF_NM_BackFromPlatform is not placed
   - TLM_NM alias Fall: its reference TLM_REF_NM_Fall is not placed
+  - TLM_MQ02C script TLM:MQ02CQuest.Caps: needs 'Caps001' from Fallout4.esm
+  - TLM_RH alias MercyTravel: its reference TLM_REF_RH_MercyTravel is not placed
+  - TLM_RH alias MercyReturn: its reference TLM_REF_RH_MercyReturn is not placed
+  - TLM_RH alias GapArrival: its reference TLM_REF_RH_GapArrival is not placed
+  - TLM_RH alias MouthArrival: its reference TLM_REF_RH_MouthArrival is not placed
+  - TLM_RH alias CageSurface: its reference TLM_REF_RH_CageSurface is not placed
+  - TLM_RH alias CageBelow: its reference TLM_REF_RH_CageBelow is not placed
+  - TLM_RH alias GalleryArrival: its reference TLM_REF_RH_GalleryArrival is not placed
+  - TLM_RH alias Gallows: its reference TLM_REF_RH_Gallows is not placed
+  - TLM_RH alias Released: its reference TLM_REF_RH_Released is not placed
+  - TLM_RH alias Custody: its reference TLM_REF_RH_Custody is not placed
+  - TLM_RH alias DornWithdraw: its reference TLM_REF_RH_DornWithdraw is not placed
+  - TLM_RH alias Quill: its reference TLM_REF_RH_Quill is not placed
+  - TLM_RH alias Roark: its reference TLM_REF_RH_Roark is not placed
+  - TLM_RH alias Blevins: its reference TLM_REF_RH_Blevins is not placed
+  - TLM_RH alias Dorn: its reference TLM_REF_RH_Dorn is not placed
+  - TLM_RH alias Rope: its reference TLM_REF_RH_Rope is not placed
+  - TLM_RH alias RopeBroken: its reference TLM_REF_RH_RopeBroken is not placed
+  - TLM_RH alias CourtRecord: its reference TLM_REF_RH_CourtRecord is not placed
+  - TLM_RH alias ReferralSent: its reference TLM_REF_RH_ReferralSent is not placed
+  - TLM_RH alias TollBoard: its reference TLM_REF_RH_TollBoard is not placed
+  - TLM_RH alias Docket: its reference TLM_REF_RH_Docket is not placed
+  - TLM_RH alias Transcript: its reference TLM_REF_RH_Transcript is not placed
+  - TLM_RH alias TollBox: its reference TLM_REF_RH_TollBox is not placed
+  - TLM_RH alias Bypass: its reference TLM_REF_RH_Bypass is not placed
+  - TLM_RH alias Watch: its reference TLM_REF_RH_Watch is not placed
+  - TLM_RH alias ToMouth: its reference TLM_REF_RH_ToMouth is not placed
+  - TLM_RH alias ToGap: its reference TLM_REF_RH_ToGap is not placed
+  - TLM_RH alias CageControl: its reference TLM_REF_RH_CageControl is not placed
+  - TLM_RH alias BelowControl: its reference TLM_REF_RH_BelowControl is not placed
+  - TLM_RH alias FiringControl: its reference TLM_REF_RH_FiringControl is not placed
+  - TLM_RH alias BreakControl: its reference TLM_REF_RH_BreakControl is not placed
+  - TLM_RH alias Roster: its reference TLM_REF_RH_Roster is not placed
+  - TLM_RH alias Gallery: its reference TLM_REF_RH_Gallery is not placed
+  - TLM_RH alias FromGallery: its reference TLM_REF_RH_FromGallery is not placed
+  - TLM_RH alias GalleryLamp: its reference TLM_REF_RH_GalleryLamp is not placed
+  - TLM_RH alias CotLamp: its reference TLM_REF_RH_CotLamp is not placed
+  - TLM_RH alias Silver: its reference TLM_REF_RH_Silver is not placed
+  - TLM_RH alias Shovel: its reference TLM_REF_RH_Shovel is not placed
+  - TLM_RH alias Knocking: its reference TLM_REF_RH_Knocking is not placed
+  - TLM_RH alias MouthOpen: its reference TLM_REF_RH_MouthOpen is not placed
+  - TLM_RH alias MouthClosed: its reference TLM_REF_RH_MouthClosed is not placed
+  - TLM_RH alias BreakOpen: its reference TLM_REF_RH_BreakOpen is not placed
+  - TLM_RH alias BreakClosed: its reference TLM_REF_RH_BreakClosed is not placed
+  - TLM_RH alias StoneDoor: its reference TLM_REF_RH_StoneDoor is not placed
+  - TLM_RH alias Exit: its reference TLM_REF_RH_Exit is not placed
+  - TLM_RH alias Resolve: its reference TLM_REF_RH_Resolve is not placed
+  - TLM_RH alias BodyKey: its reference TLM_REF_RH_BodyKey is not placed
+  - TLM_RH alias LabelGap: its reference TLM_REF_RH_LabelGap is not placed
+  - TLM_RH alias LabelMouth: its reference TLM_REF_RH_LabelMouth is not placed
+  - TLM_RH alias LabelCage: its reference TLM_REF_RH_LabelCage is not placed
+  - TLM_RH alias LabelNine: its reference TLM_REF_RH_LabelNine is not placed
+  - TLM_RH alias LabelGallery: its reference TLM_REF_RH_LabelGallery is not placed
+  - TLM_RH alias Fall: its reference TLM_REF_RH_Fall is not placed
+  - TLM_RH alias Miner01: its reference TLM_REF_RH_Miner01 is not placed
+  - TLM_RH alias Miner02: its reference TLM_REF_RH_Miner02 is not placed
+  - TLM_RH alias Miner03: its reference TLM_REF_RH_Miner03 is not placed
+  - TLM_RH alias Miner04: its reference TLM_REF_RH_Miner04 is not placed
+  - TLM_RH alias Miner05: its reference TLM_REF_RH_Miner05 is not placed
+  - TLM_RH alias Miner06: its reference TLM_REF_RH_Miner06 is not placed
+  - TLM_RH alias Miner07: its reference TLM_REF_RH_Miner07 is not placed
+  - TLM_RH alias Miner08: its reference TLM_REF_RH_Miner08 is not placed
+  - TLM_RH alias Miner09: its reference TLM_REF_RH_Miner09 is not placed
+  - TLM_RH alias Miner10: its reference TLM_REF_RH_Miner10 is not placed
+  - TLM_RH alias Miner11: its reference TLM_REF_RH_Miner11 is not placed
+  - TLM_RH alias Below01: its reference TLM_REF_RH_Below01 is not placed
+  - TLM_RH alias Cage01: its reference TLM_REF_RH_Cage01 is not placed
+  - TLM_RH alias Surface01: its reference TLM_REF_RH_Surface01 is not placed
+  - TLM_RH alias Below02: its reference TLM_REF_RH_Below02 is not placed
+  - TLM_RH alias Cage02: its reference TLM_REF_RH_Cage02 is not placed
+  - TLM_RH alias Surface02: its reference TLM_REF_RH_Surface02 is not placed
+  - TLM_RH alias Below03: its reference TLM_REF_RH_Below03 is not placed
+  - TLM_RH alias Cage03: its reference TLM_REF_RH_Cage03 is not placed
+  - TLM_RH alias Surface03: its reference TLM_REF_RH_Surface03 is not placed
+  - TLM_RH alias Below04: its reference TLM_REF_RH_Below04 is not placed
+  - TLM_RH alias Cage04: its reference TLM_REF_RH_Cage04 is not placed
+  - TLM_RH alias Surface04: its reference TLM_REF_RH_Surface04 is not placed
+  - TLM_RH alias Below05: its reference TLM_REF_RH_Below05 is not placed
+  - TLM_RH alias Cage05: its reference TLM_REF_RH_Cage05 is not placed
+  - TLM_RH alias Surface05: its reference TLM_REF_RH_Surface05 is not placed
+  - TLM_RH alias Below06: its reference TLM_REF_RH_Below06 is not placed
+  - TLM_RH alias Cage06: its reference TLM_REF_RH_Cage06 is not placed
+  - TLM_RH alias Surface06: its reference TLM_REF_RH_Surface06 is not placed
+  - TLM_RH alias Below07: its reference TLM_REF_RH_Below07 is not placed
+  - TLM_RH alias Cage07: its reference TLM_REF_RH_Cage07 is not placed
+  - TLM_RH alias Surface07: its reference TLM_REF_RH_Surface07 is not placed
+  - TLM_RH alias Below08: its reference TLM_REF_RH_Below08 is not placed
+  - TLM_RH alias Cage08: its reference TLM_REF_RH_Cage08 is not placed
+  - TLM_RH alias Surface08: its reference TLM_REF_RH_Surface08 is not placed
+  - TLM_RH alias Below09: its reference TLM_REF_RH_Below09 is not placed
+  - TLM_RH alias Cage09: its reference TLM_REF_RH_Cage09 is not placed
+  - TLM_RH alias Surface09: its reference TLM_REF_RH_Surface09 is not placed
+  - TLM_RH alias Below10: its reference TLM_REF_RH_Below10 is not placed
+  - TLM_RH alias Cage10: its reference TLM_REF_RH_Cage10 is not placed
+  - TLM_RH alias Surface10: its reference TLM_REF_RH_Surface10 is not placed
+  - TLM_RH alias Below11: its reference TLM_REF_RH_Below11 is not placed
+  - TLM_RH alias Cage11: its reference TLM_REF_RH_Cage11 is not placed
+  - TLM_RH alias Surface11: its reference TLM_REF_RH_Surface11 is not placed
+  - TLM_RH alias Player: needs PlayerRef from Fallout4.esm

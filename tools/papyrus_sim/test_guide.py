@@ -82,8 +82,8 @@ class DemoGuide(unittest.TestCase):
         text = p.s.message_boxes[-1]
         # GREENWATER-STORY-001 (order, item 1): in this candidate one road is playable, and the guide says which
         # and where; it still offers no route that does not exist.
-        self.assertIn('Greenwater and Iron Junction are available at their story test points.', text)
-        self.assertIn('Red Hollow and the fair are not playable.', text)
+        self.assertIn('Greenwater, Iron Junction and Red Hollow are available at their story test points.', text)
+        self.assertIn('The fair is not playable.', text)
         self.assertNotIn('not implemented', text)
         self.assertNotIn('search the ground', text)
         self.assertEqual(p.s.quests['TLM_MQ01'].done, before)

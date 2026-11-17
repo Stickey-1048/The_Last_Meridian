@@ -24,7 +24,7 @@ public static class StoryCloneCheck
         // Not damage: a source as it was before the road existed (neither quest, no binding). It must clone as it did.
         "source-without-greenwater","night-mail-binding-removed","night-mail-binding-to-another-quest","night-mail-binding-as-alias",
         "night-mail-alias-dropped","night-mail-placement-missing","night-mail-placement-substituted","night-mail-road-missing",
-        "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail"};
+        "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail","red-hollow-binding-removed","red-hollow-binding-to-another-quest","red-hollow-alias-dropped","red-hollow-placement-missing","red-hollow-road-missing","red-hollow-cell-missing","red-hollow-prisoner-forced","source-without-red-hollow"};
 
     static IFallout4ModGetter Damaged(string story,string damage)
     {
@@ -34,8 +34,18 @@ public static class StoryCloneCheck
         ScriptObjectProperty Prop(string name)=>walk.Properties.OfType<ScriptObjectProperty>().Single(p=>p.Name==name);
         var gw=bad.Quests.Single(q=>q.EditorID=="TLM_GW");
         var nm=bad.Quests.SingleOrDefault(q=>q.EditorID=="TLM_NM");
-        void RemoveNightMail(){walk.Properties.Remove(Prop("TLM_NightMail"));bad.Quests.Remove(nm!.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);}
+        var rh=bad.Quests.SingleOrDefault(q=>q.EditorID=="TLM_RH");
+        void RemoveRedHollow(){if(rh==null)return;walk.Properties.Remove(Prop("TLM_RedHollow"));bad.Quests.Remove(rh.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02C").FormKey);}
+        void RemoveNightMail(){RemoveRedHollow();walk.Properties.Remove(Prop("TLM_NightMail"));bad.Quests.Remove(nm!.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);}
         switch(damage){
+            case "red-hollow-binding-removed":walk.Properties.Remove(Prop("TLM_RedHollow"));break;
+            case "red-hollow-binding-to-another-quest":Prop("TLM_RedHollow").Object.SetTo(gw.FormKey);break;
+            case "red-hollow-alias-dropped":rh!.Aliases!.RemoveAt(0);break;
+            case "red-hollow-placement-missing":((QuestReferenceAlias)rh!.Aliases![0]).ForcedReference.SetToNull();break;
+            case "red-hollow-road-missing":bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02C").FormKey);break;
+            case "red-hollow-cell-missing":foreach(var b in bad.Cells.Records)foreach(var s in b.SubBlocks)s.Cells.RemoveAll(c=>c.EditorID=="TLM_CELL_RedHollow");break;
+            case "red-hollow-prisoner-forced":rh!.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="Condemned").ForcedReference.SetTo(((QuestReferenceAlias)rh.Aliases[0]).ForcedReference.FormKey);break;
+            case "source-without-red-hollow":RemoveRedHollow();break;
             case "greenwater-binding-removed":walk.Properties.Remove(Prop("TLM_Greenwater"));break;
             case "greenwater-binding-to-another-quest":Prop("TLM_Greenwater").Object.SetTo(bad.Quests.Single(q=>q.EditorID=="TLM_SQ01").FormKey);break;
             case "greenwater-binding-as-alias":Prop("TLM_Greenwater").Alias=0;break;
@@ -102,6 +112,8 @@ public static class StoryCloneCheck
             return new{present=true,form=q.FormKey.ToString(),script=script.Name,properties=script.Properties.Count,
                 aliases=q.Aliases!.OfType<IQuestReferenceAliasGetter>().Select(a=>{
                     var key=a.ForcedReference.FormKey;
+                    if(key.IsNull)return (object)new{name=a.Name,id=a.ID,reference="script-filled",form="",owner="",x=0f,y=0f,z=0f,actor=false,flags=0u};
+                    if(key.ModKey.FileName.String=="Fallout4.esm")return (object)new{name=a.Name,id=a.ID,reference="Player",form=key.ToString(),owner="Fallout4.esm",x=0f,y=0f,z=0f,actor=true,flags=0u};
                     var r=persistent.TryGetValue(key,out var own)?own:masterRefs[key];
                     P3Float pos=r switch {IPlacedNpcGetter n=>n.Position,IPlacedObjectGetter o=>o.Position,_=>default};
                     return new{name=a.Name,id=a.ID,reference=r.EditorID,form=r.FormKey.ToString(),owner=r.FormKey.ModKey.FileName.String,x=pos.X,y=pos.Y,z=pos.Z,actor=r is IPlacedNpcGetter,flags=r.MajorRecordFlagsRaw};}).ToArray(),
@@ -115,7 +127,8 @@ public static class StoryCloneCheck
             masters=read.ModHeader.MasterReferences.Select(m=>m.Master.ToString()).ToArray(),
             quests=read.Quests.Select(q=>q.EditorID).ToArray(),
             persistentReferences=persistent.Count,
-            firstSection=Quest("TLM_WS_A1"),greenwater=Quest("TLM_WS_GW"),nightMail=Quest("TLM_WS_NM"),
+            firstSection=Quest("TLM_WS_A1"),greenwater=Quest("TLM_WS_GW"),nightMail=Quest("TLM_WS_NM"),redHollow=Quest("TLM_WS_RH"),
+            redHollowSites=WorldStory.RedHollowSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z}),
             nightMailSites=WorldStory.NightMailSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z}),
             sites=WorldStory.GreenwaterSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z})},new JsonSerializerOptions{WriteIndented=true}));
         return 0;
