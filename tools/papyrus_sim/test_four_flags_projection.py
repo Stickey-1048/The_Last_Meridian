@@ -8,8 +8,9 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 from test_sim import ROOT,PLUGIN
-from test_greenwater_world_clone import clone
+from test_greenwater_world_clone import clone,stand_in_story
 from source_snapshot import snapshot,built_greenwater_relief,GREENWATER_RELIEF
 
 
@@ -170,17 +171,30 @@ class FourFlagsProjection(unittest.TestCase):
         self.assertEqual([a['name'] for a in after['fourFlags']['aliases']],['Entry','MercyReturn'])
 
     def test_floor_model_and_exact_bounds_are_required_before_source_grid_acceptance(self):
+        story=stand_in_story()
+        self.assertTrue(story.is_file(),'use the binary actually built by the canonical synthetic fixture')
         for variant,accepted in (('four-flags-floor',True),('four-flags-floor-bounds',False),('four-flags-floor-no-model',False)):
             with self.subTest(variant=variant):
                 out=Path(tempfile.mkdtemp(prefix='tlm-ff-floor-'));master=out/'Fallout4.esm'
                 made=subprocess.run(['dotnet','run','--project','tools/StandInMaster','--',str(master),variant],cwd=ROOT,capture_output=True,text=True)
                 self.assertEqual(made.returncode,0,made.stdout+made.stderr)
-                got=subprocess.run(['dotnet',str(ROOT/'tools/WorldSliceBuilder/bin/Debug/net8.0/WorldSliceBuilder.dll'),'--four-flags-interior-check',str(master),str(PLUGIN.with_suffix('.esp'))],cwd=ROOT,capture_output=True,text=True)
+                got=subprocess.run(['dotnet',str(ROOT/'tools/WorldSliceBuilder/bin/Debug/net8.0/WorldSliceBuilder.dll'),'--four-flags-interior-check',str(master),str(story)],cwd=ROOT,capture_output=True,text=True)
                 self.assertEqual(got.returncode,0 if accepted else 1,got.stdout+got.stderr)
                 if accepted:
                     d=json.loads(got.stdout);self.assertEqual(d['tiles'],63)
                     self.assertIn('Synthetic',d['model']);self.assertTrue(d['courierBookText'])
                 else:self.assertIn('REFUSED',got.stderr)
+
+    def test_fresh_json_only_sim_fixture_needs_no_adjacent_preexisting_binary(self):
+        folder=Path(tempfile.mkdtemp(prefix='tlm-ff-json-only-'))
+        description=folder/'TheLastMeridian.json'
+        description.write_bytes(PLUGIN.read_bytes())
+        self.assertFalse(description.with_suffix('.esp').exists())
+        # This is the fresh CI shape: a description exists, no sibling ESP,
+        # and the canonical binary fixture has not yet built anything.
+        with patch('test_four_flags_projection.PLUGIN',description),patch('test_greenwater_world_clone._built',{}):
+            self.test_floor_model_and_exact_bounds_are_required_before_source_grid_acceptance()
+        self.assertFalse(description.with_suffix('.esp').exists())
 
 
 if __name__=='__main__':unittest.main()
