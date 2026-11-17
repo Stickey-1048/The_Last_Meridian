@@ -160,7 +160,10 @@ grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$
 
 standin weak-evidence
 grep -q "alias  0 Player  (reference) \[Optional\]" "$(report weak-evidence)" || { echo "FAILED: two quests were accepted as enough evidence for the player reference"; exit 1; }
-grep -q "^Cell " "$(report weak-evidence)" && { echo "FAILED: a cell record was written although the master has no test room"; exit 1; }
+# A copy of one of the game's cells is only ever written for a test room that exists. The Night Mail's own cell
+# ("of this plugin") is this plugin's and has no such need, so only a cell "of the game" counts here.
+grep -q "^Cell .* of the game" "$(report weak-evidence)" && { echo "FAILED: a cell record of the game's was written although the master has no test room"; exit 1; }
+grep -q "^Cell TLM_CELL_NightMail .* of this plugin" "$(report weak-evidence)" || { echo "FAILED: the plugin's own cell was not written without a test room (it needs none)"; exit 1; }
 grep -q "TLM_REF_TrialPerson: not placed (no cell 'QASmoke' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: a master without the test room was not reported"; exit 1; }
 # That master has no settler either: the actors made from it are left out, and so is whoever stands on them.
 grep -q "TLM_NPC_TrialPerson: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: an actor that could not be made was not reported"; exit 1; }

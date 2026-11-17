@@ -175,4 +175,20 @@ Not touched: `MQ01Quest`, `SQ01Quest`, `MercyBriefing`, `MQ02BQuest`, `Greenwate
 
 ## 10. What was done
 
-To be completed when the work is finished.
+Done on `feat/night-mail-story-001`, above the contract commit `d075620`. The complete account (paths, mapping, aliases, scenes, allocation, floors and markers, provenance, checks and what is not known) is `NIGHT_MAIL_STORY_001_LEDGER.md`; this section says how it came out against the plan above.
+
+- **Native shape, as planned:** two quests (`TLM_MQ02A`, which holds every rule and shows nothing; `TLM_NM`, the greybox) and one cell of this plugin's own (`TLM_CELL_NightMail`), with 51 aliased pieces and 45 floor tiles. The exterior clone `TLM_WS_NM` places only the two Mercy pieces.
+- **Stages:** the 15 accepted stages and the 9 native-only ones of the table above, as planned; stage 62 carries the contract's neutral text. Two stages the plan did not list a number for were not needed.
+- **Facts:** the 18 globals of the plan.
+- **Hooks, as planned:** only `OnActivate`, `OnTriggerEnter`, `OnDeath` and `OnCombatStateChanged`. Custody is read by `GetItemCount` at the moment of use.
+- **Declared projections, as planned:** `dole_lives` is set at the run, the sale or a back-out after he was spoken to, and cleared by his death; `lockridge_reported` is also set when Lockridge is already dead (the yard is then recorded vacant, not withdrawn, and no withdrawal scene is said to have been made from her); Dole's coat as a second place for the silver was not built.
+- **Changed from the plan, and why:**
+  - The way back along the line is a control in its own right (`AskWalkToCut` / `AskRejoin`, depending on whether the train is still in the Cut), so that evidence on the siding can be reached after any outcome, and so that a scene that cannot be shown never keeps anybody in the Cut. Two records were added for it (the last two ids, 2664 and 2665).
+  - Billie is placed by the recorded facts (`PlaceBillie`) rather than moved ahead of a scene; a tight standing check (128 units) is used for the cast at their spots and a wider one (512) for the player at a zone's arrival marker, because Billie's two spots in the Cut are about 350 apart.
+  - A stamp asked for once and not seen to arrive is never asked for again and leaves her other two answers open (the plan said the decision would be "pending"; it had no way out).
+  - A countersigning confirmed and never seen, with Lockridge dead, is dropped.
+  - `MercyReturn` moved from `(3050, 2590)` to `(2780, 2650)` at Mercy, to stand 128 units clear of Greenwater's and the cabin's.
+- **Incorporated from root:** `381d631c2ba8bfe5cf5d9f55b36e721137aa69f3` (ledger section 3).
+- **Earlier candidates:** the Greenwater candidate is now a frozen one (its manifest, check and packager byte-unchanged; its tests run against the 016b tree taken out of Git); its fixture's expectation of this checkout was changed (unrun).
+
+Nothing was compiled, built against the game's master, installed or run in the game. No PowerShell was available: `Build-NightMail.ps1`, `Test-NightMailPackageSafety.ps1` and the edited `Test-GreenwaterPackageSafety.ps1` are unrun and unparsed.
