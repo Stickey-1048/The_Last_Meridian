@@ -46,6 +46,8 @@ public sealed record AmmoOfWeaponNamedProp(string Name, params string[] WeaponNa
 // A record in Fallout4.esm, by EditorID. Skipped (and reported) in skeleton mode.
 // Kind names the record type to look in (see Builder.TypedLookups); null tries them all.
 public sealed record VanillaProp(string Name, string EditorId, string? Kind = null) : Prop(Name);
+// Mandatory exact typed identity for relief inventory, with no name fallback.
+public sealed record StrictVanillaProp(string Name, string EditorId, string Kind, string DisplayName) : Prop(Name);
 
 public sealed record AliasSpec(
     string Name,
@@ -360,7 +362,7 @@ public static class Spec
         // Development only (scenario 11): what is shown when the person of the
         // plugin's own is activated. Not a box: nobody is there to answer one.
         new("TLM_MSG_TrialTalk", null, "The second trial settler has nothing to say yet.", Box: false),
-    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).Concat(Greenwater.Messages).Concat(NightMail.Messages).Concat(RedHollow.Messages).ToArray();
+    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).Concat(Greenwater.Messages).Concat(NightMail.Messages).Concat(RedHollow.Messages).Concat(GreenwaterRelief.Messages).ToArray();
 
     // --------------------------------------------------------------- core
     public static readonly QuestSpec Core = new(
@@ -702,5 +704,5 @@ public static class Spec
                 new VanillaProp("MarkerBase", "XMarker", "Static")),
         });
 
-    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest, Greenwater.Road, Greenwater.Stage, NightMail.Road, NightMail.Stage, RedHollow.Road, RedHollow.Stage };
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest, Greenwater.Road, Greenwater.Stage, NightMail.Road, NightMail.Stage, RedHollow.Road, RedHollow.Stage, GreenwaterRelief.Quest };
 }

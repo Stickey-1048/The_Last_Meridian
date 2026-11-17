@@ -94,7 +94,7 @@ public static class StoryCloneCheck
         world.SubCells.Add(block);block.Items.Add(sub);
         var cell=new Cell(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_WS_Clearing",Grid=new CellGrid{Point=new P2Int(0,0)}};
         sub.Items.Add(cell);
-        try{WorldStory.Add(mod,world,cell,template);}
+        try{WorldStory.Add(mod,world,cell,template);WorldStory.CompleteReliefControls(mod,world,template);}
         catch(InvalidDataException e){Console.Error.WriteLine("REFUSED: "+e.Message);return 1;}
         var plugin=Path.Combine(output,"TLMWorldSlice.esp");
         mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(ModKey.FromNameAndExtension("Fallout4.esm"),template.ModKey).Write();

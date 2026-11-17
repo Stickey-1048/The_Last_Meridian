@@ -188,7 +188,7 @@ public static class Greenwater
     public const int WhoTravel = 1, WhoLanding = 2, WhoOpal = 3, WhoBoard = 4, WhoRafferty = 5, WhoSkiff = 6, WhoGangway = 7,
         WhoOffSide = 8, WhoHatcher = 9, WhoTable = 10, WhoStrongbox = 11, WhoChain = 12, WhoPilot = 13, WhoFire = 14,
         WhoDock = 15, WhoExit = 16, WhoBelden = 17, WhoCrew1 = 18, WhoCrew2 = 19, WhoLabelLanding = 20, WhoLabelQueen = 21,
-        WhoLabelChute = 22, WhoCargo = 23, WhoSteeple = 24, WhoBurnt = 25;
+        WhoLabelChute = 22, WhoCargo = 23, WhoSteeple = 24, WhoBurnt = 25, WhoReliefStores = 26, WhoReliefSupply = 27;
 
     static readonly string[] Paper = { "Clipboard", "Folder" };
     static readonly string[] Crate = { "Fertilizer Bag", "Bag of Cement", "Wooden Crate", "Folder" };
@@ -250,6 +250,12 @@ public static class Greenwater
             Label: "Grain barge lashing - inspect choices", LooksLike: new[] { "Chain", "Adjustable Wrench", "Wrench", "Folder" }, Use: "Examine"),
         new("Pilot", "the barge's pilot lever", "TLM_ACTI_GW_Pilot", 2790, 340, 12, WhoPilot, Into: "Pilot",
             Label: "Grain barge pilot - move freed cargo", LooksLike: new[] { "Connecting Rod", "Wrench", "Folder" }, Use: "Take"),
+        // Own new IDs/aliases appended. Exterior refs are allocated only after
+        // all accepted scenery; no old reference is moved or renumbered.
+        new("ReliefStores", "current relief stores", "TLM_ACTI_GW_ReliefStores", 2180, 850, 12, WhoReliefStores, OnAtSetUp: false,
+            Label: "Greenwater winter relief - stores", LooksLike: Paper, Use: "Inspect"),
+        new("ReliefSupply", "Mercy relief food supply", "TLM_ACTI_Mercy_ReliefSupply", 3050, 3620, 12, WhoReliefSupply, OnAtSetUp: false,
+            Label: "Greenwater relief food - 10 Corn for 20 caps", LooksLike: Paper, Use: "Inspect"),
     };
 
     // The development build sets the same layout down in the game's test room: so many units ahead of the
@@ -258,6 +264,7 @@ public static class Greenwater
     {
         "MercyTravel" => (560, 60),
         "MercyReturn" => (520, 100),
+        "ReliefSupply" => (660, 180),
         _ => (p.X - 1250 + 1400, p.Y - 480),
     };
 
@@ -367,9 +374,9 @@ public static class Greenwater
         Says("ReportUnknown", "Owen Pritchard", Line["pritchard_hears_river_after_fair_unknown"], "[Report on Greenwater]", "[Later]"),
 
         // ---- This build speaking.
-        Ui("ArrivalBrief", "[Greenwater: your task]", "Opal Starnes needs the town's winter grain back. Speak to her at the landing. Hatcher holds the grain barge beside the Queen of Tellico. The Queen is his occupied gambling boat; it is NOT the grain barge. Signs identify both staged areas.", "Find Opal at the landing"),
-        Ui("Goal", "[Your choices concern the grain]", "Opal wants the winter grain returned. Hatcher has it beside the Queen. You can negotiate at his table or investigate the barge with Rafferty. Taking Hatcher's money leaves the grain with him. No route is chosen by this note."),
-        Ui("Stakes", "[Who is affected]", "Greenwater needs this grain for winter. Hatcher's payment helps you and leaves the grain with him. The Chute risks cargo loss. Burning the occupied Queen endangers the people aboard and the grain. Hatcher's fate is a separate decision if you win.", "I understand the stakes"),
+        Ui("ArrivalBrief", "[Greenwater: your task]", "Opal Starnes needs the town's winter grain back. Find her at the landing. Hatcher holds the grain barge beside the Queen, his occupied gambling boat. The Queen is NOT the grain barge. Signs identify both areas.", "Find Opal at the landing"),
+        Ui("Goal", "[Your choices concern the grain]", "Opal needs the winter grain held beside Hatcher's Queen. Negotiate at his table or investigate the barge with Rafferty. Taking Hatcher's money leaves the grain with him. This note chooses no route."),
+        Ui("Stakes", "[Who is affected]", "Greenwater needs grain for winter. Hatcher's payment helps you; he keeps the grain. The Chute risks cargo loss. Burning the Queen endangers people and grain. Hatcher's fate is a separate decision if you win.", "I understand the stakes"),
         Ui("ConfirmShare", "[Accept Hatcher's deal?]", "Receive 200 caps and leave the grain aboard Hatcher's barge. This settles your cargo choice; Greenwater does not get its grain back through this deal. Telling Opal a false story remains a separate choice.", "Accept 200 caps; leave the grain", "Cancel; make no deal"),
         Ui("NoteSharePaid", "[Hatcher's payment]", "200 caps received. The grain remains with Hatcher. You have not told Opal anything yet."),
         Ui("LabelShareHeld", "[Greenwater grain: Hatcher retained it]", "You accepted Hatcher's payment. The grain remains with him; Greenwater did not receive it."),
@@ -420,7 +427,7 @@ public static class Greenwater
         Ui("ReportEndKnown", "[River report]", "You learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.\n\n" + UiRoadComplete),
         Ui("ReportEndUnknown", "[River report]", "You did not learn why Hatcher held the grain.\n\n" + UiRoadComplete),
         Ui("LabelLanding", "[Greenwater landing]", "Opal Starnes keeps the food stores here. Her winter grain is held beside Hatcher's Queen, not at this landing. Speak to Opal, then to Mose Rafferty about reaching the boats. The Mercy return point is nearby."),
-        Ui("LabelQueen", "[Queen of Tellico - occupied boat]", "This marked area stands for Hatcher's gambling boat: the card table, strongbox and firebox. The separate grain barge is off this deck, beside the chain and pilot lever. Fire threatens both people and grain."),
+        Ui("LabelQueen", "[Queen of Tellico - occupied boat]", "This area stands for Hatcher's gambling boat: the card table, strongbox and firebox. The separate grain barge is off this deck, beside the chain and pilot lever. Fire threatens both people and grain."),
         Ui("LabelChute", "[Greybox: Hangman's Chute]", "A short strip stands for the fast water. The return dock is at its end."),
         Ui("LabelSteeple", "[Greybox: the steeple's mooring ring]", "The steeple stands out of the lake here. Boats tie up to its ring."),
         Ui("LabelBurnt", "[Greybox: the Queen, burned]", "This marker stands for the burned boat."),
@@ -498,6 +505,7 @@ public static class Greenwater
             Scripts: p.Who == 0 ? Array.Empty<ScriptBind>() : new[] { new ScriptBind("TLM:GreenwaterTalk", new IntProp("Who", p.Who)) })).ToArray(),
         Script: new ScriptBind("TLM:GreenwaterWalk", new Prop[]
         {
+            new FormProp("TLM_Relief", GreenwaterRelief.QuestId),
             new FormProp("TLM_MQ02B", QuestId),
             new FormProp("TLM_MQ01", "TLM_MQ01"),
             new FormProp("TLM_G_MQ01_Done", "TLM_G_MQ01_Done"),
@@ -509,6 +517,7 @@ public static class Greenwater
             Mine("Opal"), Mine("Hatcher"), Mine("Rafferty"), Mine("Belden"), Mine("Crew1"), Mine("Crew2"),
             Mine("CargoLashed"), Mine("CargoWhole"), Mine("CargoReduced"), Mine("Table"), Mine("Chain"), Mine("Pilot"),
             Mine("FireControl"), Mine("Burnt"),
+            Mine("ReliefStores"), Mine("ReliefSupply"),
         }.Concat(Messages.Select(m => m.EditorId[MessagePrefix.Length..]).Select(id =>
             id.StartsWith("Opal") || id.StartsWith("Rafferty") || id.StartsWith("Hatcher") || id.StartsWith("Belden")
                 ? Say(id)

@@ -1636,6 +1636,24 @@ public sealed class Builder
                     else
                         Pending.Add($"{what}: needs what a weapon named {string.Join(" or ", awp.WeaponNames.Select(n => $"'{n}'"))} fires, from Fallout4.esm");
                     break;
+                case StrictVanillaProp strict:
+                    bool strictOk = false;
+                    FormKey strictKey = default;
+                    if (TryVanilla(strict.EditorId, strict.Kind, out strictKey))
+                    {
+                        if (strict.Kind == "Ingestible" && _vanilla!.TryResolve<IIngestibleGetter>(strictKey, out var edible))
+                            strictOk = edible.EditorID == strict.EditorId && edible.Name?.String == strict.DisplayName;
+                        else if (strict.Kind == "MiscItem" && _vanilla!.TryResolve<IMiscItemGetter>(strictKey, out var misc))
+                            strictOk = misc.EditorID == strict.EditorId && misc.Name?.String == strict.DisplayName;
+                    }
+                    if (strictOk)
+                    {
+                        entry.Properties.Add(new ScriptObjectProperty { Name = strict.Name, Flags = ScriptProperty.Flag.Edited,
+                            Object = new FormLink<IFallout4MajorRecordGetter>(strictKey), Alias = -1 });
+                        VanillaNotes.Add($"STRICT relief binding {strict.Name}: {strict.Kind} {strict.EditorId} '{strict.DisplayName}' -> {strictKey}; no fallback");
+                    }
+                    else Pending.Add($"STRICT relief unavailable: {strict.Name} requires exact {strict.Kind} {strict.EditorId} named '{strict.DisplayName}'; property omitted, ledger fails closed");
+                    break;
                 case VanillaProp vp:
                     if (TryVanilla(vp.EditorId, vp.Kind, out var key))
                     {
@@ -1698,6 +1716,7 @@ public sealed class Builder
         ("Ammunition", Typed<IAmmunitionGetter>),
         ("Armor", Typed<IArmorGetter>),
         ("Book", Typed<IBookGetter>),
+        ("Ingestible", Typed<IIngestibleGetter>),
         ("LeveledItem", Typed<ILeveledItemGetter>),
         ("Container", Typed<IContainerGetter>),
         ("Activator", Typed<IActivatorGetter>),

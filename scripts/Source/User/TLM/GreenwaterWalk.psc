@@ -33,6 +33,7 @@ NOT COMPILED. NOT RUN IN THE GAME. It runs in the project's stand-in engine
 (tools/papyrus_sim/test_greenwater.py).}
 
 Group Quests
+	Quest Property TLM_Relief Auto Const
 	Quest Property TLM_MQ02B Auto Const Mandatory
 	Quest Property TLM_MQ01 Auto Const Mandatory
 	{Read only.}
@@ -41,6 +42,8 @@ Group Quests
 EndGroup
 
 Group Placed
+	ReferenceAlias Property Alias_ReliefStores Auto Const
+	ReferenceAlias Property Alias_ReliefSupply Auto Const
 	ReferenceAlias[] Property ZoneOn Auto Const
 	{The pieces switched on when the player first travels. Not the travel
 	point, which is on from the start, nor what only an outcome brings.}
@@ -230,6 +233,8 @@ int GW_LABEL_CHUTE = 22 Const
 int GW_CARGO = 23 Const
 int GW_STEEPLE = 24 Const
 int GW_BURNT = 25 Const
+int GW_RELIEF_STORES = 26 Const
+int GW_RELIEF_SUPPLY = 27 Const
 
 ; How the Queen was boarded (TLM:MQ02BQuest.Board).
 int BOARD_GANGWAY = 1 Const
@@ -320,6 +325,9 @@ Function OpenDoor()
 		Return
 	EndIf
 	point.EnableNoWait()
+	If BindRelief()
+		SwitchOn(Alias_ReliefSupply)
+	EndIf
 	doorOpen = true
 	Debug.Trace("TLM_GW: the Mercy travel point is on")
 EndFunction
@@ -371,8 +379,19 @@ bool Function SetUp()
 		i += 1
 	EndWhile
 	zonesUp = true
+	If BindRelief()
+		SwitchOn(Alias_ReliefStores)
+	EndIf
 	Debug.Trace("TLM_GW: Greenwater is set up; aliases of TLM_MQ02B left empty: " + unfilled)
 	Return true
+EndFunction
+
+bool Function BindRelief()
+	TLM:GreenwaterRelief ledger = TLM_Relief as TLM:GreenwaterRelief
+	If !ledger
+		Return false
+	EndIf
+	Return ledger.OpenControls(Self, Piece(Alias_ReliefStores), Piece(Alias_ReliefSupply))
 EndFunction
 
 Function SwitchOn(ReferenceAlias akAlias)
@@ -396,6 +415,11 @@ Function Refresh()
 	TLM:MQ02BQuest river = Road()
 	If !river || !zonesUp
 		Return
+	EndIf
+	; A temporary relief startup refusal must not permanently hide its controls.
+	If BindRelief()
+		SwitchOn(Alias_ReliefStores)
+		SwitchOn(Alias_ReliefSupply)
 	EndIf
 	int lashing = river.Cargo()
 	If lashing == RV_CARGO_LASHED || lashing == RV_CARGO_YIELDED
@@ -505,6 +529,15 @@ Function Used(int aiWho)
 		Debug.Trace("TLM_GW: TLM_MQ02B does not carry TLM:MQ02BQuest; nothing can be used", 2)
 	ElseIf aiWho == GW_TRAVEL
 		Travel(river)
+	ElseIf aiWho == GW_RELIEF_STORES || aiWho == GW_RELIEF_SUPPLY
+		If BindRelief()
+			TLM:GreenwaterRelief ledger = TLM_Relief as TLM:GreenwaterRelief
+			If aiWho == GW_RELIEF_STORES
+				ledger.Use(1, Piece(Alias_ReliefStores))
+			Else
+				ledger.Use(2, Piece(Alias_ReliefSupply))
+			EndIf
+		EndIf
 	ElseIf !zonesUp
 		; A piece of Greenwater that the player was never sent to: nothing.
 	ElseIf aiWho == GW_EXIT
@@ -641,14 +674,14 @@ Function Travel(TLM:MQ02BQuest akRiver)
 	EndIf
 	Refresh()
 	player.MoveTo(arrival)
-	If !player || player.IsDead() || player.GetParentCell() != arrival.GetParentCell() || player.GetDistance(arrival) > ARRIVE_REACH
+	If !player || player.IsDead() || player.GetParentCell() != arrival.GetParentCell() || player.GetDistance(arrival) > 256.0
 		Return
 	EndIf
 	If !arrivalBriefRead && akRiver.Outcome() == RV_NONE && !akRiver.GetStageDone(20) && akRiver.OpalCanSpeak()
 		If ShowBox(ArrivalBrief) != 0
 			Return
 		EndIf
-		If player.IsDead() || player.GetParentCell() != arrival.GetParentCell() || player.GetDistance(arrival) > ARRIVE_REACH || akRiver.Outcome() != RV_NONE || !akRiver.OpalCanSpeak()
+		If player.IsDead() || player.GetParentCell() != arrival.GetParentCell() || player.GetDistance(arrival) > 256.0 || akRiver.Outcome() != RV_NONE || !akRiver.OpalCanSpeak()
 			Return
 		EndIf
 		arrivalBriefRead = true
@@ -728,18 +761,22 @@ Function TalkOpal(TLM:MQ02BQuest akRiver)
 EndFunction
 
 Function FirstMeeting(TLM:MQ02BQuest akRiver)
+	Actor opal = Alias_Opal.GetActorReference()
+	If !LocalSpeaker(opal, Alias_Opal)
+		Return
+	EndIf
 	int pick = ShowBox(SayOpalFirst)
-	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak()
+	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak() || !LocalSpeaker(opal, Alias_Opal)
 		Return
 	EndIf
 	If pick == 0
 		; Heard out: the stage is hers to have said, and the player's to have answered.
 		If Said(SayOpalWants)
-			If akRiver.HearOpal() && akRiver.RoadOpen() && akRiver.OpalCanSpeak()
+			If LocalSpeaker(opal, Alias_Opal) && akRiver.HearOpal() && akRiver.RoadOpen() && akRiver.OpalCanSpeak()
 				If ShowBox(Goal) != 0
 					Return
 				EndIf
-				If akRiver.RoadOpen() && akRiver.OpalCanSpeak() && akRiver.Outcome() == RV_NONE
+				If akRiver.RoadOpen() && akRiver.OpalCanSpeak() && LocalSpeaker(opal, Alias_Opal) && akRiver.Outcome() == RV_NONE
 					ShowBox(Stakes)
 				EndIf
 			EndIf
@@ -755,6 +792,7 @@ EndFunction
 
 Function JudgeBeforeOpal(TLM:MQ02BQuest akRiver)
 	{The barge is home, Hatcher lives and is free, and she asks what is to be done with him.}
+	Actor opal = Alias_Opal.GetActorReference()
 	bool sheriff = akRiver.SheriffCanReceive()
 	int pick = -1
 	If sheriff
@@ -767,6 +805,9 @@ Function JudgeBeforeOpal(TLM:MQ02BQuest akRiver)
 	EndIf
 	; Her question is answered to her: alive, present and in no fight after it as before it.
 	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak()
+		Return
+	EndIf
+	If !LocalSpeaker(opal, Alias_Opal)
 		Return
 	EndIf
 	If pick == 0
@@ -795,6 +836,10 @@ EndFunction
 
 Function AfterShare(TLM:MQ02BQuest akRiver)
 	{The share is paid. Whether she is lied to is the player's to choose here, and only here.}
+	Actor opal = Alias_Opal.GetActorReference()
+	If !akRiver.RoadOpen() || !akRiver.IsSharePaid() || !LocalSpeaker(opal, Alias_Opal)
+		Return
+	EndIf
 	If akRiver.IsLieHeard()
 		ShowBox(SayOpalDefault)
 		Return
@@ -803,19 +848,22 @@ Function AfterShare(TLM:MQ02BQuest akRiver)
 		If ShowBox(AskLie) != 0
 			Return
 		EndIf
+		If !akRiver.RoadOpen() || !LocalSpeaker(opal, Alias_Opal)
+			Return
+		EndIf
 		If !akRiver.TellLie()
 			Return
 		EndIf
 	EndIf
 	; Told: that much is earned and kept. Her answer is hers to give, alive, present and in no fight,
 	; now or when she is next spoken to; only then what the journal says of it, and her cup.
-	If !akRiver.OpalCanSpeak()
+	If !akRiver.OpalCanSpeak() || !LocalSpeaker(opal, Alias_Opal)
 		Return
 	EndIf
 	If !Said(SayOpalAfterShare)
 		Return
 	EndIf
-	If akRiver.LieWasHeard()
+	If LocalSpeaker(opal, Alias_Opal) && akRiver.LieWasHeard()
 		Portion(akRiver, RV_GRANT_CUP)
 	EndIf
 EndFunction
@@ -924,6 +972,7 @@ EndFunction
 
 Function TableTalk(TLM:MQ02BQuest akRiver)
 	{His offer, and back to it after his admission as the writing has it. Never more than a few rounds.}
+	Actor hatcher = Alias_Hatcher.GetActorReference()
 	int rounds = 0
 	While rounds < TABLE_ROUNDS
 		rounds += 1
@@ -939,6 +988,9 @@ Function TableTalk(TLM:MQ02BQuest akRiver)
 			EndIf
 		EndIf
 		If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+			Return
+		EndIf
+		If !LocalSpeaker(hatcher, Alias_Hatcher)
 			Return
 		EndIf
 		If pick == 0
@@ -972,10 +1024,11 @@ Function TableTalk(TLM:MQ02BQuest akRiver)
 EndFunction
 
 Function DealCards(TLM:MQ02BQuest akRiver)
+	Actor hatcher = Alias_Hatcher.GetActorReference()
 	If ShowBox(CardStakes) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !LocalSpeaker(hatcher, Alias_Hatcher) || !akRiver.Unsettled()
 		Return
 	EndIf
 	int hand = akRiver.PlayCards()
@@ -999,19 +1052,21 @@ Function DealCards(TLM:MQ02BQuest akRiver)
 EndFunction
 
 Function BuyShare(TLM:MQ02BQuest akRiver)
-	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled() || !akRiver.IsShareOffered()
+	Actor hatcher = Alias_Hatcher.GetActorReference()
+	int roadStamp = akRiver.Stamp()
+	If !ShareContext(akRiver, hatcher, roadStamp)
 		Return
 	EndIf
 	If ShowBox(SayHatcherShare) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled() || !akRiver.IsShareOffered()
+	If !ShareContext(akRiver, hatcher, roadStamp)
 		Return
 	EndIf
 	If ShowBox(ConfirmShare) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled() || !akRiver.IsShareOffered()
+	If !ShareContext(akRiver, hatcher, roadStamp)
 		Return
 	EndIf
 	If akRiver.TakeShare()
@@ -1024,10 +1079,24 @@ Function BuyShare(TLM:MQ02BQuest akRiver)
 	EndIf
 EndFunction
 
+bool Function LocalSpeaker(Actor akSpeaker, ReferenceAlias akAlias)
+	{The same living participant remains close enough for this activation.}
+	Actor player = Game.GetPlayer()
+	If !player || player.IsDead() || !akSpeaker || !akAlias || akAlias.GetActorReference() != akSpeaker
+		Return false
+	EndIf
+	Return !akSpeaker.IsDead() && !akSpeaker.IsDisabled() && !akSpeaker.IsInCombat() && player.GetParentCell() == akSpeaker.GetParentCell() && player.GetDistance(akSpeaker) <= 2048.0
+EndFunction
+
+bool Function ShareContext(TLM:MQ02BQuest akRiver, Actor akHatcher, int aiStamp)
+	Return akRiver.RoadOpen() && akRiver.Stamp() == aiStamp && LocalSpeaker(akHatcher, Alias_Hatcher) && akRiver.HatcherAtTable() && akRiver.Unsettled() && akRiver.IsShareOffered()
+EndFunction
+
 Function JudgeAtTable(TLM:MQ02BQuest akRiver)
 	{Beaten, he asks what is to become of him. Only what can be done is offered:
 	nobody dead or absent is handed a prisoner, and with Opal not there his
 	question about her is not put.}
+	Actor hatcher = Alias_Hatcher.GetActorReference()
 	If !akRiver.HatcherAtTable() || !akRiver.HatcherCanBeJudged()
 		Return
 	EndIf
@@ -1071,12 +1140,23 @@ Function JudgeAtTable(TLM:MQ02BQuest akRiver)
 	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.HatcherCanBeJudged()
 		Return
 	EndIf
-	Judge(akRiver, verdict)
+	If !LocalSpeaker(hatcher, Alias_Hatcher)
+		Return
+	EndIf
+	Judge(akRiver, verdict, true)
 EndFunction
 
-bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict)
+bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict, bool abAtTable = false)
 	{60 the steeple, 61 Pritchard, 1 his boat. Whoever it needs is asked for again by the road itself.}
+	ReferenceAlias speakerAlias = Alias_Opal
+	If abAtTable
+		speakerAlias = Alias_Hatcher
+	EndIf
+	Actor speaker = speakerAlias.GetActorReference()
 	If !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged()
+		Return false
+	EndIf
+	If !LocalSpeaker(speaker, speakerAlias)
 		Return false
 	EndIf
 	int confirmed = -1
@@ -1087,7 +1167,7 @@ bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict)
 	ElseIf aiVerdict == 1
 		confirmed = ShowBox(ConfirmRelease)
 	EndIf
-	If confirmed != 0 || !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged()
+	If confirmed != 0 || !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged() || !LocalSpeaker(speaker, speakerAlias)
 		Return false
 	EndIf
 	bool done = false

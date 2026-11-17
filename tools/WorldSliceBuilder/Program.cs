@@ -218,6 +218,28 @@ if(expanded){
   }
  }
 }
+object? relief=null;
+if(args.Length==4){
+ using var reliefSource=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);
+ // AFTER expansion/private details: preserves every accepted old world ID.
+ relief=WorldStory.CompleteReliefControls(mod,world,reliefSource);
+ if(relief!=null){
+  // Actual transformed upright ObjectBounds screen, not native/Havok proof.
+  // Both controls stand on the generated flat LAND at Z0; no floor is
+  // claimed beneath the supply control outside the shelter's open front.
+  foreach(var name in new[]{"ReliefStores","ReliefSupply"}){
+   var at=WorldStory.GreenwaterSites[name];
+   if(at.X<96||at.X>4000||at.Y<96||at.Y>4000||at.Z!=12)throw new InvalidDataException("Relief control outside supported flat LAND");
+   for(int tick=0;tick<=100;tick++){
+    float x=at.X,y=at.Y-220+220*tick/100f;
+    foreach(var obstacle in routeObstacles.Where(p=>!p.Id.Contains("Floor",StringComparison.Ordinal))){
+     float dx=MathF.Max(MathF.Max(obstacle.MinX-x,0),x-obstacle.MaxX),dy=MathF.Max(MathF.Max(obstacle.MinY-y,0),y-obstacle.MaxY);
+     if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Relief 192-unit approach blocked: "+name+" / "+obstacle.Id);
+    }
+   }
+  }
+ }
+}
 mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(included.ToArray()).Write();
 using var read=Fallout4Mod.CreateFromBinaryOverlay(plugin,Fallout4Release.Fallout4);
 if(story!=null)WorldStory.Validate(read);
@@ -242,5 +264,6 @@ if(details!=null){
  if(refs.Length!=6)throw new InvalidDataException("Private shelter detail did not roundtrip exactly six references.");
  File.WriteAllText(Path.Combine(output,"private-shelter-details.json"),JsonSerializer.Serialize(new{detail=details,references=refs.Select(r=>new{id=r.EditorID,form=r.FormKey.ToString(),@base=r.Base.FormKey.ToString(),x=r.Position!.X,y=r.Position.Y,z=r.Position.Z,yaw=r.Rotation!.Z})},new JsonSerializerOptions{WriteIndented=true}));
 }
+if(relief!=null)File.WriteAllText(Path.Combine(output,"greenwater-relief-controls.json"),JsonSerializer.Serialize(new{wiring=relief,clearance="Actual transformed existing upright AABB sampling; continuous 192-unit south approach; supported flat LAND. Native reach, model/collision and controller visibility pending."},new JsonSerializerOptions{WriteIndented=true}));
 Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;

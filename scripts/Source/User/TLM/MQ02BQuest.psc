@@ -303,6 +303,32 @@ int Function Recovered()
 	Return TLM_G_MQ02B_Recovered.GetValueInt()
 EndFunction
 
+int Function ReliefStartingReserve()
+	{Read-only normalized completed cargo tuple. -1 means inconsistent/unready;
+	never substitutes an enum for delivered measures or rewrites river history.}
+	If !IsRunning() || !GetStageDone(100) || !CanComplete() || ReturnPending != RV_RETURN_NONE || EscapePending || Burning || Claim != Outcome()
+		Return -1
+	EndIf
+	int course = Outcome()
+	int cargoState = Cargo()
+	int units = Recovered()
+	int home = TLM_G_MQ02B_GrainHome.GetValueInt()
+	If course == RV_CARDS && GetStageDone(41) && !GetStageDone(42) && !GetStageDone(43) && !GetStageDone(44) && cargoState == RV_CARGO_HOME_WHOLE && units == 12 && home == 1 && !SharePaid && !SharePending
+		Return 900
+	ElseIf course == RV_CHUTE && GetStageDone(42) && !GetStageDone(41) && !GetStageDone(43) && !GetStageDone(44) && cargoState == RV_CARGO_HOME_REDUCED && home == 1 && !SharePaid && !SharePending
+		If units == 8
+			Return 630
+		ElseIf units == 6
+			Return 495
+		EndIf
+	ElseIf course == RV_FIRE && GetStageDone(43) && !GetStageDone(41) && !GetStageDone(42) && !GetStageDone(44) && cargoState == RV_CARGO_DESTROYED && units == 0 && home == 0 && !SharePaid && !SharePending
+		Return 90
+	ElseIf course == RV_SHARE && GetStageDone(44) && !GetStageDone(41) && !GetStageDone(42) && !GetStageDone(43) && cargoState == RV_CARGO_LASHED && units == 0 && home == 0 && SharePaid && !SharePending
+		Return 90
+	EndIf
+	Return -1
+EndFunction
+
 int Function Stamp()
 	{The road's exclusive state as one number: the course claimed and recorded,
 	the cargo, what is pending, whether the road is complete. Read before a box

@@ -395,6 +395,13 @@ foreach (var c in cells)
     sub.Cells.Add(c);
 }
 
+// New strict relief form appended after every historical synthetic allocation.
+// The older display-name Corn remains unchanged for existing Meal lookups.
+if (variant != "relief-no-corn")
+{
+    var strictCorn = mod.Ingestibles.AddNew("Corn");
+    strictCorn.Name = variant == "relief-wrong-corn-name" ? "Not Corn" : "Corn";
+}
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
 // Real masters use ids below 0x800; a stand-in may too.
 mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();
