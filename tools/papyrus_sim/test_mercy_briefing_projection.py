@@ -187,7 +187,7 @@ class Projection(unittest.TestCase):
         self.assertIsNotNone(described[0]["Model"], "against a master the book takes after one of its notes")
         # The first section's two papers are as they were.
         # (TLM_BOOK_LetterOfHire is GREENWATER-STORY-001's; test_greenwater_projection.py reads it.)
-        self.assertEqual(sorted(books), ["TLM_BOOK_Docket2298", "TLM_BOOK_LetterOfHire", "TLM_BOOK_MarshalLog", "TLM_BOOK_RailMaintLedger"])
+        self.assertEqual(sorted(books), ["TLM_BOOK_Docket2298", "TLM_BOOK_HymnalFlyleaf", "TLM_BOOK_LetterOfHire", "TLM_BOOK_MarshalLog", "TLM_BOOK_RailMaintLedger"])
 
     def test_the_quest_is_a_utility_task_of_its_own(self):
         entry = self.map["quest"]

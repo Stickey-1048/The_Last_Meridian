@@ -203,7 +203,25 @@ Lockridge's three gate greetings read the side quest as it recorded itself and w
 
 ## 11. What was run here, and what came out
 
-@@CHECKS@@
+On this source, with `tools/run_checks.sh` run as a scratch copy with the one line that needs PowerShell (`tools/test_world_story_launcher.py`) left out.
+
+| What | Result |
+|---|---|
+| `run_checks.sh` step 1, logic model | 179 tests pass (8 skipped, as before) |
+| step 2, plugin build and layout | builds; self-check passes; layout self-test catches 39 kinds of damage |
+| step 3, consistency, story intake | clean for 26 scripts; intake fixtures pass |
+| step 4, eight stand-in masters | all pass, after one line of `run_checks.sh` was corrected (it forbade any cell record when the master has no test room; it now forbids only a copy of one of the game's cells, and requires the plugin's own cell to be written) |
+| step 5, simulator | 799 tests ran; 798 passed and 1 failed (`test_mercy_briefing_projection`'s list of books lacked the new hymnal). The list was corrected and that file re-run alone: 13 pass. **The whole of step 5 was not re-run after that correction.** |
+| `test_night_mail` / `_scenes` / `_router` | 46 / 58 / 18 pass |
+| `test_night_mail_projection` / `_source` | 15 / 12 pass |
+| `test_night_mail_mutations` | 3 pass: 56 removed guards, each noticed by a named test |
+| `test_night_mail_world_clone` | 11 pass (clone step on a stand-in; the two Mercy references read back) |
+| `test_night_mail_candidate`, `test_greenwater_candidate`, `test_mercy_briefing_candidate` | 34, 38, 22 pass |
+| `logic_model test_night_mail_model` | 37 pass |
+| `night_mail_story_candidate.py verify` | passes |
+| `greenwater_story_candidate.py verify`, `mercy_briefing_candidate.py verify` | refuse this checkout, as they must |
+
+Not run: the Papyrus compiler; any build against the game's master; `WorldSliceBuilder` as a whole; anything in PowerShell (`Build-NightMail.ps1`, both fixtures); the game.
 
 ## 12. Source against native: what is not known
 
