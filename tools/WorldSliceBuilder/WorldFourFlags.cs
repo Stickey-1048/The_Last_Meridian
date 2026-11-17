@@ -6,8 +6,24 @@ using Noggog;
 public static partial class WorldStory
 {
     public static readonly Dictionary<string,(float X,float Y,float Z)> FourFlagsSites=new(){
-        ["Entry"]=(3920,3100,12),["MercyReturn"]=(3890,3070,32)
+        ["Entry"]=(3820,3100,12),["MercyReturn"]=(3820,3070,32)
     };
+    public static readonly (float X,float Y) FourFlagsApproach=(3820,3000);
+
+    public static void AuditFourFlagsApproach(IEnumerable<(string Id,float MinX,float MaxX,float MinY,float MaxY)> bounds,
+        float startX,float startY,float entryX,float entryY,float returnX,float returnY)
+    {
+        var obstacles=bounds.Where(p=>!p.Id.Contains("Floor",StringComparison.Ordinal)).ToArray();
+        void Check(float x,float y){
+            if(x<96||x>4000||y<96||y>4000)throw new InvalidDataException("Fair entry outside supported flat LAND");
+            foreach(var p in obstacles){
+                float dx=MathF.Max(MathF.Max(p.MinX-x,0),x-p.MaxX),dy=MathF.Max(MathF.Max(p.MinY-y,0),y-p.MaxY);
+                if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Fair entry192-unit approach blocked: "+p.Id);
+            }
+        }
+        for(int tick=0;tick<=100;tick++)Check(startX+(entryX-startX)*tick/100f,startY+(entryY-startY)*tick/100f);
+        Check(returnX,returnY);
+    }
     const string FairMaster="TLM_MQ03",FairEntry="TLM_FF_Entry",FairClone="TLM_WS_FF_Entry";
 
     public static object? CompleteFourFlagsEntry(Fallout4Mod mod,Worldspace world,IFallout4ModGetter source)

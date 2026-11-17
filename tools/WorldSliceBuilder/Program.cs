@@ -9,6 +9,15 @@ using System.Text.Json;
 // a master record, installed files or a save. Output must be a workspace folder.
 if((args.Length==3||(args.Length==5&&args[3]=="--damage"))&&args[0]=="--story-clone-check")return StoryCloneCheck.Run(args[1],args[2],args.Length==5?args[4]:null);
 // FOUR_FLAGS_AUDIT_MODE_BEGIN
+if(args.Length==2&&args[0]=="--four-flags-approach-check"){
+ try{
+  using var fixture=JsonDocument.Parse(File.ReadAllText(args[1]));var root=fixture.RootElement;
+  var bounds=root.GetProperty("obstacles").EnumerateArray().Select(p=>(p.GetProperty("id").GetString()!,p.GetProperty("minX").GetSingle(),p.GetProperty("maxX").GetSingle(),p.GetProperty("minY").GetSingle(),p.GetProperty("maxY").GetSingle())).ToArray();
+  var start=root.GetProperty("start");var entry=root.GetProperty("entry");var back=root.GetProperty("return");
+  WorldStory.AuditFourFlagsApproach(bounds,start[0].GetSingle(),start[1].GetSingle(),entry[0].GetSingle(),entry[1].GetSingle(),back[0].GetSingle(),back[1].GetSingle());
+  Console.WriteLine("Fair approach and return clearance PASS");return 0;
+ }catch(InvalidDataException error){Console.Error.WriteLine("REFUSED: "+error.Message);return 1;}
+}
 if(args.Length==3&&args[0]=="--four-flags-interior-check"){
  try{
   using var fairVanilla=Fallout4Mod.CreateFromBinaryOverlay(args[1],Fallout4Release.Fallout4);
@@ -266,13 +275,8 @@ if(args.Length==4){
  if(fourFlags!=null){
   var at=WorldStory.FourFlagsSites["Entry"];
   if(at.X<96||at.X>4000||at.Y<96||at.Y>4000||at.Z!=12)throw new InvalidDataException("Fair entry outside supported flat LAND");
-  for(int tick=0;tick<=100;tick++){
-   float x=4000+(at.X-4000)*tick/100f,y=at.Y;
-   foreach(var obstacle in routeObstacles.Where(p=>!p.Id.Contains("Floor",StringComparison.Ordinal))){
-    float dx=MathF.Max(MathF.Max(obstacle.MinX-x,0),x-obstacle.MaxX),dy=MathF.Max(MathF.Max(obstacle.MinY-y,0),y-obstacle.MaxY);
-    if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Fair entry192-unit approach blocked: "+obstacle.Id);
-   }
-  }
+  var start=WorldStory.FourFlagsApproach;var back=WorldStory.FourFlagsSites["MercyReturn"];
+  WorldStory.AuditFourFlagsApproach(routeObstacles.Select(p=>(p.Id,p.MinX,p.MaxX,p.MinY,p.MaxY)),start.X,start.Y,at.X,at.Y,back.X,back.Y);
  }
 }
 // FOUR_FLAGS_APPEND_END

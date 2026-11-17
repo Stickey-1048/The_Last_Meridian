@@ -2436,16 +2436,16 @@
   ],
   "exteriorEntry": {
     "Entry": [
-      3920,
+      3820,
       3100,
       12
     ],
     "MercyReturn": [
-      3890,
+      3820,
       3070,
       32
     ],
-    "approach": "192-unit upright clearance sampled from4000,3100to3920,3100; east of the unchanged yard fence. Full actual-master scenery AABBs remain a packaging gate, no native collision/walking claim."
+    "approach": "192-unit upright clearance sampled from3820,3000to3820,3100; return3820,3070 independently screened between unchanged inner and outer east fences. Full actual-master scenery AABBs remain a packaging gate, no native collision/walking claim."
   },
   "sceneRecovery": {
     "evidence": "Same immutable original beside original Juno on ordinary ground OR actually held by captured/current player",

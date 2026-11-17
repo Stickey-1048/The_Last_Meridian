@@ -138,15 +138,38 @@ class FourFlagsProjection(unittest.TestCase):
             with self.subTest(damage=damage):
                 got=clone(damage);self.assertEqual(got.returncode,1,got.stdout+got.stderr);self.assertIn('REFUSED',got.stderr)
 
-    def test_new_entry_and_return_remain_outside_preserved_east_yard_fence(self):
+    def test_new_entry_and_return_remain_between_both_preserved_east_fences(self):
         got=clone();self.assertEqual(got.returncode,0,got.stdout+got.stderr);d=json.loads(got.stdout)
-        self.assertEqual(d['fourFlagsSites'],{'Entry':[3920,3100,12],'MercyReturn':[3890,3070,32]})
-        # Existing fence's supported upright east bound: X3688, half-depth2.
-        # The whole 192-unit approach fromX4000 stays on its eastern side.
+        self.assertEqual(d['fourFlagsSites'],{'Entry':[3820,3100,12],'MercyReturn':[3820,3070,32]})
+        # Independently read actual native bounds: inner east3690, outer west3966.
         for a in d['fourFlags']['aliases']:
             self.assertGreaterEqual(a['x']-(3688+2),96)
-            self.assertLessEqual(a['x']+96,4096)
+            self.assertLessEqual(a['x']+96,3966)
             self.assertTrue(2432<a['y']<3456)
+
+    def test_actual_approach_guard_refuses_both_fences_and_old_outer_crossing(self):
+        # Synthetic metadata fixtures reproduce the independently audited native
+        # fence AABBs; no licensed assets/master or pre-existing build/sim ESP.
+        from test_greenwater_world_clone import DLL
+        world=(ROOT/'tools/WorldSliceBuilder/WorldFourFlags.cs').read_text(encoding='utf-8')
+        program=(ROOT/'tools/WorldSliceBuilder/Program.cs').read_text(encoding='utf-8')
+        self.assertIn('FourFlagsApproach=(3820,3000)',world)
+        self.assertIn('AuditFourFlagsApproach(routeObstacles.Select(p=>(p.Id,p.MinX,p.MaxX,p.MinY,p.MaxY)),start.X,start.Y,at.X,at.Y,back.X,back.Y)',program)
+        bounds=[{'id':'YardRight4','minX':3686,'maxX':3690,'minY':2944,'maxY':3072},
+                {'id':'YardRight5','minX':3686,'maxX':3690,'minY':3072,'maxY':3200},
+                {'id':'BoundaryEast22','minX':3966,'maxX':3970,'minY':2944,'maxY':3072},
+                {'id':'BoundaryEast23','minX':3966,'maxX':3970,'minY':3072,'maxY':3200}]
+        good={'obstacles':bounds,'start':[3820,3000],'entry':[3820,3100],'return':[3820,3070]}
+        cases=[({},None),({'start':[4000,3100],'entry':[3920,3100]},'BoundaryEast'),
+               ({'start':[3670,3000]},'YardRight'),({'entry':[3750,3100]},'YardRight'),
+               ({'return':[3920,3070]},'BoundaryEast'),({'return':[3750,3070]},'YardRight')]
+        for edits,blocked in cases:
+            with self.subTest(edits=edits),tempfile.TemporaryDirectory() as temp:
+                fixture=Path(temp)/'bounds.json';fixture.write_text(json.dumps({**good,**edits}),encoding='utf-8')
+                got=subprocess.run(['dotnet',str(DLL),'--four-flags-approach-check',str(fixture)],cwd=ROOT,capture_output=True,text=True)
+                self.assertEqual(got.returncode,1 if blocked else 0,got.stdout+got.stderr)
+                if blocked:self.assertIn(blocked,got.stderr)
+                else:self.assertIn('clearance PASS',got.stdout)
 
     def test_old_raw_clone_payloads_and_ids_survive_new_entry_adapter(self):
         oldroot=snapshot(GREENWATER_RELIEF);oldplugin=built_greenwater_relief().with_suffix('.esp')
