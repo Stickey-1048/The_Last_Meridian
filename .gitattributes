@@ -26,3 +26,6 @@ tools/WorldSliceBuilder/expanded-artifact.json text eol=lf
 
 # Pictures are binary too.
 *.png binary
+
+# Story implementation orders and independent contract receipts are frozen inputs.
+docs/design/GREENWATER_STORY_001*.md text eol=lf
