@@ -6,7 +6,10 @@ import json
 import re
 import subprocess
 import unittest
-from test_sim import ROOT, PLUGIN, need_build
+from test_sim import ROOT as LIVE_ROOT, need_build
+from source_snapshot import snapshot, built_night_mail, NIGHT_MAIL
+ROOT=snapshot(NIGHT_MAIL)
+PLUGIN=built_night_mail()
 from test_mercy_briefing_projection import book_texts
 
 
@@ -26,7 +29,7 @@ class Projection(unittest.TestCase):
     def test_accepted_input_is_the_accepted_git_text(self):
         for f in self.map['source']['files']:
             name = self.map['source']['folder'] + '/' + f
-            old = subprocess.run(['git','show','d142104:'+name],cwd=ROOT,capture_output=True,check=True).stdout.decode('utf-8')
+            old = subprocess.run(['git','show','d142104:'+name],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode('utf-8')
             self.assertEqual((ROOT/name).read_text(encoding='utf-8'), old.replace('\r\n','\n'), name)
 
     def test_every_message_has_exactly_one_mapping(self):
@@ -107,7 +110,7 @@ class Projection(unittest.TestCase):
             self.assertEqual(at,len(doc['text']))
         # The portable runner copies JSON into build/sim, not the binary.
         # The skeleton build contains the same authored BOOK records.
-        books=book_texts(ROOT/'build/TheLastMeridian.esp')
+        books=book_texts(PLUGIN.with_suffix('.esp'))
         doc=next(d for d in self.docs.values() if d['title']=='Flyleaf of a Hymnal')
         self.assertEqual(books['TLM_BOOK_HymnalFlyleaf'],(doc['title'],doc['text']))
 

@@ -1066,7 +1066,7 @@ class TheLinesAndTheScript(unittest.TestCase):
             message = messages[MSG + name]
             # GREENWATER-STORY-001 (order, item 1): in this candidate one later road is playable, and the
             # first section's own ending says so instead of saying that none is.
-            self.assertTrue(message["Text"].endswith('"\n\n[Opening complete. Greenwater and Iron Junction are playable.]'), message["Text"])
+            self.assertTrue(message["Text"].endswith('"\n\n[Opening complete. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]'), message["Text"])
             self.assertNotIn('Later routes are not playable', message["Text"])
             self.assertLessEqual(len(message["Text"].encode('ascii')), 240, name)
             expected = ["Continue"] + (["There's something else from that train."] if name.endswith("AndMore") else [])

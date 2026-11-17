@@ -514,7 +514,7 @@
       {
         "record": "TLM_MSG_GW_AskTravel",
         "property": "AskTravel",
-        "text": "[Greenwater story test]\n\nGreenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: flat ground and labelled stand-ins. Travel there now?",
+        "text": "[Greenwater story test]\n\nGreenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: flat ground and labelled stand-ins. Travel there now?",
         "buttons": [
           "Travel to Greenwater",
           "Not now"
@@ -865,7 +865,7 @@
       {
         "record": "TLM_MSG_GW_ReportEndKnown",
         "property": "ReportEndKnown",
-        "text": "[River report]\n\nYou learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.\n\nGreenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not.",
+        "text": "[River report]\n\nYou learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.\n\nGreenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.",
         "buttons": [
           "Continue"
         ],
@@ -874,7 +874,7 @@
       {
         "record": "TLM_MSG_GW_ReportEndUnknown",
         "property": "ReportEndUnknown",
-        "text": "[River report]\n\nYou did not learn why Hatcher held the grain.\n\nGreenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not.",
+        "text": "[River report]\n\nYou did not learn why Hatcher held the grain.\n\nGreenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.",
         "buttons": [
           "Continue"
         ],

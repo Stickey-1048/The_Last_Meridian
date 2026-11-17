@@ -162,6 +162,7 @@ Group Preview
 	{TLM_GW, with TLM:GreenwaterWalk on it: the Greenwater greybox
 	(GREENWATER-STORY-001). None, or not that script: there is no travel
 	point and no river report, and nothing else changes.}
+	Quest Property TLM_RedHollow Auto Const
 	Quest Property TLM_NightMail Auto Const
 	{TLM_NM, with TLM:NightMailWalk on it: the Night Mail greybox
 	(NIGHT-MAIL-STORY-001). None, or not that script: there is no travel
@@ -263,6 +264,7 @@ Function Begin()
 	WearPipBoy()
 	OpenGreenwater()
 	OpenNightMail()
+	OpenRedHollow()
 	Debug.Trace("TLM_A1: the first section is set up; aliases left empty: " + unfilled + ", people not there: " + missing)
 	If SayBegin
 		SayBegin.Show()
@@ -390,6 +392,11 @@ EndFunction
 ; ==================================================================== talk
 
 Function Spoken(int aiWho, Actor akWho)
+	; The same living earlier-road actor can be staged at Red Hollow. Its new
+	; alias owns that activation there; neither old encounter nor alias is reset.
+	If TLM_RedHollow && (TLM_RedHollow as TLM:RedHollowWalk).BorrowsActor(akWho)
+		Return
+	EndIf
 	{Called by TLM:Act1Talk when the player activates somebody.}
 	; Nothing between the test and the claim calls into the game, so two
 	; activations cannot both pass.
@@ -647,6 +654,10 @@ bool Function AfterTheChapter(Actor akWho)
 	; Nothing of the river was offered, or it was explicitly left for later: the rail, on the same terms.
 	int rail = OfferRailReport(akWho)
 	If rail == RIVER_REPORT_GIVEN || rail == RIVER_REPORT_CLOSED
+		Return true
+	EndIf
+	int hollow = OfferHollowReport(akWho)
+	If hollow == RIVER_REPORT_GIVEN || hollow == RIVER_REPORT_CLOSED
 		Return true
 	EndIf
 	; Nothing was offered, or each was explicitly left for later: the briefing, as before.
@@ -1184,4 +1195,17 @@ Function WaitForGlobal(GlobalVariable akGlobal, int aiValue)
 		Utility.Wait(0.25)
 		tries += 1
 	EndWhile
+EndFunction
+
+Function OpenRedHollow()
+	If TLM_RedHollow
+		(TLM_RedHollow as TLM:RedHollowWalk).OpenDoor()
+	EndIf
+EndFunction
+
+int Function OfferHollowReport(Actor akWho)
+	If !akWho || !TLM_RedHollow || !TLM_MQ01.GetStageDone(100) || TLM_G_MQ01_Done.GetValueInt() != 1
+		Return RIVER_REPORT_NONE
+	EndIf
+	Return (TLM_RedHollow as TLM:RedHollowWalk).OfferReport(akWho)
 EndFunction

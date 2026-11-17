@@ -1087,16 +1087,16 @@ class AtMercy(unittest.TestCase):
         for name, text in texts.items():
             for phrase in stale:
                 self.assertNotIn(phrase, text, name)
-        self.assertTrue(texts["TLM_MSG_MB_Hub"].endswith("[Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not.]"))
+        self.assertTrue(texts["TLM_MSG_MB_Hub"].endswith("[Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]"))
         self.assertTrue(texts["TLM_MSG_MB_HandOff"].endswith("[Opening complete. Ask for briefings or use a story test point.]"))
-        self.assertTrue(texts[MSG + "PritchardAfter"].endswith("[Opening complete. Greenwater and Iron Junction are playable.]"))
-        self.assertIn("Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not.", texts[G + "AskTravel"])
+        self.assertTrue(texts[MSG + "PritchardAfter"].endswith("[Opening complete. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]"))
+        self.assertIn("Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not.", texts[G + "AskTravel"])
         briefing = [q for q in json.loads(PLUGIN.read_text())["Quests"] if q["EditorId"] == "TLM_MercyBriefing"][0]
         self.assertEqual([s["Log"] for s in briefing["Stages"]],
-                         ["Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not.",
-                          "Mercy briefing complete. Greenwater and Iron Junction are playable; Red Hollow and the fair are not."])
+                         ["Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.",
+                          "Mercy briefing complete. Greenwater, Iron Junction and Red Hollow are playable; the fair is not."])
         guide = (SCRIPTS / "Act1Guide.psc").read_text()
-        self.assertIn("Greenwater and Iron Junction are available at their story test points. Red Hollow and the fair are not playable.", guide)
+        self.assertIn("Greenwater, Iron Junction and Red Hollow are available at their story test points. The fair is not playable.", guide)
         self.assertNotIn("are not implemented here", guide)
 
     def test_scenario_twelve_meets_none_of_it(self):
@@ -1165,7 +1165,7 @@ class TheNumbers(unittest.TestCase):
         self.assertNotIn("StartGameEnabled", road["Flags"])
         self.assertEqual([a["Flags"] for a in road["Aliases"]], [["Optional"]] * 11)
         self.assertEqual(sorted(q["EditorId"] for q in self.data["Quests"]),
-                         sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", ROAD, STAGE, "TLM_MQ02A", "TLM_NM"]))
+                         sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", ROAD, STAGE, "TLM_MQ02A", "TLM_NM", "TLM_MQ02C", "TLM_RH"]))
         for other in ("TLM_MQ02", "TLM_MQ02C", "TLM_MQ03", "TLM_MQ04"):
             self.assertNotIn(other, [q["EditorId"] for q in self.data["Quests"]])
 

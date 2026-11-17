@@ -185,7 +185,18 @@ class Asker:
         t = self.test
         t.assertEqual(self.state(), self.model_state(), "the briefing against its model (game, model) after: " + where)
         t.assertEqual(mb.problems(self.brief), [], where)
-        t.assertEqual(self.world(), self.before, "something outside the briefing changed after: " + where)
+        # The composed Red Hollow observer only mirrors actual held-copy custody
+        # and the helper model's acquisition history; it must not commission10,
+        # touch actors/other globals/objectives, or refill the old helper.
+        import copy
+        expected=copy.deepcopy(self.before)
+        if "TLM_MQ02C" in self.s.quests:
+            expected['globals']['TLM_G_MQ02C_Docket2298Held']=float(self.held()>0)
+            if self.brief.copy_issued:
+                if 16 not in expected['stages']['TLM_MQ02C']:
+                    expected['stages']['TLM_MQ02C'].append(16)
+                expected['completed']['TLM_MQ02C']=(True,False)
+        t.assertEqual(self.world(), expected, "something outside the briefing changed after: " + where)
         t.assertEqual([l for l in self.s.papyrus_log if l.startswith("error")], [], where)
         self.p.same(where)                 # TLM_MQ01 and TLM_SQ01 against their own model
 
@@ -622,7 +633,7 @@ class TheTask(unittest.TestCase):
         for v in (NOT_NOW, RAIL, RIVER, PIKE, ASK, TAKE, TAKE):
             a.ask(v)                       # each compares the whole world outside the briefing with what it was
         # (TLM_MQ02B and TLM_GW are GREENWATER-STORY-001's; the briefing sets nothing on them either: see a.world().)
-        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_GW", "TLM_MQ01", "TLM_MQ02A", "TLM_MQ02B", "TLM_MercyBriefing", "TLM_NM", "TLM_SQ01", "TLM_Trial"])
+        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_GW", "TLM_MQ01", "TLM_MQ02A", "TLM_MQ02B", "TLM_MQ02C", "TLM_MercyBriefing", "TLM_NM", "TLM_RH", "TLM_SQ01", "TLM_Trial"])
         self.assertEqual((a.s.quests["TLM_MQ02B"].running, a.s.quests["TLM_MQ02B"].done), (False, []))
         self.assertEqual(a.p.has("Caps001") if "Caps001" in a.s.forms else a.p.has(a.p.caps), a.before["carried"].get("Caps001", 0))
         source = (SCRIPTS / "MercyBriefing.psc").read_text()

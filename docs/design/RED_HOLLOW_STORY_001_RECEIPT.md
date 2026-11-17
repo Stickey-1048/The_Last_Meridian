@@ -33,3 +33,14 @@ Actual PSC/model/controller tests, malformed source and scene refusal probes, ex
 ## Completion evidence
 
 Implementation, final allocation/projection/scene ledger, actual check results, exact pushed source head and remaining engine assumptions will be recorded here as the bounded job completes. This first commit does not claim any of them.
+
+
+## Implemented source handoff, separate from acceptance
+
+The actual implementation now includes MQ02CQuest, RedHollowWalk and RedHollowTalk, its accepted-text projection/physical allocation builder, exterior mixed-ownership clone, exact98-message mapping and actual state/scene ledger. The rule/controller has all six mine resolutions plus independent court branches, eleven persistent physical roles and recovery intent. The actual registered hit is received by RedHollowWalk itself; RedHollowTalk forwards activation/entry/death/combat/load only. No old actor is duplicated and no earlier encounter/alias is reset.
+
+Focused checks have exercised actual PSC/controller branches and synthetic binary cloning, accepted text/labels, source provenance and package refusals. Deliberately broken source trials run the existing player assertions and must be caught. The full portable suite is the final source gate, with its complete output retained locally under build/checks. Native compile/build/game acceptance is not implied. The current manifest's measured/artifact/native fields remain null.
+
+Historical Night Mail projection/provenance checks use an actual read-only Git export of exact4624, which must verify, while the frozen verifier refuses this composed checkout. Live three-road projection/actor/quest count assertions are precise. The existing Mercy whole-world test permits only the read-only Red Hollow observer's exact current-copy mirror and model-predicted acquisition-history16; all other world/actor/quest state remains guarded. No skip, broad waiver or workflow change is introduced.
+
+Root alone owns independent source acceptance, fresh29-script licensed compilation, licensed two-plugin readback and normal-stat native playtests. The candidate is for fresh game/save only. No save/profile/install/security/auth/provider operation was performed here. The owner does not need to answer another story question for this handoff.

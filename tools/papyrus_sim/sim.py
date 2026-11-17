@@ -392,6 +392,8 @@ class Session:
         self.pending: List[tuple] = []                # (due, order, name, make generator)
         self.order = 0
         self.distance_watches: List[dict] = []
+        self.hit_watches = []
+        self.menu_mode = False
         self.papyrus_log: List[str] = []
         self.user_logs: Dict[str, List[str]] = {}
         self.open_logs = set()
@@ -1308,6 +1310,25 @@ class Session:
         if isinstance(thing, Alias):
             return thing.ref
         return thing
+
+    def n_scriptobject_registerforhitevent(self, obj, context, target, aggressor=None, source=None, projectile=None,
+                                           power=-1, sneak=-1, bash=-1, block=-1, match=True):
+        inst = self._need_context(context, "RegisterForHitEvent")
+        target, aggressor = self._ref_of(target), self._ref_of(aggressor)
+        self.hit_watches = [w for w in self.hit_watches if not (w[0] is inst and w[1] is target)]
+        self.hit_watches.append((inst, target, aggressor))
+
+    def hit_event(self, target, aggressor, source=None, projectile=None, power=False, sneak=False, bash=False, block=False, material=""):
+        """Seed one documented registered hit; no unregistered alias event or activation can manufacture it.
+        Geometry/projectile collision delivery remains a native acceptance gate."""
+        for watch in list(self.hit_watches):
+            inst, wanted, attacker = watch
+            if wanted is target and (attacker is None or attacker is aggressor):
+                self.hit_watches.remove(watch)
+                self.send_event(inst, "OnHit", [target, aggressor, source, projectile, power, sneak, bash, block, material])
+
+    def g_utility_isinmenumode(self):
+        return self.menu_mode
 
     def n_scriptobject_registerfordistancegreaterthanevent(self, obj, context, a, b, distance):
         inst = self._need_context(context, "RegisterForDistanceGreaterThanEvent")

@@ -10,14 +10,16 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from test_sim import ROOT
+from test_sim import ROOT as LIVE_ROOT
+from source_snapshot import snapshot
+ROOT=snapshot("4624ee90844e34d20db0124b109837798256e8c7")
 sys.path.insert(0,str(ROOT/'tools'))
 import night_mail_story_candidate as candidate
 
 
 def copy_source():
     target=Path(tempfile.mkdtemp(prefix='tlm-night-mail-source-'))
-    m=json.loads(candidate.MANIFEST.read_text())
+    m=json.loads((ROOT/'tools/win/night-mail-story-candidate.json').read_text())
     names=set(m['sourceFilesTextSha256'])|set(m['frozenTextSha256'])|{'.gitattributes','tools/win/night-mail-story-candidate.json'}
     for name in names:
         (target/name).parent.mkdir(parents=True,exist_ok=True)
@@ -27,18 +29,19 @@ def copy_source():
 
 class Candidate(unittest.TestCase):
     def test_current_source_verifies_and_baseline_is_really_frozen(self):
-        self.assertEqual(candidate.problems(),[])
-        m=json.loads(candidate.MANIFEST.read_text())
+        self.assertEqual(candidate.problems(ROOT),[])
+        self.assertTrue(candidate.problems(LIVE_ROOT))
+        m=json.loads((ROOT/'tools/win/night-mail-story-candidate.json').read_text())
         for name in candidate.FROZEN:
-            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=ROOT,capture_output=True,check=True).stdout.decode('utf-8').replace('\r\n','\n')
+            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode('utf-8').replace('\r\n','\n')
             self.assertEqual((ROOT/name).read_text(),old,name)
             self.assertEqual(hashlib.sha256(old.encode()).hexdigest().upper(),m['baselineFrozenTextSha256'][name])
-        old_attrs=subprocess.run(['git','show',candidate.BASELINE+':.gitattributes'],cwd=ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
+        old_attrs=subprocess.run(['git','show',candidate.BASELINE+':.gitattributes'],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
         self.assertEqual(m['baselineAttributes'],old_attrs)
         self.assertIn((ROOT/'.gitattributes').read_text(),(old_attrs,old_attrs+candidate.ATTR_LINE))
 
     def test_every_changed_source_is_fresh_and_reviewed_selection_is_exact(self):
-        m=json.loads(candidate.MANIFEST.read_text());old=json.loads((ROOT/'tools/win/greenwater-story-candidate.json').read_text())
+        m=json.loads((ROOT/'tools/win/night-mail-story-candidate.json').read_text());old=json.loads((ROOT/'tools/win/greenwater-story-candidate.json').read_text())
         same,changed,new,gone=candidate.against(old['sourceTextSha256'],m['sourceTextSha256'])
         self.assertEqual((changed,new,gone),(['Act1Guide.psc','Act1Walk.psc'],['MQ02AQuest.psc','NightMailTalk.psc','NightMailWalk.psc'],[]))
         selected=m['runtimeSelection'];self.assertEqual((len(selected['reusedReviewedPex']),len(selected['freshlyCompiled'])),(17,9))
@@ -59,7 +62,7 @@ class Candidate(unittest.TestCase):
     def test_frozen_and_attributes_guards_do_not_accept_broad_exceptions(self):
         r=copy_source();p=r/'tools/win/Build-Greenwater.ps1';p.write_text(p.read_text()+'\n# mutation\n')
         self.assertIn('frozenTextSha256 differs',' | '.join(candidate.problems(r)))
-        m=json.loads(candidate.MANIFEST.read_text());before=m['baselineAttributes']
+        m=json.loads((ROOT/'tools/win/night-mail-story-candidate.json').read_text());before=m['baselineAttributes']
         for attrs in (before+'* text eol=crlf\n',candidate.ATTR_LINE+before,before+candidate.ATTR_LINE*2,
                       before.replace('world-details-artifact.json text eol=lf','world-details-artifact.json text eol=crlf')):
             r=copy_source();(r/'.gitattributes').write_text(attrs)
@@ -74,7 +77,7 @@ class Candidate(unittest.TestCase):
 
     def bundle_inputs(self):
         r=Path(tempfile.mkdtemp(prefix='tlm-nm-measure-'));bundle=r/'bundle';scripts=bundle/'Scripts/TLM';scripts.mkdir(parents=True)
-        compile_folder=r/'full-compile';compile_folder.mkdir();m=json.loads(candidate.MANIFEST.read_text())
+        compile_folder=r/'full-compile';compile_folder.mkdir();m=json.loads((ROOT/'tools/win/night-mail-story-candidate.json').read_text())
         selected=m['runtimeSelection'];pins={}
         for name in list(selected['reusedReviewedPex'])+selected['freshlyCompiled']:
             reviewed=('reviewed '+name).encode();fresh=('fresh '+name).encode()
