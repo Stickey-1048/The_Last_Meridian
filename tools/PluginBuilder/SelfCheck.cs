@@ -268,7 +268,11 @@ public static class SelfCheck
         foreach (var cell in info.Cells)
         {
             var name = cell.EditorId ?? "(no EditorID)";
-            Expect(!cell.OfThisPlugin, $"cell {name}: is a new cell of this plugin; only copies of the game's cells are expected");
+            // A cell is the plugin's own exactly when the spec says so; every other is a copy of one of the game's.
+            var ownCell = Spec.OwnCells.Any(c => string.Equals(c.EditorId, name, StringComparison.OrdinalIgnoreCase));
+            Expect(cell.OfThisPlugin == ownCell, ownCell
+                ? $"cell {name}: the spec makes it a cell of this plugin's own, and the file has it as a copy of a master's"
+                : $"cell {name}: is a new cell of this plugin; the spec names it as one of the game's");
             Expect(cellNames.Contains(name, StringComparer.OrdinalIgnoreCase), $"cell {name}: the spec places nothing there");
             // The plugin's copy of the cell's record goes where the master files the cell.
             if (builder.CellsFiled.TryGetValue(name, out var filed))

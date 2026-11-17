@@ -244,6 +244,11 @@ if (room)
     corn.Name = "Corn";
 
     var marker = mod.Statics.AddNew("XMarker");
+    // NIGHT-MAIL-STORY-001: the floor tile the plugin lays in a cell of its own. A stand-in with the name and
+    // the reach this project takes the game's tile to have (256 square about its middle); the game's own tile
+    // is read from the owner's master when the plugin is built there.
+    var floorTile = mod.Statics.AddNew("workshop_ShackMidFloor01B");
+    floorTile.ObjectBounds = new ObjectBounds { First = new P3Int16(-128, -128, -8), Second = new P3Int16(128, 128, 0) };
     // Synthetic records for DEMO-ORIENT-002 lookup/placement/enable tests.
     // These paths are deliberately fake: this is not geometry or visual proof.
     foreach (var id in new[] { "StoneWallOldRubble", "ExtRubble_BricksLrg_Clump01", "FenceWIBollardPost01", "FenceWoodPost01", "ModernDomesticTableLrg01" })

@@ -919,49 +919,69 @@ public sealed class Builder
             // tracked id file comes out the same with and without Fallout4.esm.
             // A build that changed it would later block a pull on the game PC.
             var keys = new Dictionary<string, FormKey>();
+            // A cell of this plugin's own (NIGHT-MAIL-STORY-001) has an id of its own, given out before its
+            // references' and, like theirs, whether or not the cell is made.
+            var own = Spec.OwnCells.FirstOrDefault(c => string.Equals(c.EditorId, group.Key, StringComparison.OrdinalIgnoreCase));
+            var ownKey = own != null ? _mod.GetNextFormKey(own.EditorId) : default;
             foreach (var p in group) keys.Add(p.EditorId, _mod.GetNextFormKey(p.EditorId));
 
             if (_vanilla == null)
             {
-                foreach (var p in group) Pending.Add($"{p.EditorId}: not placed (the cell '{p.Cell}' is in Fallout4.esm)");
+                foreach (var p in group)
+                    Pending.Add(own != null
+                        ? $"{p.EditorId}: not placed (its cell '{p.Cell}' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)"
+                        : $"{p.EditorId}: not placed (the cell '{p.Cell}' is in Fallout4.esm)");
                 continue;
             }
-            if (!TryVanilla(group.Key, "Cell", out var cellKey)
-                || !_vanilla.TryResolveContext<ICell, ICellGetter>(cellKey, out var context))
+            ICell cell;
+            Arrival arrival;
+            if (own != null)
             {
-                foreach (var p in group) Pending.Add($"{p.EditorId}: not placed (no cell '{p.Cell}' in Fallout4.esm)");
-                continue;
+                // What is placed in it is placed by the cell's own coordinates: from its origin, facing north.
+                cell = MakeOwnCell(own, ownKey);
+                arrival = new Arrival(new P3Float(0, 0, 0), 0f, true);
+                Arrivals.Add(new(group.Key, ownKey.ToString(), new[] { 0f, 0f, 0f }, 0f, true));
             }
+            else
+            {
+                if (!TryVanilla(group.Key, "Cell", out var cellKey)
+                    || !_vanilla.TryResolveContext<ICell, ICellGetter>(cellKey, out var context))
+                {
+                    foreach (var p in group) Pending.Add($"{p.EditorId}: not placed (no cell '{p.Cell}' in Fallout4.esm)");
+                    continue;
+                }
 
-            NoteWhereFiled(cellKey, group.Key);
-            var arrival = FindArrival(context.Record, group.Key);
-            Arrivals.Add(new(group.Key, cellKey.ToString(), new[] { arrival.Position.X, arrival.Position.Y, arrival.Position.Z }, arrival.Heading, arrival.Found));
+                NoteWhereFiled(cellKey, group.Key);
+                arrival = FindArrival(context.Record, group.Key);
+                Arrivals.Add(new(group.Key, cellKey.ToString(), new[] { arrival.Position.X, arrival.Position.Y, arrival.Position.Z }, arrival.Heading, arrival.Found));
+
+                // This plugin's copy of the cell's record. The game's own
+                // references in the cell are not copied: they stay in the master.
+                cell = context.GetOrAddAsOverride(_mod);
+                CopyCellName(context.Record, cell, group.Key);
+                // The library's copy leaves out what is in the cell (read from its
+                // copy mask: references, navigation meshes and land are all off).
+                // Should that ever differ, nothing of the game's may stay: a copy
+                // of one of its references here would replace it in the game.
+                var theirs = cell.Persistent.Count + cell.Temporary.Count + cell.NavigationMeshes.Count + (cell.Landscape == null ? 0 : 1);
+                if (theirs != 0)
+                {
+                    cell.Persistent.Clear();
+                    cell.Temporary.Clear();
+                    cell.NavigationMeshes.Clear();
+                    cell.Landscape = null;
+                    VanillaNotes.Add($"NOTE {group.Key}: the copy of the cell's record came with {theirs} of the game's references, navigation meshes or land; they were taken out again");
+                }
+            }
             var sample = group.Any(p => p.BoxHalfExtents != null) ? SampleGameTriggers() : null;
-
-            // This plugin's copy of the cell's record. The game's own
-            // references in the cell are not copied: they stay in the master.
-            var cell = context.GetOrAddAsOverride(_mod);
-            CopyCellName(context.Record, cell, group.Key);
-            // The library's copy leaves out what is in the cell (read from its
-            // copy mask: references, navigation meshes and land are all off).
-            // Should that ever differ, nothing of the game's may stay: a copy
-            // of one of its references here would replace it in the game.
-            var theirs = cell.Persistent.Count + cell.Temporary.Count + cell.NavigationMeshes.Count + (cell.Landscape == null ? 0 : 1);
-            if (theirs != 0)
-            {
-                cell.Persistent.Clear();
-                cell.Temporary.Clear();
-                cell.NavigationMeshes.Clear();
-                cell.Landscape = null;
-                VanillaNotes.Add($"NOTE {group.Key}: the copy of the cell's record came with {theirs} of the game's references, navigation meshes or land; they were taken out again");
-            }
+            var boundsNoted = new HashSet<FormKey>();
 
             foreach (var p in group)
             {
                 FormKey baseKey;
                 if (p.VanillaKind == null)
                 {
-                    if (!_byId.TryGetValue(p.Base, out var own))
+                    if (!_byId.TryGetValue(p.Base, out var ownRecord))
                     {
                         // A record of the plugin's own that this build could not make (it says why elsewhere).
                         if (!Spec.Npcs.Any(n => n.EditorId == p.Base))
@@ -969,7 +989,7 @@ public sealed class Builder
                         Pending.Add($"{p.EditorId}: not placed (its base '{p.Base}' was not made)");
                         continue;
                     }
-                    baseKey = own.FormKey;
+                    baseKey = ownRecord.FormKey;
                 }
                 else if (p.BaseNames != null)
                 {
@@ -985,6 +1005,14 @@ public sealed class Builder
                     continue;
                 }
                 if (p.VanillaKind != null) PlacedGameBase[p.EditorId] = baseKey.ToString();
+                // In a cell of this plugin's own the game's statics are the floor: what their model reaches is
+                // what the layout was drawn for, so it is read from the master and said, once for each.
+                if (own != null && string.Equals(p.VanillaKind, "Static", StringComparison.OrdinalIgnoreCase) && boundsNoted.Add(baseKey)
+                    && _vanilla.TryResolve<IStaticGetter>(baseKey, out var floorStatic))
+                {
+                    var b = floorStatic.ObjectBounds;
+                    VanillaNotes.Add($"{own.EditorId}: the game's {p.Base} placed in it reaches from ({b.First.X}, {b.First.Y}, {b.First.Z}) to ({b.Second.X}, {b.Second.Y}, {b.Second.Z}) about where it is placed");
+                }
 
                 var (sin, cos) = (MathF.Sin(arrival.Heading), MathF.Cos(arrival.Heading));
                 // Heading is measured from north (+Y) towards east (+X): ahead is (sin, cos), right is (cos, -sin).
@@ -1074,6 +1102,43 @@ public sealed class Builder
     }
 
     /// <summary>
+    /// A cell of this plugin's own: an interior, with a name, lit evenly so that a greybox can be seen, filed
+    /// under the block and sub-block its id asks for (the last decimal digit of the id, and the one before it).
+    /// It has no navigation mesh: nobody in it walks anywhere of their own accord.
+    ///
+    /// UNTESTED in the game and in the Creation Kit: no cell of this plugin's own has been loaded there.
+    /// </summary>
+    ICell MakeOwnCell(OwnCellSpec spec, FormKey key)
+    {
+        var cell = new Cell(key, Fallout4Release.Fallout4) { EditorID = spec.EditorId, Name = spec.Name };
+        cell.Flags |= Cell.Flag.IsInteriorCell;
+        cell.Lighting = new CellLighting
+        {
+            AmbientColor = Color.FromArgb(255, 150, 150, 150),
+            DirectionalColor = Color.FromArgb(255, 200, 200, 200),
+            DirectionalFade = 1f,
+        };
+        var (blockNumber, subNumber) = ((int)(key.ID % 10), (int)(key.ID / 10 % 10));
+        var block = _mod.Cells.Records.FirstOrDefault(b => b.BlockNumber == blockNumber);
+        if (block == null)
+        {
+            block = new CellBlock { BlockNumber = blockNumber, GroupType = GroupTypeEnum.InteriorCellBlock };
+            _mod.Cells.Records.Add(block);
+        }
+        var sub = block.SubBlocks.FirstOrDefault(s => s.BlockNumber == subNumber);
+        if (sub == null)
+        {
+            sub = new CellSubBlock { BlockNumber = subNumber, GroupType = GroupTypeEnum.InteriorCellSubBlock };
+            block.SubBlocks.Add(sub);
+        }
+        sub.Cells.Add(cell);
+        CellsFiled[spec.EditorId] = (blockNumber, subNumber);
+        CellNames[spec.EditorId] = spec.Name;
+        VanillaNotes.Add($"{spec.EditorId}: a cell of this plugin's own ({key}), an interior named '{spec.Name}', filed under block {blockNumber}, sub-block {subNumber}; what is placed in it is placed by its own coordinates; it has no navigation mesh");
+        return cell;
+    }
+
+    /// <summary>
     /// The name of a cell is text, and the game keeps its text apart from the
     /// master, in strings files; the master holds a number for it. This
     /// plugin holds its text itself, so the copy needs the name as text. It is
@@ -1148,7 +1213,7 @@ public sealed class Builder
         {
             var h = p.BoxHalfExtents!;
             if (h.Length != 3 || h.Any(x => x <= 0)) throw new InvalidOperationException($"{p.EditorId}: a box needs three sizes above zero");
-            if (MathF.Abs(p.Right) <= h[0] + clear && MathF.Abs(p.Ahead) <= h[1] + clear)
+            if (MathF.Abs(p.Right) <= h[0] + clear && MathF.Abs(p.Ahead) <= h[1] + clear && MathF.Abs(p.Up) <= h[2] + clear)
                 throw new InvalidOperationException($"{p.EditorId}: the box holds, or nearly holds, the spot where the player arrives");
         }
         for (var i = 0; i < boxes.Count; i++)

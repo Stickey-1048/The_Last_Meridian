@@ -162,6 +162,10 @@ Group Preview
 	{TLM_GW, with TLM:GreenwaterWalk on it: the Greenwater greybox
 	(GREENWATER-STORY-001). None, or not that script: there is no travel
 	point and no river report, and nothing else changes.}
+	Quest Property TLM_NightMail Auto Const
+	{TLM_NM, with TLM:NightMailWalk on it: the Night Mail greybox
+	(NIGHT-MAIL-STORY-001). None, or not that script: there is no travel
+	point to Iron Junction and no rail report, and nothing else changes.}
 EndGroup
 
 ; ----------------------------------------------------------------- constants
@@ -258,6 +262,7 @@ Function Begin()
 	OpenTheRoad()
 	WearPipBoy()
 	OpenGreenwater()
+	OpenNightMail()
 	Debug.Trace("TLM_A1: the first section is set up; aliases left empty: " + unfilled + ", people not there: " + missing)
 	If SayBegin
 		SayBegin.Show()
@@ -630,8 +635,8 @@ EndFunction
 
 bool Function AfterTheChapter(Actor akWho)
 	{What Pritchard has for the player once the chapter is over: the river
-	report if Greenwater was finished and not yet reported, otherwise the
-	Mercy briefing. One conversation, inside this script's own claim on it.
+	report if Greenwater was finished and not yet reported, then what is owed
+	of the Night Mail, otherwise the Mercy briefing. One conversation, inside this script's own claim on it.
 	True if either took this activation.}
 	int river = OfferRiverReport(akWho)
 	If river == RIVER_REPORT_GIVEN || river == RIVER_REPORT_CLOSED
@@ -639,7 +644,12 @@ bool Function AfterTheChapter(Actor akWho)
 		; report's. Nothing else is said in it.
 		Return true
 	EndIf
-	; Nothing was offered, or it was explicitly left for later: the briefing, as before.
+	; Nothing of the river was offered, or it was explicitly left for later: the rail, on the same terms.
+	int rail = OfferRailReport(akWho)
+	If rail == RIVER_REPORT_GIVEN || rail == RIVER_REPORT_CLOSED
+		Return true
+	EndIf
+	; Nothing was offered, or each was explicitly left for later: the briefing, as before.
 	Return OfferBriefing(akWho)
 EndFunction
 
@@ -657,6 +667,41 @@ Function OpenGreenwater()
 	If greybox
 		greybox.OpenDoor()
 	EndIf
+EndFunction
+
+TLM:NightMailWalk Function NightMail()
+	{The Night Mail greybox's script, if it is bound. None otherwise.}
+	If !TLM_NightMail
+		Return None
+	EndIf
+	Return TLM_NightMail as TLM:NightMailWalk
+EndFunction
+
+Function OpenNightMail()
+	{At set-up: the Mercy travel point to Iron Junction is switched on. Nothing of Iron Junction is.}
+	TLM:NightMailWalk greybox = NightMail()
+	If greybox
+		greybox.OpenDoor()
+	EndIf
+EndFunction
+
+int Function OfferRailReport(Actor akWho)
+	{After the chapter: what Pritchard is owed of the Night Mail
+	(NIGHT-MAIL-STORY-001): the report of the road, the inspector's stamp, the
+	yard's change. The same four answers as the river report, and the same
+	numbers. RIVER_REPORT_NONE, with nothing shown or changed, if the greybox
+	is not bound, nobody was passed on, or the main quest is not complete.}
+	If !akWho
+		Return RIVER_REPORT_NONE
+	EndIf
+	If !TLM_MQ01.GetStageDone(100) || TLM_G_MQ01_Done.GetValueInt() != 1
+		Return RIVER_REPORT_NONE
+	EndIf
+	TLM:NightMailWalk greybox = NightMail()
+	If !greybox
+		Return RIVER_REPORT_NONE
+	EndIf
+	Return greybox.OfferReport(akWho)
 EndFunction
 
 ; What TLM:GreenwaterWalk.OfferReport answers. The same numbers as there; a test compares them.

@@ -22,7 +22,11 @@ What it asserts where the plugin places references in a cell of the game
     numbered by the last decimal digit of its id and the sub-block numbered by
     the digit before it, with its references in a group of their own under it;
   - the cell is one of a master's, and every reference under it is one of this
-    plugin's: the game's own references are not copied;
+    plugin's: the game's own references are not copied. Or the cell is one of
+    this plugin's own, which it may be only if the builder's description
+    names it as one (NIGHT-MAIL-STORY-001): it then has a name of its own
+    (EDID), is flagged an interior (DATA, 2 bytes, bit 1) and carries its
+    lighting (XCLL);
   - every reference is a placed actor or object (ACHR, REFR) with a base (NAME)
     and a position (DATA, 24 bytes); it is flagged persistent exactly when it
     is in the cell's persistent group; a box (XPRM) is 32 bytes; where its
@@ -208,6 +212,11 @@ SHAPES = {1: "Box", 2: "Sphere", 3: "Plane", 4: "Line", 5: "Ellipsoid"}
 KINDS = {"ACHR": "PlacedNpc", "REFR": "PlacedObject"}
 
 
+# Where placed_from_json keeps the cells of the plugin's own, beside the references it describes by number.
+OWN_CELLS = "cells of this plugin's own"
+INTERIOR = 0x0001
+
+
 def placed_from_json(path):
     """FormID -> what the builder's description says about each placed reference, or None without the file.
     Each entry also gets "BaseId": the FormID its base should have in the file, with the plugin's own
@@ -230,6 +239,8 @@ def placed_from_json(path):
             else:
                 p["BaseId"] = (len(masters) << 24 | own[base]) if base in own else None
             out[int(p["FormKey"].split(":")[0], 16)] = p
+    # The cells the builder says are this plugin's own, by the number of each within the plugin.
+    out[OWN_CELLS] = {int(cell["FormKey"].split(":")[0], 16) for cell in data.get("Cells", []) if cell.get("OfThisPlugin")}
     return out
 
 
@@ -399,8 +410,27 @@ def check_cells(buf, described=None):
                         if (block_number, sub_number) != (object_id % 10, object_id // 10 % 10):
                             problems.append(f"{name}: filed under block {block_number}, sub-block {sub_number}; "
                                             f"its id asks for {object_id % 10} and {object_id // 10 % 10}")
+                        own_cells = (described or {}).get(OWN_CELLS, set())
                         if cell >> 24 >= masters:
-                            problems.append(f"{name}: is a new cell of this plugin; only copies of a master's cells are expected")
+                            if object_id not in own_cells:
+                                problems.append(f"{name}: is a new cell of this plugin; only copies of a master's cells are expected"
+                                                " (the builder's description does not name it as a cell of the plugin's own)")
+                            else:
+                                # A cell of the plugin's own: named, an interior, and lit.
+                                cell_subs = dict(subrecords(thing[4]))
+                                if not cell_subs.get("EDID", b"").rstrip(b"\0"):
+                                    problems.append(f"{name}: a cell of this plugin's own with no name (EDID)")
+                                data = cell_subs.get("DATA", b"")
+                                if len(data) != 2:
+                                    problems.append(f"{name}: a cell of this plugin's own whose flags (DATA) are {len(data)} bytes, expected 2")
+                                elif not struct.unpack("<H", data)[0] & INTERIOR:
+                                    problems.append(f"{name}: a cell of this plugin's own that is not flagged an interior")
+                                if "XCLL" not in cell_subs:
+                                    problems.append(f"{name}: a cell of this plugin's own with no lighting (XCLL)")
+                        elif object_id in own_cells and cell >> 24 == 0 and masters:
+                            # The description numbers the plugin's own records apart from its masters'; a master's cell
+                            # can share such a number only by chance, and is then told apart by its references below.
+                            pass
                         continue
                     if thing[1] != GROUP_CELL_CHILDREN or cell is None or struct.unpack("<I", thing[2])[0] != cell:
                         problems.append(f"cell sub-block {block_number}/{sub_number}: a group of type {thing[1]} that does not belong to the cell record before it")
@@ -491,6 +521,8 @@ def check_cells(buf, described=None):
                                 problems.append(f"{who}: collision layer {layer} in the file, {want['CollisionLayer']} in the description")
     if described is not None:
         for formid, want in described.items():
+            if formid == OWN_CELLS:
+                continue
             if not any(s & 0xFFFFFF == formid for s in seen):
                 problems.append(f"{want['EditorId']}: in the builder's description, but not under any cell in the file")
     # A quest alias filled with a reference of this plugin must point at one that is in the file.
@@ -555,6 +587,31 @@ def patch(buf, offset, new):
     return buf[:offset] + new + buf[offset + len(new):]
 
 
+def first_own_cell(buf):
+    """Offset of the first CELL record that is one of this plugin's own (its id is numbered after the masters'), or -1.
+    Found by walking the cell blocks, not by searching bytes."""
+    masters = master_count(buf)
+    for item in items(buf, 0, len(buf)):
+        if item[0] != "group" or item[1] != GROUP_TOP or item[2] != b"CELL":
+            continue
+        for block in items(buf, item[3], item[4]):
+            if block[0] != "group":
+                continue
+            for sub in items(buf, block[3], block[4]):
+                if sub[0] != "group":
+                    continue
+                i = sub[3]
+                while i < sub[4]:
+                    if buf[i:i + 4] == b"GRUP":
+                        i += struct.unpack_from("<I", buf, i + 4)[0]
+                        continue
+                    size = struct.unpack_from("<I", buf, i + 4)[0]
+                    if buf[i:i + 4] == b"CELL" and struct.unpack_from("<I", buf, i + 12)[0] >> 24 >= masters:
+                        return i
+                    i += 24 + size
+    return -1
+
+
 def cell_damage(buf):
     """(name, damaged copy or None) for each kind of damage to the cells part. Sizes are never changed."""
     out = []
@@ -581,6 +638,19 @@ def cell_damage(buf):
         out.append(("a reference with another name", None if e < 0 else patch(buf, e + 6, b"X")))
         d = buf.find(b"DATA", r + 24, r + 24 + size)
         out.append(("a reference turned another way", None if d < 0 else patch(buf, d + 6 + 20, struct.pack("<f", struct.unpack_from("<f", buf, d + 6 + 20)[0] + 0.5))))
+    # A cell of the plugin's own, if the file has one (NIGHT-MAIL-STORY-001).
+    c = first_own_cell(buf)
+    if c >= 0:
+        size = struct.unpack_from("<I", buf, c + 4)[0]
+        d = buf.find(b"DATA\x02\x00", c + 24, c + 24 + size)
+        out.append(("a cell of the plugin's own that is not an interior", None if d < 0 else
+                    patch(buf, d + 6, struct.pack("<H", struct.unpack_from("<H", buf, d + 6)[0] & ~INTERIOR))))
+        x = buf.find(b"XCLL", c + 24, c + 24 + size)
+        out.append(("a cell of the plugin's own without its lighting", None if x < 0 else patch(buf, x, b"XCLX")))
+        e = buf.find(b"EDID", c + 24, c + 24 + size)
+        out.append(("a cell of the plugin's own without its name", None if e < 0 else patch(buf, e, b"EDIX")))
+        # Its number changed to one the builder's description does not give a cell of the plugin's own.
+        out.append(("a cell of the plugin's own that the description does not name", patch(buf, c + 12, struct.pack("<I", struct.unpack_from("<I", buf, c + 12)[0] + 0x1000))))
     a = buf.find(b"ALFR\x04\x00")
     while a >= 0 and buf[a + 9] == 0:           # skip aliases filled with a master's reference (the player)
         a = buf.find(b"ALFR\x04\x00", a + 1)
@@ -732,7 +802,9 @@ def main(argv):
     print(f"plugin layout: {quests} quest records; every stage has one item starting with its flags, every objective has flags, the NEXT marker is present")
     if cells:
         beside = "and agrees with the builder's description" if described is not None else "(no description beside the plugin to compare with)"
-        print(f"plugin layout: {refs} placed references under {cells} cell record(s) of the game; each is this plugin's own, filed and flagged as it should be, {beside}")
+        own_cells = len((described or {}).get(OWN_CELLS, set()))
+        whose = "of the game" if not own_cells else f"({cells - own_cells} of the game, {own_cells} of this plugin's own: an interior, named and lit)"
+        print(f"plugin layout: {refs} placed references under {cells} cell record(s) {whose}; each is this plugin's own, filed and flagged as it should be, {beside}")
     else:
         print("plugin layout: no cell records (nothing is placed in the world by this build)")
     if npcs:
