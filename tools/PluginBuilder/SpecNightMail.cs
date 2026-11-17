@@ -265,6 +265,7 @@ public static class NightMail
         new("CargoRetained", "the cargo locked in the yard", "TLM_ACTI_NM_CargoRetained", 600, 300, Use, WhoCargo, OnAtSetUp: false,
             Label: "Mail Car (locked in the yard)", LooksLike: Crate, Use: "Look"),
         new("BillieYard", "where Billie stands when she has walked home", "XMarker", 400, 300, Stand),
+        new("BillieFootplate", "where Billie stands on the footplate in the yard", "XMarker", 1040, 400, Stand),
 
         // ---- Zone 2, floor A: Old Contrary's footplate as it stands in the yard.
         new("LabelFootplate", "the footplate's label", "TLM_ACTI_NM_LabelFootplate", 760, 60, Use, WhoLabelFootplate,
@@ -449,6 +450,7 @@ public static class NightMail
         Ui("NoteAssignedNoBillie", Test, UiAssigned),
         Ui("AskDepartScene", Scene, "The Night Mail leaves the yard for Sawtooth Cut. The eleven miles are not shown: you are set down on her footplate where she stops at the lanterns. No moving engine is simulated.", GoOn, NotYet),
         Ui("AskRejoin", Scene, "The Night Mail is standing in Sawtooth Cut. You walk the line back to her.", GoOn, NotNow),
+        Ui("AskWalkToCut", Scene, "You walk the line out to Sawtooth Cut on foot. The train is not there, and no train is moved.", GoOn, NotNow),
         Ui("NoteTrainNothing", "[Old Contrary]", "There is nothing to do with her here."),
         // ---- At the lanterns.
         Ui("AskRegulator", "[Regulator]", "Nobody is at the regulator. It is a lever.", Labels["tarrow_in_cut"]),
@@ -623,7 +625,7 @@ public static class NightMail
             new AliasListProp("CastInto", Casts.Select(c => (QuestId, c.Into)).ToArray()),
             new StringListProp("CastNames", Casts.Select(c => $"{c.Piece.Name} as {c.Into} of {QuestId}").ToArray()),
             Mine("MercyTravel"), Mine("MercyReturn"), Mine("YardArrival"), Mine("YardFootplate"), Mine("CutArrival"), Mine("PlatformArrival"),
-            Mine("BillieCut"), Mine("BilliePlatform"), Mine("BillieWalk"), Mine("BillieYard"),
+            Mine("BillieFootplate"), Mine("BillieCut"), Mine("BilliePlatform"), Mine("BillieWalk"), Mine("BillieYard"),
             Mine("Retreat1"), Mine("Retreat2"), Mine("Retreat3"),
             Mine("Lockridge"), Mine("Billie"), Mine("Dole"), Mine("Rifle1"), Mine("Rifle2"), Mine("Rifle3"),
             Mine("CargoAboard"), Mine("CargoAtCut"), Mine("CargoDelivered"), Mine("CargoRetained"), Mine("CargoSeized"),

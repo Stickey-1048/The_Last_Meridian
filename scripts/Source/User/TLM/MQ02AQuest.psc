@@ -139,6 +139,7 @@ int NM_YARD_AUTHORITY = 2 Const
 int NM_GO_NONE = 0 Const
 int NM_GO_DEPART = 1 Const
 int NM_GO_REJOIN = 2 Const
+int NM_GO_WALK = 3 Const
 
 ; What the regulator and the reverser can begin at the Cut.
 int NM_AT_NOTHING = 0 Const
@@ -195,6 +196,7 @@ bool HymnalGiven = false
 bool HymnalShown = false
 bool StampPending = false
 bool StampGiven = false
+bool StampAsked = false
 bool HandoverPending = false
 
 Event OnStageSet(int auiStageID, int auiItemID)
@@ -580,7 +582,9 @@ int Function GoOffered()
 	{What the departure control can begin now. NM_GO_DEPART: the Night Mail
 	leaves the yard for the Cut (the job taken, the train in the yard with
 	its mail, nothing begun). NM_GO_REJOIN: the train stands in the Cut and
-	the player walks the line back to it. Reads only.}
+	the player walks the line back to it. NM_GO_WALK: the player has been to
+	the Cut and the train is no longer there: the line is walked on foot, to
+	the siding and whoever is still there. No walk settles anything. Reads only.}
 	If !RoadOpen()
 		Return NM_GO_NONE
 	EndIf
@@ -595,6 +599,9 @@ int Function GoOffered()
 	EndIf
 	If Assigned() && Train() == NM_TRAIN_YARD && Mail() == NM_MAIL_ABOARD && Claim == NM_NONE && Outcome() == NM_NONE
 		Return NM_GO_DEPART
+	EndIf
+	If GetStageDone(40)
+		Return NM_GO_WALK
 	EndIf
 	Return NM_GO_NONE
 EndFunction
@@ -1215,6 +1222,21 @@ bool Function BeginCountersign(ObjectReference akInDrawer)
 	Return true
 EndFunction
 
+bool Function AbandonCountersign()
+	{A countersigning that was confirmed and never seen finished cannot be
+	finished without her. If she is dead or not there, nothing was signed and
+	nothing was recorded: the request is dropped, and the stamp is undecided
+	as it was. True if it was dropped. Nothing recorded is taken back by this.}
+	bool there = IsThere(Alias_Lockridge)
+	; No call into the game between this test and the claim.
+	If YardPending != NM_YARD_COUNTERSIGN || there
+		Return false
+	EndIf
+	YardPending = NM_YARD_NONE
+	Debug.Trace("TLM_MQ02A: the countersigning was confirmed, never seen, and Lockridge is no longer there to do it: nothing was signed, and the request is dropped", 2)
+	Return true
+EndFunction
+
 bool Function FinishCountersign(ObjectReference akSigned, ObjectReference akStamped, ObjectReference akHeld)
 	{The countersigning is SEEN: the board shows her own name and no longer the
 	inspector's, the suspect stock stands held, and she is alive and present
@@ -1239,23 +1261,34 @@ EndFunction
 
 bool Function TakeStamp(ObjectReference akInDrawer)
 	{"Pritchard gets the stamp." The stamp, seen in the drawer, is asked into
-	the player's inventory once. It is not yet recorded taken.}
+	the player's inventory once. It is not yet recorded taken. If the one
+	request was not seen to arrive, nothing was taken: her other two answers
+	stand open, and it is never asked for again. Should it be found in the
+	inventory after all when this is next chosen, that is the taking.}
 	If !RoadOpen() || !StampUndecided() || !IsOn(akInDrawer)
 		Return false
 	EndIf
-	If StampGiven
+	bool holds = HoldsStamp()
+	; No call into the game between this test and the claim.
+	If StampGiven || StampPending || YardPending != NM_YARD_NONE
 		Return false
 	EndIf
-	; No call into the game between this test and the claim.
-	If StampPending || YardPending != NM_YARD_NONE
-		Return false
+	If StampAsked
+		If !holds
+			Return false
+		EndIf
+		StampPending = true
+		StampGiven = true
+		Return true
 	EndIf
 	StampPending = true
+	StampAsked = true
 	If GiveOne(StampItem)
 		StampGiven = true
 		Return true
 	EndIf
-	Debug.Trace("TLM_MQ02A: FAIL CLOSED: the stamp was asked for once and is not in the inventory. It is not asked for again, and nothing else is decided about it. Report this line.", 2)
+	StampPending = false
+	Debug.Trace("TLM_MQ02A: FAIL CLOSED: the stamp was asked for once and is not in the inventory. It is not asked for again; nothing was taken and nothing is recorded. Report this line.", 2)
 	Return false
 EndFunction
 

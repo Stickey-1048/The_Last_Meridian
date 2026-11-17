@@ -43,7 +43,7 @@ YES_NO = {True: 0, False: 1}
 INDEX = {
     "AskTravel": YES_NO, "AskTravelAgain": YES_NO,
     "AskLeaveResolved": YES_NO, "AskLeaveUnresolved": YES_NO, "AskLeaveAgain": YES_NO,
-    "AskBackToYard": YES_NO, "AskRejoin": YES_NO, "AskBoard": YES_NO, "AskDepartScene": YES_NO,
+    "AskBackToYard": YES_NO, "AskRejoin": YES_NO, "AskWalkToCut": YES_NO, "AskBoard": YES_NO, "AskDepartScene": YES_NO,
     "AskRunScene": YES_NO, "AskReverseScene": YES_NO, "AskForwardScene": YES_NO, "AskCarryBackScene": YES_NO,
     "AskCountersignScene": YES_NO, "AskBillieReport": YES_NO, "AskShowHymnal": YES_NO,
     "LockridgeGateB": {"ride": 0, "hymns": 1, "rails": 2, "no": 3},
@@ -262,6 +262,9 @@ class Rider:
     def on(self, alias):
         return not self.s.placed[R + alias].disabled
 
+    def fighting(self, who):
+        return self.who[who].combat_target is not None
+
     def at(self, who, marker, reach=64.0):
         a = self.who[who] if isinstance(who, str) and who in self.who else who
         b = self.s.placed[marker if marker.startswith("TLM_") else R + marker]
@@ -352,7 +355,7 @@ class Rider:
         if player.cell is not self.cell:
             return nm.MERCY
         for name, (low, high) in FLOORS.items():
-            if low <= player.pos[0] <= high:
+            if low - 64 <= player.pos[0] <= high:          # the stand-in sets a walker down a step short of a piece
                 return name
         return "off the floors, at x %s" % player.pos[0]
 
@@ -464,7 +467,7 @@ class Rider:
 
     def depart(self, go=True):
         want = self.m.use_depart(go)
-        return self.act(R + "Depart", want, {"AskBoard": go, "AskDepartScene": go, "AskRejoin": go})
+        return self.act(R + "Depart", want, {"AskBoard": go, "AskDepartScene": go, "AskRejoin": go, "AskWalkToCut": go})
 
     def train(self, pick=None, confirm=True, piece="Regulator"):
         clear = self.m.train_offered() == nm.NM_AT_CLEAR

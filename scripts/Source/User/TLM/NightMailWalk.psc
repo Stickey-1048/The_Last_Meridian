@@ -42,6 +42,7 @@ Group Placed
 	ReferenceAlias Property Alias_YardFootplate Auto Const
 	ReferenceAlias Property Alias_CutArrival Auto Const
 	ReferenceAlias Property Alias_PlatformArrival Auto Const
+	ReferenceAlias Property Alias_BillieFootplate Auto Const
 	ReferenceAlias Property Alias_BillieCut Auto Const
 	ReferenceAlias Property Alias_BilliePlatform Auto Const
 	ReferenceAlias Property Alias_BillieWalk Auto Const
@@ -125,6 +126,7 @@ Group Technical
 	Message Property NoteAssignedNoBillie Auto Const
 	Message Property AskDepartScene Auto Const
 	Message Property AskRejoin Auto Const
+	Message Property AskWalkToCut Auto Const
 	Message Property NoteTrainNothing Auto Const
 	Message Property AskRegulator Auto Const
 	Message Property AskRunScene Auto Const
@@ -280,6 +282,7 @@ int NM_YARD_AUTHORITY = 2 Const
 int NM_GO_NONE = 0 Const
 int NM_GO_DEPART = 1 Const
 int NM_GO_REJOIN = 2 Const
+int NM_GO_WALK = 3 Const
 int NM_AT_OPEN = 1 Const
 int NM_AT_CLEAR = 2 Const
 int NM_HOW_SEEN = 1 Const
@@ -494,6 +497,31 @@ Function Refresh()
 	Put(Alias_BoardStamped, held && decided != NM_STAMP_SIGNED)
 	Put(Alias_HeldStock, decided == NM_STAMP_SIGNED)
 	Put(Alias_StampInDrawer, decided != NM_STAMP_TAKEN && !river.IsStampBeingTaken())
+	PlaceBillie(river)
+EndFunction
+
+bool Function PlaceBillie(TLM:MQ02AQuest akRiver)
+	{Billie where the road's facts say the engine's driver is: on the footplate
+	where the train is recorded to stand, or, put off after a sale, at her
+	walking marker until her return was shown and at the yard after it. She is
+	never ahead of what is recorded. True if she is alive, present, in no
+	fight and seen there.}
+	ReferenceAlias spot = Alias_BillieFootplate
+	int train = akRiver.Train()
+	If akRiver.Outcome() == NM_SOLD
+		If !akRiver.IsBillieReleased()
+			Return false
+		EndIf
+		spot = Alias_BillieWalk
+		If akRiver.IsBillieReported()
+			spot = Alias_BillieYard
+		EndIf
+	ElseIf train == NM_TRAIN_CUT
+		spot = Alias_BillieCut
+	ElseIf train == NM_TRAIN_PLATFORM
+		spot = Alias_BilliePlatform
+	EndIf
+	Return MoveBillie(akRiver, spot)
 EndFunction
 
 ; ==================================================================== lines
@@ -599,6 +627,10 @@ Function UsedOnTheRoad(TLM:MQ02AQuest akRiver, int aiWho)
 		TalkLockridge(akRiver)
 	ElseIf aiWho == NW_RIFLE1 || aiWho == NW_RIFLE2 || aiWho == NW_RIFLE3
 		; The Black Rail have no lines.
+	ElseIf aiWho == NW_BACK
+		; The way back along the line is never shut, whatever was begun and not seen: walking settles
+		; nothing, and a scene that cannot be shown must not keep anybody in the Cut.
+		BackToYard(akRiver)
 	ElseIf Resume(akRiver)
 		; A scene of the train was begun and not seen finished: it was tried again, and nothing else is done.
 	ElseIf aiWho == NW_LABEL_YARD
@@ -625,8 +657,6 @@ Function UsedOnTheRoad(TLM:MQ02AQuest akRiver, int aiWho)
 		AtTrain(akRiver)
 	ElseIf aiWho == NW_DOLE
 		TalkDole(akRiver)
-	ElseIf aiWho == NW_BACK
-		BackToYard(akRiver)
 	EndIf
 EndFunction
 
@@ -1050,6 +1080,12 @@ Function Countersign(TLM:MQ02AQuest akRiver)
 EndFunction
 
 Function CarryOutCountersign(TLM:MQ02AQuest akRiver)
+	If akRiver.AbandonCountersign()
+		; She is dead or gone before it could be shown: a dead woman countersigns nothing.
+		Refresh()
+		ShowBox(NoteDecisionFailed)
+		Return
+	EndIf
 	ObjectReference signed = Piece(Alias_BoardSigned)
 	ObjectReference stamped = Piece(Alias_BoardStamped)
 	ObjectReference held = Piece(Alias_HeldStock)
@@ -1168,16 +1204,21 @@ EndFunction
 
 ; ============================================================== Billie Tupper
 
-Function MoveBillie(TLM:MQ02AQuest akRiver, ReferenceAlias akWhere)
-	{Billie, alive, present and in no fight, is set at that marker. Nobody else is moved by it.}
+bool Function MoveBillie(TLM:MQ02AQuest akRiver, ReferenceAlias akWhere)
+	{Billie, alive, present and in no fight, is set at that marker unless she
+	stands there already. Nobody else is moved by it. True if she is seen there.}
 	ObjectReference where = Piece(akWhere)
 	If !where || !akRiver.BillieCanSpeak()
-		Return
+		Return false
 	EndIf
 	Actor billie = Alias_Billie.GetActorReference()
-	If billie
+	If !billie
+		Return false
+	EndIf
+	If !akRiver.StandsAt(billie, where)
 		billie.MoveTo(where)
 	EndIf
+	Return akRiver.StandsAt(billie, where)
 EndFunction
 
 Function TalkBillie(TLM:MQ02AQuest akRiver)
@@ -1233,7 +1274,9 @@ Function AtDepart(TLM:MQ02AQuest akRiver)
 		go = akRiver.GoOffered()
 	EndIf
 	If go == NM_GO_REJOIN
-		Rejoin(akRiver)
+		Rejoin(akRiver, AskRejoin)
+	ElseIf go == NM_GO_WALK
+		Rejoin(akRiver, AskWalkToCut)
 	ElseIf go == NM_GO_DEPART
 		Depart(akRiver)
 	EndIf
@@ -1267,7 +1310,6 @@ Function CarryOutDepart(TLM:MQ02AQuest akRiver)
 	bool done = false
 	If cut && lanterns && player && akRiver.PlayerIsAlive()
 		SwitchOn(Alias_Lanterns)
-		MoveBillie(akRiver, Alias_BillieCut)
 		player.MoveTo(cut)
 		If Arrived(akRiver, cut)
 			zone = NW_ZONE_CUT
@@ -1283,14 +1325,15 @@ Function CarryOutDepart(TLM:MQ02AQuest akRiver)
 	EndIf
 EndFunction
 
-Function Rejoin(TLM:MQ02AQuest akRiver)
-	{The train stands in the Cut and the player is not with it: on foot back to it. Nothing is settled.}
+Function Rejoin(TLM:MQ02AQuest akRiver, Message akAsk)
+	{On foot along the line to the Cut: back to the train that stands there, or, when it has gone on, been
+	taken or gone home, to the siding it left. Nothing is settled and no train is moved.}
 	ObjectReference cut = Piece(Alias_CutArrival)
 	If !cut
 		Return
 	EndIf
 	int mark = akRiver.Mark()
-	If ShowBox(AskRejoin) != 0
+	If ShowBox(akAsk) != 0
 		Return
 	EndIf
 	Actor player = Game.GetPlayer()
@@ -1417,7 +1460,6 @@ Function CarryOutRun(TLM:MQ02AQuest akRiver)
 		SwitchOff(Alias_CargoAtCut)
 		SwitchOn(Alias_EngineDamaged)
 		SwitchOff(Alias_EngineSound)
-		MoveBillie(akRiver, Alias_BilliePlatform)
 		player.MoveTo(platform)
 		If Arrived(akRiver, platform)
 			zone = NW_ZONE_PLATFORM
@@ -1433,7 +1475,8 @@ Function CarryOutRun(TLM:MQ02AQuest akRiver)
 		Return
 	EndIf
 	ShowBox(NoteRunDone)
-	If akRiver.DidBillieDrive() && akRiver.BillieCanSpeak() && !ranSaid
+	; Hers to say if she drove and is seen at the platform with the engine.
+	If akRiver.DidBillieDrive() && !ranSaid && PlaceBillie(akRiver)
 		If Said(SayBillieRan)
 			ranSaid = true
 		EndIf
@@ -1472,7 +1515,6 @@ bool Function BackAtTheYard(TLM:MQ02AQuest akRiver)
 	EndIf
 	SwitchOn(Alias_CargoRetained)
 	SwitchOff(Alias_CargoAtCut)
-	MoveBillie(akRiver, Alias_YardFootplate)
 	player.MoveTo(yard)
 	If !Arrived(akRiver, yard)
 		Return false
@@ -1494,7 +1536,7 @@ Function CarryOutReverse(TLM:MQ02AQuest akRiver)
 	EndIf
 	ShowBox(NoteBackedOut)
 	; "Nobody's dead" is hers to say only if she drove, and nobody is.
-	If akRiver.DidBillieDrive() && akRiver.BillieCanSpeak() && !akRiver.AnybodyDead() && !backedSaid
+	If akRiver.DidBillieDrive() && !akRiver.AnybodyDead() && !backedSaid && PlaceBillie(akRiver)
 		If Said(SayBillieBacked)
 			backedSaid = true
 		EndIf
@@ -1534,7 +1576,6 @@ Function CarryOutForward(TLM:MQ02AQuest akRiver)
 		SwitchOff(Alias_CargoAtCut)
 		SwitchOn(Alias_EngineSound)
 		SwitchOff(Alias_EngineDamaged)
-		MoveBillie(akRiver, Alias_BilliePlatform)
 		player.MoveTo(platform)
 		If Arrived(akRiver, platform)
 			zone = NW_ZONE_PLATFORM

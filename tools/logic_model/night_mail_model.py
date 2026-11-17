@@ -49,7 +49,7 @@ NM_STAMP_NONE, NM_STAMP_KEPT, NM_STAMP_SIGNED, NM_STAMP_TAKEN = 0, 61, 62, 63
 NM_YARD_HELD, NM_YARD_WITHDRAWN, NM_YARD_VACANT = range(3)
 NM_SCENE_NONE, NM_SCENE_DEPART, NM_SCENE_RUN, NM_SCENE_FORWARD, NM_SCENE_REVERSE, NM_SCENE_RETURN, NM_SCENE_SALE, NM_SCENE_DEFEAT = range(8)
 NM_YARD_NONE, NM_YARD_COUNTERSIGN, NM_YARD_AUTHORITY = range(3)
-NM_GO_NONE, NM_GO_DEPART, NM_GO_REJOIN = range(3)
+NM_GO_NONE, NM_GO_DEPART, NM_GO_REJOIN, NM_GO_WALK = range(4)
 NM_AT_NOTHING, NM_AT_OPEN, NM_AT_CLEAR = range(3)
 NM_HOW_SEEN, NM_HOW_TOLD = 1, 2
 NM_GREET_NONE, NM_GREET_GATE, NM_GREET_ALERTED, NM_GREET_SOLD = range(4)
@@ -160,6 +160,8 @@ class Line:
             return NM_GO_REJOIN
         if self.assigned() and self.train == NM_TRAIN_YARD and self.mail == NM_MAIL_ABOARD and self.claim == NM_NONE and self.outcome == NM_NONE:
             return NM_GO_DEPART
+        if self.done(40):
+            return NM_GO_WALK
         return NM_GO_NONE
 
     def greeting(self) -> int:
@@ -248,9 +250,7 @@ class Line:
         """On foot from the Cut or the platform. Settles nothing."""
         if not self.road_open():
             return []
-        resumed = self._resume()
-        if resumed is not None:
-            return resumed
+        # Never shut, whatever was begun and not seen: no scene is tried again by it.
         shown = ["AskBackToYard"]
         if go:
             self.where = YARD
@@ -384,7 +384,8 @@ class Line:
                 self.stages.add(62)
                 shown.append("NoteCountersigned")
         elif stamp == "take":
-            if not self._give("stamp"):
+            if self.asked.get("stamp", 0) or not self._give("stamp"):
+                # Asked for once. Not seen to arrive: nothing was taken, and it is never asked for again.
                 shown.append("NoteStampFailed")
                 return
             self.stamps += 1
@@ -450,8 +451,8 @@ class Line:
             self._retire(10)
             self._show(20)
             offered = self.go_offered()
-        if offered == NM_GO_REJOIN:
-            shown.append("AskRejoin")
+        if offered in (NM_GO_REJOIN, NM_GO_WALK):
+            shown.append("AskRejoin" if offered == NM_GO_REJOIN else "AskWalkToCut")
             if go:
                 self.where = CUT
             return shown
