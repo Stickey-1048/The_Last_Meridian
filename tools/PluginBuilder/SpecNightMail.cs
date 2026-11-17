@@ -498,8 +498,8 @@ public static class NightMail
         Ui("NoteLeftUnresolved", Test, "You left Iron Junction with the Night Mail unsettled. The road is still open."),
         Ui("NoteFall", Greybox, "You stepped off the greybox floor and were set back on it."),
         // ---- Labels.
-        Ui("LabelYard", "[Greybox: Iron Junction yard]", "Augusta Lockridge runs the yard from her desk. The rules are on the gate; the dispatch board and her desk drawer are here. Old Contrary stands on the next part of this floor."),
-        Ui("LabelFootplate", "[Greybox: Old Contrary's footplate, in the yard]", "Flat floor stands for the engine. Billie Tupper drives. The departure control is here, and the mail car behind."),
+        Ui("LabelYard", "[Greybox: Iron Junction yard]", "The rules are on the gate. The office desk, drawer and dispatch board are here; the board shows the yard's current status. The footplate stand-in is on the next part of this floor."),
+        Ui("LabelFootplate", "[Greybox: Old Contrary's footplate, in the yard]", "Flat floor stands for the engine. The departure control is here, and the mail car behind. Use the current controls to continue."),
         Ui("LabelCut", "[Greybox: Sawtooth Cut]", "The footplate as it stands at the lanterns, with the regulator and the reverser. Ahead: the spread rail and Preacher Dole. The tabernacle siding is beyond him."),
         Ui("LabelSiding", "[Greybox: the boxcar tabernacle]", "Dole's chapel on a dead siding: a hymnal, a collection plate, and a boiler somebody has chalked."),
         Ui("LabelPlatform", "[Greybox: the valley platform]", "Where the Night Mail arrives if she gets through."),

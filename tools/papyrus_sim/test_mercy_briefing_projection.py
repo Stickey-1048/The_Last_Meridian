@@ -133,9 +133,9 @@ class Projection(unittest.TestCase):
     def test_availability_text_is_outside_the_quotes_and_as_the_contract_words_it(self):
         # As GREENWATER-STORY-001's order words them for this candidate (item 1), in which Greenwater is playable.
         # The a8 source keeps ACT1-RUNTIME-001's own wording, which said that no destination is.
-        self.assertEqual(self.ui["briefing_only"], "Mercy briefing. Greenwater is playable; the other roads are not.")
-        self.assertEqual(self.ui["hand_off_footer"], "Opening complete. Ask for briefings or use Greenwater story test.")
-        self.assertEqual(self.ui["journal_complete"], "Mercy briefing complete. Only Greenwater is playable; other roads and fair are not.")
+        self.assertEqual(self.ui["briefing_only"], "Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not.")
+        self.assertEqual(self.ui["hand_off_footer"], "Opening complete. Ask for briefings or use a story test point.")
+        self.assertEqual(self.ui["journal_complete"], "Mercy briefing complete. Greenwater and Iron Junction are playable; Red Hollow and the fair are not.")
         self.assertEqual(self.ui["objective"], "Ask Pritchard about the three roads.")
         for record in ("Hub", "HandOff"):
             text = self.messages[PREFIX + record]["Text"]
@@ -160,7 +160,7 @@ class Projection(unittest.TestCase):
                 longest = max(longest, len(text))
                 for b in m["Buttons"]:
                     self.assertLessEqual(len(b["Text"]), 48, name)
-        self.assertEqual(longest, 236)                 # measured: the hand-off with this candidate's footer; the longest spoken box alone is 221
+        self.assertEqual(longest, 233)                 # measured: the hand-off with this candidate's footer; the longest spoken box alone is 221
 
     def test_nothing_names_what_act_one_does_not_know(self):
         for name, m in self.messages.items():
@@ -187,7 +187,7 @@ class Projection(unittest.TestCase):
         self.assertIsNotNone(described[0]["Model"], "against a master the book takes after one of its notes")
         # The first section's two papers are as they were.
         # (TLM_BOOK_LetterOfHire is GREENWATER-STORY-001's; test_greenwater_projection.py reads it.)
-        self.assertEqual(sorted(books), ["TLM_BOOK_Docket2298", "TLM_BOOK_LetterOfHire", "TLM_BOOK_MarshalLog", "TLM_BOOK_RailMaintLedger"])
+        self.assertEqual(sorted(books), ["TLM_BOOK_Docket2298", "TLM_BOOK_HymnalFlyleaf", "TLM_BOOK_LetterOfHire", "TLM_BOOK_MarshalLog", "TLM_BOOK_RailMaintLedger"])
 
     def test_the_quest_is_a_utility_task_of_its_own(self):
         entry = self.map["quest"]
@@ -201,7 +201,7 @@ class Projection(unittest.TestCase):
         self.assertEqual(quest["Objectives"][0]["TargetAliases"], [0])
         self.assertEqual([s["Name"] for s in quest["Scripts"]], ["TLM:MercyBriefing"])
         ids = {q["EditorId"] for q in self.plugin["Quests"]}
-        self.assertEqual(ids, {"TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", "TLM_MQ02B", "TLM_GW"})
+        self.assertEqual(ids, {"TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", "TLM_MQ02A", "TLM_MQ02B", "TLM_GW", "TLM_NM"})
         for later in entry["not_a_stage_of"]:
             # TLM_MQ02B now exists (GREENWATER-STORY-001): the briefing is still no stage of it.
             if later != "TLM_MQ02b":

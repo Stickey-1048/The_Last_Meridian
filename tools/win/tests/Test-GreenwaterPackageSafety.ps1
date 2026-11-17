@@ -22,6 +22,7 @@
 param([string]$Python='python')
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
+$sourceRoot=$repo
 $root=Join-Path $repo ('build/greenwater-package-safety-'+[guid]::NewGuid().ToString('N'))
 [void](New-Item -ItemType Directory $root)
 $checks=0
@@ -61,7 +62,7 @@ $files=@(
 function Copy-FromCheckout([string]$name,[string]$copy) {
     $target=Join-Path $copy $name
     [void](New-Item -ItemType Directory -Force (Split-Path -Parent $target))
-    Copy-Item -LiteralPath (Join-Path $repo $name) -Destination $target -Force
+    Copy-Item -LiteralPath (Join-Path $sourceRoot $name) -Destination $target -Force
 }
 function Add-Text([string]$path,[string]$text) {
     # Appended as bytes, so that nothing else in the file changes.
@@ -94,7 +95,27 @@ try {
         if ((Get-Content $master -Raw).Trim() -ne 'input sentinel') { throw "The input master changed: $what" }
     }
 
-    # 1. The unchanged copy passes the full verifier and the packager's own source check, and is stopped by the
+    # NIGHT-MAIL-STORY-001: this checkout is newer than the frozen Greenwater manifest.
+    # Require its precise refusal, then run ALL the original damage probes on the immutable
+    # 016b source export. No original verifier/pin/packager is changed or waived.
+    if (Test-Path -LiteralPath (Join-Path $scripts 'NightMailWalk.psc')) {
+        $reason=Get-Refusal ($common + @{OutputDirectory=$new;Python=$Python})
+        if ($reason -notlike '*candidate source verifier refused this checkout*Act1Walk.psc is not the source*') { throw "The frozen Greenwater packager did not precisely refuse Night Mail: $reason" };$checks++
+        Assert-NothingMade 'newer Night Mail source';$checks++
+        $zip=Join-Path $root '016b-source.zip';$sourceRoot=Join-Path $root '016b-source'
+        & git -C $repo archive --format=zip --output $zip '016b2b4005203ba180b908fb310a1653a95f934f'
+        if ($LASTEXITCODE -ne 0) { throw 'Could not export the immutable Greenwater source for its original probes.' }
+        Expand-Archive -LiteralPath $zip -DestinationPath $sourceRoot
+        foreach ($name in $files) { Copy-FromCheckout $name $copy }
+        foreach ($name in @('MQ02AQuest.psc','NightMailWalk.psc','NightMailTalk.psc')) {
+            $onlyCopy=[IO.Path]::GetFullPath((Join-Path $scripts $name))
+            if (-not $onlyCopy.StartsWith(([IO.Path]::GetFullPath($copy)+[IO.Path]::DirectorySeparatorChar),[StringComparison]::OrdinalIgnoreCase)) { throw 'Script copy path escaped the fixture.' }
+            Remove-Item -LiteralPath $onlyCopy
+        }
+        foreach ($script in @(Get-ChildItem -LiteralPath (Join-Path $sourceRoot 'scripts/Source/User/TLM') -File -Filter '*.psc')) { Copy-Item -LiteralPath $script.FullName -Destination $scripts -Force }
+    }
+
+    # 1. The unchanged 016b copy passes the full verifier and the packager's own source check, and is stopped by the
     #    next check: the first of the 17 reviewed compiled scripts is not in the empty runtime folder.
     $reason=Get-Refusal ($common + @{OutputDirectory=$new;Python=$Python})
     if ($reason -notlike '*Reviewed runtime input absent:*') { throw "The unchanged copy was not stopped at the reviewed runtime check: $reason" };$checks++

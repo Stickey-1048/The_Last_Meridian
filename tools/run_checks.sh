@@ -19,7 +19,7 @@ cd "$(dirname "$0")/.."
 export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
 
 echo "== 1/5 logic model =="
-(cd tools/logic_model && python3 -m unittest 2>&1 | tail -4)
+(cd tools/logic_model && python3 -m unittest 2>&1)
 
 echo "== 2/5 plugin build =="
 dotnet build tools/WorldSliceBuilder --nologo
@@ -160,7 +160,10 @@ grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$
 
 standin weak-evidence
 grep -q "alias  0 Player  (reference) \[Optional\]" "$(report weak-evidence)" || { echo "FAILED: two quests were accepted as enough evidence for the player reference"; exit 1; }
-grep -q "^Cell " "$(report weak-evidence)" && { echo "FAILED: a cell record was written although the master has no test room"; exit 1; }
+# NIGHT-MAIL-STORY-001 owns one interior cell independently of QASmoke.
+# Refuse a fabricated game-cell override AND require exactly that own cell.
+grep -q "^Cell QASmoke " "$(report weak-evidence)" && { echo "FAILED: a QASmoke override was written although the master has no test room"; exit 1; }
+[ "$(grep -c '^Cell ' "$(report weak-evidence)")" = 1 ] && grep -q '^Cell TLM_CELL_NightMail ' "$(report weak-evidence)" || { echo "FAILED: a source without QASmoke must write exactly the Night Mail own cell"; exit 1; }
 grep -q "TLM_REF_TrialPerson: not placed (no cell 'QASmoke' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: a master without the test room was not reported"; exit 1; }
 # That master has no settler either: the actors made from it are left out, and so is whoever stands on them.
 grep -q "TLM_NPC_TrialPerson: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: an actor that could not be made was not reported"; exit 1; }
@@ -208,7 +211,7 @@ echo "  vanilla lookups work against eight stand-in masters (spelling, fallback,
 echo "  the id file came out the same with and without a master"
 
 echo "== 5/5 the scripts against a stand-in for the game =="
-(cd tools/papyrus_sim && python3 -m unittest 2>&1 | tail -4)
+(cd tools/papyrus_sim && python3 -m unittest 2>&1)
 python3 tools/papyrus_sim --brief all
 # The same with every call out of a script taking a frame, so that handlers
 # on different threads overlap (amendment A24).

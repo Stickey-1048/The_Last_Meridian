@@ -293,10 +293,6 @@ class Line:
         greet = self.greeting()
         if greet != NM_GREET_NONE:
             self._gate(shown, greet, pick)
-        elif self.outcome == NM_RUN and self.mail == NM_MAIL_DELIVERED and not self.done(60):
-            shown.append("LockridgeAfterRan")
-            if pick == "rails":
-                shown.append("LockridgeRails")
         elif self.outcome == NM_DEFEAT and not self.dole and not self.ostrander_known:
             shown.append("LockridgeAfterDole")
         else:

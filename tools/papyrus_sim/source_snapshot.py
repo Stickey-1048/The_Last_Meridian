@@ -1,0 +1,32 @@
+"""Read-only Git source exports for frozen candidate tests, never live pins."""
+import io
+import subprocess
+import tempfile
+import zipfile
+from pathlib import Path
+from test_sim import ROOT
+
+GREENWATER = "016b2b4005203ba180b908fb310a1653a95f934f"
+_snapshots = {}
+
+
+def snapshot(commit=GREENWATER):
+    if commit not in _snapshots:
+        got = subprocess.run(["git", "archive", "--format=zip", commit], cwd=ROOT, capture_output=True, check=True)
+        target = Path(tempfile.mkdtemp(prefix="tlm-source-"))
+        with zipfile.ZipFile(io.BytesIO(got.stdout)) as archive:
+            archive.extractall(target)
+        _snapshots[commit] = target
+    return _snapshots[commit]
+
+
+def built_greenwater():
+    root = snapshot()
+    out = root / "build/sim/TheLastMeridian.json"
+    if not out.exists():
+        for args in (["tools/StandInMaster", "build/standin/Fallout4.esm", "default"],
+                     ["tools/PluginBuilder", "--out", "build/sim", "--fallout4-esm", "build/standin/Fallout4.esm"]):
+            got = subprocess.run(["dotnet", "run", "--project", args[0], "--"] + args[1:], cwd=root, capture_output=True, text=True)
+            if got.returncode:
+                raise AssertionError("Frozen 016b stand-in build failed:\n" + got.stdout + got.stderr)
+    return out

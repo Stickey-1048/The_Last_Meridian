@@ -22,7 +22,9 @@ public static class StoryCloneCheck
     static readonly string[] Damages={"greenwater-binding-removed","greenwater-binding-to-another-quest","greenwater-binding-as-alias",
         "briefing-binding-removed","greenwater-alias-dropped","greenwater-placement-missing","road-quest-missing",
         // Not damage: a source as it was before the road existed (neither quest, no binding). It must clone as it did.
-        "source-without-greenwater"};
+        "source-without-greenwater","night-mail-binding-removed","night-mail-binding-to-another-quest","night-mail-binding-as-alias",
+        "night-mail-alias-dropped","night-mail-placement-missing","night-mail-placement-substituted","night-mail-road-missing",
+        "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail"};
 
     static IFallout4ModGetter Damaged(string story,string damage)
     {
@@ -31,6 +33,8 @@ public static class StoryCloneCheck
         var walk=a1.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:Act1Walk");
         ScriptObjectProperty Prop(string name)=>walk.Properties.OfType<ScriptObjectProperty>().Single(p=>p.Name==name);
         var gw=bad.Quests.Single(q=>q.EditorID=="TLM_GW");
+        var nm=bad.Quests.SingleOrDefault(q=>q.EditorID=="TLM_NM");
+        void RemoveNightMail(){walk.Properties.Remove(Prop("TLM_NightMail"));bad.Quests.Remove(nm!.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);}
         switch(damage){
             case "greenwater-binding-removed":walk.Properties.Remove(Prop("TLM_Greenwater"));break;
             case "greenwater-binding-to-another-quest":Prop("TLM_Greenwater").Object.SetTo(bad.Quests.Single(q=>q.EditorID=="TLM_SQ01").FormKey);break;
@@ -40,8 +44,22 @@ public static class StoryCloneCheck
             case "greenwater-placement-missing":((QuestReferenceAlias)gw.Aliases![3]).ForcedReference.SetToNull();break;
             case "road-quest-missing":bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02B").FormKey);break;
             case "source-without-greenwater":
+                if(nm!=null)RemoveNightMail();
                 walk.Properties.Remove(Prop("TLM_Greenwater"));
                 bad.Quests.Remove(gw.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02B").FormKey);break;
+            case "night-mail-binding-removed":walk.Properties.Remove(Prop("TLM_NightMail"));break;
+            case "night-mail-binding-to-another-quest":Prop("TLM_NightMail").Object.SetTo(gw.FormKey);break;
+            case "night-mail-binding-as-alias":Prop("TLM_NightMail").Alias=0;break;
+            case "night-mail-alias-dropped":nm!.Aliases!.RemoveAt(nm.Aliases.Count-1);break;
+            case "night-mail-placement-missing":((QuestReferenceAlias)nm!.Aliases![3]).ForcedReference.SetToNull();break;
+            case "night-mail-placement-substituted":((QuestReferenceAlias)nm!.Aliases![3]).ForcedReference.SetTo(((QuestReferenceAlias)nm.Aliases[4]).ForcedReference.FormKey);break;
+            case "night-mail-road-missing":bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);break;
+            case "night-mail-cell-missing":foreach(var b in bad.Cells.Records)foreach(var s in b.SubBlocks)s.Cells.RemoveAll(c=>c.EditorID=="TLM_CELL_NightMail");break;
+            case "night-mail-interior-moved":
+                var cells=bad.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(s=>s.Cells).ToArray();
+                var own=cells.Single(c=>c.EditorID=="TLM_CELL_NightMail");var piece=own.Persistent.First(r=>r.EditorID=="TLM_REF_NM_Lockridge");
+                own.Persistent.Remove(piece);cells.Single(c=>c.EditorID=="QASmoke").Persistent.Add(piece);break;
+            case "source-without-night-mail":RemoveNightMail();break;
             default:throw new ArgumentException("unknown damage: "+damage+"; one of "+string.Join(", ",Damages));
         }
         return bad;
@@ -74,6 +92,7 @@ public static class StoryCloneCheck
         try{WorldStory.Validate(read);}
         catch(InvalidDataException e){Console.Error.WriteLine("REFUSED on read-back: "+e.Message);return 1;}
         var persistent=read.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
+        var masterRefs=template.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(s=>s.Cells).SelectMany(c=>c.Persistent.Concat(c.Temporary)).ToDictionary(r=>r.FormKey);
         object Quest(string id){
             var q=read.Quests.SingleOrDefault(x=>x.EditorID==id);
             if(q==null)return new{present=false};
@@ -82,9 +101,10 @@ public static class StoryCloneCheck
             var script=q.VirtualMachineAdapter!.Scripts.First();
             return new{present=true,form=q.FormKey.ToString(),script=script.Name,properties=script.Properties.Count,
                 aliases=q.Aliases!.OfType<IQuestReferenceAliasGetter>().Select(a=>{
-                    var r=persistent[a.ForcedReference.FormKey];
+                    var key=a.ForcedReference.FormKey;
+                    var r=persistent.TryGetValue(key,out var own)?own:masterRefs[key];
                     P3Float pos=r switch {IPlacedNpcGetter n=>n.Position,IPlacedObjectGetter o=>o.Position,_=>default};
-                    return new{name=a.Name,id=a.ID,reference=r.EditorID,x=pos.X,y=pos.Y,z=pos.Z,actor=r is IPlacedNpcGetter,flags=r.MajorRecordFlagsRaw};}).ToArray(),
+                    return new{name=a.Name,id=a.ID,reference=r.EditorID,form=r.FormKey.ToString(),owner=r.FormKey.ModKey.FileName.String,x=pos.X,y=pos.Y,z=pos.Z,actor=r is IPlacedNpcGetter,flags=r.MajorRecordFlagsRaw};}).ToArray(),
                 aliasScripts=q.VirtualMachineAdapter.Aliases.Select(a=>new{alias=a.Property.Alias,on=Where(a.Property.Object.FormKey),scripts=a.Scripts.Select(s=>s.Name).ToArray()}).ToArray(),
                 forms=script.Properties.OfType<IScriptObjectPropertyGetter>().Where(p=>p.Alias<0).ToDictionary(p=>p.Name,p=>Where(p.Object.FormKey)),
                 ownAliases=script.Properties.OfType<IScriptObjectPropertyGetter>().Where(p=>p.Alias>=0).ToDictionary(p=>p.Name,p=>Where(p.Object.FormKey)+" alias "+p.Alias),
@@ -95,7 +115,8 @@ public static class StoryCloneCheck
             masters=read.ModHeader.MasterReferences.Select(m=>m.Master.ToString()).ToArray(),
             quests=read.Quests.Select(q=>q.EditorID).ToArray(),
             persistentReferences=persistent.Count,
-            firstSection=Quest("TLM_WS_A1"),greenwater=Quest("TLM_WS_GW"),
+            firstSection=Quest("TLM_WS_A1"),greenwater=Quest("TLM_WS_GW"),nightMail=Quest("TLM_WS_NM"),
+            nightMailSites=WorldStory.NightMailSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z}),
             sites=WorldStory.GreenwaterSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z})},new JsonSerializerOptions{WriteIndented=true}));
         return 0;
     }

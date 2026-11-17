@@ -1,6 +1,6 @@
 TheLastMeridian.esp  (masters: Fallout4.esm; header version 0.95; lowest FormID 0x800)
 
-Global (31)
+Global (49)
   000800  TLM_G_DataVersion
   000801  TLM_G_CaravanOutcome
   000802  TLM_G_CaravanMethod
@@ -32,22 +32,44 @@ Global (31)
   0008B2  TLM_G_MQ02B_HatcherHunting
   0008B3  TLM_G_MQ02B_SilverRiver
   0008B4  TLM_G_MQ02B_Reported
-Faction (5)
+  00094F  TLM_G_MQ02A_Outcome
+  000950  TLM_G_MQ02A_Mail
+  000951  TLM_G_MQ02A_Engine
+  000952  TLM_G_MQ02A_Train
+  000953  TLM_G_MQ02A_Dole
+  000954  TLM_G_MQ02A_Stamp
+  000955  TLM_G_MQ02A_StampDelivered
+  000956  TLM_G_MQ02A_YardAuthority
+  000957  TLM_G_MQ02A_Reported
+  000958  TLM_G_MQ02A_MailThrough
+  000959  TLM_G_MQ02A_MailSold
+  00095A  TLM_G_MQ02A_LineClosed
+  00095B  TLM_G_MQ02A_DoleLives
+  00095C  TLM_G_MQ02A_SilverRail
+  00095D  TLM_G_MQ02A_OstranderKnown
+  00095E  TLM_G_MQ02A_LockridgeStamping
+  00095F  TLM_G_MQ02A_LockridgeSigned
+  000960  TLM_G_MQ02A_LockridgeReported
+Faction (7)
   000812  TLM_Fac_Cutters
   000813  TLM_Fac_Caravan
   000814  TLM_Fac_MercyCrossing
   0008B5  TLM_Fac_Greenwater
   0008B6  TLM_Fac_QueenCrew
-MiscItem (3)
+  000961  TLM_Fac_IronJunction
+  000962  TLM_Fac_BlackRail
+MiscItem (4)
   000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
   000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
   000823  TLM_MISC_TrialObject  "Trial Object"
-Book (4)
+  000963  TLM_MISC_OstranderStamp  "Inspector's Stamp"
+Book (5)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
   00089E  TLM_BOOK_Docket2298  "Mercy Road Case: 2298 Review Copy"
   0008D2  TLM_BOOK_LetterOfHire  "A Letter of Hire"
-Activator (31)
+  00098A  TLM_BOOK_HymnalFlyleaf  "Flyleaf of a Hymnal"
+Activator (63)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
   000834  TLM_TRIG_TownGate
@@ -79,9 +101,41 @@ Activator (31)
   0008C9  TLM_ACTI_GW_CargoLashed  "Grain barge (lashed to the Queen)"
   0008CA  TLM_ACTI_GW_Chain  "Anchor chain and barge lashing"
   0008CB  TLM_ACTI_GW_Pilot  "Barge pilot lever"
+  000964  TLM_ACTI_NM_Travel  "Iron Junction story test"
+  000965  TLM_ACTI_NM_Rules  "Rules of the Yard"
+  000966  TLM_ACTI_NM_LabelYard  "Greybox: Iron Junction yard"
+  000967  TLM_ACTI_NM_Exit  "Road to Mercy Crossing"
+  000968  TLM_ACTI_NM_Drawer  "Top Drawer of the Yardmaster's Desk"
+  000969  TLM_ACTI_NM_StampInDrawer  "Inspector's Stamp (in the drawer)"
+  00096A  TLM_ACTI_NM_BoardStamped  "Dispatch Board"
+  00096B  TLM_ACTI_NM_BoardSigned  "Dispatch Board (countersigned)"
+  00096C  TLM_ACTI_NM_BoardClosed  "Dispatch Board (closed)"
+  00096D  TLM_ACTI_NM_HeldStock  "Held from Dispatch"
+  00096E  TLM_ACTI_NM_CargoRetained  "Mail Car (locked in the yard)"
+  00096F  TLM_ACTI_NM_LabelFootplate  "Greybox: Old Contrary's footplate, in the yard"
+  000970  TLM_ACTI_NM_Depart  "Old Contrary: Departure"
+  000971  TLM_ACTI_NM_CargoAboard  "Mail Car"
+  000972  TLM_ACTI_NM_LabelCut  "Greybox: Sawtooth Cut"
+  000973  TLM_ACTI_NM_Regulator  "Regulator"
+  000974  TLM_ACTI_NM_Reverser  "Reverser"
+  000975  TLM_ACTI_NM_CargoAtCut  "Mail Car"
+  000976  TLM_ACTI_NM_BackFromCut  "Track Back to Iron Junction"
+  000977  TLM_ACTI_NM_Lanterns  "Lanterns Across the Track"
+  000978  TLM_ACTI_NM_CargoSeized  "Mail Car (emptied)"
+  000979  TLM_ACTI_NM_LabelSiding  "Greybox: the boxcar tabernacle"
+  00097A  TLM_ACTI_NM_Hymnal  "Hymnal"
+  00097B  TLM_ACTI_NM_Plate  "Collection Plate"
+  00097C  TLM_ACTI_NM_Chalk  "Chalk on a Boiler"
+  00097D  TLM_ACTI_NM_LabelPlatform  "Greybox: the valley platform"
+  00097E  TLM_ACTI_NM_CargoDelivered  "Mail Car (unloaded at the platform)"
+  00097F  TLM_ACTI_NM_EngineSound  "Old Contrary"
+  000980  TLM_ACTI_NM_EngineDamaged  "Old Contrary (damaged)"
+  000981  TLM_ACTI_NM_PlatformExit  "Road to Mercy Crossing"
+  000982  TLM_ACTI_NM_BackFromPlatform  "Line Back to Iron Junction"
+  000983  TLM_TRIG_NM_Fall
 Container (1)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
-Message (155)
+Message (279)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -185,15 +239,15 @@ Message (155)
           button 0: "Continue"
   000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
 
-[Opening complete. Only Greenwater is playable.]"  title: "Owen Pritchard"
+[Opening complete. Greenwater and Iron Junction are playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[Opening complete. Only Greenwater is playable.]"  title: "Owen Pritchard"
+[Opening complete. Greenwater and Iron Junction are playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[Opening complete. Only Greenwater is playable.]"  title: "Owen Pritchard"
+[Opening complete. Greenwater and Iron Junction are playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
           button 1: "There's something else from that train."
   00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Pike. I fix what shoots. Forty-fours are scarce, so make yours count.""  title: "Ada Pike"
@@ -226,7 +280,7 @@ Message (155)
           button 0: "Continue"
   0008A0  TLM_MSG_MB_Hub  [box]  "Owen Pritchard: "Which road do you want to ask about? Tell me what you know, or ask what to look for."
 
-[Mercy briefing. Greenwater is playable; the other roads are not.]"  title: "Owen Pritchard"
+[Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not.]"  title: "Owen Pritchard"
           button 0: "The rail."
           button 1: "The river."
           button 2: "Red Hollow."
@@ -247,7 +301,7 @@ Message (155)
   0008A7  TLM_MSG_MB_CopyPendingNote  [notification]  "Review copy hand-over unconfirmed. None is given again. Report this to the tester."
   0008A8  TLM_MSG_MB_HandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
 
-[Opening complete. Ask for briefings or use Greenwater story test.]"  title: "Owen Pritchard"
+[Opening complete. Ask for briefings or use a story test point.]"  title: "Owen Pritchard"
           button 0: "Continue"
   0008D5  TLM_MSG_GW_OpalDefault  [box]  "Opal Starnes: "Back of the line, bless you. Everybody eats or nobody does.""  title: "Opal Starnes"
           button 0: "Continue"
@@ -344,7 +398,7 @@ Message (155)
           button 1: "[Later]"
   0008F7  TLM_MSG_GW_AskTravel  [box]  "[Greenwater story test]
 
-Only the Greenwater road is playable in this candidate. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
+Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
           button 0: "Travel to Greenwater"
           button 1: "Not now"
   0008F8  TLM_MSG_GW_AskTravelAgain  [box]  "[Greenwater story test]
@@ -507,13 +561,13 @@ You accepted Hatcher's share. The grain remains aboard the Queen."
 
 You learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.
 
-Greenwater road complete. The other roads and the fair are not playable in this candidate."
+Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not."
           button 0: "Continue"
   00091A  TLM_MSG_GW_ReportEndUnknown  [box]  "[River report]
 
 You did not learn why Hatcher held the grain.
 
-Greenwater road complete. The other roads and the fair are not playable in this candidate."
+Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not."
           button 0: "Continue"
   00091B  TLM_MSG_GW_LabelLanding  [box]  "[Greybox: Greenwater landing and cook-shed]
 
@@ -602,6 +656,518 @@ The bearer does not know."
   00092B  TLM_MSG_GW_LetterPage4  [box]  "[A Letter of Hire, page 4 of 4]
 
 (no signature. Pressed into the wax, a small plain square.)"
+          button 0: "Continue"
+  00098D  TLM_MSG_NM_LockridgeDefault  [box]  "Augusta Lockridge: "Honey, if it has wheels I can talk about it all day. If it hasn't, see my clerk.""  title: "Augusta Lockridge"
+          button 0: "Continue"
+  00098E  TLM_MSG_NM_LockridgeGateA  [box]  "Augusta Lockridge: "Well now. Owen Pritchard's sent me a gun with legs. Sit. Four trains in a month, honey, and a hymn chalked on every boiler.""  title: "Augusta Lockridge"
+          button 0: "Continue"
+  00098F  TLM_MSG_NM_LockridgeGateB  [box]  "Augusta Lockridge: "Tonight I send the payroll and the fever physic through Sawtooth Cut. I want you on the footplate.""  title: "Augusta Lockridge"
+          button 0: "I'll ride your mail."
+          button 1: "Who chalks the hymns?"
+          button 2: "Who passes your trains as sound?"
+          button 3: "Not tonight."
+  000990  TLM_MSG_NM_LockridgeGateAlerted  [box]  "Augusta Lockridge: "So you're the one sent Pritchard a page of my Line 14. I've had the inspector's desk nailed shut since, and no, you may not see in it. Sit down anyway. I need a gun more than I need to like you.""  title: "Augusta Lockridge"
+          button 0: "I'll ride your mail."
+          button 1: "Who signed that page?"
+          button 2: "Not tonight."
+  000991  TLM_MSG_NM_LockridgeGateSold  [box]  "Augusta Lockridge: "Silas Vane wrote me. A certain book has come into his keeping, he says, and no inquiry need ever trouble me. Now who sold him that, I wonder. Sit down, honey. Let's see what else you'll do for money.""  title: "Augusta Lockridge"
+          button 0: "I'll ride your mail."
+          button 1: "Who chalks the hymns?"
+          button 2: "Not tonight."
+  000992  TLM_MSG_NM_LockridgeDole  [box]  "Augusta Lockridge: "Preacher Dole. He lifts a rail, lets the Lord and the grade do the rest, and holds a service on what's left. Thirty rifles say amen. I'd admire to see him answer for it. I'd admire it more to see my mail get through.""  title: "Augusta Lockridge"
+          button 0: "Continue"
+  000993  TLM_MSG_NM_LockridgeRails  [box]  "Augusta Lockridge: "Every car on this line is passed by the Inspector of Way, and stamped. You want to read stamps, read stamps. The train leaves at dark whether you can read or not.""  title: "Augusta Lockridge"
+          button 0: "Continue"
+  000994  TLM_MSG_NM_LockridgeHired  [box]  "Augusta Lockridge: "Billie drives. Do what she says about the engine and nothing she says about anything else. And honey? If it comes down to the mail or the girl, you bring me the girl.""  title: "Augusta Lockridge"
+          button 0: "Continue"
+  000995  TLM_MSG_NM_LockridgeAfterRan  [box]  "Augusta Lockridge: "You jumped my engine over a hole. She's a wreck. The physic's in the valley and the payroll's in my safe and I have not been this happy since I was a bride. Ask me for something.""  title: "Augusta Lockridge"
+          button 0: "Whose hand is on your inspections?"
+          button 1: "Nothing. Good night."
+  000996  TLM_MSG_NM_LockridgeAfterDole  [box]  "Augusta Lockridge: "Dole's dead? ...You'll think me foolish. Six years back I read at a funeral for a man who used to stand right where you are and tell me no. I'd have liked to hear no again. Well. The line's open.""  title: "Augusta Lockridge"
+          button 0: "Continue"
+  000997  TLM_MSG_NM_LockridgeAfterSold  [box]  "Augusta Lockridge: "Billie walked in at four this morning. Eleven miles. She told me what you did, and then she asked me not to have you shot. So I'm asking you nicely, honey. Get out of my yard.""  title: "Augusta Lockridge"
+          button 0: "Continue"
+  000998  TLM_MSG_NM_LockridgeHymnal  [box]  "Augusta Lockridge: "That's his hand. That's Reuben's own hand. He's ALIVE? ...Top drawer, honey. Go on. You'd find it anyway. Nobody would come out to inspect a line that kills inspectors. So Reuben went on inspecting.""  title: "Augusta Lockridge"
+          button 0: "(Open the drawer)"
+  000999  TLM_MSG_NM_LockridgeStamp  [box]  "Augusta Lockridge: "Every stamp was a train that ran. Physic, seed corn, coal. I never did the other sum and I'll thank you not to do it for me. Well? You've the drawer open. What becomes of an old woman and a dead man's name?""  title: "Augusta Lockridge"
+          button 0: "Keep stamping. Trains have to run."
+          button 1: "Sign your own name from now on."
+          button 2: "Pritchard gets the stamp."
+          button 3: "(Close the drawer)"
+  00099A  TLM_MSG_NM_BillieDefault  [box]  "Wilhelmina Tupper: "If it's about the brakes, I know. If it's about a bet, I'm listening.""  title: "Wilhelmina Tupper"
+          button 0: "Continue"
+  00099B  TLM_MSG_NM_BillieFootplate  [box]  "Wilhelmina Tupper: "You're the gun? You don't look like much. Neither does she. Old Contrary: eleven tons, nine of them spite. Hold that. Not that, that comes off. Bet you a day's pay you're sick before the Cut.""  title: "Wilhelmina Tupper"
+          button 0: "You're on."
+          button 1: "What's in the Cut?"
+          button 2: "Just drive."
+  00099C  TLM_MSG_NM_BillieCutBefore  [box]  "Wilhelmina Tupper: "Rail's spread on the left hand, about so much. Not gone. Spread. Anything heavy lies down on its side. Anything light, going like the devil had a mortgage on it... well. Nobody's tried. Don't tell Gussie I said that.""  title: "Wilhelmina Tupper"
+          button 0: "Continue"
+  00099D  TLM_MSG_NM_BillieInCut  [box]  "Wilhelmina Tupper: "Lanterns. That's him. That's all of them. Rail's out just where I said. I can stop her, I can back her, or I can find out something nobody knows about this engine. Your gun, your say. QUICK.""  title: "Wilhelmina Tupper"
+          button 0: "Stoke her. Run the gap."
+          button 1: "Stop her. I'm getting down."
+          button 2: "Back her out."
+  00099E  TLM_MSG_NM_BillieRan  [box]  "Wilhelmina Tupper: "HA! Did you... we were in the AIR! She's bent, she's a little bit on fire, I think I bit my tongue through. You owe me a day's pay. No. I owe you. Oh, Gussie's going to skin me.""  title: "Wilhelmina Tupper"
+          button 0: "Continue"
+  00099F  TLM_MSG_NM_BillieBacked  [box]  "Wilhelmina Tupper: "Well. Nobody's dead. That's the best I can say for it. You want to tell her, or shall I? ...I'll tell her. You'd only make it sound sensible.""  title: "Wilhelmina Tupper"
+          button 0: "Continue"
+  0009A0  TLM_MSG_NM_BillieWalking  [box]  "Wilhelmina Tupper: "Don't. Don't say one word to me. It's eleven miles and I know every tie. There are children in that valley with the fever and I was going to drive it to them. You think of that when you spend it.""  title: "Wilhelmina Tupper"
+          button 0: "Continue"
+  0009A1  TLM_MSG_NM_DoleDefault  [box]  "Ezekiel Dole: "The service is at dusk, traveller, wherever the rail gives out. All are welcome. Most arrive suddenly.""  title: "Ezekiel Dole"
+          button 0: "Continue"
+  0009A2  TLM_MSG_NM_DoleSermon  [box]  "Ezekiel Dole: "Evening, traveller. The text tonight is four foot eight and one half. I measured this rail nineteen years, and they signed my name to it after I was in the ground. Step down off her lie and hear the rest.""  title: "Ezekiel Dole"
+          button 0: "Stand aside, Preacher."
+          button 1: "What's my share?"
+          button 2: "They buried you. Who are you?"
+          button 3: "(Go back to the footplate)"
+  0009A3  TLM_MSG_NM_DoleName  [box]  "Ezekiel Dole: "Ostrander. Inspector of Way. I condemned the Greenwater trestle and they ran a train over it that same week. Then the fever, and a pest-house, and a hymn. Somebody in that yard still stamps my name on scrap iron. Ask who.""  title: "Ezekiel Dole"
+          button 0: "And the silver in your plate?"
+          button 1: "Stand aside."
+          button 2: "What's my share?"
+  0009A4  TLM_MSG_NM_DoleSilver  [box]  "Ezekiel Dole: "Comes by a man who comes by a man. A square mark on every piece. It buys powder. I'd lift these rails for love, traveller. I take the silver so the Lord is not left out of pocket.""  title: "Ezekiel Dole"
+          button 0: "Stand aside."
+          button 1: "What's my share?"
+  0009A5  TLM_MSG_NM_DoleShare  [box]  "Ezekiel Dole: "A third of the pay-chest, and the girl walks home unharmed. The physic goes up the hill: my people have the fever too, and nobody ever sent them a train. Say done and step off the footplate.""  title: "Ezekiel Dole"
+          button 0: "Done."
+          button 1: "No."
+          button 2: "(Go back to the footplate)"
+  0009A6  TLM_MSG_NM_DoleShareNoBillie  [box]  "Ezekiel Dole: "The physic goes up the hill: my people have the fever too, and nobody ever sent them a train. Say done and step off the footplate.""  title: "Ezekiel Dole"
+          button 0: "Continue"
+  0009A7  TLM_MSG_NM_DoleFace  [box]  "Ezekiel Dole: "Then here endeth the lesson. I will count three for you, which is three more than the yard gave anybody on the morning train. One.""  title: "Ezekiel Dole"
+          button 0: "Continue"
+  0009A8  TLM_MSG_NM_ReportKnown  [box]  "Owen Pritchard: "You have a rail-payment lead. Tell me how you learned it. If you travelled the line, separate what you saw from what somebody told you.""  title: "Owen Pritchard"
+          button 0: "[Report on Iron Junction]"
+          button 1: "[Later]"
+  0009A9  TLM_MSG_NM_ReportUnknown  [box]  "Owen Pritchard: "If you haven't taken the rail, ask about Iron Junction. If you have, tell me what you saw. Don't name a payer unless you've learned who paid.""  title: "Owen Pritchard"
+          button 0: "[Report on Iron Junction]"
+          button 1: "[Later]"
+  0009AA  TLM_MSG_NM_AskTravel  [box]  "[Iron Junction story test]
+
+Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: floors and labelled stand-ins. Travel there now?"
+          button 0: "Travel to Iron Junction"
+          button 1: "Not now"
+  0009AB  TLM_MSG_NM_AskTravelAgain  [box]  "[Iron Junction story test]
+
+The Night Mail road is complete. You can go back: what was settled stays settled."
+          button 0: "Travel to Iron Junction"
+          button 1: "Not now"
+  0009AC  TLM_MSG_NM_NoteTravelNotYet  [box]  "[Iron Junction story test]
+
+Not yet. Deliver the marshal's dispatch to Sheriff Pritchard and hear him out first."
+          button 0: "Continue"
+  0009AD  TLM_MSG_NM_NoteTravelFailed  [box]  "[Iron Junction story test]
+
+Iron Junction could not be reached, so no arrival is recorded. Nothing else was changed. See the script log."
+          button 0: "Continue"
+  0009AE  TLM_MSG_NM_NoteNotAssigned  [box]  "[Old Contrary]
+
+The yardmaster has not given you the footplate. Speak to Augusta Lockridge at her desk."
+          button 0: "Continue"
+  0009AF  TLM_MSG_NM_AskBoard  [box]  "[Old Contrary]
+
+Nobody at the yard is giving out this run. The payroll and the fever medicine are aboard."
+          button 0: "Board the Night Mail"
+          button 1: "Not now"
+  0009B0  TLM_MSG_NM_NoteAssignedNoBillie  [box]  "[Iron Junction story test]
+
+Assignment accepted. Board the Night Mail."
+          button 0: "Continue"
+  0009B1  TLM_MSG_NM_AskDepartScene  [box]  "[Scene]
+
+The Night Mail leaves the yard for Sawtooth Cut. The eleven miles are not shown: you are set down on her footplate where she stops at the lanterns. No moving engine is simulated."
+          button 0: "Continue"
+          button 1: "Not yet"
+  0009B2  TLM_MSG_NM_AskRejoin  [box]  "[Scene]
+
+The Night Mail is standing in Sawtooth Cut. You walk the line back to her."
+          button 0: "Continue"
+          button 1: "Not now"
+  000A68  TLM_MSG_NM_AskWalkToCut  [box]  "[Scene]
+
+You walk the line out to Sawtooth Cut on foot. The train is not there, and no train is moved."
+          button 0: "Continue"
+          button 1: "Not now"
+  0009B3  TLM_MSG_NM_NoteTrainNothing  [box]  "[Old Contrary]
+
+There is nothing to do with her here."
+          button 0: "Continue"
+  0009B4  TLM_MSG_NM_AskRegulator  [box]  "[Regulator]
+
+Nobody is at the regulator. It is a lever."
+          button 0: "Stoke her. Run the gap."
+          button 1: "Stop her. I'm getting down."
+          button 2: "Back her out."
+  0009B5  TLM_MSG_NM_AskRunScene  [box]  "[Scene]
+
+The run at the spread rail is shown as a staged scene: you are set down at the valley platform with what arrives. No moving engine, jump or damage is simulated."
+          button 0: "Continue"
+          button 1: "Not yet"
+  0009B6  TLM_MSG_NM_AskReverseScene  [box]  "[Scene]
+
+Old Contrary backs out of the Cut to the yard with her cargo. Shown as a staged scene: you are set down on her footplate in the yard."
+          button 0: "Continue"
+          button 1: "Not yet"
+  0009B7  TLM_MSG_NM_AskAfterDefeat  [box]  "[Regulator]
+
+The line through the Cut is clear. The payroll and the fever medicine are still aboard."
+          button 0: "Take the mail through"
+          button 1: "Take the train back to the yard"
+          button 2: "(Leave the regulator)"
+  0009B8  TLM_MSG_NM_AskForwardScene  [box]  "[Scene]
+
+The Night Mail goes on through the Cut to the valley. Shown as a staged scene: you are set down at the valley platform."
+          button 0: "Continue"
+          button 1: "Not yet"
+  0009B9  TLM_MSG_NM_AskCarryBackScene  [box]  "[Scene]
+
+The Night Mail goes back to the yard with her cargo. Shown as a staged scene: you are set down on her footplate in the yard."
+          button 0: "Continue"
+          button 1: "Not yet"
+  0009BA  TLM_MSG_NM_NoteSceneFailed  [box]  "[Iron Junction story test]
+
+That could not be shown, so nothing is recorded. Use the same control again, or one where you now stand."
+          button 0: "Continue"
+  0009BB  TLM_MSG_NM_NoteSceneStuck  [box]  "[Iron Junction story test]
+
+That cannot be shown in this build: a piece of it is missing. Nothing is recorded. Report this to the tester."
+          button 0: "Continue"
+  0009BC  TLM_MSG_NM_NoteRunDone  [box]  "[Iron Junction story test]
+
+The Night Mail got through. The payroll and the fever medicine are at the valley platform; Old Contrary is damaged."
+          button 0: "Continue"
+  0009BD  TLM_MSG_NM_NoteForwardDone  [box]  "[Iron Junction story test]
+
+The payroll and the fever medicine are at the valley platform."
+          button 0: "Continue"
+  0009BE  TLM_MSG_NM_NoteBackedOut  [box]  "[Iron Junction story test]
+
+The train is back at Iron Junction with its cargo undelivered. The obstruction at Sawtooth Cut remains."
+          button 0: "Continue"
+  0009BF  TLM_MSG_NM_NoteCarriedBack  [box]  "[Iron Junction story test]
+
+The train is back at Iron Junction. The payroll and the fever medicine are locked in the yard, undelivered. The line through the Cut is clear."
+          button 0: "Continue"
+  0009C0  TLM_MSG_NM_NoteDefeat  [box]  "[Iron Junction story test]
+
+Preacher Dole is dead. The Black Rail have gone up the hill and the line is clear. The payroll and the fever medicine are still aboard."
+          button 0: "Continue"
+  0009C1  TLM_MSG_NM_AskShareOffer  [box]  "[Offer]
+
+Offer: 150 caps."
+          button 0: "Done."
+          button 1: "No."
+          button 2: "(Go back to the footplate)"
+  0009C2  TLM_MSG_NM_NoteShareFailed  [box]  "[Iron Junction story test]
+
+No share was paid and no deal was made. See the script log."
+          button 0: "Continue"
+  0009C3  TLM_MSG_NM_NoteSold  [box]  "[Iron Junction story test]
+
+You accepted Dole's share: 150 caps. The payroll and the fever medicine were taken from the train. Billie Tupper was put off to walk home."
+          button 0: "Continue"
+  0009C4  TLM_MSG_NM_NoteSoldNoBillie  [box]  "[Iron Junction story test]
+
+You accepted Dole's share: 150 caps. The payroll and the fever medicine were taken from the train."
+          button 0: "Continue"
+  0009C5  TLM_MSG_NM_NoteSalePending  [box]  "[Iron Junction story test]
+
+The share is paid. The rest of the sale could not be shown, so it is not recorded yet. Use Dole, a control or the mail car again. Nothing is paid twice."
+          button 0: "Continue"
+  0009C6  TLM_MSG_NM_NotePlate  [box]  "[Collection plate]
+
+The plate is full of silver slugs. Each is stamped with a small square mark."
+          button 0: "Continue"
+  0009C7  TLM_MSG_NM_NoteDrawer  [box]  "[Top drawer]
+
+The inspector's stamp is in the drawer. The pad is still wet."
+          button 0: "Continue"
+  0009C8  TLM_MSG_NM_AskStampAlone  [box]  "[Top drawer]
+
+Nobody at the desk answers for the stamp."
+          button 0: "Pritchard gets the stamp."
+          button 1: "(Close the drawer)"
+  0009C9  TLM_MSG_NM_NoteStampKept  [box]  "[Iron Junction story test]
+
+The stamp stays in the drawer, in use. Every car is still passed in the inspector's name, and suspect stock is still dispatched."
+          button 0: "Continue"
+  0009CA  TLM_MSG_NM_AskCountersignScene  [box]  "[Scene]
+
+Lockridge goes through the entries and countersigns them in her own name. Shown as a staged scene; no night passes."
+          button 0: "Continue"
+          button 1: "Not yet"
+  0009CB  TLM_MSG_NM_NoteCountersigned  [box]  "[Iron Junction story test]
+
+Lockridge countersigned the reviewed entries in her own name. Suspect stock is held from dispatch."
+          button 0: "Continue"
+  0009CC  TLM_MSG_NM_NoteStampTaken  [box]  "[Iron Junction story test]
+
+You took the inspector's stamp as evidence. It has not yet been delivered to Pritchard."
+          button 0: "Continue"
+  0009CD  TLM_MSG_NM_NoteStampFailed  [box]  "[Iron Junction story test]
+
+The stamp could not be taken. Nothing is recorded and nothing else is decided about it. See the script log."
+          button 0: "Continue"
+  0009CE  TLM_MSG_NM_NoteDecisionFailed  [box]  "[Iron Junction story test]
+
+That could not be done. Nothing is recorded."
+          button 0: "Continue"
+  0009CF  TLM_MSG_NM_NoteDrawerKept  [box]  "[Top drawer]
+
+The stamp is in the drawer, in use."
+          button 0: "Continue"
+  0009D0  TLM_MSG_NM_NoteDrawerSigned  [box]  "[Top drawer]
+
+The stamp is in the drawer. Lockridge signs in her own name now."
+          button 0: "Continue"
+  0009D1  TLM_MSG_NM_NoteDrawerGone  [box]  "[Top drawer]
+
+The drawer is empty. You took the stamp."
+          button 0: "Continue"
+  0009D2  TLM_MSG_NM_AskShowHymnal  [box]  "[Hymnal]
+
+You are carrying the hymnal from the tabernacle."
+          button 0: "(Show her the flyleaf)"
+          button 1: "(Not now)"
+  0009D3  TLM_MSG_NM_NoteNoDispatch  [box]  "[Iron Junction]
+
+Augusta Lockridge no longer dispatches trains from this yard."
+          button 0: "Continue"
+  0009D4  TLM_MSG_NM_NoteSaleStatus  [box]  "[Iron Junction story test]
+
+You accepted Dole's share. The payroll and medicine were taken from the train."
+          button 0: "Continue"
+  0009D5  TLM_MSG_NM_AskBillieReport  [box]  "[Scene]
+
+By this scene's clock it is the next morning. Billie Tupper has walked the eleven miles in and told the yardmaster what happened in the Cut. No game time passes."
+          button 0: "Continue"
+          button 1: "Not now"
+  0009D6  TLM_MSG_NM_AskBackToYard  [box]  "[Scene]
+
+You go back along the line to Iron Junction yard on foot. The train stays where it is."
+          button 0: "Continue"
+          button 1: "Not now"
+  0009D7  TLM_MSG_NM_AskLeaveResolved  [box]  "[Road to Mercy]
+
+Leave Iron Junction? The road is complete once you are back at Mercy Crossing."
+          button 0: "Leave for Mercy"
+          button 1: "Stay"
+  0009D8  TLM_MSG_NM_AskLeaveUnresolved  [box]  "[Road to Mercy]
+
+The Night Mail is not settled. Leaving settles nothing; you can come back."
+          button 0: "Leave for Mercy"
+          button 1: "Stay"
+  0009D9  TLM_MSG_NM_AskLeaveAgain  [box]  "[Road to Mercy]
+
+Leave Iron Junction?"
+          button 0: "Leave for Mercy"
+          button 1: "Stay"
+  0009DA  TLM_MSG_NM_NoteRoadComplete  [box]  "[Iron Junction story test]
+
+Night Mail road complete. Greenwater remains playable; Red Hollow and the fair are not. Sheriff Pritchard will hear what became of the Night Mail."
+          button 0: "Continue"
+  0009DB  TLM_MSG_NM_NoteLeftUnresolved  [box]  "[Iron Junction story test]
+
+You left Iron Junction with the Night Mail unsettled. The road is still open."
+          button 0: "Continue"
+  0009DC  TLM_MSG_NM_NoteFall  [box]  "[Greybox]
+
+You stepped off the greybox floor and were set back on it."
+          button 0: "Continue"
+  0009DD  TLM_MSG_NM_LabelYard  [box]  "[Greybox: Iron Junction yard]
+
+The rules are on the gate. The office desk, drawer and dispatch board are here; the board shows the yard's current status. The footplate stand-in is on the next part of this floor."
+          button 0: "Continue"
+  0009DE  TLM_MSG_NM_LabelFootplate  [box]  "[Greybox: Old Contrary's footplate, in the yard]
+
+Flat floor stands for the engine. The departure control is here, and the mail car behind. Use the current controls to continue."
+          button 0: "Continue"
+  0009DF  TLM_MSG_NM_LabelCut  [box]  "[Greybox: Sawtooth Cut]
+
+The footplate as it stands at the lanterns, with the regulator and the reverser. Ahead: the spread rail and Preacher Dole. The tabernacle siding is beyond him."
+          button 0: "Continue"
+  0009E0  TLM_MSG_NM_LabelSiding  [box]  "[Greybox: the boxcar tabernacle]
+
+Dole's chapel on a dead siding: a hymnal, a collection plate, and a boiler somebody has chalked."
+          button 0: "Continue"
+  0009E1  TLM_MSG_NM_LabelPlatform  [box]  "[Greybox: the valley platform]
+
+Where the Night Mail arrives if she gets through."
+          button 0: "Continue"
+  0009E2  TLM_MSG_NM_LabelLanterns  [box]  "[Sawtooth Cut]
+
+Lanterns across the track. The left-hand rail is spread, not gone."
+          button 0: "Continue"
+  0009E3  TLM_MSG_NM_LabelCargoAboard  [box]  "[Mail car]
+
+The payroll and the valley's fever medicine, aboard the Night Mail."
+          button 0: "Continue"
+  0009E4  TLM_MSG_NM_LabelCargoDelivered  [box]  "[Mail car]
+
+The payroll and the fever medicine, delivered."
+          button 0: "Continue"
+  0009E5  TLM_MSG_NM_LabelCargoRetained  [box]  "[Mail car]
+
+The payroll and the fever medicine, locked in the yard. Not delivered."
+          button 0: "Continue"
+  0009E6  TLM_MSG_NM_LabelCargoSeized  [box]  "[Mail car]
+
+Empty. The payroll and the fever medicine were taken up the hill."
+          button 0: "Continue"
+  0009E7  TLM_MSG_NM_LabelEngineSound  [box]  "[Old Contrary]
+
+At the valley platform, sound."
+          button 0: "Continue"
+  0009E8  TLM_MSG_NM_LabelEngineDamaged  [box]  "[Old Contrary]
+
+At the valley platform, bent and scorched from the gap."
+          button 0: "Continue"
+  0009E9  TLM_MSG_NM_LabelBoardStamped  [box]  "[Dispatch board]
+
+Every car is passed and stamped in the name of R. Ostrander, Inspector of Way. All stock is dispatched."
+          button 0: "Continue"
+  0009EA  TLM_MSG_NM_LabelBoardSigned  [box]  "[Dispatch board]
+
+Entries countersigned A. Lockridge. Suspect stock is held from dispatch."
+          button 0: "Continue"
+  0009EB  TLM_MSG_NM_LabelBoardClosed  [box]  "[Dispatch board]
+
+Closed by order of the sheriff of Mercy Crossing. No car is dispatched and nobody signs."
+          button 0: "Continue"
+  0009EC  TLM_MSG_NM_LabelHeldStock  [box]  "[Held stock]
+
+Cars held from dispatch until they are inspected."
+          button 0: "Continue"
+  0009ED  TLM_MSG_NM_ReportMailDelivered  [box]  "[Rail report]
+
+The payroll and the fever medicine reached the valley."
+          button 0: "Continue"
+  0009EE  TLM_MSG_NM_ReportMailRetained  [box]  "[Rail report]
+
+The payroll and the fever medicine are locked in the yard at Iron Junction, undelivered."
+          button 0: "Continue"
+  0009EF  TLM_MSG_NM_ReportMailSeized  [box]  "[Rail report]
+
+The payroll and the fever medicine were taken from the train by the Black Rail."
+          button 0: "Continue"
+  0009F0  TLM_MSG_NM_ReportMailAboard  [box]  "[Rail report]
+
+The payroll and the fever medicine are still aboard the Night Mail in Sawtooth Cut."
+          button 0: "Continue"
+  0009F1  TLM_MSG_NM_ReportRan  [box]  "[Rail report]
+
+The Night Mail ran the spread rail. The engine is damaged."
+          button 0: "Continue"
+  0009F2  TLM_MSG_NM_ReportDoleByYou  [box]  "[Rail report]
+
+You killed Preacher Dole in the Cut. His death does not erase the yard's inspection records."
+          button 0: "Continue"
+  0009F3  TLM_MSG_NM_ReportDoleDead  [box]  "[Rail report]
+
+Preacher Dole is dead. His death does not erase the yard's inspection records."
+          button 0: "Continue"
+  0009F4  TLM_MSG_NM_ReportSold  [box]  "[Rail report]
+
+You accepted Dole's share. The payroll and medicine were taken from the train."
+          button 0: "Continue"
+  0009F5  TLM_MSG_NM_ReportBacked  [box]  "[Rail report]
+
+The train returned with its cargo undelivered. The obstruction at Sawtooth Cut remains."
+          button 0: "Continue"
+  0009F6  TLM_MSG_NM_ReportKnowBoth  [box]  "[Rail report]
+
+You learned that square-marked silver pays for the pulled rails, and that Preacher Dole is Ostrander, Inspector of Way. Who pays is not known."
+          button 0: "Continue"
+  0009F7  TLM_MSG_NM_ReportKnowSilver  [box]  "[Rail report]
+
+You learned that square-marked silver pays for the pulled rails. Who pays is not known."
+          button 0: "Continue"
+  0009F8  TLM_MSG_NM_ReportKnowName  [box]  "[Rail report]
+
+You learned that Preacher Dole is Ostrander, Inspector of Way."
+          button 0: "Continue"
+  0009F9  TLM_MSG_NM_ReportKnowNeither  [box]  "[Rail report]
+
+You did not learn who Preacher Dole is or what he is paid in."
+          button 0: "Continue"
+  0009FA  TLM_MSG_NM_ReportEnd  [box]  "[Rail report]
+
+Night Mail road complete. Greenwater remains playable; Red Hollow and the fair are not."
+          button 0: "Continue"
+  0009FB  TLM_MSG_NM_AskHandOver  [box]  "[Inspector's stamp]
+
+You are carrying the stamp from Lockridge's drawer."
+          button 0: "[Hand the stamp to Pritchard]"
+          button 1: "[Keep it for now]"
+  0009FC  TLM_MSG_NM_NoteStampDelivered  [box]  "[Iron Junction story test]
+
+Sheriff Pritchard has the inspector's stamp."
+          button 0: "Continue"
+  0009FD  TLM_MSG_NM_NoteHandoverFailed  [box]  "[Iron Junction story test]
+
+The stamp was not seen to reach Sheriff Pritchard. It is not recorded delivered. Speak to him again."
+          button 0: "Continue"
+  0009FE  TLM_MSG_NM_NoteAuthorityWithdrawn  [box]  "[Iron Junction]
+
+By the sheriff's order the dispatch board at Iron Junction is closed. Augusta Lockridge signs and dispatches nothing. The yard has no master. This is shown at the yard."
+          button 0: "Continue"
+  0009FF  TLM_MSG_NM_NoteAuthorityVacant  [box]  "[Iron Junction]
+
+Augusta Lockridge is dead. The dispatch board at Iron Junction is closed and nobody signs. The yard has no master. This is shown at the yard."
+          button 0: "Continue"
+  000A00  TLM_MSG_NM_NoteAuthorityFailed  [box]  "[Iron Junction story test]
+
+Sheriff Pritchard has the stamp. The change at the yard could not be shown, so it is not recorded yet. Speak to him again, or use the dispatch board."
+          button 0: "Continue"
+  000A01  TLM_MSG_NM_RulesPage1  [box]  "[Rules of the Yard, page 1 of 4]
+
+IRON JUNCTION
+A. LOCKRIDGE, YARDMASTER"
+          button 0: "Continue"
+  000A02  TLM_MSG_NM_RulesPage2  [box]  "[Rules of the Yard, page 2 of 4]
+
+1. This is a railway. Everything else is somebody's opinion.
+2. Arms are worn outside the gate or handed to the gateman.
+   The gateman has a list. Do not be on it."
+          button 0: "Continue"
+  000A03  TLM_MSG_NM_RulesPage3  [box]  "[Rules of the Yard, page 3 of 4]
+
+3. No car leaves this yard that has not been passed and
+   stamped by the Inspector of Way.
+4. No man, woman or child rides for nothing. Brahmin by weight.
+5. The yardmaster's office turns to face trouble."
+          button 0: "Continue"
+  000A04  TLM_MSG_NM_RulesPage4  [box]  "[Rules of the Yard, page 4 of 4]
+
+   If it is facing you, consider your position.
+6. Trains leave on time. If you are not aboard,
+   that was your decision."
+          button 0: "Continue"
+  000A05  TLM_MSG_NM_ChalkPage1  [box]  "[Chalk on a Boiler, page 1 of 1]
+
+No. 212
+
+There is power in the blood.
+
+Gauge at point of failure: 4 ft 9 3/4 in.
+Passed as sound, stamped, on the 3rd inst.
+Who signed?"
+          button 0: "Continue"
+  000A06  TLM_MSG_NM_FlyleafPage1  [box]  "[Flyleaf of a Hymnal, page 1 of 2]
+
+This book the property of
+R. OSTRANDER
+Inspector of Way, Corridor Line
+Iron Junction
+
+Presented by the yardmaster and hands
+on the completion of ten years' service.
+May he find us always in good order."
+          button 0: "Continue"
+  000A07  TLM_MSG_NM_FlyleafPage2  [box]  "[Flyleaf of a Hymnal, page 2 of 2]
+
+(below, in pencil, in another hand)
+
+Reuben. You were right about the trestle.
+I ran it anyway. A."
           button 0: "Continue"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
@@ -881,6 +1447,7 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            TLM_SQ01 = TLM_SQ01
            TLM_MercyBriefing = TLM_MercyBriefing
            TLM_Greenwater = TLM_GW
+           TLM_NightMail = TLM_NM
            TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
            TLM_G_CaravanMethod = TLM_G_CaravanMethod
            TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
@@ -1048,8 +1615,8 @@ Quest TLM_MercyBriefing  00089F  "Mercy briefing"  type=SideQuests priority=35 f
            CopyPendingNote = TLM_MSG_MB_CopyPendingNote
            HandOffLine = TLM_MSG_MB_HandOff
   structure: 2 of 2 stages have one item with its flags subrecord; 1 of 1 objectives have flags; condition marker present
-  stage   10  "Mercy briefing. Greenwater is playable; the other roads are not."
-  stage   20 [complete]  "Mercy briefing complete. Only Greenwater is playable; other roads and fair are not."
+  stage   10  "Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not."
+  stage   20 [complete]  "Mercy briefing complete. Greenwater and Iron Junction are playable; Red Hollow and the fair are not."
   objective 10: "Ask Pritchard about the three roads."  -> alias 0
   alias  0 Briefer  (reference) [Optional]
 
@@ -1317,10 +1884,381 @@ Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  typ
            script TLM:GreenwaterTalk
                     Who = 13
 
-Not wired yet (249):
+Quest TLM_MQ02A  00098B  "The Night Mail"  type=MainQuest priority=56 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MQ02AQuest
+           TLM_MQ01 = TLM_MQ01
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           Alias_MercySheriff = alias 4 on TLM_MQ01
+           TLM_G_SQ01_Outcome = TLM_G_SQ01_Outcome
+           TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
+           Alias_Lockridge = alias 0 on TLM_MQ02A
+           Alias_Billie = alias 1 on TLM_MQ02A
+           Alias_Dole = alias 2 on TLM_MQ02A
+           Alias_Rifle1 = alias 3 on TLM_MQ02A
+           Alias_Rifle2 = alias 4 on TLM_MQ02A
+           Alias_Rifle3 = alias 5 on TLM_MQ02A
+           TLM_G_MQ02A_Outcome = TLM_G_MQ02A_Outcome
+           TLM_G_MQ02A_Mail = TLM_G_MQ02A_Mail
+           TLM_G_MQ02A_Engine = TLM_G_MQ02A_Engine
+           TLM_G_MQ02A_Train = TLM_G_MQ02A_Train
+           TLM_G_MQ02A_Dole = TLM_G_MQ02A_Dole
+           TLM_G_MQ02A_Stamp = TLM_G_MQ02A_Stamp
+           TLM_G_MQ02A_StampDelivered = TLM_G_MQ02A_StampDelivered
+           TLM_G_MQ02A_YardAuthority = TLM_G_MQ02A_YardAuthority
+           TLM_G_MQ02A_Reported = TLM_G_MQ02A_Reported
+           TLM_G_MQ02A_MailThrough = TLM_G_MQ02A_MailThrough
+           TLM_G_MQ02A_MailSold = TLM_G_MQ02A_MailSold
+           TLM_G_MQ02A_LineClosed = TLM_G_MQ02A_LineClosed
+           TLM_G_MQ02A_DoleLives = TLM_G_MQ02A_DoleLives
+           TLM_G_MQ02A_SilverRail = TLM_G_MQ02A_SilverRail
+           TLM_G_MQ02A_OstranderKnown = TLM_G_MQ02A_OstranderKnown
+           TLM_G_MQ02A_LockridgeStamping = TLM_G_MQ02A_LockridgeStamping
+           TLM_G_MQ02A_LockridgeSigned = TLM_G_MQ02A_LockridgeSigned
+           TLM_G_MQ02A_LockridgeReported = TLM_G_MQ02A_LockridgeReported
+           HymnalBook = TLM_BOOK_HymnalFlyleaf
+           StampItem = TLM_MISC_OstranderStamp
+  structure: 24 of 24 stages have one item with its flags subrecord; 7 of 7 objectives have flags; condition marker present
+  stage   10  "Iron Junction is a roundhouse with a wall round it and a woman on the turntable who points her office at whoever is coming."
+  stage   20  "Gussie Lockridge has lost four trains in a month. Tonight's carries the payroll and the valley's fever medicine. She wants a gun on the footplate and is not asking twice."
+  stage   21  "You agreed to ride the Night Mail with the payroll and fever medicine."
+  stage   30  "Old Contrary is under steam. Billie Tupper drives as if the dark owed her money."
+  stage   31  "You boarded Old Contrary. The regulator is ready."
+  stage   40  "Lanterns across the track. A rail pulled out of true. A tall man on a flatcar with a hymnal, and thirty rifles for a choir."
+  stage   41  "Billie put the regulator through the roof. Old Contrary took the gap in the air and came down on the rails, more or less."
+  stage   42  "Preacher Dole is lying across the rail he pulled. His congregation went up the hill without singing."
+  stage   43  "You sold the Night Mail. The payroll and the fever medicine went up the hill on the Black Rail's shoulders, and Billie Tupper was put off to walk home."
+  stage   44  "Billie backed her out of the Cut in the dark. The mail is safe and no use to anybody, and the line is shut."
+  stage   46  "The Night Mail got through. The medicine and payroll arrived; the engine is damaged."
+  stage   47  "Preacher Dole is dead. His death does not erase the yard's inspection records."
+  stage   48  "You accepted Dole's share. The payroll and medicine were taken from the train."
+  stage   49  "The train returned with its cargo undelivered. The obstruction at Sawtooth Cut remains."
+  stage   50  "The preacher's collection plate is full of silver slugs. Each is stamped with a small square mark."
+  stage   51  "Dole described square-marked silver paying for pulled rails."
+  stage   55  "The name written in the front of the preacher's hymnal is R. Ostrander, Inspector of Way."
+  stage   56  "Preacher Dole identified himself as Ostrander, Inspector of Way."
+  stage   60  "The dead inspector's stamp is in Gussie Lockridge's drawer. The pad is still wet."
+  stage   61  "You left the stamp where it was. The trains will run, and Ostrander will go on passing them."
+  stage   62  "Lockridge countersigned the reviewed entries in her own name. Suspect stock is held from dispatch."
+  stage   63  "You took the stamp. Gussie Lockridge watched you carry it out and did not turn her office to follow."
+  stage   64  "You took the inspector's stamp as evidence. It has not yet been delivered to Pritchard."
+  stage  100 [complete]  (Left for Mercy with an outcome of the encounter recorded)
+  objective 10: "Find the yardmaster at Iron Junction"  -> alias 0
+  objective 20: "Ride the footplate of the Night Mail"  -> alias 6
+  objective 40: "Get the Night Mail through Sawtooth Cut, or do not"  -> alias 7
+  objective 55: "(Optional) Find out who has been signing for a dead man"
+  objective 70: "Take the mail through, or take the train back to the yard"  -> alias 7
+  objective 80: "Leave Iron Junction for Mercy Crossing"  -> alias 8
+  objective 90: "Bring the inspector's stamp to Sheriff Pritchard"
+  alias  0 Lockridge  (reference) [Optional]
+  alias  1 Billie  (reference) [Optional]
+  alias  2 Dole  (reference) [Optional]
+  alias  3 Rifle1  (reference) [Optional]
+  alias  4 Rifle2  (reference) [Optional]
+  alias  5 Rifle3  (reference) [Optional]
+  alias  6 Depart  (reference) [Optional]
+  alias  7 Regulator  (reference) [Optional]
+  alias  8 Exit  (reference) [Optional]
+
+Quest TLM_NM  00098C  "The Last Meridian (Night Mail greybox: development)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:NightMailWalk
+           TLM_MQ02A = TLM_MQ02A
+           TLM_MQ01 = TLM_MQ01
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           ZoneOn = [alias 2 on TLM_NM, alias 3 on TLM_NM, alias 4 on TLM_NM, alias 5 on TLM_NM, alias 6 on TLM_NM, alias 7 on TLM_NM, alias 8 on TLM_NM, alias 9 on TLM_NM, alias 14 on TLM_NM, alias 15 on TLM_NM, alias 16 on TLM_NM, alias 17 on TLM_NM, alias 18 on TLM_NM, alias 19 on TLM_NM, alias 20 on TLM_NM, alias 21 on TLM_NM, alias 22 on TLM_NM, alias 23 on TLM_NM, alias 24 on TLM_NM, alias 25 on TLM_NM, alias 27 on TLM_NM, alias 28 on TLM_NM, alias 29 on TLM_NM, alias 30 on TLM_NM, alias 31 on TLM_NM, alias 32 on TLM_NM, alias 33 on TLM_NM, alias 35 on TLM_NM, alias 36 on TLM_NM, alias 37 on TLM_NM, alias 38 on TLM_NM, alias 39 on TLM_NM, alias 40 on TLM_NM, alias 41 on TLM_NM, alias 42 on TLM_NM, alias 43 on TLM_NM, alias 44 on TLM_NM, alias 48 on TLM_NM, alias 49 on TLM_NM, alias 50 on TLM_NM]
+           CastFrom = [alias 5 on TLM_NM, alias 6 on TLM_NM, alias 18 on TLM_NM, alias 19 on TLM_NM, alias 24 on TLM_NM, alias 30 on TLM_NM, alias 31 on TLM_NM, alias 32 on TLM_NM, alias 33 on TLM_NM]
+           CastInto = [alias 8 on TLM_MQ02A, alias 0 on TLM_MQ02A, alias 1 on TLM_MQ02A, alias 6 on TLM_MQ02A, alias 7 on TLM_MQ02A, alias 2 on TLM_MQ02A, alias 3 on TLM_MQ02A, alias 4 on TLM_MQ02A, alias 5 on TLM_MQ02A]
+           CastNames = ["the road to Mercy from the yard as Exit of TLM_MQ02A", "Augusta Lockridge as Lockridge of TLM_MQ02A", "Wilhelmina Tupper as Billie of TLM_MQ02A", "the departure control as Depart of TLM_MQ02A", "the regulator as Regulator of TLM_MQ02A", "Ezekiel Dole as Dole of TLM_MQ02A", "one of the Black Rail as Rifle1 of TLM_MQ02A", "another of the Black Rail as Rifle2 of TLM_MQ02A", "a third of the Black Rail as Rifle3 of TLM_MQ02A"]
+           Alias_MercyTravel = alias 0 on TLM_NM
+           Alias_MercyReturn = alias 1 on TLM_NM
+           Alias_YardArrival = alias 2 on TLM_NM
+           Alias_YardFootplate = alias 17 on TLM_NM
+           Alias_CutArrival = alias 21 on TLM_NM
+           Alias_PlatformArrival = alias 42 on TLM_NM
+           Alias_BillieFootplate = alias 15 on TLM_NM
+           Alias_BillieCut = alias 23 on TLM_NM
+           Alias_BilliePlatform = alias 44 on TLM_NM
+           Alias_BillieWalk = alias 28 on TLM_NM
+           Alias_BillieYard = alias 14 on TLM_NM
+           Alias_Retreat1 = alias 35 on TLM_NM
+           Alias_Retreat2 = alias 36 on TLM_NM
+           Alias_Retreat3 = alias 37 on TLM_NM
+           Alias_Lockridge = alias 6 on TLM_NM
+           Alias_Billie = alias 18 on TLM_NM
+           Alias_Dole = alias 30 on TLM_NM
+           Alias_Rifle1 = alias 31 on TLM_NM
+           Alias_Rifle2 = alias 32 on TLM_NM
+           Alias_Rifle3 = alias 33 on TLM_NM
+           Alias_CargoAboard = alias 20 on TLM_NM
+           Alias_CargoAtCut = alias 26 on TLM_NM
+           Alias_CargoDelivered = alias 45 on TLM_NM
+           Alias_CargoRetained = alias 13 on TLM_NM
+           Alias_CargoSeized = alias 34 on TLM_NM
+           Alias_EngineSound = alias 46 on TLM_NM
+           Alias_EngineDamaged = alias 47 on TLM_NM
+           Alias_Lanterns = alias 29 on TLM_NM
+           Alias_StampInDrawer = alias 8 on TLM_NM
+           Alias_BoardStamped = alias 9 on TLM_NM
+           Alias_BoardSigned = alias 10 on TLM_NM
+           Alias_BoardClosed = alias 11 on TLM_NM
+           Alias_HeldStock = alias 12 on TLM_NM
+           SayLockridgeDefault = TLM_MSG_NM_LockridgeDefault
+           SayLockridgeGateA = TLM_MSG_NM_LockridgeGateA
+           SayLockridgeGateB = TLM_MSG_NM_LockridgeGateB
+           SayLockridgeGateAlerted = TLM_MSG_NM_LockridgeGateAlerted
+           SayLockridgeGateSold = TLM_MSG_NM_LockridgeGateSold
+           SayLockridgeDole = TLM_MSG_NM_LockridgeDole
+           SayLockridgeRails = TLM_MSG_NM_LockridgeRails
+           SayLockridgeHired = TLM_MSG_NM_LockridgeHired
+           SayLockridgeAfterRan = TLM_MSG_NM_LockridgeAfterRan
+           SayLockridgeAfterDole = TLM_MSG_NM_LockridgeAfterDole
+           SayLockridgeAfterSold = TLM_MSG_NM_LockridgeAfterSold
+           SayLockridgeHymnal = TLM_MSG_NM_LockridgeHymnal
+           SayLockridgeStamp = TLM_MSG_NM_LockridgeStamp
+           SayBillieDefault = TLM_MSG_NM_BillieDefault
+           SayBillieFootplate = TLM_MSG_NM_BillieFootplate
+           SayBillieCutBefore = TLM_MSG_NM_BillieCutBefore
+           SayBillieInCut = TLM_MSG_NM_BillieInCut
+           SayBillieRan = TLM_MSG_NM_BillieRan
+           SayBillieBacked = TLM_MSG_NM_BillieBacked
+           SayBillieWalking = TLM_MSG_NM_BillieWalking
+           SayDoleDefault = TLM_MSG_NM_DoleDefault
+           SayDoleSermon = TLM_MSG_NM_DoleSermon
+           SayDoleName = TLM_MSG_NM_DoleName
+           SayDoleSilver = TLM_MSG_NM_DoleSilver
+           SayDoleShare = TLM_MSG_NM_DoleShare
+           SayDoleShareNoBillie = TLM_MSG_NM_DoleShareNoBillie
+           SayDoleFace = TLM_MSG_NM_DoleFace
+           SayReportKnown = TLM_MSG_NM_ReportKnown
+           SayReportUnknown = TLM_MSG_NM_ReportUnknown
+           AskTravel = TLM_MSG_NM_AskTravel
+           AskTravelAgain = TLM_MSG_NM_AskTravelAgain
+           NoteTravelNotYet = TLM_MSG_NM_NoteTravelNotYet
+           NoteTravelFailed = TLM_MSG_NM_NoteTravelFailed
+           NoteNotAssigned = TLM_MSG_NM_NoteNotAssigned
+           AskBoard = TLM_MSG_NM_AskBoard
+           NoteAssignedNoBillie = TLM_MSG_NM_NoteAssignedNoBillie
+           AskDepartScene = TLM_MSG_NM_AskDepartScene
+           AskRejoin = TLM_MSG_NM_AskRejoin
+           AskWalkToCut = TLM_MSG_NM_AskWalkToCut
+           NoteTrainNothing = TLM_MSG_NM_NoteTrainNothing
+           AskRegulator = TLM_MSG_NM_AskRegulator
+           AskRunScene = TLM_MSG_NM_AskRunScene
+           AskReverseScene = TLM_MSG_NM_AskReverseScene
+           AskAfterDefeat = TLM_MSG_NM_AskAfterDefeat
+           AskForwardScene = TLM_MSG_NM_AskForwardScene
+           AskCarryBackScene = TLM_MSG_NM_AskCarryBackScene
+           NoteSceneFailed = TLM_MSG_NM_NoteSceneFailed
+           NoteSceneStuck = TLM_MSG_NM_NoteSceneStuck
+           NoteRunDone = TLM_MSG_NM_NoteRunDone
+           NoteForwardDone = TLM_MSG_NM_NoteForwardDone
+           NoteBackedOut = TLM_MSG_NM_NoteBackedOut
+           NoteCarriedBack = TLM_MSG_NM_NoteCarriedBack
+           NoteDefeat = TLM_MSG_NM_NoteDefeat
+           AskShareOffer = TLM_MSG_NM_AskShareOffer
+           NoteShareFailed = TLM_MSG_NM_NoteShareFailed
+           NoteSold = TLM_MSG_NM_NoteSold
+           NoteSoldNoBillie = TLM_MSG_NM_NoteSoldNoBillie
+           NoteSalePending = TLM_MSG_NM_NoteSalePending
+           NotePlate = TLM_MSG_NM_NotePlate
+           NoteDrawer = TLM_MSG_NM_NoteDrawer
+           AskStampAlone = TLM_MSG_NM_AskStampAlone
+           NoteStampKept = TLM_MSG_NM_NoteStampKept
+           AskCountersignScene = TLM_MSG_NM_AskCountersignScene
+           NoteCountersigned = TLM_MSG_NM_NoteCountersigned
+           NoteStampTaken = TLM_MSG_NM_NoteStampTaken
+           NoteStampFailed = TLM_MSG_NM_NoteStampFailed
+           NoteDecisionFailed = TLM_MSG_NM_NoteDecisionFailed
+           NoteDrawerKept = TLM_MSG_NM_NoteDrawerKept
+           NoteDrawerSigned = TLM_MSG_NM_NoteDrawerSigned
+           NoteDrawerGone = TLM_MSG_NM_NoteDrawerGone
+           AskShowHymnal = TLM_MSG_NM_AskShowHymnal
+           NoteNoDispatch = TLM_MSG_NM_NoteNoDispatch
+           NoteSaleStatus = TLM_MSG_NM_NoteSaleStatus
+           AskBillieReport = TLM_MSG_NM_AskBillieReport
+           AskBackToYard = TLM_MSG_NM_AskBackToYard
+           AskLeaveResolved = TLM_MSG_NM_AskLeaveResolved
+           AskLeaveUnresolved = TLM_MSG_NM_AskLeaveUnresolved
+           AskLeaveAgain = TLM_MSG_NM_AskLeaveAgain
+           NoteRoadComplete = TLM_MSG_NM_NoteRoadComplete
+           NoteLeftUnresolved = TLM_MSG_NM_NoteLeftUnresolved
+           NoteFall = TLM_MSG_NM_NoteFall
+           LabelYard = TLM_MSG_NM_LabelYard
+           LabelFootplate = TLM_MSG_NM_LabelFootplate
+           LabelCut = TLM_MSG_NM_LabelCut
+           LabelSiding = TLM_MSG_NM_LabelSiding
+           LabelPlatform = TLM_MSG_NM_LabelPlatform
+           LabelLanterns = TLM_MSG_NM_LabelLanterns
+           LabelCargoAboard = TLM_MSG_NM_LabelCargoAboard
+           LabelCargoDelivered = TLM_MSG_NM_LabelCargoDelivered
+           LabelCargoRetained = TLM_MSG_NM_LabelCargoRetained
+           LabelCargoSeized = TLM_MSG_NM_LabelCargoSeized
+           LabelEngineSound = TLM_MSG_NM_LabelEngineSound
+           LabelEngineDamaged = TLM_MSG_NM_LabelEngineDamaged
+           LabelBoardStamped = TLM_MSG_NM_LabelBoardStamped
+           LabelBoardSigned = TLM_MSG_NM_LabelBoardSigned
+           LabelBoardClosed = TLM_MSG_NM_LabelBoardClosed
+           LabelHeldStock = TLM_MSG_NM_LabelHeldStock
+           ReportMailDelivered = TLM_MSG_NM_ReportMailDelivered
+           ReportMailRetained = TLM_MSG_NM_ReportMailRetained
+           ReportMailSeized = TLM_MSG_NM_ReportMailSeized
+           ReportMailAboard = TLM_MSG_NM_ReportMailAboard
+           ReportRan = TLM_MSG_NM_ReportRan
+           ReportDoleByYou = TLM_MSG_NM_ReportDoleByYou
+           ReportDoleDead = TLM_MSG_NM_ReportDoleDead
+           ReportSold = TLM_MSG_NM_ReportSold
+           ReportBacked = TLM_MSG_NM_ReportBacked
+           ReportKnowBoth = TLM_MSG_NM_ReportKnowBoth
+           ReportKnowSilver = TLM_MSG_NM_ReportKnowSilver
+           ReportKnowName = TLM_MSG_NM_ReportKnowName
+           ReportKnowNeither = TLM_MSG_NM_ReportKnowNeither
+           ReportEnd = TLM_MSG_NM_ReportEnd
+           AskHandOver = TLM_MSG_NM_AskHandOver
+           NoteStampDelivered = TLM_MSG_NM_NoteStampDelivered
+           NoteHandoverFailed = TLM_MSG_NM_NoteHandoverFailed
+           NoteAuthorityWithdrawn = TLM_MSG_NM_NoteAuthorityWithdrawn
+           NoteAuthorityVacant = TLM_MSG_NM_NoteAuthorityVacant
+           NoteAuthorityFailed = TLM_MSG_NM_NoteAuthorityFailed
+           RulesPage1 = TLM_MSG_NM_RulesPage1
+           RulesPage2 = TLM_MSG_NM_RulesPage2
+           RulesPage3 = TLM_MSG_NM_RulesPage3
+           RulesPage4 = TLM_MSG_NM_RulesPage4
+           ChalkPage1 = TLM_MSG_NM_ChalkPage1
+           FlyleafPage1 = TLM_MSG_NM_FlyleafPage1
+           FlyleafPage2 = TLM_MSG_NM_FlyleafPage2
+  structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  alias  0 MercyTravel  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 1
+  alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
+  alias  2 YardArrival  (reference) [Optional, AllowDisabled]
+  alias  3 Rules  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 3
+  alias  4 LabelYard  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 4
+  alias  5 Exit  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 9
+  alias  6 Lockridge  (reference) [Optional, AllowDisabled, Protected]
+           script TLM:NightMailTalk
+                    Who = 5
+  alias  7 Drawer  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 6
+  alias  8 StampInDrawer  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 6
+  alias  9 BoardStamped  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 7
+  alias 10 BoardSigned  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 7
+  alias 11 BoardClosed  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 7
+  alias 12 HeldStock  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 8
+  alias 13 CargoRetained  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 10
+  alias 14 BillieYard  (reference) [Optional, AllowDisabled]
+  alias 15 BillieFootplate  (reference) [Optional, AllowDisabled]
+  alias 16 LabelFootplate  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 11
+  alias 17 YardFootplate  (reference) [Optional, AllowDisabled]
+  alias 18 Billie  (reference) [Optional, AllowDisabled, Protected]
+           script TLM:NightMailTalk
+                    Who = 12
+  alias 19 Depart  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 13
+  alias 20 CargoAboard  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 10
+  alias 21 CutArrival  (reference) [Optional, AllowDisabled]
+  alias 22 LabelCut  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 14
+  alias 23 BillieCut  (reference) [Optional, AllowDisabled]
+  alias 24 Regulator  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 15
+  alias 25 Reverser  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 16
+  alias 26 CargoAtCut  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 10
+  alias 27 BackFromCut  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 22
+  alias 28 BillieWalk  (reference) [Optional, AllowDisabled]
+  alias 29 Lanterns  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 17
+  alias 30 Dole  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 18
+  alias 31 Rifle1  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 19
+  alias 32 Rifle2  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 20
+  alias 33 Rifle3  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 21
+  alias 34 CargoSeized  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 10
+  alias 35 Retreat1  (reference) [Optional, AllowDisabled]
+  alias 36 Retreat2  (reference) [Optional, AllowDisabled]
+  alias 37 Retreat3  (reference) [Optional, AllowDisabled]
+  alias 38 LabelSiding  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 23
+  alias 39 Hymnal  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 24
+  alias 40 Plate  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 25
+  alias 41 Chalk  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 26
+  alias 42 PlatformArrival  (reference) [Optional, AllowDisabled]
+  alias 43 LabelPlatform  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 27
+  alias 44 BilliePlatform  (reference) [Optional, AllowDisabled]
+  alias 45 CargoDelivered  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 10
+  alias 46 EngineSound  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 28
+  alias 47 EngineDamaged  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 28
+  alias 48 PlatformExit  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 9
+  alias 49 BackFromPlatform  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 22
+  alias 50 Fall  (reference) [Optional, AllowDisabled]
+           script TLM:NightMailTalk
+                    Who = 31
+
+Not wired yet (436):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
+  - TLM_MISC_OstranderStamp: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_BrakeShoes: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_DrawBar: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NoticeBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
@@ -1345,6 +2283,37 @@ Not wired yet (249):
   - TLM_ACTI_GW_CargoLashed: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_GW_Chain: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_GW_Pilot: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Travel: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Rules: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_LabelYard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Exit: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Drawer: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_StampInDrawer: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_BoardStamped: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_BoardSigned: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_BoardClosed: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_HeldStock: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_CargoRetained: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_LabelFootplate: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Depart: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_CargoAboard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_LabelCut: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Regulator: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Reverser: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_CargoAtCut: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_BackFromCut: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Lanterns: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_CargoSeized: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_LabelSiding: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Hymnal: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Plate: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_Chalk: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_LabelPlatform: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_CargoDelivered: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_EngineSound: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_EngineDamaged: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_PlatformExit: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_NM_BackFromPlatform: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: empty (it holds 'Caps001', which needs Fallout4.esm)
   - TLM_NPC_TrialPerson: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
@@ -1368,10 +2337,17 @@ Not wired yet (249):
   - TLM_NPC_COMMODORE_QUEEN: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_QUEEN_CREW_01: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_QUEEN_CREW_02: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_YARDMASTER_IRONJUNCTION: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_DRIVER_NIGHTMAIL: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_PREACHER_BLACKRAIL: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_BLACKRAIL_01: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_BLACKRAIL_02: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_BLACKRAIL_03: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_MarshalLog: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_Docket2298: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_LetterOfHire: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_HymnalFlyleaf: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTrigger: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is in Fallout4.esm)
@@ -1447,6 +2423,102 @@ Not wired yet (249):
   - TLM_REF_GW_CargoLashed: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_GW_Chain: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_GW_Pilot: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_NM_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_NM_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_NM_YardArrival: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Rules: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_LabelYard: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Exit: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Lockridge: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Drawer: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_StampInDrawer: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BoardStamped: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BoardSigned: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BoardClosed: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_HeldStock: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_CargoRetained: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BillieYard: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BillieFootplate: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_LabelFootplate: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_YardFootplate: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Billie: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Depart: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_CargoAboard: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_CutArrival: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_LabelCut: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BillieCut: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Regulator: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Reverser: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_CargoAtCut: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BackFromCut: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BillieWalk: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Lanterns: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Dole: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Rifle1: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Rifle2: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Rifle3: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_CargoSeized: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Retreat1: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Retreat2: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Retreat3: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_LabelSiding: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Hymnal: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Plate: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Chalk: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_PlatformArrival: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_LabelPlatform: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BilliePlatform: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_CargoDelivered: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_EngineSound: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_EngineDamaged: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_PlatformExit: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_BackFromPlatform: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Fall: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A00: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A01: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A02: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A10: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A11: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A12: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A20: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A21: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A22: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A30: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A31: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A32: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A40: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A41: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_A42: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B00: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B01: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B02: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B10: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B11: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B12: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B20: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B21: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B22: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B30: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B31: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B32: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B40: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B41: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B42: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B50: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B51: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B52: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B60: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B61: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_B62: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C00: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C01: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C02: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C10: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C11: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C12: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C20: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C21: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_NM_Floor_C22: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -1567,3 +2639,55 @@ Not wired yet (249):
   - TLM_GW alias CargoLashed: its reference TLM_REF_GW_CargoLashed is not placed
   - TLM_GW alias Chain: its reference TLM_REF_GW_Chain is not placed
   - TLM_GW alias Pilot: its reference TLM_REF_GW_Pilot is not placed
+  - TLM_MQ02A script TLM:MQ02AQuest.Caps: needs 'Caps001' from Fallout4.esm
+  - TLM_NM alias MercyTravel: its reference TLM_REF_NM_MercyTravel is not placed
+  - TLM_NM alias MercyReturn: its reference TLM_REF_NM_MercyReturn is not placed
+  - TLM_NM alias YardArrival: its reference TLM_REF_NM_YardArrival is not placed
+  - TLM_NM alias Rules: its reference TLM_REF_NM_Rules is not placed
+  - TLM_NM alias LabelYard: its reference TLM_REF_NM_LabelYard is not placed
+  - TLM_NM alias Exit: its reference TLM_REF_NM_Exit is not placed
+  - TLM_NM alias Lockridge: its reference TLM_REF_NM_Lockridge is not placed
+  - TLM_NM alias Drawer: its reference TLM_REF_NM_Drawer is not placed
+  - TLM_NM alias StampInDrawer: its reference TLM_REF_NM_StampInDrawer is not placed
+  - TLM_NM alias BoardStamped: its reference TLM_REF_NM_BoardStamped is not placed
+  - TLM_NM alias BoardSigned: its reference TLM_REF_NM_BoardSigned is not placed
+  - TLM_NM alias BoardClosed: its reference TLM_REF_NM_BoardClosed is not placed
+  - TLM_NM alias HeldStock: its reference TLM_REF_NM_HeldStock is not placed
+  - TLM_NM alias CargoRetained: its reference TLM_REF_NM_CargoRetained is not placed
+  - TLM_NM alias BillieYard: its reference TLM_REF_NM_BillieYard is not placed
+  - TLM_NM alias BillieFootplate: its reference TLM_REF_NM_BillieFootplate is not placed
+  - TLM_NM alias LabelFootplate: its reference TLM_REF_NM_LabelFootplate is not placed
+  - TLM_NM alias YardFootplate: its reference TLM_REF_NM_YardFootplate is not placed
+  - TLM_NM alias Billie: its reference TLM_REF_NM_Billie is not placed
+  - TLM_NM alias Depart: its reference TLM_REF_NM_Depart is not placed
+  - TLM_NM alias CargoAboard: its reference TLM_REF_NM_CargoAboard is not placed
+  - TLM_NM alias CutArrival: its reference TLM_REF_NM_CutArrival is not placed
+  - TLM_NM alias LabelCut: its reference TLM_REF_NM_LabelCut is not placed
+  - TLM_NM alias BillieCut: its reference TLM_REF_NM_BillieCut is not placed
+  - TLM_NM alias Regulator: its reference TLM_REF_NM_Regulator is not placed
+  - TLM_NM alias Reverser: its reference TLM_REF_NM_Reverser is not placed
+  - TLM_NM alias CargoAtCut: its reference TLM_REF_NM_CargoAtCut is not placed
+  - TLM_NM alias BackFromCut: its reference TLM_REF_NM_BackFromCut is not placed
+  - TLM_NM alias BillieWalk: its reference TLM_REF_NM_BillieWalk is not placed
+  - TLM_NM alias Lanterns: its reference TLM_REF_NM_Lanterns is not placed
+  - TLM_NM alias Dole: its reference TLM_REF_NM_Dole is not placed
+  - TLM_NM alias Rifle1: its reference TLM_REF_NM_Rifle1 is not placed
+  - TLM_NM alias Rifle2: its reference TLM_REF_NM_Rifle2 is not placed
+  - TLM_NM alias Rifle3: its reference TLM_REF_NM_Rifle3 is not placed
+  - TLM_NM alias CargoSeized: its reference TLM_REF_NM_CargoSeized is not placed
+  - TLM_NM alias Retreat1: its reference TLM_REF_NM_Retreat1 is not placed
+  - TLM_NM alias Retreat2: its reference TLM_REF_NM_Retreat2 is not placed
+  - TLM_NM alias Retreat3: its reference TLM_REF_NM_Retreat3 is not placed
+  - TLM_NM alias LabelSiding: its reference TLM_REF_NM_LabelSiding is not placed
+  - TLM_NM alias Hymnal: its reference TLM_REF_NM_Hymnal is not placed
+  - TLM_NM alias Plate: its reference TLM_REF_NM_Plate is not placed
+  - TLM_NM alias Chalk: its reference TLM_REF_NM_Chalk is not placed
+  - TLM_NM alias PlatformArrival: its reference TLM_REF_NM_PlatformArrival is not placed
+  - TLM_NM alias LabelPlatform: its reference TLM_REF_NM_LabelPlatform is not placed
+  - TLM_NM alias BilliePlatform: its reference TLM_REF_NM_BilliePlatform is not placed
+  - TLM_NM alias CargoDelivered: its reference TLM_REF_NM_CargoDelivered is not placed
+  - TLM_NM alias EngineSound: its reference TLM_REF_NM_EngineSound is not placed
+  - TLM_NM alias EngineDamaged: its reference TLM_REF_NM_EngineDamaged is not placed
+  - TLM_NM alias PlatformExit: its reference TLM_REF_NM_PlatformExit is not placed
+  - TLM_NM alias BackFromPlatform: its reference TLM_REF_NM_BackFromPlatform is not placed
+  - TLM_NM alias Fall: its reference TLM_REF_NM_Fall is not placed

@@ -1,4 +1,4 @@
-"""The Greenwater story candidate's source manifest (GREENWATER-STORY-001):
+"""The frozen 016b Greenwater candidate's source manifest (GREENWATER-STORY-001):
 tools/win/greenwater-story-candidate.json, read by tools/greenwater_story_candidate.py.
 
 That the checkout is the source the manifest describes: 23 scripts, seventeen
@@ -21,6 +21,12 @@ parsed. What it can do, and does, is carry out each change the fixture makes
 on a copy of the tree here, in Python, and require the candidate's verifier to
 refuse it with the words the fixture expects.
 
+These original candidate and mutation checks run on an actual immutable 016b
+Git export. Its own stand-in binary is built for the record checks. The live
+Night Mail checkout is separately required to be refused by the frozen
+verifier; current frozen files and attributes are still checked against Git.
+The historical PowerShell text assertions describe that export. Execution of
+the current PowerShell refusal fixtures is recorded in the Night Mail ledger.
 Source provenance only. Not a compile and not a game test.
 """
 import fnmatch
@@ -35,6 +41,10 @@ import unittest
 from pathlib import Path
 
 from test_sim import ROOT
+from source_snapshot import snapshot, built_greenwater
+
+LIVE_ROOT = ROOT
+ROOT = snapshot()  # The immutable 016b candidate, not the composed Night Mail checkout.
 
 sys.path.insert(0, str(ROOT / "tools"))
 import greenwater_story_candidate as candidate                    # noqa: E402
@@ -55,7 +65,7 @@ def preserves_frozen_attributes(before, now):
 
 
 def copy_of_the_tree():
-    """Just what the check reads, as it is in this working copy."""
+    """Just what the frozen check reads, from the exact accepted 016b export."""
     root = Path(tempfile.mkdtemp(prefix="tlm-gw-candidate-"))
     names = ("scripts/Source/User/TLM",) + candidate.BUILDER_SOURCES + candidate.OLD_MANIFESTS + candidate.FROZEN + (
         MANIFEST_NAME, "assets/incoming/act1/story/documents.json")
@@ -70,7 +80,7 @@ def copy_of_the_tree():
 
 
 def in_git(commit):
-    return subprocess.run(["git", "cat-file", "-e", commit + "^{commit}"], cwd=ROOT, capture_output=True).returncode == 0
+    return subprocess.run(["git", "cat-file", "-e", commit + "^{commit}"], cwd=LIVE_ROOT, capture_output=True).returncode == 0
 
 
 class TheCandidate(unittest.TestCase):
@@ -80,7 +90,10 @@ class TheCandidate(unittest.TestCase):
         self.a8 = json.loads((ROOT / candidate.A8_MANIFEST).read_text())
 
     def test_the_checkout_is_the_source_the_manifest_describes(self):
-        self.assertEqual(candidate.problems(), [])
+        self.assertEqual(candidate.problems(ROOT, ROOT / MANIFEST_NAME), [])
+        refused = candidate.problems(LIVE_ROOT, LIVE_ROOT / MANIFEST_NAME)
+        self.assertTrue(refused, "The frozen Greenwater verifier must refuse the Night Mail source")
+        self.assertIn("Act1Walk.psc is not the source", " | ".join(refused))
 
     def test_it_is_twenty_three_scripts_and_what_changed(self):
         m = self.manifest
@@ -108,7 +121,7 @@ class TheCandidate(unittest.TestCase):
         # The 162 of the reviewed commit keep their numbers; the repair's four notices follow them.
         self.assertEqual(sorted(n for n, v in ids["appended"].items() if v > 2378),
                          ["TLM_MSG_GW_NoteCargoFailed", "TLM_MSG_GW_NoteCargoStuck", "TLM_MSG_GW_NoteFireNoMarker", "TLM_MSG_GW_NoteFireStuck"])
-        got = subprocess.run(["git", "show", A8 + ":tools/PluginBuilder/formkeys.txt"], cwd=ROOT, capture_output=True)
+        got = subprocess.run(["git", "show", A8 + ":tools/PluginBuilder/formkeys.txt"], cwd=LIVE_ROOT, capture_output=True)
         if got.returncode != 0:
             self.skipTest("the a8 commit is not in this copy; the recorded digest of the earlier lines was still checked")
         before = got.stdout.decode("utf-8").replace("\r\n", "\n")
@@ -175,25 +188,25 @@ class TheCandidate(unittest.TestCase):
         frozen = list(candidate.OLD_MANIFESTS + candidate.FROZEN) + [
             "tools/win/Play-WorldDetails.cmd", "tools/win/Play-WorldNatural.cmd", "tools/win/Play-WorldStory.cmd", "tools/win/Play-WorldExpanded.cmd",
             "tools/test_world_story_launcher.py", ".github"]
-        got = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--"] + frozen, cwd=ROOT)
+        got = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--"] + frozen, cwd=LIVE_ROOT)
         self.assertEqual(got.returncode, 0, "a frozen manifest, verifier, packager, launcher or workflow differs from the contract commit's")
-        attributes = subprocess.run(["git", "show", CONTRACT + ":.gitattributes"], cwd=ROOT,
+        attributes = subprocess.run(["git", "show", CONTRACT + ":.gitattributes"], cwd=LIVE_ROOT,
                                     capture_output=True, text=True, check=True).stdout
-        self.assertTrue(preserves_frozen_attributes(attributes, (ROOT / ".gitattributes").read_text()),
+        self.assertTrue(preserves_frozen_attributes(attributes, (LIVE_ROOT / ".gitattributes").read_text()),
                         "frozen attributes changed beyond the exact approved Night Mail docs LF append")
         # The earlier PowerShell tests: as they were, but for the one fixture the repair was told to correct
         # (finding 4) and the new packager's own new fixture.
-        was = subprocess.run(["git", "ls-tree", "-r", "--name-only", CONTRACT, "tools/win/tests"], cwd=ROOT, capture_output=True, text=True).stdout.split()
+        was = subprocess.run(["git", "ls-tree", "-r", "--name-only", CONTRACT, "tools/win/tests"], cwd=LIVE_ROOT, capture_output=True, text=True).stdout.split()
         now = sorted("tools/win/tests/" + f.name for f in (ROOT / "tools/win/tests").iterdir())
         self.assertEqual(now, sorted(was + ["tools/win/tests/Test-GreenwaterPackageSafety.ps1"]))
         for name in was:
-            same = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--", name], cwd=ROOT).returncode == 0
+            same = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--", name], cwd=LIVE_ROOT).returncode == 0
             self.assertEqual(same, name != NATURAL_FIXTURE, name)
 
     def test_attribute_guard_rejects_changed_old_rules_and_unapproved_overrides(self):
         if not in_git(CONTRACT):
             self.skipTest("the contract commit is not in this copy")
-        before = subprocess.run(["git", "show", CONTRACT + ":.gitattributes"], cwd=ROOT,
+        before = subprocess.run(["git", "show", CONTRACT + ":.gitattributes"], cwd=LIVE_ROOT,
                                 capture_output=True, text=True, check=True).stdout
         old_rule = "tools/win/world-details-artifact.json text eol=lf"
         self.assertIn(old_rule, before)
@@ -229,7 +242,7 @@ class TheCandidate(unittest.TestCase):
         self.assertEqual(now.count(expect % differ[0]), 1)
         self.assertNotIn(expect % "Act1Walk.psc", now)
         self.assertNotIn("-notlike '*'", now)
-        before = subprocess.run(["git", "show", CONTRACT + ":" + NATURAL_FIXTURE], cwd=ROOT, capture_output=True, text=True)
+        before = subprocess.run(["git", "show", CONTRACT + ":" + NATURAL_FIXTURE], cwd=LIVE_ROOT, capture_output=True, text=True)
         if before.returncode != 0:
             self.skipTest("the contract commit is not in this copy")
         old, new = before.stdout.replace("\r\n", "\n").split("\n"), now.split("\n")
@@ -244,9 +257,7 @@ class TheCandidate(unittest.TestCase):
         self.assertEqual(len(list((ROOT / "scripts/Source/User/TLM").glob("*.psc"))), 23)
 
     def test_the_records_are_the_ones_the_stand_in_build_reads_back(self):
-        built_file = ROOT / "build" / "sim" / "TheLastMeridian.json"
-        if not built_file.exists():
-            self.skipTest("no stand-in build here (tools/run_checks.sh makes one)")
+        built_file = built_greenwater()
         built = {q["EditorId"]: q for q in json.loads(built_file.read_text())["Quests"]}
         self.assertEqual(sorted(built), sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", "TLM_MQ02B", "TLM_GW"]))
         for name, said in self.manifest["records"]["quests"].items():
