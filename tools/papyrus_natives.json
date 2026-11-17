@@ -1180,6 +1180,51 @@
     "returns": "float",
     "source": "falloutck.uesp.net/wiki/Sqrt_-_Math"
    }
+  ],
+  "GetValue": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "ActorValue akAV"
+    ],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/GetValue_-_ObjectReference",
+    "unverified": "GREENWATER-STORY-001, 2026-11-17: written from memory of the Creation Kit wiki page named; the wiki refused automated fetches in this session, so the page was NOT read again. To be confirmed by the compiler."
+   }
+  ],
+  "GetBaseValue": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "ActorValue akAV"
+    ],
+    "returns": "float",
+    "source": "falloutck.uesp.net/wiki/GetBaseValue_-_ObjectReference",
+    "unverified": "GREENWATER-STORY-001, 2026-11-17: written from memory of the Creation Kit wiki page named; the wiki refused automated fetches in this session, so the page was NOT read again. To be confirmed by the compiler."
+   }
+  ],
+  "OnTriggerEnter": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "ObjectReference",
+    "params": [
+     "ObjectReference akActionRef"
+    ],
+    "returns": "",
+    "source": "falloutck.uesp.net/wiki/OnTriggerEnter_-_ObjectReference",
+    "unverified": "GREENWATER-STORY-001, 2026-11-17: written from memory of the Creation Kit wiki page named; the wiki refused automated fetches in this session, so the page was NOT read again. To be confirmed by the compiler."
+   }
   ]
  }
 }

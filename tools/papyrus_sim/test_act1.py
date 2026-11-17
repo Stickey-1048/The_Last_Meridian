@@ -1064,8 +1064,10 @@ class TheLinesAndTheScript(unittest.TestCase):
         messages = {m["EditorId"]: m for m in self.data["Messages"]}
         for name in ("PritchardHandOff", "PritchardAfter", "PritchardAfterAndMore"):
             message = messages[MSG + name]
-            self.assertIn('"\n\n[First-section demo complete.', message["Text"])
-            self.assertIn('Later routes are not playable.]', message["Text"])
+            # GREENWATER-STORY-001 (order, item 1): in this candidate one later road is playable, and the
+            # first section's own ending says so instead of saying that none is.
+            self.assertTrue(message["Text"].endswith('"\n\n[Opening complete. Only Greenwater is playable.]'), message["Text"])
+            self.assertNotIn('Later routes are not playable', message["Text"])
             self.assertLessEqual(len(message["Text"].encode('ascii')), 240, name)
             expected = ["Continue"] + (["There's something else from that train."] if name.endswith("AndMore") else [])
             self.assertEqual([b["Text"] for b in message["Buttons"]], expected)

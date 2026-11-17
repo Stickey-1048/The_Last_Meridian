@@ -19,15 +19,19 @@
   },
   "ui": {
     "what": "Product-availability text. Not fiction, not said by anybody, and kept outside the quoted speech.",
-    "briefing_only": "Mercy briefing only. The three destinations are not playable in this build.",
-    "hand_off_footer": "Opening complete. Ask again for Mercy briefs; roads unbuilt.",
-    "journal_complete": "Mercy briefing complete. Destinations are not playable in this build.",
+    "briefing_only": "Mercy briefing. Greenwater is playable; the other roads are not.",
+    "hand_off_footer": "Opening complete. Ask for briefings or use Greenwater story test.",
+    "journal_complete": "Mercy briefing complete. Only Greenwater is playable; other roads and fair are not.",
     "objective": "Ask Pritchard about the three roads.",
     "quest_name": "Mercy briefing",
     "copy_issued": "One review copy only. No second copy is given.",
     "copy_pending": "Review copy hand-over unconfirmed. None is given again. Report this to the tester.",
     "continue": "Continue",
-    "from_the_contract": ["briefing_only", "hand_off_footer", "journal_complete", "objective"],
+    "from_the_contract": ["objective"],
+    "changed_by_greenwater_story_001": {
+      "what": "In the GREENWATER-STORY-001 candidate Greenwater is playable, so the three strings that said no destination is were replaced (its order, item 1; Nora's review, section 1). The a8 source and its package keep the earlier wording: Mercy briefing only. The three destinations are not playable in this build. / Opening complete. Ask again for Mercy briefs; roads unbuilt. / Mercy briefing complete. Destinations are not playable in this build.",
+      "strings": ["briefing_only", "hand_off_footer", "journal_complete"]
+    },
     "written_for_this_increment": ["quest_name", "copy_issued", "copy_pending"],
     "continue_is": "The first section's own word for going on (SpecAct1.cs, GoOn). The writing's nodes without buttons have an implicit Continue, and pritchard_road_pike has an explicit one."
   },

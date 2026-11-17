@@ -174,7 +174,7 @@ public static class Spec
     // ------------------------------------------------------------ globals
     // All short, default 0. TLM_Truth etc. are the hidden metrics named by
     // docs/doctrine-of-the-open-ledger.md.
-    public static readonly string[] Globals =
+    public static readonly string[] Globals = new[]
     {
         "TLM_G_DataVersion",
         "TLM_G_CaravanOutcome",
@@ -199,14 +199,14 @@ public static class Spec
         // installed copy of the plugin; TLM:Core then runs that scenario of
         // the self-test by itself and closes the game. Remove before release.
         "TLM_G_DevScenario",
-    };
+    }.Concat(Greenwater.Globals).ToArray();
 
-    public static readonly string[] Factions =
+    public static readonly string[] Factions = new[]
     {
         "TLM_Fac_Cutters",
         "TLM_Fac_Caravan",
         "TLM_Fac_MercyCrossing",
-    };
+    }.Concat(Greenwater.Factions).ToArray();
 
     public static readonly MiscSpec[] MiscItems =
     {
@@ -223,7 +223,7 @@ public static class Spec
     {
         // Development only (the placed-content trial).
         new("TLM_ACTI_TrialTrigger"),
-    }.Concat(Act1.Activators).ToArray();
+    }.Concat(Act1.Activators).Concat(Greenwater.Activators).ToArray();
 
     public static readonly ContainerSpec[] Containers = Act1.Containers;
 
@@ -248,7 +248,7 @@ public static class Spec
         // placeholders, not characters.
         new("TLM_NPC_TrialPerson", "Second Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: true),
         new("TLM_NPC_TrialPersonBare", "Third Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: false),
-    }.Concat(Act1.Npcs).ToArray();
+    }.Concat(Act1.Npcs).Concat(Greenwater.Npcs).ToArray();
 
     // ------------------------------------------------- placed references
     // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
@@ -305,7 +305,7 @@ public static class Spec
         new("TLM_REF_TrialPersonOwn", TrialCell, "TLM_NPC_TrialPerson", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialSettlerOnFloor", TrialCell, "WorkshopNPC", "Npc", Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialPersonBare", TrialCell, "TLM_NPC_TrialPersonBare", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
-    }.Concat(Act1.Placed).ToArray();
+    }.Concat(Act1.Placed).Concat(Greenwater.Placed).ToArray();
 
     // Both take after one of the game's notes, so that they can lie in the
     // world and be read there (the first section's rough cut places them).
@@ -323,7 +323,7 @@ public static class Spec
             "the line's word to the yard the same week. Last I saw, no one had been sent in his place.\n\n" +
             "Odd, then, that every car I rode on this trip came up on the list as \"signed clean\".\n\n" +
             "Pritchard will want to see this in person.", LooksLikeANote: true),
-    }.Concat(MercyBriefing.Books).ToArray();
+    }.Concat(MercyBriefing.Books).Concat(Greenwater.Books).ToArray();
 
     // ----------------------------------------------------------- messages
     public static readonly MessageSpec[] Messages = new MessageSpec[]
@@ -350,7 +350,7 @@ public static class Spec
         // Development only (scenario 11): what is shown when the person of the
         // plugin's own is activated. Not a box: nobody is there to answer one.
         new("TLM_MSG_TrialTalk", null, "The second trial settler has nothing to say yet.", Box: false),
-    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).ToArray();
+    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).Concat(Greenwater.Messages).ToArray();
 
     // --------------------------------------------------------------- core
     public static readonly QuestSpec Core = new(
@@ -692,5 +692,5 @@ public static class Spec
                 new VanillaProp("MarkerBase", "XMarker", "Static")),
         });
 
-    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest };
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest, Greenwater.Road, Greenwater.Stage };
 }

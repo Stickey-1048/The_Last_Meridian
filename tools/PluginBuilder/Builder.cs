@@ -698,6 +698,10 @@ public sealed class Builder
                 case "Container":
                     foreach (var r in _vanillaMod.Containers) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
                     break;
+                case "Ingestible":
+                    // GREENWATER-STORY-001: a food item of the game's for the road's three small portions.
+                    foreach (var r in _vanillaMod.Ingestibles) Add(r.FormKey, r.EditorID, () => r.Name?.String, () => r.Model?.File, () => r.ObjectBounds);
+                    break;
                 default:
                     throw new InvalidOperationException($"Spec asks for a {kind} by the name a player sees, which the builder cannot look up");
             }

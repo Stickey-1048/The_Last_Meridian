@@ -34,9 +34,11 @@ public static class MercyBriefing
 
     // ------------------------------------------------------------------ UI
     // Product-availability text. Not said by anybody.
-    public const string UiBriefingOnly = "Mercy briefing only. The three destinations are not playable in this build.";
-    public const string UiHandOffFooter = "Opening complete. Ask again for Mercy briefs; roads unbuilt.";
-    public const string UiJournalComplete = "Mercy briefing complete. Destinations are not playable in this build.";
+    // GREENWATER-STORY-001 (order, item 1): in this candidate Greenwater is playable, so the three strings below
+    // no longer say that no destination is. The a8 source and its package keep the earlier wording.
+    public const string UiBriefingOnly = "Mercy briefing. Greenwater is playable; the other roads are not.";
+    public const string UiHandOffFooter = "Opening complete. Ask for briefings or use Greenwater story test.";
+    public const string UiJournalComplete = "Mercy briefing complete. Only Greenwater is playable; other roads and fair are not.";
     public const string UiObjective = "Ask Pritchard about the three roads.";
     public const string UiCopyIssued = "One review copy only. No second copy is given.";
     public const string UiCopyPending = "Review copy hand-over unconfirmed. None is given again. Report this to the tester.";

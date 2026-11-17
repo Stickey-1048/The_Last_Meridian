@@ -157,7 +157,8 @@ public static class Act1
         // Native1.10.163 showed the306-character handoff ending truncated with
         // garbage after~255characters. Keep the complete boundary well below
         // that observed failure point; this is not a general engine-limit claim.
-        return message with { Text = message.Text + "\n\n[First-section demo complete. Later routes are not playable.]" };
+        // GREENWATER-STORY-001 (order, item 1): in this candidate one later road is playable.
+        return message with { Text = message.Text + "\n\n[Opening complete. Only Greenwater is playable.]" };
     }
 
     const string Dunmore = "Reese Dunmore", Nell = "Nell Fenwick", Abel = "Abel Rudd", Cutter = "Tellico Cutter",
@@ -308,6 +309,9 @@ public static class Act1
             new FormProp("TLM_SQ01", "TLM_SQ01"),
             // ACT1-RUNTIME-001: the optional Mercy briefing after the chapter (SpecMercyBriefing.cs).
             new FormProp("TLM_MercyBriefing", MercyBriefing.QuestId),
+            // GREENWATER-STORY-001: the Greenwater greybox (SpecGreenwater.cs): its travel point is opened at set-up,
+            // and the river report is offered from Pritchard's own conversation.
+            new FormProp("TLM_Greenwater", Greenwater.StageQuestId),
             new FormProp("TLM_G_CaravanOutcome", "TLM_G_CaravanOutcome"),
             new FormProp("TLM_G_CaravanMethod", "TLM_G_CaravanMethod"),
             new FormProp("TLM_G_CaravanAliveAtMercy", "TLM_G_CaravanAliveAtMercy"),
