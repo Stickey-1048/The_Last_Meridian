@@ -140,10 +140,11 @@ Actor Function Person(int role)
 		Return None
 	EndIf
 	Actor who = Cast[role].GetActorReference()
+	Quest sharedQuest = Self as Quest
 	If role >= 4 && (!originalOwnCast || who != originalOwnCast[role - 4])
 		Return None
 	EndIf
-	If role < 4 && who != (Self as TLM:FourFlagsWalk).OriginalVisitor(role)
+	If role < 4 && who != (sharedQuest as TLM:FourFlagsWalk).OriginalVisitor(role)
 		Return None
 	EndIf
 	Return who
@@ -175,7 +176,8 @@ EndFunction
 
 bool Function Speaker(Actor who, int role, int capturedEpoch)
 	bool eligible = Local() && Alive(who) && At(Game.GetPlayer(),who,2048.0)
-	bool authority = (Self as TLM:FourFlagsWalk).SourceIdentity(role,who)
+	Quest sharedQuest = Self as Quest
+	bool authority = (sharedQuest as TLM:FourFlagsWalk).SourceIdentity(role,who)
 	Actor currentActor = Person(role)
 	Return eligible && authority && currentActor == who && capturedEpoch == generation
 EndFunction

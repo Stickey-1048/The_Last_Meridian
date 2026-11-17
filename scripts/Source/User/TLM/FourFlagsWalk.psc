@@ -153,7 +153,8 @@ ObjectReference entryPoint = None
 ObjectReference returnPoint = None
 
 TLM:MQ03Quest Function Road()
-	Return Self as TLM:MQ03Quest
+	Quest sharedQuest = Self as Quest
+	Return sharedQuest as TLM:MQ03Quest
 EndFunction
 
 ObjectReference Function Ref(ReferenceAlias a)
@@ -2132,12 +2133,12 @@ Function Facts(int capturedEpoch)
 	int basis = Road().EntryKind()
 	int encounter = Number(Road().GetStageDone(40))
 	int course = Road().ResponseKind()
-	int occupation = Number(Road().GetStageDone(70))
+	int occupationMark = Number(Road().GetStageDone(70))
 	int read = Number(Road().ReadBefore())
 	If !Road().Current(capturedEpoch)
 		Return
 	EndIf
-	If Status.Show(basis,encounter,course,occupation,read) != 0 || !Road().Current(capturedEpoch)
+	If Status.Show(basis,encounter,course,occupationMark,read) != 0 || !Road().Current(capturedEpoch)
 		Return
 	EndIf
 	Actor publicHolder = Road().PublicHolder()
