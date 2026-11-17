@@ -46,6 +46,12 @@ PACKAGER = ROOT / "tools" / "win" / "Build-Greenwater.ps1"
 FIXTURE = ROOT / "tools" / "win" / "tests" / "Test-GreenwaterPackageSafety.ps1"
 NATURAL_FIXTURE = "tools/win/tests/Test-WorldNaturalPackageSafety.ps1"
 FRESH = ["Act1Guide.pex", "Act1Walk.pex", "GreenwaterTalk.pex", "GreenwaterWalk.pex", "MQ02BQuest.pex", "MercyBriefing.pex"]
+NIGHT_MAIL_DOC_ATTRIBUTES = "docs/design/NIGHT_MAIL_STORY_001*.md text eol=lf\n"
+
+
+def preserves_frozen_attributes(before, now):
+    """Preserve all prior rules; only the reviewed Night Mail docs rule may follow."""
+    return now in (before, before + NIGHT_MAIL_DOC_ATTRIBUTES)
 
 
 def copy_of_the_tree():
@@ -168,9 +174,13 @@ class TheCandidate(unittest.TestCase):
             self.skipTest("the contract commit is not in this copy; the pinned digests were still checked")
         frozen = list(candidate.OLD_MANIFESTS + candidate.FROZEN) + [
             "tools/win/Play-WorldDetails.cmd", "tools/win/Play-WorldNatural.cmd", "tools/win/Play-WorldStory.cmd", "tools/win/Play-WorldExpanded.cmd",
-            "tools/test_world_story_launcher.py", ".gitattributes", ".github"]
+            "tools/test_world_story_launcher.py", ".github"]
         got = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--"] + frozen, cwd=ROOT)
         self.assertEqual(got.returncode, 0, "a frozen manifest, verifier, packager, launcher or workflow differs from the contract commit's")
+        attributes = subprocess.run(["git", "show", CONTRACT + ":.gitattributes"], cwd=ROOT,
+                                    capture_output=True, text=True, check=True).stdout
+        self.assertTrue(preserves_frozen_attributes(attributes, (ROOT / ".gitattributes").read_text()),
+                        "frozen attributes changed beyond the exact approved Night Mail docs LF append")
         # The earlier PowerShell tests: as they were, but for the one fixture the repair was told to correct
         # (finding 4) and the new packager's own new fixture.
         was = subprocess.run(["git", "ls-tree", "-r", "--name-only", CONTRACT, "tools/win/tests"], cwd=ROOT, capture_output=True, text=True).stdout.split()
@@ -179,6 +189,28 @@ class TheCandidate(unittest.TestCase):
         for name in was:
             same = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--", name], cwd=ROOT).returncode == 0
             self.assertEqual(same, name != NATURAL_FIXTURE, name)
+
+    def test_attribute_guard_rejects_changed_old_rules_and_unapproved_overrides(self):
+        if not in_git(CONTRACT):
+            self.skipTest("the contract commit is not in this copy")
+        before = subprocess.run(["git", "show", CONTRACT + ":.gitattributes"], cwd=ROOT,
+                                capture_output=True, text=True, check=True).stdout
+        old_rule = "tools/win/world-details-artifact.json text eol=lf"
+        self.assertIn(old_rule, before)
+        approved = before + NIGHT_MAIL_DOC_ATTRIBUTES
+        self.assertTrue(preserves_frozen_attributes(before, before))
+        self.assertTrue(preserves_frozen_attributes(before, approved))
+        mutations = {
+            "alter frozen manifest rule": approved.replace(old_rule, old_rule.replace("eol=lf", "eol=crlf")),
+            "remove frozen manifest rule": approved.replace(old_rule + "\n", ""),
+            "append broad override": approved + "* text eol=crlf\n",
+            "broaden approved rule": before + "docs/design/*.md text eol=lf\n",
+            "prepend instead of append": NIGHT_MAIL_DOC_ATTRIBUTES + before,
+            "duplicate approved rule": approved + NIGHT_MAIL_DOC_ATTRIBUTES,
+        }
+        for name, changed in mutations.items():
+            with self.subTest(mutation=name):
+                self.assertFalse(preserves_frozen_attributes(before, changed))
 
     def test_the_natural_fixture_differs_by_its_one_expectation(self):
         """Repair, finding 4. The frozen Natural packager walks its pinned sources in the order of its manifest
