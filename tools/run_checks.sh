@@ -19,7 +19,7 @@ cd "$(dirname "$0")/.."
 export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
 
 echo "== 1/5 logic model =="
-(cd tools/logic_model && python3 -m unittest 2>&1 | tail -4)
+(cd tools/logic_model && python3 -m unittest 2>&1)
 
 echo "== 2/5 plugin build =="
 dotnet build tools/WorldSliceBuilder --nologo
@@ -211,7 +211,7 @@ echo "  vanilla lookups work against eight stand-in masters (spelling, fallback,
 echo "  the id file came out the same with and without a master"
 
 echo "== 5/5 the scripts against a stand-in for the game =="
-(cd tools/papyrus_sim && python3 -m unittest 2>&1 | tail -4)
+(cd tools/papyrus_sim && python3 -m unittest 2>&1)
 python3 tools/papyrus_sim --brief all
 # The same with every call out of a script taking a frame, so that handlers
 # on different threads overlap (amendment A24).

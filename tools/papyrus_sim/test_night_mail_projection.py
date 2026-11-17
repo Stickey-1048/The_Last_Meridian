@@ -94,7 +94,9 @@ class Projection(unittest.TestCase):
                 while at<len(doc['text']) and doc['text'][at]=='\n':at+=1
                 self.assertEqual([b['Text'] for b in m['Buttons']],['Continue'])
             self.assertEqual(at,len(doc['text']))
-        books=book_texts(PLUGIN.with_suffix('.esp'))
+        # The portable runner copies JSON into build/sim, not the binary.
+        # The skeleton build contains the same authored BOOK records.
+        books=book_texts(ROOT/'build/TheLastMeridian.esp')
         doc=next(d for d in self.docs.values() if d['title']=='Flyleaf of a Hymnal')
         self.assertEqual(books['TLM_BOOK_HymnalFlyleaf'],(doc['title'],doc['text']))
 
