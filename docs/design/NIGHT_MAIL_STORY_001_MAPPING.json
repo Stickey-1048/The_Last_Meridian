@@ -119,7 +119,11 @@
         "Whose hand is on your inspections?",
         "Nothing. Good night."
       ],
-      "button_mode": "node"
+      "button_mode": "node",
+      "withheld_context": {
+        "emitted": false,
+        "reason": "The full accepted line claims payroll in Lockridge's safe. This candidate acknowledges payroll and medicine together at the valley and has no actual payroll-to-safe custody fact. Withhold the entire quote; keep accepted text unchanged and the independent drawer accessible."
+      }
     },
     {
       "record": "TLM_MSG_NM_LockridgeAfterDole",
@@ -750,14 +754,14 @@
     },
     {
       "record": "TLM_MSG_NM_LabelYard",
-      "text": "[Greybox: Iron Junction yard]\n\nAugusta Lockridge runs the yard from her desk. The rules are on the gate; the dispatch board and her desk drawer are here. Old Contrary stands on the next part of this floor.",
+      "text": "[Greybox: Iron Junction yard]\n\nThe rules are on the gate. The office desk, drawer and dispatch board are here; the board shows the yard's current status. The footplate stand-in is on the next part of this floor.",
       "buttons": [
         "Continue"
       ]
     },
     {
       "record": "TLM_MSG_NM_LabelFootplate",
-      "text": "[Greybox: Old Contrary's footplate, in the yard]\n\nFlat floor stands for the engine. Billie Tupper drives. The departure control is here, and the mail car behind.",
+      "text": "[Greybox: Old Contrary's footplate, in the yard]\n\nFlat floor stands for the engine. The departure control is here, and the mail car behind. Use the current controls to continue.",
       "buttons": [
         "Continue"
       ]

@@ -82,6 +82,17 @@ class Projection(unittest.TestCase):
             self.assertEqual(m['Text'],e['text'])
             self.assertEqual([b['Text'] for b in m['Buttons']],e['buttons'])
 
+    def test_unsupported_payroll_quote_is_preserved_in_records_but_withheld_at_runtime(self):
+        withheld=[e for e in self.map['speech'] if 'withheld_context' in e]
+        self.assertEqual([e['record'] for e in withheld],['TLM_MSG_NM_LockridgeAfterRan'])
+        self.assertFalse(withheld[0]['withheld_context']['emitted'])
+        self.assertIn('payroll',withheld[0]['withheld_context']['reason'])
+        walk=(ROOT/'scripts/Source/User/TLM/NightMailWalk.psc').read_text()
+        self.assertNotIn('ShowBox(SayLockridgeAfterRan)',walk)
+        self.assertIn("payroll's in my safe",self.messages['TLM_MSG_NM_LockridgeAfterRan']['Text'])
+        self.assertNotIn('Billie Tupper drives',self.messages['TLM_MSG_NM_LabelFootplate']['Text'])
+        self.assertNotIn('runs the yard',self.messages['TLM_MSG_NM_LabelYard']['Text'])
+
     def test_documents_are_whole_and_book_is_actual_binary_text(self):
         for d in self.map['documents']:
             doc=self.docs[d['document']]; at=0

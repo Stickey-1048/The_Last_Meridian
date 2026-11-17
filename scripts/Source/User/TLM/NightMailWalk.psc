@@ -849,6 +849,9 @@ Function TalkLockridge(TLM:MQ02AQuest akRiver)
 	EndIf
 	If akRiver.CanShowHymnal()
 		int show = ShowBox(AskShowHymnal)
+		If !akRiver.CanShowHymnal()
+			Return
+		EndIf
 		If show == 0
 			ShowHymnal(akRiver)
 			Return
@@ -864,12 +867,10 @@ Function TalkLockridge(TLM:MQ02AQuest akRiver)
 		Return
 	EndIf
 	int course = akRiver.Outcome()
-	If course == NM_RUN && akRiver.Mail() == NM_MAIL_DELIVERED && !akRiver.GetStageDone(60)
-		int pick = ShowBox(SayLockridgeAfterRan)
-		If pick == 0 && akRiver.RoadOpen() && akRiver.LockridgeCanSpeak()
-			ShowBox(SayLockridgeRails)
-		EndIf
-	ElseIf course == NM_DEFEAT && akRiver.DoleIsDead() && !akRiver.KnowsName()
+	; The full after-run quotation claims payroll in her safe. This greybox
+	; represents both cargoes at the valley and has no such custody fact.
+	; Withhold that compound quotation; the independent drawer stays usable.
+	If course == NM_DEFEAT && akRiver.DoleIsDead() && !akRiver.KnowsName()
 		ShowBox(SayLockridgeAfterDole)
 	Else
 		ShowBox(SayLockridgeDefault)
@@ -974,10 +975,13 @@ EndFunction
 Function ShowHymnal(TLM:MQ02AQuest akRiver)
 	{The real book, shown to a living Lockridge with Dole alive: her answer, and
 	then the drawer she tells the player to open.}
+	If !akRiver.CanShowHymnal()
+		Return
+	EndIf
 	If ShowBox(SayLockridgeHymnal) != 0
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || !akRiver.LockridgeCanSpeak()
+	If !akRiver.CanShowHymnal()
 		Return
 	EndIf
 	If !akRiver.ShowHymnal()
@@ -1086,6 +1090,11 @@ Function CarryOutCountersign(TLM:MQ02AQuest akRiver)
 		ShowBox(NoteDecisionFailed)
 		Return
 	EndIf
+	; A temporary loss of the observer or eligible signatory preserves intent.
+	If !akRiver.PlayerIsAlive() || !akRiver.LockridgeCanSpeak()
+		Refresh()
+		Return
+	EndIf
 	ObjectReference signed = Piece(Alias_BoardSigned)
 	ObjectReference stamped = Piece(Alias_BoardStamped)
 	ObjectReference held = Piece(Alias_HeldStock)
@@ -1162,7 +1171,7 @@ Function AtBoard(TLM:MQ02AQuest akRiver)
 	EndIf
 EndFunction
 
-int Function CarryOutAuthority(TLM:MQ02AQuest akRiver)
+int Function CarryOutAuthority(TLM:MQ02AQuest akRiver, Actor akSheriff = None)
 	{The yard without a master: its dispatch board closed and the other two
 	off, LOOKED AT, then acknowledged, then recorded. NW_SHOWN_DONE if it is
 	recorded; NW_SHOWN_UNSEEN if the boards could not be seen so;
@@ -1188,6 +1197,12 @@ int Function CarryOutAuthority(TLM:MQ02AQuest akRiver)
 			pick = ShowBox(NoteAuthorityVacant)
 		Else
 			pick = ShowBox(NoteAuthorityWithdrawn)
+		EndIf
+		; A yard-board retry has no recipient. Inside his conversation, however,
+		; the current sheriff must still be eligible before this new commitment.
+		If !akRiver.PlayerIsAlive() || (akSheriff && !StillHere(akSheriff, Game.GetPlayer()))
+			Refresh()
+			Return NW_SHOWN_UNANSWERED
 		EndIf
 		If pick == 0
 			If akRiver.FinishAuthority(closed, stamped, signed)
@@ -1653,7 +1668,7 @@ Function Sermon(TLM:MQ02AQuest akRiver)
 	EndIf
 	akRiver.MeetDole()
 	If pick == 0
-		Face(akRiver)
+		Face(akRiver, mark)
 	ElseIf pick == 1
 		Share(akRiver, mark)
 	ElseIf pick == 2
@@ -1672,7 +1687,7 @@ Function HisName(TLM:MQ02AQuest akRiver, int aiMark)
 	If pick == 0
 		HisSilver(akRiver, aiMark)
 	ElseIf pick == 1
-		Face(akRiver)
+		Face(akRiver, aiMark)
 	Else
 		Share(akRiver, aiMark)
 	EndIf
@@ -1685,18 +1700,21 @@ Function HisSilver(TLM:MQ02AQuest akRiver, int aiMark)
 	EndIf
 	akRiver.LearnSilver(NM_HOW_TOLD)
 	If pick == 0
-		Face(akRiver)
+		Face(akRiver, aiMark)
 	Else
 		Share(akRiver, aiMark)
 	EndIf
 EndFunction
 
-Function Face(TLM:MQ02AQuest akRiver)
+Function Face(TLM:MQ02AQuest akRiver, int aiMark)
 	{"Stand aside." His answer; and once it is answered, the fight the player chose.}
+	If !StillHis(akRiver, aiMark) || akRiver.TrainOffered() != NM_AT_OPEN
+		Return
+	EndIf
 	If !Said(SayDoleFace)
 		Return
 	EndIf
-	If !akRiver.RoadOpen() || !akRiver.FaceDole()
+	If !StillHis(akRiver, aiMark) || !akRiver.FaceDole(aiMark)
 		Return
 	EndIf
 	Rouse()
@@ -1729,7 +1747,7 @@ Function Share(TLM:MQ02AQuest akRiver, int aiMark)
 	If pick == 0
 		Sell(akRiver)
 	ElseIf pick == 1
-		Face(akRiver)
+		Face(akRiver, aiMark)
 	EndIf
 EndFunction
 
@@ -1896,7 +1914,9 @@ int Function OfferReport(Actor akSheriff)
 				Return NW_REPORT_CLOSED
 			EndIf
 			any = true
-			TellReport(river)
+			If !TellReport(river, akSheriff, player)
+				Return NW_REPORT_CLOSED
+			EndIf
 		ElseIf pick != 1
 			Return NW_REPORT_CLOSED
 		EndIf
@@ -1916,7 +1936,10 @@ int Function OfferReport(Actor akSheriff)
 				Return NW_REPORT_CLOSED
 			EndIf
 			any = true
-			ShowBox(NoteStampDelivered)
+			int received = ShowBox(NoteStampDelivered)
+			If received != 0 || !StillHere(akSheriff, player)
+				Return NW_REPORT_CLOSED
+			EndIf
 		ElseIf hand != 1
 			Return NW_REPORT_CLOSED
 		EndIf
@@ -1928,7 +1951,7 @@ int Function OfferReport(Actor akSheriff)
 		If !river.BeginAuthority()
 			Return NW_REPORT_CLOSED
 		EndIf
-		int shown = CarryOutAuthority(river)
+		int shown = CarryOutAuthority(river, akSheriff)
 		If shown == NW_SHOWN_UNSEEN
 			; The stamp is his. The yard's change could not be shown, and is tried again when he is next spoken to.
 			ShowBox(NoteAuthorityFailed)
@@ -1952,40 +1975,79 @@ bool Function StillHere(Actor akSheriff, Actor akPlayer)
 	Return !akSheriff.IsDead() && !akSheriff.IsDisabled() && !akSheriff.IsInCombat() && !akPlayer.IsDead()
 EndFunction
 
-Function TellReport(TLM:MQ02AQuest akRiver)
+bool Function TellReport(TLM:MQ02AQuest akRiver, Actor akSheriff, Actor akPlayer)
 	{What is reported is what the road holds, said by this build and not put in his mouth.}
+	int mark = akRiver.RoadMark()
 	int mail = akRiver.Mail()
 	If mail == NM_MAIL_DELIVERED
-		ShowBox(ReportMailDelivered)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportMailDelivered, mark)
+			Return false
+		EndIf
 	ElseIf mail == NM_MAIL_RETAINED
-		ShowBox(ReportMailRetained)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportMailRetained, mark)
+			Return false
+		EndIf
 	ElseIf mail == NM_MAIL_SEIZED
-		ShowBox(ReportMailSeized)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportMailSeized, mark)
+			Return false
+		EndIf
 	Else
-		ShowBox(ReportMailAboard)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportMailAboard, mark)
+			Return false
+		EndIf
 	EndIf
 	int course = akRiver.Outcome()
 	If course == NM_RUN
-		ShowBox(ReportRan)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportRan, mark)
+			Return false
+		EndIf
 	ElseIf course == NM_SOLD
-		ShowBox(ReportSold)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportSold, mark)
+			Return false
+		EndIf
 	ElseIf course == NM_BACKED
-		ShowBox(ReportBacked)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportBacked, mark)
+			Return false
+		EndIf
 	ElseIf akRiver.DoleFate() == NM_DOLE_BY_PLAYER
-		ShowBox(ReportDoleByYou)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportDoleByYou, mark)
+			Return false
+		EndIf
 	Else
-		ShowBox(ReportDoleDead)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportDoleDead, mark)
+			Return false
+		EndIf
 	EndIf
 	bool silver = akRiver.KnowsSilver()
 	bool name = akRiver.KnowsName()
 	If silver && name
-		ShowBox(ReportKnowBoth)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportKnowBoth, mark)
+			Return false
+		EndIf
 	ElseIf silver
-		ShowBox(ReportKnowSilver)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportKnowSilver, mark)
+			Return false
+		EndIf
 	ElseIf name
-		ShowBox(ReportKnowName)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportKnowName, mark)
+			Return false
+		EndIf
 	Else
-		ShowBox(ReportKnowNeither)
+		If !ReportPage(akRiver, akSheriff, akPlayer, ReportKnowNeither, mark)
+			Return false
+		EndIf
 	EndIf
-	ShowBox(ReportEnd)
+	If !ReportPage(akRiver, akSheriff, akPlayer, ReportEnd, mark)
+		Return false
+	EndIf
+	Return true
+EndFunction
+
+bool Function ReportPage(TLM:MQ02AQuest akRiver, Actor akSheriff, Actor akPlayer, Message akPage, int aiMark)
+	{Only an exact Continue under the same current participants permits another page or offer.}
+	If !StillHere(akSheriff, akPlayer) || !akRiver.GetStageDone(100) || akRiver.RoadMark() != aiMark
+		Return false
+	EndIf
+	int pick = ShowBox(akPage)
+	Return pick == 0 && StillHere(akSheriff, akPlayer) && akRiver.GetStageDone(100) && akRiver.RoadMark() == aiMark
 EndFunction

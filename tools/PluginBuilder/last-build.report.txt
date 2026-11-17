@@ -974,11 +974,11 @@ You stepped off the greybox floor and were set back on it."
           button 0: "Continue"
   0009DD  TLM_MSG_NM_LabelYard  [box]  "[Greybox: Iron Junction yard]
 
-Augusta Lockridge runs the yard from her desk. The rules are on the gate; the dispatch board and her desk drawer are here. Old Contrary stands on the next part of this floor."
+The rules are on the gate. The office desk, drawer and dispatch board are here; the board shows the yard's current status. The footplate stand-in is on the next part of this floor."
           button 0: "Continue"
   0009DE  TLM_MSG_NM_LabelFootplate  [box]  "[Greybox: Old Contrary's footplate, in the yard]
 
-Flat floor stands for the engine. Billie Tupper drives. The departure control is here, and the mail car behind."
+Flat floor stands for the engine. The departure control is here, and the mail car behind. Use the current controls to continue."
           button 0: "Continue"
   0009DF  TLM_MSG_NM_LabelCut  [box]  "[Greybox: Sawtooth Cut]
 

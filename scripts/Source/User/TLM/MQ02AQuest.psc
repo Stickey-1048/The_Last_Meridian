@@ -689,9 +689,9 @@ bool Function MeetDole()
 	Return true
 EndFunction
 
-bool Function FaceDole()
+bool Function FaceDole(int aiMark)
 	{"Stand aside" was said and his answer delivered: the player chose the fight.}
-	If !RoadOpen() || !AtTheCut() || !IsThere(Alias_Dole)
+	If !RoadOpen() || RoadMark() != aiMark || TrainOffered() != NM_AT_OPEN || !CanSpeak(Alias_Dole)
 		Return false
 	EndIf
 	DoleFaced = true
@@ -1244,7 +1244,7 @@ bool Function FinishCountersign(ObjectReference akSigned, ObjectReference akStam
 	If !IsRunning()
 		Return false
 	EndIf
-	If !IsOn(akSigned) || !IsOff(akStamped) || !IsOn(akHeld) || !IsThere(Alias_Lockridge)
+	If !IsOn(akSigned) || !IsOff(akStamped) || !IsOn(akHeld) || !CanSpeak(Alias_Lockridge) || !PlayerIsAlive()
 		Debug.Trace("TLM_MQ02A: the countersigning is not recorded: the board, the held stock or Lockridge is not seen as it needs. It stays pending", 2)
 		Return false
 	EndIf
@@ -1406,7 +1406,7 @@ bool Function FinishAuthority(ObjectReference akClosed, ObjectReference akStampe
 	authority withdrawn; with Lockridge dead it is a yard left vacant, which
 	is a different fact and is recorded as one. Only now, with the stamp
 	delivered, is lockridge_reported true.}
-	If !IsRunning()
+	If !IsRunning() || !PlayerIsAlive()
 		Return false
 	EndIf
 	If !IsOn(akClosed) || !IsOff(akStamped) || !IsOff(akSigned)
