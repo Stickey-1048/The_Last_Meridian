@@ -506,6 +506,7 @@ public static class Greenwater
         Script: new ScriptBind("TLM:GreenwaterWalk", new Prop[]
         {
             new FormProp("TLM_Relief", GreenwaterRelief.QuestId),
+            new FormProp("TLM_FourFlags", FourFlags.QuestId),
             new FormProp("TLM_MQ02B", QuestId),
             new FormProp("TLM_MQ01", "TLM_MQ01"),
             new FormProp("TLM_G_MQ01_Done", "TLM_G_MQ01_Done"),

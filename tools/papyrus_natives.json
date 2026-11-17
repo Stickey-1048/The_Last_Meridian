@@ -1298,6 +1298,30 @@
     "returns": "none",
     "source": "Read-only local Creation Kit Base/ScriptObject.psc line301; open and close both invalidate clock prime"
    }
+  ],
+  "GetContainer": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "ObjectReference",
+    "source": "Local distributed ObjectReference.psc SDK, line413; signature inspected for FOUR-FLAGS-STORY-001. Not native acceptance."
+   }
+  ],
+  "IsInScene": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "bool",
+    "source": "Local distributed Actor.psc SDK, line397; signature inspected for FOUR-FLAGS-STORY-001. Not native acceptance."
+   }
   ]
  }
 }

@@ -241,6 +241,14 @@ bool Function BeldenCanSpeak()
 	Return CanSpeak(Alias_Belden)
 EndFunction
 
+bool Function BeldenVisitSafe()
+	Return !ReliefPending || ReliefGiven
+EndFunction
+
+bool Function SheriffVisitSafe()
+	Return !Judging && (HangIntent == RV_HANG_NONE || HangIntent == RV_HANG_DONE) && ReturnPending == RV_RETURN_NONE && HatcherState() != RV_H_CUSTODY
+EndFunction
+
 bool Function SheriffCanReceive()
 	{Owen Pritchard, alive, present and in no fight, wherever the first section put him.}
 	Return CanSpeak(Alias_MercySheriff)

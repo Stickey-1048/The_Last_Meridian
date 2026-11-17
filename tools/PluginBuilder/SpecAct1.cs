@@ -315,6 +315,8 @@ public static class Act1
             // NIGHT-MAIL-STORY-001: the Night Mail greybox (SpecNightMail.cs), on the same terms.
             new FormProp("TLM_NightMail", NightMail.StageQuestId),
             new FormProp("TLM_RedHollow", RedHollow.StageId),
+            new FormProp("TLM_FourFlags", FourFlags.QuestId),
+            new FormProp("TLM_FourFlagsEntry", FourFlags.EntryId),
             new FormProp("TLM_G_CaravanOutcome", "TLM_G_CaravanOutcome"),
             new FormProp("TLM_G_CaravanMethod", "TLM_G_CaravanMethod"),
             new FormProp("TLM_G_CaravanAliveAtMercy", "TLM_G_CaravanAliveAtMercy"),

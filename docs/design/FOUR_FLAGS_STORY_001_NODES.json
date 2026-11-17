@@ -1,0 +1,1730 @@
+{
+  "baseline": "a31b5eded170dac81cd1d4f5d70a19a758c942e8",
+  "count": 61,
+  "source": "assets/incoming/act1/story/talk/tlm_mq03.json",
+  "guards": "Raw accepted conditions retained; live contexts additionally require actual present eligible originals. For noncourier absence families, unavailable authority is a specifically mapped technical presence qualification, never a recorded death. Dead-courier speech requires actual observed dead Juno.",
+  "nodes": [
+    {
+      "source": "pritchard_fair",
+      "speaker": "pritchard",
+      "entry": true,
+      "priority": 50,
+      "when": [
+        "mq03 done 10",
+        "mq03 notdone 40"
+      ],
+      "buttons": [],
+      "text": "Forty years. Not one gun drawn on this ground on Decoration Day, and I've buried men who wanted to. Eat something. Shoot for the beef if you must. Then go and let each of those four lie to you. I want to know which does it best.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_pritchard_fair_1",
+        "S_pritchard_fair_2"
+      ]
+    },
+    {
+      "source": "whitcomb_default",
+      "speaker": "whitcomb",
+      "entry": true,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Clara Whitcomb, for the Compact. If you've freight to move, I'm listening. If you've a grievance, I'm listening with my other ear.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_whitcomb_default_1"
+      ]
+    },
+    {
+      "source": "whitcomb_offer",
+      "speaker": "whitcomb",
+      "entry": true,
+      "priority": 40,
+      "when": [
+        "mq03 done 10",
+        "mq03 notdone 40"
+      ],
+      "buttons": [
+        {
+          "label": "Who sets the rates?",
+          "then": "whitcomb_rates"
+        },
+        {
+          "label": "And when a big buyer undercuts?",
+          "then": "whitcomb_big"
+        },
+        {
+          "label": "(Move on)"
+        }
+      ],
+      "text": "Clara Whitcomb, for the Compact. You're the one from the wreck; I'd know you by the ballad. Here's my whole pitch, no charge: open roads, posted rates, and nobody's leave to ask. Now what am I bid?",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_whitcomb_offer_1"
+      ]
+    },
+    {
+      "source": "whitcomb_rates",
+      "speaker": "whitcomb",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Carriers in the Compact vote on a shared rate. Nell Fenwick voted against me twice and for me once. Others want to set their own rates. Leaving an agreement mustn't cost them the right to use the road.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_whitcomb_rates_1"
+      ]
+    },
+    {
+      "source": "whitcomb_big",
+      "speaker": "whitcomb",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "The small carriers ask that too. One bad season can sell them to people in my own Compact who smile just the way I do. I know it. I haven't a rule for it yet. I'd sooner admit that than sell you a pig in a sack.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_whitcomb_big_1"
+      ]
+    },
+    {
+      "source": "brigg_default",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "State your business and your arms. In that order.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_default_1"
+      ]
+    },
+    {
+      "source": "brigg_offer",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 40,
+      "when": [
+        "mq03 done 10",
+        "mq03 notdone 40"
+      ],
+      "buttons": [
+        {
+          "label": "At what price?",
+          "then": "brigg_price"
+        },
+        {
+          "label": "Your judge hangs men from a wagon.",
+          "then": "brigg_quill"
+        },
+        {
+          "label": "Do all your Wardens agree?",
+          "then": "brigg_dissent"
+        },
+        {
+          "label": "(Move on)"
+        }
+      ],
+      "text": "Colonel Brigg. You are the armed party who came down from the wreck. You have been of use to Sergeant Pritchard; I note it. The Dominion offers one thing: a road you may walk at night. Everything else people say they want comes after.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_offer_1",
+        "S_brigg_offer_2"
+      ]
+    },
+    {
+      "source": "brigg_dissent",
+      "speaker": "brigg",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Old Wardens want local warrants and limits on requisition. Iron Command wants one order obeyed before any appeal. Both wear the old badge. Pritchard and I differ on what that badge permits.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_dissent_1"
+      ]
+    },
+    {
+      "source": "brigg_price",
+      "speaker": "brigg",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "A gate at each gap. A levy by head and wheel. Arms registered; militias under my command. I can patrol this road, not put a decent officer behind every desk. A bad one will have too much power. That's a price. I still mean to collect.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_price_1",
+        "S_brigg_price_2"
+      ]
+    },
+    {
+      "source": "brigg_quill",
+      "speaker": "brigg",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Judge Quill hangs road-agents after a hearing, at noon, in public. Before there was a gate at the gap they were hanged by whoever caught them, or not at all. Tell me which you prefer and I will tell you what you are.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_quill_1"
+      ]
+    },
+    {
+      "source": "belden_default",
+      "speaker": "belden",
+      "entry": true,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Delegate Belden, Commonwealth provisioning. There is a bowl if you want one. Eating here commits you to nothing.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_belden_default_1"
+      ]
+    },
+    {
+      "source": "belden_offer",
+      "speaker": "belden",
+      "entry": true,
+      "priority": 40,
+      "when": [
+        "mq03 done 10",
+        "mq03 notdone 40"
+      ],
+      "buttons": [
+        {
+          "label": "Who keeps the list?",
+          "then": "belden_list"
+        },
+        {
+          "label": "And if a town wants off the list?",
+          "then": "belden_leave"
+        },
+        {
+          "label": "Who argues against your office?",
+          "then": "belden_dissent"
+        },
+        {
+          "label": "(Move on)"
+        }
+      ],
+      "text": "Tomas Belden, Commonwealth provisioning. Take a bowl if you want; supper isn't a signature. Our stores can carry a town through a bad season. One list tells us where the need is. Somebody must answer for what it leaves out.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_belden_offer_1"
+      ]
+    },
+    {
+      "source": "belden_dissent",
+      "speaker": "belden",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Local provisioning crews want open counts and town appeals. Central stores insist on one office controlling release. That's an argument inside the Commonwealth, not a rumour from its enemies.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_belden_dissent_1"
+      ]
+    },
+    {
+      "source": "belden_list",
+      "speaker": "belden",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "A provisioning committee. It reaches people a merchant might never trust with credit. It also puts mistakes behind an office door. Ask to see your entry and who can correct it. I ought to have better answers than a committee's address.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_belden_list_1",
+        "S_belden_list_2"
+      ]
+    },
+    {
+      "source": "belden_leave",
+      "speaker": "belden",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "There is an appeal, and a committee can delay it. I won't tell you that is the same as a door you can open yourself. When every pantry shares a winter store, leaving has a cost. You should know who sets it before you sign.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_belden_leave_1"
+      ]
+    },
+    {
+      "source": "grey_default",
+      "speaker": "grey",
+      "entry": true,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Grey. I am measuring. Please do not stand in the line of sight.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_grey_default_1"
+      ]
+    },
+    {
+      "source": "grey_offer",
+      "speaker": "grey",
+      "entry": true,
+      "priority": 40,
+      "when": [
+        "mq03 done 10",
+        "mq03 notdone 40"
+      ],
+      "buttons": [
+        {
+          "label": "What would the light cost?",
+          "then": "grey_cost"
+        },
+        {
+          "label": "What do you know about that train?",
+          "then": "grey_train"
+        },
+        {
+          "label": "Do your engineers agree?",
+          "then": "grey_dissent"
+        },
+        {
+          "label": "(Move on)"
+        }
+      ],
+      "text": "Grey. I survey. Your reservoir stands at a head of two hundred and six feet and nobody has drawn a watt from it in two centuries. The Directorate could light this valley in a year. First you should ask what we would need to control.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_grey_offer_1",
+        "S_grey_offer_2"
+      ]
+    },
+    {
+      "source": "grey_dissent",
+      "speaker": "grey",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Some of our engineers want every reading open to the people who supply it. Others want control first and explanations later. Both can build the works. They disagree about who gets to say stop.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_grey_dissent_1"
+      ]
+    },
+    {
+      "source": "grey_cost",
+      "speaker": "grey",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Access to the works, instruments on the hill, operating records. Outages while we test. Need our engineers long enough and you may find you cannot refuse them. Ask who may end the agreement. My instructions have no satisfactory answer.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_grey_cost_1",
+        "S_grey_cost_2"
+      ]
+    },
+    {
+      "source": "grey_train",
+      "speaker": "grey",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "The yard's copy lists outstanding repairs under a clearance nobody can verify. Ask to see the original inspection page. A signature is not an inspection, whatever confidence people place in it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_grey_train_1"
+      ]
+    },
+    {
+      "source": "pike_line",
+      "speaker": "pike",
+      "entry": true,
+      "priority": 40,
+      "when": [
+        "mq03 done 10",
+        "mq03 notdone 40",
+        "mq03 notdone 20"
+      ],
+      "buttons": [
+        {
+          "label": "I'm in.",
+          "do": [
+            "mq03 set 20"
+          ]
+        },
+        {
+          "label": "Who is she?",
+          "then": "pike_flint"
+        },
+        {
+          "label": "Not today."
+        }
+      ],
+      "text": "Beef shoot. A share of the steer is four caps. One ball, sixty paces, closest to the cross takes the hind quarter. I measure. I don't argue. The one to beat is the long drink of water with the beaded scabbard.",
+      "disposition": "withheld",
+      "reason": "Optional unimplemented competition: no fee, result, reward or dependent speech",
+      "pages": []
+    },
+    {
+      "source": "pike_flint",
+      "speaker": "pike",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Calls herself Flint. Hunts men for pay and one man for nothing. I re-crowned that rifle for her last spring and wouldn't take money, and no, I'm not telling you why. Shoot, or step off my line.",
+      "disposition": "withheld",
+      "reason": "Optional unimplemented competition: no fee, result, reward or dependent speech",
+      "pages": []
+    },
+    {
+      "source": "flint_default",
+      "speaker": "flint",
+      "entry": true,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "I'm working.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_flint_default_1"
+      ]
+    },
+    {
+      "source": "flint_line",
+      "speaker": "flint",
+      "entry": true,
+      "priority": 50,
+      "when": [
+        "mq03 done 20",
+        "mq03 notdone 21",
+        "mq03 notdone 22",
+        "mq03 notdone 40"
+      ],
+      "buttons": [],
+      "text": "Watch the flags, then the sight. Keep your finger clear till Pike calls it. Your turn.",
+      "disposition": "withheld",
+      "reason": "Optional unimplemented competition: no fee, result, reward or dependent speech",
+      "pages": []
+    },
+    {
+      "source": "flint_beaten",
+      "speaker": "flint",
+      "entry": true,
+      "priority": 60,
+      "when": [
+        "mq03 done 21",
+        "mq03 notdone 40"
+      ],
+      "buttons": [],
+      "text": "Hm. Pike's dividers agree with you. Enjoy the beef. I've business beyond the shooting line.",
+      "disposition": "withheld",
+      "reason": "Optional unimplemented competition: no fee, result, reward or dependent speech",
+      "pages": []
+    },
+    {
+      "source": "threefords_default",
+      "speaker": "threefords",
+      "entry": true,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "Juno Three-Fords. I carried this through three fords without opening it. Find me Sheriff Pritchard, then find me a dry bench. In that order.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_threefords_default_1"
+      ]
+    },
+    {
+      "source": "threefords_dying",
+      "speaker": "threefords",
+      "entry": true,
+      "priority": 90,
+      "when": [
+        "mq03 done 42",
+        "mq03 notdone 100",
+        "alive threefords"
+      ],
+      "buttons": [],
+      "text": "Not you. Pritchard. ...No time. Listen. Lights on Blackstone ridge, every night, where there's no town. Trains on the dead line. They stop there. And a number. Learn it, I had to. Four, one, one, seven. Four, one, one, seven.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_threefords_dying_1",
+        "S_threefords_dying_2"
+      ]
+    },
+    {
+      "source": "flint_roof",
+      "speaker": "flint",
+      "entry": true,
+      "priority": 80,
+      "when": [
+        "mq03 done 50"
+      ],
+      "buttons": [
+        {
+          "label": "Who is he?",
+          "then": "flint_who"
+        },
+        {
+          "label": "What does the landing tell us?",
+          "then": "flint_hat"
+        }
+      ],
+      "text": "Don't touch it yet. Seven of these in six years. That makes eight. Left on the rail where anyone could find it. Someone wants an audience. I mean to find out who paid for one.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_flint_roof_1"
+      ]
+    },
+    {
+      "source": "flint_who",
+      "speaker": "flint",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "If I had a name I'd not be collecting brass. A distant coat, a bright gun, a boat already waiting. I reckon someone sold him the courier's road and hour. Find me at Pike's if you learn more. I'll trade.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_flint_who_1"
+      ]
+    },
+    {
+      "source": "flint_hat",
+      "speaker": "flint",
+      "entry": false,
+      "priority": 0,
+      "when": [],
+      "buttons": [],
+      "text": "He had a boat waiting. That tells me he chose the ground before he took the shot. Find the landing. Someone tied that skiff up.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_flint_hat_1"
+      ]
+    },
+    {
+      "source": "brigg_rifles",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 90,
+      "when": [
+        "mq03 done 40",
+        "mq03 done 43",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "alive brigg"
+      ],
+      "buttons": [],
+      "text": "Stand easy. Search the landing with the local officers and witnesses present. We do not take the fair tonight. I will not make a second shooting out of a public inquiry.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_rifles_1"
+      ]
+    },
+    {
+      "source": "brigg_holds",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 85,
+      "when": [
+        "mq03 done 70"
+      ],
+      "buttons": [],
+      "text": "This ground is under Dominion order until the murderer is found. Nobody leaves it armed. That includes you. You may object in writing, to Judge Quill, who sits at noon.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_holds_1"
+      ]
+    },
+    {
+      "source": "pritchard_case",
+      "speaker": "pritchard",
+      "entry": true,
+      "priority": 90,
+      "when": [
+        "mq03 done 60",
+        "mq03 notdone 100"
+      ],
+      "buttons": [
+        {
+          "label": "Four, one, one, seven. Vane's hand.",
+          "do": [
+            "mq03 set 100"
+          ]
+        },
+        {
+          "label": "(Say nothing)",
+          "do": [
+            "mq03 set 100"
+          ]
+        }
+      ],
+      "text": "Brass with holes in it. A hill with lamps drawn on. And a number, in a hand I've seen on my grocery account every month for twenty years. ...Give me a minute. No. Don't. Read it to me again.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_pritchard_case_1"
+      ]
+    },
+    {
+      "source": "brigg_demand",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 65,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Call the delegates to uphold the truce)",
+          "then": "whitcomb_truce"
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_courier_dead",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 59,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Call the delegates to uphold the truce)",
+          "then": "whitcomb_truce"
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_courier_dead_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_talbot",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 64,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "dead pritchard",
+        "alive talbot",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Call the delegates to uphold the truce)",
+          "then": "whitcomb_truce_talbot"
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_talbot_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_talbot_courier_dead",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 58,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "dead pritchard",
+        "alive talbot",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Call the delegates to uphold the truce)",
+          "then": "whitcomb_truce_talbot"
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_talbot_courier_dead_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_whitcomb",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 63,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "dead whitcomb",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_whitcomb_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_whitcomb_courier_dead",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 57,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "dead whitcomb",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_whitcomb_courier_dead_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_belden",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 62,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "dead belden",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_belden_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_belden_courier_dead",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 56,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "dead belden",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_belden_courier_dead_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_grey",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 61,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "dead grey",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_grey_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_grey_courier_dead",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 55,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "dead grey",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_grey_courier_dead_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_officer",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 60,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "dead pritchard",
+        "dead talbot",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_officer_1"
+      ]
+    },
+    {
+      "source": "brigg_demand_no_officer_courier_dead",
+      "speaker": "brigg",
+      "entry": true,
+      "priority": 54,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "dead pritchard",
+        "dead talbot",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_demand_no_officer_courier_dead_1"
+      ]
+    },
+    {
+      "source": "whitcomb_truce",
+      "speaker": "whitcomb",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "belden_truce"
+        }
+      ],
+      "text": "We came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_whitcomb_truce_1"
+      ]
+    },
+    {
+      "source": "belden_truce",
+      "speaker": "belden",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "grey_truce"
+        }
+      ],
+      "text": "My provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_belden_truce_1"
+      ]
+    },
+    {
+      "source": "grey_truce",
+      "speaker": "grey",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "pritchard_truce"
+        }
+      ],
+      "text": "A witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_grey_truce_1"
+      ]
+    },
+    {
+      "source": "pritchard_truce",
+      "speaker": "pritchard",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "brigg_truce_concession_pritchard"
+        }
+      ],
+      "text": "This is my circuit. I'll take the statements in the open and give every flag a copy. Your men can help search the landing. They don't take the fair.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_pritchard_truce_1"
+      ]
+    },
+    {
+      "source": "whitcomb_truce_talbot",
+      "speaker": "whitcomb",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive talbot",
+        "dead pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "belden_truce_talbot"
+        }
+      ],
+      "text": "We came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_whitcomb_truce_talbot_1"
+      ]
+    },
+    {
+      "source": "belden_truce_talbot",
+      "speaker": "belden",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive talbot",
+        "dead pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "grey_truce_talbot"
+        }
+      ],
+      "text": "My provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_belden_truce_talbot_1"
+      ]
+    },
+    {
+      "source": "grey_truce_talbot",
+      "speaker": "grey",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive talbot",
+        "dead pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "talbot_truce"
+        }
+      ],
+      "text": "A witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_grey_truce_talbot_1"
+      ]
+    },
+    {
+      "source": "talbot_truce",
+      "speaker": "talbot",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive talbot",
+        "dead pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "then": "brigg_truce_concession_talbot"
+        }
+      ],
+      "text": "These people came under truce. Take their names, not their right to leave. I'll keep the statements where the witnesses can see them.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_talbot_truce_1"
+      ]
+    },
+    {
+      "source": "brigg_truce_concession_pritchard",
+      "speaker": "brigg",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "alive pritchard"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "do": [
+            "mq03 set 43"
+          ],
+          "then": "brigg_rifles"
+        }
+      ],
+      "text": "I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_truce_concession_pritchard_1"
+      ]
+    },
+    {
+      "source": "brigg_truce_concession_talbot",
+      "speaker": "brigg",
+      "entry": false,
+      "priority": 0,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "alive brigg",
+        "alive whitcomb",
+        "alive belden",
+        "alive grey",
+        "dead pritchard",
+        "alive talbot"
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "do": [
+            "mq03 set 43"
+          ],
+          "then": "brigg_rifles"
+        }
+      ],
+      "text": "I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_brigg_truce_concession_talbot_1"
+      ]
+    },
+    {
+      "source": "pritchard_courier_no_brigg_living",
+      "speaker": "pritchard",
+      "entry": true,
+      "priority": 75,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive pritchard",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "The courier is down. Keep the case from the crowd. We need someone on the roof and someone with her. Say what you'll do.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_pritchard_courier_no_brigg_living_1"
+      ]
+    },
+    {
+      "source": "pritchard_courier_no_brigg_dead",
+      "speaker": "pritchard",
+      "entry": true,
+      "priority": 74,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive pritchard",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "The courier is dead. Keep the case from the crowd. Someone should search the roof and landing. Say whether you'll look or take the case out of the crush.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_pritchard_courier_no_brigg_dead_1"
+      ]
+    },
+    {
+      "source": "talbot_courier_no_brigg_living",
+      "speaker": "talbot",
+      "entry": true,
+      "priority": 75,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive talbot",
+        "dead pritchard",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "The courier's down. I can keep people back, not do three jobs at once. Somebody stay with her, somebody find the shot, somebody keep that case safe. Choose.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_talbot_courier_no_brigg_living_1"
+      ]
+    },
+    {
+      "source": "talbot_courier_no_brigg_dead",
+      "speaker": "talbot",
+      "entry": true,
+      "priority": 74,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive talbot",
+        "dead pritchard",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "The courier is dead. I can keep people back. You can search the roof and landing, or get the case out of the crush.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_talbot_courier_no_brigg_dead_1"
+      ]
+    },
+    {
+      "source": "flint_courier_no_brigg_living",
+      "speaker": "flint",
+      "entry": true,
+      "priority": 75,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive flint",
+        "dead pritchard",
+        "dead talbot",
+        "alive threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Stay with the courier)",
+          "do": [
+            "mq03 set 42"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "The shot came from the roof. Her case is still on her wrist. Help her, take it out of the crush, or come look at the landing. I'm not spending another minute guessing.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_flint_courier_no_brigg_living_1"
+      ]
+    },
+    {
+      "source": "flint_courier_no_brigg_dead",
+      "speaker": "flint",
+      "entry": true,
+      "priority": 74,
+      "when": [
+        "mq03 done 40",
+        "mq03 notdone 41",
+        "mq03 notdone 42",
+        "mq03 notdone 43",
+        "mq03 notdone 44",
+        "mq03 notdone 70",
+        "mq03 notdone 100",
+        "dead brigg",
+        "alive flint",
+        "dead pritchard",
+        "dead talbot",
+        "dead threefords"
+      ],
+      "buttons": [
+        {
+          "label": "(Search the roof and landing)",
+          "do": [
+            "mq03 set 41"
+          ]
+        },
+        {
+          "label": "(Take the case and go)",
+          "do": [
+            "mq03 set 44"
+          ]
+        }
+      ],
+      "text": "The courier is dead. The shot came from the roof. Search the landing, or take her case out of the crush. Standing here won't tell us who fired.",
+      "disposition": "implemented",
+      "reason": "Exact authored projection with original identities/current local context; all consequential effects remain ledger-acknowledged",
+      "pages": [
+        "S_flint_courier_no_brigg_dead_1"
+      ]
+    }
+  ]
+}
