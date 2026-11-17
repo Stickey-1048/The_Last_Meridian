@@ -1726,5 +1726,15 @@
         "S_flint_courier_no_brigg_dead_1"
       ]
     }
+  ],
+  "evidenceAsides": [
+    {
+      "source": "talk/town.json:pike_mould_aside",
+      "kind": "aside",
+      "record": "TLM_MSG_FF_A_pike_mould_aside",
+      "channel": "Explicit original inspected silver comparison with current original Pike; not a greeting, entry or priority candidate",
+      "guard": "Actual original silver held by player, prior inspection50, current living present noncombat nonbusy original Pike, current alias/object/player/epoch after confirmation",
+      "effects": "None: no competition win/fee/reward, faction knowledge or shooter identity"
+    }
   ]
 }

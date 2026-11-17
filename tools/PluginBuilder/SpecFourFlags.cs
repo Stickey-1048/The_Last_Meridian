@@ -13,6 +13,7 @@ public static class FourFlags
     public static readonly Dictionary<string,JsonElement> Lines=Load("talk/tlm_mq03.json").GetProperty("lines").EnumerateArray().ToDictionary(l=>l.GetProperty("id").GetString()!,l=>l);
     public static readonly Dictionary<string,JsonElement> Documents=Load("documents.json").GetProperty("documents").EnumerateArray().Where(d=>new[]{"fair_handbill","silver_case","courier_card"}.Contains(d.GetProperty("id").GetString())).ToDictionary(d=>d.GetProperty("id").GetString()!,d=>d);
     static readonly Dictionary<string,string> Names=Load("characters.json").GetProperty("characters").EnumerateArray().ToDictionary(c=>c.GetProperty("id").GetString()!,c=>c.GetProperty("name").GetString()!);
+    public static readonly JsonElement PikeAside=Load("talk/town.json").GetProperty("lines").EnumerateArray().Single(l=>l.GetProperty("id").GetString()=="pike_mould_aside");
     public static readonly string[] Roles={"pritchard","talbot","pike","belden","whitcomb","brigg","grey","flint","threefords"};
     public static readonly string[] Withheld={"pike_line","pike_flint","flint_line","flint_beaten"};
     public static readonly string[] NodeNames=Lines.Keys.ToArray();
@@ -43,6 +44,8 @@ public static class FourFlags
         ["GiveSilver"]=("[Evidence transfer]\n\nThe eligible Flint can receive this original spent case after your inspection. This is a real item transfer, not evidence inferred from her presence.",new[]{"Give original evidence to Flint","Keep evidence here"}),
         ["Landing"]=("[Landing inspection stand-in]\n\nThis labelled ground-level station represents inspecting the prepared landing. No distant person or moving skiff has been observed; the shooter's identity remains unknown.",new[]{"Inspect the landing","Not now"}),
         ["Competition"]=("[Optional competition]\n\nOptional competition is not available in this prototype. No fee, win, reward or required progression is attached to this station.",new[]{"Continue"}),
+        ["PikeCompare"]=("[Pike: evidence comparison]\n\nYou carry the original inspected spent silver case. Ask Pike to compare it? A tooling mark is circumstantial evidence, not the shooter's identity.",new[]{"Compare original evidence","Not now"}),
+        ["PikeUnavailable"]=("[Pike at the fair]\n\nThe optional competition is unavailable. Evidence comparison needs the original inspected spent silver case in your inventory. No replacement copy or remote inspection is offered.",new[]{"Continue"}),
         ["Exit"]=("[Return to Mercy]\n\nLeave the camp-ground. Surviving visiting originals will be returned to their captured locations and enabled states. A failed return remains reported; player exit stays usable.",new[]{"Return to Mercy","Stay"}),
         ["ReturnsPending"]=("[Original cast return unfinished]\n\nAt least one original actor has not reached the verified return marker/state. No successful restoration is claimed. Use the fair entry/status control to retry only those returns.",new[]{"Continue"}),
         ["Blocked"]=("[Effect not acknowledged]\n\nAn issued original-reference transfer is unresolved. It will not be reissued or inferred from later inventory changes. Inspect current custody/status; copies, refunds and fabricated success are unavailable.",new[]{"Continue"}),
@@ -53,7 +56,8 @@ public static class FourFlags
     };
     public static readonly MessageSpec[] Messages=Lines.Where(p=>!Withheld.Contains(p.Key)).SelectMany(p=>SpeechPages(p.Key).Select((text,i)=>new MessageSpec(Prefix+"S_"+p.Key+"_"+(i+1),null,Names[p.Value.GetProperty("speaker").GetString()!]+":\n\n"+text,true,(i+1==SpeechPages(p.Key).Length?Labels(p.Key):new[]{"Continue"}).Select(b=>new ButtonSpec(b)).ToArray())))
         .Concat(Documents.SelectMany(p=>DocumentPages(p.Key).Select((text,i)=>Ui("D_"+p.Key+"_"+(i+1),text))))
-        .Concat(UiText.Select(p=>Ui(p.Key,p.Value.Text,p.Value.Buttons))).ToArray();
+        .Concat(UiText.Select(p=>Ui(p.Key,p.Value.Text,p.Value.Buttons)))
+        .Append(Ui("A_pike_mould_aside",Names["pike"]+":\n\n"+PikeAside.GetProperty("text").GetString()!)).ToArray();
     public static readonly string[] Factions={"TLM_Fac_FF_Staging"};
     public static readonly NpcSpec[] Npcs=new[]{("Whitcomb","whitcomb","female"),("Brigg","brigg","male"),("Grey","grey","male"),("Flint","flint","female"),("Juno","threefords","female")}.Select(p=>new NpcSpec("TLM_NPC_FF_"+p.Item1,Names[p.Item2],"WorkshopNPC",false,p.Item3,Factions[0],true)).ToArray();
     public static readonly MiscSpec[] MiscItems={new(SilverId,"Original spent silver cartridge case",LooksLike:new[]{"Pencil","Clipboard","Folder"})};

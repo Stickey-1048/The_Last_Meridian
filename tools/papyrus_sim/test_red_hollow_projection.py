@@ -4,7 +4,10 @@ import json
 import re
 import subprocess
 import unittest
-from test_sim import ROOT,PLUGIN
+from test_sim import ROOT as LIVE_ROOT
+from source_snapshot import snapshot,built_greenwater_relief,GREENWATER_RELIEF
+ROOT=snapshot(GREENWATER_RELIEF)
+PLUGIN=built_greenwater_relief()
 
 class RedHollowProjection(unittest.TestCase):
     @classmethod
@@ -16,7 +19,7 @@ class RedHollowProjection(unittest.TestCase):
     def test_source_is_accepted_text_without_canon_rewrite(self):
         for file,digest in self.map['source']['files'].items():
             text=(self.story/file).read_text()
-            old=subprocess.run(['git','show','4624ee9:'+self.map['source']['folder']+'/'+file],cwd=ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
+            old=subprocess.run(['git','show','4624ee9:'+self.map['source']['folder']+'/'+file],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
             self.assertEqual(text,old,file);self.assertEqual(hashlib.sha256(text.encode()).hexdigest().upper(),digest)
     def test_every_message_is_mapped_once_and_bounded(self):
         rows=sum((self.map[k] for k in ('speech','documents','transcripts','ui')),[])
@@ -49,9 +52,9 @@ class RedHollowProjection(unittest.TestCase):
         for q in self.plugin['Quests']:
             if q['EditorId'] in self.map['aliases']:self.assertEqual(q['Aliases'],self.map['aliases'][q['EditorId']])
         q=next(q for q in self.plugin['Quests'] if q['EditorId']=='TLM_MQ02C');self.assertEqual(q['Stages'],self.map['stages']);self.assertEqual(q['Objectives'],self.map['objectives'])
-        old=subprocess.run(['git','show','4624ee9:tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
+        old=subprocess.run(['git','show','4624ee9:tools/PluginBuilder/formkeys.txt'],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().splitlines()
         ids=(ROOT/'tools/PluginBuilder/formkeys.txt').read_text().splitlines();self.assertEqual(ids[:len(old)],old)
-        accepted=subprocess.run(['git','show','1cdd466:tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
+        accepted=subprocess.run(['git','show','1cdd466:tools/PluginBuilder/formkeys.txt'],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().splitlines()
         self.assertEqual(ids[:len(accepted)],accepted,'the complete accepted Red Hollow prefix remains exact')
         self.assertEqual({ids[i]:int(ids[i+1]) for i in range(len(old),len(accepted),2)},self.map['allocation']['new'])
         # The later relief candidate separately verifies its exact39-record
@@ -81,7 +84,7 @@ class RedHollowProjection(unittest.TestCase):
         for local in re.findall(r'^\s*(?:int|ObjectReference)\s+(\w+)\s*=',source,re.M):self.assertNotIn(local.lower(),('scene','sound','action'))
 
     def test_repair_preserves_799c_prefix_and_exact_standard_menu_bindings(self):
-        old=subprocess.run(['git','show','799c5e8:tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
+        old=subprocess.run(['git','show','799c5e8:tools/PluginBuilder/formkeys.txt'],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().splitlines()
         current=(ROOT/'tools/PluginBuilder/formkeys.txt').read_text().splitlines();self.assertEqual(current[:len(old)],old)
         stage=next(q for q in self.plugin['Quests'] if q['EditorId']=='TLM_RH')
         names=next(p['Value'] for p in stage['Scripts'][0]['Props'] if p['Name']=='ClockMenus')

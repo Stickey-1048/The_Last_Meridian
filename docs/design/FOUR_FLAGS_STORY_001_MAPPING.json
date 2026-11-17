@@ -1,0 +1,2332 @@
+{
+  "baseline": "a31b5eded170dac81cd1d4f5d70a19a758c942e8",
+  "authority": "FOUR_FLAGS_STORY_001_CONTRACT.md + ORDER.md; all61 source projections separately in NODES.json",
+  "allocation": {
+    "oldPairs": 1057,
+    "append": [
+      {
+        "record": "TLM_Fac_FF_Staging",
+        "id": 3105
+      },
+      {
+        "record": "TLM_MISC_FF_Silver",
+        "id": 3106
+      },
+      {
+        "record": "TLM_ACTI_FF_Entry",
+        "id": 3107
+      },
+      {
+        "record": "TLM_ACTI_FF_Exit",
+        "id": 3108
+      },
+      {
+        "record": "TLM_ACTI_FF_Ready",
+        "id": 3109
+      },
+      {
+        "record": "TLM_ACTI_FF_Response",
+        "id": 3110
+      },
+      {
+        "record": "TLM_ACTI_FF_CaseControl",
+        "id": 3111
+      },
+      {
+        "record": "TLM_ACTI_FF_Firing",
+        "id": 3112
+      },
+      {
+        "record": "TLM_ACTI_FF_Landing",
+        "id": 3113
+      },
+      {
+        "record": "TLM_ACTI_FF_Competition",
+        "id": 3114
+      },
+      {
+        "record": "TLM_ACTI_FF_Status",
+        "id": 3115
+      },
+      {
+        "record": "TLM_ACTI_FF_OccupationBoard",
+        "id": 3116
+      },
+      {
+        "record": "TLM_NPC_FF_Whitcomb",
+        "id": 3117
+      },
+      {
+        "record": "TLM_NPC_FF_Brigg",
+        "id": 3118
+      },
+      {
+        "record": "TLM_NPC_FF_Grey",
+        "id": 3119
+      },
+      {
+        "record": "TLM_NPC_FF_Flint",
+        "id": 3120
+      },
+      {
+        "record": "TLM_NPC_FF_Juno",
+        "id": 3121
+      },
+      {
+        "record": "TLM_BOOK_FF_CourierCase",
+        "id": 3122
+      },
+      {
+        "record": "TLM_MQ03",
+        "id": 3123
+      },
+      {
+        "record": "TLM_FF_Entry",
+        "id": 3124
+      },
+      {
+        "record": "TLM_MSG_FF_S_pritchard_fair_1",
+        "id": 3125
+      },
+      {
+        "record": "TLM_MSG_FF_S_pritchard_fair_2",
+        "id": 3126
+      },
+      {
+        "record": "TLM_MSG_FF_S_whitcomb_default_1",
+        "id": 3127
+      },
+      {
+        "record": "TLM_MSG_FF_S_whitcomb_offer_1",
+        "id": 3128
+      },
+      {
+        "record": "TLM_MSG_FF_S_whitcomb_rates_1",
+        "id": 3129
+      },
+      {
+        "record": "TLM_MSG_FF_S_whitcomb_big_1",
+        "id": 3130
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_default_1",
+        "id": 3131
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_offer_1",
+        "id": 3132
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_offer_2",
+        "id": 3133
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_dissent_1",
+        "id": 3134
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_price_1",
+        "id": 3135
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_price_2",
+        "id": 3136
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_quill_1",
+        "id": 3137
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_default_1",
+        "id": 3138
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_offer_1",
+        "id": 3139
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_dissent_1",
+        "id": 3140
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_list_1",
+        "id": 3141
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_list_2",
+        "id": 3142
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_leave_1",
+        "id": 3143
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_default_1",
+        "id": 3144
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_offer_1",
+        "id": 3145
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_offer_2",
+        "id": 3146
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_dissent_1",
+        "id": 3147
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_cost_1",
+        "id": 3148
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_cost_2",
+        "id": 3149
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_train_1",
+        "id": 3150
+      },
+      {
+        "record": "TLM_MSG_FF_S_flint_default_1",
+        "id": 3151
+      },
+      {
+        "record": "TLM_MSG_FF_S_threefords_default_1",
+        "id": 3152
+      },
+      {
+        "record": "TLM_MSG_FF_S_threefords_dying_1",
+        "id": 3153
+      },
+      {
+        "record": "TLM_MSG_FF_S_threefords_dying_2",
+        "id": 3154
+      },
+      {
+        "record": "TLM_MSG_FF_S_flint_roof_1",
+        "id": 3155
+      },
+      {
+        "record": "TLM_MSG_FF_S_flint_who_1",
+        "id": 3156
+      },
+      {
+        "record": "TLM_MSG_FF_S_flint_hat_1",
+        "id": 3157
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_rifles_1",
+        "id": 3158
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_holds_1",
+        "id": 3159
+      },
+      {
+        "record": "TLM_MSG_FF_S_pritchard_case_1",
+        "id": 3160
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_1",
+        "id": 3161
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_courier_dead_1",
+        "id": 3162
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_talbot_1",
+        "id": 3163
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_talbot_courier_dead_1",
+        "id": 3164
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_whitcomb_1",
+        "id": 3165
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_whitcomb_courier_dead_1",
+        "id": 3166
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_belden_1",
+        "id": 3167
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_belden_courier_dead_1",
+        "id": 3168
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_grey_1",
+        "id": 3169
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_grey_courier_dead_1",
+        "id": 3170
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_officer_1",
+        "id": 3171
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_demand_no_officer_courier_dead_1",
+        "id": 3172
+      },
+      {
+        "record": "TLM_MSG_FF_S_whitcomb_truce_1",
+        "id": 3173
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_truce_1",
+        "id": 3174
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_truce_1",
+        "id": 3175
+      },
+      {
+        "record": "TLM_MSG_FF_S_pritchard_truce_1",
+        "id": 3176
+      },
+      {
+        "record": "TLM_MSG_FF_S_whitcomb_truce_talbot_1",
+        "id": 3177
+      },
+      {
+        "record": "TLM_MSG_FF_S_belden_truce_talbot_1",
+        "id": 3178
+      },
+      {
+        "record": "TLM_MSG_FF_S_grey_truce_talbot_1",
+        "id": 3179
+      },
+      {
+        "record": "TLM_MSG_FF_S_talbot_truce_1",
+        "id": 3180
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_truce_concession_pritchard_1",
+        "id": 3181
+      },
+      {
+        "record": "TLM_MSG_FF_S_brigg_truce_concession_talbot_1",
+        "id": 3182
+      },
+      {
+        "record": "TLM_MSG_FF_S_pritchard_courier_no_brigg_living_1",
+        "id": 3183
+      },
+      {
+        "record": "TLM_MSG_FF_S_pritchard_courier_no_brigg_dead_1",
+        "id": 3184
+      },
+      {
+        "record": "TLM_MSG_FF_S_talbot_courier_no_brigg_living_1",
+        "id": 3185
+      },
+      {
+        "record": "TLM_MSG_FF_S_talbot_courier_no_brigg_dead_1",
+        "id": 3186
+      },
+      {
+        "record": "TLM_MSG_FF_S_flint_courier_no_brigg_living_1",
+        "id": 3187
+      },
+      {
+        "record": "TLM_MSG_FF_S_flint_courier_no_brigg_dead_1",
+        "id": 3188
+      },
+      {
+        "record": "TLM_MSG_FF_D_fair_handbill_1",
+        "id": 3189
+      },
+      {
+        "record": "TLM_MSG_FF_D_fair_handbill_2",
+        "id": 3190
+      },
+      {
+        "record": "TLM_MSG_FF_D_fair_handbill_3",
+        "id": 3191
+      },
+      {
+        "record": "TLM_MSG_FF_D_silver_case_1",
+        "id": 3192
+      },
+      {
+        "record": "TLM_MSG_FF_D_silver_case_2",
+        "id": 3193
+      },
+      {
+        "record": "TLM_MSG_FF_D_courier_card_1",
+        "id": 3194
+      },
+      {
+        "record": "TLM_MSG_FF_D_courier_card_2",
+        "id": 3195
+      },
+      {
+        "record": "TLM_MSG_FF_D_courier_card_3",
+        "id": 3196
+      },
+      {
+        "record": "TLM_MSG_FF_Entry",
+        "id": 3197
+      },
+      {
+        "record": "TLM_MSG_FF_NoReport",
+        "id": 3198
+      },
+      {
+        "record": "TLM_MSG_FF_Travel",
+        "id": 3199
+      },
+      {
+        "record": "TLM_MSG_FF_Layout",
+        "id": 3200
+      },
+      {
+        "record": "TLM_MSG_FF_LayoutLimits",
+        "id": 3201
+      },
+      {
+        "record": "TLM_MSG_FF_Ready",
+        "id": 3202
+      },
+      {
+        "record": "TLM_MSG_FF_Shot",
+        "id": 3203
+      },
+      {
+        "record": "TLM_MSG_FF_DeadCourier",
+        "id": 3204
+      },
+      {
+        "record": "TLM_MSG_FF_NoCarrier",
+        "id": 3205
+      },
+      {
+        "record": "TLM_MSG_FF_Occupation",
+        "id": 3206
+      },
+      {
+        "record": "TLM_MSG_FF_OccupationSeen",
+        "id": 3207
+      },
+      {
+        "record": "TLM_MSG_FF_PendingCourse",
+        "id": 3208
+      },
+      {
+        "record": "TLM_MSG_FF_PendingOrder",
+        "id": 3209
+      },
+      {
+        "record": "TLM_MSG_FF_Case",
+        "id": 3210
+      },
+      {
+        "record": "TLM_MSG_FF_Take",
+        "id": 3211
+      },
+      {
+        "record": "TLM_MSG_FF_Public",
+        "id": 3212
+      },
+      {
+        "record": "TLM_MSG_FF_Solo",
+        "id": 3213
+      },
+      {
+        "record": "TLM_MSG_FF_Silver",
+        "id": 3214
+      },
+      {
+        "record": "TLM_MSG_FF_GiveSilver",
+        "id": 3215
+      },
+      {
+        "record": "TLM_MSG_FF_Landing",
+        "id": 3216
+      },
+      {
+        "record": "TLM_MSG_FF_Competition",
+        "id": 3217
+      },
+      {
+        "record": "TLM_MSG_FF_Exit",
+        "id": 3218
+      },
+      {
+        "record": "TLM_MSG_FF_ReturnsPending",
+        "id": 3219
+      },
+      {
+        "record": "TLM_MSG_FF_Blocked",
+        "id": 3220
+      },
+      {
+        "record": "TLM_MSG_FF_Failed",
+        "id": 3221
+      },
+      {
+        "record": "TLM_MSG_FF_Status",
+        "id": 3222
+      },
+      {
+        "record": "TLM_MSG_FF_Custody",
+        "id": 3223
+      },
+      {
+        "record": "TLM_MSG_FF_Unavailable",
+        "id": 3224
+      },
+      {
+        "record": "TLM_REF_FF_Entry",
+        "id": 3225
+      },
+      {
+        "record": "TLM_REF_FF_MercyReturn",
+        "id": 3226
+      },
+      {
+        "record": "TLM_CELL_FourFlags",
+        "id": 3227
+      },
+      {
+        "record": "TLM_REF_FF_Arrival",
+        "id": 3228
+      },
+      {
+        "record": "TLM_REF_FF_Exit",
+        "id": 3229
+      },
+      {
+        "record": "TLM_REF_FF_Ready",
+        "id": 3230
+      },
+      {
+        "record": "TLM_REF_FF_Response",
+        "id": 3231
+      },
+      {
+        "record": "TLM_REF_FF_CaseControl",
+        "id": 3232
+      },
+      {
+        "record": "TLM_REF_FF_Firing",
+        "id": 3233
+      },
+      {
+        "record": "TLM_REF_FF_Landing",
+        "id": 3234
+      },
+      {
+        "record": "TLM_REF_FF_Competition",
+        "id": 3235
+      },
+      {
+        "record": "TLM_REF_FF_Status",
+        "id": 3236
+      },
+      {
+        "record": "TLM_REF_FF_OccupationBoard",
+        "id": 3237
+      },
+      {
+        "record": "TLM_REF_FF_OriginalCase",
+        "id": 3238
+      },
+      {
+        "record": "TLM_REF_FF_OriginalSilver",
+        "id": 3239
+      },
+      {
+        "record": "TLM_REF_FF_Whitcomb",
+        "id": 3240
+      },
+      {
+        "record": "TLM_REF_FF_Brigg",
+        "id": 3241
+      },
+      {
+        "record": "TLM_REF_FF_Grey",
+        "id": 3242
+      },
+      {
+        "record": "TLM_REF_FF_Flint",
+        "id": 3243
+      },
+      {
+        "record": "TLM_REF_FF_Juno",
+        "id": 3244
+      },
+      {
+        "record": "TLM_REF_FF_PritchardAnchor",
+        "id": 3245
+      },
+      {
+        "record": "TLM_REF_FF_TalbotAnchor",
+        "id": 3246
+      },
+      {
+        "record": "TLM_REF_FF_PikeAnchor",
+        "id": 3247
+      },
+      {
+        "record": "TLM_REF_FF_BeldenAnchor",
+        "id": 3248
+      },
+      {
+        "record": "TLM_REF_FF_PritchardReturn",
+        "id": 3249
+      },
+      {
+        "record": "TLM_REF_FF_TalbotReturn",
+        "id": 3250
+      },
+      {
+        "record": "TLM_REF_FF_PikeReturn",
+        "id": 3251
+      },
+      {
+        "record": "TLM_REF_FF_BeldenReturn",
+        "id": 3252
+      },
+      {
+        "record": "TLM_REF_FF_Floor00",
+        "id": 3253
+      },
+      {
+        "record": "TLM_REF_FF_Floor01",
+        "id": 3254
+      },
+      {
+        "record": "TLM_REF_FF_Floor02",
+        "id": 3255
+      },
+      {
+        "record": "TLM_REF_FF_Floor03",
+        "id": 3256
+      },
+      {
+        "record": "TLM_REF_FF_Floor04",
+        "id": 3257
+      },
+      {
+        "record": "TLM_REF_FF_Floor05",
+        "id": 3258
+      },
+      {
+        "record": "TLM_REF_FF_Floor06",
+        "id": 3259
+      },
+      {
+        "record": "TLM_REF_FF_Floor10",
+        "id": 3260
+      },
+      {
+        "record": "TLM_REF_FF_Floor11",
+        "id": 3261
+      },
+      {
+        "record": "TLM_REF_FF_Floor12",
+        "id": 3262
+      },
+      {
+        "record": "TLM_REF_FF_Floor13",
+        "id": 3263
+      },
+      {
+        "record": "TLM_REF_FF_Floor14",
+        "id": 3264
+      },
+      {
+        "record": "TLM_REF_FF_Floor15",
+        "id": 3265
+      },
+      {
+        "record": "TLM_REF_FF_Floor16",
+        "id": 3266
+      },
+      {
+        "record": "TLM_REF_FF_Floor20",
+        "id": 3267
+      },
+      {
+        "record": "TLM_REF_FF_Floor21",
+        "id": 3268
+      },
+      {
+        "record": "TLM_REF_FF_Floor22",
+        "id": 3269
+      },
+      {
+        "record": "TLM_REF_FF_Floor23",
+        "id": 3270
+      },
+      {
+        "record": "TLM_REF_FF_Floor24",
+        "id": 3271
+      },
+      {
+        "record": "TLM_REF_FF_Floor25",
+        "id": 3272
+      },
+      {
+        "record": "TLM_REF_FF_Floor26",
+        "id": 3273
+      },
+      {
+        "record": "TLM_REF_FF_Floor30",
+        "id": 3274
+      },
+      {
+        "record": "TLM_REF_FF_Floor31",
+        "id": 3275
+      },
+      {
+        "record": "TLM_REF_FF_Floor32",
+        "id": 3276
+      },
+      {
+        "record": "TLM_REF_FF_Floor33",
+        "id": 3277
+      },
+      {
+        "record": "TLM_REF_FF_Floor34",
+        "id": 3278
+      },
+      {
+        "record": "TLM_REF_FF_Floor35",
+        "id": 3279
+      },
+      {
+        "record": "TLM_REF_FF_Floor36",
+        "id": 3280
+      },
+      {
+        "record": "TLM_REF_FF_Floor40",
+        "id": 3281
+      },
+      {
+        "record": "TLM_REF_FF_Floor41",
+        "id": 3282
+      },
+      {
+        "record": "TLM_REF_FF_Floor42",
+        "id": 3283
+      },
+      {
+        "record": "TLM_REF_FF_Floor43",
+        "id": 3284
+      },
+      {
+        "record": "TLM_REF_FF_Floor44",
+        "id": 3285
+      },
+      {
+        "record": "TLM_REF_FF_Floor45",
+        "id": 3286
+      },
+      {
+        "record": "TLM_REF_FF_Floor46",
+        "id": 3287
+      },
+      {
+        "record": "TLM_REF_FF_Floor50",
+        "id": 3288
+      },
+      {
+        "record": "TLM_REF_FF_Floor51",
+        "id": 3289
+      },
+      {
+        "record": "TLM_REF_FF_Floor52",
+        "id": 3290
+      },
+      {
+        "record": "TLM_REF_FF_Floor53",
+        "id": 3291
+      },
+      {
+        "record": "TLM_REF_FF_Floor54",
+        "id": 3292
+      },
+      {
+        "record": "TLM_REF_FF_Floor55",
+        "id": 3293
+      },
+      {
+        "record": "TLM_REF_FF_Floor56",
+        "id": 3294
+      },
+      {
+        "record": "TLM_REF_FF_Floor60",
+        "id": 3295
+      },
+      {
+        "record": "TLM_REF_FF_Floor61",
+        "id": 3296
+      },
+      {
+        "record": "TLM_REF_FF_Floor62",
+        "id": 3297
+      },
+      {
+        "record": "TLM_REF_FF_Floor63",
+        "id": 3298
+      },
+      {
+        "record": "TLM_REF_FF_Floor64",
+        "id": 3299
+      },
+      {
+        "record": "TLM_REF_FF_Floor65",
+        "id": 3300
+      },
+      {
+        "record": "TLM_REF_FF_Floor66",
+        "id": 3301
+      },
+      {
+        "record": "TLM_REF_FF_Floor70",
+        "id": 3302
+      },
+      {
+        "record": "TLM_REF_FF_Floor71",
+        "id": 3303
+      },
+      {
+        "record": "TLM_REF_FF_Floor72",
+        "id": 3304
+      },
+      {
+        "record": "TLM_REF_FF_Floor73",
+        "id": 3305
+      },
+      {
+        "record": "TLM_REF_FF_Floor74",
+        "id": 3306
+      },
+      {
+        "record": "TLM_REF_FF_Floor75",
+        "id": 3307
+      },
+      {
+        "record": "TLM_REF_FF_Floor76",
+        "id": 3308
+      },
+      {
+        "record": "TLM_REF_FF_Floor80",
+        "id": 3309
+      },
+      {
+        "record": "TLM_REF_FF_Floor81",
+        "id": 3310
+      },
+      {
+        "record": "TLM_REF_FF_Floor82",
+        "id": 3311
+      },
+      {
+        "record": "TLM_REF_FF_Floor83",
+        "id": 3312
+      },
+      {
+        "record": "TLM_REF_FF_Floor84",
+        "id": 3313
+      },
+      {
+        "record": "TLM_REF_FF_Floor85",
+        "id": 3314
+      },
+      {
+        "record": "TLM_REF_FF_Floor86",
+        "id": 3315
+      },
+      {
+        "record": "TLM_MSG_FF_PikeCompare",
+        "id": 3316
+      },
+      {
+        "record": "TLM_MSG_FF_PikeUnavailable",
+        "id": 3317
+      },
+      {
+        "record": "TLM_MSG_FF_A_pike_mould_aside",
+        "id": 3318
+      }
+    ]
+  },
+  "ledger": {
+    "quest": "TLM_MQ03",
+    "scripts": [
+      "TLM:MQ03Quest",
+      "TLM:FourFlagsWalk"
+    ],
+    "entryOnly": "TLM_FF_Entry; exterior clone TLM_WS_FF_Entry owns no story/cast/case/history"
+  },
+  "aliases": [
+    {
+      "id": 0,
+      "name": "Entry",
+      "fill": "forced 000C99:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "MercyReturn",
+      "fill": "forced 000C9A:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 2,
+      "name": "Arrival",
+      "fill": "forced 000C9C:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 3,
+      "name": "Exit",
+      "fill": "forced 000C9D:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Ready",
+      "fill": "forced 000C9E:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Response",
+      "fill": "forced 000C9F:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "CaseControl",
+      "fill": "forced 000CA0:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Firing",
+      "fill": "forced 000CA1:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Landing",
+      "fill": "forced 000CA2:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Competition",
+      "fill": "forced 000CA3:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Status",
+      "fill": "forced 000CA4:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "OccupationBoard",
+      "fill": "forced 000CA5:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "OriginalCase",
+      "fill": "forced 000CA6:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 13,
+      "name": "OriginalSilver",
+      "fill": "forced 000CA7:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 14,
+      "name": "Whitcomb",
+      "fill": "forced 000CA8:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Brigg",
+      "fill": "forced 000CA9:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Grey",
+      "fill": "forced 000CAA:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Flint",
+      "fill": "forced 000CAB:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 27
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Juno",
+      "fill": "forced 000CAC:TheLastMeridian.esp",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "PritchardAnchor",
+      "fill": "forced 000CAD:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 20,
+      "name": "TalbotAnchor",
+      "fill": "forced 000CAE:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 21,
+      "name": "PikeAnchor",
+      "fill": "forced 000CAF:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 22,
+      "name": "BeldenAnchor",
+      "fill": "forced 000CB0:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 23,
+      "name": "PritchardReturn",
+      "fill": "forced 000CB1:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 24,
+      "name": "TalbotReturn",
+      "fill": "forced 000CB2:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 25,
+      "name": "PikeReturn",
+      "fill": "forced 000CB3:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 26,
+      "name": "BeldenReturn",
+      "fill": "forced 000CB4:TheLastMeridian.esp",
+      "scripts": []
+    },
+    {
+      "id": 27,
+      "name": "Pritchard",
+      "fill": null,
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Talbot",
+      "fill": null,
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Pike",
+      "fill": null,
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Belden",
+      "fill": null,
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Player",
+      "fill": "forced 000856:Fallout4.esm",
+      "scripts": [
+        {
+          "Name": "TLM:FourFlagsTalk",
+          "Props": [
+            {
+              "Name": "Who",
+              "Kind": "int",
+              "Target": null,
+              "Alias": null,
+              "Value": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ui": [
+    {
+      "record": "TLM_MSG_FF_S_pritchard_fair_1",
+      "text": "Owen Pritchard:\n\nForty years. Not one gun drawn on this ground on Decoration Day, and I've buried men who wanted to. Eat something. Shoot for the beef if you must. Then go and let each of those four lie to you. I want to know which does it",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_pritchard_fair_2",
+      "text": "Owen Pritchard:\n\nbest.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_whitcomb_default_1",
+      "text": "Clara Whitcomb:\n\nClara Whitcomb, for the Compact. If you've freight to move, I'm listening. If you've a grievance, I'm listening with my other ear.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_whitcomb_offer_1",
+      "text": "Clara Whitcomb:\n\nClara Whitcomb, for the Compact. You're the one from the wreck; I'd know you by the ballad. Here's my whole pitch, no charge: open roads, posted rates, and nobody's leave to ask. Now what am I bid?",
+      "buttons": [
+        "Who sets the rates?",
+        "And when a big buyer undercuts?",
+        "(Move on)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_whitcomb_rates_1",
+      "text": "Clara Whitcomb:\n\nCarriers in the Compact vote on a shared rate. Nell Fenwick voted against me twice and for me once. Others want to set their own rates. Leaving an agreement mustn't cost them the right to use the road.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_whitcomb_big_1",
+      "text": "Clara Whitcomb:\n\nThe small carriers ask that too. One bad season can sell them to people in my own Compact who smile just the way I do. I know it. I haven't a rule for it yet. I'd sooner admit that than sell you a pig in a sack.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_default_1",
+      "text": "Amos Brigg:\n\nState your business and your arms. In that order.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_offer_1",
+      "text": "Amos Brigg:\n\nColonel Brigg. You are the armed party who came down from the wreck. You have been of use to Sergeant Pritchard; I note it. The Dominion offers one thing: a road you may walk at night. Everything else people say they want",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_offer_2",
+      "text": "Amos Brigg:\n\ncomes after.",
+      "buttons": [
+        "At what price?",
+        "Your judge hangs men from a wagon.",
+        "Do all your Wardens agree?",
+        "(Move on)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_dissent_1",
+      "text": "Amos Brigg:\n\nOld Wardens want local warrants and limits on requisition. Iron Command wants one order obeyed before any appeal. Both wear the old badge. Pritchard and I differ on what that badge permits.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_price_1",
+      "text": "Amos Brigg:\n\nA gate at each gap. A levy by head and wheel. Arms registered; militias under my command. I can patrol this road, not put a decent officer behind every desk. A bad one will have too much power. That's a price. I still mean to",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_price_2",
+      "text": "Amos Brigg:\n\ncollect.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_quill_1",
+      "text": "Amos Brigg:\n\nJudge Quill hangs road-agents after a hearing, at noon, in public. Before there was a gate at the gap they were hanged by whoever caught them, or not at all. Tell me which you prefer and I will tell you what you are.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_default_1",
+      "text": "Tomas Belden:\n\nDelegate Belden, Commonwealth provisioning. There is a bowl if you want one. Eating here commits you to nothing.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_offer_1",
+      "text": "Tomas Belden:\n\nTomas Belden, Commonwealth provisioning. Take a bowl if you want; supper isn't a signature. Our stores can carry a town through a bad season. One list tells us where the need is. Somebody must answer for what it leaves out.",
+      "buttons": [
+        "Who keeps the list?",
+        "And if a town wants off the list?",
+        "Who argues against your office?",
+        "(Move on)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_dissent_1",
+      "text": "Tomas Belden:\n\nLocal provisioning crews want open counts and town appeals. Central stores insist on one office controlling release. That's an argument inside the Commonwealth, not a rumour from its enemies.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_list_1",
+      "text": "Tomas Belden:\n\nA provisioning committee. It reaches people a merchant might never trust with credit. It also puts mistakes behind an office door. Ask to see your entry and who can correct it. I ought to have better answers than a",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_list_2",
+      "text": "Tomas Belden:\n\ncommittee's address.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_leave_1",
+      "text": "Tomas Belden:\n\nThere is an appeal, and a committee can delay it. I won't tell you that is the same as a door you can open yourself. When every pantry shares a winter store, leaving has a cost. You should know who sets it before you sign.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_default_1",
+      "text": "Lucien Grey:\n\nGrey. I am measuring. Please do not stand in the line of sight.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_offer_1",
+      "text": "Lucien Grey:\n\nGrey. I survey. Your reservoir stands at a head of two hundred and six feet and nobody has drawn a watt from it in two centuries. The Directorate could light this valley in a year. First you should ask what we would need to",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_offer_2",
+      "text": "Lucien Grey:\n\ncontrol.",
+      "buttons": [
+        "What would the light cost?",
+        "What do you know about that train?",
+        "Do your engineers agree?",
+        "(Move on)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_dissent_1",
+      "text": "Lucien Grey:\n\nSome of our engineers want every reading open to the people who supply it. Others want control first and explanations later. Both can build the works. They disagree about who gets to say stop.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_cost_1",
+      "text": "Lucien Grey:\n\nAccess to the works, instruments on the hill, operating records. Outages while we test. Need our engineers long enough and you may find you cannot refuse them. Ask who may end the agreement. My instructions have no",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_cost_2",
+      "text": "Lucien Grey:\n\nsatisfactory answer.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_train_1",
+      "text": "Lucien Grey:\n\nThe yard's copy lists outstanding repairs under a clearance nobody can verify. Ask to see the original inspection page. A signature is not an inspection, whatever confidence people place in it.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_flint_default_1",
+      "text": "Edda Flint:\n\nI'm working.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_threefords_default_1",
+      "text": "Juno Three-Fords:\n\nJuno Three-Fords. I carried this through three fords without opening it. Find me Sheriff Pritchard, then find me a dry bench. In that order.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_threefords_dying_1",
+      "text": "Juno Three-Fords:\n\nNot you. Pritchard. ...No time. Listen. Lights on Blackstone ridge, every night, where there's no town. Trains on the dead line. They stop there. And a number. Learn it, I had to. Four, one, one, seven. Four, one, one,",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_threefords_dying_2",
+      "text": "Juno Three-Fords:\n\nseven.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_flint_roof_1",
+      "text": "Edda Flint:\n\nDon't touch it yet. Seven of these in six years. That makes eight. Left on the rail where anyone could find it. Someone wants an audience. I mean to find out who paid for one.",
+      "buttons": [
+        "Who is he?",
+        "What does the landing tell us?"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_flint_who_1",
+      "text": "Edda Flint:\n\nIf I had a name I'd not be collecting brass. A distant coat, a bright gun, a boat already waiting. I reckon someone sold him the courier's road and hour. Find me at Pike's if you learn more. I'll trade.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_flint_hat_1",
+      "text": "Edda Flint:\n\nHe had a boat waiting. That tells me he chose the ground before he took the shot. Find the landing. Someone tied that skiff up.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_rifles_1",
+      "text": "Amos Brigg:\n\nStand easy. Search the landing with the local officers and witnesses present. We do not take the fair tonight. I will not make a second shooting out of a public inquiry.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_holds_1",
+      "text": "Amos Brigg:\n\nThis ground is under Dominion order until the murderer is found. Nobody leaves it armed. That includes you. You may object in writing, to Judge Quill, who sits at noon.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_pritchard_case_1",
+      "text": "Owen Pritchard:\n\nBrass with holes in it. A hill with lamps drawn on. And a number, in a hand I've seen on my grocery account every month for twenty years. ...Give me a minute. No. Don't. Read it to me again.",
+      "buttons": [
+        "Four, one, one, seven. Vane's hand.",
+        "(Say nothing)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Call the delegates to uphold the truce)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_courier_dead_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Call the delegates to uphold the truce)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_talbot_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Call the delegates to uphold the truce)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_talbot_courier_dead_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Call the delegates to uphold the truce)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_whitcomb_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_whitcomb_courier_dead_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_belden_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_belden_courier_dead_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_grey_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_grey_courier_dead_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_officer_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_demand_no_officer_courier_dead_1",
+      "text": "Amos Brigg:\n\nRifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_whitcomb_truce_1",
+      "text": "Clara Whitcomb:\n\nWe came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_truce_1",
+      "text": "Tomas Belden:\n\nMy provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_truce_1",
+      "text": "Lucien Grey:\n\nA witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_pritchard_truce_1",
+      "text": "Owen Pritchard:\n\nThis is my circuit. I'll take the statements in the open and give every flag a copy. Your men can help search the landing. They don't take the fair.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_whitcomb_truce_talbot_1",
+      "text": "Clara Whitcomb:\n\nWe came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_belden_truce_talbot_1",
+      "text": "Tomas Belden:\n\nMy provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_grey_truce_talbot_1",
+      "text": "Lucien Grey:\n\nA witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_talbot_truce_1",
+      "text": "Jonah Talbot:\n\nThese people came under truce. Take their names, not their right to leave. I'll keep the statements where the witnesses can see them.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_truce_concession_pritchard_1",
+      "text": "Amos Brigg:\n\nI accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_brigg_truce_concession_talbot_1",
+      "text": "Amos Brigg:\n\nI accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_pritchard_courier_no_brigg_living_1",
+      "text": "Owen Pritchard:\n\nThe courier is down. Keep the case from the crowd. We need someone on the roof and someone with her. Say what you'll do.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_pritchard_courier_no_brigg_dead_1",
+      "text": "Owen Pritchard:\n\nThe courier is dead. Keep the case from the crowd. Someone should search the roof and landing. Say whether you'll look or take the case out of the crush.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_talbot_courier_no_brigg_living_1",
+      "text": "Jonah Talbot:\n\nThe courier's down. I can keep people back, not do three jobs at once. Somebody stay with her, somebody find the shot, somebody keep that case safe. Choose.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_talbot_courier_no_brigg_dead_1",
+      "text": "Jonah Talbot:\n\nThe courier is dead. I can keep people back. You can search the roof and landing, or get the case out of the crush.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_flint_courier_no_brigg_living_1",
+      "text": "Edda Flint:\n\nThe shot came from the roof. Her case is still on her wrist. Help her, take it out of the crush, or come look at the landing. I'm not spending another minute guessing.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Stay with the courier)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_S_flint_courier_no_brigg_dead_1",
+      "text": "Edda Flint:\n\nThe courier is dead. The shot came from the roof. Search the landing, or take her case out of the crush. Standing here won't tell us who fired.",
+      "buttons": [
+        "(Search the roof and landing)",
+        "(Take the case and go)"
+      ],
+      "channel": "approved speech",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_fair_handbill_1",
+      "text": "DECORATION DAY at the old camp-ground, Mercy Crossing  Graves dressed from sunup. Bring flowers. Paper will do. Singing at ten. Dinner on the ground at noon. Bring a dish and take one home.  BEEF SHOOT at two. Four caps",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_fair_handbill_2",
+      "text": "the share. One ball, sixty paces. Miss A. Pike judges.  FIDDLERS' CONTEST after.  By particular request of the Sheriff, there will attend, to say their piece and hear ours: The Compact. The Commonwealth. The Dominion.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_fair_handbill_3",
+      "text": "The Directorate.  NO GUN HAS BEEN DRAWN ON THIS GROUND ON DECORATION DAY IN FORTY YEARS. O. Pritchard asks that you remember it.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_silver_case_1",
+      "text": "A pistol case, spent. Longer than any pistol round sold in the valleys.  Not brass. Silver, or near it, and turned on a lathe by somebody patient.  No maker's mark. Where one would be, the metal has been filed bright. ",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_silver_case_2",
+      "text": "It was not dropped. It was stood on end, square to the rail, to be found.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_courier_card_1",
+      "text": "A strip of thin brass, a hand long, punched with rows of small round holes. No two rows alike.  A sketch in pencil: a long ridge, a notch in it, and under the notch eleven small lamps drawn in a line where no town is.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_courier_card_2",
+      "text": "Beside it: BLACKSTONE. COUNTED THEM THREE NIGHTS RUNNING.  A slip of ledger paper, torn from a larger sheet. One line:      4117    quiet, 4 heads, the month    pd.  The hand is small, upright and very neat. Anybody who",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_D_courier_card_3",
+      "text": "has ever had credit in Mercy Crossing knows it.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "approved document",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Entry",
+      "text": "[The Four Flags]\n\nCall the Decoration Day fair after the first section. Road reports stay separate; no unfinished road resolves automatically.",
+      "buttons": [
+        "Use a completed road",
+        "Call the fair without my report",
+        "Read the handbill",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_NoReport",
+      "text": "[No road report delivered]\n\nCall the fair without my report? This grants no knowledge or old report. All three roads remain open.",
+      "buttons": [
+        "Call the fair without my report",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Travel",
+      "text": "[Fair travel]\n\nTravel to the separate staged camp-ground? Old local clocks pause during transit and absence. This is not a landscape journey.",
+      "buttons": [
+        "Travel to the camp-ground",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Layout",
+      "text": "[Camp-ground prototype]\n\nCompact, Dominion, Commonwealth and Directorate have separate labelled stations. Hearing an offer signs nothing. The central courier scene waits for your explicit readiness.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_LayoutLimits",
+      "text": "[Four offers, then a response]\n\nWalk to each available delegate. The firing position and landing are ground-level inspection stand-ins. No roof climb, projectile, voice or distant shooter is represented.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Ready",
+      "text": "[Continue the fair]\n\nThe four offer stations are available. Start the staged courier encounter now? You may hear more offers first.",
+      "buttons": [
+        "Continue the fair",
+        "Not yet"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Shot",
+      "text": "[Staged shooting representation]\n\nJuno and her original case have reached the courier station. This notice represents the shot and wound; no firearm effect or forced death is claimed.",
+      "buttons": [
+        "Witness the staged scene",
+        "Pause the scene"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_DeadCourier",
+      "text": "[Courier found dead]\n\nYou found the courier dead at the fair. Her case may still hold evidence. No new shot or injury has been staged.",
+      "buttons": [
+        "Inspect this scene",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_NoCarrier",
+      "text": "[Response unavailable]\n\nNo officer or witness is available to direct the response. You may still inspect the firing position or read the accessible case.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Occupation",
+      "text": "[Dominion order]\n\nBrigg has demanded control of the camp. Continue under that order, or return to the unresolved choices?",
+      "buttons": [
+        "Continue under the order",
+        "Return to choices"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_OccupationSeen",
+      "text": "[Staged Dominion control]\n\nThe Dominion order board is visibly displayed at the central station. This represents occupation, without confiscation, injury, allegiance or a blocked exit.",
+      "buttons": [
+        "Acknowledge the visible order",
+        "Pause here"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_PendingCourse",
+      "text": "[Occupation already recorded]\n\nThe selected response is unfinished. Retry that response or inspect the physical evidence. Earlier occupation remains a fact; the original unresolved demand is not reopened.",
+      "buttons": [
+        "Retry selected response",
+        "Inspect case",
+        "Close"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_PendingOrder",
+      "text": "[Response pending]\n\nThe visible order acknowledgment is unfinished. Retry it, or return to unresolved choices. No occupation is recorded until its acknowledgment succeeds.",
+      "buttons": [
+        "Retry order acknowledgment",
+        "Return to choices",
+        "Close"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Case",
+      "text": "[Original courier case]\n\nInspect the actual case, take it for personal custody, or ask an available Pritchard to read it publicly. Copies of its base item never count as the original.",
+      "buttons": [
+        "Read the accessible original",
+        "Take original case",
+        "Public reading with Pritchard",
+        "Close"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Take",
+      "text": "[Personal custody]\n\nTake this original case from its actual current position. No wrist cutting, unseen escape, sale, burning or universal witness knowledge is claimed.",
+      "buttons": [
+        "Take original case",
+        "Leave it"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Public",
+      "text": "[Public case reading]\n\nDeliver this original case to the present Pritchard for a public reading. Its physical custody changes; your earlier observations remain.",
+      "buttons": [
+        "Deliver original to Pritchard",
+        "Keep it here"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Solo",
+      "text": "[Courier case read]\n\nYou read the line numbered 4117 and the Blackstone sketch. Pritchard's account has not been heard.",
+      "buttons": [
+        "Acknowledge the read lead",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Silver",
+      "text": "[Firing-position stand-in]\n\nInspect the original spent silver cartridge case here. This is ground-level evidence, not a roof climb or observation of a departing shooter.",
+      "buttons": [
+        "Inspect original silver case",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_GiveSilver",
+      "text": "[Evidence transfer]\n\nThe eligible Flint can receive this original spent case after your inspection. This is a real item transfer, not evidence inferred from her presence.",
+      "buttons": [
+        "Give original evidence to Flint",
+        "Keep evidence here"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Landing",
+      "text": "[Landing inspection stand-in]\n\nThis labelled ground-level station represents inspecting the prepared landing. No distant person or moving skiff has been observed; the shooter's identity remains unknown.",
+      "buttons": [
+        "Inspect the landing",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Competition",
+      "text": "[Optional competition]\n\nOptional competition is not available in this prototype. No fee, win, reward or required progression is attached to this station.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_PikeCompare",
+      "text": "[Pike: evidence comparison]\n\nYou carry the original inspected spent silver case. Ask Pike to compare it? A tooling mark is circumstantial evidence, not the shooter's identity.",
+      "buttons": [
+        "Compare original evidence",
+        "Not now"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_PikeUnavailable",
+      "text": "[Pike at the fair]\n\nThe optional competition is unavailable. Evidence comparison needs the original inspected spent silver case in your inventory. No replacement copy or remote inspection is offered.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Exit",
+      "text": "[Return to Mercy]\n\nLeave the camp-ground. Surviving visiting originals will be returned to their captured locations and enabled states. A failed return remains reported; player exit stays usable.",
+      "buttons": [
+        "Return to Mercy",
+        "Stay"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_ReturnsPending",
+      "text": "[Original cast return unfinished]\n\nAt least one original actor has not reached the verified return marker/state. No successful restoration is claimed. Use the fair entry/status control to retry only those returns.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Blocked",
+      "text": "[Effect not acknowledged]\n\nAn issued original-reference transfer is unresolved. It will not be reissued or inferred from later inventory changes. Inspect current custody/status; copies, refunds and fabricated success are unavailable.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Failed",
+      "text": "[Scene unfinished]\n\nThe required actor, original object, arrival or acknowledgment is not current. Nothing further was recorded. Use the same ordinary control for eligible unfinished scene work.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Status",
+      "text": "[Four Flags status]\n\nEntry basis %g; courier encounter %g; response %g; occupation %g. Actual case read %g. Inspect physical custody separately. No older road or relief balance was changed.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Custody",
+      "text": "[Original case custody]\n\nHeld by player %g; public custodian present %g; transfer pending %g; original cast returns pending %g. Historical reading and current possession are different facts.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_Unavailable",
+      "text": "[Fair unavailable]\n\nComplete the first section before calling or entering the fair. No report, injury, allegiance or other-road outcome was created.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "technical controls/representation/status",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    },
+    {
+      "record": "TLM_MSG_FF_A_pike_mould_aside",
+      "text": "Ada Pike:\n\nThat silver case carries a mark from case-working tools I made years ago. Not the bullet mould. Come by after dark and I'll show you the drawings; they don't tell us the customer's name.",
+      "buttons": [
+        "Continue"
+      ],
+      "channel": "explicit approved evidence aside",
+      "guard": "Captured activation generation checked after current native player/participant/reference context; no unsupported action inferred from page display"
+    }
+  ],
+  "nativeUnknowns": [
+    "Typed original-reference AddItem/GetContainer immediate custody receipt in owned engine",
+    "Original actor return marker capture/placement/disabled-state restore and current NPC packages",
+    "Real floor model/bounds audit, physical collision and controller navigation",
+    "Staged shot/visible occupation/endpoint comprehension; no projectile/audio/navmesh claims",
+    "Full fresh34 Papyrus compile, own licensed-master package, actual game paths remain root gates"
+  ]
+}

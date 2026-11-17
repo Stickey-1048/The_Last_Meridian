@@ -163,7 +163,7 @@ grep -q "alias  0 Player  (reference) \[Optional\]" "$(report weak-evidence)" ||
 # RED-HOLLOW-STORY-001 composes exactly two own interior cells independently of QASmoke.
 # Refuse a fabricated game-cell override AND require exactly that own cell.
 grep -q "^Cell QASmoke " "$(report weak-evidence)" && { echo "FAILED: a QASmoke override was written although the master has no test room"; exit 1; }
-[ "$(grep -c '^Cell ' "$(report weak-evidence)")" = 2 ] && grep -q '^Cell TLM_CELL_NightMail ' "$(report weak-evidence)" && grep -q '^Cell TLM_CELL_RedHollow ' "$(report weak-evidence)" || { echo "FAILED: a source without QASmoke must write exactly Night Mail and Red Hollow own cells"; exit 1; }
+[ "$(grep -c '^Cell ' "$(report weak-evidence)")" = 3 ] && grep -q '^Cell TLM_CELL_NightMail ' "$(report weak-evidence)" && grep -q '^Cell TLM_CELL_RedHollow ' "$(report weak-evidence)" && grep -q '^Cell TLM_CELL_FourFlags ' "$(report weak-evidence)" || { echo "FAILED: a source without QASmoke must write exactly Night Mail, Red Hollow and Four Flags own cells"; exit 1; }
 grep -q "TLM_REF_TrialPerson: not placed (no cell 'QASmoke' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: a master without the test room was not reported"; exit 1; }
 # That master has no settler either: the actors made from it are left out, and so is whoever stands on them.
 grep -q "TLM_NPC_TrialPerson: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: an actor that could not be made was not reported"; exit 1; }

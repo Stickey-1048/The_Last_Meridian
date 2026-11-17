@@ -71,7 +71,7 @@ Global (70)
   000A7C  TLM_G_MQ02C_LampTaken
   000A7D  TLM_G_MQ02C_Docket2298Held
   000A7E  TLM_G_MQ02C_SilverMine
-Faction (8)
+Faction (9)
   000812  TLM_Fac_Cutters
   000813  TLM_Fac_Caravan
   000814  TLM_Fac_MercyCrossing
@@ -80,7 +80,8 @@ Faction (8)
   000961  TLM_Fac_IronJunction
   000962  TLM_Fac_BlackRail
   000A7F  TLM_Fac_RH_Staging
-MiscItem (7)
+  000C21  TLM_Fac_FF_Staging
+MiscItem (8)
   000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
   000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
   000823  TLM_MISC_TrialObject  "Trial Object"
@@ -88,13 +89,15 @@ MiscItem (7)
   000A80  TLM_MISC_RH_Lamp  "Smokeless lamp (greybox proof)"
   000A81  TLM_MISC_RH_FiringKey  "Blevins's firing key"
   000A82  TLM_MISC_RH_Receipt  "Sixty-cap court receipt"
-Book (5)
+  000C22  TLM_MISC_FF_Silver  "Original spent silver cartridge case"
+Book (6)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
   00089E  TLM_BOOK_Docket2298  "Mercy Road Case: 2298 Review Copy"
   0008D2  TLM_BOOK_LetterOfHire  "A Letter of Hire"
   00098A  TLM_BOOK_HymnalFlyleaf  "Flyleaf of a Hymnal"
-Activator (102)
+  000C32  TLM_BOOK_FF_CourierCase  "Original courier case: ledger and Blackstone sketch"
+Activator (112)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
   000834  TLM_TRIG_TownGate
@@ -197,11 +200,21 @@ Activator (102)
   000AA5  TLM_ACTI_RH_LabelNine  "Greybox: the Nine level"
   000AA6  TLM_ACTI_RH_LabelGallery  "Greybox: sealed gallery"
   000AA7  TLM_ACTI_RH_Fall  "Supported-floor return"
+  000C23  TLM_ACTI_FF_Entry  "Four Flags: entry, handbill and returns"
+  000C24  TLM_ACTI_FF_Exit  "Return to Mercy"
+  000C25  TLM_ACTI_FF_Ready  "Continue the fair: courier scene"
+  000C26  TLM_ACTI_FF_Response  "Current courier response"
+  000C27  TLM_ACTI_FF_CaseControl  "Original courier case: access and custody"
+  000C28  TLM_ACTI_FF_Firing  "Ground-level firing-position inspection"
+  000C29  TLM_ACTI_FF_Landing  "Ground-level landing inspection"
+  000C2A  TLM_ACTI_FF_Competition  "Optional competition: unavailable"
+  000C2B  TLM_ACTI_FF_Status  "Fair facts and original custody"
+  000C2C  TLM_ACTI_FF_OccupationBoard  "Dominion order: occupation representation"
 Container (3)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
   000AA8  TLM_CONT_RH_Rope  "Rope attachment: projectile target"
   000AA9  TLM_CONT_RH_TollBox  "Court payment box"
-Message (412)
+Message (515)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -305,15 +318,15 @@ Message (412)
           button 0: "Continue"
   000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
 
-[Opening complete. All three roads playable; fair unavailable.]"  title: "Owen Pritchard"
+[Opening complete. Three roads and Four Flags entry are available.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[Opening complete. All three roads playable; fair unavailable.]"  title: "Owen Pritchard"
+[Opening complete. Three roads and Four Flags entry are available.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[Opening complete. All three roads playable; fair unavailable.]"  title: "Owen Pritchard"
+[Opening complete. Three roads and Four Flags entry are available.]"  title: "Owen Pritchard"
           button 0: "Continue"
           button 1: "There's something else from that train."
   00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Pike. I fix what shoots. Forty-fours are scarce, so make yours count.""  title: "Ada Pike"
@@ -346,7 +359,7 @@ Message (412)
           button 0: "Continue"
   0008A0  TLM_MSG_MB_Hub  [box]  "Owen Pritchard: "Which road do you want to ask about? Tell me what you know, or ask what to look for."
 
-[Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.]"  title: "Owen Pritchard"
+[Mercy briefing. Three roads and the qualified Four Flags entry are available.]"  title: "Owen Pritchard"
           button 0: "The rail."
           button 1: "The river."
           button 2: "Red Hollow."
@@ -513,7 +526,7 @@ Let the living Hatcher keep his boat. This releases him; it does not promise fut
           button 1: "Cancel"
   0008F7  TLM_MSG_GW_AskTravel  [box]  "[Greenwater story test]
 
-Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
+Three roads are playable. Four Flags entry is available after the first section. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
           button 0: "Travel to Greenwater"
           button 1: "Not now"
   0008F8  TLM_MSG_GW_AskTravelAgain  [box]  "[Greenwater story test]
@@ -676,13 +689,13 @@ You accepted Hatcher's payment. The grain remains on his barge beside the Queen;
 
 You learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.
 
-Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not."
+Greenwater road complete. The other roads and Four Flags entry remain available."
           button 0: "Continue"
   00091A  TLM_MSG_GW_ReportEndUnknown  [box]  "[River report]
 
 You did not learn why Hatcher held the grain.
 
-Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not."
+Greenwater road complete. The other roads and Four Flags entry remain available."
           button 0: "Continue"
   00091B  TLM_MSG_GW_LabelLanding  [box]  "[Greenwater landing]
 
@@ -857,7 +870,7 @@ The bearer does not know."
           button 1: "[Later]"
   0009AA  TLM_MSG_NM_AskTravel  [box]  "[Iron Junction story test]
 
-Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not. It is a greybox: floors and labelled stand-ins. Travel there now?"
+Three roads are playable. Four Flags entry is available after the first section. It is a greybox: floors and labelled stand-ins. Travel there now?"
           button 0: "Travel to Iron Junction"
           button 1: "Not now"
   0009AB  TLM_MSG_NM_AskTravelAgain  [box]  "[Iron Junction story test]
@@ -1077,7 +1090,7 @@ Leave Iron Junction?"
           button 1: "Stay"
   0009DA  TLM_MSG_NM_NoteRoadComplete  [box]  "[Iron Junction story test]
 
-Night Mail road complete. Greenwater and Red Hollow remain playable; the fair is not. Sheriff Pritchard will hear what became of the Night Mail."
+Night Mail road complete. The other roads and Four Flags entry remain available. Sheriff Pritchard will hear what became of the Night Mail."
           button 0: "Continue"
   0009DB  TLM_MSG_NM_NoteLeftUnresolved  [box]  "[Iron Junction story test]
 
@@ -1205,7 +1218,7 @@ You did not learn who Preacher Dole is or what he is paid in."
           button 0: "Continue"
   0009FA  TLM_MSG_NM_ReportEnd  [box]  "[Rail report]
 
-Night Mail road complete. Greenwater and Red Hollow remain playable; the fair is not."
+Night Mail road complete. The other roads and Four Flags entry remain available."
           button 0: "Continue"
   0009FB  TLM_MSG_NM_AskHandOver  [box]  "[Inspector's stamp]
 
@@ -1390,7 +1403,7 @@ I ran it anyway. A."
           button 0: "Continue"
   000AE5  TLM_MSG_RH_Travel  [box]  "[Red Hollow story test]
 
-Greenwater, Iron Junction and Red Hollow are playable. The fair is not. Travel to the gap?"
+Three roads are playable. Four Flags entry is available after the first section. Travel to the gap?"
           button 0: "Travel"
           button 1: "Not now"
   000AE6  TLM_MSG_RH_StageTravel  [box]  "[Staged travel]
@@ -1559,7 +1572,7 @@ Unsettled work remains unsettled. Return now?"
           button 1: "Stay"
   000B02  TLM_MSG_RH_End  [box]  "[Red Hollow]
 
-Red Hollow road complete. All three roads remain playable; the fair is not."
+Red Hollow road complete. Three roads and Four Flags entry remain available."
           button 0: "Continue"
   000B03  TLM_MSG_RH_LabelGap  [box]  "[Greybox: toll and court]
 
@@ -1804,6 +1817,471 @@ All six local steps are accounted for and outstanding shortfall is clear. Earlie
 All six local steps and current shortfall are covered. This bounded season has no further donation, purchase or advance. Earlier hunger and your original river decision remain in the record."
           button 0: "Inspect ledger"
           button 1: "Close"
+  000C35  TLM_MSG_FF_S_pritchard_fair_1  [box]  "Owen Pritchard:
+
+Forty years. Not one gun drawn on this ground on Decoration Day, and I've buried men who wanted to. Eat something. Shoot for the beef if you must. Then go and let each of those four lie to you. I want to know which does it"
+          button 0: "Continue"
+  000C36  TLM_MSG_FF_S_pritchard_fair_2  [box]  "Owen Pritchard:
+
+best."
+          button 0: "Continue"
+  000C37  TLM_MSG_FF_S_whitcomb_default_1  [box]  "Clara Whitcomb:
+
+Clara Whitcomb, for the Compact. If you've freight to move, I'm listening. If you've a grievance, I'm listening with my other ear."
+          button 0: "Continue"
+  000C38  TLM_MSG_FF_S_whitcomb_offer_1  [box]  "Clara Whitcomb:
+
+Clara Whitcomb, for the Compact. You're the one from the wreck; I'd know you by the ballad. Here's my whole pitch, no charge: open roads, posted rates, and nobody's leave to ask. Now what am I bid?"
+          button 0: "Who sets the rates?"
+          button 1: "And when a big buyer undercuts?"
+          button 2: "(Move on)"
+  000C39  TLM_MSG_FF_S_whitcomb_rates_1  [box]  "Clara Whitcomb:
+
+Carriers in the Compact vote on a shared rate. Nell Fenwick voted against me twice and for me once. Others want to set their own rates. Leaving an agreement mustn't cost them the right to use the road."
+          button 0: "Continue"
+  000C3A  TLM_MSG_FF_S_whitcomb_big_1  [box]  "Clara Whitcomb:
+
+The small carriers ask that too. One bad season can sell them to people in my own Compact who smile just the way I do. I know it. I haven't a rule for it yet. I'd sooner admit that than sell you a pig in a sack."
+          button 0: "Continue"
+  000C3B  TLM_MSG_FF_S_brigg_default_1  [box]  "Amos Brigg:
+
+State your business and your arms. In that order."
+          button 0: "Continue"
+  000C3C  TLM_MSG_FF_S_brigg_offer_1  [box]  "Amos Brigg:
+
+Colonel Brigg. You are the armed party who came down from the wreck. You have been of use to Sergeant Pritchard; I note it. The Dominion offers one thing: a road you may walk at night. Everything else people say they want"
+          button 0: "Continue"
+  000C3D  TLM_MSG_FF_S_brigg_offer_2  [box]  "Amos Brigg:
+
+comes after."
+          button 0: "At what price?"
+          button 1: "Your judge hangs men from a wagon."
+          button 2: "Do all your Wardens agree?"
+          button 3: "(Move on)"
+  000C3E  TLM_MSG_FF_S_brigg_dissent_1  [box]  "Amos Brigg:
+
+Old Wardens want local warrants and limits on requisition. Iron Command wants one order obeyed before any appeal. Both wear the old badge. Pritchard and I differ on what that badge permits."
+          button 0: "Continue"
+  000C3F  TLM_MSG_FF_S_brigg_price_1  [box]  "Amos Brigg:
+
+A gate at each gap. A levy by head and wheel. Arms registered; militias under my command. I can patrol this road, not put a decent officer behind every desk. A bad one will have too much power. That's a price. I still mean to"
+          button 0: "Continue"
+  000C40  TLM_MSG_FF_S_brigg_price_2  [box]  "Amos Brigg:
+
+collect."
+          button 0: "Continue"
+  000C41  TLM_MSG_FF_S_brigg_quill_1  [box]  "Amos Brigg:
+
+Judge Quill hangs road-agents after a hearing, at noon, in public. Before there was a gate at the gap they were hanged by whoever caught them, or not at all. Tell me which you prefer and I will tell you what you are."
+          button 0: "Continue"
+  000C42  TLM_MSG_FF_S_belden_default_1  [box]  "Tomas Belden:
+
+Delegate Belden, Commonwealth provisioning. There is a bowl if you want one. Eating here commits you to nothing."
+          button 0: "Continue"
+  000C43  TLM_MSG_FF_S_belden_offer_1  [box]  "Tomas Belden:
+
+Tomas Belden, Commonwealth provisioning. Take a bowl if you want; supper isn't a signature. Our stores can carry a town through a bad season. One list tells us where the need is. Somebody must answer for what it leaves out."
+          button 0: "Who keeps the list?"
+          button 1: "And if a town wants off the list?"
+          button 2: "Who argues against your office?"
+          button 3: "(Move on)"
+  000C44  TLM_MSG_FF_S_belden_dissent_1  [box]  "Tomas Belden:
+
+Local provisioning crews want open counts and town appeals. Central stores insist on one office controlling release. That's an argument inside the Commonwealth, not a rumour from its enemies."
+          button 0: "Continue"
+  000C45  TLM_MSG_FF_S_belden_list_1  [box]  "Tomas Belden:
+
+A provisioning committee. It reaches people a merchant might never trust with credit. It also puts mistakes behind an office door. Ask to see your entry and who can correct it. I ought to have better answers than a"
+          button 0: "Continue"
+  000C46  TLM_MSG_FF_S_belden_list_2  [box]  "Tomas Belden:
+
+committee's address."
+          button 0: "Continue"
+  000C47  TLM_MSG_FF_S_belden_leave_1  [box]  "Tomas Belden:
+
+There is an appeal, and a committee can delay it. I won't tell you that is the same as a door you can open yourself. When every pantry shares a winter store, leaving has a cost. You should know who sets it before you sign."
+          button 0: "Continue"
+  000C48  TLM_MSG_FF_S_grey_default_1  [box]  "Lucien Grey:
+
+Grey. I am measuring. Please do not stand in the line of sight."
+          button 0: "Continue"
+  000C49  TLM_MSG_FF_S_grey_offer_1  [box]  "Lucien Grey:
+
+Grey. I survey. Your reservoir stands at a head of two hundred and six feet and nobody has drawn a watt from it in two centuries. The Directorate could light this valley in a year. First you should ask what we would need to"
+          button 0: "Continue"
+  000C4A  TLM_MSG_FF_S_grey_offer_2  [box]  "Lucien Grey:
+
+control."
+          button 0: "What would the light cost?"
+          button 1: "What do you know about that train?"
+          button 2: "Do your engineers agree?"
+          button 3: "(Move on)"
+  000C4B  TLM_MSG_FF_S_grey_dissent_1  [box]  "Lucien Grey:
+
+Some of our engineers want every reading open to the people who supply it. Others want control first and explanations later. Both can build the works. They disagree about who gets to say stop."
+          button 0: "Continue"
+  000C4C  TLM_MSG_FF_S_grey_cost_1  [box]  "Lucien Grey:
+
+Access to the works, instruments on the hill, operating records. Outages while we test. Need our engineers long enough and you may find you cannot refuse them. Ask who may end the agreement. My instructions have no"
+          button 0: "Continue"
+  000C4D  TLM_MSG_FF_S_grey_cost_2  [box]  "Lucien Grey:
+
+satisfactory answer."
+          button 0: "Continue"
+  000C4E  TLM_MSG_FF_S_grey_train_1  [box]  "Lucien Grey:
+
+The yard's copy lists outstanding repairs under a clearance nobody can verify. Ask to see the original inspection page. A signature is not an inspection, whatever confidence people place in it."
+          button 0: "Continue"
+  000C4F  TLM_MSG_FF_S_flint_default_1  [box]  "Edda Flint:
+
+I'm working."
+          button 0: "Continue"
+  000C50  TLM_MSG_FF_S_threefords_default_1  [box]  "Juno Three-Fords:
+
+Juno Three-Fords. I carried this through three fords without opening it. Find me Sheriff Pritchard, then find me a dry bench. In that order."
+          button 0: "Continue"
+  000C51  TLM_MSG_FF_S_threefords_dying_1  [box]  "Juno Three-Fords:
+
+Not you. Pritchard. ...No time. Listen. Lights on Blackstone ridge, every night, where there's no town. Trains on the dead line. They stop there. And a number. Learn it, I had to. Four, one, one, seven. Four, one, one,"
+          button 0: "Continue"
+  000C52  TLM_MSG_FF_S_threefords_dying_2  [box]  "Juno Three-Fords:
+
+seven."
+          button 0: "Continue"
+  000C53  TLM_MSG_FF_S_flint_roof_1  [box]  "Edda Flint:
+
+Don't touch it yet. Seven of these in six years. That makes eight. Left on the rail where anyone could find it. Someone wants an audience. I mean to find out who paid for one."
+          button 0: "Who is he?"
+          button 1: "What does the landing tell us?"
+  000C54  TLM_MSG_FF_S_flint_who_1  [box]  "Edda Flint:
+
+If I had a name I'd not be collecting brass. A distant coat, a bright gun, a boat already waiting. I reckon someone sold him the courier's road and hour. Find me at Pike's if you learn more. I'll trade."
+          button 0: "Continue"
+  000C55  TLM_MSG_FF_S_flint_hat_1  [box]  "Edda Flint:
+
+He had a boat waiting. That tells me he chose the ground before he took the shot. Find the landing. Someone tied that skiff up."
+          button 0: "Continue"
+  000C56  TLM_MSG_FF_S_brigg_rifles_1  [box]  "Amos Brigg:
+
+Stand easy. Search the landing with the local officers and witnesses present. We do not take the fair tonight. I will not make a second shooting out of a public inquiry."
+          button 0: "Continue"
+  000C57  TLM_MSG_FF_S_brigg_holds_1  [box]  "Amos Brigg:
+
+This ground is under Dominion order until the murderer is found. Nobody leaves it armed. That includes you. You may object in writing, to Judge Quill, who sits at noon."
+          button 0: "Continue"
+  000C58  TLM_MSG_FF_S_pritchard_case_1  [box]  "Owen Pritchard:
+
+Brass with holes in it. A hill with lamps drawn on. And a number, in a hand I've seen on my grocery account every month for twenty years. ...Give me a minute. No. Don't. Read it to me again."
+          button 0: "Four, one, one, seven. Vane's hand."
+          button 1: "(Say nothing)"
+  000C59  TLM_MSG_FF_S_brigg_demand_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Call the delegates to uphold the truce)"
+          button 3: "(Take the case and go)"
+  000C5A  TLM_MSG_FF_S_brigg_demand_courier_dead_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Call the delegates to uphold the truce)"
+          button 2: "(Take the case and go)"
+  000C5B  TLM_MSG_FF_S_brigg_demand_talbot_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Call the delegates to uphold the truce)"
+          button 3: "(Take the case and go)"
+  000C5C  TLM_MSG_FF_S_brigg_demand_talbot_courier_dead_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Call the delegates to uphold the truce)"
+          button 2: "(Take the case and go)"
+  000C5D  TLM_MSG_FF_S_brigg_demand_no_whitcomb_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Take the case and go)"
+  000C5E  TLM_MSG_FF_S_brigg_demand_no_whitcomb_courier_dead_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Take the case and go)"
+  000C5F  TLM_MSG_FF_S_brigg_demand_no_belden_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Take the case and go)"
+  000C60  TLM_MSG_FF_S_brigg_demand_no_belden_courier_dead_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Take the case and go)"
+  000C61  TLM_MSG_FF_S_brigg_demand_no_grey_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Take the case and go)"
+  000C62  TLM_MSG_FF_S_brigg_demand_no_grey_courier_dead_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Take the case and go)"
+  000C63  TLM_MSG_FF_S_brigg_demand_no_officer_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Take the case and go)"
+  000C64  TLM_MSG_FF_S_brigg_demand_no_officer_courier_dead_1  [box]  "Amos Brigg:
+
+Rifles downrange. Seal the landing. Until the killer is found, this ground answers to Dominion command. Witnesses may observe the search. They will not direct it."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Take the case and go)"
+  000C65  TLM_MSG_FF_S_whitcomb_truce_1  [box]  "Clara Whitcomb:
+
+We came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record."
+          button 0: "Continue"
+  000C66  TLM_MSG_FF_S_belden_truce_1  [box]  "Tomas Belden:
+
+My provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names."
+          button 0: "Continue"
+  000C67  TLM_MSG_FF_S_grey_truce_1  [box]  "Lucien Grey:
+
+A witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing."
+          button 0: "Continue"
+  000C68  TLM_MSG_FF_S_pritchard_truce_1  [box]  "Owen Pritchard:
+
+This is my circuit. I'll take the statements in the open and give every flag a copy. Your men can help search the landing. They don't take the fair."
+          button 0: "Continue"
+  000C69  TLM_MSG_FF_S_whitcomb_truce_talbot_1  [box]  "Clara Whitcomb:
+
+We came under Pritchard's truce, Colonel. Search for the killer. Don't turn every guest into your prisoner. The Compact will put its witnesses on that record."
+          button 0: "Continue"
+  000C6A  TLM_MSG_FF_S_belden_truce_talbot_1  [box]  "Tomas Belden:
+
+My provisioning crew will give their accounts. They did not bring food here to serve as cover for an occupation. Let the local officers take the names."
+          button 0: "Continue"
+  000C6B  TLM_MSG_FF_S_grey_truce_talbot_1  [box]  "Lucien Grey:
+
+A witness who cannot leave has reason to tell you what you want. Record the accounts before you seize the ground. You asked the other flags to witness; we are witnessing."
+          button 0: "Continue"
+  000C6C  TLM_MSG_FF_S_talbot_truce_1  [box]  "Jonah Talbot:
+
+These people came under truce. Take their names, not their right to leave. I'll keep the statements where the witnesses can see them."
+          button 0: "Continue"
+  000C6D  TLM_MSG_FF_S_brigg_truce_concession_pritchard_1  [box]  "Amos Brigg:
+
+I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record."
+          button 0: "Continue"
+  000C6E  TLM_MSG_FF_S_brigg_truce_concession_talbot_1  [box]  "Amos Brigg:
+
+I accept a local search with witnesses. The fair stays outside Dominion command tonight. Put those limits on the record."
+          button 0: "Continue"
+  000C6F  TLM_MSG_FF_S_pritchard_courier_no_brigg_living_1  [box]  "Owen Pritchard:
+
+The courier is down. Keep the case from the crowd. We need someone on the roof and someone with her. Say what you'll do."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Take the case and go)"
+  000C70  TLM_MSG_FF_S_pritchard_courier_no_brigg_dead_1  [box]  "Owen Pritchard:
+
+The courier is dead. Keep the case from the crowd. Someone should search the roof and landing. Say whether you'll look or take the case out of the crush."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Take the case and go)"
+  000C71  TLM_MSG_FF_S_talbot_courier_no_brigg_living_1  [box]  "Jonah Talbot:
+
+The courier's down. I can keep people back, not do three jobs at once. Somebody stay with her, somebody find the shot, somebody keep that case safe. Choose."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Take the case and go)"
+  000C72  TLM_MSG_FF_S_talbot_courier_no_brigg_dead_1  [box]  "Jonah Talbot:
+
+The courier is dead. I can keep people back. You can search the roof and landing, or get the case out of the crush."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Take the case and go)"
+  000C73  TLM_MSG_FF_S_flint_courier_no_brigg_living_1  [box]  "Edda Flint:
+
+The shot came from the roof. Her case is still on her wrist. Help her, take it out of the crush, or come look at the landing. I'm not spending another minute guessing."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Stay with the courier)"
+          button 2: "(Take the case and go)"
+  000C74  TLM_MSG_FF_S_flint_courier_no_brigg_dead_1  [box]  "Edda Flint:
+
+The courier is dead. The shot came from the roof. Search the landing, or take her case out of the crush. Standing here won't tell us who fired."
+          button 0: "(Search the roof and landing)"
+          button 1: "(Take the case and go)"
+  000C75  TLM_MSG_FF_D_fair_handbill_1  [box]  "DECORATION DAY at the old camp-ground, Mercy Crossing  Graves dressed from sunup. Bring flowers. Paper will do. Singing at ten. Dinner on the ground at noon. Bring a dish and take one home.  BEEF SHOOT at two. Four caps"
+          button 0: "Continue"
+  000C76  TLM_MSG_FF_D_fair_handbill_2  [box]  "the share. One ball, sixty paces. Miss A. Pike judges.  FIDDLERS' CONTEST after.  By particular request of the Sheriff, there will attend, to say their piece and hear ours: The Compact. The Commonwealth. The Dominion."
+          button 0: "Continue"
+  000C77  TLM_MSG_FF_D_fair_handbill_3  [box]  "The Directorate.  NO GUN HAS BEEN DRAWN ON THIS GROUND ON DECORATION DAY IN FORTY YEARS. O. Pritchard asks that you remember it."
+          button 0: "Continue"
+  000C78  TLM_MSG_FF_D_silver_case_1  [box]  "A pistol case, spent. Longer than any pistol round sold in the valleys.  Not brass. Silver, or near it, and turned on a lathe by somebody patient.  No maker's mark. Where one would be, the metal has been filed bright. "
+          button 0: "Continue"
+  000C79  TLM_MSG_FF_D_silver_case_2  [box]  "It was not dropped. It was stood on end, square to the rail, to be found."
+          button 0: "Continue"
+  000C7A  TLM_MSG_FF_D_courier_card_1  [box]  "A strip of thin brass, a hand long, punched with rows of small round holes. No two rows alike.  A sketch in pencil: a long ridge, a notch in it, and under the notch eleven small lamps drawn in a line where no town is."
+          button 0: "Continue"
+  000C7B  TLM_MSG_FF_D_courier_card_2  [box]  "Beside it: BLACKSTONE. COUNTED THEM THREE NIGHTS RUNNING.  A slip of ledger paper, torn from a larger sheet. One line:      4117    quiet, 4 heads, the month    pd.  The hand is small, upright and very neat. Anybody who"
+          button 0: "Continue"
+  000C7C  TLM_MSG_FF_D_courier_card_3  [box]  "has ever had credit in Mercy Crossing knows it."
+          button 0: "Continue"
+  000C7D  TLM_MSG_FF_Entry  [box]  "[The Four Flags]
+
+Call the Decoration Day fair after the first section. Road reports stay separate; no unfinished road resolves automatically."
+          button 0: "Use a completed road"
+          button 1: "Call the fair without my report"
+          button 2: "Read the handbill"
+          button 3: "Not now"
+  000C7E  TLM_MSG_FF_NoReport  [box]  "[No road report delivered]
+
+Call the fair without my report? This grants no knowledge or old report. All three roads remain open."
+          button 0: "Call the fair without my report"
+          button 1: "Not now"
+  000C7F  TLM_MSG_FF_Travel  [box]  "[Fair travel]
+
+Travel to the separate staged camp-ground? Old local clocks pause during transit and absence. This is not a landscape journey."
+          button 0: "Travel to the camp-ground"
+          button 1: "Not now"
+  000C80  TLM_MSG_FF_Layout  [box]  "[Camp-ground prototype]
+
+Compact, Dominion, Commonwealth and Directorate have separate labelled stations. Hearing an offer signs nothing. The central courier scene waits for your explicit readiness."
+          button 0: "Continue"
+  000C81  TLM_MSG_FF_LayoutLimits  [box]  "[Four offers, then a response]
+
+Walk to each available delegate. The firing position and landing are ground-level inspection stand-ins. No roof climb, projectile, voice or distant shooter is represented."
+          button 0: "Continue"
+  000C82  TLM_MSG_FF_Ready  [box]  "[Continue the fair]
+
+The four offer stations are available. Start the staged courier encounter now? You may hear more offers first."
+          button 0: "Continue the fair"
+          button 1: "Not yet"
+  000C83  TLM_MSG_FF_Shot  [box]  "[Staged shooting representation]
+
+Juno and her original case have reached the courier station. This notice represents the shot and wound; no firearm effect or forced death is claimed."
+          button 0: "Witness the staged scene"
+          button 1: "Pause the scene"
+  000C84  TLM_MSG_FF_DeadCourier  [box]  "[Courier found dead]
+
+You found the courier dead at the fair. Her case may still hold evidence. No new shot or injury has been staged."
+          button 0: "Inspect this scene"
+          button 1: "Not now"
+  000C85  TLM_MSG_FF_NoCarrier  [box]  "[Response unavailable]
+
+No officer or witness is available to direct the response. You may still inspect the firing position or read the accessible case."
+          button 0: "Continue"
+  000C86  TLM_MSG_FF_Occupation  [box]  "[Dominion order]
+
+Brigg has demanded control of the camp. Continue under that order, or return to the unresolved choices?"
+          button 0: "Continue under the order"
+          button 1: "Return to choices"
+  000C87  TLM_MSG_FF_OccupationSeen  [box]  "[Staged Dominion control]
+
+The Dominion order board is visibly displayed at the central station. This represents occupation, without confiscation, injury, allegiance or a blocked exit."
+          button 0: "Acknowledge the visible order"
+          button 1: "Pause here"
+  000C88  TLM_MSG_FF_PendingCourse  [box]  "[Occupation already recorded]
+
+The selected response is unfinished. Retry that response or inspect the physical evidence. Earlier occupation remains a fact; the original unresolved demand is not reopened."
+          button 0: "Retry selected response"
+          button 1: "Inspect case"
+          button 2: "Close"
+  000C89  TLM_MSG_FF_PendingOrder  [box]  "[Response pending]
+
+The visible order acknowledgment is unfinished. Retry it, or return to unresolved choices. No occupation is recorded until its acknowledgment succeeds."
+          button 0: "Retry order acknowledgment"
+          button 1: "Return to choices"
+          button 2: "Close"
+  000C8A  TLM_MSG_FF_Case  [box]  "[Original courier case]
+
+Inspect the actual case, take it for personal custody, or ask an available Pritchard to read it publicly. Copies of its base item never count as the original."
+          button 0: "Read the accessible original"
+          button 1: "Take original case"
+          button 2: "Public reading with Pritchard"
+          button 3: "Close"
+  000C8B  TLM_MSG_FF_Take  [box]  "[Personal custody]
+
+Take this original case from its actual current position. No wrist cutting, unseen escape, sale, burning or universal witness knowledge is claimed."
+          button 0: "Take original case"
+          button 1: "Leave it"
+  000C8C  TLM_MSG_FF_Public  [box]  "[Public case reading]
+
+Deliver this original case to the present Pritchard for a public reading. Its physical custody changes; your earlier observations remain."
+          button 0: "Deliver original to Pritchard"
+          button 1: "Keep it here"
+  000C8D  TLM_MSG_FF_Solo  [box]  "[Courier case read]
+
+You read the line numbered 4117 and the Blackstone sketch. Pritchard's account has not been heard."
+          button 0: "Acknowledge the read lead"
+          button 1: "Not now"
+  000C8E  TLM_MSG_FF_Silver  [box]  "[Firing-position stand-in]
+
+Inspect the original spent silver cartridge case here. This is ground-level evidence, not a roof climb or observation of a departing shooter."
+          button 0: "Inspect original silver case"
+          button 1: "Not now"
+  000C8F  TLM_MSG_FF_GiveSilver  [box]  "[Evidence transfer]
+
+The eligible Flint can receive this original spent case after your inspection. This is a real item transfer, not evidence inferred from her presence."
+          button 0: "Give original evidence to Flint"
+          button 1: "Keep evidence here"
+  000C90  TLM_MSG_FF_Landing  [box]  "[Landing inspection stand-in]
+
+This labelled ground-level station represents inspecting the prepared landing. No distant person or moving skiff has been observed; the shooter's identity remains unknown."
+          button 0: "Inspect the landing"
+          button 1: "Not now"
+  000C91  TLM_MSG_FF_Competition  [box]  "[Optional competition]
+
+Optional competition is not available in this prototype. No fee, win, reward or required progression is attached to this station."
+          button 0: "Continue"
+  000CF4  TLM_MSG_FF_PikeCompare  [box]  "[Pike: evidence comparison]
+
+You carry the original inspected spent silver case. Ask Pike to compare it? A tooling mark is circumstantial evidence, not the shooter's identity."
+          button 0: "Compare original evidence"
+          button 1: "Not now"
+  000CF5  TLM_MSG_FF_PikeUnavailable  [box]  "[Pike at the fair]
+
+The optional competition is unavailable. Evidence comparison needs the original inspected spent silver case in your inventory. No replacement copy or remote inspection is offered."
+          button 0: "Continue"
+  000C92  TLM_MSG_FF_Exit  [box]  "[Return to Mercy]
+
+Leave the camp-ground. Surviving visiting originals will be returned to their captured locations and enabled states. A failed return remains reported; player exit stays usable."
+          button 0: "Return to Mercy"
+          button 1: "Stay"
+  000C93  TLM_MSG_FF_ReturnsPending  [box]  "[Original cast return unfinished]
+
+At least one original actor has not reached the verified return marker/state. No successful restoration is claimed. Use the fair entry/status control to retry only those returns."
+          button 0: "Continue"
+  000C94  TLM_MSG_FF_Blocked  [box]  "[Effect not acknowledged]
+
+An issued original-reference transfer is unresolved. It will not be reissued or inferred from later inventory changes. Inspect current custody/status; copies, refunds and fabricated success are unavailable."
+          button 0: "Continue"
+  000C95  TLM_MSG_FF_Failed  [box]  "[Scene unfinished]
+
+The required actor, original object, arrival or acknowledgment is not current. Nothing further was recorded. Use the same ordinary control for eligible unfinished scene work."
+          button 0: "Continue"
+  000C96  TLM_MSG_FF_Status  [box]  "[Four Flags status]
+
+Entry basis %g; courier encounter %g; response %g; occupation %g. Actual case read %g. Inspect physical custody separately. No older road or relief balance was changed."
+          button 0: "Continue"
+  000C97  TLM_MSG_FF_Custody  [box]  "[Original case custody]
+
+Held by player %g; public custodian present %g; transfer pending %g; original cast returns pending %g. Historical reading and current possession are different facts."
+          button 0: "Continue"
+  000C98  TLM_MSG_FF_Unavailable  [box]  "[Fair unavailable]
+
+Complete the first section before calling or entering the fair. No report, injury, allegiance or other-road outcome was created."
+          button 0: "Continue"
+  000CF6  TLM_MSG_FF_A_pike_mould_aside  [box]  "Ada Pike:
+
+That silver case carries a mark from case-working tools I made years ago. Not the bullet mould. Come by after dark and I'll show you the drawings; they don't tell us the customer's name."
+          button 0: "Continue"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
   script TLM:Core
@@ -2084,6 +2562,8 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            TLM_Greenwater = TLM_GW
            TLM_NightMail = TLM_NM
            TLM_RedHollow = TLM_RH
+           TLM_FourFlags = TLM_MQ03
+           TLM_FourFlagsEntry = TLM_FF_Entry
            TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
            TLM_G_CaravanMethod = TLM_G_CaravanMethod
            TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
@@ -2251,8 +2731,8 @@ Quest TLM_MercyBriefing  00089F  "Mercy briefing"  type=SideQuests priority=35 f
            CopyPendingNote = TLM_MSG_MB_CopyPendingNote
            HandOffLine = TLM_MSG_MB_HandOff
   structure: 2 of 2 stages have one item with its flags subrecord; 1 of 1 objectives have flags; condition marker present
-  stage   10  "Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not."
-  stage   20 [complete]  "Mercy briefing complete. Greenwater, Iron Junction and Red Hollow are playable; the fair is not."
+  stage   10  "Mercy briefing. Three roads and the qualified Four Flags entry are available."
+  stage   20 [complete]  "Mercy briefing complete. Three roads and qualified Four Flags entry remain available."
   objective 10: "Ask Pritchard about the three roads."  -> alias 0
   alias  0 Briefer  (reference) [Optional]
 
@@ -2317,6 +2797,7 @@ Quest TLM_MQ02B  0008D3  "The Queen of Tellico"  type=MainQuest priority=55 flag
 Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:GreenwaterWalk
            TLM_Relief = TLM_GW_Relief
+           TLM_FourFlags = TLM_MQ03
            TLM_MQ02B = TLM_MQ02B
            TLM_MQ01 = TLM_MQ01
            TLM_G_MQ01_Done = TLM_G_MQ01_Done
@@ -3441,7 +3922,263 @@ Quest TLM_GW_Relief  000C07  "Greenwater winter relief (local ledger)"  type=Non
            script TLM:GreenwaterTalk
                     Who = 0
 
-Not wired yet (821):
+Quest TLM_MQ03  000C33  "The Four Flags"  type=MainQuest priority=55 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MQ03Quest
+           TLM_MQ01 = TLM_MQ01
+           TLM_MQ02A = TLM_MQ02A
+           TLM_MQ02B = TLM_MQ02B
+           TLM_MQ02C = TLM_MQ02C
+           FirstDone = TLM_G_MQ01_Done
+           Cast = [alias 27 on TLM_MQ03, alias 28 on TLM_MQ03, alias 29 on TLM_MQ03, alias 30 on TLM_MQ03, alias 14 on TLM_MQ03, alias 15 on TLM_MQ03, alias 16 on TLM_MQ03, alias 17 on TLM_MQ03, alias 18 on TLM_MQ03]
+           RailReported = TLM_G_MQ02A_Reported
+           RiverReported = TLM_G_MQ02B_Reported
+           HollowReported = TLM_G_MQ02C_Reported
+           Alias_Arrival = alias 2 on TLM_MQ03
+           Alias_OccupationBoard = alias 11 on TLM_MQ03
+           Alias_OriginalCase = alias 12 on TLM_MQ03
+           Alias_OriginalSilver = alias 13 on TLM_MQ03
+           Alias_Player = alias 31 on TLM_MQ03
+  script TLM:FourFlagsWalk
+           Alias_Entry = alias 0 on TLM_MQ03
+           Alias_MercyReturn = alias 1 on TLM_MQ03
+           Alias_Arrival = alias 2 on TLM_MQ03
+           Alias_Exit = alias 3 on TLM_MQ03
+           Alias_Ready = alias 4 on TLM_MQ03
+           Alias_Response = alias 5 on TLM_MQ03
+           Alias_CaseControl = alias 6 on TLM_MQ03
+           Alias_Firing = alias 7 on TLM_MQ03
+           Alias_Landing = alias 8 on TLM_MQ03
+           Alias_Competition = alias 9 on TLM_MQ03
+           Alias_Status = alias 10 on TLM_MQ03
+           Alias_OccupationBoard = alias 11 on TLM_MQ03
+           Alias_OriginalCase = alias 12 on TLM_MQ03
+           Alias_OriginalSilver = alias 13 on TLM_MQ03
+           Alias_Whitcomb = alias 14 on TLM_MQ03
+           Alias_Brigg = alias 15 on TLM_MQ03
+           Alias_Grey = alias 16 on TLM_MQ03
+           Alias_Flint = alias 17 on TLM_MQ03
+           Alias_Juno = alias 18 on TLM_MQ03
+           Alias_PritchardAnchor = alias 19 on TLM_MQ03
+           Alias_TalbotAnchor = alias 20 on TLM_MQ03
+           Alias_PikeAnchor = alias 21 on TLM_MQ03
+           Alias_BeldenAnchor = alias 22 on TLM_MQ03
+           Alias_PritchardReturn = alias 23 on TLM_MQ03
+           Alias_TalbotReturn = alias 24 on TLM_MQ03
+           Alias_PikeReturn = alias 25 on TLM_MQ03
+           Alias_BeldenReturn = alias 26 on TLM_MQ03
+           Alias_Pritchard = alias 27 on TLM_MQ03
+           Alias_Talbot = alias 28 on TLM_MQ03
+           Alias_Pike = alias 29 on TLM_MQ03
+           Alias_Belden = alias 30 on TLM_MQ03
+           Alias_Player = alias 31 on TLM_MQ03
+           S_pritchard_fair_1 = TLM_MSG_FF_S_pritchard_fair_1
+           S_pritchard_fair_2 = TLM_MSG_FF_S_pritchard_fair_2
+           S_whitcomb_default_1 = TLM_MSG_FF_S_whitcomb_default_1
+           S_whitcomb_offer_1 = TLM_MSG_FF_S_whitcomb_offer_1
+           S_whitcomb_rates_1 = TLM_MSG_FF_S_whitcomb_rates_1
+           S_whitcomb_big_1 = TLM_MSG_FF_S_whitcomb_big_1
+           S_brigg_default_1 = TLM_MSG_FF_S_brigg_default_1
+           S_brigg_offer_1 = TLM_MSG_FF_S_brigg_offer_1
+           S_brigg_offer_2 = TLM_MSG_FF_S_brigg_offer_2
+           S_brigg_dissent_1 = TLM_MSG_FF_S_brigg_dissent_1
+           S_brigg_price_1 = TLM_MSG_FF_S_brigg_price_1
+           S_brigg_price_2 = TLM_MSG_FF_S_brigg_price_2
+           S_brigg_quill_1 = TLM_MSG_FF_S_brigg_quill_1
+           S_belden_default_1 = TLM_MSG_FF_S_belden_default_1
+           S_belden_offer_1 = TLM_MSG_FF_S_belden_offer_1
+           S_belden_dissent_1 = TLM_MSG_FF_S_belden_dissent_1
+           S_belden_list_1 = TLM_MSG_FF_S_belden_list_1
+           S_belden_list_2 = TLM_MSG_FF_S_belden_list_2
+           S_belden_leave_1 = TLM_MSG_FF_S_belden_leave_1
+           S_grey_default_1 = TLM_MSG_FF_S_grey_default_1
+           S_grey_offer_1 = TLM_MSG_FF_S_grey_offer_1
+           S_grey_offer_2 = TLM_MSG_FF_S_grey_offer_2
+           S_grey_dissent_1 = TLM_MSG_FF_S_grey_dissent_1
+           S_grey_cost_1 = TLM_MSG_FF_S_grey_cost_1
+           S_grey_cost_2 = TLM_MSG_FF_S_grey_cost_2
+           S_grey_train_1 = TLM_MSG_FF_S_grey_train_1
+           S_flint_default_1 = TLM_MSG_FF_S_flint_default_1
+           S_threefords_default_1 = TLM_MSG_FF_S_threefords_default_1
+           S_threefords_dying_1 = TLM_MSG_FF_S_threefords_dying_1
+           S_threefords_dying_2 = TLM_MSG_FF_S_threefords_dying_2
+           S_flint_roof_1 = TLM_MSG_FF_S_flint_roof_1
+           S_flint_who_1 = TLM_MSG_FF_S_flint_who_1
+           S_flint_hat_1 = TLM_MSG_FF_S_flint_hat_1
+           S_brigg_rifles_1 = TLM_MSG_FF_S_brigg_rifles_1
+           S_brigg_holds_1 = TLM_MSG_FF_S_brigg_holds_1
+           S_pritchard_case_1 = TLM_MSG_FF_S_pritchard_case_1
+           S_brigg_demand_1 = TLM_MSG_FF_S_brigg_demand_1
+           S_brigg_demand_courier_dead_1 = TLM_MSG_FF_S_brigg_demand_courier_dead_1
+           S_brigg_demand_talbot_1 = TLM_MSG_FF_S_brigg_demand_talbot_1
+           S_brigg_demand_talbot_courier_dead_1 = TLM_MSG_FF_S_brigg_demand_talbot_courier_dead_1
+           S_brigg_demand_no_whitcomb_1 = TLM_MSG_FF_S_brigg_demand_no_whitcomb_1
+           S_brigg_demand_no_whitcomb_courier_dead_1 = TLM_MSG_FF_S_brigg_demand_no_whitcomb_courier_dead_1
+           S_brigg_demand_no_belden_1 = TLM_MSG_FF_S_brigg_demand_no_belden_1
+           S_brigg_demand_no_belden_courier_dead_1 = TLM_MSG_FF_S_brigg_demand_no_belden_courier_dead_1
+           S_brigg_demand_no_grey_1 = TLM_MSG_FF_S_brigg_demand_no_grey_1
+           S_brigg_demand_no_grey_courier_dead_1 = TLM_MSG_FF_S_brigg_demand_no_grey_courier_dead_1
+           S_brigg_demand_no_officer_1 = TLM_MSG_FF_S_brigg_demand_no_officer_1
+           S_brigg_demand_no_officer_courier_dead_1 = TLM_MSG_FF_S_brigg_demand_no_officer_courier_dead_1
+           S_whitcomb_truce_1 = TLM_MSG_FF_S_whitcomb_truce_1
+           S_belden_truce_1 = TLM_MSG_FF_S_belden_truce_1
+           S_grey_truce_1 = TLM_MSG_FF_S_grey_truce_1
+           S_pritchard_truce_1 = TLM_MSG_FF_S_pritchard_truce_1
+           S_whitcomb_truce_talbot_1 = TLM_MSG_FF_S_whitcomb_truce_talbot_1
+           S_belden_truce_talbot_1 = TLM_MSG_FF_S_belden_truce_talbot_1
+           S_grey_truce_talbot_1 = TLM_MSG_FF_S_grey_truce_talbot_1
+           S_talbot_truce_1 = TLM_MSG_FF_S_talbot_truce_1
+           S_brigg_truce_concession_pritchard_1 = TLM_MSG_FF_S_brigg_truce_concession_pritchard_1
+           S_brigg_truce_concession_talbot_1 = TLM_MSG_FF_S_brigg_truce_concession_talbot_1
+           S_pritchard_courier_no_brigg_living_1 = TLM_MSG_FF_S_pritchard_courier_no_brigg_living_1
+           S_pritchard_courier_no_brigg_dead_1 = TLM_MSG_FF_S_pritchard_courier_no_brigg_dead_1
+           S_talbot_courier_no_brigg_living_1 = TLM_MSG_FF_S_talbot_courier_no_brigg_living_1
+           S_talbot_courier_no_brigg_dead_1 = TLM_MSG_FF_S_talbot_courier_no_brigg_dead_1
+           S_flint_courier_no_brigg_living_1 = TLM_MSG_FF_S_flint_courier_no_brigg_living_1
+           S_flint_courier_no_brigg_dead_1 = TLM_MSG_FF_S_flint_courier_no_brigg_dead_1
+           D_fair_handbill_1 = TLM_MSG_FF_D_fair_handbill_1
+           D_fair_handbill_2 = TLM_MSG_FF_D_fair_handbill_2
+           D_fair_handbill_3 = TLM_MSG_FF_D_fair_handbill_3
+           D_silver_case_1 = TLM_MSG_FF_D_silver_case_1
+           D_silver_case_2 = TLM_MSG_FF_D_silver_case_2
+           D_courier_card_1 = TLM_MSG_FF_D_courier_card_1
+           D_courier_card_2 = TLM_MSG_FF_D_courier_card_2
+           D_courier_card_3 = TLM_MSG_FF_D_courier_card_3
+           Entry = TLM_MSG_FF_Entry
+           NoReport = TLM_MSG_FF_NoReport
+           Travel = TLM_MSG_FF_Travel
+           Layout = TLM_MSG_FF_Layout
+           LayoutLimits = TLM_MSG_FF_LayoutLimits
+           Ready = TLM_MSG_FF_Ready
+           Shot = TLM_MSG_FF_Shot
+           DeadCourier = TLM_MSG_FF_DeadCourier
+           NoCarrier = TLM_MSG_FF_NoCarrier
+           Occupation = TLM_MSG_FF_Occupation
+           OccupationSeen = TLM_MSG_FF_OccupationSeen
+           PendingCourse = TLM_MSG_FF_PendingCourse
+           PendingOrder = TLM_MSG_FF_PendingOrder
+           Case = TLM_MSG_FF_Case
+           Take = TLM_MSG_FF_Take
+           Public = TLM_MSG_FF_Public
+           Solo = TLM_MSG_FF_Solo
+           Silver = TLM_MSG_FF_Silver
+           GiveSilver = TLM_MSG_FF_GiveSilver
+           Landing = TLM_MSG_FF_Landing
+           Competition = TLM_MSG_FF_Competition
+           PikeCompare = TLM_MSG_FF_PikeCompare
+           PikeUnavailable = TLM_MSG_FF_PikeUnavailable
+           Exit = TLM_MSG_FF_Exit
+           ReturnsPending = TLM_MSG_FF_ReturnsPending
+           Blocked = TLM_MSG_FF_Blocked
+           Failed = TLM_MSG_FF_Failed
+           Status = TLM_MSG_FF_Status
+           Custody = TLM_MSG_FF_Custody
+           Unavailable = TLM_MSG_FF_Unavailable
+           A_pike_mould_aside = TLM_MSG_FF_A_pike_mould_aside
+  structure: 15 of 15 stages have one item with its flags subrecord; 3 of 3 objectives have flags; condition marker present
+  stage   10  "You reached the Decoration Day camp-ground. Four factions have been invited."
+  stage   11  "Four flags, one table, dinner on the ground. Pritchard says nobody has drawn a gun on Decoration Day in forty years and he would take it kindly if you were not the first."
+  stage   40  (no log)
+  stage   41  "You chose to investigate the firing position and landing."
+  stage   42  "You chose to stay with the courier. What she can tell you depends on whether she is still alive to speak."
+  stage   43  "The delegates and local witnesses backed the Decoration Day truce. Brigg accepted a limited search instead of taking the camp-ground."
+  stage   44  "You took the courier's case."
+  stage   45  "You found the courier dead at the fair. Her case may still hold evidence."
+  stage   46  "You encountered the courier at the fair during the staged shooting scene."
+  stage   50  "You inspected the spent silver case at the firing position."
+  stage   51  "One empty case, silver, standing on end on the bell-rail where it would be found. Edda Flint was already there. She put it on her string."
+  stage   60  "The courier's case holds a strip of brass punched with holes, a sketch of a ridge with lamps drawn on it, and one line of writing: a ledger number, in Silas Vane's hand."
+  stage   70  "The Dominion holds the camp-ground. Brigg says it is for the public safety and will be for as long as the public is unsafe."
+  stage  100 [complete]  "You read the courier's ledger line, numbered 4117, and the Blackstone sketch."
+  stage  101  "Pritchard read the number twice and sat down. He has eaten supper with Silas Vane for twenty years."
+  objective 10: "Hear what the four flags are offering"
+  objective 40: "The courier is down. Choose a response"
+  objective 60: "Open the original courier case"
+  alias  0 Entry  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 1
+  alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
+  alias  2 Arrival  (reference) [Optional, AllowDisabled]
+  alias  3 Exit  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 2
+  alias  4 Ready  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 3
+  alias  5 Response  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 4
+  alias  6 CaseControl  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 5
+  alias  7 Firing  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 6
+  alias  8 Landing  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 7
+  alias  9 Competition  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 8
+  alias 10 Status  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 9
+  alias 11 OccupationBoard  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 10
+  alias 12 OriginalCase  (reference) [Optional, AllowDisabled]
+  alias 13 OriginalSilver  (reference) [Optional, AllowDisabled]
+  alias 14 Whitcomb  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 24
+  alias 15 Brigg  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 25
+  alias 16 Grey  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 26
+  alias 17 Flint  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 27
+  alias 18 Juno  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 28
+  alias 19 PritchardAnchor  (reference) [Optional, AllowDisabled]
+  alias 20 TalbotAnchor  (reference) [Optional, AllowDisabled]
+  alias 21 PikeAnchor  (reference) [Optional, AllowDisabled]
+  alias 22 BeldenAnchor  (reference) [Optional, AllowDisabled]
+  alias 23 PritchardReturn  (reference) [Optional, AllowDisabled]
+  alias 24 TalbotReturn  (reference) [Optional, AllowDisabled]
+  alias 25 PikeReturn  (reference) [Optional, AllowDisabled]
+  alias 26 BeldenReturn  (reference) [Optional, AllowDisabled]
+  alias 27 Pritchard  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 20
+  alias 28 Talbot  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 21
+  alias 29 Pike  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 22
+  alias 30 Belden  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 23
+  alias 31 Player  (reference) [Optional]
+           script TLM:FourFlagsTalk
+                    Who = 0
+
+Quest TLM_FF_Entry  000C34  "Four Flags entry adapter"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:FourFlagsEntry
+           FairQuest = TLM_MQ03
+           Entry = alias 0 on TLM_FF_Entry
+           MercyReturn = alias 1 on TLM_FF_Entry
+  structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  alias  0 Entry  (reference) [Optional, AllowDisabled]
+           script TLM:FourFlagsTalk
+                    Who = 1
+                    FairQuest = TLM_MQ03
+  alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
+
+Not wired yet (959):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -3449,6 +4186,7 @@ Not wired yet (821):
   - TLM_MISC_RH_Lamp: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_RH_FiringKey: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_RH_Receipt: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_MISC_FF_Silver: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_BrakeShoes: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_DrawBar: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_NoticeBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
@@ -3542,6 +4280,16 @@ Not wired yet (821):
   - TLM_ACTI_RH_LabelCage: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_RH_LabelNine: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_RH_LabelGallery: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Entry: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Exit: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Ready: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Response: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_CaseControl: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Firing: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Landing: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Competition: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_Status: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_FF_OccupationBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: empty (it holds 'Caps001', which needs Fallout4.esm)
   - TLM_CONT_RH_Rope: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
@@ -3590,11 +4338,17 @@ Not wired yet (821):
   - TLM_NPC_RH_Miner09: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_RH_Miner10: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_RH_Miner11: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_FF_Whitcomb: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_FF_Brigg: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_FF_Grey: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_FF_Flint: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_FF_Juno: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_MarshalLog: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_Docket2298: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_LetterOfHire: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_HymnalFlyleaf: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_FF_CourierCase: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTrigger: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is in Fallout4.esm)
@@ -3676,6 +4430,8 @@ Not wired yet (821):
   - TLM_REF_NM_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_RH_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_RH_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_FF_Entry: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_FF_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_NM_YardArrival: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_Rules: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_LabelYard: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
@@ -3987,6 +4743,94 @@ Not wired yet (821):
   - TLM_REF_RH_Floor_D51: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_RH_Floor_D52: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_RH_Floor_D53: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Arrival: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Exit: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Ready: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Response: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_CaseControl: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Firing: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Landing: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Competition: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Status: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_OccupationBoard: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_OriginalCase: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_OriginalSilver: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Whitcomb: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Brigg: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Grey: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Flint: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Juno: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_PritchardAnchor: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_TalbotAnchor: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_PikeAnchor: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_BeldenAnchor: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_PritchardReturn: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_TalbotReturn: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_PikeReturn: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_BeldenReturn: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor00: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor01: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor02: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor03: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor04: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor05: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor06: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor10: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor11: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor12: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor13: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor14: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor15: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor16: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor20: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor21: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor22: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor23: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor24: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor25: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor26: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor30: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor31: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor32: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor33: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor34: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor35: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor36: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor40: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor41: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor42: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor43: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor44: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor45: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor46: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor50: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor51: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor52: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor53: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor54: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor55: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor56: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor60: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor61: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor62: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor63: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor64: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor65: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor66: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor70: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor71: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor72: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor73: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor74: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor75: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor76: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor80: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor81: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor82: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor83: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor84: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor85: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_FF_Floor86: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -4263,3 +5107,34 @@ Not wired yet (821):
   - STRICT relief unavailable: Corn requires exact Ingestible Corn named 'Corn'; property omitted, ledger fails closed
   - STRICT relief unavailable: Caps requires exact MiscItem Caps001 named 'Bottlecap'; property omitted, ledger fails closed
   - TLM_GW_Relief alias Player: needs PlayerRef from Fallout4.esm
+  - TLM_MQ03 script TLM:FourFlagsWalk.MarkerBase: needs 'XMarker' from Fallout4.esm
+  - TLM_MQ03 alias Entry: its reference TLM_REF_FF_Entry is not placed
+  - TLM_MQ03 alias MercyReturn: its reference TLM_REF_FF_MercyReturn is not placed
+  - TLM_MQ03 alias Arrival: its reference TLM_REF_FF_Arrival is not placed
+  - TLM_MQ03 alias Exit: its reference TLM_REF_FF_Exit is not placed
+  - TLM_MQ03 alias Ready: its reference TLM_REF_FF_Ready is not placed
+  - TLM_MQ03 alias Response: its reference TLM_REF_FF_Response is not placed
+  - TLM_MQ03 alias CaseControl: its reference TLM_REF_FF_CaseControl is not placed
+  - TLM_MQ03 alias Firing: its reference TLM_REF_FF_Firing is not placed
+  - TLM_MQ03 alias Landing: its reference TLM_REF_FF_Landing is not placed
+  - TLM_MQ03 alias Competition: its reference TLM_REF_FF_Competition is not placed
+  - TLM_MQ03 alias Status: its reference TLM_REF_FF_Status is not placed
+  - TLM_MQ03 alias OccupationBoard: its reference TLM_REF_FF_OccupationBoard is not placed
+  - TLM_MQ03 alias OriginalCase: its reference TLM_REF_FF_OriginalCase is not placed
+  - TLM_MQ03 alias OriginalSilver: its reference TLM_REF_FF_OriginalSilver is not placed
+  - TLM_MQ03 alias Whitcomb: its reference TLM_REF_FF_Whitcomb is not placed
+  - TLM_MQ03 alias Brigg: its reference TLM_REF_FF_Brigg is not placed
+  - TLM_MQ03 alias Grey: its reference TLM_REF_FF_Grey is not placed
+  - TLM_MQ03 alias Flint: its reference TLM_REF_FF_Flint is not placed
+  - TLM_MQ03 alias Juno: its reference TLM_REF_FF_Juno is not placed
+  - TLM_MQ03 alias PritchardAnchor: its reference TLM_REF_FF_PritchardAnchor is not placed
+  - TLM_MQ03 alias TalbotAnchor: its reference TLM_REF_FF_TalbotAnchor is not placed
+  - TLM_MQ03 alias PikeAnchor: its reference TLM_REF_FF_PikeAnchor is not placed
+  - TLM_MQ03 alias BeldenAnchor: its reference TLM_REF_FF_BeldenAnchor is not placed
+  - TLM_MQ03 alias PritchardReturn: its reference TLM_REF_FF_PritchardReturn is not placed
+  - TLM_MQ03 alias TalbotReturn: its reference TLM_REF_FF_TalbotReturn is not placed
+  - TLM_MQ03 alias PikeReturn: its reference TLM_REF_FF_PikeReturn is not placed
+  - TLM_MQ03 alias BeldenReturn: its reference TLM_REF_FF_BeldenReturn is not placed
+  - TLM_MQ03 alias Player: needs PlayerRef from Fallout4.esm
+  - TLM_FF_Entry alias Entry: its reference TLM_REF_FF_Entry is not placed
+  - TLM_FF_Entry alias MercyReturn: its reference TLM_REF_FF_MercyReturn is not placed

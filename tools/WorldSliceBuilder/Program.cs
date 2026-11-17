@@ -8,6 +8,16 @@ using System.Text.Json;
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
 if((args.Length==3||(args.Length==5&&args[3]=="--damage"))&&args[0]=="--story-clone-check")return StoryCloneCheck.Run(args[1],args[2],args.Length==5?args[4]:null);
+// FOUR_FLAGS_AUDIT_MODE_BEGIN
+if(args.Length==3&&args[0]=="--four-flags-interior-check"){
+ try{
+  using var fairVanilla=Fallout4Mod.CreateFromBinaryOverlay(args[1],Fallout4Release.Fallout4);
+  using var fairSource=Fallout4Mod.CreateFromBinaryOverlay(args[2],Fallout4Release.Fallout4);
+  Console.WriteLine(JsonSerializer.Serialize(WorldStory.AuditFourFlagsInterior(fairSource,fairVanilla),new JsonSerializerOptions{WriteIndented=true}));
+  return 0;
+ }catch(InvalidDataException error){Console.Error.WriteLine("REFUSED: "+error.Message);return 1;}
+}
+// FOUR_FLAGS_AUDIT_MODE_END
 var privateMode=args.LastOrDefault();
 bool combinedArt=privateMode=="--private-art-combined";
 bool fenceComparison=combinedArt||privateMode=="--private-fence-ab";
@@ -245,6 +255,27 @@ if(args.Length==4){
  }
 }
 // GREENWATER_RELIEF_APPEND_END
+// FOUR_FLAGS_APPEND_BEGIN
+object? fourFlags=null;
+object? fairFloorAudit=null;
+if(args.Length==4){
+ using var fairSource=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);
+ if(fairSource.Quests.Any(q=>q.EditorID=="TLM_MQ03"))fairFloorAudit=WorldStory.AuditFourFlagsInterior(fairSource,master);
+ // AFTER the previously last relief allocations: preserve every earlier ID.
+ fourFlags=WorldStory.CompleteFourFlagsEntry(mod,world,fairSource);
+ if(fourFlags!=null){
+  var at=WorldStory.FourFlagsSites["Entry"];
+  if(at.X<96||at.X>4000||at.Y<96||at.Y>4000||at.Z!=12)throw new InvalidDataException("Fair entry outside supported flat LAND");
+  for(int tick=0;tick<=100;tick++){
+   float x=3920+(at.X-3920)*tick/100f,y=at.Y;
+   foreach(var obstacle in routeObstacles.Where(p=>!p.Id.Contains("Floor",StringComparison.Ordinal))){
+    float dx=MathF.Max(MathF.Max(obstacle.MinX-x,0),x-obstacle.MaxX),dy=MathF.Max(MathF.Max(obstacle.MinY-y,0),y-obstacle.MaxY);
+    if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Fair entry192-unit approach blocked: "+obstacle.Id);
+   }
+  }
+ }
+}
+// FOUR_FLAGS_APPEND_END
 mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(included.ToArray()).Write();
 using var read=Fallout4Mod.CreateFromBinaryOverlay(plugin,Fallout4Release.Fallout4);
 if(story!=null)WorldStory.Validate(read);
@@ -272,5 +303,8 @@ if(details!=null){
 // GREENWATER_RELIEF_REPORT_BEGIN
 if(relief!=null)File.WriteAllText(Path.Combine(output,"greenwater-relief-controls.json"),JsonSerializer.Serialize(new{wiring=relief,clearance="Actual transformed upright AABB sampling; 192-unit approaches from east at the landing and from the existing rear supply street at Mercy; supported flat LAND. Native reach, model/collision and controller visibility pending."},new JsonSerializerOptions{WriteIndented=true}));
 // GREENWATER_RELIEF_REPORT_END
+// FOUR_FLAGS_REPORT_BEGIN
+if(fourFlags!=null)File.WriteAllText(Path.Combine(output,"four-flags-entry.json"),JsonSerializer.Serialize(new{wiring=fourFlags,interior=fairFloorAudit,clearance="Actual transformed upright AABB192-unit approach at entry and typed master floor/grid readback; no navmesh, Havok, native cast/marker/case/controller acceptance."},new JsonSerializerOptions{WriteIndented=true}));
+// FOUR_FLAGS_REPORT_END
 Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;

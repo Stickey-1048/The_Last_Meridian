@@ -4,6 +4,9 @@ no game acceptance, projectile, terrain, audio or native inventory guarantee.}
 
 Form Property MarkerBase Auto Const
 Message Property PendingOrder Auto Const Mandatory
+Message Property PikeCompare Auto Const Mandatory
+Message Property PikeUnavailable Auto Const Mandatory
+Message Property A_pike_mould_aside Auto Const Mandatory
 ReferenceAlias Property Alias_Entry Auto Const Mandatory
 ReferenceAlias Property Alias_MercyReturn Auto Const Mandatory
 ReferenceAlias Property Alias_Arrival Auto Const Mandatory
@@ -1176,6 +1179,13 @@ bool Function IsVisiting(Actor who)
 	Return false
 EndFunction
 
+Actor Function OriginalVisitor(int role)
+	If role >= 0 && role < 4 && visitors && visitorPending[role] && visitorCaptured[role]
+		Return visitors[role]
+	EndIf
+	Return None
+EndFunction
+
 ReferenceAlias Function VisitorAlias(int role)
 	If role == 0
 		Return Alias_Pritchard
@@ -1411,7 +1421,11 @@ Function EntryMenu(int capturedEpoch)
 			Return
 		EndIf
 	EndIf
-	If !Road().FirstComplete()
+	bool firstFinished = Road().FirstComplete()
+	If !EntryCurrent(capturedEpoch)
+		Return
+	EndIf
+	If !firstFinished
 		Unavailable.Show()
 		Return
 	EndIf
@@ -1422,12 +1436,14 @@ Function EntryMenu(int capturedEpoch)
 		EndIf
 		If selected == 0
 			If !Road().AnyRoadComplete()
-				Unavailable.Show()
+				If EntryCurrent(capturedEpoch)
+					Unavailable.Show()
+				EndIf
 				Return
 			EndIf
 			If Road().AnyReportedComplete()
 				Road().Qualify(1,capturedEpoch)
-			ElseIf NoReport.Show() == 0 && EntryCurrent(capturedEpoch)
+			ElseIf EntryCurrent(capturedEpoch) && NoReport.Show() == 0 && EntryCurrent(capturedEpoch)
 				Road().Qualify(2,capturedEpoch)
 			EndIf
 		ElseIf selected == 1
@@ -1447,13 +1463,18 @@ Function EntryMenu(int capturedEpoch)
 	EndIf
 	int travelAnswer = Travel.Show()
 	TLM:Act1Walk original = sourceOwner as TLM:Act1Walk
-	If travelAnswer != 0 || !original || !original.CanVisitFair() || !EntryCurrent(capturedEpoch)
+	Actor player = Game.GetPlayer()
+	If travelAnswer != 0 || !player || !original || !original.CanVisitFair() || !EntryCurrent(capturedEpoch) || !Road().TravelCurrent(capturedEpoch)
 		Return
 	EndIf
 	ClockGap()
-	Game.GetPlayer().MoveTo(Ref(Alias_Arrival))
+	ObjectReference arrival = Ref(Alias_Arrival)
+	If !arrival || !Road().TravelCurrent(capturedEpoch)
+		Return
+	EndIf
+	player.MoveTo(arrival)
 	ClockGap()
-	If !Road().Arrive(capturedEpoch)
+	If !Road().RecordFairArrival(capturedEpoch)
 		Return
 	EndIf
 	EnableStations()
@@ -1474,6 +1495,7 @@ Function EntryMenu(int capturedEpoch)
 EndFunction
 
 Function ExitFair(int capturedEpoch)
+	Actor player = Game.GetPlayer()
 	If !LocalCurrent(Ref(Alias_Exit),capturedEpoch) || Exit.Show() != 0 || !LocalCurrent(Ref(Alias_Exit),capturedEpoch)
 		Return
 	EndIf
@@ -1481,10 +1503,11 @@ Function ExitFair(int capturedEpoch)
 	ReturnVisitors(capturedEpoch)
 	; Returning an absent/busy original may fail, but player exit never depends
 	; on those optional returns. No stranded original is reported as restored.
-	If capturedEpoch != Road().Epoch() || !returnPoint || !Road().Local()
+	bool returnReady = returnPoint && player && player == Game.GetPlayer() && Road().Local()
+	If !returnReady || capturedEpoch != Road().Epoch()
 		Return
 	EndIf
-	Game.GetPlayer().MoveTo(returnPoint)
+	player.MoveTo(returnPoint)
 	ClockGap()
 	bool arrived = Road().At(Game.GetPlayer(),returnPoint,256.0)
 	If arrived && capturedEpoch == Road().Epoch() && PendingReturns() > 0
@@ -1495,6 +1518,9 @@ EndFunction
 Function CourierScene(int capturedEpoch)
 	If Road().GetStageDone(40)
 		PresentCourses(capturedEpoch)
+		Return
+	EndIf
+	If !Road().Current(capturedEpoch)
 		Return
 	EndIf
 	If !layoutRead
@@ -1508,7 +1534,10 @@ Function CourierScene(int capturedEpoch)
 	EndIf
 	Actor courier = Road().Person(8)
 	ObjectReference original = Ref(Alias_OriginalCase)
-	If !courier || !original || Ready.Show() != 0 || !LocalCurrent(Ref(Alias_Ready),capturedEpoch)
+	If !courier || !original || !LocalCurrent(Ref(Alias_Ready),capturedEpoch)
+		Return
+	EndIf
+	If Ready.Show() != 0 || !LocalCurrent(Ref(Alias_Ready),capturedEpoch)
 		Return
 	EndIf
 	; Before enabling, disabled original Juno still occupies her own placed
@@ -1579,6 +1608,10 @@ Function TalkRole(int role, int capturedEpoch)
 	If !Usable(role)
 		Return
 	EndIf
+	If role == 2
+		PikeEvidence(capturedEpoch)
+		Return
+	EndIf
 	If Road().ChoicesOpen() && (role == 5 || role == 0 || role == 1 || role == 7)
 		PresentCourses(capturedEpoch)
 		Return
@@ -1591,6 +1624,10 @@ Function TalkRole(int role, int capturedEpoch)
 	Actor who = party[role]
 	string node = SelectedEntry(role)
 	If node == "" || node == "pritchard_case"
+		Return
+	EndIf
+	If node == "flint_roof" && !Road().FlintBefore()
+		FiringPosition(capturedEpoch)
 		Return
 	EndIf
 	int selected = SayNode(node,who,role,capturedEpoch,party)
@@ -1796,7 +1833,7 @@ int Function SourceCourse(string node, int selected)
 EndFunction
 
 Function PresentCourses(int capturedEpoch)
-	If !Road().Current(capturedEpoch) || !Road().GetStageDone(40) || Road().GetStageDone(100)
+	If !Road().GetStageDone(40) || Road().GetStageDone(100) || !Road().Current(capturedEpoch)
 		Return
 	EndIf
 	If Road().PendingEffect() != 0
@@ -1805,7 +1842,11 @@ Function PresentCourses(int capturedEpoch)
 	EndIf
 	If Road().PendingResponse() != 0
 		int retry = -1
-		If Road().GetStageDone(70)
+		bool occupied = Road().GetStageDone(70)
+		If !Road().Current(capturedEpoch)
+			Return
+		EndIf
+		If occupied
 			retry = PendingCourse.Show()
 		Else
 			retry = PendingOrder.Show()
@@ -1852,6 +1893,10 @@ Function PresentCourses(int capturedEpoch)
 		If Road().Current(capturedEpoch)
 			Failed.Show()
 		EndIf
+		Return
+	EndIf
+	If node == "pritchard_case"
+		ReadCase(true,capturedEpoch)
 		Return
 	EndIf
 	int selected = SayNode(node,issuer,carrier,capturedEpoch,party)
@@ -1974,10 +2019,13 @@ Function ReadCase(bool publicReading, int capturedEpoch)
 	Actor[] party = CaptureParty()
 	Actor sheriff = party[0]
 	If publicReading
-		If Road().PendingEffect() != 0 || !Road().Speaker(sheriff,0,capturedEpoch) || !Road().CaseAccess(original) || !Road().Current(capturedEpoch)
+		If !Road().Speaker(sheriff,0,capturedEpoch) || !Road().CaseAccess(original) || !Road().Current(capturedEpoch)
 			Return
 		EndIf
 		If original.GetContainer() != sheriff
+			If Road().PendingEffect() != 0 || !Road().Current(capturedEpoch)
+				Return
+			EndIf
 			If Public.Show() != 0 || !SameParty(party) || !Road().Speaker(sheriff,0,capturedEpoch) || !Road().Current(capturedEpoch)
 				Return
 			EndIf
@@ -1990,6 +2038,9 @@ Function ReadCase(bool publicReading, int capturedEpoch)
 		Return
 	EndIf
 	If Road().GetStageDone(100)
+		Return
+	EndIf
+	If !Road().Current(capturedEpoch)
 		Return
 	EndIf
 	If publicReading
@@ -2034,6 +2085,9 @@ Function FiringPosition(int capturedEpoch)
 		If original
 			original.Enable()
 		EndIf
+		If original != Ref(Alias_OriginalSilver) || !LocalCurrent(Ref(Alias_Firing),capturedEpoch)
+			Return
+		EndIf
 		If Silver.Show() != 0 || !LocalCurrent(Ref(Alias_Firing),capturedEpoch) || !Paper("silver_case",original,capturedEpoch) || !Road().InspectSilver(original,capturedEpoch)
 			Return
 		EndIf
@@ -2063,7 +2117,15 @@ int Function Number(bool value)
 EndFunction
 
 Function Facts(int capturedEpoch)
-	If Status.Show(Road().EntryKind(),Number(Road().GetStageDone(40)),Road().ResponseKind(),Number(Road().GetStageDone(70)),Number(Road().ReadBefore())) != 0 || !Road().Current(capturedEpoch)
+	int basis = Road().EntryKind()
+	int encounter = Number(Road().GetStageDone(40))
+	int course = Road().ResponseKind()
+	int occupation = Number(Road().GetStageDone(70))
+	int read = Number(Road().ReadBefore())
+	If !Road().Current(capturedEpoch)
+		Return
+	EndIf
+	If Status.Show(basis,encounter,course,occupation,read) != 0 || !Road().Current(capturedEpoch)
 		Return
 	EndIf
 	Actor publicHolder = Road().PublicHolder()
@@ -2121,6 +2183,28 @@ Function Used(int who)
 		busy = false
 		busyEpoch = -1
 	EndIf
+EndFunction
+
+bool Function PikeEvidenceContext(Actor pike, ObjectReference original, int capturedEpoch)
+	bool eligible = Road().SilverBefore() && original && original == Road().SilverObject() && original == Ref(Alias_OriginalSilver) && original.GetContainer() == Game.GetPlayer() && SourceIdentity(2,pike) && Road().Speaker(pike,2,capturedEpoch) && Near(pike)
+	Return eligible && capturedEpoch == Road().Epoch()
+EndFunction
+
+Function PikeEvidence(int capturedEpoch)
+	Actor pike = Road().Person(2)
+	ObjectReference original = Road().SilverObject()
+	If !PikeEvidenceContext(pike,original,capturedEpoch)
+		If Road().Speaker(pike,2,capturedEpoch)
+			PikeUnavailable.Show()
+		EndIf
+		Return
+	EndIf
+	If PikeCompare.Show() != 0 || !PikeEvidenceContext(pike,original,capturedEpoch)
+		Return
+	EndIf
+	; Explicit evidence-aside channel only, never a greeting/priority candidate.
+	; The accepted aside remains circumstantial and performs no quest effect.
+	A_pike_mould_aside.Show()
 EndFunction
 
 bool Function Paper(string documentId, ObjectReference original, int capturedEpoch)

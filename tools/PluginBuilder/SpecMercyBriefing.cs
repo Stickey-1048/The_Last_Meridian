@@ -36,9 +36,9 @@ public static class MercyBriefing
     // Product-availability text. Not said by anybody.
     // GREENWATER-STORY-001 (order, item 1): in this candidate Greenwater is playable, so the three strings below
     // no longer say that no destination is. The a8 source and its package keep the earlier wording.
-    public const string UiBriefingOnly = "Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.";
+    public const string UiBriefingOnly = "Mercy briefing. Three roads and the qualified Four Flags entry are available.";
     public const string UiHandOffFooter = "Opening complete. Ask for briefings or use a story test point.";
-    public const string UiJournalComplete = "Mercy briefing complete. Greenwater, Iron Junction and Red Hollow are playable; the fair is not.";
+    public const string UiJournalComplete = "Mercy briefing complete. Three roads and qualified Four Flags entry remain available.";
     public const string UiObjective = "Ask Pritchard about the three roads.";
     public const string UiCopyIssued = "One review copy only. No second copy is given.";
     public const string UiCopyPending = "Review copy hand-over unconfirmed. None is given again. Report this to the tester.";

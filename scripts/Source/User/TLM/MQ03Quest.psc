@@ -44,6 +44,7 @@ bool opportunitiesShown = false
 ObjectReference originalCaseIdentity = None
 ObjectReference originalSilverIdentity = None
 Actor[] originalOwnCast
+Actor playerIdentity = None
 
 bool Function InitializeIdentities()
 	{Captured once from the verified source aliases after successful Start.
@@ -70,6 +71,7 @@ bool Function InitializeIdentities()
 		i += 1
 	EndWhile
 	originalOwnCast = owned
+	playerIdentity = Alias_Player.GetActorReference()
 	originalCaseIdentity = originalCase
 	originalSilverIdentity = originalSilver
 	Return true
@@ -141,11 +143,14 @@ Actor Function Person(int role)
 	If role >= 4 && (!originalOwnCast || who != originalOwnCast[role - 4])
 		Return None
 	EndIf
+	If role < 4 && who != (Self as TLM:FourFlagsWalk).OriginalVisitor(role)
+		Return None
+	EndIf
 	Return who
 EndFunction
 
 bool Function Alive(Actor who)
-	Return who && !who.IsDead() && !who.IsDisabled() && !who.IsInCombat()
+	Return who && !who.IsDead() && !who.IsDisabled() && !who.IsInCombat() && !who.IsInDialogueWithPlayer() && !who.IsInScene()
 EndFunction
 
 bool Function At(ObjectReference who, ObjectReference where, float reach = 128.0)
@@ -154,7 +159,7 @@ EndFunction
 
 bool Function Local()
 	Actor player = Game.GetPlayer()
-	Return IsRunning() && entryBasis > 0 && FirstComplete() && player && !player.IsDead() && !player.IsInCombat() && Alias_Player.GetReference() == player && Alias_Arrival.GetReference() && player.GetParentCell() == Alias_Arrival.GetReference().GetParentCell()
+	Return IsRunning() && entryBasis > 0 && FirstComplete() && player && player == playerIdentity && Alive(player) && Alias_Player.GetReference() == player && Alias_Arrival.GetReference() && player.GetParentCell() == Alias_Arrival.GetReference().GetParentCell()
 EndFunction
 
 bool Function Current(int capturedEpoch)
@@ -162,13 +167,20 @@ bool Function Current(int capturedEpoch)
 	Return eligible && capturedEpoch == generation
 EndFunction
 
-bool Function Speaker(Actor who, int role, int capturedEpoch)
-	bool eligible = Local() && Alive(who) && At(Game.GetPlayer(),who,2048.0)
-	Actor currentActor = Person(role)
-	Return eligible && currentActor == who && capturedEpoch == generation
+bool Function TravelCurrent(int capturedEpoch)
+	Actor player = Game.GetPlayer()
+	bool eligible = IsRunning() && entryBasis > 0 && FirstComplete() && player && player == playerIdentity && Alive(player) && Alias_Player.GetReference() == player
+	Return eligible && capturedEpoch == generation
 EndFunction
 
-bool Function Arrive(int capturedEpoch)
+bool Function Speaker(Actor who, int role, int capturedEpoch)
+	bool eligible = Local() && Alive(who) && At(Game.GetPlayer(),who,2048.0)
+	bool authority = (Self as TLM:FourFlagsWalk).SourceIdentity(role,who)
+	Actor currentActor = Person(role)
+	Return eligible && authority && currentActor == who && capturedEpoch == generation
+EndFunction
+
+bool Function RecordFairArrival(int capturedEpoch)
 	bool here = Local() && At(Game.GetPlayer(),Alias_Arrival.GetReference(),256.0)
 	If !here || capturedEpoch != generation
 		Return false
@@ -191,8 +203,8 @@ bool Function CaseAccess(ObjectReference original)
 	ObjectReference holder = original.GetContainer()
 	If holder == Game.GetPlayer()
 		Return Local()
-	ElseIf holder == publicCustodian && Alive(publicCustodian)
-		Return Local() && At(Game.GetPlayer(),publicCustodian,2048.0)
+	ElseIf holder && holder == Person(0)
+		Return Local() && Alive(Person(0)) && At(Game.GetPlayer(),holder,2048.0)
 	ElseIf !holder
 		Return Local() && At(Game.GetPlayer(),original,256.0) && !original.IsDisabled()
 	EndIf
@@ -205,7 +217,16 @@ bool Function Held()
 EndFunction
 
 Actor Function PublicHolder()
-	Return publicCustodian
+	ObjectReference original = originalCaseIdentity
+	If !original
+		Return None
+	EndIf
+	ObjectReference holder = original.GetContainer()
+	Actor sheriff = Person(0)
+	If holder == sheriff && Alive(sheriff)
+		Return sheriff
+	EndIf
+	Return None
 EndFunction
 
 bool Function AcknowledgeHeldTake(ObjectReference original, int capturedEpoch)
@@ -253,6 +274,10 @@ bool Function FlintBefore()
 	Return flintTalks
 EndFunction
 
+ObjectReference Function SilverObject()
+	Return originalSilverIdentity
+EndFunction
+
 bool Function RecordOpportunities(int capturedEpoch)
 	If !GetStageDone(10) || !Current(capturedEpoch)
 		Return false
@@ -262,7 +287,7 @@ bool Function RecordOpportunities(int capturedEpoch)
 EndFunction
 
 bool Function BeginEncounter(Actor courier, ObjectReference original, int capturedEpoch)
-	bool eligible = GetStageDone(10) && !GetStageDone(40) && opportunitiesShown && courier && original && Local() && At(Game.GetPlayer(),courier,2048.0)
+	bool eligible = GetStageDone(10) && !GetStageDone(40) && opportunitiesShown && courier && original && !courier.IsInCombat() && !courier.IsInDialogueWithPlayer() && !courier.IsInScene() && Local() && At(Game.GetPlayer(),courier,2048.0)
 	If !eligible || original != originalCaseIdentity || Person(8) != courier || Alias_OriginalCase.GetReference() != original || capturedEpoch != generation
 		Return false
 	EndIf
@@ -276,7 +301,7 @@ bool Function BeginEncounter(Actor courier, ObjectReference original, int captur
 EndFunction
 
 bool Function FinishEncounter(Actor courier, ObjectReference original, bool foundDead, int capturedEpoch)
-	bool eligible = sceneArmed && !GetStageDone(40) && Local() && courier && original && !courier.IsDisabled() && !courier.IsInCombat() && courier.IsDead() == foundDead && !original.IsDisabled() && At(Game.GetPlayer(),courier,2048.0) && At(original,courier,128.0) && !original.GetContainer()
+	bool eligible = sceneArmed && !GetStageDone(40) && Local() && courier && original && !courier.IsDisabled() && !courier.IsInCombat() && !courier.IsInDialogueWithPlayer() && !courier.IsInScene() && courier.IsDead() == foundDead && !original.IsDisabled() && At(Game.GetPlayer(),courier,2048.0) && At(original,courier,128.0) && !original.GetContainer()
 	If !eligible || courier != sceneCourier || original != sceneCase || Person(8) != courier || Alias_OriginalCase.GetReference() != original || capturedEpoch != generation
 		Return false
 	EndIf
@@ -481,7 +506,7 @@ EndFunction
 bool Function FinishRead(ObjectReference original, Actor speakerActor, int capturedEpoch)
 	bool eligible = caseHistoricalRead && GetStageDone(60) && !GetStageDone(100) && CaseAccess(original)
 	If speakerActor
-		eligible = eligible && speakerActor == publicCustodian && original.GetContainer() == speakerActor && Speaker(speakerActor,0,capturedEpoch)
+		eligible = eligible && original.GetContainer() == speakerActor && Speaker(speakerActor,0,capturedEpoch)
 	EndIf
 	If !eligible || Alias_OriginalCase.GetReference() != original || !Current(capturedEpoch)
 		Return false

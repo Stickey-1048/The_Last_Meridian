@@ -2534,3 +2534,9 @@ TLM_REF_FF_Floor85
 3314
 TLM_REF_FF_Floor86
 3315
+TLM_MSG_FF_PikeCompare
+3316
+TLM_MSG_FF_PikeUnavailable
+3317
+TLM_MSG_FF_A_pike_mould_aside
+3318
