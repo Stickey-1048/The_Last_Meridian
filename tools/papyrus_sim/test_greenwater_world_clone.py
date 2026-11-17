@@ -32,6 +32,9 @@ DLL = ROOT / "tools" / "WorldSliceBuilder" / "bin" / "Debug" / "net8.0" / "World
 SPEC = ROOT / "tools" / "PluginBuilder" / "SpecGreenwater.cs"
 STORY = ROOT / "tools" / "WorldSliceBuilder" / "WorldStory.cs"
 EXPANSION = ROOT / "tools" / "WorldSliceBuilder" / "Expansion.cs"
+PROGRAM = ROOT / "tools" / "WorldSliceBuilder" / "Program.cs"
+# The commit the repair was made from: the first section's own sites are as they were there.
+REVIEWED = "7e05c6b879e21940786c008f9dcdef4d5404654c"
 PEOPLE = {"Opal", "Hatcher", "Rafferty", "Belden", "Crew1", "Crew2"}
 _built = {}
 
@@ -186,9 +189,64 @@ class TheSites(unittest.TestCase):
             if not name.startswith("Mercy"):
                 self.assertLessEqual(y, 700, name)
 
+    def cabin_floor(self):
+        """The cabin's floor as the exterior builder's source lays it: (min x, max x, min y, max y, surface z).
+        From the source only. The tile's real bounds are in the game's master, which is not here; the builder's
+        own furniture check takes the same footprint 4 units smaller on every side."""
+        source = PROGRAM.read_text()
+        loop = re.search(r"for\(int col=0;col<(\d+);col\+\+\)for\(int row=0;row<(\d+);row\+\+\)\{\s*"
+                         r"float x=(\d+)\+col\*(\d+),y=(\d+)\+row\*(\d+);\s*Put\(\$\"CabinFloor\{col\}\{row\}\",floor,x,y,(\d+)\);", source)
+        self.assertIsNotNone(loop, "the cabin's floor is no longer laid as this test reads it")
+        cols, rows, x0, dx, y0, dy, z = (int(v) for v in loop.groups())
+        self.assertEqual((dx, dy), (256, 256))
+        self.assertIn('var floor=Static("workshop_ShackMidFloor01B")', source)
+        return (x0 - dx / 2, x0 + (cols - 1) * dx + dx / 2, y0 - dy / 2, y0 + (rows - 1) * dy + dy / 2, z)
+
+    def test_the_return_marker_stands_above_the_cabins_floor_and_nothing_else_is_over_it(self):
+        """Repair, finding 8. MercyReturn is the one site inside the footprint of the cabin's floor tiles, whose
+        surface the exterior builder gives as Z 16 ("the native-tested supporting surface"). It stands 16 units
+        above that surface, to settle, as the builder's own arrival marker stands at Z 32. This holds the
+        numbers together; whether the player lands and stands there is not known and is not claimed."""
+        min_x, max_x, min_y, max_y, surface = self.cabin_floor()
+        self.assertEqual((min_x, max_x, min_y, max_y, surface), (2664, 3432, 2672, 3184, 16))
+        self.assertIn("Existing floors are the native-tested supporting surface atZ16", PROGRAM.read_text())
+        self.assertIn('Put("Arrival",Static("COCMarkerHeading"),448,640,32,', PROGRAM.read_text())
+        over = sorted(name for name, (x, y, z) in self.sites.items() if min_x <= x <= max_x and min_y <= y <= max_y)
+        self.assertEqual(over, ["MercyReturn"])
+        x, y, z = self.sites["MercyReturn"]
+        self.assertEqual((x, y, z), (3150, 2700, 32))
+        self.assertEqual(z - surface, 16)
+        # In front of the front wall (the tiles' middle line, y 2800) and before the gap the middle tile leaves in it.
+        self.assertLess(y, 2800)
+        self.assertTrue(3048 - 128 < x < 3048 + 128)
+        # And the travel point, which is used and not landed on, is clear of the floor altogether.
+        self.assertLess(self.sites["MercyTravel"][1], min_y)
+
+    def test_no_other_site_moved_in_the_repair(self):
+        def sites_at(commit, path, begin, end):
+            got = subprocess.run(["git", "show", commit + ":" + path], cwd=ROOT, capture_output=True, text=True)
+            if got.returncode != 0:
+                return None
+            return got.stdout.split(begin)[1].split(end)[0]
+        before = sites_at(REVIEWED, "tools/WorldSliceBuilder/WorldStory.cs", "GreenwaterSites=new(){", "};")
+        if before is None:
+            self.skipTest("the reviewed commit is not in this copy")
+        was = {m.group(1): [float(m.group(2)), float(m.group(3)), float(m.group(4))]
+               for m in re.finditer(r'\["(\w+)"\]=\((\d+),(\d+),(\d+)\)', before)}
+        self.assertEqual(was["MercyReturn"], [3150.0, 2700.0, 0.0])
+        self.assertEqual({k: v for k, v in self.sites.items() if k != "MercyReturn"}, {k: v for k, v in was.items() if k != "MercyReturn"})
+        # The first section's 29 sites and the cabin itself: the same text as at the reviewed commit.
+        now = STORY.read_text()
+        old = subprocess.run(["git", "show", REVIEWED + ":tools/WorldSliceBuilder/WorldStory.cs"], cwd=ROOT, capture_output=True, text=True).stdout
+        cut = lambda text: text.split("var sites=new Dictionary<string,(float X,float Y,float Z)>")[1].split("};")[0]
+        self.assertEqual(cut(now), cut(old))
+        for name in ("tools/WorldSliceBuilder/Program.cs", "tools/WorldSliceBuilder/Expansion.cs", "tools/WorldSliceBuilder/ShelterDetails.cs"):
+            self.assertEqual(subprocess.run(["git", "diff", "--quiet", REVIEWED, "--", name], cwd=ROOT).returncode, 0, name)
+
     def test_mercys_two_pieces_stand_in_the_yard_clear_of_what_is_there(self):
-        # The yard's fence: x 2408 to 3688, y 2432 to 3456; the cabin's front wall at y 2800; Pritchard at (3260, 2530),
-        # Talbot at (2850, 2530), the guide at (3380, 2500); the gateway's posts at (2920, 2380) and (3176, 2380).
+        # The yard's fence: x 2408 to 3688, y 2432 to 3456; the cabin's front wall at y 2800 (its floor reaches 128
+        # units in front of that: see the test above); Pritchard at (3260, 2530), Talbot at (2850, 2530), the guide
+        # at (3380, 2500); the gateway's posts at (2920, 2380) and (3176, 2380).
         there = {"Pritchard": (3260, 2530), "Talbot": (2850, 2530), "GuideMercy": (3380, 2500), "GateLeft": (2920, 2380), "GateRight": (3176, 2380)}
         for name in ("MercyTravel", "MercyReturn"):
             x, y, z = self.sites[name]

@@ -633,9 +633,13 @@ bool Function AfterTheChapter(Actor akWho)
 	report if Greenwater was finished and not yet reported, otherwise the
 	Mercy briefing. One conversation, inside this script's own claim on it.
 	True if either took this activation.}
-	If OfferRiverReport(akWho)
+	int river = OfferRiverReport(akWho)
+	If river == RIVER_REPORT_GIVEN || river == RIVER_REPORT_CLOSED
+		; Given, or shown and come back with no valid answer: either way this conversation was the
+		; report's. Nothing else is said in it.
 		Return true
 	EndIf
+	; Nothing was offered, or it was explicitly left for later: the briefing, as before.
 	Return OfferBriefing(akWho)
 EndFunction
 
@@ -655,20 +659,28 @@ Function OpenGreenwater()
 	EndIf
 EndFunction
 
-bool Function OfferRiverReport(Actor akWho)
+; What TLM:GreenwaterWalk.OfferReport answers. The same numbers as there; a test compares them.
+int RIVER_REPORT_NONE = 0 Const
+int RIVER_REPORT_GIVEN = 1 Const
+int RIVER_REPORT_LATER = 2 Const
+int RIVER_REPORT_CLOSED = 3 Const
+
+int Function OfferRiverReport(Actor akWho)
 	{After the chapter and after the Greenwater road: Pritchard hears what
-	became of the grain (GREENWATER-STORY-001). False, with nothing shown or
-	changed, if the greybox is not bound, nobody was passed on, the main quest
-	is not complete, or there is nothing to report or it is left for later.}
+	became of the grain (GREENWATER-STORY-001). RIVER_REPORT_NONE, with nothing
+	shown or changed, if the greybox is not bound, nobody was passed on, the
+	main quest is not complete, or there is nothing to report. Otherwise what
+	the greybox says became of the offer: given, explicitly left for later, or
+	shown and closed with no valid answer.}
 	If !akWho
-		Return false
+		Return RIVER_REPORT_NONE
 	EndIf
 	If !TLM_MQ01.GetStageDone(100) || TLM_G_MQ01_Done.GetValueInt() != 1
-		Return false
+		Return RIVER_REPORT_NONE
 	EndIf
 	TLM:GreenwaterWalk greybox = Greenwater()
 	If !greybox
-		Return false
+		Return RIVER_REPORT_NONE
 	EndIf
 	Return greybox.OfferReport(akWho)
 EndFunction

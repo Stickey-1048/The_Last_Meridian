@@ -12,8 +12,11 @@ public static class WorldStory
     // and 150 from the bypass's hidden posts; Mercy's two pieces stand in the yard, between the gateway and
     // Pritchard. The same numbers as tools/PluginBuilder/SpecGreenwater.cs (Greenwater.Parts); a test compares
     // the two. Nothing of the first section's 29 references moves.
+    // MercyReturn is the one site that lies over the cabin's floor tiles (Program.cs: 256-unit tiles at x 2792,
+    // 3048, 3304 and y 2800, 3056, placed at Z 16: x 2664 to 3432, y 2672 to 3184). It stands at Z 32: that
+    // surface plus 16 units to settle, as the exterior's own arrival marker does. Not seen in the game.
     public static readonly Dictionary<string,(float X,float Y,float Z)> GreenwaterSites=new(){
-        ["MercyTravel"]=(3150,2620,12),["MercyReturn"]=(3150,2700,0),
+        ["MercyTravel"]=(3150,2620,12),["MercyReturn"]=(3150,2700,32),
         ["ChuteStart"]=(1300,480,0),["LabelChute"]=(1380,580,12),["ReturnDock"]=(1640,480,100),
         ["Exit"]=(1760,380,12),["Arrival"]=(1800,300,0),["LandingSight"]=(1900,440,100),["LabelLanding"]=(1880,580,12),
         ["CargoWhole"]=(1960,650,12),["CargoReduced"]=(2040,650,12),["Steeple"]=(2000,300,12),["Opal"]=(2100,560,0),

@@ -141,6 +141,19 @@ int RV_GRANT_RELIEF = 3 Const
 int RV_ACK_POLLS = 10 Const
 float RV_CUSTODY_REACH = 1500.0 Const
 
+; The hanging, step by step. A death is the hanging only while an execution
+; is under way (RV_HANG_EXECUTING): after Hatcher was seen at the ring, and
+; until he is seen dead or the wait for it is over.
+int RV_HANG_NONE = 0 Const
+int RV_HANG_MOVING = 1 Const
+int RV_HANG_EXECUTING = 2 Const
+int RV_HANG_DONE = 3 Const
+; How far from the steeple's ring a man taken to it may stand and be at it.
+float RV_GALLOWS_REACH = 256.0 Const
+; How long his death is waited for after the one Kill: thirty looks, a tenth
+; of a second apart. Declared, not measured: nobody has seen a hanging here.
+int RV_DEATH_POLLS = 30 Const
+
 ; ------------------------------------------------------------------- state
 ; Kept by a save as they are. Nothing sets them back.
 
@@ -157,6 +170,7 @@ bool LieTold = false
 bool LieHeard = false
 bool DeniedSaid = false
 bool Judging = false
+int HangIntent = 0
 bool Burning = false
 int Approach = 0
 bool HireRead = false
@@ -260,6 +274,16 @@ bool Function HatcherToJudge()
 	Return TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE
 EndFunction
 
+bool Function HatcherCanBeJudged()
+	{A judgment can be carried out on him: beaten at cards, still free, alive,
+	present and in no fight. A man who is fighting is not hanged, handed over
+	or let go by a choice made at his table.}
+	If !GetStageDone(41) || !CanSpeak(Alias_Hatcher)
+		Return false
+	EndIf
+	Return TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE
+EndFunction
+
 ; ================================================================ what stands
 
 bool Function RoadOpen()
@@ -277,6 +301,25 @@ EndFunction
 
 int Function Recovered()
 	Return TLM_G_MQ02B_Recovered.GetValueInt()
+EndFunction
+
+int Function Stamp()
+	{The road's exclusive state as one number: the course claimed and recorded,
+	the cargo, what is pending, whether the road is complete. Read before a box
+	and again after it: two readings that differ mean that something was begun,
+	settled or ended while the box was open, and what the box offered is stale.
+	Nobody's life is in it: each action asks for the people it needs itself.}
+	int mark = Claim + 100 * Outcome() + 10000 * Cargo() + 100000 * ReturnPending
+	If EscapePending
+		mark += 1000000
+	EndIf
+	If Burning
+		mark += 2000000
+	EndIf
+	If GetStageDone(100)
+		mark += 4000000
+	EndIf
+	Return mark
 EndFunction
 
 bool Function Unsettled()
@@ -530,22 +573,28 @@ bool Function TakeShare()
 EndFunction
 
 bool Function TellLie()
-	{The player chose to tell Opal the Chute took the barge. Her answer is another matter.}
+	{The player chose to tell Opal the Chute took the barge, and she is alive,
+	present and in no fight to be told. The paid deal and this lie delivered
+	are what grain_sold means: it is earned here, and stays earned whatever
+	she then says or whatever becomes of her. Her answer is another matter.}
 	If !RoadOpen() || !GetStageDone(44) || !SharePaid || !CanSpeak(Alias_Opal)
 		Return false
 	EndIf
-	LieTold = true
+	If !LieTold
+		LieTold = true
+		TLM_G_MQ02B_GrainSold.SetValueInt(1)
+	EndIf
 	Return true
 EndFunction
 
 bool Function LieWasHeard()
-	{Opal's answer to the lie was delivered. Only now is the accepted journal true.}
-	If !RoadOpen() || !LieTold
+	{Opal's answer to the lie was delivered by Opal alive, present and in no
+	fight. Only now is the accepted journal true (stage 46).}
+	If !RoadOpen() || !LieTold || !CanSpeak(Alias_Opal)
 		Return false
 	EndIf
 	If !LieHeard
 		LieHeard = true
-		TLM_G_MQ02B_GrainSold.SetValueInt(1)
 		SetStage(46)
 	EndIf
 	Return true
@@ -561,6 +610,10 @@ bool Function LearnHire(int aiHow)
 	If aiHow == RV_HIRE_LETTER
 		HireRead = true
 	ElseIf aiHow == RV_HIRE_ADMISSION
+		; An admission is heard from a man who is there to make it.
+		If !HatcherAtTable()
+			Return false
+		EndIf
 		HireHeard = true
 	Else
 		Return false
@@ -593,33 +646,74 @@ bool Function CutChain()
 	Return true
 EndFunction
 
-int Function BeginReturn()
-	{The pilot lever. RV_RETURN_ESCAPE with a cut chain, RV_RETURN_TOW with a barge
-	won at cards and not yet home, otherwise RV_RETURN_NONE. May be begun again.}
+int Function ReturnOffered()
+	{Which return the pilot lever can begin now: RV_RETURN_ESCAPE with a cut
+	chain, RV_RETURN_TOW with a barge won at cards and not yet home, otherwise
+	RV_RETURN_NONE. Reads only.}
 	If !RoadOpen()
 		Return RV_RETURN_NONE
 	EndIf
 	If EscapePending && !GetStageDone(42)
-		ReturnPending = RV_RETURN_ESCAPE
-	ElseIf Claim == RV_CARDS && Cargo() == RV_CARGO_YIELDED
-		ReturnPending = RV_RETURN_TOW
-	Else
-		Return RV_RETURN_NONE
+		Return RV_RETURN_ESCAPE
 	EndIf
-	Return ReturnPending
+	If Claim == RV_CARDS && Cargo() == RV_CARGO_YIELDED
+		Return RV_RETURN_TOW
+	EndIf
+	Return RV_RETURN_NONE
 EndFunction
 
-int Function CompleteReturn()
-	{The player reached the return dock. What arrived with them: RV_RETURN_ESCAPE
-	(the Chute was run, stage 42), RV_RETURN_TOW (the whole barge), or RV_RETURN_NONE.}
+int Function BeginReturn(int aiKind)
+	{The pilot lever, after its notice was answered: the return of that kind is
+	begun, if it is still the one the lever can begin. May be begun again; it
+	never becomes another kind, and it settles nothing.}
+	If aiKind != RV_RETURN_ESCAPE && aiKind != RV_RETURN_TOW
+		Return RV_RETURN_NONE
+	EndIf
+	If ReturnOffered() != aiKind
+		Return RV_RETURN_NONE
+	EndIf
+	ReturnPending = aiKind
+	Return aiKind
+EndFunction
+
+int Function ReturnArriving()
+	{Which return the player reaching the dock would bring home. Reads only.}
 	If !RoadOpen()
 		Return RV_RETURN_NONE
+	EndIf
+	If ReturnPending == RV_RETURN_ESCAPE && EscapePending
+		Return RV_RETURN_ESCAPE
+	EndIf
+	If ReturnPending == RV_RETURN_TOW && Claim == RV_CARDS && Cargo() == RV_CARGO_YIELDED
+		Return RV_RETURN_TOW
+	EndIf
+	Return RV_RETURN_NONE
+EndFunction
+
+int Function CompleteReturn(int aiKind, ObjectReference akHome, ObjectReference akLashed)
+	{The player reached the return dock, and the cargo is SEEN at the landing:
+	akHome, the piece that stands for it there, is switched on, and akLashed,
+	the cargo lashed to the Queen, is not. What arrived: RV_RETURN_ESCAPE (the
+	Chute was run, stage 42), RV_RETURN_TOW (the whole barge), or
+	RV_RETURN_NONE with nothing written and the return still pending.}
+	If !RoadOpen() || aiKind == RV_RETURN_NONE
+		Return RV_RETURN_NONE
+	EndIf
+	If !akHome || akHome.IsDisabled()
+		Debug.Trace("TLM_MQ02B: the return is not recorded: the cargo is not seen at the landing. The return stays pending", 2)
+		Return RV_RETURN_NONE
+	EndIf
+	If akLashed
+		If !akLashed.IsDisabled()
+			Debug.Trace("TLM_MQ02B: the return is not recorded: the cargo is still seen lashed to the Queen. The return stays pending", 2)
+			Return RV_RETURN_NONE
+		EndIf
 	EndIf
 	bool piloted = IsThere(Alias_Rafferty)
 	bool hunted = TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE && IsThere(Alias_Hatcher)
 	int lashing = Cargo()
 	; No call into the game between these tests and the writing down.
-	If ReturnPending == RV_RETURN_ESCAPE && EscapePending
+	If aiKind == RV_RETURN_ESCAPE && ReturnPending == RV_RETURN_ESCAPE && EscapePending
 		ReturnPending = RV_RETURN_NONE
 		EscapePending = false
 		int units = RV_UNITS_ALONE
@@ -637,7 +731,7 @@ int Function CompleteReturn()
 		CourseTaken()
 		Return RV_RETURN_ESCAPE
 	EndIf
-	If ReturnPending == RV_RETURN_TOW && lashing == RV_CARGO_YIELDED
+	If aiKind == RV_RETURN_TOW && ReturnPending == RV_RETURN_TOW && Claim == RV_CARDS && lashing == RV_CARGO_YIELDED
 		ReturnPending = RV_RETURN_NONE
 		TLM_G_MQ02B_Recovered.SetValueInt(RV_UNITS_WHOLE)
 		TLM_G_MQ02B_Cargo.SetValueInt(RV_CARGO_HOME_WHOLE)
@@ -674,9 +768,27 @@ bool Function OrderFire()
 	Return true
 EndFunction
 
-bool Function FireDone()
-	{The fire was staged and seen: the occupied Queen and the cargo lashed to her are lost.}
-	If !IsRunning() || Claim != RV_FIRE || !Burning
+bool Function FireDone(ObjectReference akBurnt, ObjectReference akLashed)
+	{The fire was staged and is SEEN: akBurnt, the burned Queen's marker, is
+	switched on, and akLashed, the cargo lashed to her, is not. Only then are
+	the occupied Queen and the cargo recorded lost. Otherwise nothing is
+	written and the fire stays ordered.}
+	If !IsRunning()
+		Return false
+	EndIf
+	If !akBurnt || akBurnt.IsDisabled()
+		Debug.Trace("TLM_MQ02B: the fire is not recorded: its marker is not seen. The fire stays ordered", 2)
+		Return false
+	EndIf
+	If akLashed
+		If !akLashed.IsDisabled()
+			Debug.Trace("TLM_MQ02B: the fire is not recorded: the cargo is still seen lashed to the Queen. The fire stays ordered", 2)
+			Return false
+		EndIf
+	EndIf
+	bool free = TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE && HatcherState() == RV_H_FREE
+	; No call into the game between this test and the claim.
+	If Claim != RV_FIRE || !Burning
 		Return false
 	EndIf
 	Burning = false
@@ -685,7 +797,7 @@ bool Function FireDone()
 	TLM_G_MQ02B_QueenBurned.SetValueInt(1)
 	TLM_G_MQ02B_Outcome.SetValueInt(RV_FIRE)
 	; A man who was aboard and alive is not counted dead: he is not accounted for.
-	If TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE && HatcherState() == RV_H_FREE
+	If free
 		TLM_G_MQ02B_Hatcher.SetValueInt(RV_H_UNACCOUNTED)
 	EndIf
 	SetStage(43)
@@ -696,9 +808,14 @@ EndFunction
 ; ------------------------------------------------------------------ judgments
 
 bool Function Hang()
-	{"He's yours, Opal." Hatcher alive and free, Opal alive and there: he is
-	taken to the steeple and hanged. Recorded only if he is then dead.}
-	If !RoadOpen() || !HatcherToJudge() || !CanSpeak(Alias_Opal)
+	{"He's yours, Opal." Hatcher beaten, free, alive, present and in no fight;
+	Opal alive, present and in no fight; the steeple's ring there and switched
+	on. He is taken to the ring and SEEN at it, and everybody is asked for
+	again, before anything is done to him. Then he is killed, once. The
+	hanging is recorded only when he is seen dead after that, by this
+	function's wait or by his alias's death event, whichever is first.
+	False, with nothing recorded and no second Kill, in every other case.}
+	If !RoadOpen() || !HatcherCanBeJudged() || !CanSpeak(Alias_Opal)
 		Return false
 	EndIf
 	Actor hatcher = Person(Alias_Hatcher)
@@ -706,45 +823,88 @@ bool Function Hang()
 	If Alias_Steeple
 		ring = Alias_Steeple.GetReference()
 	EndIf
+	If !ring || ring.IsDisabled()
+		Debug.Trace("TLM_MQ02B: no hanging: the steeple's ring is missing or switched off. Nothing was done to Hatcher and nothing is recorded", 2)
+		Return false
+	EndIf
 	; No call into the game between this test and the claim.
-	If Judging || TLM_G_MQ02B_Hatcher.GetValueInt() != RV_H_FREE
+	If Judging || HangIntent != RV_HANG_NONE
 		Return false
 	EndIf
 	Judging = true
-	If ring
-		hatcher.MoveTo(ring)
-	EndIf
-	hatcher.Kill()
-	If !hatcher.IsDead()
+	HangIntent = RV_HANG_MOVING
+	hatcher.MoveTo(ring)
+	; Where he is, and whether what the choice needed is still so. Nothing has been done to him yet but the move.
+	bool there = !hatcher.IsDead() && !hatcher.IsDisabled() && hatcher.GetParentCell() == ring.GetParentCell() && hatcher.GetDistance(ring) <= RV_GALLOWS_REACH
+	bool still = RoadOpen() && CanSpeak(Alias_Opal) && !hatcher.IsInCombat() && !ring.IsDisabled() && TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE
+	If !there || !still
+		HangIntent = RV_HANG_NONE
 		Judging = false
-		Debug.Trace("TLM_MQ02B: the hanging was ordered and Hatcher is not dead; nothing is recorded", 2)
+		Debug.Trace("TLM_MQ02B: no hanging: Hatcher at the ring " + there + ", everybody and everything still as the choice needs " + still + ". He was not killed and nothing is recorded", 2)
 		Return false
 	EndIf
+	; He is at the ring. From here until he is seen dead, or the wait is over, his death is the hanging.
+	HangIntent = RV_HANG_EXECUTING
+	hatcher.Kill()
+	int polls = 0
+	While polls < RV_DEATH_POLLS && HangIntent == RV_HANG_EXECUTING && !hatcher.IsDead()
+		Utility.Wait(0.1)
+		polls += 1
+	EndWhile
+	bool hanged = RecordHanging()
+	If !hanged
+		; Asked once; never asked again for this order. A death after this is not the hanging.
+		If HangIntent == RV_HANG_EXECUTING
+			HangIntent = RV_HANG_NONE
+		EndIf
+		Debug.Trace("TLM_MQ02B: the hanging was carried as far as the one Kill and Hatcher is not dead after the wait; nothing is recorded and he is not killed again for it", 2)
+	EndIf
+	Judging = false
+	Return hanged
+EndFunction
+
+bool Function RecordHanging()
+	{The one place a hanging is written down. True if it is recorded, now or
+	before. Only while an execution is under way and with Hatcher seen dead.}
+	Actor hatcher = Person(Alias_Hatcher)
+	bool dead = false
+	If hatcher
+		dead = hatcher.IsDead()
+	EndIf
+	; No call into the game between this test and the claim.
+	If HangIntent == RV_HANG_DONE
+		Return true
+	EndIf
+	If HangIntent != RV_HANG_EXECUTING || !dead
+		Return false
+	EndIf
+	HangIntent = RV_HANG_DONE
 	TLM_G_MQ02B_Hatcher.SetValueInt(RV_H_HANGED)
 	TLM_G_MQ02B_HatcherHanged.SetValueInt(1)
 	SetStage(60)
-	Judging = false
 	Return true
 EndFunction
 
 bool Function Custody()
 	{"He goes to Pritchard, alive." Hatcher alive and free, Pritchard alive and
 	there: Hatcher is taken to him. Recorded only if he is then alive beside him.}
-	If !RoadOpen() || !HatcherToJudge() || !SheriffCanReceive()
+	If !RoadOpen() || !HatcherCanBeJudged() || !SheriffCanReceive()
 		Return false
 	EndIf
 	Actor hatcher = Person(Alias_Hatcher)
 	Actor sheriff = Person(Alias_MercySheriff)
 	; No call into the game between this test and the claim.
-	If Judging || TLM_G_MQ02B_Hatcher.GetValueInt() != RV_H_FREE
+	If Judging || HangIntent != RV_HANG_NONE
 		Return false
 	EndIf
 	Judging = true
 	hatcher.MoveTo(sheriff, 96.0, 96.0, 0.0)
 	bool arrived = !hatcher.IsDead() && !sheriff.IsDead() && hatcher.GetParentCell() == sheriff.GetParentCell() && hatcher.GetDistance(sheriff) < RV_CUSTODY_REACH
-	If !arrived
+	; And whether what the choice needed is still so, asked again after the move.
+	bool still = RoadOpen() && SheriffCanReceive() && !hatcher.IsDisabled() && !hatcher.IsInCombat() && TLM_G_MQ02B_Hatcher.GetValueInt() == RV_H_FREE
+	If !arrived || !still
 		Judging = false
-		Debug.Trace("TLM_MQ02B: Hatcher was sent to Pritchard and is not alive beside him; nothing is recorded", 2)
+		Debug.Trace("TLM_MQ02B: no custody: Hatcher alive beside Pritchard " + arrived + ", everybody still as the choice needs " + still + "; nothing is recorded", 2)
 		Return false
 	EndIf
 	hatcher.SetRestrained(true)
@@ -756,11 +916,11 @@ EndFunction
 
 bool Function Release()
 	{"Let him keep his boat." Hatcher alive and free.}
-	If !RoadOpen() || !HatcherToJudge()
+	If !RoadOpen() || !HatcherCanBeJudged()
 		Return false
 	EndIf
 	; No call into the game between this test and the claim.
-	If Judging || TLM_G_MQ02B_Hatcher.GetValueInt() != RV_H_FREE
+	If Judging || HangIntent != RV_HANG_NONE
 		Return false
 	EndIf
 	TLM_G_MQ02B_Hatcher.SetValueInt(RV_H_RELEASED)
@@ -769,7 +929,13 @@ bool Function Release()
 EndFunction
 
 Function HatcherDied()
-	{Heard from his alias. Not the hanging, which writes its own record.}
+	{Heard from his alias. While an execution is under way this death is the
+	hanging, and is written by the same function as the wait in Hang uses, so
+	that the two cannot disagree. Any other death is a death otherwise.}
+	If HangIntent == RV_HANG_EXECUTING
+		RecordHanging()
+		Return
+	EndIf
 	If Judging
 		Return
 	EndIf
@@ -894,5 +1060,5 @@ EndFunction
 
 Function TraceState()
 	{One line in the script log. From the console: cqf TLM_MQ02B TraceState}
-	Debug.Trace("TLM_MQ02B: outcome=" + Outcome() + " claim=" + Claim + " cargo=" + Cargo() + " recovered=" + Recovered() + " hatcher=" + HatcherState() + " card=" + CardResult + " escapePending=" + EscapePending + " returnPending=" + ReturnPending + " fireWarned=" + FireWarned + " sharePaid=" + SharePaid + " sharePending=" + SharePending + " lieTold=" + LieTold + " lieHeard=" + LieHeard + " knowsHire=" + GetStageDone(50) + " hireRead=" + HireRead + " hireHeard=" + HireHeard + " approach=" + Approach + " complete=" + GetStageDone(100) + " reported=" + IsReported())
+	Debug.Trace("TLM_MQ02B: outcome=" + Outcome() + " claim=" + Claim + " cargo=" + Cargo() + " recovered=" + Recovered() + " hatcher=" + HatcherState() + " card=" + CardResult + " escapePending=" + EscapePending + " returnPending=" + ReturnPending + " fireWarned=" + FireWarned + " sharePaid=" + SharePaid + " sharePending=" + SharePending + " lieTold=" + LieTold + " lieHeard=" + LieHeard + " knowsHire=" + GetStageDone(50) + " hireRead=" + HireRead + " hireHeard=" + HireHeard + " approach=" + Approach + " hangIntent=" + HangIntent + " complete=" + GetStageDone(100) + " reported=" + IsReported())
 EndFunction

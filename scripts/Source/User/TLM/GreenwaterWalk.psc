@@ -150,6 +150,10 @@ Group Technical
 	{Buttons: burn the occupied Queen, not yet.}
 	Message Property NoteFireScene Auto Const
 	Message Property NoteFireFailed Auto Const
+	Message Property NoteFireNoMarker Auto Const
+	Message Property NoteFireStuck Auto Const
+	Message Property NoteCargoFailed Auto Const
+	Message Property NoteCargoStuck Auto Const
 	Message Property NotePilotNothing Auto Const
 	Message Property NoteChuteScene Auto Const
 	Message Property NoteTowScene Auto Const
@@ -241,6 +245,7 @@ int RV_H_UNACCOUNTED = 5 Const
 int RV_CARD_WON = 2 Const
 int RV_CARD_LOST = 1 Const
 int RV_UNITS_PILOTED = 8 Const
+int RV_RETURN_NONE = 0 Const
 int RV_RETURN_ESCAPE = 1 Const
 int RV_RETURN_TOW = 2 Const
 int RV_HIRE_LETTER = 1 Const
@@ -250,6 +255,14 @@ int RV_GRANT_CUP = 2 Const
 int RV_GRANT_RELIEF = 3 Const
 
 float ARRIVE_REACH = 1500.0 Const
+; How long a switched piece is looked for: twenty looks, a tenth of a second apart.
+int SEEN_POLLS = 20 Const
+
+; What OfferReport tells TLM:Act1Walk. The same numbers there; a test compares them.
+int GW_REPORT_NONE = 0 Const
+int GW_REPORT_GIVEN = 1 Const
+int GW_REPORT_LATER = 2 Const
+int GW_REPORT_CLOSED = 3 Const
 int TABLE_ROUNDS = 3 Const
 
 ; ------------------------------------------------------------------- state
@@ -391,8 +404,10 @@ Function Refresh()
 		SwitchOff(Alias_CargoReduced)
 	EndIf
 	int course = river.Outcome()
-	If course == RV_FIRE || river.IsBurning()
-		; The deck's working pieces are gone. The strongbox is not: what was in it can still be read.
+	If course == RV_FIRE
+		; Recorded, and only then: the deck's working pieces are gone. The strongbox is not: what was in
+		; it can still be read. A fire that was ordered and is not yet recorded leaves every piece where
+		; it is, the firebox above all: using it again is how the fire is shown.
 		SwitchOn(Alias_Burnt)
 		SwitchOff(Alias_Table)
 		SwitchOff(Alias_Chain)
@@ -422,6 +437,17 @@ int Function ShowBox(Message akLine)
 		Return -1
 	EndIf
 	Return akLine.Show()
+EndFunction
+
+Function Notice(Message akLine)
+	{A notice from a trigger box, which is not inside a use: shown only if no
+	box is open, and claimed while it is.}
+	If talking
+		Return
+	EndIf
+	talking = true
+	ShowBox(akLine)
+	talking = false
 EndFunction
 
 bool Function Said(Message akLine)
@@ -565,8 +591,12 @@ Function Attacked(int aiWho)
 EndFunction
 
 Function FightBack(ReferenceAlias akAlias, Actor akTarget)
+	{Somebody alive, present and not already fighting is set on the target. Not
+	somebody already in a fight: this is called from every one of their combat
+	events, and a fight started again from the event that the last start
+	raised would never end.}
 	Actor who = akAlias.GetActorReference()
-	If who && !who.IsDead() && !who.IsDisabled()
+	If who && !who.IsDead() && !who.IsDisabled() && !who.IsInCombat()
 		who.StartCombat(akTarget)
 	EndIf
 EndFunction
@@ -675,7 +705,7 @@ EndFunction
 
 Function FirstMeeting(TLM:MQ02BQuest akRiver)
 	int pick = ShowBox(SayOpalFirst)
-	If !akRiver.OpalCanSpeak()
+	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak()
 		Return
 	EndIf
 	If pick == 0
@@ -704,6 +734,10 @@ Function JudgeBeforeOpal(TLM:MQ02BQuest akRiver)
 			pick = 2
 		EndIf
 	EndIf
+	; Her question is answered to her: alive, present and in no fight after it as before it.
+	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak()
+		Return
+	EndIf
 	If pick == 0
 		Judge(akRiver, 60)
 	ElseIf pick == 1
@@ -722,7 +756,9 @@ Function Deny(TLM:MQ02BQuest akRiver)
 		Return
 	EndIf
 	If Said(SayOpalDenied)
-		akRiver.MarkDenied()
+		If akRiver.OpalCanSpeak()
+			akRiver.MarkDenied()
+		EndIf
 	EndIf
 EndFunction
 
@@ -740,14 +776,16 @@ Function AfterShare(TLM:MQ02BQuest akRiver)
 			Return
 		EndIf
 	EndIf
-	; Told. Her answer, and only then what the journal says of it.
+	; Told: that much is earned and kept. Her answer is hers to give, alive, present and in no fight,
+	; now or when she is next spoken to; only then what the journal says of it, and her cup.
 	If !akRiver.OpalCanSpeak()
 		Return
 	EndIf
-	If Said(SayOpalAfterShare)
-		If akRiver.LieWasHeard()
-			Portion(akRiver, RV_GRANT_CUP)
-		EndIf
+	If !Said(SayOpalAfterShare)
+		Return
+	EndIf
+	If akRiver.LieWasHeard()
+		Portion(akRiver, RV_GRANT_CUP)
 	EndIf
 EndFunction
 
@@ -774,6 +812,9 @@ Function TalkRafferty(TLM:MQ02BQuest akRiver)
 		AtChain(akRiver)
 	ElseIf akRiver.GetStageDone(20) && !akRiver.GetStageDone(30) && akRiver.Unsettled()
 		int pick = ShowBox(SayRaffertySkiff)
+		If !akRiver.RoadOpen() || !akRiver.RaffertyCanSpeak()
+			Return
+		EndIf
 		If pick == 1
 			TakeSkiff(akRiver)
 		ElseIf pick == 2
@@ -786,13 +827,21 @@ EndFunction
 
 Function TakeSkiff(TLM:MQ02BQuest akRiver)
 	{The skiff to the Queen's off side: a move of the player, and of Rafferty if
-	he lives to row. Boarding is crossing the box there, not this.}
-	Actor player = Game.GetPlayer()
-	ObjectReference side = Piece(Alias_OffSideArrival)
-	If !player || player.IsDead() || !side
+	he lives to row. Boarding is crossing the box there, not this. Nobody is
+	moved unless the notice was answered with its one button and, after it,
+	the player is alive on a road that stands as it stood.}
+	If !akRiver.RoadOpen() || !Piece(Alias_OffSideArrival)
 		Return
 	EndIf
-	ShowBox(NoteSkiffScene)
+	int stamp = akRiver.Stamp()
+	If ShowBox(NoteSkiffScene) != 0
+		Return
+	EndIf
+	Actor player = Game.GetPlayer()
+	ObjectReference side = Piece(Alias_OffSideArrival)
+	If !player || !side || !akRiver.RoadOpen() || akRiver.Stamp() != stamp
+		Return
+	EndIf
 	BringRafferty(akRiver, side)
 	player.MoveTo(side)
 EndFunction
@@ -858,7 +907,7 @@ Function TableTalk(TLM:MQ02BQuest akRiver)
 				pick += 1
 			EndIf
 		EndIf
-		If !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+		If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
 			Return
 		EndIf
 		If pick == 0
@@ -871,12 +920,18 @@ Function TableTalk(TLM:MQ02BQuest akRiver)
 			If !Said(SayHatcherPaidA)
 				Return
 			EndIf
+			; His admission is his to finish: alive, present, in no fight and at his table between its two halves.
+			If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+				Return
+			EndIf
 			If ShowBox(SayHatcherPaidB) != 0
 				Return
 			EndIf
-			; Heard to its end.
-			akRiver.LearnHire(RV_HIRE_ADMISSION)
-			If !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+			; Heard to its end, from a man still there to have said it. The road asks for him again itself.
+			If !akRiver.LearnHire(RV_HIRE_ADMISSION)
+				Return
+			EndIf
+			If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
 				Return
 			EndIf
 		Else
@@ -896,7 +951,7 @@ Function DealCards(TLM:MQ02BQuest akRiver)
 		EndIf
 		If akRiver.IsShareOffered()
 			If ShowBox(SayHatcherWon) == 0
-				If akRiver.HatcherAtTable() && akRiver.Unsettled()
+				If akRiver.RoadOpen() && akRiver.HatcherAtTable() && akRiver.Unsettled()
 					BuyShare(akRiver)
 				EndIf
 			EndIf
@@ -910,7 +965,7 @@ Function BuyShare(TLM:MQ02BQuest akRiver)
 	If ShowBox(SayHatcherShare) != 0
 		Return
 	EndIf
-	If !akRiver.HatcherAtTable() || !akRiver.Unsettled()
+	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.Unsettled()
 		Return
 	EndIf
 	If akRiver.TakeShare()
@@ -924,7 +979,7 @@ Function JudgeAtTable(TLM:MQ02BQuest akRiver)
 	{Beaten, he asks what is to become of him. Only what can be done is offered:
 	nobody dead or absent is handed a prisoner, and with Opal not there his
 	question about her is not put.}
-	If !akRiver.HatcherAtTable() || !akRiver.HatcherToJudge()
+	If !akRiver.HatcherAtTable() || !akRiver.HatcherCanBeJudged()
 		Return
 	EndIf
 	bool opal = akRiver.OpalCanSpeak()
@@ -958,9 +1013,16 @@ Function JudgeAtTable(TLM:MQ02BQuest akRiver)
 			verdict = 1
 		EndIf
 	EndIf
-	If verdict != 0
-		Judge(akRiver, verdict)
+	If verdict == 0
+		Return
 	EndIf
+	; His question is answered to him: alive, present, in no fight and unjudged after it as before it.
+	; If he is not, nothing is carried out and nothing more is said. The road asks again for whoever
+	; the verdict itself needs.
+	If !akRiver.RoadOpen() || !akRiver.HatcherAtTable() || !akRiver.HatcherCanBeJudged()
+		Return
+	EndIf
+	Judge(akRiver, verdict)
 EndFunction
 
 bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict)
@@ -1008,10 +1070,15 @@ Function AtChain(TLM:MQ02BQuest akRiver)
 	EndIf
 	; Who and what is aboard: Rafferty says it if he can; if he cannot, this build does, and says that it is.
 	int pick = -1
-	If akRiver.RaffertyCanSpeak()
+	bool his = akRiver.RaffertyCanSpeak()
+	If his
 		pick = ShowBox(SayRaffertyChain)
 	Else
 		pick = ShowBox(AskChain)
+	EndIf
+	; If it was Rafferty who said it, it is answered to Rafferty. The chain can be used again without him.
+	If !akRiver.RoadOpen() || (his && !akRiver.RaffertyCanSpeak())
+		Return
 	EndIf
 	If pick == 0
 		If akRiver.CutChain()
@@ -1025,33 +1092,100 @@ Function AtChain(TLM:MQ02BQuest akRiver)
 EndFunction
 
 Function AtPilot(TLM:MQ02BQuest akRiver)
+	{The barge's pilot lever. What it can begin is read first and written only
+	after its notice was answered with its one button and, after that, the
+	player is alive on a road that stands as it stood. A return already
+	pending stays pending whatever the notice comes back with.}
 	If !akRiver.GetStageDone(30)
 		Boarded(akRiver, BOARD_DECK)
 	EndIf
-	Actor player = Game.GetPlayer()
-	ObjectReference chute = Piece(Alias_ChuteStart)
-	If !chute
+	int kind = akRiver.ReturnOffered()
+	If kind != RV_RETURN_ESCAPE && kind != RV_RETURN_TOW
+		ShowBox(NotePilotNothing)
 		Return
 	EndIf
-	int kind = akRiver.BeginReturn()
+	If !Piece(Alias_ChuteStart)
+		Debug.Trace("TLM_GW: the head of the Chute is not placed; the pilot lever begins nothing", 2)
+		Return
+	EndIf
+	int stamp = akRiver.Stamp()
+	int pick = -1
 	If kind == RV_RETURN_ESCAPE
-		ShowBox(NoteChuteScene)
-	ElseIf kind == RV_RETURN_TOW
-		ShowBox(NoteTowScene)
+		pick = ShowBox(NoteChuteScene)
 	Else
-		ShowBox(NotePilotNothing)
+		pick = ShowBox(NoteTowScene)
+	EndIf
+	If pick != 0
+		Return
+	EndIf
+	Actor player = Game.GetPlayer()
+	ObjectReference chute = Piece(Alias_ChuteStart)
+	If !player || !chute || !akRiver.RoadOpen() || akRiver.Stamp() != stamp
+		Return
+	EndIf
+	If akRiver.BeginReturn(kind) != kind
 		Return
 	EndIf
 	; The run itself is the walk from here to the return dock. Nothing is settled by this move.
 	player.MoveTo(chute)
 EndFunction
 
+bool Function Seen(ObjectReference akOn, ObjectReference akOff)
+	{akOn is switched on and akOff (if there is one) is not. Looked for, for two seconds at the most.}
+	If !akOn
+		Return false
+	EndIf
+	int tries = 0
+	While tries < SEEN_POLLS && (akOn.IsDisabled() || (akOff && !akOff.IsDisabled()))
+		Utility.Wait(0.1)
+		tries += 1
+	EndWhile
+	If akOn.IsDisabled()
+		Return false
+	EndIf
+	If akOff
+		Return akOff.IsDisabled()
+	EndIf
+	Return true
+EndFunction
+
 Function ReachedDock(TLM:MQ02BQuest akRiver)
-	int arrived = akRiver.CompleteReturn()
-	If arrived != RV_RETURN_ESCAPE && arrived != RV_RETURN_TOW
+	{The player walked onto the return dock. The cargo is put at the landing
+	and LOOKED AT before anything is recorded: the road writes nothing unless
+	the home piece is on and the lashed one off. If they are not, the pieces
+	are put back as the facts stand, the return stays pending, and the lever
+	and this dock can be used again.}
+	int kind = akRiver.ReturnArriving()
+	If kind != RV_RETURN_ESCAPE && kind != RV_RETURN_TOW
 		Return
 	EndIf
+	ReferenceAlias homeAlias = Alias_CargoReduced
+	If kind == RV_RETURN_TOW
+		homeAlias = Alias_CargoWhole
+	EndIf
+	ObjectReference home = Piece(homeAlias)
+	ObjectReference lashed = Piece(Alias_CargoLashed)
+	If !home
+		Debug.Trace("TLM_GW: the cargo's piece at the landing is not placed; the return cannot be shown and is not recorded. It stays pending", 2)
+		Notice(NoteCargoStuck)
+		Return
+	EndIf
+	SwitchOn(homeAlias)
+	SwitchOff(Alias_CargoLashed)
+	int arrived = RV_RETURN_NONE
+	If Seen(home, lashed)
+		arrived = akRiver.CompleteReturn(kind, home, lashed)
+	EndIf
+	; The pieces as the facts now stand: at the landing if it was recorded, lashed again if it was not.
 	Refresh()
+	If arrived != kind
+		If akRiver.ReturnArriving() == kind
+			Debug.Trace("TLM_GW: the cargo was not seen at the landing; nothing is recorded and the return stays pending. Use the pilot lever again and walk to the return dock.", 2)
+			Notice(NoteCargoFailed)
+		EndIf
+		; Otherwise it was brought home by another arrival at this dock, which says so itself.
+		Return
+	EndIf
 	ObjectReference landing = Piece(Alias_Arrival)
 	If arrived == RV_RETURN_ESCAPE
 		BringRafferty(akRiver, landing)
@@ -1092,7 +1226,17 @@ Function AtFire(TLM:MQ02BQuest akRiver)
 		ShowBox(NoteFireNotWarned)
 		Return
 	EndIf
+	; Nothing is ordered that cannot be shown.
+	If !Piece(Alias_Burnt)
+		Debug.Trace("TLM_GW: the burned Queen's marker is not placed; no fire is ordered", 2)
+		ShowBox(NoteFireNoMarker)
+		Return
+	EndIf
+	int stamp = akRiver.Stamp()
 	If ShowBox(AskFire) != 0
+		Return
+	EndIf
+	If !akRiver.RoadOpen() || akRiver.Stamp() != stamp || !Piece(Alias_Burnt)
 		Return
 	EndIf
 	If akRiver.OrderFire()
@@ -1101,36 +1245,53 @@ Function AtFire(TLM:MQ02BQuest akRiver)
 EndFunction
 
 Function StageFire(TLM:MQ02BQuest akRiver)
-	{The fire, as this greybox can show it: the burned marker on, the lashed cargo
-	and the deck's working pieces off, the people who were aboard not there. It
-	is recorded only if the marker is seen on and the cargo seen gone.}
-	Refresh()
-	SwitchOff(Alias_CargoLashed)
+	{The fire, as this greybox can show it: the burned marker on and the lashed
+	cargo off, and both LOOKED AT; the road records it only if it sees them so
+	itself, and only then is the deck cleared. If they are not seen, the
+	pieces are put back as the facts stand and the firebox, which stays on
+	while a fire is ordered and not recorded, is how it is tried again.}
 	ObjectReference marker = Piece(Alias_Burnt)
 	ObjectReference lashed = Piece(Alias_CargoLashed)
-	int tries = 0
-	While tries < 20 && marker && marker.IsDisabled()
-		Utility.Wait(0.1)
-		tries += 1
-	EndWhile
-	If !marker || marker.IsDisabled() || (lashed && !lashed.IsDisabled())
-		Debug.Trace("TLM_GW: the fire was ordered and is not seen (the burned marker is off or the lashed cargo is still there); nothing is recorded. Use the firebox again.", 2)
-		ShowBox(NoteFireFailed)
+	If !marker
+		Debug.Trace("TLM_GW: the fire was ordered and its marker is not placed: it cannot be shown or recorded, and no other course is open. Report this line.", 2)
+		ShowBox(NoteFireStuck)
 		Return
 	EndIf
-	If !akRiver.FireDone()
+	SwitchOn(Alias_Burnt)
+	SwitchOff(Alias_CargoLashed)
+	bool done = false
+	If Seen(marker, lashed)
+		done = akRiver.FireDone(marker, lashed)
+	EndIf
+	If !done
+		If akRiver.IsBurning()
+			; Not shown. Nothing burned: the marker off again, the cargo as the facts have it.
+			SwitchOff(Alias_Burnt)
+			Refresh()
+			SwitchOn(Alias_FireControl)
+			ObjectReference control = Piece(Alias_FireControl)
+			If control && Seen(control, None)
+				Debug.Trace("TLM_GW: the fire was ordered and is not seen (the burned marker is off or the lashed cargo is still there); nothing is recorded. Use the firebox again.", 2)
+				ShowBox(NoteFireFailed)
+			Else
+				Debug.Trace("TLM_GW: the fire was ordered and is not seen, and the firebox is missing or cannot be switched on: it cannot be tried again here, and no other course is open. Report this line.", 2)
+				ShowBox(NoteFireStuck)
+			EndIf
+		EndIf
 		Return
 	EndIf
 	Refresh()
-	ShowBox(NoteFireScene)
+	; The notice, and only on its one button the move to the landing.
+	If ShowBox(NoteFireScene) != 0
+		Return
+	EndIf
 	Actor player = Game.GetPlayer()
 	ObjectReference landing = Piece(Alias_Arrival)
-	If landing
-		BringRafferty(akRiver, landing)
-		If player && !player.IsDead()
-			player.MoveTo(landing)
-		EndIf
+	If !player || !landing || !akRiver.RoadOpen()
+		Return
 	EndIf
+	BringRafferty(akRiver, landing)
+	player.MoveTo(landing)
 	If !burnedSaid && akRiver.RaffertyCanSpeak()
 		If Said(SayRaffertyBurned)
 			burnedSaid = true
@@ -1171,17 +1332,26 @@ EndFunction
 
 ; ============================================================ the river report
 
-bool Function OfferReport(Actor akSheriff)
+int Function OfferReport(Actor akSheriff)
 	{Called by TLM:Act1Walk, inside its own claim on Pritchard's conversation,
-	when he is activated after the chapter. True if the report took this
-	activation. False, with nothing changed, if there is nothing to report, it
-	was reported before, or the player chose to leave it for later.}
+	when he is activated after the chapter. What became of this activation:
+	GW_REPORT_NONE    nothing was offered (nothing to report, or reported
+	                  before): nothing was shown and the conversation goes on;
+	GW_REPORT_GIVEN   the report was offered, chosen and given;
+	GW_REPORT_LATER   it was offered and explicitly left for later, by its
+	                  second button: the conversation goes on;
+	GW_REPORT_CLOSED  it was offered and came back with no button a person can
+	                  press, or by the time it was answered Pritchard, the
+	                  player or the road was not as the offer needed. Nothing
+	                  is recorded and this conversation is over: no briefing
+	                  and no other line follows it.}
 	TLM:MQ02BQuest river = Road()
-	If !river || !akSheriff || akSheriff.IsDead() || akSheriff.IsInCombat()
-		Return false
+	Actor player = Game.GetPlayer()
+	If !river || !akSheriff || !player || akSheriff.IsDead() || akSheriff.IsInCombat() || player.IsDead()
+		Return GW_REPORT_NONE
 	EndIf
 	If !river.GetStageDone(100) || river.IsReported()
-		Return false
+		Return GW_REPORT_NONE
 	EndIf
 	int pick = -1
 	bool known = river.KnowsHire()
@@ -1190,15 +1360,21 @@ bool Function OfferReport(Actor akSheriff)
 	Else
 		pick = ShowBox(SayReportUnknown)
 	EndIf
-	If pick != 0
-		Return false
+	; Shown. From here this conversation is the report's, unless it is explicitly left for later.
+	If akSheriff.IsDead() || akSheriff.IsDisabled() || akSheriff.IsInCombat() || player.IsDead()
+		Return GW_REPORT_CLOSED
 	EndIf
-	Actor player = Game.GetPlayer()
-	If akSheriff.IsDead() || akSheriff.IsInCombat() || !player || player.IsDead()
-		Return false
+	If !river.GetStageDone(100) || river.IsReported() || river.KnowsHire() != known
+		Return GW_REPORT_CLOSED
+	EndIf
+	If pick == 1
+		Return GW_REPORT_LATER
+	EndIf
+	If pick != 0
+		Return GW_REPORT_CLOSED
 	EndIf
 	If !river.GiveReport()
-		Return false
+		Return GW_REPORT_CLOSED
 	EndIf
 	; What is reported is what the road holds, said by this build and not put in his mouth.
 	int lashing = river.Cargo()
@@ -1216,5 +1392,5 @@ bool Function OfferReport(Actor akSheriff)
 	Else
 		ShowBox(ReportEndUnknown)
 	EndIf
-	Return true
+	Return GW_REPORT_GIVEN
 EndFunction

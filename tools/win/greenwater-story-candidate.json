@@ -6,23 +6,27 @@
   "order": "docs/design/GREENWATER_STORY_001_ORDER.md",
   "composedFrom": "637cbeda836c55b7c93bb45583b1ea2914f2d46d",
   "grewFrom": "a8f6d6482b4b5dc9d545e197ed4cf2c8f6324306",
+  "repairOf": {
+    "reviewed": "7e05c6b879e21940786c008f9dcdef4d5404654c",
+    "what": "This manifest describes the source as repaired after independent review of that commit (docs/design/GREENWATER_STORY_001_REPAIR_RECEIPT.md). Root's diagnostic compile and build of that commit are not this source's: the repaired source has to be compiled and built again."
+  },
   "writingSource": "d142104fdc6f72ae556f285a0166c1122893b991",
   "notUnder": "This manifest is separate from tools/win/world-details-artifact.json, world-natural-artifact.json, world-story-artifact.json, tools/WorldSliceBuilder/expanded-artifact.json and tools/win/mercy-briefing-candidate.json. Those pin the 19-script runtime and describe the 20-script a8 source, and are unchanged; their packagers and checks refuse this checkout's source.",
   "scripts": 23,
   "sourceTextSha256": {
     "Act1Guide.psc": "066D48FA960462CD2CB5E7C230B95DC683F2D424090023C58C9DF5D3A929EFEF",
     "Act1Talk.psc": "CEC5BCC33B63A55E2427FBA4422E2A375E31598E52911DF79B4DEC040207039A",
-    "Act1Walk.psc": "62053C29AE51B45313111C5388B60AFE28F7F3D3D6AD0FE072960EAAD9D30025",
+    "Act1Walk.psc": "30E2C92003BDF3217CE9D28F4DC741B8AA275C1986897C70EE893EAEE2A12F1D",
     "CaseDriver.psc": "04012F79061B9F0F73D8FA353176B5D5267A73F2E810857FD2CE22D60922A241",
     "Core.psc": "17E9008372C7BF01AF1676DB6EA093C7BBEE7F8CA01EBACEDA5389164C6B00D4",
     "FixtureProbe.psc": "F670FDD250514576FB6D4C09EF0229FC9287F24649BD4FD4C370CBE3B467B87E",
     "GreenwaterTalk.psc": "1216CC1F4C0EE6DBF6F686B807C480EDD6B145D77B9D9B9CAA3D3CEBC3B3EAA9",
-    "GreenwaterWalk.psc": "64BBF2C3347B2FB690717A1BCB4E9F44296D5E05BFCBC313512561F287D62563",
+    "GreenwaterWalk.psc": "9A639B93D3D903D8AEC29D54985852481357A31BC54C56D5AE3201D25F246D90",
     "MQ01CaravanHandAlias.psc": "84CF637A5434F82E7409DC39D1C346A96DEC03ED7EDE6A88181F01B152900378",
     "MQ01CutterAlias.psc": "F11732576830A95D310FEBECF042C2A228F502CE4FC99A6165368F774AD49FBB",
     "MQ01PlayerAlias.psc": "F7D4F23B8DBB829F2ED09F62F17D330046E1ACBD2F6C0439E573B3F7CA3DAE25",
     "MQ01Quest.psc": "4146C08D783C2DB99A8E734CB411536120BBA41DBD61C5989035D0B0D4445B35",
-    "MQ02BQuest.psc": "BA7E2896444CCE25298C66A07B3A069BA7E65AFE698DBDF7B0D2EEB5DAF0D08C",
+    "MQ02BQuest.psc": "F8D8AD8088AAED2EC02E9442FC21CDE0AECDE53624551FF9C33A02114DB2BB14",
     "MatrixCases.psc": "72C7DDF351DA609940298DF0592F50919A05FF6A98B9EBCF3EDA306EDD6CD68D",
     "MercyBriefing.psc": "041E03DE8E161C7F954AC98D9C669C5FD9D15E34ACA913B284CD597AB826D0D1",
     "MessageStageAlias.psc": "BC2ED1F7851038AD0067389D1365E891803083A757A34B1516F0BF6027F198A6",
@@ -140,12 +144,12 @@
     "tools/PluginBuilder/Spec.cs": "63CB91BCF4391D1D641AF4C69565F91B527420E45035070C0F1A12557969F89E",
     "tools/PluginBuilder/SpecAct1.cs": "14B7FA5E59F80BFB8313FA5F989DD06992AF17EC15A10683B68789D1563F6B9D",
     "tools/PluginBuilder/SpecMercyBriefing.cs": "89F81900BDF04DB451C25E8876C72CDFB7AF4570ED18A932B5DB179E38B2CB05",
-    "tools/PluginBuilder/SpecGreenwater.cs": "72190E9118E4D9B27C7B965FD8F809D9FE0D24E31951285527B0F9EBD2C12FA3",
+    "tools/PluginBuilder/SpecGreenwater.cs": "3A7258304FFC65E02707921C7F3D9C2A7F52FE98F2C77FFB58F133342B7ED358",
     "tools/PluginBuilder/SpecGuide.cs": "68DB9FBDE8A98F61863D3DA6E1096ACDE1D4016C4266FD89CEA73C3DC2C8D324",
     "tools/PluginBuilder/SpecOrientation.cs": "AB0E8D60159C950629A75A2926A7F1AC90CB86DA2D4519A1FDE2C951B297709A",
     "tools/PluginBuilder/Builder.cs": "E6F860BB10928AFB5471CB04248582FC4F19FB3C15757CB9B71DBAD883F17B96",
-    "tools/PluginBuilder/formkeys.txt": "B132D14B96EFD90654AA2F6EEE851CE45D2DC4BFC144840B3F9A7FD259B7DAE5",
-    "tools/WorldSliceBuilder/WorldStory.cs": "41CAC1FD135226E79C46D98899AB3A62894123AECDCA6BD57C0A218FC07EA9A2",
+    "tools/PluginBuilder/formkeys.txt": "14340E77DF4A949C6C454D581F19383543AB2CD028FF79CED9ECCAE33A7610F5",
+    "tools/WorldSliceBuilder/WorldStory.cs": "F324157DD7D7650535494038395980F25D7CAAE305794CF73885A3F451350A9F",
     "tools/WorldSliceBuilder/Program.cs": "23F292D74ACC1BB180FE171038FFC3952999462C643B84BC5A20C24CBD9D6C93"
   },
   "idFile": {
@@ -313,7 +317,11 @@
       "TLM_REF_GW_OffSideSight": 2375,
       "TLM_REF_GW_CargoLashed": 2376,
       "TLM_REF_GW_Chain": 2377,
-      "TLM_REF_GW_Pilot": 2378
+      "TLM_REF_GW_Pilot": 2378,
+      "TLM_MSG_GW_NoteFireNoMarker": 2379,
+      "TLM_MSG_GW_NoteFireStuck": 2380,
+      "TLM_MSG_GW_NoteCargoFailed": 2381,
+      "TLM_MSG_GW_NoteCargoStuck": 2382
     }
   },
   "documents": {
@@ -454,7 +462,7 @@
         ],
         "aliasesWithAScript": 27,
         "properties": {
-          "TLM:GreenwaterWalk": 113
+          "TLM:GreenwaterWalk": 117
         }
       }
     },
@@ -548,7 +556,7 @@
       "TLM_REF_GW_Strongbox",
       "TLM_REF_GW_Table"
     ],
-    "messages": 87,
+    "messages": 91,
     "bindingAddedElsewhere": {
       "TLM:Act1Walk on TLM_A1": {
         "TLM_Greenwater": "TLM_GW"
@@ -563,19 +571,19 @@
     "cardThreshold": "Current Charisma 5 or more wins the card (TLM:MQ02BQuest, RV_CARD_THRESHOLD). The script traces the current and the base value and the threshold at each deal."
   },
   "recipe": {
-    "what": "How a workspace package of this candidate is built. Every step after the first needs the game's own master, the Papyrus compiler and the reviewed compiled scripts of the Details runtime, on a licensed PC; none of them has been run for this candidate. tools/win/Build-Greenwater.ps1 does steps 2, 3, 5 and 6 and writes a measurement; it is untested scaffolding, never run and never parsed by PowerShell. Nothing is installed, and no licensed file goes into the repository or the cloud.",
+    "what": "How a workspace package of this candidate is built. Every step after the first needs the game's own master, the Papyrus compiler and the reviewed compiled scripts of the Details runtime, on a licensed PC; none of them has been run for this candidate. tools/win/Build-Greenwater.ps1 runs step 1 itself before it creates anything (and stops unless it passes), then does steps 2, 3, 5 and 6 and writes a measurement; it is untested scaffolding, never run and never parsed by PowerShell, and so is its refusal fixture tools/win/tests/Test-GreenwaterPackageSafety.ps1. Nothing is installed, and no licensed file goes into the repository or the cloud.",
     "steps": [
-      "1. python3 tools/greenwater_story_candidate.py verify   (the checkout is this manifest's source)",
+      "1. python3 tools/greenwater_story_candidate.py verify   (the checkout is this manifest's source: the 23 scripts, the builder's sources, the id file, the documents and the frozen earlier files. Nothing is built from a checkout that does not pass it)",
       "2. dotnet run --project tools/PluginBuilder -- --out <new folder>/plugin --fallout4-esm <Fallout4.esm>   (self-check must pass; READ THE REPORT: every 'not wired' line, and what the builder found for Charisma, for the meal and for the six people's originals)",
       "3. dotnet run --project tools/WorldSliceBuilder -- <Fallout4.esm> <new folder>/world --story-source <new folder>/plugin/TheLastMeridian.esp --natural --private-shelter-detail   (the same exterior options as the Details package; it refuses a clone whose first section does not point at TLM_GW, or whose greybox is not the 31 pieces)",
-      "4. COMPILE PROOF: compile all 23 scripts under scripts/Source/User/TLM afresh with the game's Papyrus compiler into a folder of its own (tools/win/Build-Scripts.ps1 compiles every .psc there). All 23 must compile. Keep the compiler's log and the 23 results with the build receipt.",
+      "4. COMPILE PROOF: compile all 23 scripts under scripts/Source/User/TLM afresh with the game's Papyrus compiler into a folder of its own (tools/win/Build-Scripts.ps1 compiles every .psc there). All 23 must compile. Keep the compiler's log and the 23 results with the build receipt. The names and number of the compiled files do not show which source they were compiled from: that the six bundled fresh files are this checkout's is shown by the kept log and root's review of that compile, and by nothing in the packager.",
       "5. THE REVIEWED 17: take the compiled scripts of the Details runtime (the 19 that tools/win/world-details-artifact.json pins under 'runtime'). For each of the 17 names under runtimeSelection.reusedReviewedPex, check the file's SHA-256 against the digest recorded there before using it. Step 1 has already shown that their 17 sources are the reviewed text.",
       "6. THE BUNDLE'S Scripts/TLM: exactly 23 files. The 17 reviewed files of step 5, copied byte for byte; the 6 under runtimeSelection.freshlyCompiled from the compile of step 4. Never the freshly compiled 17, whether or not the compiler happened to reproduce them, and never an earlier Act1Walk.pex, Act1Guide.pex or MercyBriefing.pex.",
       "7. python3 tools/greenwater_story_candidate.py measure <bundle folder> --fresh-compile <folder of step 4>   (prints the measured digests for the build receipt and says of each script whether it is the reviewed file or one of the six fresh ones; exit 1 if the selection is not the one above; it changes no pin)"
     ],
-    "packager": "tools/win/Build-Greenwater.ps1 -VanillaMaster <Fallout4.esm> -ReviewedRuntime <folder> -FreshCompile <folder of step 4> -OutputDirectory build\\<new folder>",
+    "packager": "tools/win/Build-Greenwater.ps1 -VanillaMaster <Fallout4.esm> -ReviewedRuntime <folder> -FreshCompile <folder of step 4> -OutputDirectory build\\<new folder> [-Python <a Python 3 interpreter>]",
     "launcher": "None. The frozen launchers (tools/win/Play-World*.cmd, World-Story.psm1) stage only packages whose pins they hold, and hold none for this candidate. Staging a measured bundle of this candidate into a disposable profile is root's operator action, after source acceptance.",
-    "expectedIds": "The 162 records appended to tools/PluginBuilder/formkeys.txt (2217 to 2378) keep their numbers in every build: the allocator reads that file."
+    "expectedIds": "The 166 records appended to tools/PluginBuilder/formkeys.txt (2217 to 2382) keep their numbers in every build: the allocator reads that file."
   },
   "measured": {
     "masterSha256": null,

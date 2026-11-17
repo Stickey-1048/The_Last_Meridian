@@ -3,7 +3,7 @@ tools/win/greenwater-story-candidate.json, read by tools/greenwater_story_candid
 
 That the checkout is the source the manifest describes: 23 scripts, seventeen
 of them still the text the Details package pins; against the a8 source two
-changed and three added; the id file's earlier 338 lines untouched and 162
+changed and three added; the id file's earlier 338 lines untouched and 166
 ids appended; the four earlier package manifests unchanged byte for byte, the
 a8 manifest, its check and the earlier packagers and launcher unchanged as
 text, and none of them saying anything of this candidate; which compiled
@@ -14,11 +14,17 @@ them back; and no digest of anything compiled or built for this candidate
 recorded that nobody measured. And that the check notices each of those going
 wrong.
 
-About tools/win/Build-Greenwater.ps1 this file can say only what its text
-says: no PowerShell is here, so that script has never been run or parsed.
+About tools/win/Build-Greenwater.ps1 and its refusal fixture
+tools/win/tests/Test-GreenwaterPackageSafety.ps1 this file can say only what
+their text says: no PowerShell is here, so neither has ever been run or
+parsed. What it can do, and does, is carry out each change the fixture makes
+on a copy of the tree here, in Python, and require the candidate's verifier to
+refuse it with the words the fixture expects.
 
 Source provenance only. Not a compile and not a game test.
 """
+import fnmatch
+import hashlib
 import json
 import re
 import shutil
@@ -37,6 +43,8 @@ CONTRACT = "637cbeda836c55b7c93bb45583b1ea2914f2d46d"
 A8 = "a8f6d6482b4b5dc9d545e197ed4cf2c8f6324306"
 MANIFEST_NAME = "tools/win/greenwater-story-candidate.json"
 PACKAGER = ROOT / "tools" / "win" / "Build-Greenwater.ps1"
+FIXTURE = ROOT / "tools" / "win" / "tests" / "Test-GreenwaterPackageSafety.ps1"
+NATURAL_FIXTURE = "tools/win/tests/Test-WorldNaturalPackageSafety.ps1"
 FRESH = ["Act1Guide.pex", "Act1Walk.pex", "GreenwaterTalk.pex", "GreenwaterWalk.pex", "MQ02BQuest.pex", "MercyBriefing.pex"]
 
 
@@ -88,9 +96,12 @@ class TheCandidate(unittest.TestCase):
 
     def test_the_earlier_ids_are_untouched_and_the_new_ones_follow(self):
         ids = self.manifest["idFile"]
-        self.assertEqual((ids["earlierLines"], len(ids["appended"])), (338, 162))
-        self.assertEqual(sorted(ids["appended"].values()), list(range(2217, 2379)))
-        self.assertEqual(len(set(ids["appended"].values())), 162)
+        self.assertEqual((ids["earlierLines"], len(ids["appended"])), (338, 166))
+        self.assertEqual(sorted(ids["appended"].values()), list(range(2217, 2383)))
+        self.assertEqual(len(set(ids["appended"].values())), 166)
+        # The 162 of the reviewed commit keep their numbers; the repair's four notices follow them.
+        self.assertEqual(sorted(n for n, v in ids["appended"].items() if v > 2378),
+                         ["TLM_MSG_GW_NoteCargoFailed", "TLM_MSG_GW_NoteCargoStuck", "TLM_MSG_GW_NoteFireNoMarker", "TLM_MSG_GW_NoteFireStuck"])
         got = subprocess.run(["git", "show", A8 + ":tools/PluginBuilder/formkeys.txt"], cwd=ROOT, capture_output=True)
         if got.returncode != 0:
             self.skipTest("the a8 commit is not in this copy; the recorded digest of the earlier lines was still checked")
@@ -157,9 +168,48 @@ class TheCandidate(unittest.TestCase):
             self.skipTest("the contract commit is not in this copy; the pinned digests were still checked")
         frozen = list(candidate.OLD_MANIFESTS + candidate.FROZEN) + [
             "tools/win/Play-WorldDetails.cmd", "tools/win/Play-WorldNatural.cmd", "tools/win/Play-WorldStory.cmd", "tools/win/Play-WorldExpanded.cmd",
-            "tools/win/tests", "tools/test_world_story_launcher.py", ".gitattributes", ".github"]
+            "tools/test_world_story_launcher.py", ".gitattributes", ".github"]
         got = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--"] + frozen, cwd=ROOT)
         self.assertEqual(got.returncode, 0, "a frozen manifest, verifier, packager, launcher or workflow differs from the contract commit's")
+        # The earlier PowerShell tests: as they were, but for the one fixture the repair was told to correct
+        # (finding 4) and the new packager's own new fixture.
+        was = subprocess.run(["git", "ls-tree", "-r", "--name-only", CONTRACT, "tools/win/tests"], cwd=ROOT, capture_output=True, text=True).stdout.split()
+        now = sorted("tools/win/tests/" + f.name for f in (ROOT / "tools/win/tests").iterdir())
+        self.assertEqual(now, sorted(was + ["tools/win/tests/Test-GreenwaterPackageSafety.ps1"]))
+        for name in was:
+            same = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--", name], cwd=ROOT).returncode == 0
+            self.assertEqual(same, name != NATURAL_FIXTURE, name)
+
+    def test_the_natural_fixture_differs_by_its_one_expectation(self):
+        """Repair, finding 4. The frozen Natural packager walks its pinned sources in the order of its manifest
+        and refuses at the first whose text differs. Worked out here from that manifest and this checkout: it
+        is Act1Guide.psc, and that is the one script the fixture now requires. Everything else in the fixture
+        is as it was. The packager, its pins and the Details fixture are not touched. PowerShell is not here:
+        whether the fixture passes in either shell is root's to run."""
+        pins = json.loads((ROOT / "tools/win/world-natural-artifact.json").read_text())["sourceTextSha256"]
+        differ = [n for n, digest in pins.items() if candidate.text_digest(ROOT / "scripts/Source/User/TLM" / n) != digest]
+        self.assertEqual(differ, ["Act1Guide.psc", "Act1Walk.psc"])
+        packager = (ROOT / "tools/win/Build-WorldNatural.ps1").read_text()
+        self.assertIn("foreach ($item in $pins.sourceTextSha256.PSObject.Properties) {", packager)
+        self.assertIn('throw "Current source differs from reviewed logical source: $($item.Name)"', packager)
+        now = (ROOT / NATURAL_FIXTURE).read_text().replace("\r\n", "\n")
+        expect = "if ($reason -notlike '*Current source differs from reviewed logical source: %s*') { throw"
+        self.assertEqual(now.count(expect % differ[0]), 1)
+        self.assertNotIn(expect % "Act1Walk.psc", now)
+        self.assertNotIn("-notlike '*'", now)
+        before = subprocess.run(["git", "show", CONTRACT + ":" + NATURAL_FIXTURE], cwd=ROOT, capture_output=True, text=True)
+        if before.returncode != 0:
+            self.skipTest("the contract commit is not in this copy")
+        old, new = before.stdout.replace("\r\n", "\n").split("\n"), now.split("\n")
+        # Outside its comment and its one line, the fixture is the earlier fixture, line for line.
+        code = lambda lines: [l for l in lines if not l.strip().startswith("#")]
+        self.assertEqual([l.replace("Act1Guide.psc", "Act1Walk.psc") for l in code(new)], code(old))
+        self.assertEqual(len([l for l in code(new) if l not in code(old)]), 1)
+        # The Details packager counts and names the scripts before it reads any, so its fixture's expectation holds.
+        details = (ROOT / "tools/win/Build-WorldDetails.ps1").read_text()
+        self.assertLess(details.index("Current source names differ from the reviewed19 scripts"), details.index("Current source differs from reviewed logical source"))
+        self.assertIn("*Current source names differ from the reviewed19 scripts*", (ROOT / "tools/win/tests/Test-WorldDetailsPackageSafety.ps1").read_text())
+        self.assertEqual(len(list((ROOT / "scripts/Source/User/TLM").glob("*.psc"))), 23)
 
     def test_the_records_are_the_ones_the_stand_in_build_reads_back(self):
         built_file = ROOT / "build" / "sim" / "TheLastMeridian.json"
@@ -183,12 +233,12 @@ class TheCandidate(unittest.TestCase):
         records = self.manifest["records"]
         self.assertEqual((len(records["globals"]), len(records["factions"]), len(records["actors"]), records["book"], len(records["placedReferences"]),
                           len(records["activators"]), len(records["triggers"]), records["messages"]),
-                         (12, 2, 6, ["TLM_BOOK_LetterOfHire"], 31, 17, 4, 87))
+                         (12, 2, 6, ["TLM_BOOK_LetterOfHire"], 31, 17, 4, 91))
         # Every appended id is accounted for by one of those kinds, or is one of the two quests.
         named = set(records["globals"] + records["factions"] + records["actors"] + records["book"] + records["placedReferences"]
                     + records["activators"] + records["triggers"]) | {"TLM_MQ02B", "TLM_GW"}
         rest = [n for n in self.manifest["idFile"]["appended"] if n not in named]
-        self.assertEqual(len(rest), 87)
+        self.assertEqual(len(rest), 91)
         self.assertTrue(all(n.startswith("TLM_MSG_GW_") for n in rest))
 
     def test_the_normal_start_is_untouched_and_no_qa_helper_is_in_the_source(self):
@@ -421,6 +471,7 @@ class ThePackagersText(unittest.TestCase):
     def setUp(self):
         self.text = PACKAGER.read_text()
         self.code = "\n".join(l for l in self.text.split("#>", 1)[1].splitlines() if not l.strip().startswith("#"))
+        self.first_write = min(self.code.index(w) for w in ("New-Item", "Copy-Item", "WriteAllText", "dotnet run"))
 
     def test_it_says_it_is_untested(self):
         self.assertIn("UNTESTED SCAFFOLDING", self.text)
@@ -433,9 +484,44 @@ class ThePackagersText(unittest.TestCase):
         self.assertGreater(len(guard.splitlines()), 20)
         self.assertIn(guard, self.text)
         # And nothing is created before the guard and the checks of the inputs and of the source have passed.
-        first_write = min(self.code.index(w) for w in ("New-Item", "Copy-Item", "WriteAllText", "dotnet run"))
-        for check in ("reparse point", "Current source differs", "Reviewed runtime input pin mismatch", "The fresh compile must hold exactly"):
-            self.assertLess(self.code.index(check), first_write, check)
+        for check in ("reparse point", "candidate source verifier refused this checkout", "Current source differs",
+                      "Reviewed runtime input pin mismatch", "The fresh compile must hold exactly"):
+            self.assertLess(self.code.index(check), self.first_write, check)
+
+    def test_the_full_source_verifier_runs_first_and_fails_closed(self):
+        """Repair, the addendum. The packager's own source check reads the 23 scripts only; the candidate's
+        verifier also reads the builder's sources, the id file, the documents and the frozen earlier files.
+        It is run, and has to pass, before anything is created or built."""
+        code = self.code
+        run = code.index("-B $verifier verify")
+        self.assertEqual(code.count("-B $verifier verify"), 1)
+        self.assertIn("$verifier=Join-Path $repo 'tools/greenwater_story_candidate.py'", code)
+        # After the output folder's own rules, before every write, every build and the packager's own source check.
+        self.assertLess(code.index("Package output must be wholly new"), run)
+        self.assertLess(run, self.first_write)
+        self.assertLess(run, code.index("dotnet run"))
+        self.assertLess(run, code.index("Current source names differ"))
+        # No interpreter, an interpreter that cannot be run, a non-zero exit, and a zero without the verifier's
+        # own statement: each stops, and each before the first write.
+        for stop in ('throw "Python interpreter not found: $Python.', "throw \"The candidate source verifier could not be run with",
+                     "if ($null -eq $LASTEXITCODE -or $LASTEXITCODE -ne 0) { throw \"The candidate source verifier refused this checkout",
+                     "if ($verifyOutput -notlike '*the checkout is the source its manifest describes*') { throw"):
+            self.assertIn(stop, code)
+            self.assertLess(code.index(stop), self.first_write, stop)
+        self.assertIn("$global:LASTEXITCODE=$null", code)
+        self.assertLess(code.index("$global:LASTEXITCODE=$null"), run)
+        # The statement it waits for is the one the verifier makes, and only when nothing is wrong.
+        tool = (ROOT / "tools/greenwater_story_candidate.py").read_text()
+        self.assertIn("the checkout is the source its manifest describes", tool)
+        said = subprocess.run([sys.executable, "-B", str(ROOT / "tools/greenwater_story_candidate.py"), "verify"], capture_output=True, text=True)
+        self.assertEqual(said.returncode, 0, said.stdout)
+        self.assertIn("the checkout is the source its manifest describes", said.stdout)
+        # The interpreter is a parameter; nothing is installed and no setting, path or policy is changed.
+        self.assertIn("[string]$Python='python'", self.text)
+        for word in ("pip", "winget", "choco", "Install-", "Set-ExecutionPolicy", "$env:PATH", "[Environment]::SetEnvironmentVariable", "Start-Process"):
+            self.assertNotIn(word.lower(), code.lower(), word)
+        # The fresh compile's files are not claimed to be this source's by anything here.
+        self.assertIn("What that does NOT show: that the files in -FreshCompile were compiled from", self.text)
 
     def test_it_reads_its_own_manifest_and_takes_no_earlier_pin_for_its_output(self):
         self.assertIn("greenwater-story-candidate.json", self.code)
@@ -459,6 +545,8 @@ class ThePackagersText(unittest.TestCase):
                 self.assertRegex(line, r"-Destination (\$bundle|\$packaged|\(Join-Path \$output )", line)
         self.assertEqual(self.code.count("WriteAllText"), 1)
         self.assertIn("WriteAllText((Join-Path $output 'measured.json')", self.code)
+        # The only programs it runs: the interpreter, on the verifier, and dotnet, on the two builders.
+        self.assertEqual(len(re.findall(r"(?m)^\s*(?:\$\w+=\()?& ", self.code)), 3)
 
     def test_it_counts_what_the_manifest_counts(self):
         self.assertIn("$sourcePins.Count -ne 23 -or $reviewed.Count -ne 17 -or $fresh.Count -ne 6", self.code)
@@ -467,6 +555,86 @@ class ThePackagersText(unittest.TestCase):
         for open_, close in ("{}", "()", "[]"):
             self.assertEqual(self.code.count(open_), self.code.count(close), open_ + close)
 
+
+class ThePackagersFixture(unittest.TestCase):
+    """tools/win/tests/Test-GreenwaterPackageSafety.ps1, read as text, and its changes carried out here in Python.
+    The fixture itself has never been run or parsed: no PowerShell is here. Running it in both shells is root's."""
+
+    def setUp(self):
+        self.text = FIXTURE.read_text()
+        self.code = "\n".join(l for l in self.text.split("#>", 1)[1].splitlines() if not l.strip().startswith("#"))
+
+    def test_it_says_it_is_unrun(self):
+        self.assertIn("UNRUN WHERE IT WAS WRITTEN", self.text)
+        self.assertIn("nothing here\n  counts as a pass", self.text)
+
+    def test_it_copies_everything_the_verifier_reads_and_edits_only_the_copy(self):
+        listed = re.findall(r"^\s+'([\w./-]+)',?$", self.code.split("$files=@(")[1].split(")")[0], re.M)
+        need = set(candidate.BUILDER_SOURCES + candidate.OLD_MANIFESTS + candidate.FROZEN) | {
+            MANIFEST_NAME, "tools/greenwater_story_candidate.py", "tools/win/Build-Greenwater.ps1", "assets/incoming/act1/story/documents.json"}
+        self.assertEqual(sorted(listed), sorted(need))
+        self.assertIn("Join-Path $repo 'scripts/Source/User/TLM') -File -Filter '*.psc'", self.code)
+        # Every edit is to a path joined to the copy; the checkout is only read.
+        for line in self.code.splitlines():
+            if "Add-Text $path" in line or "WriteAllText($path" in line:
+                continue
+            self.assertNotRegex(line, r"(Set-Content|Add-Text|WriteAllText|Remove-Item)[^;]*\$repo\b(?!\)\+)", line)
+        self.assertIn("& $change.Do (Join-Path $copy $change.File)", self.code)
+        self.assertIn("$root=Join-Path $repo ('build/greenwater-package-safety-'", self.code)
+        self.assertIn("if (-not $target.StartsWith(([IO.Path]::GetFullPath($repo)+[IO.Path]::DirectorySeparatorChar)", self.code)
+
+    def changes(self):
+        """(what, file, the -like pattern it expects) for each change the fixture makes."""
+        return re.findall(r"@\{What='([^']+)';File='([^']+)';Expect='([^']+)';Do=", self.code)
+
+    def test_each_change_it_makes_is_refused_here_with_the_words_it_expects(self):
+        """The same six changes, made in Python on a copy of the tree: the verifier the packager runs must refuse
+        each, saying what the fixture requires it to say. This is the verifier's side of the fixture, run for
+        real; the PowerShell side is not run."""
+        made = self.changes()
+        self.assertEqual([c[0] for c in made], ["a builder source", "the exterior builder", "the id file", "a document",
+                                                "a frozen earlier packager", "an earlier manifest"])
+        how = {
+            "a builder source": lambda p: p.write_bytes(p.read_bytes() + b"\n// fixture\n"),
+            "the exterior builder": lambda p: p.write_bytes(p.read_bytes() + b"\n// fixture\n"),
+            "the id file": lambda p: p.write_bytes(p.read_bytes() + b"TLM_FIXTURE\n9999\n"),
+            "a document": lambda p: p.write_text(p.read_text(encoding="utf-8").replace("Enclosed, forty. Count them.", "Enclosed, fifty. Count them."), encoding="utf-8"),
+            "a frozen earlier packager": lambda p: p.write_bytes(p.read_bytes() + b"\n# fixture\n"),
+            "an earlier manifest": lambda p: p.write_bytes(p.read_bytes() + b" "),
+        }
+        raw = (ROOT / "assets/incoming/act1/story/documents.json").read_text(encoding="utf-8")
+        self.assertEqual(raw.count("Enclosed, forty. Count them."), 1)
+        for what, name, expect in made:
+            with self.subTest(what):
+                root = copy_of_the_tree()
+                self.assertEqual(candidate.problems(root, root / MANIFEST_NAME), [])
+                how[what](root / name)
+                said = " | ".join(candidate.problems(root, root / MANIFEST_NAME))
+                self.assertTrue(fnmatch.fnmatchcase("The candidate source verifier refused this checkout (exit code 1). Nothing was built. It said: " + said, expect),
+                                "%s: the verifier says %r, the fixture expects %r" % (what, said, expect))
+                # And none of them is something the packager's own source check would have seen: no script changed.
+                self.assertNotIn(".psc is not the source", said)
+        # The fixture requires both the verifier's refusal and its reason, and that nothing was made.
+        self.assertIn("if ($reason -notlike '*candidate source verifier refused this checkout*') { throw", self.code)
+        self.assertIn("if ($reason -notlike $change.Expect) { throw", self.code)
+        self.assertEqual(self.code.count("Assert-NothingMade"), 4)
+        for made_nothing in ("if (Test-Path -LiteralPath $new) { throw", "if ($reached.Dotnet -ne 0) { throw", "(Join-Path $copy 'build')"):
+            self.assertIn(made_nothing, self.code)
+
+    def test_it_accepts_no_refusal_without_its_reason(self):
+        # Every refusal is read for its text; there is no bare catch that counts as a pass.
+        self.assertNotIn("function Refuses", self.code)
+        self.assertEqual(self.code.count("catch { $reason=$_.Exception.Message }"), 2)
+        self.assertEqual(len(re.findall(r"-notlike '\*[^']+\*'", self.code)) + self.code.count("-notlike $change.Expect"), 7)
+        for reason in ("*Reviewed runtime input absent:*", "*Python interpreter not found*", "*must be a new directory under this checkout build folder*", "*must be wholly new*"):
+            self.assertIn(reason, self.code)
+        # Each of those is a message the packager can give.
+        packager = PACKAGER.read_text()
+        for message in ("Reviewed runtime input absent:", "Python interpreter not found:", "must be a new directory under this checkout build folder",
+                        "must be wholly new", "candidate source verifier refused this checkout"):
+            self.assertIn(message, packager)
+        for open_, close in ("{}", "()", "[]"):
+            self.assertEqual(self.code.count(open_), self.code.count(close), open_ + close)
 
 if __name__ == "__main__":
     unittest.main()

@@ -8,6 +8,8 @@
   game master exist. It has not been run, not even parsed by PowerShell. Read
   it before running it. Its checks of the output folder are the lines of
   Build-WorldDetails.ps1, which root has run; the rest is new.
+  tools\win\tests\Test-GreenwaterPackageSafety.ps1 is its refusal fixture,
+  written in the same place and as unrun as this.
 
   It is the opt-in build of this candidate and of nothing else. The Details,
   Natural and story packagers and launchers are unchanged and refuse this
@@ -26,14 +28,36 @@
                       compiler's log with the build receipt. This script does
                       not run the compiler;
     -OutputDirectory  a folder that does not exist yet, under this checkout's
-                      build folder.
+                      build folder;
+    -Python           a Python 3 interpreter: a command name or the full path
+                      of its executable (default: python). On Windows pass
+                      the full path of a real interpreter if "python" is only
+                      the Store's placeholder. Nothing is installed and no
+                      setting is changed.
 
-  What it does: checks that the checkout is the source of
-  greenwater-story-candidate.json (23 scripts by text); builds the plugin and
+  What it does, in this order, and nothing is created before the fourth step:
+   1. checks the output folder (wholly new, under build, no reparse point);
+   2. runs the candidate's FULL source verifier,
+      tools\greenwater_story_candidate.py verify, and stops unless it exits 0
+      and says the checkout is its manifest's source. That check covers what
+      the steps below do not: the builder's own sources (the spec, the
+      builder, the exterior builder), the id file, the two documents' text,
+      the four earlier manifests and the frozen earlier manifest, checks and
+      packagers. If no interpreter can be run, it stops;
+   3. checks again itself that the checkout is the source of
+      greenwater-story-candidate.json (23 scripts by text), that the 17
+      reviewed compiled scripts are the pinned bytes, and that the fresh
+      compile holds exactly the 23;
+   4. builds the plugin and
   the exterior from source against the master; puts into bundle\Scripts\TLM
   exactly 23 files: the 17 reviewed ones byte for byte, and the 6 that the
   manifest lists under runtimeSelection.freshlyCompiled from -FreshCompile;
   writes measured.json.
+
+  What that does NOT show: that the files in -FreshCompile were compiled from
+  this checkout's sources. Their names and their number are checked, nothing
+  else can be. The compiler's log and root's own review of that compile are
+  what tie them to the source, and stay required.
 
   What it does NOT do: compare anything it built with a pin. No pin of this
   candidate's plugin, exterior or six fresh scripts exists. measured.json is a
@@ -45,7 +69,8 @@ param(
     [Parameter(Mandatory)][string]$VanillaMaster,
     [Parameter(Mandatory)][string]$ReviewedRuntime,
     [Parameter(Mandatory)][string]$FreshCompile,
-    [Parameter(Mandatory)][string]$OutputDirectory
+    [Parameter(Mandatory)][string]$OutputDirectory,
+    [string]$Python='python'
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
@@ -74,6 +99,28 @@ while ($cursor) {
 }
 foreach ($file in @($VanillaMaster)) { if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw "Required input absent: $file" } }
 foreach ($folder in @($ReviewedRuntime,$FreshCompile)) { if (-not (Test-Path -LiteralPath $folder -PathType Container)) { throw "Required input folder absent: $folder" } }
+
+# The candidate's full source verifier, before anything is created or built. The checks further down cover the
+# 23 scripts and the compiled inputs only; this one also covers the builder's sources, the id file, the documents
+# and the frozen earlier files. Fails closed: no interpreter, an interpreter that cannot be run, any exit code
+# but 0, or a 0 without the verifier's own statement, each stops here.
+$verifier=Join-Path $repo 'tools/greenwater_story_candidate.py'
+if (-not (Test-Path -LiteralPath $verifier -PathType Leaf)) { throw 'The candidate source verifier is absent: tools/greenwater_story_candidate.py. Nothing was built.' }
+$interpreter=Get-Command -Name $Python -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($null -eq $interpreter) { throw "Python interpreter not found: $Python. Pass -Python with the full path of a Python 3 executable. Nothing was built." }
+$verifyOutput=''
+$global:LASTEXITCODE=$null
+$preference=$ErrorActionPreference
+try {
+    # A native program's error output must not end this script before its exit code is read.
+    $ErrorActionPreference='Continue'
+    $verifyOutput=(& $interpreter.Path -B $verifier verify 2>&1 | Out-String)
+} catch {
+    $ErrorActionPreference=$preference
+    throw "The candidate source verifier could not be run with $($interpreter.Path): $($_.Exception.Message). Nothing was built."
+} finally { $ErrorActionPreference=$preference }
+if ($null -eq $LASTEXITCODE -or $LASTEXITCODE -ne 0) { throw "The candidate source verifier refused this checkout (exit code $LASTEXITCODE). Nothing was built. It said: $($verifyOutput.Trim())" }
+if ($verifyOutput -notlike '*the checkout is the source its manifest describes*') { throw "The candidate source verifier exited 0 without saying that the checkout is its manifest's source. Nothing was built. It said: $($verifyOutput.Trim())" }
 
 function Get-TextSha256([string]$Path) {
     # A source's digest: its UTF-8 text with every line end made LF. Not a digest of anything compiled.
