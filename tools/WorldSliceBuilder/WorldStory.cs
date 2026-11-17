@@ -26,6 +26,16 @@ public static class WorldStory
         ["Burnt"]=(2620,440,12),["OffSideArrival"]=(2560,230,0),["OffSideSight"]=(2620,370,100),
         ["CargoLashed"]=(2680,300,12),["Chain"]=(2740,300,12),["Pilot"]=(2790,340,12)
     };
+    // NIGHT-MAIL-STORY-001: the Night Mail has its own cell in the story master (TLM_CELL_NightMail: five labelled
+    // zones on three floors, no navmesh), so the exterior clone places only what stands at Mercy: the way in and the
+    // way back. Every other alias of the clone keeps pointing at the story master's own-cell reference. The same
+    // numbers as tools/PluginBuilder/SpecNightMail.cs (NightMail.Pieces, the two with AtMercy); a test compares the
+    // two. Both stand in the yard's southern edge, clear of the cabin's floor tiles (y 2672 and over) and 128 units or more from every other piece there,
+    // Greenwater's two included. Not seen in the game.
+    public static readonly Dictionary<string,(float X,float Y,float Z)> NightMailSites=new(){
+        ["MercyTravel"]=(2950,2640,12),["MercyReturn"]=(2780,2650,0)
+    };
+    const string NightMailQuest="TLM_NM";const string NightMailClone="TLM_WS_NM";const string NightMailRoad="TLM_MQ02A";
     const string GreenwaterQuest="TLM_GW";const string GreenwaterClone="TLM_WS_GW";const string RoadQuest="TLM_MQ02B";
     static readonly ModKey StoryMaster=ModKey.FromNameAndExtension("TheLastMeridian.esp");
 
@@ -70,6 +80,87 @@ public static class WorldStory
         // The exterior first section opens the exterior greybox, not the test room's.
         door.Object.SetTo(clone.FormKey);
         return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),references=mapping.Count,mapping};
+    }
+
+    // The greybox quest of the Night Mail, cloned as Greenwater's is, but with new persistent references for only
+    // the two Mercy pieces. Its other aliases keep their story-master references (in TLM_CELL_NightMail), and the
+    // road (TLM_MQ02A) and the cell stay in the story master.
+    static object? AddNightMail(Fallout4Mod mod,Worldspace world,IFallout4ModGetter source,Dictionary<FormKey,IPlacedGetter> sourceRefs,QuestAdapter firstSection)
+    {
+        var original=source.Quests.SingleOrDefault(q=>q.EditorID==NightMailQuest);
+        var bound=firstSection.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.Where(p=>p.Name=="TLM_NightMail").ToArray();
+        if(original==null){
+            // A source built before the road existed has neither the quest nor the binding.
+            if(bound.Length!=0)throw new InvalidDataException("Night Mail binding without a Night Mail quest");
+            return null;
+        }
+        var road=source.Quests.SingleOrDefault(q=>q.EditorID==NightMailRoad)??throw new InvalidDataException("Night Mail greybox without its road quest");
+        if(bound.Length!=1||bound[0] is not ScriptObjectProperty door||door.Alias!=-1||door.Object.FormKey!=original.FormKey)throw new InvalidDataException("First section is not bound to the story master's Night Mail greybox");
+        var clone=original.Duplicate(mod.GetNextFormKey());
+        clone.EditorID=NightMailClone;clone.Name="The Last Meridian - exterior Night Mail greybox (development)";
+        mod.Quests.Add(clone);
+        var aliases=clone.Aliases??throw new InvalidDataException("Missing Night Mail alias table");
+        if(aliases.Count<NightMailSites.Count||aliases.Any(a=>a is not QuestReferenceAlias r||r.ForcedReference.IsNull)||NightMailSites.Keys.Any(k=>aliases.OfType<QuestReferenceAlias>().Count(a=>a.Name==k)!=1))throw new InvalidDataException("Unexpected Night Mail alias contract");
+        var mapping=new List<object>();
+        foreach(var a in aliases.Cast<QuestReferenceAlias>().Where(a=>NightMailSites.ContainsKey(a.Name??""))){
+            if(!sourceRefs.TryGetValue(a.ForcedReference.FormKey,out var old))throw new InvalidDataException("Missing Night Mail source placement: "+a.Name);
+            var at=NightMailSites[a.Name!];var key=mod.GetNextFormKey();IPlaced placed;
+            if(old is IPlacedObjectGetter obj){var p=obj.Duplicate(key);p.Position=new P3Float(at.X,at.Y,at.Z);p.Rotation=new P3Float(0,0,0);p.EditorID="TLM_WS_ST_NM_"+a.Name;placed=p;}
+            else throw new InvalidDataException("Unsupported Night Mail source placement: "+a.Name);
+            placed.MajorRecordFlagsRaw|=0xC00; // own persistent, initially disabled
+            world.TopCell!.Persistent.Add(placed);a.ForcedReference.SetTo(key);
+            mapping.Add(new{alias=a.Name,id=a.ID,source=old.FormKey.ToString(),reference=key.ToString(),x=at.X,y=at.Y,z=at.Z});
+        }
+        var adapter=clone.VirtualMachineAdapter??throw new InvalidDataException("Missing Night Mail VMAD");
+        void Remap(ScriptObjectProperty obj){if(obj.Object.FormKey==original.FormKey)obj.Object.SetTo(clone.FormKey);}
+        void Script(ScriptEntry script){foreach(var p in script.Properties){
+            if(p is ScriptObjectProperty obj)Remap(obj);
+            if(p is ScriptObjectListProperty list)foreach(var o in list.Objects)Remap(o);
+        }}
+        foreach(var s in adapter.Scripts)Script(s);
+        foreach(var b in adapter.Aliases){Remap(b.Property);foreach(var s in b.Scripts)Script(s);}
+        // The exterior first section opens the exterior greybox, not the test room's.
+        door.Object.SetTo(clone.FormKey);
+        return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),aliases=aliases.Count,references=mapping.Count,mapping};
+    }
+
+    static void ValidateNightMail(IFallout4ModGetter addon,IQuestGetter firstSection)
+    {
+        var clone=addon.Quests.SingleOrDefault(q=>q.EditorID==NightMailClone);
+        var door=firstSection.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.Where(p=>p.Name=="TLM_NightMail").ToArray();
+        if(clone==null){if(door.Length!=0)throw new InvalidDataException("Night Mail binding without the exterior greybox");return;}
+        if(door.Length!=1||door[0] is not IScriptObjectPropertyGetter opened||opened.Alias!=-1||opened.Object.FormKey!=clone.FormKey)throw new InvalidDataException("Exterior first section does not open the exterior Night Mail greybox");
+        var aliases=clone.Aliases?.OfType<IQuestReferenceAliasGetter>().ToArray()??throw new InvalidDataException("Night Mail alias table missing");
+        if(aliases.Length<NightMailSites.Count||aliases.Any(a=>a.ForcedReference.IsNull))throw new InvalidDataException("Night Mail aliases must all be bound");
+        var refs=addon.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
+        var own=0;
+        foreach(var a in aliases){
+            var key=a.ForcedReference.FormKey;
+            if(NightMailSites.TryGetValue(a.Name??"",out var at)){
+                own++;
+                if(key.ModKey!=addon.ModKey||!refs.TryGetValue(key,out var placed))throw new InvalidDataException("Night Mail Mercy piece is not one of the exterior's own persistent references: "+a.Name);
+                P3Float? pos=placed switch {IPlacedObjectGetter o=>o.Position,_=>null};
+                if(pos is not {} got||got.X!=at.X||got.Y!=at.Y||got.Z!=at.Z)throw new InvalidDataException("Night Mail reference is not at its site: "+a.Name);
+                if((placed.MajorRecordFlagsRaw&0xC00)!=0xC00)throw new InvalidDataException("Night Mail reference is not persistent and initially disabled: "+a.Name);
+            }
+            else if(key.ModKey!=StoryMaster)throw new InvalidDataException("Night Mail piece in the story master's own cell was given another home: "+a.Name);
+        }
+        if(own!=NightMailSites.Count)throw new InvalidDataException("Night Mail exterior pieces are not exactly the two at Mercy");
+        var vmad=clone.VirtualMachineAdapter??throw new InvalidDataException("Night Mail VMAD missing");
+        var ids=aliases.Select(a=>a.ID).ToHashSet();
+        if(vmad.Aliases.Any(a=>a.Property.Object.FormKey!=clone.FormKey||!ids.Contains((uint)a.Property.Alias)||a.Scripts.Any(s=>s.Name!="TLM:NightMailTalk")))throw new InvalidDataException("Night Mail alias script ownership not remapped");
+        var walk=vmad.Scripts.Single(s=>s.Name=="TLM:NightMailWalk");
+        foreach(var p in walk.Properties){
+            if(p is IScriptObjectPropertyGetter obj){
+                if(obj.Alias>=0&&obj.Object.FormKey!=clone.FormKey)throw new InvalidDataException("Night Mail own alias property points at preview: "+p.Name);
+                if(obj.Alias<0&&obj.Object.FormKey.ModKey!=StoryMaster)throw new InvalidDataException("Night Mail form property does not point into the story master: "+p.Name);
+            }
+            if(p is IScriptObjectListPropertyGetter list){
+                if(p.Name!="CastInto"&&list.Objects.Any(o=>o.Object.FormKey!=clone.FormKey))throw new InvalidDataException("Night Mail own alias array points at preview: "+p.Name);
+                if(p.Name=="CastInto"&&list.Objects.Any(o=>o.Object.FormKey.ModKey!=StoryMaster))throw new InvalidDataException("Night Mail road aliases were not preserved in master");
+            }
+        }
+        if(addon.Quests.Any(q=>q.EditorID==NightMailRoad))throw new InvalidDataException("The Night Mail road quest was copied into the addon");
     }
 
     static void ValidateGreenwater(IFallout4ModGetter addon,IQuestGetter firstSection)
@@ -136,6 +227,7 @@ public static class WorldStory
         var playerProperty=entry.VirtualMachineAdapter.Scripts.Single().Properties.OfType<IScriptObjectPropertyGetter>().Single(p=>p.Name=="FreshPlayer");
         if(playerProperty.Object.FormKey!=entry.FormKey||playerProperty.Alias!=0)throw new InvalidDataException("Missing guarded player-alias property");
         ValidateGreenwater(addon,section);
+        ValidateNightMail(addon,section);
     }
     public static object Add(Fallout4Mod mod, Worldspace world, Cell clearing, IFallout4ModGetter source)
     {
@@ -213,6 +305,8 @@ public static class WorldStory
         // GREENWATER-STORY-001: the second clone, after everything of the first section is allocated, so that the
         // first section's 29 references and both quests keep the ids they had.
         var greenwater=AddGreenwater(mod,world,source,sourceRefs,adapter);
-        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,greenwater,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
+        // NIGHT-MAIL-STORY-001: the third, after Greenwater's, so that Greenwater's 31 references keep their ids.
+        var nightMail=AddNightMail(mod,world,source,sourceRefs,adapter);
+        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,greenwater,nightMail,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
     }
 }

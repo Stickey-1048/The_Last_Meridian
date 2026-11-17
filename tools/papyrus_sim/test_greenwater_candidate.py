@@ -21,6 +21,21 @@ parsed. What it can do, and does, is carry out each change the fixture makes
 on a copy of the tree here, in Python, and require the candidate's verifier to
 refuse it with the words the fixture expects.
 
+SINCE NIGHT-MAIL-STORY-001 THIS MANIFEST IS A FROZEN EARLIER ONE. It describes the
+Greenwater-only source (commit 016b2b4), not this checkout: this checkout is the
+composed Night Mail candidate, which has three more scripts, a changed
+Act1Walk and Act1Guide's second text, builder sources that have grown and
+`formkeys.txt` lines appended. The manifest, its check and Build-Greenwater.ps1
+are unchanged (their text is compared with 016b's here), and what is tested now
+is that
+  - the check REFUSES this checkout, for those reasons;
+  - on the 016b tree itself, taken out of Git, it still passes, and still
+    notices every kind of damage it noticed;
+  - the packager still runs the full verifier first and fails closed, and its
+    fixture now expects the refusal of this checkout.
+The composed candidate has its own manifest (tools/win/night-mail-story-candidate.json,
+test_night_mail_candidate.py).
+
 Source provenance only. Not a compile and not a game test.
 """
 import fnmatch
@@ -40,6 +55,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 import greenwater_story_candidate as candidate                    # noqa: E402
 
 CONTRACT = "637cbeda836c55b7c93bb45583b1ea2914f2d46d"
+# The source this manifest describes: the Greenwater road as repaired, before the Night Mail.
+G016B = "016b2b4005203ba180b908fb310a1653a95f934f"
 A8 = "a8f6d6482b4b5dc9d545e197ed4cf2c8f6324306"
 MANIFEST_NAME = "tools/win/greenwater-story-candidate.json"
 PACKAGER = ROOT / "tools" / "win" / "Build-Greenwater.ps1"
@@ -54,18 +71,32 @@ def preserves_frozen_attributes(before, now):
     return now in (before, before + NIGHT_MAIL_DOC_ATTRIBUTES)
 
 
-def copy_of_the_tree():
+def tree_names():
+    return (("scripts/Source/User/TLM",) + candidate.BUILDER_SOURCES + candidate.OLD_MANIFESTS + candidate.FROZEN + (
+        MANIFEST_NAME, "tools/greenwater_story_candidate.py", "assets/incoming/act1/story/documents.json"))
+
+
+def copy_of_this_checkout():
     """Just what the check reads, as it is in this working copy."""
     root = Path(tempfile.mkdtemp(prefix="tlm-gw-candidate-"))
-    names = ("scripts/Source/User/TLM",) + candidate.BUILDER_SOURCES + candidate.OLD_MANIFESTS + candidate.FROZEN + (
-        MANIFEST_NAME, "assets/incoming/act1/story/documents.json")
-    for name in dict.fromkeys(names):
+    for name in dict.fromkeys(tree_names()):
         source, target = ROOT / name, root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         if source.is_dir():
             shutil.copytree(source, target, ignore=lambda folder, items: [i for i in items if not i.endswith(".psc")])
         else:
             shutil.copyfile(source, target)
+    return root
+
+
+def copy_of_the_tree():
+    """Just what the check reads, AS IT WAS AT 016b, taken out of Git: the source the manifest describes.
+    None if that commit is not in this copy."""
+    packed = subprocess.run(["git", "archive", "--format=tar", G016B, "--"] + list(dict.fromkeys(tree_names())), cwd=ROOT, capture_output=True)
+    if packed.returncode != 0:
+        return None
+    root = Path(tempfile.mkdtemp(prefix="tlm-gw-016b-"))
+    subprocess.run(["tar", "-x", "-C", str(root)], input=packed.stdout, check=True)
     return root
 
 
@@ -79,8 +110,33 @@ class TheCandidate(unittest.TestCase):
         self.details = json.loads(candidate.DETAILS.read_text())
         self.a8 = json.loads((ROOT / candidate.A8_MANIFEST).read_text())
 
-    def test_the_checkout_is_the_source_the_manifest_describes(self):
-        self.assertEqual(candidate.problems(), [])
+    def test_the_016b_source_is_the_source_the_manifest_describes(self):
+        root = copy_of_the_tree()
+        if root is None:
+            self.skipTest("the 016b commit is not in this copy")
+        self.assertEqual(candidate.problems(root, root / MANIFEST_NAME), [])
+
+    def test_this_checkout_is_refused_and_for_the_right_reasons(self):
+        """The Night Mail candidate added three scripts, changed two of the 23 and grew the builder's sources and
+        the id file. The Greenwater manifest must not pass for it, and no compiled script it selects may be taken
+        for this source's."""
+        said = " | ".join(candidate.problems())
+        self.assertIn("Act1Walk.psc is not the source the manifest describes", said)
+        self.assertIn("Act1Guide.psc is not the source the manifest describes", said)
+        self.assertIn("only here ['MQ02AQuest.psc', 'NightMailTalk.psc', 'NightMailWalk.psc']", said)
+        self.assertIn("builderSourceTextSha256 is not as the manifest describes", said)
+        self.assertIn("idFile is not as the manifest describes", said)
+        for untouched in ("MQ02BQuest.psc", "GreenwaterWalk.psc", "GreenwaterTalk.psc", "MercyBriefing.psc", "MQ01Quest.psc", "SQ01Quest.psc"):
+            self.assertNotIn(untouched + " is not the source", said)       # the Greenwater road's own scripts are 016b's, word for word
+        self.assertNotIn("earlierManifestsSha256", said)                  # and the four older manifests are as they were
+        self.assertNotIn("frozenTextSha256", said)
+
+    def test_the_manifest_its_check_and_the_packager_are_the_ones_016b_had(self):
+        if not in_git(G016B):
+            self.skipTest("the 016b commit is not in this copy")
+        frozen = [MANIFEST_NAME, "tools/greenwater_story_candidate.py", "tools/win/Build-Greenwater.ps1"]
+        got = subprocess.run(["git", "diff", "--quiet", G016B, "--"] + frozen, cwd=ROOT)
+        self.assertEqual(got.returncode, 0, "a frozen manifest, its check or its packager differs from 016b's: they are not edited")
 
     def test_it_is_twenty_three_scripts_and_what_changed(self):
         m = self.manifest
@@ -185,7 +241,8 @@ class TheCandidate(unittest.TestCase):
         # (finding 4) and the new packager's own new fixture.
         was = subprocess.run(["git", "ls-tree", "-r", "--name-only", CONTRACT, "tools/win/tests"], cwd=ROOT, capture_output=True, text=True).stdout.split()
         now = sorted("tools/win/tests/" + f.name for f in (ROOT / "tools/win/tests").iterdir())
-        self.assertEqual(now, sorted(was + ["tools/win/tests/Test-GreenwaterPackageSafety.ps1"]))
+        # (and, since NIGHT-MAIL-STORY-001, the composed candidate's own, which this file does not test)
+        self.assertEqual(now, sorted(was + ["tools/win/tests/Test-GreenwaterPackageSafety.ps1", "tools/win/tests/Test-NightMailPackageSafety.ps1"]))
         for name in was:
             same = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--", name], cwd=ROOT).returncode == 0
             self.assertEqual(same, name != NATURAL_FIXTURE, name)
@@ -241,14 +298,16 @@ class TheCandidate(unittest.TestCase):
         details = (ROOT / "tools/win/Build-WorldDetails.ps1").read_text()
         self.assertLess(details.index("Current source names differ from the reviewed19 scripts"), details.index("Current source differs from reviewed logical source"))
         self.assertIn("*Current source names differ from the reviewed19 scripts*", (ROOT / "tools/win/tests/Test-WorldDetailsPackageSafety.ps1").read_text())
-        self.assertEqual(len(list((ROOT / "scripts/Source/User/TLM").glob("*.psc"))), 23)
+        self.assertEqual(len(list((ROOT / "scripts/Source/User/TLM").glob("*.psc"))), 26)        # 23 at 016b, and the Night Mail's three
 
     def test_the_records_are_the_ones_the_stand_in_build_reads_back(self):
         built_file = ROOT / "build" / "sim" / "TheLastMeridian.json"
         if not built_file.exists():
             self.skipTest("no stand-in build here (tools/run_checks.sh makes one)")
         built = {q["EditorId"]: q for q in json.loads(built_file.read_text())["Quests"]}
-        self.assertEqual(sorted(built), sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", "TLM_MQ02B", "TLM_GW"]))
+        # The two quests of this road are as 016b read them back; the Night Mail's two are beside them now.
+        self.assertEqual(sorted(built), sorted(["TLM_Core", "TLM_MQ01", "TLM_SQ01", "TLM_Trial", "TLM_A1", "TLM_MercyBriefing", "TLM_MQ02B", "TLM_GW",
+                                                "TLM_MQ02A", "TLM_NM"]))
         for name, said in self.manifest["records"]["quests"].items():
             q = built[name]
             self.assertEqual(said["scripts"], [s["Name"] for s in q["Scripts"]], name)
@@ -366,6 +425,8 @@ class TheCandidate(unittest.TestCase):
 class WhatTheCheckCatches(unittest.TestCase):
     def damaged(self, change):
         root = copy_of_the_tree()
+        if root is None:
+            self.skipTest("the 016b commit is not in this copy")
         self.assertEqual(candidate.problems(root, root / MANIFEST_NAME), [], "the copy is sound before it is damaged")
         change(root)
         return " | ".join(candidate.problems(root, root / MANIFEST_NAME))
@@ -545,9 +606,16 @@ class ThePackagersText(unittest.TestCase):
         # The statement it waits for is the one the verifier makes, and only when nothing is wrong.
         tool = (ROOT / "tools/greenwater_story_candidate.py").read_text()
         self.assertIn("the checkout is the source its manifest describes", tool)
+        # On the 016b tree it passes and says so; on this checkout, which is another source, it refuses.
+        tree = copy_of_the_tree()
+        if tree is not None:
+            said = subprocess.run([sys.executable, "-B", str(tree / "tools/greenwater_story_candidate.py"), "verify"], capture_output=True, text=True)
+            self.assertEqual(said.returncode, 0, said.stdout)
+            self.assertIn("the checkout is the source its manifest describes", said.stdout)
         said = subprocess.run([sys.executable, "-B", str(ROOT / "tools/greenwater_story_candidate.py"), "verify"], capture_output=True, text=True)
-        self.assertEqual(said.returncode, 0, said.stdout)
-        self.assertIn("the checkout is the source its manifest describes", said.stdout)
+        self.assertEqual(said.returncode, 1, said.stdout)
+        self.assertNotIn("the checkout is the source its manifest describes", said.stdout)
+        self.assertIn("is not the source the manifest describes", said.stdout)
         # The interpreter is a parameter; nothing is installed and no setting, path or policy is changed.
         self.assertIn("[string]$Python='python'", self.text)
         for word in ("pip", "winget", "choco", "Install-", "Set-ExecutionPolicy", "$env:PATH", "[Environment]::SetEnvironmentVariable", "Start-Process"):
@@ -611,21 +679,31 @@ class ThePackagersFixture(unittest.TestCase):
             if "Add-Text $path" in line or "WriteAllText($path" in line:
                 continue
             self.assertNotRegex(line, r"(Set-Content|Add-Text|WriteAllText|Remove-Item)[^;]*\$repo\b(?!\)\+)", line)
-        self.assertIn("& $change.Do (Join-Path $copy $change.File)", self.code)
         self.assertIn("$root=Join-Path $repo ('build/greenwater-package-safety-'", self.code)
         self.assertIn("if (-not $target.StartsWith(([IO.Path]::GetFullPath($repo)+[IO.Path]::DirectorySeparatorChar)", self.code)
 
-    def changes(self):
-        """(what, file, the -like pattern it expects) for each change the fixture makes."""
-        return re.findall(r"@\{What='([^']+)';File='([^']+)';Expect='([^']+)';Do=", self.code)
+    # The six damage cases the fixture made while this checkout was the 016b source, and the words it then expected.
+    SIX = [("a builder source", "tools/PluginBuilder/SpecGreenwater.cs", "*builderSourceTextSha256 is not as the manifest describes*"),
+           ("the exterior builder", "tools/WorldSliceBuilder/WorldStory.cs", "*builderSourceTextSha256 is not as the manifest describes*"),
+           ("the id file", "tools/PluginBuilder/formkeys.txt", "*idFile is not as the manifest describes*"),
+           ("a document", "assets/incoming/act1/story/documents.json", "*documents is not as the manifest describes*"),
+           ("a frozen earlier packager", "tools/win/Build-WorldDetails.ps1", "*frozenTextSha256: tools/win/Build-WorldDetails.ps1 is not the frozen text*"),
+           ("an earlier manifest", "tools/win/world-natural-artifact.json", "*earlierManifestsSha256: tools/win/world-natural-artifact.json is not the pinned*")]
 
-    def test_each_change_it_makes_is_refused_here_with_the_words_it_expects(self):
-        """The same six changes, made in Python on a copy of the tree: the verifier the packager runs must refuse
-        each, saying what the fixture requires it to say. This is the verifier's side of the fixture, run for
-        real; the PowerShell side is not run."""
-        made = self.changes()
-        self.assertEqual([c[0] for c in made], ["a builder source", "the exterior builder", "the id file", "a document",
-                                                "a frozen earlier packager", "an earlier manifest"])
+    def test_the_fixture_no_longer_makes_the_six_changes_and_says_why(self):
+        """On this checkout they could not be told apart: it differs from the manifest already. They are made
+        below, on the 016b tree, where the verifier passes before it is damaged."""
+        self.assertNotIn("@{What=", self.code)
+        self.assertNotIn("$change.Expect", self.code)
+        self.assertIn("SINCE NIGHT-MAIL-STORY-001 THIS PACKAGER IS A FROZEN EARLIER ONE", self.text)
+        self.assertIn("can no longer be told apart here", self.text)
+        for _, name, _ in self.SIX:
+            self.assertIn("'" + name + "'", self.code)                      # the copy still holds everything the verifier reads
+
+    def test_each_change_it_made_is_refused_on_the_016b_tree_with_the_words_it_expected(self):
+        """The same six changes, made in Python on a copy of the 016b tree: the verifier the packager runs must
+        refuse each, saying what the fixture used to require it to say. The verifier's side, run for real; the
+        PowerShell side is not run."""
         how = {
             "a builder source": lambda p: p.write_bytes(p.read_bytes() + b"\n// fixture\n"),
             "the exterior builder": lambda p: p.write_bytes(p.read_bytes() + b"\n// fixture\n"),
@@ -636,29 +714,35 @@ class ThePackagersFixture(unittest.TestCase):
         }
         raw = (ROOT / "assets/incoming/act1/story/documents.json").read_text(encoding="utf-8")
         self.assertEqual(raw.count("Enclosed, forty. Count them."), 1)
-        for what, name, expect in made:
+        for what, name, expect in self.SIX:
             with self.subTest(what):
                 root = copy_of_the_tree()
+                if root is None:
+                    self.skipTest("the 016b commit is not in this copy")
                 self.assertEqual(candidate.problems(root, root / MANIFEST_NAME), [])
                 how[what](root / name)
                 said = " | ".join(candidate.problems(root, root / MANIFEST_NAME))
                 self.assertTrue(fnmatch.fnmatchcase("The candidate source verifier refused this checkout (exit code 1). Nothing was built. It said: " + said, expect),
-                                "%s: the verifier says %r, the fixture expects %r" % (what, said, expect))
-                # And none of them is something the packager's own source check would have seen: no script changed.
+                                "%s: the verifier says %r, the fixture expected %r" % (what, said, expect))
                 self.assertNotIn(".psc is not the source", said)
-        # The fixture requires both the verifier's refusal and its reason, and that nothing was made.
+        # The fixture requires the verifier's refusal and its reason, and that nothing was made.
         self.assertIn("if ($reason -notlike '*candidate source verifier refused this checkout*') { throw", self.code)
-        self.assertIn("if ($reason -notlike $change.Expect) { throw", self.code)
-        self.assertEqual(self.code.count("Assert-NothingMade"), 4)
+        self.assertEqual(self.code.count("Assert-NothingMade"), 3)             # its definition and two uses
         for made_nothing in ("if (Test-Path -LiteralPath $new) { throw", "if ($reached.Dotnet -ne 0) { throw", "(Join-Path $copy 'build')"):
             self.assertIn(made_nothing, self.code)
+
+    def test_this_checkout_is_refused_by_the_packagers_verifier_with_the_words_the_fixture_expects(self):
+        root = copy_of_this_checkout()
+        said = "The candidate source verifier refused this checkout (exit code 1). Nothing was built. It said: " + " | ".join(candidate.problems(root, root / MANIFEST_NAME))
+        for pattern in ("*candidate source verifier refused this checkout*", "*Act1Walk.psc is not the source the manifest describes*", "*NightMailWalk.psc*"):
+            self.assertTrue(fnmatch.fnmatchcase(said, pattern), pattern)
 
     def test_it_accepts_no_refusal_without_its_reason(self):
         # Every refusal is read for its text; there is no bare catch that counts as a pass.
         self.assertNotIn("function Refuses", self.code)
         self.assertEqual(self.code.count("catch { $reason=$_.Exception.Message }"), 2)
-        self.assertEqual(len(re.findall(r"-notlike '\*[^']+\*'", self.code)) + self.code.count("-notlike $change.Expect"), 7)
-        for reason in ("*Reviewed runtime input absent:*", "*Python interpreter not found*", "*must be a new directory under this checkout build folder*", "*must be wholly new*"):
+        self.assertEqual(len(re.findall(r"-notlike '\*[^']+\*'", self.code)), 6)
+        for reason in ("*Python interpreter not found*", "*must be a new directory under this checkout build folder*", "*must be wholly new*"):
             self.assertIn(reason, self.code)
         # Each of those is a message the packager can give.
         packager = PACKAGER.read_text()

@@ -21,8 +21,10 @@ public static class StoryCloneCheck
 {
     static readonly string[] Damages={"greenwater-binding-removed","greenwater-binding-to-another-quest","greenwater-binding-as-alias",
         "briefing-binding-removed","greenwater-alias-dropped","greenwater-placement-missing","road-quest-missing",
+        "nightmail-binding-removed","nightmail-binding-to-another-quest","nightmail-binding-as-alias","nightmail-alias-dropped",
+        "nightmail-mercy-placement-missing","nightmail-road-quest-missing","nightmail-source-without-the-second-mercy-piece",
         // Not damage: a source as it was before the road existed (neither quest, no binding). It must clone as it did.
-        "source-without-greenwater"};
+        "source-without-greenwater","source-without-nightmail"};
 
     static IFallout4ModGetter Damaged(string story,string damage)
     {
@@ -31,6 +33,7 @@ public static class StoryCloneCheck
         var walk=a1.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:Act1Walk");
         ScriptObjectProperty Prop(string name)=>walk.Properties.OfType<ScriptObjectProperty>().Single(p=>p.Name==name);
         var gw=bad.Quests.Single(q=>q.EditorID=="TLM_GW");
+        var nm=bad.Quests.Single(q=>q.EditorID=="TLM_NM");
         switch(damage){
             case "greenwater-binding-removed":walk.Properties.Remove(Prop("TLM_Greenwater"));break;
             case "greenwater-binding-to-another-quest":Prop("TLM_Greenwater").Object.SetTo(bad.Quests.Single(q=>q.EditorID=="TLM_SQ01").FormKey);break;
@@ -42,6 +45,16 @@ public static class StoryCloneCheck
             case "source-without-greenwater":
                 walk.Properties.Remove(Prop("TLM_Greenwater"));
                 bad.Quests.Remove(gw.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02B").FormKey);break;
+            case "nightmail-binding-removed":walk.Properties.Remove(Prop("TLM_NightMail"));break;
+            case "nightmail-binding-to-another-quest":Prop("TLM_NightMail").Object.SetTo(bad.Quests.Single(q=>q.EditorID=="TLM_SQ01").FormKey);break;
+            case "nightmail-binding-as-alias":Prop("TLM_NightMail").Alias=0;break;
+            case "nightmail-alias-dropped":nm.Aliases!.Remove(nm.Aliases!.OfType<QuestReferenceAlias>().First(a=>a.Name=="MercyReturn"));break;
+            case "nightmail-mercy-placement-missing":nm.Aliases!.OfType<QuestReferenceAlias>().First(a=>a.Name=="MercyTravel").ForcedReference.SetToNull();break;
+            case "nightmail-road-quest-missing":bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);break;
+            case "nightmail-source-without-the-second-mercy-piece":nm.Aliases!.OfType<QuestReferenceAlias>().First(a=>a.Name=="MercyReturn").Name="Elsewhere";break;
+            case "source-without-nightmail":
+                walk.Properties.Remove(Prop("TLM_NightMail"));
+                bad.Quests.Remove(nm.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);break;
             default:throw new ArgumentException("unknown damage: "+damage+"; one of "+string.Join(", ",Damages));
         }
         return bad;
@@ -74,6 +87,7 @@ public static class StoryCloneCheck
         try{WorldStory.Validate(read);}
         catch(InvalidDataException e){Console.Error.WriteLine("REFUSED on read-back: "+e.Message);return 1;}
         var persistent=read.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
+        var storyRefs=template.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(b=>b.Cells).SelectMany(c=>c.Persistent.Concat(c.Temporary)).ToDictionary(p=>p.FormKey);
         object Quest(string id){
             var q=read.Quests.SingleOrDefault(x=>x.EditorID==id);
             if(q==null)return new{present=false};
@@ -82,9 +96,10 @@ public static class StoryCloneCheck
             var script=q.VirtualMachineAdapter!.Scripts.First();
             return new{present=true,form=q.FormKey.ToString(),script=script.Name,properties=script.Properties.Count,
                 aliases=q.Aliases!.OfType<IQuestReferenceAliasGetter>().Select(a=>{
-                    var r=persistent[a.ForcedReference.FormKey];
+                    // Most of the Night Mail's pieces stay where the story master put them, in its own cell: read from there.
+                    var r=persistent.TryGetValue(a.ForcedReference.FormKey,out var mine)?mine:storyRefs[a.ForcedReference.FormKey];
                     P3Float pos=r switch {IPlacedNpcGetter n=>n.Position,IPlacedObjectGetter o=>o.Position,_=>default};
-                    return new{name=a.Name,id=a.ID,reference=r.EditorID,x=pos.X,y=pos.Y,z=pos.Z,actor=r is IPlacedNpcGetter,flags=r.MajorRecordFlagsRaw};}).ToArray(),
+                    return new{name=a.Name,id=a.ID,reference=r.EditorID,x=pos.X,y=pos.Y,z=pos.Z,actor=r is IPlacedNpcGetter,flags=r.MajorRecordFlagsRaw,inAddon=persistent.ContainsKey(a.ForcedReference.FormKey)};}).ToArray(),
                 aliasScripts=q.VirtualMachineAdapter.Aliases.Select(a=>new{alias=a.Property.Alias,on=Where(a.Property.Object.FormKey),scripts=a.Scripts.Select(s=>s.Name).ToArray()}).ToArray(),
                 forms=script.Properties.OfType<IScriptObjectPropertyGetter>().Where(p=>p.Alias<0).ToDictionary(p=>p.Name,p=>Where(p.Object.FormKey)),
                 ownAliases=script.Properties.OfType<IScriptObjectPropertyGetter>().Where(p=>p.Alias>=0).ToDictionary(p=>p.Name,p=>Where(p.Object.FormKey)+" alias "+p.Alias),
@@ -95,8 +110,9 @@ public static class StoryCloneCheck
             masters=read.ModHeader.MasterReferences.Select(m=>m.Master.ToString()).ToArray(),
             quests=read.Quests.Select(q=>q.EditorID).ToArray(),
             persistentReferences=persistent.Count,
-            firstSection=Quest("TLM_WS_A1"),greenwater=Quest("TLM_WS_GW"),
-            sites=WorldStory.GreenwaterSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z})},new JsonSerializerOptions{WriteIndented=true}));
+            firstSection=Quest("TLM_WS_A1"),greenwater=Quest("TLM_WS_GW"),nightMail=Quest("TLM_WS_NM"),
+            sites=WorldStory.GreenwaterSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z}),
+            nightMailSites=WorldStory.NightMailSites.ToDictionary(s=>s.Key,s=>new[]{s.Value.X,s.Value.Y,s.Value.Z})},new JsonSerializerOptions{WriteIndented=true}));
         return 0;
     }
 }

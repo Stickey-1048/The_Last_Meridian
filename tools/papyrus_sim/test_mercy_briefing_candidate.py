@@ -77,12 +77,12 @@ class TheCandidate(unittest.TestCase):
         self.assertEqual(candidate.problems(root, root / "tools/win/mercy-briefing-candidate.json"), [])
 
     def test_this_checkout_is_refused_and_for_the_right_reasons(self):
-        """The Greenwater candidate changed two of the 20 scripts and added three. The a8 manifest must not pass
+        """The Greenwater candidate changed two of the 20 scripts and added three; the Night Mail candidate added three more. The a8 manifest must not pass
         for it, and no compiled script selected by that manifest may be taken for this source's."""
         said = " | ".join(candidate.problems())
         self.assertIn("Act1Walk.psc is not the source the manifest describes", said)
         self.assertIn("Act1Guide.psc is not the source the manifest describes", said)
-        self.assertIn("only here ['GreenwaterTalk.psc', 'GreenwaterWalk.psc', 'MQ02BQuest.psc']", said)
+        self.assertIn("only here ['GreenwaterTalk.psc', 'GreenwaterWalk.psc', 'MQ02AQuest.psc', 'MQ02BQuest.psc', 'NightMailTalk.psc', 'NightMailWalk.psc']", said)
         self.assertIn("runtimeSelection", said)
         self.assertNotIn("MercyBriefing.psc is not the source", said)       # that script is a8's, word for word
         self.assertNotIn("earlierManifestsSha256", said)                    # and the four older manifests are as they were

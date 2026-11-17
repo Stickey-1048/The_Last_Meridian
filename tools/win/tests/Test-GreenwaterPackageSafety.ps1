@@ -6,11 +6,19 @@
   run or parsed. Running it in Windows PowerShell 5.1 and in PowerShell 7 is root's, and until then nothing here
   counts as a pass.
 
+  SINCE NIGHT-MAIL-STORY-001 THIS PACKAGER IS A FROZEN EARLIER ONE. It builds the Greenwater-only source (commit
+  016b2b4), and this checkout is the composed Night Mail candidate, which tools/win/Build-NightMail.ps1 builds.
+  The packager and its manifest are unchanged, and what it must now do with this checkout is REFUSE it, by its
+  full source verifier, naming scripts that are not the source it describes, before anything is created. The six
+  damage cases it used to make on a copy (a builder source, the exterior builder, the id file, a document, a
+  frozen packager, an earlier manifest) can no longer be told apart here: this checkout differs from the
+  manifest already, in the scripts, the builder sources and the id file, and the verifier would refuse each for
+  that. They are carried out instead, in Python, on the 016b tree taken out of Git
+  (tools/papyrus_sim/test_greenwater_candidate.py), where the verifier passes before it is damaged.
+
   What it tries: the packager, run on a COPY of the files its source check reads (under this checkout's build
   folder, removed afterwards; the checkout itself is never edited), must
-    - go past its source checks on the unchanged copy and stop at the first missing reviewed compiled script;
-    - refuse, by the candidate's full source verifier and for the stated reason, a copy in which a builder source,
-      the id file, a document's text or a frozen earlier packager was changed;
+    - refuse this checkout by the candidate's full source verifier, for the stated reason;
     - refuse when no Python interpreter can be found;
     - still refuse an output folder outside the build folder, one that exists with content, and one that exists
       empty;
@@ -94,44 +102,20 @@ try {
         if ((Get-Content $master -Raw).Trim() -ne 'input sentinel') { throw "The input master changed: $what" }
     }
 
-    # 1. The unchanged copy passes the full verifier and the packager's own source check, and is stopped by the
-    #    next check: the first of the 17 reviewed compiled scripts is not in the empty runtime folder.
+    # 1. This checkout is not the Greenwater-only source its manifest describes. The full verifier refuses it, for
+    #    the scripts that differ, before anything is created, built or compiled.
     $reason=Get-Refusal ($common + @{OutputDirectory=$new;Python=$Python})
-    if ($reason -notlike '*Reviewed runtime input absent:*') { throw "The unchanged copy was not stopped at the reviewed runtime check: $reason" };$checks++
-    Assert-NothingMade 'the unchanged copy';$checks++
+    if ($reason -notlike '*candidate source verifier refused this checkout*') { throw "This checkout was not refused by the full verifier: $reason" };$checks++
+    if ($reason -notlike '*Act1Walk.psc is not the source the manifest describes*') { throw "The refusal does not name Act1Walk.psc as changed: $reason" };$checks++
+    if ($reason -notlike '*NightMailWalk.psc*') { throw "The refusal does not name the Night Mail scripts as not part of the Greenwater source: $reason" };$checks++
+    Assert-NothingMade 'this checkout';$checks++
 
-    # 2. Provenance the packager's own source check does not read. Each must be refused by the full verifier,
-    #    for its own reason, before anything is created.
-    $document=Join-Path $copy 'assets/incoming/act1/story/documents.json'
-    $changes=@(
-        @{What='a builder source';File='tools/PluginBuilder/SpecGreenwater.cs';Expect='*builderSourceTextSha256 is not as the manifest describes*';Do={ param($path) Add-Text $path "`n// fixture`n" }},
-        @{What='the exterior builder';File='tools/WorldSliceBuilder/WorldStory.cs';Expect='*builderSourceTextSha256 is not as the manifest describes*';Do={ param($path) Add-Text $path "`n// fixture`n" }},
-        @{What='the id file';File='tools/PluginBuilder/formkeys.txt';Expect='*idFile is not as the manifest describes*';Do={ param($path) Add-Text $path "TLM_FIXTURE`n9999`n" }},
-        @{What='a document';File='assets/incoming/act1/story/documents.json';Expect='*documents is not as the manifest describes*';Do={ param($path)
-            $text=[IO.File]::ReadAllText($path)
-            if (-not $text.Contains('Enclosed, forty. Count them.')) { throw 'fixture: the letter of hire is not worded as this fixture expects' }
-            [IO.File]::WriteAllText($path,$text.Replace('Enclosed, forty. Count them.','Enclosed, fifty. Count them.'),(New-Object Text.UTF8Encoding $false)) }},
-        @{What='a frozen earlier packager';File='tools/win/Build-WorldDetails.ps1';Expect='*frozenTextSha256: tools/win/Build-WorldDetails.ps1 is not the frozen text*';Do={ param($path) Add-Text $path "`n# fixture`n" }},
-        @{What='an earlier manifest';File='tools/win/world-natural-artifact.json';Expect='*earlierManifestsSha256: tools/win/world-natural-artifact.json is not the pinned*';Do={ param($path) Add-Text $path " " }}
-    )
-    foreach ($change in $changes) {
-        & $change.Do (Join-Path $copy $change.File)
-        $reason=Get-Refusal ($common + @{OutputDirectory=$new;Python=$Python})
-        if ($reason -notlike '*candidate source verifier refused this checkout*') { throw "Not refused by the full verifier ($($change.What)): $reason" };$checks++
-        if ($reason -notlike $change.Expect) { throw "Refused for another reason ($($change.What)): $reason" };$checks++
-        Assert-NothingMade $change.What;$checks++
-        Copy-FromCheckout $change.File $copy
-    }
-    # Put back, the copy passes the verifier again: the refusals above were for the changes and nothing else.
-    $reason=Get-Refusal ($common + @{OutputDirectory=$new;Python=$Python})
-    if ($reason -notlike '*Reviewed runtime input absent:*') { throw "The restored copy was not stopped at the reviewed runtime check: $reason" };$checks++
-
-    # 3. No interpreter: fails closed.
+    # 2. No interpreter: fails closed.
     $reason=Get-Refusal ($common + @{OutputDirectory=$new;Python='tlm-no-such-python-interpreter'})
     if ($reason -notlike '*Python interpreter not found*') { throw "A missing interpreter was not refused as such: $reason" };$checks++
     Assert-NothingMade 'no interpreter';$checks++
 
-    # 4. The output folder's own rules still come first.
+    # 3. The output folder's own rules still come first.
     $outside=Join-Path ([IO.Path]::GetTempPath()) ('must-not-exist-'+[guid]::NewGuid().ToString('N'))
     $reason=Get-Refusal ($common + @{OutputDirectory=$outside;Python=$Python})
     if ($reason -notlike '*must be a new directory under this checkout build folder*') { throw "An outside output was not refused as such: $reason" };$checks++

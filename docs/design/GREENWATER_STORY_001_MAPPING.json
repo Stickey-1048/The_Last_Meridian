@@ -514,7 +514,7 @@
       {
         "record": "TLM_MSG_GW_AskTravel",
         "property": "AskTravel",
-        "text": "[Greenwater story test]\n\nOnly the Greenwater road is playable in this candidate. It is a greybox: flat ground and labelled stand-ins. Travel there now?",
+        "text": "[Greenwater story test]\n\nGreenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: flat ground and labelled stand-ins. Travel there now?",
         "buttons": [
           "Travel to Greenwater",
           "Not now"
@@ -865,7 +865,7 @@
       {
         "record": "TLM_MSG_GW_ReportEndKnown",
         "property": "ReportEndKnown",
-        "text": "[River report]\n\nYou learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.\n\nGreenwater road complete. The other roads and the fair are not playable in this candidate.",
+        "text": "[River report]\n\nYou learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.\n\nGreenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not.",
         "buttons": [
           "Continue"
         ],
@@ -874,7 +874,7 @@
       {
         "record": "TLM_MSG_GW_ReportEndUnknown",
         "property": "ReportEndUnknown",
-        "text": "[River report]\n\nYou did not learn why Hatcher held the grain.\n\nGreenwater road complete. The other roads and the fair are not playable in this candidate.",
+        "text": "[River report]\n\nYou did not learn why Hatcher held the grain.\n\nGreenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not.",
         "buttons": [
           "Continue"
         ],
@@ -1182,7 +1182,7 @@
     }
   },
   "availability_text_changed_elsewhere": {
-    "why": "Order, item 1: in this candidate Greenwater is playable.",
+    "why": "Order, item 1: in this candidate Greenwater is playable. Replaced by NIGHT-MAIL-STORY-001, in which Iron Junction is playable too (docs/design/NIGHT_MAIL_STORY_001_MAPPING.json, availability_text_changed_elsewhere): the three Mercy strings and the first section's footer below are those of the Greenwater-only candidate; the two Greenwater boxes named by ui.boxes carry the composed wording.",
     "TLM_MSG_MB_Hub and stage 10 of TLM_MercyBriefing": "Mercy briefing. Greenwater is playable; the other roads are not.",
     "TLM_MSG_MB_HandOff": "Opening complete. Ask for briefings or use Greenwater story test.",
     "stage 20 of TLM_MercyBriefing": "Mercy briefing complete. Only Greenwater is playable; other roads and fair are not.",

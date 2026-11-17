@@ -167,9 +167,9 @@ class Projection(unittest.TestCase):
 
     def test_the_availability_text_is_the_orders(self):
         texts = {k: m["Text"] for k, m in self.messages.items()}
-        self.assertIn("Only the Greenwater road is playable in this candidate.", texts[G + "AskTravel"])
+        self.assertIn("Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not.", texts[G + "AskTravel"])
         for end in ("ReportEndKnown", "ReportEndUnknown"):
-            self.assertTrue(texts[G + end].endswith("Greenwater road complete. The other roads and the fair are not playable in this candidate."))
+            self.assertTrue(texts[G + end].endswith("Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not."))
         travel = [r for r in self.plugin["Records"] if r["EditorId"] == "TLM_ACTI_GW_Travel"][0]
         self.assertEqual(travel["Name"], "Greenwater story test")
 

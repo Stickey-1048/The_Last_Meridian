@@ -1,0 +1,1507 @@
+{
+ "what": "NIGHT-MAIL-STORY-001: which field of the accepted writing each native record of the Night Mail takes its words from, when it is shown, and what this build says for itself. tools/papyrus_sim/test_night_mail_projection.py compares the plugin as built with this file and with the writing. Agreement of built records with source documents; not a compile and not a game test.",
+ "contract": [
+  "docs/design/NIGHT_MAIL_STORY_001.md",
+  "docs/design/NIGHT_MAIL_STORY_001_ORDER.md"
+ ],
+ "source": {
+  "accepted_at": "d142104fdc6f72ae556f285a0166c1122893b991",
+  "folder": "assets/incoming/act1/story",
+  "quest": "quests/tlm_mq02a.json",
+  "talk": "talk/tlm_mq02a.json",
+  "hub_talk": "talk/tlm_mq02.json",
+  "documents": "documents.json",
+  "characters": "characters.json"
+ },
+ "speech_format": {
+  "how_a_box_is_written": "<name>: \"<text>\"",
+  "name_from": "characters.json, the speaker's 'name'",
+  "pritchard": "Owen Pritchard"
+ },
+ "limit": {
+  "longest_displayed_string": 240,
+  "why": "As docs/design/ACT1_RUNTIME_001_MAPPING.json: this project's margin under the 255 at which the game was seen to cut a box short."
+ },
+ "who_can_speak": "A line is shown only if its speaker is alive, enabled and in no fight when it is asked for, and what follows an answered box is done only if they still are. A dead or fighting participant speaks no line, countersigns nothing and receives no item.",
+ "speech": [
+  {
+   "record": "TLM_MSG_NM_LockridgeDefault",
+   "property": "SayLockridgeDefault",
+   "speaker": "lockridge",
+   "node": "lockridge_default",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "Lockridge alive, present and in no fight and dispatching, and none of her other lines applies."
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeGateA",
+   "property": "SayLockridgeGateA",
+   "speaker": "lockridge",
+   "node": "lockridge_gate",
+   "text": {
+    "cut_before": " Tonight I send",
+    "part": 1
+   },
+   "buttons": [
+    {
+     "ui": "Continue"
+    }
+   ],
+   "shown_when": "Stage 10 set, no job taken, nothing claimed or recorded, Lockridge alive, present and in no fight and dispatching, the yard not alerted and the ledger not sold. First of two boxes.",
+   "not_imported": [
+    "The line is 222 characters and 243 with her name: over this project's 240. It is shown whole in two boxes, cut at a sentence end; nothing is left out."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeGateB",
+   "property": "SayLockridgeGateB",
+   "speaker": "lockridge",
+   "node": "lockridge_gate",
+   "text": {
+    "cut_before": " Tonight I send",
+    "part": 2
+   },
+   "buttons": "node",
+   "shown_when": "The first box answered, and Lockridge still alive, present and in no fight on a road that stands as it stood.",
+   "then": "0: lockridge_hired (or this build's notice if Billie is not there to be named), then AcceptJob -> stage 20. 1: lockridge_dole. 2: lockridge_rails. 3: nothing; no fight, no loss.",
+   "not_imported": [
+    "The effect 'mq02a set 20' on its first button: stage 20 is set when her answer to it has been shown and answered, not when it is asked for."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeGateAlerted",
+   "property": "SayLockridgeGateAlerted",
+   "speaker": "lockridge",
+   "node": "lockridge_gate_alerted",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "As the gate greeting, with TLM_G_SQ01_YardAlerted 1: the side quest's own record of its REPORTED outcome. Read, never written. A posted notice does not set it.",
+   "then": "0: the job, as above. 1: lockridge_rails. 2: nothing.",
+   "not_imported": [
+    "The condition 'flag yard_alerted' is read from TLM_G_SQ01_YardAlerted, which only the side quest's report to Pritchard sets."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeGateSold",
+   "property": "SayLockridgeGateSold",
+   "speaker": "lockridge",
+   "node": "lockridge_gate_sold",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "As the gate greeting, with TLM_G_SQ01_Outcome 5: the side quest's sold outcome. A ledger that is merely not carried is not that.",
+   "then": "0: the job. 1: lockridge_dole. 2: nothing.",
+   "not_imported": [
+    "The condition 'ledger is sold' is read from the side quest's recorded outcome, not from the inventory."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeDole",
+   "property": "SayLockridgeDole",
+   "speaker": "lockridge",
+   "node": "lockridge_dole",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'Who chalks the hymns?' pressed and Lockridge still alive, present and in no fight."
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeRails",
+   "property": "SayLockridgeRails",
+   "speaker": "lockridge",
+   "node": "lockridge_rails",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'Who passes your trains as sound?', 'Who signed that page?' or 'Whose hand is on your inspections?' pressed and Lockridge still alive, present and in no fight."
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeHired",
+   "property": "SayLockridgeHired",
+   "speaker": "lockridge",
+   "node": "lockridge_hired",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'I'll ride your mail.' pressed, Lockridge alive, present and in no fight, and Billie alive and present: the line names her as the driver.",
+   "then": "Answered: AcceptJob -> stage 20, objective 10 ticked, 20 shown."
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeAfterRan",
+   "property": "SayLockridgeAfterRan",
+   "speaker": "lockridge",
+   "node": "lockridge_after_ran",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "Outcome the run, the mail delivered, stage 60 not set; Lockridge alive, present and in no fight and dispatching.",
+   "then": "0: lockridge_rails. 1: nothing."
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeAfterDole",
+   "property": "SayLockridgeAfterDole",
+   "speaker": "lockridge",
+   "node": "lockridge_after_dole",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "Outcome Dole defeated, Dole seen dead, the name not known; Lockridge alive, present and in no fight and dispatching.",
+   "not_imported": [
+    "The condition is 'done 42, notdone 55'; natively: the outcome 'Dole defeated' (42 or 47) and neither way of knowing the name (55, 56)."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeAfterSold",
+   "property": "SayLockridgeAfterSold",
+   "speaker": "lockridge",
+   "node": "lockridge_after_sold",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "Outcome the sale, Billie released alive, and her return and report shown and seen (BillieReported). Until then this build's NoteSaleStatus.",
+   "not_imported": [
+    "The condition 'done 43' alone: the line says Billie walked in at four this morning and told her. It is hers only after that scene was shown with both alive."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeHymnal",
+   "property": "SayLockridgeHymnal",
+   "speaker": "lockridge",
+   "node": "lockridge_hymnal",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'(Show her the flyleaf)' pressed with the hymnal itself in the inventory, Lockridge alive, present and in no fight and dispatching, Dole not dead, nothing decided about the stamp, not shown before.",
+   "then": "Answered: ShowHymnal, FindStamp -> stage 60, then her question about the stamp.",
+   "not_imported": [
+    "The condition 'done 55' alone: knowing the name by being told (56) holds no book to show. The line speaks of Dole in the present tense, so not after his death."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_LockridgeStamp",
+   "property": "SayLockridgeStamp",
+   "speaker": "lockridge",
+   "node": "lockridge_stamp",
+   "text": "whole",
+   "buttons": [
+    {
+     "node": "lockridge_stamp",
+     "button": 0
+    },
+    {
+     "node": "lockridge_stamp",
+     "button": 1
+    },
+    {
+     "node": "lockridge_stamp",
+     "button": 2
+    },
+    {
+     "ui": "(Close the drawer)"
+    }
+   ],
+   "shown_when": "The drawer opened (stage 60), nothing decided or being decided, Lockridge alive, present and in no fight and dispatching.",
+   "then": "0: KeepStamping -> 61. 1: the countersigning scene -> 62. 2: TakeStamp -> 63. 3: nothing decided. Answered to her: if she is not alive, present and in no fight after it, nothing."
+  },
+  {
+   "record": "TLM_MSG_NM_BillieDefault",
+   "property": "SayBillieDefault",
+   "speaker": "tarrow",
+   "node": "tarrow_default",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "Billie alive, present and in no fight, and none of her other lines applies."
+  },
+  {
+   "record": "TLM_MSG_NM_BillieFootplate",
+   "property": "SayBillieFootplate",
+   "speaker": "tarrow",
+   "node": "tarrow_footplate",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "The job taken, stage 40 not set, the train in the yard, nothing recorded; Billie alive, present and in no fight.",
+   "then": "1: tarrow_cut_before. 0 and 2: nothing; the departure is the departure control's."
+  },
+  {
+   "record": "TLM_MSG_NM_BillieCutBefore",
+   "property": "SayBillieCutBefore",
+   "speaker": "tarrow",
+   "node": "tarrow_cut_before",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'What's in the Cut?' pressed and Billie still alive, present and in no fight."
+  },
+  {
+   "record": "TLM_MSG_NM_BillieInCut",
+   "property": "SayBillieInCut",
+   "speaker": "tarrow",
+   "node": "tarrow_in_cut",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "The encounter unsettled (train in the Cut, mail aboard, no course claimed or recorded, no scene pending); Billie alive, present and in no fight. At her, or at the regulator or reverser.",
+   "then": "0: the run's notice, then the run. 2: the reverse's notice, then the reverse. 1: nothing: the train is standing and the player walks to Dole. Answered to her."
+  },
+  {
+   "record": "TLM_MSG_NM_BillieRan",
+   "property": "SayBillieRan",
+   "speaker": "tarrow",
+   "node": "tarrow_ran",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "The run recorded with Billie at the regulator when it was begun, Billie alive, present and in no fight and seen at the platform; once.",
+   "not_imported": [
+    "The condition 'done 41' is the same fact: 41 is set only when she drove."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_BillieBacked",
+   "property": "SayBillieBacked",
+   "speaker": "tarrow",
+   "node": "tarrow_backed",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "The reverse recorded with Billie driving, Billie alive, present and in no fight and seen on the yard footplate, and nobody of the cast dead; once.",
+   "not_imported": [
+    "The condition 'done 44' alone: the line says nobody's dead."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_BillieWalking",
+   "property": "SayBillieWalking",
+   "speaker": "tarrow",
+   "node": "tarrow_walking",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "The sale recorded with Billie released; Billie alive, present and in no fight."
+  },
+  {
+   "record": "TLM_MSG_NM_DoleDefault",
+   "property": "SayDoleDefault",
+   "speaker": "dole",
+   "node": "dole_default",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "Dole alive, present and in no fight, and the encounter not open to him (settled, or a scene pending)."
+  },
+  {
+   "record": "TLM_MSG_NM_DoleSermon",
+   "property": "SayDoleSermon",
+   "speaker": "dole",
+   "node": "dole_sermon",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "The encounter unsettled (train in the Cut, mail aboard, no course claimed or recorded, no scene pending); Dole alive, present and in no fight.",
+   "then": "Answered with Dole still alive, present and in no fight: MeetDole. 0: dole_face. 1: his share. 2: dole_name. 3: nothing; no fight."
+  },
+  {
+   "record": "TLM_MSG_NM_DoleName",
+   "property": "SayDoleName",
+   "speaker": "dole",
+   "node": "dole_name",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'They buried you. Who are you?' pressed and Dole still alive, present and in no fight.",
+   "then": "Answered with Dole still alive, present and in no fight: LearnName(told) -> stage 56, ostrander_known. No book is given or read by it. 0: dole_silver. 1: dole_face. 2: his share."
+  },
+  {
+   "record": "TLM_MSG_NM_DoleSilver",
+   "property": "SayDoleSilver",
+   "speaker": "dole",
+   "node": "dole_silver",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'And the silver in your plate?' pressed and Dole still alive, present and in no fight.",
+   "then": "Answered with Dole still alive, present and in no fight: LearnSilver(told) -> stage 51, silver_rail. 0: dole_face. 1: his share."
+  },
+  {
+   "record": "TLM_MSG_NM_DoleShare",
+   "property": "SayDoleShare",
+   "speaker": "dole",
+   "node": "dole_share",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'What's my share?' pressed, the share never paid or asked for, Dole alive, present and in no fight, and Billie alive and present: the line promises her a walk home unharmed.",
+   "then": "0: TakeShare (150 caps, asked once, seen), then the sale's scene. 1: dole_face, the fight. 2: nothing. Answered to him."
+  },
+  {
+   "record": "TLM_MSG_NM_DoleShareNoBillie",
+   "property": "SayDoleShareNoBillie",
+   "speaker": "dole",
+   "node": "dole_share",
+   "text": {
+    "from": "The physic goes up the hill:"
+   },
+   "buttons": [
+    {
+     "ui": "Continue"
+    }
+   ],
+   "shown_when": "As dole_share with Billie dead or not there.",
+   "then": "Then this build's AskShareOffer with the node's own three buttons.",
+   "not_imported": [
+    "The first two sentences (the offer of 150 caps and 'Your driver walks home unharmed'): a promise about a dead woman is not put in his mouth. The offer itself is restated by this build."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_DoleFace",
+   "property": "SayDoleFace",
+   "speaker": "dole",
+   "node": "dole_face",
+   "text": "whole",
+   "buttons": "node",
+   "shown_when": "'Stand aside' or 'No.' pressed and Dole still alive, present and in no fight.",
+   "then": "Answered: FaceDole; Dole and the living Black Rail who are not already fighting are set on the player."
+  },
+  {
+   "record": "TLM_MSG_NM_ReportKnown",
+   "property": "SayReportKnown",
+   "speaker": "pritchard",
+   "node": "pritchard_hears_rail_after_fair",
+   "text": "whole",
+   "buttons": [
+    {
+     "ui": "[Report on Iron Junction]"
+    },
+    {
+     "ui": "[Later]"
+    }
+   ],
+   "shown_when": "At Mercy, after the chapter, the road complete (stage 100) and not reported, silver_rail set; Pritchard and the player alive, he in no fight.",
+   "then": "0: GiveReport, then this build's report boxes. 1: the conversation goes on. Anything else: nothing more in this conversation.",
+   "not_imported": [
+    "Its condition (after the fair). Only the text is used, as the contract says; no fair is implied."
+   ]
+  },
+  {
+   "record": "TLM_MSG_NM_ReportUnknown",
+   "property": "SayReportUnknown",
+   "speaker": "pritchard",
+   "node": "pritchard_hears_rail_after_fair_unknown",
+   "text": "whole",
+   "buttons": [
+    {
+     "ui": "[Report on Iron Junction]"
+    },
+    {
+     "ui": "[Later]"
+    }
+   ],
+   "shown_when": "As above with silver_rail not set.",
+   "then": "As above.",
+   "not_imported": [
+    "Its condition (after the fair). Only the text is used."
+   ]
+  }
+ ],
+ "ui": {
+  "what": "This build speaking: product availability, what is representation, what a test should write down. In square brackets on the screen and never attributed to a character. Each text below is the built record's.",
+  "boxes": [
+   {
+    "record": "TLM_MSG_NM_AskTravel",
+    "property": "AskTravel",
+    "text": "[Iron Junction story test]\n\nGreenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: floors and labelled stand-ins. Travel there now?",
+    "buttons": [
+     "Travel to Iron Junction",
+     "Not now"
+    ],
+    "shown_when": "The Mercy travel point, TLM_MQ01 stages 50, 60 and 100 set, its Done global 1 and the delivery acknowledged; the road not complete. 0: the zones are set up, the player moved to the yard gate and SEEN there -> stage 10."
+   },
+   {
+    "record": "TLM_MSG_NM_AskTravelAgain",
+    "property": "AskTravelAgain",
+    "text": "[Iron Junction story test]\n\nThe Night Mail road is complete. You can go back: what was settled stays settled.",
+    "buttons": [
+     "Travel to Iron Junction",
+     "Not now"
+    ],
+    "shown_when": "The same with stage 100 set."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteTravelNotYet",
+    "property": "NoteTravelNotYet",
+    "text": "[Iron Junction story test]\n\nNot yet. Deliver the marshal's dispatch to Sheriff Pritchard and hear him out first.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The travel point before the first section is over."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteTravelFailed",
+    "property": "NoteTravelFailed",
+    "text": "[Iron Junction story test]\n\nIron Junction could not be reached, so no arrival is recorded. Nothing else was changed. See the script log.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "Travel confirmed and the set-up failed, or the player was not seen at the yard gate within ten seconds. Stage 10 is not set."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteNotAssigned",
+    "property": "NoteNotAssigned",
+    "text": "[Old Contrary]\n\nThe yardmaster has not given you the footplate. Speak to Augusta Lockridge at her desk.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The departure control with no job taken and Lockridge alive, present and in no fight and dispatching."
+   },
+   {
+    "record": "TLM_MSG_NM_AskBoard",
+    "property": "AskBoard",
+    "text": "[Old Contrary]\n\nNobody at the yard is giving out this run. The payroll and the fever medicine are aboard.",
+    "buttons": [
+     "Board the Night Mail",
+     "Not now"
+    ],
+    "shown_when": "The departure control with no job taken and nobody to give it (Lockridge dead, gone, fighting or no longer dispatching). 0: BoardUnassigned -> stage 21."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteAssignedNoBillie",
+    "property": "NoteAssignedNoBillie",
+    "text": "[Iron Junction story test]\n\nAssignment accepted. Board the Night Mail.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "'I'll ride your mail.' pressed with Billie dead or not there: in place of lockridge_hired, which names her. Answered: stage 20."
+   },
+   {
+    "record": "TLM_MSG_NM_AskDepartScene",
+    "property": "AskDepartScene",
+    "text": "[Scene]\n\nThe Night Mail leaves the yard for Sawtooth Cut. The eleven miles are not shown: you are set down on her footplate where she stops at the lanterns. No moving engine is simulated.",
+    "buttons": [
+     "Continue",
+     "Not yet"
+    ],
+    "shown_when": "The departure control, the job taken (20 or 21), the train in the yard with its mail, nothing claimed. 0: BeginDepart (30 with Billie present, else 31), the player moved to the Cut footplate, lanterns on, LOOKED AT, then recorded by TLM:MQ02AQuest, which is handed the references and looks itself -> 40."
+   },
+   {
+    "record": "TLM_MSG_NM_AskRejoin",
+    "property": "AskRejoin",
+    "text": "[Scene]\n\nThe Night Mail is standing in Sawtooth Cut. You walk the line back to her.",
+    "buttons": [
+     "Continue",
+     "Not now"
+    ],
+    "shown_when": "The departure control with the train standing in the Cut and the player elsewhere. 0: the player is moved to the Cut. Settles nothing."
+   },
+   {
+    "record": "TLM_MSG_NM_AskWalkToCut",
+    "property": "AskWalkToCut",
+    "text": "[Scene]\n\nYou walk the line out to Sawtooth Cut on foot. The train is not there, and no train is moved.",
+    "buttons": [
+     "Continue",
+     "Not now"
+    ],
+    "shown_when": "The departure control once stage 40 is set and the train is no longer in the Cut. 0: the player is moved to the Cut on foot. No train is moved and nothing is settled."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteTrainNothing",
+    "property": "NoteTrainNothing",
+    "text": "[Old Contrary]\n\nThere is nothing to do with her here.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "A control of the train with nothing it can begin."
+   },
+   {
+    "record": "TLM_MSG_NM_AskRegulator",
+    "property": "AskRegulator",
+    "text": "[Regulator]\n\nNobody is at the regulator. It is a lever.",
+    "buttons": [
+     "Stoke her. Run the gap.",
+     "Stop her. I'm getting down.",
+     "Back her out."
+    ],
+    "shown_when": "The regulator or reverser with the encounter unsettled and Billie not alive, present and in no fight. Buttons: tarrow_in_cut's own three labels."
+   },
+   {
+    "record": "TLM_MSG_NM_AskRunScene",
+    "property": "AskRunScene",
+    "text": "[Scene]\n\nThe run at the spread rail is shown as a staged scene: you are set down at the valley platform with what arrives. No moving engine, jump or damage is simulated.",
+    "buttons": [
+     "Continue",
+     "Not yet"
+    ],
+    "shown_when": "'Stoke her. Run the gap.' pressed. 0: BeginRun (the course claimed), the player moved to the platform, cargo and damaged engine shown, LOOKED AT, then recorded by TLM:MQ02AQuest, which is handed the references and looks itself -> 41 (Billie drove) or 46."
+   },
+   {
+    "record": "TLM_MSG_NM_AskReverseScene",
+    "property": "AskReverseScene",
+    "text": "[Scene]\n\nOld Contrary backs out of the Cut to the yard with her cargo. Shown as a staged scene: you are set down on her footplate in the yard.",
+    "buttons": [
+     "Continue",
+     "Not yet"
+    ],
+    "shown_when": "'Back her out.' pressed. 0: BeginReverse, the player moved to the yard footplate, the cargo shown locked up, LOOKED AT, then recorded by TLM:MQ02AQuest, which is handed the references and looks itself -> 44 (Billie drove) or 49."
+   },
+   {
+    "record": "TLM_MSG_NM_AskAfterDefeat",
+    "property": "AskAfterDefeat",
+    "text": "[Regulator]\n\nThe line through the Cut is clear. The payroll and the fever medicine are still aboard.",
+    "buttons": [
+     "Take the mail through",
+     "Take the train back to the yard",
+     "(Leave the regulator)"
+    ],
+    "shown_when": "The regulator or reverser with Dole defeated and the mail still aboard in the Cut. 0: forward. 1: back to the yard. 2: nothing."
+   },
+   {
+    "record": "TLM_MSG_NM_AskForwardScene",
+    "property": "AskForwardScene",
+    "text": "[Scene]\n\nThe Night Mail goes on through the Cut to the valley. Shown as a staged scene: you are set down at the valley platform.",
+    "buttons": [
+     "Continue",
+     "Not yet"
+    ],
+    "shown_when": "'Take the mail through' pressed. 0: BeginForward, the player at the platform, cargo and sound engine shown, LOOKED AT, then recorded by TLM:MQ02AQuest, which is handed the references and looks itself: mail delivered. The outcome stays Dole defeated."
+   },
+   {
+    "record": "TLM_MSG_NM_AskCarryBackScene",
+    "property": "AskCarryBackScene",
+    "text": "[Scene]\n\nThe Night Mail goes back to the yard with her cargo. Shown as a staged scene: you are set down on her footplate in the yard.",
+    "buttons": [
+     "Continue",
+     "Not yet"
+    ],
+    "shown_when": "'Take the train back to the yard' pressed. 0: BeginCarryBack, the player at the yard footplate, cargo shown locked up, LOOKED AT, then recorded by TLM:MQ02AQuest, which is handed the references and looks itself: mail retained. The line is not shut."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteSceneFailed",
+    "property": "NoteSceneFailed",
+    "text": "[Iron Junction story test]\n\nThat could not be shown, so nothing is recorded. Use the same control again, or one where you now stand.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "A scene was carried out and not seen finished: nothing recorded, the scene stays begun, and the pieces are put back as the facts stand."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteSceneStuck",
+    "property": "NoteSceneStuck",
+    "text": "[Iron Junction story test]\n\nThat cannot be shown in this build: a piece of it is missing. Nothing is recorded. Report this to the tester.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "A piece a scene needs is not placed. Nothing is begun."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteRunDone",
+    "property": "NoteRunDone",
+    "text": "[Iron Junction story test]\n\nThe Night Mail got through. The payroll and the fever medicine are at the valley platform; Old Contrary is damaged.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishRun recorded the run."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteForwardDone",
+    "property": "NoteForwardDone",
+    "text": "[Iron Junction story test]\n\nThe payroll and the fever medicine are at the valley platform.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishForward recorded the delivery."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteBackedOut",
+    "property": "NoteBackedOut",
+    "text": "[Iron Junction story test]\n\nThe train is back at Iron Junction with its cargo undelivered. The obstruction at Sawtooth Cut remains.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishReverse recorded the back-out."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteCarriedBack",
+    "property": "NoteCarriedBack",
+    "text": "[Iron Junction story test]\n\nThe train is back at Iron Junction. The payroll and the fever medicine are locked in the yard, undelivered. The line through the Cut is clear.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishCarryBack recorded the return."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteDefeat",
+    "property": "NoteDefeat",
+    "text": "[Iron Junction story test]\n\nPreacher Dole is dead. The Black Rail have gone up the hill and the line is clear. The payroll and the fever medicine are still aboard.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishDefeat recorded 'Dole defeated': Dole seen dead in the unsettled encounter and each of the Black Rail seen dead or out of the fight at a retreat marker."
+   },
+   {
+    "record": "TLM_MSG_NM_AskShareOffer",
+    "property": "AskShareOffer",
+    "text": "[Offer]\n\nOffer: 150 caps.",
+    "buttons": [
+     "Done.",
+     "No.",
+     "(Go back to the footplate)"
+    ],
+    "shown_when": "After DoleShareNoBillie. The offer as this build's text; buttons: dole_share's own three labels."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteShareFailed",
+    "property": "NoteShareFailed",
+    "text": "[Iron Junction story test]\n\nNo share was paid and no deal was made. See the script log.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The share is not on offer (paid, asked for before, or Dole not alive, present and in no fight), or the caps asked for once did not arrive: fails closed, never asked again."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteSold",
+    "property": "NoteSold",
+    "text": "[Iron Junction story test]\n\nYou accepted Dole's share: 150 caps. The payroll and the fever medicine were taken from the train. Billie Tupper was put off to walk home.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishSale recorded the sale with Billie seen alive at her walking marker (43)."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteSoldNoBillie",
+    "property": "NoteSoldNoBillie",
+    "text": "[Iron Junction story test]\n\nYou accepted Dole's share: 150 caps. The payroll and the fever medicine were taken from the train.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishSale recorded the sale with no living Billie (48)."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteSalePending",
+    "property": "NoteSalePending",
+    "text": "[Iron Junction story test]\n\nThe share is paid. The rest of the sale could not be shown, so it is not recorded yet. Use Dole, a control or the mail car again. Nothing is paid twice.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "Paid, and the cargo or Billie not seen as the sale needs: not recorded, stays begun, never paid again."
+   },
+   {
+    "record": "TLM_MSG_NM_NotePlate",
+    "property": "NotePlate",
+    "text": "[Collection plate]\n\nThe plate is full of silver slugs. Each is stamped with a small square mark.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The collection plate used. Answered: LearnSilver(seen) -> stage 50, silver_rail."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteDrawer",
+    "property": "NoteDrawer",
+    "text": "[Top drawer]\n\nThe inspector's stamp is in the drawer. The pad is still wet.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The drawer used with stage 60 not set. Answered: FindStamp -> stage 60, objective 55 ticked."
+   },
+   {
+    "record": "TLM_MSG_NM_AskStampAlone",
+    "property": "AskStampAlone",
+    "text": "[Top drawer]\n\nNobody at the desk answers for the stamp.",
+    "buttons": [
+     "Pritchard gets the stamp.",
+     "(Close the drawer)"
+    ],
+    "shown_when": "The drawer open, nothing decided, and Lockridge not alive, present and in no fight or not dispatching. Button 0 is lockridge_stamp's third label. 0: TakeStamp -> 64. 1: nothing."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteStampKept",
+    "property": "NoteStampKept",
+    "text": "[Iron Junction story test]\n\nThe stamp stays in the drawer, in use. Every car is still passed in the inspector's name, and suspect stock is still dispatched.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "KeepStamping recorded 61: Lockridge alive, present and in no fight, the stamp seen in her drawer and not in the inventory."
+   },
+   {
+    "record": "TLM_MSG_NM_AskCountersignScene",
+    "property": "AskCountersignScene",
+    "text": "[Scene]\n\nLockridge goes through the entries and countersigns them in her own name. Shown as a staged scene; no night passes.",
+    "buttons": [
+     "Continue",
+     "Not yet"
+    ],
+    "shown_when": "'Sign your own name from now on.' pressed. 0: BeginCountersign, the signed board and held stock shown, LOOKED AT, then recorded by TLM:MQ02AQuest, which is handed the references and looks itself with Lockridge alive and present -> 62."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteCountersigned",
+    "property": "NoteCountersigned",
+    "text": "[Iron Junction story test]\n\nLockridge countersigned the reviewed entries in her own name. Suspect stock is held from dispatch.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "FinishCountersign recorded 62."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteStampTaken",
+    "property": "NoteStampTaken",
+    "text": "[Iron Junction story test]\n\nYou took the inspector's stamp as evidence. It has not yet been delivered to Pritchard.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "ConfirmStampTaken: the stamp given (asked once, seen in the inventory) and the drawer seen without it -> 63 with Lockridge alive, present and in no fight to watch, else 64. Custody, not delivery."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteStampFailed",
+    "property": "NoteStampFailed",
+    "text": "[Iron Junction story test]\n\nThe stamp could not be taken. Nothing is recorded and nothing else is decided about it. See the script log.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The stamp was asked for once and not seen to arrive, or cannot be taken now. Nothing recorded; her other answers stay open; never asked for again."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteDecisionFailed",
+    "property": "NoteDecisionFailed",
+    "text": "[Iron Junction story test]\n\nThat could not be done. Nothing is recorded.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "A decision about the stamp could not be made as things stand (for one: a countersigning confirmed and not seen, with Lockridge no longer there to do it, is dropped)."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteDrawerKept",
+    "property": "NoteDrawerKept",
+    "text": "[Top drawer]\n\nThe stamp is in the drawer, in use.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The drawer used after 61."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteDrawerSigned",
+    "property": "NoteDrawerSigned",
+    "text": "[Top drawer]\n\nThe stamp is in the drawer. Lockridge signs in her own name now.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The drawer used after 62."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteDrawerGone",
+    "property": "NoteDrawerGone",
+    "text": "[Top drawer]\n\nThe drawer is empty. You took the stamp.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The drawer used after the stamp was taken."
+   },
+   {
+    "record": "TLM_MSG_NM_AskShowHymnal",
+    "property": "AskShowHymnal",
+    "text": "[Hymnal]\n\nYou are carrying the hymnal from the tabernacle.",
+    "buttons": [
+     "(Show her the flyleaf)",
+     "(Not now)"
+    ],
+    "shown_when": "Lockridge used with CanShowHymnal true (see LockridgeHymnal). 0: lockridge_hymnal. 1: what she would otherwise say."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteNoDispatch",
+    "property": "NoteNoDispatch",
+    "text": "[Iron Junction]\n\nAugusta Lockridge no longer dispatches trains from this yard.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "Lockridge used after the yard's authority was recorded withdrawn."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteSaleStatus",
+    "property": "NoteSaleStatus",
+    "text": "[Iron Junction story test]\n\nYou accepted Dole's share. The payroll and medicine were taken from the train.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "Lockridge used after a sale whose aftermath she has not been shown to know: Billie not released alive, or her return not yet shown."
+   },
+   {
+    "record": "TLM_MSG_NM_AskBillieReport",
+    "property": "AskBillieReport",
+    "text": "[Scene]\n\nBy this scene's clock it is the next morning. Billie Tupper has walked the eleven miles in and told the yardmaster what happened in the Cut. No game time passes.",
+    "buttons": [
+     "Continue",
+     "Not now"
+    ],
+    "shown_when": "Lockridge used after a sale with Billie released, both alive, her return not yet shown. 0: Billie is moved to the yard and SEEN there -> BillieReported, then lockridge_after_sold. 1: NoteSaleStatus."
+   },
+   {
+    "record": "TLM_MSG_NM_AskBackToYard",
+    "property": "AskBackToYard",
+    "text": "[Scene]\n\nYou go back along the line to Iron Junction yard on foot. The train stays where it is.",
+    "buttons": [
+     "Continue",
+     "Not now"
+    ],
+    "shown_when": "The way back along the line, at the Cut or the platform. Never shut by a pending scene. 0: the player is moved to the yard. Settles nothing."
+   },
+   {
+    "record": "TLM_MSG_NM_AskLeaveResolved",
+    "property": "AskLeaveResolved",
+    "text": "[Road to Mercy]\n\nLeave Iron Junction? The road is complete once you are back at Mercy Crossing.",
+    "buttons": [
+     "Leave for Mercy",
+     "Stay"
+    ],
+    "shown_when": "An exit with an outcome recorded and no scene pending. 0: the player is moved to Mercy and SEEN there -> stage 100."
+   },
+   {
+    "record": "TLM_MSG_NM_AskLeaveUnresolved",
+    "property": "AskLeaveUnresolved",
+    "text": "[Road to Mercy]\n\nThe Night Mail is not settled. Leaving settles nothing; you can come back.",
+    "buttons": [
+     "Leave for Mercy",
+     "Stay"
+    ],
+    "shown_when": "An exit otherwise. 0: the player is moved to Mercy. Nothing is completed."
+   },
+   {
+    "record": "TLM_MSG_NM_AskLeaveAgain",
+    "property": "AskLeaveAgain",
+    "text": "[Road to Mercy]\n\nLeave Iron Junction?",
+    "buttons": [
+     "Leave for Mercy",
+     "Stay"
+    ],
+    "shown_when": "An exit with stage 100 set."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteRoadComplete",
+    "property": "NoteRoadComplete",
+    "text": "[Iron Junction story test]\n\nNight Mail road complete. Greenwater remains playable; Red Hollow and the fair are not. Sheriff Pritchard will hear what became of the Night Mail.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "Complete recorded stage 100."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteLeftUnresolved",
+    "property": "NoteLeftUnresolved",
+    "text": "[Iron Junction story test]\n\nYou left Iron Junction with the Night Mail unsettled. The road is still open.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "Left with nothing completed."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteFall",
+    "property": "NoteFall",
+    "text": "[Greybox]\n\nYou stepped off the greybox floor and were set back on it.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The box under the floors entered: the player is set back at the arrival marker of the zone a scene last put them in. Records nothing."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelYard",
+    "property": "LabelYard",
+    "text": "[Greybox: Iron Junction yard]\n\nAugusta Lockridge runs the yard from her desk. The rules are on the gate; the dispatch board and her desk drawer are here. Old Contrary stands on the next part of this floor.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The yard's label used."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelFootplate",
+    "property": "LabelFootplate",
+    "text": "[Greybox: Old Contrary's footplate, in the yard]\n\nFlat floor stands for the engine. Billie Tupper drives. The departure control is here, and the mail car behind.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The footplate's label used."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelCut",
+    "property": "LabelCut",
+    "text": "[Greybox: Sawtooth Cut]\n\nThe footplate as it stands at the lanterns, with the regulator and the reverser. Ahead: the spread rail and Preacher Dole. The tabernacle siding is beyond him.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The Cut's label used."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelSiding",
+    "property": "LabelSiding",
+    "text": "[Greybox: the boxcar tabernacle]\n\nDole's chapel on a dead siding: a hymnal, a collection plate, and a boiler somebody has chalked.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The siding's label used."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelPlatform",
+    "property": "LabelPlatform",
+    "text": "[Greybox: the valley platform]\n\nWhere the Night Mail arrives if she gets through.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The platform's label used."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelLanterns",
+    "property": "LabelLanterns",
+    "text": "[Sawtooth Cut]\n\nLanterns across the track. The left-hand rail is spread, not gone.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The lanterns used."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelCargoAboard",
+    "property": "LabelCargoAboard",
+    "text": "[Mail car]\n\nThe payroll and the valley's fever medicine, aboard the Night Mail.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "A mail-car piece used with the mail aboard."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelCargoDelivered",
+    "property": "LabelCargoDelivered",
+    "text": "[Mail car]\n\nThe payroll and the fever medicine, delivered.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The same with the mail delivered."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelCargoRetained",
+    "property": "LabelCargoRetained",
+    "text": "[Mail car]\n\nThe payroll and the fever medicine, locked in the yard. Not delivered.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The same with the mail retained."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelCargoSeized",
+    "property": "LabelCargoSeized",
+    "text": "[Mail car]\n\nEmpty. The payroll and the fever medicine were taken up the hill.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The same with the mail seized."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelEngineSound",
+    "property": "LabelEngineSound",
+    "text": "[Old Contrary]\n\nAt the valley platform, sound.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The engine at the platform used, sound."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelEngineDamaged",
+    "property": "LabelEngineDamaged",
+    "text": "[Old Contrary]\n\nAt the valley platform, bent and scorched from the gap.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The same, damaged."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelBoardStamped",
+    "property": "LabelBoardStamped",
+    "text": "[Dispatch board]\n\nEvery car is passed and stamped in the name of R. Ostrander, Inspector of Way. All stock is dispatched.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The dispatch board used with the yard held and no countersigning."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelBoardSigned",
+    "property": "LabelBoardSigned",
+    "text": "[Dispatch board]\n\nEntries countersigned A. Lockridge. Suspect stock is held from dispatch.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The same after 62."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelBoardClosed",
+    "property": "LabelBoardClosed",
+    "text": "[Dispatch board]\n\nClosed by order of the sheriff of Mercy Crossing. No car is dispatched and nobody signs.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The same after the yard's authority was recorded withdrawn or vacant."
+   },
+   {
+    "record": "TLM_MSG_NM_LabelHeldStock",
+    "property": "LabelHeldStock",
+    "text": "[Held stock]\n\nCars held from dispatch until they are inspected.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The held stock used (on only after 62)."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportMailDelivered",
+    "property": "ReportMailDelivered",
+    "text": "[Rail report]\n\nThe payroll and the fever medicine reached the valley.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: the mail delivered."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportMailRetained",
+    "property": "ReportMailRetained",
+    "text": "[Rail report]\n\nThe payroll and the fever medicine are locked in the yard at Iron Junction, undelivered.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: the mail retained."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportMailSeized",
+    "property": "ReportMailSeized",
+    "text": "[Rail report]\n\nThe payroll and the fever medicine were taken from the train by the Black Rail.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: the mail seized."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportMailAboard",
+    "property": "ReportMailAboard",
+    "text": "[Rail report]\n\nThe payroll and the fever medicine are still aboard the Night Mail in Sawtooth Cut.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: the mail still aboard in the Cut (Dole defeated and the train left there)."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportRan",
+    "property": "ReportRan",
+    "text": "[Rail report]\n\nThe Night Mail ran the spread rail. The engine is damaged.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: outcome the run."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportDoleByYou",
+    "property": "ReportDoleByYou",
+    "text": "[Rail report]\n\nYou killed Preacher Dole in the Cut. His death does not erase the yard's inspection records.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: Dole defeated, killed by the player in the unsettled encounter."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportDoleDead",
+    "property": "ReportDoleDead",
+    "text": "[Rail report]\n\nPreacher Dole is dead. His death does not erase the yard's inspection records.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: Dole defeated, dead otherwise."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportSold",
+    "property": "ReportSold",
+    "text": "[Rail report]\n\nYou accepted Dole's share. The payroll and medicine were taken from the train.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: outcome the sale."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportBacked",
+    "property": "ReportBacked",
+    "text": "[Rail report]\n\nThe train returned with its cargo undelivered. The obstruction at Sawtooth Cut remains.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: outcome the back-out."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportKnowBoth",
+    "property": "ReportKnowBoth",
+    "text": "[Rail report]\n\nYou learned that square-marked silver pays for the pulled rails, and that Preacher Dole is Ostrander, Inspector of Way. Who pays is not known.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: silver_rail and ostrander_known."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportKnowSilver",
+    "property": "ReportKnowSilver",
+    "text": "[Rail report]\n\nYou learned that square-marked silver pays for the pulled rails. Who pays is not known.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: silver_rail only."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportKnowName",
+    "property": "ReportKnowName",
+    "text": "[Rail report]\n\nYou learned that Preacher Dole is Ostrander, Inspector of Way.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: ostrander_known only."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportKnowNeither",
+    "property": "ReportKnowNeither",
+    "text": "[Rail report]\n\nYou did not learn who Preacher Dole is or what he is paid in.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "In the report: neither."
+   },
+   {
+    "record": "TLM_MSG_NM_ReportEnd",
+    "property": "ReportEnd",
+    "text": "[Rail report]\n\nNight Mail road complete. Greenwater remains playable; Red Hollow and the fair are not.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The report's last box."
+   },
+   {
+    "record": "TLM_MSG_NM_AskHandOver",
+    "property": "AskHandOver",
+    "text": "[Inspector's stamp]\n\nYou are carrying the stamp from Lockridge's drawer.",
+    "buttons": [
+     "[Hand the stamp to Pritchard]",
+     "[Keep it for now]"
+    ],
+    "shown_when": "Pritchard, after the chapter: the stamp taken (63 or 64), in the inventory now, not delivered, Pritchard alive, present and in no fight. 0: HandOver, seen to leave the player and reach him. 1: kept; the conversation goes on."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteStampDelivered",
+    "property": "NoteStampDelivered",
+    "text": "[Iron Junction story test]\n\nSheriff Pritchard has the inspector's stamp.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "HandOver recorded the stamp delivered."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteHandoverFailed",
+    "property": "NoteHandoverFailed",
+    "text": "[Iron Junction story test]\n\nThe stamp was not seen to reach Sheriff Pritchard. It is not recorded delivered. Speak to him again.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The stamp was not seen with Pritchard after the handover. Not recorded; looked at again when he is next spoken to."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteAuthorityWithdrawn",
+    "property": "NoteAuthorityWithdrawn",
+    "text": "[Iron Junction]\n\nBy the sheriff's order the dispatch board at Iron Junction is closed. Augusta Lockridge signs and dispatches nothing. The yard has no master. This is shown at the yard.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The stamp delivered, the yard still held, Lockridge not dead: the closed board shown and seen. Answered: FinishAuthority -> yard authority withdrawn, lockridge_reported."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteAuthorityVacant",
+    "property": "NoteAuthorityVacant",
+    "text": "[Iron Junction]\n\nAugusta Lockridge is dead. The dispatch board at Iron Junction is closed and nobody signs. The yard has no master. This is shown at the yard.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The same with Lockridge dead: recorded as a vacant yard. No withdrawal is said to have been made from her."
+   },
+   {
+    "record": "TLM_MSG_NM_NoteAuthorityFailed",
+    "property": "NoteAuthorityFailed",
+    "text": "[Iron Junction story test]\n\nSheriff Pritchard has the stamp. The change at the yard could not be shown, so it is not recorded yet. Speak to him again, or use the dispatch board.",
+    "buttons": [
+     "Continue"
+    ],
+    "shown_when": "The stamp delivered and the yard's closed board not seen: not recorded, stays begun, tried again at Pritchard or at the yard's drawer or board."
+   }
+  ]
+ },
+ "documents": [
+  {
+   "document": "yard_rules",
+   "title_field": "title",
+   "pages": [
+    "TLM_MSG_NM_RulesPage1",
+    "TLM_MSG_NM_RulesPage2",
+    "TLM_MSG_NM_RulesPage3",
+    "TLM_MSG_NM_RulesPage4"
+   ],
+   "page_heading": "[<title>, page <n> of <m>]",
+   "shown_when": "The rules on the gate used. Sets nothing.",
+   "cut": "Only at the document's own line breaks; the pages, put together with the line breaks they were cut at, are the document."
+  },
+  {
+   "document": "hymn_chalk",
+   "title_field": "title",
+   "pages": [
+    "TLM_MSG_NM_ChalkPage1"
+   ],
+   "page_heading": "[<title>, page <n> of <m>]",
+   "shown_when": "The chalked boiler used. Sets nothing."
+  },
+  {
+   "document": "hymnal_flyleaf",
+   "title_field": "title",
+   "pages": [
+    "TLM_MSG_NM_FlyleafPage1",
+    "TLM_MSG_NM_FlyleafPage2"
+   ],
+   "page_heading": "[<title>, page <n> of <m>]",
+   "shown_when": "The hymnal on the siding used. Every page answered: stage 55, and the book TLM_BOOK_HymnalFlyleaf (the same title and text, whole) is asked into the inventory once.",
+   "book": "TLM_BOOK_HymnalFlyleaf"
+  }
+ ],
+ "not_imported": {
+  "dole_reward": "The reward notice is not placed in this slice.",
+  "stage 62's accepted log": "See quest.stages, 62.",
+  "Dole's coat as a second place for the silver": "Not built: the collection plate and Dole's own admission are the two ways.",
+  "the conditions of the two Pritchard lines": "After the fair. Only their text is used."
+ },
+ "quest": {
+  "record": "TLM_MQ02A",
+  "script": "TLM:MQ02AQuest",
+  "name_field": "title",
+  "type": "MainQuest",
+  "stages": [
+   {
+    "n": 10,
+    "log": "stage 10",
+    "set_when": "ArriveAtYard: the player SEEN at the yard gate marker, in its cell. Asking to travel is not that."
+   },
+   {
+    "n": 20,
+    "log": "stage 20",
+    "set_when": "AcceptJob: 'I'll ride your mail.' pressed and her answer shown and answered, Lockridge alive, present and in no fight and dispatching."
+   },
+   {
+    "n": 21,
+    "native_only": true,
+    "log_ui": "You agreed to ride the Night Mail with the payroll and fever medicine.",
+    "set_when": "BoardUnassigned: the job taken at the footplate with nobody to give it. The grounded fallback."
+   },
+   {
+    "n": 30,
+    "log": "stage 30",
+    "set_when": "BeginDepart with Billie alive and present to drive. Says who drives; nothing has arrived."
+   },
+   {
+    "n": 31,
+    "native_only": true,
+    "log_ui": "You boarded Old Contrary. The regulator is ready.",
+    "set_when": "BeginDepart without her. The player-regulator fallback."
+   },
+   {
+    "n": 40,
+    "log": "stage 40",
+    "set_when": "FinishDepart: the player SEEN on the Cut's footplate marker and the lanterns SEEN on."
+   },
+   {
+    "n": 41,
+    "log": "stage 41",
+    "set_when": "FinishRun with Billie at the regulator when the run was begun: player, delivered cargo and damaged engine SEEN at the platform."
+   },
+   {
+    "n": 42,
+    "log": "stage 42",
+    "set_when": "FinishDefeat: Dole dead by the player's hand in the unsettled encounter, each of the Black Rail SEEN dead or out of the fight at a retreat marker. The mail is where it was."
+   },
+   {
+    "n": 43,
+    "log": "stage 43",
+    "set_when": "FinishSale: paid (once, seen), the cargo SEEN off the train, Billie SEEN alive and in no fight at her walking marker."
+   },
+   {
+    "n": 44,
+    "log": "stage 44",
+    "set_when": "FinishReverse with Billie driving: player and retained cargo SEEN at the yard."
+   },
+   {
+    "n": 46,
+    "native_only": true,
+    "log_ui": "The Night Mail got through. The medicine and payroll arrived; the engine is damaged.",
+    "set_when": "FinishRun with the player at the regulator. The accepted 41 names Billie."
+   },
+   {
+    "n": 47,
+    "native_only": true,
+    "log_ui": "Preacher Dole is dead. His death does not erase the yard's inspection records.",
+    "set_when": "Dole dead otherwise: in the unsettled encounter by another hand (the outcome 'Dole defeated', by FinishDefeat), or at any other time (his death only; no outcome)."
+   },
+   {
+    "n": 48,
+    "native_only": true,
+    "log_ui": "You accepted Dole's share. The payroll and medicine were taken from the train.",
+    "set_when": "FinishSale with no living Billie released. The accepted 43 says she was put off to walk home."
+   },
+   {
+    "n": 49,
+    "native_only": true,
+    "log_ui": "The train returned with its cargo undelivered. The obstruction at Sawtooth Cut remains.",
+    "set_when": "FinishReverse without Billie driving. The accepted 44 names her."
+   },
+   {
+    "n": 50,
+    "log": "stage 50",
+    "set_when": "LearnSilver(seen): the collection plate's notice shown and answered."
+   },
+   {
+    "n": 51,
+    "native_only": true,
+    "log_ui": "Dole described square-marked silver paying for pulled rails.",
+    "set_when": "LearnSilver(told): dole_silver shown and answered with Dole alive, present and in no fight."
+   },
+   {
+    "n": 55,
+    "log": "stage 55",
+    "set_when": "LearnName(seen): every page of the flyleaf shown and answered. Then the book is asked into the inventory, once."
+   },
+   {
+    "n": 56,
+    "native_only": true,
+    "log_ui": "Preacher Dole identified himself as Ostrander, Inspector of Way.",
+    "set_when": "LearnName(told): dole_name shown and answered with Dole alive, present and in no fight. No book."
+   },
+   {
+    "n": 60,
+    "log": "stage 60",
+    "set_when": "FindStamp: the drawer's notice answered, or the hymnal shown to Lockridge and her answer answered."
+   },
+   {
+    "n": 61,
+    "log": "stage 61",
+    "set_when": "KeepStamping: her question answered to her, the stamp SEEN in the drawer and not in the inventory."
+   },
+   {
+    "n": 62,
+    "log_ui": "Lockridge countersigned the reviewed entries in her own name. Suspect stock is held from dispatch.",
+    "set_when": "FinishCountersign: the countersigned board and the held stock SEEN, Lockridge alive and present.",
+    "why_not_the_accepted_log": "The accepted text says it took her until morning; no night is shown. The contract's neutral text is used instead."
+   },
+   {
+    "n": 63,
+    "log": "stage 63",
+    "set_when": "ConfirmStampTaken with Lockridge alive, present and in no fight to watch: the stamp given and the drawer SEEN without it. Custody, not delivery."
+   },
+   {
+    "n": 64,
+    "native_only": true,
+    "log_ui": "You took the inspector's stamp as evidence. It has not yet been delivered to Pritchard.",
+    "set_when": "The same without her. The accepted 63 says she watched."
+   },
+   {
+    "n": 100,
+    "log": "stage 100",
+    "set_when": "Complete: the player SEEN back at Mercy with an outcome recorded and no scene pending."
+   }
+  ],
+  "objectives": [
+   {
+    "n": 10,
+    "shown_when": "Stage 10.",
+    "done_when": "The job taken by AcceptJob; retired, not ticked, if it is boarded unasked."
+   },
+   {
+    "n": 20,
+    "shown_when": "The job taken (20 or 21).",
+    "done_when": "BeginDepart."
+   },
+   {
+    "n": 40,
+    "shown_when": "Stage 40.",
+    "done_when": "Any of the four outcomes recorded."
+   },
+   {
+    "n": 55,
+    "shown_when": "Stage 40.",
+    "done_when": "The drawer opened (60). Never needed."
+   },
+   {
+    "n": 70,
+    "native_only": true,
+    "text_ui": "Take the mail through, or take the train back to the yard",
+    "shown_when": "Dole defeated with the mail still aboard.",
+    "done_when": "The train taken forward or back; retired on leaving."
+   },
+   {
+    "n": 80,
+    "native_only": true,
+    "text_ui": "Leave Iron Junction for Mercy Crossing",
+    "shown_when": "Any outcome recorded.",
+    "done_when": "Stage 100."
+   },
+   {
+    "n": 90,
+    "native_only": true,
+    "text_ui": "Bring the inspector's stamp to Sheriff Pritchard",
+    "shown_when": "The stamp recorded taken.",
+    "done_when": "The stamp SEEN with Pritchard."
+   }
+  ],
+  "greybox": {
+   "record": "TLM_NM",
+   "script": "TLM:NightMailWalk",
+   "alias_script": "TLM:NightMailTalk",
+   "cell": "TLM_CELL_NightMail",
+   "development_only": true
+  }
+ },
+ "flags": [
+  {
+   "flag": "mail_through",
+   "global": "TLM_G_MQ02A_MailThrough",
+   "set_when": "FinishRun or FinishForward: the delivered cargo SEEN at the platform. Never by Dole's death."
+  },
+  {
+   "flag": "mail_sold",
+   "global": "TLM_G_MQ02A_MailSold",
+   "set_when": "FinishSale only: paid and the sale seen finished."
+  },
+  {
+   "flag": "line_closed",
+   "global": "TLM_G_MQ02A_LineClosed",
+   "set_when": "FinishReverse only: the back-out as an outcome. Not by taking the train back after Dole's defeat."
+  },
+  {
+   "flag": "dole_lives",
+   "global": "TLM_G_MQ02A_DoleLives",
+   "set_when": "At the run or the sale if Dole is alive and present; at the back-out only if he also heard the player out (DoleMet). Cleared by DoleDied. DECLARED PROJECTION: 'knows the player's face' is taken as having been run past, dealt with, or spoken to."
+  },
+  {
+   "flag": "silver_rail",
+   "global": "TLM_G_MQ02A_SilverRail",
+   "set_when": "LearnSilver: the plate seen (50) or Dole's admission delivered (51)."
+  },
+  {
+   "flag": "ostrander_known",
+   "global": "TLM_G_MQ02A_OstranderKnown",
+   "set_when": "LearnName: the flyleaf read (55) or Dole's own naming delivered (56)."
+  },
+  {
+   "flag": "lockridge_stamping",
+   "global": "TLM_G_MQ02A_LockridgeStamping",
+   "set_when": "KeepStamping only (61)."
+  },
+  {
+   "flag": "lockridge_signed",
+   "global": "TLM_G_MQ02A_LockridgeSigned",
+   "set_when": "FinishCountersign only (62)."
+  },
+  {
+   "flag": "lockridge_reported",
+   "global": "TLM_G_MQ02A_LockridgeReported",
+   "set_when": "FinishAuthority only: the stamp SEEN with Pritchard and the yard SEEN without a master. Never by taking the stamp. DECLARED PROJECTION: also set when Lockridge is already dead (the yard recorded vacant, not withdrawn)."
+  }
+ ],
+ "facts": {
+  "TLM_G_MQ02A_Outcome": "0 none, 41 the run, 42 Dole defeated, 43 the sale, 44 the back-out. Exactly one, written when its scene is seen finished.",
+  "TLM_G_MQ02A_Mail": "0 aboard, 1 delivered, 2 retained at the yard, 3 seized.",
+  "TLM_G_MQ02A_Engine": "0 sound, 1 damaged (the run only).",
+  "TLM_G_MQ02A_Train": "0 the yard, 1 the Cut, 2 the platform, 3 taken (after a sale).",
+  "TLM_G_MQ02A_Dole": "0 alive, 1 killed by the player in the unsettled encounter, 2 dead otherwise.",
+  "TLM_G_MQ02A_Stamp": "0 undecided, 61 kept in use, 62 countersigned, 63 taken (with or without Lockridge watching).",
+  "TLM_G_MQ02A_StampDelivered": "1 once the stamp is SEEN in Pritchard's inventory.",
+  "TLM_G_MQ02A_YardAuthority": "0 held by Lockridge, 1 withdrawn from her (alive), 2 vacant (she was dead).",
+  "TLM_G_MQ02A_Reported": "1 once the road's report was given to Pritchard."
+ },
+ "availability_text_changed_elsewhere": {
+  "why": "Order: in this candidate Greenwater and Iron Junction are playable; Red Hollow and the fair are not.",
+  "TLM_MSG_MB_Hub and stage 10 of TLM_MercyBriefing": "Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not.",
+  "TLM_MSG_MB_HandOff": "Opening complete. Ask for briefings or use a story test point.",
+  "stage 20 of TLM_MercyBriefing": "Mercy briefing complete. Greenwater and Iron Junction are playable; Red Hollow and the fair are not.",
+  "TLM_MSG_A1_PritchardHandOff, _PritchardAfter, _PritchardAfterAndMore": "[Opening complete. Greenwater and Iron Junction are playable.]",
+  "TLM_MSG_GW_AskTravel": "Greenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not.",
+  "TLM_MSG_GW_ReportEndKnown, _ReportEndUnknown": "Greenwater road complete. Iron Junction is also playable; Red Hollow and the fair are not.",
+  "TLM:Act1Guide, once the chapter is over": "Greenwater and Iron Junction are available at their story test points. Red Hollow and the fair are not playable. Optional Mercy evidence and briefs remain available."
+ }
+}

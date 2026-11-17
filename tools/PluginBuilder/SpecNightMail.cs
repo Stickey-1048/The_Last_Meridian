@@ -131,7 +131,7 @@ public static class NightMail
     static string GateA => Line["lockridge_gate"][..Line["lockridge_gate"].IndexOf(GateCut, StringComparison.Ordinal)];
     static string GateB => Line["lockridge_gate"][(Line["lockridge_gate"].IndexOf(GateCut, StringComparison.Ordinal) + 1)..];
     // With Billie dead or not there, Dole's promise that she walks home unharmed is not made: only the rest of
-    // his offer, from this sentence to its end (contract, "Two exact dead-Billie context projections").
+    // his offer, from this sentence to its end (the contract's two exact dead-Billie context projections).
     const string ShareRestStart = "The physic goes up the hill:";
     static string ShareRest => Line["dole_share"][Line["dole_share"].IndexOf(ShareRestStart, StringComparison.Ordinal)..];
 
@@ -239,7 +239,7 @@ public static class NightMail
         // ---- Mercy Crossing: the one way there, and where the road back sets the player down.
         new("MercyTravel", "the Mercy travel point", "TLM_ACTI_NM_Travel", 2950, 2640, 12, WhoTravel, OnAtSetUp: false,
             Label: UiTravelName, LooksLike: Paper, Use: "Travel", AtMercy: true),
-        new("MercyReturn", "where the road from Iron Junction comes in", "XMarker", 3050, 2590, 0, AtMercy: true),
+        new("MercyReturn", "where the road from Iron Junction comes in", "XMarker", 2780, 2650, 0, AtMercy: true),
 
         // ---- Zone 1, floor A: Iron Junction yard.
         new("YardArrival", "the yard gate", "XMarker", 256, 160, Stand),
