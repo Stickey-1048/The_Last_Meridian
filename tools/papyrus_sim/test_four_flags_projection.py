@@ -3,6 +3,7 @@
 No licensed master, native asset, actor movement or inventory guarantee.
 """
 import json
+import copy
 import subprocess
 import tempfile
 import unittest
@@ -80,10 +81,71 @@ class FourFlagsProjection(unittest.TestCase):
             pages=[self.msg[n]['Text'] for n in self.msg if n.startswith('TLM_MSG_FF_D_'+name+'_')]
             self.assertEqual(' '.join(pages),source,name)
 
+    def test_every_old_message_is_exact_except_twelve_declared_technical_availability_updates(self):
+        before=json.loads(built_greenwater_relief().read_text(encoding='utf-8'))
+        replacements={
+            'Opening complete. All three roads playable; fair unavailable.':'Opening complete. Three roads and Four Flags entry are available.',
+            'Mercy briefing. Greenwater, Iron Junction and Red Hollow are playable. The fair is not.':'Mercy briefing. Three roads and the qualified Four Flags entry are available.',
+            'Greenwater, Iron Junction and Red Hollow are playable in this candidate; the fair is not.':'Three roads are playable. Four Flags entry is available after the first section.',
+            'Greenwater road complete. Iron Junction and Red Hollow are also playable; the fair is not.':'Greenwater road complete. The other roads and Four Flags entry remain available.',
+            'Night Mail road complete. Greenwater and Red Hollow remain playable; the fair is not.':'Night Mail road complete. The other roads and Four Flags entry remain available.',
+            'Greenwater, Iron Junction and Red Hollow are playable. The fair is not.':'Three roads are playable. Four Flags entry is available after the first section.',
+            'Red Hollow road complete. All three roads remain playable; the fair is not.':'Red Hollow road complete. Three roads and Four Flags entry remain available.'}
+        expected={'TLM_MSG_A1_'+n for n in ('PritchardHandOff','PritchardAfter','PritchardAfterAndMore')}|{'TLM_MSG_MB_Hub'}|{'TLM_MSG_GW_'+n for n in ('AskTravel','ReportEndKnown','ReportEndUnknown')}|{'TLM_MSG_NM_'+n for n in ('AskTravel','NoteRoadComplete','ReportEnd')}|{'TLM_MSG_RH_Travel','TLM_MSG_RH_End'}
+        changed=set()
+        for old in before['Messages']:
+            name=old['EditorId'];want=dict(old)
+            if name in expected:
+                text=want['Text'];matches=[(a,b) for a,b in replacements.items() if a in text and (name!='TLM_MSG_MB_Hub' or a.startswith('Mercy briefing.'))]
+                self.assertEqual(len(matches),1,name)
+                a,b=matches[0];want['Text']=text.replace(a,b);changed.add(name)
+            self.assertEqual(self.msg[name],want,name)
+        self.assertEqual(changed,expected)
+        self.assertTrue(all(len(self.msg[n]['Text'])<=240 for n in changed))
+
+    def test_whole_accepted_npcs_refs_and_quest_payloads_are_preserved(self):
+        before=json.loads(built_greenwater_relief().read_text(encoding='utf-8'))
+        self.assertEqual(self.d['Npcs'][:len(before['Npcs'])],before['Npcs'])
+        self.assertEqual({n['EditorId'] for n in self.d['Npcs'][len(before['Npcs']):]},{'TLM_NPC_FF_'+n for n in ('Whitcomb','Brigg','Grey','Flint','Juno')})
+        oldcells={c['EditorId']:c for c in before['Cells']};newcells={c['EditorId']:c for c in self.d['Cells']}
+        self.assertEqual(set(newcells),set(oldcells)|{'TLM_CELL_FourFlags'})
+        extra=set()
+        for n,old in oldcells.items():
+            new=newcells[n];oldrefs={p['EditorId']:p for p in old['Placed']};newrefs={p['EditorId']:p for p in new['Placed']}
+            self.assertEqual({k:newrefs[k] for k in oldrefs},oldrefs,n)
+            self.assertEqual({k:v for k,v in old.items() if k!='Placed'},{k:v for k,v in new.items() if k!='Placed'},n)
+            extra.update(set(newrefs)-set(oldrefs))
+        self.assertEqual(extra,{'TLM_REF_FF_Entry','TLM_REF_FF_MercyReturn'})
+        oldquests={q['EditorId']:q for q in before['Quests']};newquests={q['EditorId']:q for q in self.d['Quests']}
+        self.assertEqual(set(newquests),set(oldquests)|{'TLM_MQ03','TLM_FF_Entry'})
+        for n,old in oldquests.items():
+            new=copy.deepcopy(newquests[n])
+            allowed={'TLM_A1':{'TLM_FourFlags','TLM_FourFlagsEntry'},'TLM_GW':{'TLM_FourFlags'}}.get(n,set())
+            added=[]
+            for script in new['Scripts']:
+                added.extend(p for p in script['Props'] if p['Name'] in allowed)
+                script['Props']=[p for p in script['Props'] if p['Name'] not in allowed]
+            self.assertEqual({p['Name'] for p in added},allowed,n)
+            for p in added:self.assertEqual(p['Target'],'TLM_FF_Entry' if p['Name']=='TLM_FourFlagsEntry' else 'TLM_MQ03')
+            if n=='TLM_MercyBriefing':
+                self.assertEqual([s['Log'] for s in new['Stages']],['Mercy briefing. Three roads and the qualified Four Flags entry are available.','Mercy briefing complete. Three roads and qualified Four Flags entry remain available.'])
+                for current,prior in zip(new['Stages'],old['Stages']):current['Log']=prior['Log']
+            self.assertEqual(new,old,n)
+
     def test_each_damaged_entry_custody_cast_or_evidence_binding_is_refused(self):
         for damage in ('fair-binding-removed','fair-ledger-missing','fair-cell-missing','fair-entry-substituted','fair-case-alias-substituted','fair-original-cast-forced','fair-dedicated-cast-substituted','fair-case-model-missing'):
             with self.subTest(damage=damage):
                 got=clone(damage);self.assertEqual(got.returncode,1,got.stdout+got.stderr);self.assertIn('REFUSED',got.stderr)
+
+    def test_new_entry_and_return_remain_outside_preserved_east_yard_fence(self):
+        got=clone();self.assertEqual(got.returncode,0,got.stdout+got.stderr);d=json.loads(got.stdout)
+        self.assertEqual(d['fourFlagsSites'],{'Entry':[3920,3100,12],'MercyReturn':[3890,3070,32]})
+        # Existing fence's supported upright east bound: X3688, half-depth2.
+        # The whole 192-unit approach fromX4000 stays on its eastern side.
+        for a in d['fourFlags']['aliases']:
+            self.assertGreaterEqual(a['x']-(3688+2),96)
+            self.assertLessEqual(a['x']+96,4096)
+            self.assertTrue(2432<a['y']<3456)
 
     def test_old_raw_clone_payloads_and_ids_survive_new_entry_adapter(self):
         oldroot=snapshot(GREENWATER_RELIEF);oldplugin=built_greenwater_relief().with_suffix('.esp')

@@ -16,7 +16,12 @@ ROOT=Path(__file__).resolve().parent.parent
 MANIFEST=ROOT/'tools/win/four-flags-candidate.json'
 BASELINE='a31b5eded170dac81cd1d4f5d70a19a758c942e8'
 ATTR_LINE='docs/design/NIGHT_MAIL_STORY_001*.md text eol=lf\n'
-FROZEN=('tools/win/greenwater-relief-candidate.json','tools/greenwater_relief_candidate.py','tools/win/Build-GreenwaterRelief.ps1','tools/win/red-hollow-story-candidate.json','tools/red_hollow_story_candidate.py','tools/win/Build-RedHollow.ps1',
+FROZEN=('CANON.md','docs/design/ACT1_CREATIVE_DECISIONS_2026-11-16.md',
+        'docs/design/ACT1_APPROVED_TEXT_REVISIONS_2026-11-16.json','docs/design/ACT1_BALLAD_ADDENDUM_2026-11-16.json',
+        'docs/design/ACT1_WRITING_CLOSURE_PACKET_2.json','docs/design/ACT1_WRITING_CLOSURE_PACKET_3.json',
+        'docs/design/ACT1_CHARLES_REVISION_RECEIPT.md','docs/design/ACT1_CHARLES_PACKET2_RECEIPT.md','docs/design/ACT1_CHARLES_PACKET3_RECEIPT.md',
+        'docs/design/ACT1_CHARLES_PACKET2_ENTRY_LEDGER.md','docs/design/ACT1_CHARLES_PACKET3_ENTRY_LEDGER.md','docs/design/ACT1_ENTRY_SELECTION_CONTRACT.md',
+        'tools/win/greenwater-relief-candidate.json','tools/greenwater_relief_candidate.py','tools/win/Build-GreenwaterRelief.ps1','tools/win/red-hollow-story-candidate.json','tools/red_hollow_story_candidate.py','tools/win/Build-RedHollow.ps1',
         'tools/win/night-mail-story-candidate.json','tools/night_mail_story_candidate.py','tools/win/Build-NightMail.ps1',
         'docs/design/NIGHT_MAIL_STORY_001_MAPPING.json','tools/win/greenwater-story-candidate.json','tools/greenwater_story_candidate.py','tools/win/Build-Greenwater.ps1',
         'tools/win/mercy-briefing-candidate.json','tools/mercy_briefing_candidate.py',

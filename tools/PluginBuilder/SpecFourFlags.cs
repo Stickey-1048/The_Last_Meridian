@@ -65,7 +65,7 @@ public static class FourFlags
     public sealed record Piece(string Alias,string Name,string Base,float X,float Y,float Z=16,int Who=0,bool Person=false,bool Mercy=false);
     static Piece Marker(string n,float x,float y)=>new(n,n,"XMarker",x,y);
     public static readonly Piece[] Pieces=new Piece[]{
-        new("Entry","Four Flags: entry, handbill and returns","TLM_ACTI_FF_Entry",3680,2600,12,1,Mercy:true),Marker("MercyReturn",3650,2570) with{Mercy=true},
+        new("Entry","Four Flags: entry, handbill and returns","TLM_ACTI_FF_Entry",3920,3100,12,1,Mercy:true),Marker("MercyReturn",3890,3070) with{Mercy=true},
         Marker("Arrival",128,128),new("Exit","Return to Mercy","TLM_ACTI_FF_Exit",128,256,12,2),
         new("Ready","Continue the fair: courier scene","TLM_ACTI_FF_Ready",1024,768,12,3),
         new("Response","Current courier response","TLM_ACTI_FF_Response",1024,896,12,4),

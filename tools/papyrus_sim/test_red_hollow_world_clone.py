@@ -18,7 +18,7 @@ class RedHollowClone(unittest.TestCase):
         self.assertEqual(sum(a['owner']=='TheLastMeridian.esp' for a in aliases),95)
         self.assertEqual(next(a for a in aliases if a['name']=='Condemned')['reference'],'script-filled')
         self.assertEqual(next(a for a in aliases if a['name']=='Player')['owner'],'Fallout4.esm')
-        self.assertEqual(self.out['persistentReferences'],66)
+        self.assertEqual(self.out['persistentReferences'],68)
         for a in exterior.values():self.assertEqual([a['x'],a['y'],a['z']],self.out['redHollowSites'][a['name']])
         self.assertEqual(self.out['firstSection']['forms']['TLM_RedHollow'],'TLM_WS_RH')
         self.assertEqual(q['forms']['TLM_MQ02C'],'TLM_MQ02C in TheLastMeridian.esp')

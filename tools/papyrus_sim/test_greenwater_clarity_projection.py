@@ -2,7 +2,10 @@
 import json
 import subprocess
 import unittest
-from test_sim import ROOT,PLUGIN
+from test_sim import ROOT as LIVE_ROOT
+from source_snapshot import snapshot,built_greenwater_relief,GREENWATER_RELIEF
+ROOT=snapshot(GREENWATER_RELIEF)
+PLUGIN=built_greenwater_relief()
 from source_snapshot import built_red_hollow
 
 
@@ -35,7 +38,7 @@ class ClarityProjection(unittest.TestCase):
                 next(s for s in oldq[name]['Stages'] if s['Index']==44)['Log']=payment['Log']
             self.assertEqual(newq[name],oldq[name],name)
         for name in ('scripts/Source/User/TLM/Core.psc',):
-            before=subprocess.run(['git','show','1cdd466:'+name],cwd=ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
+            before=subprocess.run(['git','show','1cdd466:'+name],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
             self.assertEqual((ROOT/name).read_text(),before,name)
 
     def test_existing_labels_describe_distinct_barge_and_occupied_boat(self):

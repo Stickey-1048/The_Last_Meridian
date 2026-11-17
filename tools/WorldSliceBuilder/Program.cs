@@ -267,7 +267,7 @@ if(args.Length==4){
   var at=WorldStory.FourFlagsSites["Entry"];
   if(at.X<96||at.X>4000||at.Y<96||at.Y>4000||at.Z!=12)throw new InvalidDataException("Fair entry outside supported flat LAND");
   for(int tick=0;tick<=100;tick++){
-   float x=3920+(at.X-3920)*tick/100f,y=at.Y;
+   float x=4000+(at.X-4000)*tick/100f,y=at.Y;
    foreach(var obstacle in routeObstacles.Where(p=>!p.Id.Contains("Floor",StringComparison.Ordinal))){
     float dx=MathF.Max(MathF.Max(obstacle.MinX-x,0),x-obstacle.MaxX),dy=MathF.Max(MathF.Max(obstacle.MinY-y,0),y-obstacle.MaxY);
     if(dx*dx+dy*dy<96*96)throw new InvalidDataException("Fair entry192-unit approach blocked: "+obstacle.Id);

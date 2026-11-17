@@ -27,7 +27,7 @@ class FourFlagsCandidate(unittest.TestCase):
         m=json.loads(candidate.MANIFEST.read_text());self.assertEqual(m['scripts'],34)
         for name in candidate.FROZEN:
             old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
-            self.assertEqual((ROOT/name).read_text(),old,name)
+            self.assertEqual((ROOT/name).read_text(encoding='utf-8'),old,name)
         self.assertTrue(all(v is None for v in m['measured'].values()))
         self.assertEqual((len(m['runtimeSelection']['reusedReviewedPex']),len(m['runtimeSelection']['freshlyCompiled'])),(17,17))
         old=json.loads(subprocess.run(['git','show',candidate.BASELINE+':tools/win/greenwater-relief-candidate.json'],cwd=ROOT,capture_output=True,check=True).stdout)

@@ -13,7 +13,7 @@ Q='TLM_MQ03'
 
 
 class Fair:
-    def __init__(self,t,scripts=SCRIPTS,enter=True,finish=True):
+    def __init__(self,t,scripts=SCRIPTS,enter=True,finish=True,delay=0):
         self.t=t;self.a=Player(t,scripts=scripts,travel=False,finish=finish);self.s=self.a.s
         self.q=self.s.quests[Q]
         self.rules=next(i for i in self.q.scripts if i.script.name=='TLM:MQ03Quest')
@@ -21,13 +21,14 @@ class Fair:
         self.messages={m['EditorId']:m for m in json.loads(PLUGIN.read_text())['Messages']}
         self.originals=[self.s.placed['TLM_REF_A1_'+n] for n in ('Pritchard','Talbot','Pike')]+[self.s.placed['TLM_REF_GW_Belden']]
         self.before=[(a.cell,tuple(a.pos),a.disabled,dict(a.inventory),a.dead,a.protected_override,a.essential_override) for a in self.originals]
+        self.s.native_delay=delay
         if enter:self.enter()
     def v(self,key):return self.rules.vars[key.lower()]
     def use(self,part,**answers):
         self.s.answers={n:[0]*40 for n,m in self.messages.items() if n.startswith(P) and len(m['Buttons'])==1}
         self.s.answers.update({P+k:([v] if not isinstance(v,list) else v) for k,v in answers.items()})
-        target=('TLM_REF_A1_'+part) if part in ('Pritchard','Talbot','Pike') else R+part
-        at=len(self.s.messages_shown);self.s.walk_to(target);self.s.press_activate(target);self.a.p.pause(4)
+        target=('TLM_REF_A1_'+part) if part in ('Pritchard','Talbot','Pike') else 'TLM_REF_GW_Belden' if part=='Belden' else R+part
+        at=len(self.s.messages_shown);self.s.walk_to(target);self.s.press_activate(target);self.a.p.pause(120 if self.s.native_delay else 4)
         return [n.removeprefix(P) for n in self.s.messages_shown[at:]]
     def enter(self):return self.use('Entry',Entry=1,NoReport=0,Travel=0)
     def scene(self,choice=None,**answers):
@@ -45,6 +46,33 @@ class Fair:
 
 
 class FourFlagsNormal(unittest.TestCase):
+    def test_four_exact_faction_offers_do_not_choose_allegiance_or_start_scene(self):
+        a=Fair(self);history=a.old_history()
+        for part,node in (('Whitcomb','whitcomb_offer'),('Brigg','brigg_offer'),('Belden','belden_offer'),('Grey','grey_offer')):
+            shown=a.use(part,**{n.removeprefix(P):0 for n in a.messages if n.startswith(P+'S_'+node+'_')})
+            self.assertIn('S_'+node+'_1',shown)
+            self.assertNotIn(40,a.q.done);self.assertEqual(a.v('response'),0)
+        self.assertEqual(a.old_history(),history);self.assertEqual(a.q.done,[10])
+
+    def test_original_talbot_full_quorum_concession_after_pritchard_death(self):
+        a=Fair(self);a.originals[0].dead=True
+        shown=a.scene(None,S_brigg_demand_talbot_1=2)
+        self.assertIn('S_talbot_truce_1',shown)
+        self.assertIn('S_brigg_truce_concession_talbot_1',shown)
+        self.assertIn(43,a.q.done);self.assertNotIn(70,a.q.done)
+        self.assertTrue(a.originals[0].dead);self.assertEqual(a.v('response'),43)
+
+    def test_all_four_courses_and_original_returns_with_each_native_taking_a_frame(self):
+        for choice,course in ((0,41),(1,42),(2,43),(3,44)):
+            with self.subTest(course=course):
+                a=Fair(self,delay=1.0/60.0);history=a.old_history()
+                a.scene(choice,Occupation=0,OccupationSeen=0,Take=0)
+                self.assertEqual(a.v('response'),course)
+                self.assertEqual(70 in a.q.done,course!=43)
+                a.read();self.assertIn(100,a.q.done)
+                a.use('Exit',Exit=0);self.assertFalse(any(a.walk.vars['visitorpending']))
+                self.assertEqual(a.old_history(),history)
+
     def test_explicit_no_report_arrival_preserves_old_history_and_original_cast(self):
         a=Fair(self,enter=False);before=a.old_history()
         shown=a.enter()
@@ -101,6 +129,24 @@ class FourFlagsNormal(unittest.TestCase):
 
 
 class FourFlagsEntryAndScene(unittest.TestCase):
+    def test_entry_and_master_start_failures_have_no_stage_or_cast_effect_and_retry(self):
+        for quest_name in ('TLM_FF_Entry',Q):
+            for result in (False,True):
+                with self.subTest(quest=quest_name,return_value=result):
+                    a=Fair(self,enter=False);q=a.s.quests[quest_name];q.running=False
+                    source=a.walk.vars['sourceowner'];old=a.s.n_quest_start
+                    def fail_start(quest,context):
+                        if quest is q:return result  # SEEDED refusal or true-without-running
+                        return old(quest,context)
+                    a.s.n_quest_start=fail_start
+                    self.assertFalse(a.s.invoke('TLM_FF_Entry','OpenFrom',[source]))
+                    self.assertFalse(q.running);self.assertEqual(a.q.done,[])
+                    self.assertFalse(any(a.walk.vars['visitorpending']))
+                    for actor,before in zip(a.originals,a.before):self.assertEqual((actor.cell,tuple(actor.pos),actor.disabled),before[:3])
+                    a.s.n_quest_start=old
+                    self.assertTrue(a.s.invoke('TLM_FF_Entry','OpenFrom',[source]))
+                    a.enter();self.assertIn(10,a.q.done)
+
     def test_all_entry_paths_keep_completed_first_section_prerequisite(self):
         for choice in (0,1,2):
             with self.subTest(entry=choice):
@@ -216,6 +262,24 @@ class FourFlagsResponseGuards(unittest.TestCase):
 
 
 class FourFlagsPhysicalIdentity(unittest.TestCase):
+    def test_busy_dead_or_unsafe_originals_are_not_borrowed(self):
+        for role in range(4):
+            for state in ('dead','combat','dialogue','scene'):
+                with self.subTest(role=role,state=state):
+                    a=Fair(self,enter=False);actor=a.originals[role]
+                    if state=='dead':actor.dead=True
+                    elif state=='combat':actor.combat_target=a.s.player
+                    elif state=='dialogue':
+                        actor.disabled=False  # an active conversation needs an enabled actor
+                        actor.talking_to_player=True
+                    else:actor.in_scene=True
+                    before=(actor.cell,tuple(actor.pos),actor.disabled)
+                    a.enter()
+                    self.assertFalse(a.walk.vars['visitorpending'][role])
+                    self.assertFalse(a.walk.vars['visitorstaged'][role])
+                    self.assertEqual((actor.cell,tuple(actor.pos),actor.disabled),before)
+                    self.assertIsNone(a.rules.props['cast'][role].ref)
+
     def test_base_item_copy_does_not_supply_missing_original_case_access(self):
         a=Fair(self);a.scene(0,Occupation=0,OccupationSeen=0)
         original=a.s.placed[R+'OriginalCase'];original.pos=(90000,90000,16)

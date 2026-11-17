@@ -6,7 +6,7 @@ using Noggog;
 public static partial class WorldStory
 {
     public static readonly Dictionary<string,(float X,float Y,float Z)> FourFlagsSites=new(){
-        ["Entry"]=(3680,2600,12),["MercyReturn"]=(3650,2570,32)
+        ["Entry"]=(3920,3100,12),["MercyReturn"]=(3890,3070,32)
     };
     const string FairMaster="TLM_MQ03",FairEntry="TLM_FF_Entry",FairClone="TLM_WS_FF_Entry";
 

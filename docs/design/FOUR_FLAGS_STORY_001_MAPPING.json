@@ -2328,5 +2328,123 @@
     "Real floor model/bounds audit, physical collision and controller navigation",
     "Staged shot/visible occupation/endpoint comprehension; no projectile/audio/navmesh claims",
     "Full fresh34 Papyrus compile, own licensed-master package, actual game paths remain root gates"
-  ]
+  ],
+  "composedAvailability": [
+    {
+      "record": "TLM_MSG_A1_PritchardHandOff",
+      "text": "Owen Pritchard: \"Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three.\"\n\n[Opening complete. Three roads and Four Flags entry are available.]",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_A1_PritchardAfter",
+      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. Three roads and Four Flags entry are available.]",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_A1_PritchardAfterAndMore",
+      "text": "Owen Pritchard: \"Greenwater, Red Hollow or Iron Junction. Pick one.\"\n\n[Opening complete. Three roads and Four Flags entry are available.]",
+      "buttons": [
+        "Continue",
+        "There's something else from that train."
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_MB_Hub",
+      "text": "Owen Pritchard: \"Which road do you want to ask about? Tell me what you know, or ask what to look for.\"\n\n[Mercy briefing. Three roads and the qualified Four Flags entry are available.]",
+      "buttons": [
+        "The rail.",
+        "The river.",
+        "Red Hollow.",
+        "Not now."
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_GW_AskTravel",
+      "text": "[Greenwater story test]\n\nThree roads are playable. Four Flags entry is available after the first section. It is a greybox: flat ground and labelled stand-ins. Travel there now?",
+      "buttons": [
+        "Travel to Greenwater",
+        "Not now"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_GW_ReportEndKnown",
+      "text": "[River report]\n\nYou learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.\n\nGreenwater road complete. The other roads and Four Flags entry remain available.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_GW_ReportEndUnknown",
+      "text": "[River report]\n\nYou did not learn why Hatcher held the grain.\n\nGreenwater road complete. The other roads and Four Flags entry remain available.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_NM_AskTravel",
+      "text": "[Iron Junction story test]\n\nThree roads are playable. Four Flags entry is available after the first section. It is a greybox: floors and labelled stand-ins. Travel there now?",
+      "buttons": [
+        "Travel to Iron Junction",
+        "Not now"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_NM_NoteRoadComplete",
+      "text": "[Iron Junction story test]\n\nNight Mail road complete. The other roads and Four Flags entry remain available. Sheriff Pritchard will hear what became of the Night Mail.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_NM_ReportEnd",
+      "text": "[Rail report]\n\nNight Mail road complete. The other roads and Four Flags entry remain available.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_RH_Travel",
+      "text": "[Red Hollow story test]\n\nThree roads are playable. Four Flags entry is available after the first section. Travel to the gap?",
+      "buttons": [
+        "Travel",
+        "Not now"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    },
+    {
+      "record": "TLM_MSG_RH_End",
+      "text": "[Red Hollow]\n\nRed Hollow road complete. Three roads and Four Flags entry remain available.",
+      "buttons": [
+        "Continue"
+      ],
+      "projection": "Technical availability only; accepted NPC words, titles and buttons unchanged; exact allowed replacement checked against real a31 export"
+    }
+  ],
+  "exteriorEntry": {
+    "Entry": [
+      3920,
+      3100,
+      12
+    ],
+    "MercyReturn": [
+      3890,
+      3070,
+      32
+    ],
+    "approach": "192-unit upright clearance sampled from4000,3100to3920,3100; east of the unchanged yard fence. Full actual-master scenery AABBs remain a packaging gate, no native collision/walking claim."
+  }
 }

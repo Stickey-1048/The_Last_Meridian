@@ -82,7 +82,7 @@ class TheCandidate(unittest.TestCase):
         said = " | ".join(candidate.problems())
         self.assertIn("Act1Walk.psc is not the source the manifest describes", said)
         self.assertIn("Act1Guide.psc is not the source the manifest describes", said)
-        self.assertIn("only here ['GreenwaterRelief.psc', 'GreenwaterTalk.psc', 'GreenwaterWalk.psc', 'MQ02AQuest.psc', 'MQ02BQuest.psc', 'MQ02CQuest.psc', 'NightMailTalk.psc', 'NightMailWalk.psc', 'RedHollowTalk.psc', 'RedHollowWalk.psc']", said)
+        self.assertIn("only here ['FourFlagsEntry.psc', 'FourFlagsTalk.psc', 'FourFlagsWalk.psc', 'GreenwaterRelief.psc', 'GreenwaterTalk.psc', 'GreenwaterWalk.psc', 'MQ02AQuest.psc', 'MQ02BQuest.psc', 'MQ02CQuest.psc', 'MQ03Quest.psc', 'NightMailTalk.psc', 'NightMailWalk.psc', 'RedHollowTalk.psc', 'RedHollowWalk.psc']", said)
         self.assertIn("runtimeSelection", said)
         self.assertNotIn("MercyBriefing.psc is not the source", said)       # that script is a8's, word for word
         self.assertNotIn("earlierManifestsSha256", said)                    # and the four older manifests are as they were
