@@ -1141,11 +1141,11 @@ EndFunction
 
 bool Function ResumeYard(TLM:MQ02AQuest akRiver)
 	{A scene of the yard was begun and not seen finished: it is tried again. True if there was one.}
-	int scene = akRiver.PendingAtYard()
-	If scene == NM_YARD_COUNTERSIGN
+	int pendingScene = akRiver.PendingAtYard()
+	If pendingScene == NM_YARD_COUNTERSIGN
 		CarryOutCountersign(akRiver)
 		Return true
-	ElseIf scene == NM_YARD_AUTHORITY
+	ElseIf pendingScene == NM_YARD_AUTHORITY
 		If CarryOutAuthority(akRiver) == NW_SHOWN_UNSEEN
 			ShowBox(NoteAuthorityFailed)
 		EndIf
@@ -1366,30 +1366,30 @@ bool Function Resume(TLM:MQ02AQuest akRiver)
 	{A scene of the train or the encounter was begun and not seen finished: it
 	is carried out again, as far as it is not done, and looked at again. True
 	if there was one. No scene is begun by this and none becomes another.}
-	int scene = akRiver.Pending()
-	If scene == NM_SCENE_NONE
+	int pendingScene = akRiver.Pending()
+	If pendingScene == NM_SCENE_NONE
 		; A death that was never heard of is found here.
 		If akRiver.DoleIsDead()
 			akRiver.DoleDied(false)
-			scene = akRiver.Pending()
+			pendingScene = akRiver.Pending()
 		EndIf
-		If scene == NM_SCENE_NONE
+		If pendingScene == NM_SCENE_NONE
 			Return false
 		EndIf
 	EndIf
-	If scene == NM_SCENE_DEPART
+	If pendingScene == NM_SCENE_DEPART
 		CarryOutDepart(akRiver)
-	ElseIf scene == NM_SCENE_RUN
+	ElseIf pendingScene == NM_SCENE_RUN
 		CarryOutRun(akRiver)
-	ElseIf scene == NM_SCENE_FORWARD
+	ElseIf pendingScene == NM_SCENE_FORWARD
 		CarryOutForward(akRiver)
-	ElseIf scene == NM_SCENE_REVERSE
+	ElseIf pendingScene == NM_SCENE_REVERSE
 		CarryOutReverse(akRiver)
-	ElseIf scene == NM_SCENE_RETURN
+	ElseIf pendingScene == NM_SCENE_RETURN
 		CarryOutCarryBack(akRiver)
-	ElseIf scene == NM_SCENE_SALE
+	ElseIf pendingScene == NM_SCENE_SALE
 		CarryOutSale(akRiver)
-	ElseIf scene == NM_SCENE_DEFEAT
+	ElseIf pendingScene == NM_SCENE_DEFEAT
 		CarryOutDefeat(akRiver, true)
 	EndIf
 	Return true
@@ -1584,9 +1584,9 @@ Function CarryOutForward(TLM:MQ02AQuest akRiver)
 	ObjectReference platform = Piece(Alias_PlatformArrival)
 	ObjectReference delivered = Piece(Alias_CargoDelivered)
 	ObjectReference aboard = Piece(Alias_CargoAtCut)
-	ObjectReference sound = Piece(Alias_EngineSound)
+	ObjectReference soundEngine = Piece(Alias_EngineSound)
 	bool done = false
-	If platform && delivered && sound && player && akRiver.PlayerIsAlive()
+	If platform && delivered && soundEngine && player && akRiver.PlayerIsAlive()
 		SwitchOn(Alias_CargoDelivered)
 		SwitchOff(Alias_CargoAtCut)
 		SwitchOn(Alias_EngineSound)
@@ -1594,8 +1594,8 @@ Function CarryOutForward(TLM:MQ02AQuest akRiver)
 		player.MoveTo(platform)
 		If Arrived(akRiver, platform)
 			zone = NW_ZONE_PLATFORM
-			If SeenOn(delivered) && SeenOff(aboard) && SeenOn(sound)
-				done = akRiver.FinishForward(platform, delivered, aboard, sound)
+			If SeenOn(delivered) && SeenOff(aboard) && SeenOn(soundEngine)
+				done = akRiver.FinishForward(platform, delivered, aboard, soundEngine)
 			EndIf
 		EndIf
 	EndIf

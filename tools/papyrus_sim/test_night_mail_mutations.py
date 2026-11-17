@@ -81,7 +81,7 @@ TRIALS = [
       (RULES, "	If !SeenAt(Game.GetPlayer(), akYard) || !IsOn(akRetained) || !IsOff(akAboard)\n		Debug.Trace(\"TLM_MQ02A: the reverse is not recorded", "	If false\n		Debug.Trace(\"TLM_MQ02A: the reverse is not recorded")],
      "test_night_mail_scenes.TheReverse.test_the_cargo_not_seen_locked_up"),
     ("a delivery after the defeat recorded unseen",
-     [(WALK, "			If SeenOn(delivered) && SeenOff(aboard) && SeenOn(sound)\n", "			If true\n"),
+     [(WALK, "			If SeenOn(delivered) && SeenOff(aboard) && SeenOn(soundEngine)\n", "			If true\n"),
       (RULES, "	If !SeenAt(Game.GetPlayer(), akPlatform) || !IsOn(akDelivered) || !IsOff(akAboard) || !IsOn(akSound)\n", "	If false\n")],
      "test_night_mail_scenes.AfterTheDefeat.test_forward_not_seen_then_seen"),
     ("a road complete with a scene half done",
