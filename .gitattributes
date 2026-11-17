@@ -29,3 +29,4 @@ tools/WorldSliceBuilder/expanded-artifact.json text eol=lf
 
 # Story implementation orders and independent contract receipts are frozen inputs.
 docs/design/GREENWATER_STORY_001*.md text eol=lf
+docs/design/NIGHT_MAIL_STORY_001*.md text eol=lf
