@@ -1437,12 +1437,13 @@ Function CourtMenu()
 EndFunction
 
 Function WatchCourt()
-	If !Road().CourtOpen() || !TalkOK(Alias_Quill.GetActorReference())
+	If !menusRegistered || !Road().CourtOpen() || !TalkOK(Alias_Quill.GetActorReference())
 		Return
 	EndIf
 	int courtBefore = Road().CourtMark()
 	int answer = Watch.Show()
 	If answer == 0 && Road().CourtMark() == courtBefore && Road().CourtOpen() && TalkOK(Alias_Quill.GetActorReference())
+		menuUncertain = false
 		Road().BeginWatch()
 	EndIf
 EndFunction

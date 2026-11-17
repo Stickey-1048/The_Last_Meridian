@@ -176,6 +176,13 @@ class MenuEdges(unittest.TestCase):
         a.s.now+=0.7;a.s.menu_event('PipboyHolotapeMenu',False);a.s.run(a.s.now);a.s.invoke('TLM_RH','OnTimer',[1],until=a.s.now)
         self.assertEqual(a.v('courtRemaining'),left)
         a.s.menu_event('PipboyMenu',False);a.s.run(a.s.now);a.s.invoke('TLM_RH','OnTimer',[1],until=a.s.now);self.assertEqual(a.v('courtRemaining'),left)
+    def test_court_uncertainty_is_recoverable_only_through_new_explicit_watch_warning(self):
+        a=Hollow(self);a.use('Watch',Court=1,Watch=0);a.s.menu_event('UnverifiedModMenu',True);a.wait()
+        self.assertTrue(a.walk.vars['menuuncertain']);self.assertFalse(a.v('courtWatching'))
+        a.s.menu_event('UnverifiedModMenu',False);a.wait();a.use('Watch',Court=1,Watch=0)
+        self.assertFalse(a.walk.vars['menuuncertain']);self.assertTrue(a.v('courtWatching'))
+        before=a.v('courtRemaining');a.wait(2);self.assertLess(a.v('courtRemaining'),before)
+
     def test_load_reregisters_exact_supported_names_without_wildcard_and_keeps_gap_paused(self):
         a=Hollow(self);a.below(True);left=a.v('deadlineSeconds');a.s.menu_watches={};a.s.now+=900
         a.s.ref_event(a.s.player,'OnPlayerLoadGame',[],0);a.s.run(a.s.now)
