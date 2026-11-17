@@ -5,7 +5,7 @@ using Noggog;
 
 // Opt-in development binding. Source records are only READ: the addon owns
 // every new quest/reference; main/side quest rules stay in the explicit master.
-public static class WorldStory
+public static partial class WorldStory
 {
     // GREENWATER-STORY-001: where the Greenwater greybox stands in the owner's world. Free flat ground south of
     // the bypass road: x 1250-2850, y 200-700, at least 600 units from every tree and rock the expansion places
@@ -136,6 +136,7 @@ public static class WorldStory
         var playerProperty=entry.VirtualMachineAdapter.Scripts.Single().Properties.OfType<IScriptObjectPropertyGetter>().Single(p=>p.Name=="FreshPlayer");
         if(playerProperty.Object.FormKey!=entry.FormKey||playerProperty.Alias!=0)throw new InvalidDataException("Missing guarded player-alias property");
         ValidateGreenwater(addon,section);
+        ValidateNightMail(addon,section);
     }
     public static object Add(Fallout4Mod mod, Worldspace world, Cell clearing, IFallout4ModGetter source)
     {
@@ -213,6 +214,7 @@ public static class WorldStory
         // GREENWATER-STORY-001: the second clone, after everything of the first section is allocated, so that the
         // first section's 29 references and both quests keep the ids they had.
         var greenwater=AddGreenwater(mod,world,source,sourceRefs,adapter);
-        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,greenwater,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
+        var nightMail=AddNightMail(mod,world,source,sourceRefs,adapter);
+        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,greenwater,nightMail,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
     }
 }

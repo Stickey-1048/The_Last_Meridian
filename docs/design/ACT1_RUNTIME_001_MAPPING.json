@@ -19,9 +19,9 @@
   },
   "ui": {
     "what": "Product-availability text. Not fiction, not said by anybody, and kept outside the quoted speech.",
-    "briefing_only": "Mercy briefing. Greenwater is playable; the other roads are not.",
-    "hand_off_footer": "Opening complete. Ask for briefings or use Greenwater story test.",
-    "journal_complete": "Mercy briefing complete. Only Greenwater is playable; other roads and fair are not.",
+    "briefing_only": "Mercy briefing. Greenwater and Iron Junction are playable. Red Hollow and the fair are not.",
+    "hand_off_footer": "Opening complete. Ask for briefings or use a story test point.",
+    "journal_complete": "Mercy briefing complete. Greenwater and Iron Junction are playable; Red Hollow and the fair are not.",
     "objective": "Ask Pritchard about the three roads.",
     "quest_name": "Mercy briefing",
     "copy_issued": "One review copy only. No second copy is given.",

@@ -622,7 +622,7 @@ class TheTask(unittest.TestCase):
         for v in (NOT_NOW, RAIL, RIVER, PIKE, ASK, TAKE, TAKE):
             a.ask(v)                       # each compares the whole world outside the briefing with what it was
         # (TLM_MQ02B and TLM_GW are GREENWATER-STORY-001's; the briefing sets nothing on them either: see a.world().)
-        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_GW", "TLM_MQ01", "TLM_MQ02B", "TLM_MercyBriefing", "TLM_SQ01", "TLM_Trial"])
+        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_GW", "TLM_MQ01", "TLM_MQ02A", "TLM_MQ02B", "TLM_MercyBriefing", "TLM_NM", "TLM_SQ01", "TLM_Trial"])
         self.assertEqual((a.s.quests["TLM_MQ02B"].running, a.s.quests["TLM_MQ02B"].done), (False, []))
         self.assertEqual(a.p.has("Caps001") if "Caps001" in a.s.forms else a.p.has(a.p.caps), a.before["carried"].get("Caps001", 0))
         source = (SCRIPTS / "MercyBriefing.psc").read_text()

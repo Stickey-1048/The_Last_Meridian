@@ -1,0 +1,2449 @@
+{
+  "schema": 1,
+  "contract": "NIGHT-MAIL-STORY-001",
+  "source": {
+    "accepted_commit": "d142104",
+    "folder": "assets/incoming/act1/story",
+    "files": [
+      "talk/tlm_mq02a.json",
+      "talk/tlm_mq02.json",
+      "quests/tlm_mq02a.json",
+      "documents.json",
+      "characters.json"
+    ]
+  },
+  "limit": 240,
+  "speech": [
+    {
+      "record": "TLM_MSG_NM_LockridgeDefault",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_default",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeGateA",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_gate",
+      "speaker": "Augusta Lockridge",
+      "part": "before: Tonight I send",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "projection"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeGateB",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_gate",
+      "speaker": "Augusta Lockridge",
+      "part": "after: Tonight I send",
+      "buttons": [
+        "I'll ride your mail.",
+        "Who chalks the hymns?",
+        "Who passes your trains as sound?",
+        "Not tonight."
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeGateAlerted",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_gate_alerted",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "I'll ride your mail.",
+        "Who signed that page?",
+        "Not tonight."
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeGateSold",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_gate_sold",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "I'll ride your mail.",
+        "Who chalks the hymns?",
+        "Not tonight."
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeDole",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_dole",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeRails",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_rails",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeHired",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_hired",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeAfterRan",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_after_ran",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Whose hand is on your inspections?",
+        "Nothing. Good night."
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeAfterDole",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_after_dole",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeAfterSold",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_after_sold",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeHymnal",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_hymnal",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "(Open the drawer)"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_LockridgeStamp",
+      "file": "talk/tlm_mq02a.json",
+      "node": "lockridge_stamp",
+      "speaker": "Augusta Lockridge",
+      "part": "whole",
+      "buttons": [
+        "Keep stamping. Trains have to run.",
+        "Sign your own name from now on.",
+        "Pritchard gets the stamp.",
+        "(Close the drawer)"
+      ],
+      "button_mode": "projection"
+    },
+    {
+      "record": "TLM_MSG_NM_BillieDefault",
+      "file": "talk/tlm_mq02a.json",
+      "node": "tarrow_default",
+      "speaker": "Wilhelmina Tupper",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_BillieFootplate",
+      "file": "talk/tlm_mq02a.json",
+      "node": "tarrow_footplate",
+      "speaker": "Wilhelmina Tupper",
+      "part": "whole",
+      "buttons": [
+        "You're on.",
+        "What's in the Cut?",
+        "Just drive."
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_BillieCutBefore",
+      "file": "talk/tlm_mq02a.json",
+      "node": "tarrow_cut_before",
+      "speaker": "Wilhelmina Tupper",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_BillieInCut",
+      "file": "talk/tlm_mq02a.json",
+      "node": "tarrow_in_cut",
+      "speaker": "Wilhelmina Tupper",
+      "part": "whole",
+      "buttons": [
+        "Stoke her. Run the gap.",
+        "Stop her. I'm getting down.",
+        "Back her out."
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_BillieRan",
+      "file": "talk/tlm_mq02a.json",
+      "node": "tarrow_ran",
+      "speaker": "Wilhelmina Tupper",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_BillieBacked",
+      "file": "talk/tlm_mq02a.json",
+      "node": "tarrow_backed",
+      "speaker": "Wilhelmina Tupper",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_BillieWalking",
+      "file": "talk/tlm_mq02a.json",
+      "node": "tarrow_walking",
+      "speaker": "Wilhelmina Tupper",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_DoleDefault",
+      "file": "talk/tlm_mq02a.json",
+      "node": "dole_default",
+      "speaker": "Ezekiel Dole",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_DoleSermon",
+      "file": "talk/tlm_mq02a.json",
+      "node": "dole_sermon",
+      "speaker": "Ezekiel Dole",
+      "part": "whole",
+      "buttons": [
+        "Stand aside, Preacher.",
+        "What's my share?",
+        "They buried you. Who are you?",
+        "(Go back to the footplate)"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_DoleName",
+      "file": "talk/tlm_mq02a.json",
+      "node": "dole_name",
+      "speaker": "Ezekiel Dole",
+      "part": "whole",
+      "buttons": [
+        "And the silver in your plate?",
+        "Stand aside.",
+        "What's my share?"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_DoleSilver",
+      "file": "talk/tlm_mq02a.json",
+      "node": "dole_silver",
+      "speaker": "Ezekiel Dole",
+      "part": "whole",
+      "buttons": [
+        "Stand aside.",
+        "What's my share?"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_DoleShare",
+      "file": "talk/tlm_mq02a.json",
+      "node": "dole_share",
+      "speaker": "Ezekiel Dole",
+      "part": "whole",
+      "buttons": [
+        "Done.",
+        "No.",
+        "(Go back to the footplate)"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_DoleShareNoBillie",
+      "file": "talk/tlm_mq02a.json",
+      "node": "dole_share",
+      "speaker": "Ezekiel Dole",
+      "part": "from:The physic goes up the hill:",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "projection"
+    },
+    {
+      "record": "TLM_MSG_NM_DoleFace",
+      "file": "talk/tlm_mq02a.json",
+      "node": "dole_face",
+      "speaker": "Ezekiel Dole",
+      "part": "whole",
+      "buttons": [
+        "Continue"
+      ],
+      "button_mode": "node"
+    },
+    {
+      "record": "TLM_MSG_NM_ReportKnown",
+      "file": "talk/tlm_mq02.json",
+      "node": "pritchard_hears_rail_after_fair",
+      "speaker": "Owen Pritchard",
+      "part": "whole",
+      "buttons": [
+        "[Report on Iron Junction]",
+        "[Later]"
+      ],
+      "button_mode": "projection"
+    },
+    {
+      "record": "TLM_MSG_NM_ReportUnknown",
+      "file": "talk/tlm_mq02.json",
+      "node": "pritchard_hears_rail_after_fair_unknown",
+      "speaker": "Owen Pritchard",
+      "part": "whole",
+      "buttons": [
+        "[Report on Iron Junction]",
+        "[Later]"
+      ],
+      "button_mode": "projection"
+    }
+  ],
+  "ui": [
+    {
+      "record": "TLM_MSG_NM_AskTravel",
+      "text": "[Iron Junction story test]\n\nGreenwater and Iron Junction are playable in this candidate; Red Hollow and the fair are not. It is a greybox: floors and labelled stand-ins. Travel there now?",
+      "buttons": [
+        "Travel to Iron Junction",
+        "Not now"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskTravelAgain",
+      "text": "[Iron Junction story test]\n\nThe Night Mail road is complete. You can go back: what was settled stays settled.",
+      "buttons": [
+        "Travel to Iron Junction",
+        "Not now"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteTravelNotYet",
+      "text": "[Iron Junction story test]\n\nNot yet. Deliver the marshal's dispatch to Sheriff Pritchard and hear him out first.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteTravelFailed",
+      "text": "[Iron Junction story test]\n\nIron Junction could not be reached, so no arrival is recorded. Nothing else was changed. See the script log.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteNotAssigned",
+      "text": "[Old Contrary]\n\nThe yardmaster has not given you the footplate. Speak to Augusta Lockridge at her desk.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskBoard",
+      "text": "[Old Contrary]\n\nNobody at the yard is giving out this run. The payroll and the fever medicine are aboard.",
+      "buttons": [
+        "Board the Night Mail",
+        "Not now"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteAssignedNoBillie",
+      "text": "[Iron Junction story test]\n\nAssignment accepted. Board the Night Mail.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskDepartScene",
+      "text": "[Scene]\n\nThe Night Mail leaves the yard for Sawtooth Cut. The eleven miles are not shown: you are set down on her footplate where she stops at the lanterns. No moving engine is simulated.",
+      "buttons": [
+        "Continue",
+        "Not yet"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskRejoin",
+      "text": "[Scene]\n\nThe Night Mail is standing in Sawtooth Cut. You walk the line back to her.",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskWalkToCut",
+      "text": "[Scene]\n\nYou walk the line out to Sawtooth Cut on foot. The train is not there, and no train is moved.",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteTrainNothing",
+      "text": "[Old Contrary]\n\nThere is nothing to do with her here.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskRegulator",
+      "text": "[Regulator]\n\nNobody is at the regulator. It is a lever.",
+      "buttons": [
+        "Stoke her. Run the gap.",
+        "Stop her. I'm getting down.",
+        "Back her out."
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskRunScene",
+      "text": "[Scene]\n\nThe run at the spread rail is shown as a staged scene: you are set down at the valley platform with what arrives. No moving engine, jump or damage is simulated.",
+      "buttons": [
+        "Continue",
+        "Not yet"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskReverseScene",
+      "text": "[Scene]\n\nOld Contrary backs out of the Cut to the yard with her cargo. Shown as a staged scene: you are set down on her footplate in the yard.",
+      "buttons": [
+        "Continue",
+        "Not yet"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskAfterDefeat",
+      "text": "[Regulator]\n\nThe line through the Cut is clear. The payroll and the fever medicine are still aboard.",
+      "buttons": [
+        "Take the mail through",
+        "Take the train back to the yard",
+        "(Leave the regulator)"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskForwardScene",
+      "text": "[Scene]\n\nThe Night Mail goes on through the Cut to the valley. Shown as a staged scene: you are set down at the valley platform.",
+      "buttons": [
+        "Continue",
+        "Not yet"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskCarryBackScene",
+      "text": "[Scene]\n\nThe Night Mail goes back to the yard with her cargo. Shown as a staged scene: you are set down on her footplate in the yard.",
+      "buttons": [
+        "Continue",
+        "Not yet"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteSceneFailed",
+      "text": "[Iron Junction story test]\n\nThat could not be shown, so nothing is recorded. Use the same control again, or one where you now stand.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteSceneStuck",
+      "text": "[Iron Junction story test]\n\nThat cannot be shown in this build: a piece of it is missing. Nothing is recorded. Report this to the tester.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteRunDone",
+      "text": "[Iron Junction story test]\n\nThe Night Mail got through. The payroll and the fever medicine are at the valley platform; Old Contrary is damaged.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteForwardDone",
+      "text": "[Iron Junction story test]\n\nThe payroll and the fever medicine are at the valley platform.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteBackedOut",
+      "text": "[Iron Junction story test]\n\nThe train is back at Iron Junction with its cargo undelivered. The obstruction at Sawtooth Cut remains.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteCarriedBack",
+      "text": "[Iron Junction story test]\n\nThe train is back at Iron Junction. The payroll and the fever medicine are locked in the yard, undelivered. The line through the Cut is clear.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteDefeat",
+      "text": "[Iron Junction story test]\n\nPreacher Dole is dead. The Black Rail have gone up the hill and the line is clear. The payroll and the fever medicine are still aboard.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskShareOffer",
+      "text": "[Offer]\n\nOffer: 150 caps.",
+      "buttons": [
+        "Done.",
+        "No.",
+        "(Go back to the footplate)"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteShareFailed",
+      "text": "[Iron Junction story test]\n\nNo share was paid and no deal was made. See the script log.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteSold",
+      "text": "[Iron Junction story test]\n\nYou accepted Dole's share: 150 caps. The payroll and the fever medicine were taken from the train. Billie Tupper was put off to walk home.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteSoldNoBillie",
+      "text": "[Iron Junction story test]\n\nYou accepted Dole's share: 150 caps. The payroll and the fever medicine were taken from the train.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteSalePending",
+      "text": "[Iron Junction story test]\n\nThe share is paid. The rest of the sale could not be shown, so it is not recorded yet. Use Dole, a control or the mail car again. Nothing is paid twice.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NotePlate",
+      "text": "[Collection plate]\n\nThe plate is full of silver slugs. Each is stamped with a small square mark.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteDrawer",
+      "text": "[Top drawer]\n\nThe inspector's stamp is in the drawer. The pad is still wet.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskStampAlone",
+      "text": "[Top drawer]\n\nNobody at the desk answers for the stamp.",
+      "buttons": [
+        "Pritchard gets the stamp.",
+        "(Close the drawer)"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteStampKept",
+      "text": "[Iron Junction story test]\n\nThe stamp stays in the drawer, in use. Every car is still passed in the inspector's name, and suspect stock is still dispatched.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskCountersignScene",
+      "text": "[Scene]\n\nLockridge goes through the entries and countersigns them in her own name. Shown as a staged scene; no night passes.",
+      "buttons": [
+        "Continue",
+        "Not yet"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteCountersigned",
+      "text": "[Iron Junction story test]\n\nLockridge countersigned the reviewed entries in her own name. Suspect stock is held from dispatch.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteStampTaken",
+      "text": "[Iron Junction story test]\n\nYou took the inspector's stamp as evidence. It has not yet been delivered to Pritchard.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteStampFailed",
+      "text": "[Iron Junction story test]\n\nThe stamp could not be taken. Nothing is recorded and nothing else is decided about it. See the script log.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteDecisionFailed",
+      "text": "[Iron Junction story test]\n\nThat could not be done. Nothing is recorded.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteDrawerKept",
+      "text": "[Top drawer]\n\nThe stamp is in the drawer, in use.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteDrawerSigned",
+      "text": "[Top drawer]\n\nThe stamp is in the drawer. Lockridge signs in her own name now.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteDrawerGone",
+      "text": "[Top drawer]\n\nThe drawer is empty. You took the stamp.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskShowHymnal",
+      "text": "[Hymnal]\n\nYou are carrying the hymnal from the tabernacle.",
+      "buttons": [
+        "(Show her the flyleaf)",
+        "(Not now)"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteNoDispatch",
+      "text": "[Iron Junction]\n\nAugusta Lockridge no longer dispatches trains from this yard.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteSaleStatus",
+      "text": "[Iron Junction story test]\n\nYou accepted Dole's share. The payroll and medicine were taken from the train.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskBillieReport",
+      "text": "[Scene]\n\nBy this scene's clock it is the next morning. Billie Tupper has walked the eleven miles in and told the yardmaster what happened in the Cut. No game time passes.",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskBackToYard",
+      "text": "[Scene]\n\nYou go back along the line to Iron Junction yard on foot. The train stays where it is.",
+      "buttons": [
+        "Continue",
+        "Not now"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskLeaveResolved",
+      "text": "[Road to Mercy]\n\nLeave Iron Junction? The road is complete once you are back at Mercy Crossing.",
+      "buttons": [
+        "Leave for Mercy",
+        "Stay"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskLeaveUnresolved",
+      "text": "[Road to Mercy]\n\nThe Night Mail is not settled. Leaving settles nothing; you can come back.",
+      "buttons": [
+        "Leave for Mercy",
+        "Stay"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskLeaveAgain",
+      "text": "[Road to Mercy]\n\nLeave Iron Junction?",
+      "buttons": [
+        "Leave for Mercy",
+        "Stay"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteRoadComplete",
+      "text": "[Iron Junction story test]\n\nNight Mail road complete. Greenwater remains playable; Red Hollow and the fair are not. Sheriff Pritchard will hear what became of the Night Mail.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteLeftUnresolved",
+      "text": "[Iron Junction story test]\n\nYou left Iron Junction with the Night Mail unsettled. The road is still open.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteFall",
+      "text": "[Greybox]\n\nYou stepped off the greybox floor and were set back on it.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelYard",
+      "text": "[Greybox: Iron Junction yard]\n\nAugusta Lockridge runs the yard from her desk. The rules are on the gate; the dispatch board and her desk drawer are here. Old Contrary stands on the next part of this floor.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelFootplate",
+      "text": "[Greybox: Old Contrary's footplate, in the yard]\n\nFlat floor stands for the engine. Billie Tupper drives. The departure control is here, and the mail car behind.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelCut",
+      "text": "[Greybox: Sawtooth Cut]\n\nThe footplate as it stands at the lanterns, with the regulator and the reverser. Ahead: the spread rail and Preacher Dole. The tabernacle siding is beyond him.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelSiding",
+      "text": "[Greybox: the boxcar tabernacle]\n\nDole's chapel on a dead siding: a hymnal, a collection plate, and a boiler somebody has chalked.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelPlatform",
+      "text": "[Greybox: the valley platform]\n\nWhere the Night Mail arrives if she gets through.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelLanterns",
+      "text": "[Sawtooth Cut]\n\nLanterns across the track. The left-hand rail is spread, not gone.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelCargoAboard",
+      "text": "[Mail car]\n\nThe payroll and the valley's fever medicine, aboard the Night Mail.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelCargoDelivered",
+      "text": "[Mail car]\n\nThe payroll and the fever medicine, delivered.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelCargoRetained",
+      "text": "[Mail car]\n\nThe payroll and the fever medicine, locked in the yard. Not delivered.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelCargoSeized",
+      "text": "[Mail car]\n\nEmpty. The payroll and the fever medicine were taken up the hill.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelEngineSound",
+      "text": "[Old Contrary]\n\nAt the valley platform, sound.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelEngineDamaged",
+      "text": "[Old Contrary]\n\nAt the valley platform, bent and scorched from the gap.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelBoardStamped",
+      "text": "[Dispatch board]\n\nEvery car is passed and stamped in the name of R. Ostrander, Inspector of Way. All stock is dispatched.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelBoardSigned",
+      "text": "[Dispatch board]\n\nEntries countersigned A. Lockridge. Suspect stock is held from dispatch.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelBoardClosed",
+      "text": "[Dispatch board]\n\nClosed by order of the sheriff of Mercy Crossing. No car is dispatched and nobody signs.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_LabelHeldStock",
+      "text": "[Held stock]\n\nCars held from dispatch until they are inspected.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportMailDelivered",
+      "text": "[Rail report]\n\nThe payroll and the fever medicine reached the valley.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportMailRetained",
+      "text": "[Rail report]\n\nThe payroll and the fever medicine are locked in the yard at Iron Junction, undelivered.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportMailSeized",
+      "text": "[Rail report]\n\nThe payroll and the fever medicine were taken from the train by the Black Rail.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportMailAboard",
+      "text": "[Rail report]\n\nThe payroll and the fever medicine are still aboard the Night Mail in Sawtooth Cut.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportRan",
+      "text": "[Rail report]\n\nThe Night Mail ran the spread rail. The engine is damaged.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportDoleByYou",
+      "text": "[Rail report]\n\nYou killed Preacher Dole in the Cut. His death does not erase the yard's inspection records.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportDoleDead",
+      "text": "[Rail report]\n\nPreacher Dole is dead. His death does not erase the yard's inspection records.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportSold",
+      "text": "[Rail report]\n\nYou accepted Dole's share. The payroll and medicine were taken from the train.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportBacked",
+      "text": "[Rail report]\n\nThe train returned with its cargo undelivered. The obstruction at Sawtooth Cut remains.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportKnowBoth",
+      "text": "[Rail report]\n\nYou learned that square-marked silver pays for the pulled rails, and that Preacher Dole is Ostrander, Inspector of Way. Who pays is not known.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportKnowSilver",
+      "text": "[Rail report]\n\nYou learned that square-marked silver pays for the pulled rails. Who pays is not known.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportKnowName",
+      "text": "[Rail report]\n\nYou learned that Preacher Dole is Ostrander, Inspector of Way.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportKnowNeither",
+      "text": "[Rail report]\n\nYou did not learn who Preacher Dole is or what he is paid in.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_ReportEnd",
+      "text": "[Rail report]\n\nNight Mail road complete. Greenwater remains playable; Red Hollow and the fair are not.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_AskHandOver",
+      "text": "[Inspector's stamp]\n\nYou are carrying the stamp from Lockridge's drawer.",
+      "buttons": [
+        "[Hand the stamp to Pritchard]",
+        "[Keep it for now]"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteStampDelivered",
+      "text": "[Iron Junction story test]\n\nSheriff Pritchard has the inspector's stamp.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteHandoverFailed",
+      "text": "[Iron Junction story test]\n\nThe stamp was not seen to reach Sheriff Pritchard. It is not recorded delivered. Speak to him again.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteAuthorityWithdrawn",
+      "text": "[Iron Junction]\n\nBy the sheriff's order the dispatch board at Iron Junction is closed. Augusta Lockridge signs and dispatches nothing. The yard has no master. This is shown at the yard.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteAuthorityVacant",
+      "text": "[Iron Junction]\n\nAugusta Lockridge is dead. The dispatch board at Iron Junction is closed and nobody signs. The yard has no master. This is shown at the yard.",
+      "buttons": [
+        "Continue"
+      ]
+    },
+    {
+      "record": "TLM_MSG_NM_NoteAuthorityFailed",
+      "text": "[Iron Junction story test]\n\nSheriff Pritchard has the stamp. The change at the yard could not be shown, so it is not recorded yet. Speak to him again, or use the dispatch board.",
+      "buttons": [
+        "Continue"
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "document": "yard_rules",
+      "pages": [
+        "TLM_MSG_NM_RulesPage1",
+        "TLM_MSG_NM_RulesPage2",
+        "TLM_MSG_NM_RulesPage3",
+        "TLM_MSG_NM_RulesPage4"
+      ]
+    },
+    {
+      "document": "hymn_chalk",
+      "pages": [
+        "TLM_MSG_NM_ChalkPage1"
+      ]
+    },
+    {
+      "document": "hymnal_flyleaf",
+      "pages": [
+        "TLM_MSG_NM_FlyleafPage1",
+        "TLM_MSG_NM_FlyleafPage2"
+      ]
+    }
+  ],
+  "journal": [
+    {
+      "stage": 10,
+      "kind": "accepted",
+      "text": "Iron Junction is a roundhouse with a wall round it and a woman on the turntable who points her office at whoever is coming.",
+      "context": null,
+      "completes": false
+    },
+    {
+      "stage": 20,
+      "kind": "accepted",
+      "text": "Gussie Lockridge has lost four trains in a month. Tonight's carries the payroll and the valley's fever medicine. She wants a gun on the footplate and is not asking twice.",
+      "context": "Lockridge's assignment delivered and acknowledged, Lockridge alive",
+      "completes": false
+    },
+    {
+      "stage": 21,
+      "kind": "projection",
+      "text": "You agreed to ride the Night Mail with the payroll and fever medicine.",
+      "context": "NATIVE ONLY: the job taken on at the footplate with nobody to give it",
+      "completes": false
+    },
+    {
+      "stage": 30,
+      "kind": "accepted",
+      "text": "Old Contrary is under steam. Billie Tupper drives as if the dark owed her money.",
+      "context": "The departure confirmed with Billie alive and present to drive",
+      "completes": false
+    },
+    {
+      "stage": 31,
+      "kind": "projection",
+      "text": "You boarded Old Contrary. The regulator is ready.",
+      "context": "NATIVE ONLY: the same without her",
+      "completes": false
+    },
+    {
+      "stage": 40,
+      "kind": "accepted",
+      "text": "Lanterns across the track. A rail pulled out of true. A tall man on a flatcar with a hymnal, and thirty rifles for a choir.",
+      "context": "Arrival in the Cut seen",
+      "completes": false
+    },
+    {
+      "stage": 41,
+      "kind": "accepted",
+      "text": "Billie put the regulator through the roof. Old Contrary took the gap in the air and came down on the rails, more or less.",
+      "context": "The run seen finished, Billie driving",
+      "completes": false
+    },
+    {
+      "stage": 42,
+      "kind": "accepted",
+      "text": "Preacher Dole is lying across the rail he pulled. His congregation went up the hill without singing.",
+      "context": "Dole dead by the player's hand in the unsettled encounter, the Black Rail seen out of it",
+      "completes": false
+    },
+    {
+      "stage": 43,
+      "kind": "accepted",
+      "text": "You sold the Night Mail. The payroll and the fever medicine went up the hill on the Black Rail's shoulders, and Billie Tupper was put off to walk home.",
+      "context": "The sale seen finished, Billie alive and released",
+      "completes": false
+    },
+    {
+      "stage": 44,
+      "kind": "accepted",
+      "text": "Billie backed her out of the Cut in the dark. The mail is safe and no use to anybody, and the line is shut.",
+      "context": "The reverse seen finished, Billie driving",
+      "completes": false
+    },
+    {
+      "stage": 46,
+      "kind": "projection",
+      "text": "The Night Mail got through. The medicine and payroll arrived; the engine is damaged.",
+      "context": "NATIVE ONLY: the run with the player at the regulator",
+      "completes": false
+    },
+    {
+      "stage": 47,
+      "kind": "projection",
+      "text": "Preacher Dole is dead. His death does not erase the yard's inspection records.",
+      "context": "NATIVE ONLY: Dole dead otherwise",
+      "completes": false
+    },
+    {
+      "stage": 48,
+      "kind": "projection",
+      "text": "You accepted Dole's share. The payroll and medicine were taken from the train.",
+      "context": "NATIVE ONLY: the sale with no living Billie released",
+      "completes": false
+    },
+    {
+      "stage": 49,
+      "kind": "projection",
+      "text": "The train returned with its cargo undelivered. The obstruction at Sawtooth Cut remains.",
+      "context": "NATIVE ONLY: the reverse without Billie driving",
+      "completes": false
+    },
+    {
+      "stage": 50,
+      "kind": "accepted",
+      "text": "The preacher's collection plate is full of silver slugs. Each is stamped with a small square mark.",
+      "context": "The collection plate inspected",
+      "completes": false
+    },
+    {
+      "stage": 51,
+      "kind": "projection",
+      "text": "Dole described square-marked silver paying for pulled rails.",
+      "context": "NATIVE ONLY: Dole's admission delivered",
+      "completes": false
+    },
+    {
+      "stage": 55,
+      "kind": "accepted",
+      "text": "The name written in the front of the preacher's hymnal is R. Ostrander, Inspector of Way.",
+      "context": "The flyleaf read through",
+      "completes": false
+    },
+    {
+      "stage": 56,
+      "kind": "projection",
+      "text": "Preacher Dole identified himself as Ostrander, Inspector of Way.",
+      "context": "NATIVE ONLY: Dole named himself",
+      "completes": false
+    },
+    {
+      "stage": 60,
+      "kind": "accepted",
+      "text": "The dead inspector's stamp is in Gussie Lockridge's drawer. The pad is still wet.",
+      "context": "The drawer opened",
+      "completes": false
+    },
+    {
+      "stage": 61,
+      "kind": "accepted",
+      "text": "You left the stamp where it was. The trains will run, and Ostrander will go on passing them.",
+      "context": "Keep stamping: Lockridge alive, the stamp in her drawer",
+      "completes": false
+    },
+    {
+      "stage": 62,
+      "kind": "projection",
+      "text": "Lockridge countersigned the reviewed entries in her own name. Suspect stock is held from dispatch.",
+      "context": "The countersigning scene seen finished. The accepted log is not imported",
+      "completes": false
+    },
+    {
+      "stage": 63,
+      "kind": "accepted",
+      "text": "You took the stamp. Gussie Lockridge watched you carry it out and did not turn her office to follow.",
+      "context": "The stamp taken with a living Lockridge to watch. Custody, not delivery",
+      "completes": false
+    },
+    {
+      "stage": 64,
+      "kind": "projection",
+      "text": "You took the inspector's stamp as evidence. It has not yet been delivered to Pritchard.",
+      "context": "NATIVE ONLY: the stamp taken without her",
+      "completes": false
+    },
+    {
+      "stage": 100,
+      "kind": "accepted",
+      "text": null,
+      "context": "Left for Mercy with an outcome of the encounter recorded",
+      "completes": true
+    }
+  ],
+  "objectives": [
+    {
+      "index": 10,
+      "kind": "accepted",
+      "text": "Find the yardmaster at Iron Junction"
+    },
+    {
+      "index": 20,
+      "kind": "accepted",
+      "text": "Ride the footplate of the Night Mail"
+    },
+    {
+      "index": 40,
+      "kind": "accepted",
+      "text": "Get the Night Mail through Sawtooth Cut, or do not"
+    },
+    {
+      "index": 55,
+      "kind": "accepted",
+      "text": "(Optional) Find out who has been signing for a dead man"
+    },
+    {
+      "index": 70,
+      "kind": "direction",
+      "text": "Take the mail through, or take the train back to the yard"
+    },
+    {
+      "index": 80,
+      "kind": "direction",
+      "text": "Leave Iron Junction for Mercy Crossing"
+    },
+    {
+      "index": 90,
+      "kind": "direction",
+      "text": "Bring the inspector's stamp to Sheriff Pritchard"
+    }
+  ],
+  "aliases": {
+    "TLM_MQ02A": [
+      {
+        "Id": 0,
+        "Name": "Lockridge",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 1,
+        "Name": "Billie",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 2,
+        "Name": "Dole",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 3,
+        "Name": "Rifle1",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 4,
+        "Name": "Rifle2",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 5,
+        "Name": "Rifle3",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 6,
+        "Name": "Depart",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 7,
+        "Name": "Regulator",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 8,
+        "Name": "Exit",
+        "Kind": "reference",
+        "Flags": [
+          "Optional"
+        ],
+        "Fill": null,
+        "Scripts": [],
+        "DisplayName": null
+      }
+    ],
+    "TLM_NM": [
+      {
+        "Id": 0,
+        "Name": "MercyTravel",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A08:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 1
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 1,
+        "Name": "MercyReturn",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A09:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 2,
+        "Name": "YardArrival",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A0B:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 3,
+        "Name": "Rules",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A0C:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 3
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 4,
+        "Name": "LabelYard",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A0D:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 4
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 5,
+        "Name": "Exit",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A0E:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 9
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 6,
+        "Name": "Lockridge",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled",
+          "Protected"
+        ],
+        "Fill": "forced 000A0F:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 5
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 7,
+        "Name": "Drawer",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A10:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 6
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 8,
+        "Name": "StampInDrawer",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A11:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 6
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 9,
+        "Name": "BoardStamped",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A12:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 7
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 10,
+        "Name": "BoardSigned",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A13:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 7
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 11,
+        "Name": "BoardClosed",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A14:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 7
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 12,
+        "Name": "HeldStock",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A15:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 8
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 13,
+        "Name": "CargoRetained",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A16:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 10
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 14,
+        "Name": "BillieYard",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A17:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 15,
+        "Name": "BillieFootplate",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A69:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 16,
+        "Name": "LabelFootplate",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A18:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 11
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 17,
+        "Name": "YardFootplate",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A19:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 18,
+        "Name": "Billie",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled",
+          "Protected"
+        ],
+        "Fill": "forced 000A1A:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 12
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 19,
+        "Name": "Depart",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A1B:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 13
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 20,
+        "Name": "CargoAboard",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A1C:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 10
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 21,
+        "Name": "CutArrival",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A1D:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 22,
+        "Name": "LabelCut",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A1E:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 14
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 23,
+        "Name": "BillieCut",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A1F:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 24,
+        "Name": "Regulator",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A20:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 15
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 25,
+        "Name": "Reverser",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A21:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 16
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 26,
+        "Name": "CargoAtCut",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A22:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 10
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 27,
+        "Name": "BackFromCut",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A23:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 22
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 28,
+        "Name": "BillieWalk",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A24:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 29,
+        "Name": "Lanterns",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A25:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 17
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 30,
+        "Name": "Dole",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A26:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 18
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 31,
+        "Name": "Rifle1",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A27:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 19
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 32,
+        "Name": "Rifle2",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A28:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 33,
+        "Name": "Rifle3",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A29:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 21
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 34,
+        "Name": "CargoSeized",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A2A:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 10
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 35,
+        "Name": "Retreat1",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A2B:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 36,
+        "Name": "Retreat2",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A2C:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 37,
+        "Name": "Retreat3",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A2D:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 38,
+        "Name": "LabelSiding",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A2E:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 23
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 39,
+        "Name": "Hymnal",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A2F:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 24
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 40,
+        "Name": "Plate",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A30:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 25
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 41,
+        "Name": "Chalk",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A31:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 26
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 42,
+        "Name": "PlatformArrival",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A32:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 43,
+        "Name": "LabelPlatform",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A33:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 27
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 44,
+        "Name": "BilliePlatform",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A34:TheLastMeridian.esp",
+        "Scripts": [],
+        "DisplayName": null
+      },
+      {
+        "Id": 45,
+        "Name": "CargoDelivered",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A35:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 10
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 46,
+        "Name": "EngineSound",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A36:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 28
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 47,
+        "Name": "EngineDamaged",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A37:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 28
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 48,
+        "Name": "PlatformExit",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A38:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 9
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 49,
+        "Name": "BackFromPlatform",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A39:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 22
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      },
+      {
+        "Id": 50,
+        "Name": "Fall",
+        "Kind": "reference",
+        "Flags": [
+          "Optional",
+          "AllowDisabled"
+        ],
+        "Fill": "forced 000A3A:TheLastMeridian.esp",
+        "Scripts": [
+          {
+            "Name": "TLM:NightMailTalk",
+            "Props": [
+              {
+                "Name": "Who",
+                "Kind": "int",
+                "Target": null,
+                "Alias": null,
+                "Value": 31
+              }
+            ]
+          }
+        ],
+        "DisplayName": null
+      }
+    ]
+  }
+}
