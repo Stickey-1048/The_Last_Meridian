@@ -519,7 +519,7 @@
     },
     {
       "record": "TLM_MSG_RH_Clock",
-      "text": "[Local deadline]\n\n600 active seconds initially; 30 after an expired warning is renewed. Only loaded Mouth/Nine/gallery gameplay counts. Menus, dialogue, transit, absence and load gaps pause it. Accept?",
+      "text": "[Local deadline]\n\n600 active seconds; 30 after expired-warning renewal. Loaded Mouth/Nine/gallery play only. Standard menu edges, dialogue, transit, absence and load gaps pause. Detected menu uncertainty blocks; renew warning to resume.",
       "buttons": [
         "Accept local deadline",
         "Not now"
@@ -538,7 +538,7 @@
     },
     {
       "record": "TLM_MSG_RH_NoWarning",
-      "text": "[Rescue fallback]\n\nThe living warning speaker is unavailable. You can operate the staged hoist without arming a deadline. No ghost gives the warning.",
+      "text": "[Rescue fallback]\n\nNo warned rescue deadline has been accepted. You can operate the staged hoist without arming one.",
       "buttons": [
         "Start rescue without deadline",
         "Not now"
@@ -547,7 +547,7 @@
     },
     {
       "record": "TLM_MSG_RH_ReportFacts",
-      "text": "[Current Red Hollow facts]\n\nCourt %g; mine %g; safe survivors %g; observed deaths %g (player %g; other %g). Entombment is separate.",
+      "text": "[Current Red Hollow facts]\n\nCourt %g; mine %g; safe survivors %g; observed deaths %g (player %g; known nonplayer %g; unknown %g). Entombment is separate.",
       "buttons": [
         "Continue"
       ],
@@ -789,6 +789,16 @@
         "Continue"
       ],
       "projection": "technical stand-in / controls; no added NPC prose"
+    },
+    {
+      "record": "TLM_MSG_RH_PendingRescue",
+      "text": "[Unfinished rescue]\n\nRetry the remaining survivors, or return below to inspect unfinished fates. Delivered miners stay safe; the unfinished rescue still pauses the deadline.",
+      "buttons": [
+        "Retry survivors",
+        "Inspect below",
+        "Not now"
+      ],
+      "projection": "technical pending rescue recovery; no new attributed prose"
     }
   ],
   "composedAvailability": {
@@ -3617,7 +3627,45 @@
       "TLM_MSG_RH_T_dunmore_tells_1": 3061,
       "TLM_MSG_RH_T_dunmore_tells_2": 3062,
       "TLM_MSG_RH_T_cutter_rope_1": 3063,
-      "TLM_MSG_RH_T_cutter_rope_missed_1": 3064
+      "TLM_MSG_RH_T_cutter_rope_missed_1": 3064,
+      "TLM_MSG_RH_PendingRescue": 3065
     }
+  },
+  "clockMenuCoverage": {
+    "sdk": "Local Base/ScriptObject.psc109,301 named registration/event; no wildcard",
+    "primaryNameSources": [
+      "Local Base/TutorialScript.psc MenuNames; AudioContainerNoAnimScript.psc; SurgeonScript.psc; VRWorkshopParentScript.psc",
+      "https://github.com/ianpatt/f4se/blob/master/f4se/GameMenus.h#L106-L137"
+    ],
+    "names": [
+      "LoadingMenu",
+      "Console",
+      "LevelUpMenu",
+      "MessageBoxMenu",
+      "ContainerMenu",
+      "ExamineMenu",
+      "CookingMenu",
+      "ExamineConfirmMenu",
+      "RobotModMenu",
+      "PowerArmorModMenu",
+      "WorkshopMenu",
+      "PromptMenu",
+      "SitWaitMenu",
+      "SleepWaitMenu",
+      "DialogueMenu",
+      "BarterMenu",
+      "LockpickingMenu",
+      "BookMenu",
+      "SPECIALMenu",
+      "FavoritesMenu",
+      "PauseMenu",
+      "VATSMenu",
+      "PipboyMenu",
+      "PipboyHolotapeMenu",
+      "TerminalMenu",
+      "LooksMenu"
+    ],
+    "scope": "26 standard interactive/load menu names; HUD/PowerArmorHUD/Vignette/Cursor/Fader always-open overlays deliberately excluded. F4SE is a name reference only, not a runtime dependency.",
+    "uncertainty": "Any unexpected delivered name or sampled unaccounted menu mode blocks timing until renewed explicit warning. There is no universal unnamed-menu observer: additional/mod menu inventories and actual callback scheduling need the separate native host gate."
   }
 }

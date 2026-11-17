@@ -98,8 +98,11 @@ bool lampGiven = false
 bool mineSilver = false
 bool reported = false
 int[] minerFates
+; 1 supplied player, 2 supplied nonplayer killer, 3 unknown; inspection is not attribution.
 int[] minerDeathCauses
 int[] minerArrivedAlive
+bool[] minerDeathEventSeen
+Actor[] minerDeathEventActors
 
 bool Function PlayerAlive()
 	Actor currentPlayer = Game.GetPlayer()
@@ -143,6 +146,8 @@ Function EnsureRoster()
 		minerFates = new int[11]
 		minerDeathCauses = new int[11]
 		minerArrivedAlive = new int[11]
+		minerDeathEventSeen = new bool[11]
+		minerDeathEventActors = new Actor[11]
 	EndIf
 EndFunction
 
@@ -175,17 +180,40 @@ bool Function DistinctRoster()
 	Return true
 EndFunction
 
+Function RecordDeathEvent(int minerIndex, Actor eventActor, int causeCode)
+	EnsureRoster()
+	If minerIndex < 0 || minerIndex >= 11 || !eventActor || eventActor != Miner(minerIndex) || !eventActor.IsDead()
+		Return
+	EndIf
+	minerDeathEventSeen[minerIndex] = true
+	minerDeathEventActors[minerIndex] = eventActor
+	If causeCode == 1 || causeCode == 2
+		minerDeathCauses[minerIndex] = causeCode
+	ElseIf minerDeathCauses[minerIndex] == 0
+		minerDeathCauses[minerIndex] = 3
+	EndIf
+EndFunction
+
+bool Function ObserveDeliveredDeath(int minerIndex)
+	EnsureRoster()
+	Actor deadActor = Miner(minerIndex)
+	If !deadActor || !minerDeathEventSeen[minerIndex] || minerDeathEventActors[minerIndex] != deadActor || !deadActor.IsDead()
+		Return false
+	EndIf
+	ObserveDeath(minerIndex)
+	Return Fate(minerIndex) == 4
+EndFunction
+
 Function ObserveDeath(int minerIndex, bool byPlayer = false)
 	EnsureRoster()
 	Actor deadActor = Miner(minerIndex)
 	If deadActor && deadActor.IsDead()
 		minerFates[minerIndex] = 4
-		If minerDeathCauses[minerIndex] == 0
-			If byPlayer
-				minerDeathCauses[minerIndex] = 1
-			Else
-				minerDeathCauses[minerIndex] = 2
-			EndIf
+		If byPlayer
+			minerDeathCauses[minerIndex] = 1
+		ElseIf minerDeathCauses[minerIndex] == 0
+			; A corpse proves death, not a killer. Preserve any genuinely supplied cause.
+			minerDeathCauses[minerIndex] = 3
 		EndIf
 	EndIf
 EndFunction
@@ -294,12 +322,15 @@ Function RefreshEvidence(TLM:MercyBriefing briefingScript)
 	If !currentPlayer
 		Return
 	EndIf
+	bool needsHistory = briefingScript && briefingScript.WasCopyIssued() && !GetStageDone(16)
+	If needsHistory && !IsRunning()
+		If !Start() || !IsRunning()
+			Return
+		EndIf
+	EndIf
 	TLM_G_MQ02C_Docket2298Held.SetValueInt((currentPlayer.GetItemCount(DocketItem) > 0) as int)
 	TLM_G_MQ02C_LampTaken.SetValueInt((currentPlayer.GetItemCount(LampItem) > 0) as int)
-	If briefingScript && briefingScript.WasCopyIssued() && !GetStageDone(16)
-		If !IsRunning()
-			Start()
-		EndIf
+	If needsHistory && IsRunning()
 		SetStage(16)
 	EndIf
 EndFunction
@@ -323,7 +354,7 @@ bool Function BindPrisoner(Actor prisonerActor, int originalRole, ObjectReferenc
 		Return Person(Alias_Condemned) == prisonerActor
 	EndIf
 	TLM:MQ01Quest earlierQuest = TLM_MQ01 as TLM:MQ01Quest
-	If !earlierQuest || !Commissioned() || !prisonerActor || prisonerActor.IsDead() || prisonerActor.IsInCombat()
+	If !IsRunning() || courtValue != 0 || courtIntent != 0 || !earlierQuest || !Commissioned() || !prisonerActor || prisonerActor.IsDead() || prisonerActor.IsInCombat()
 		Return false
 	EndIf
 	If prisonerActor != earlierQuest.Alias_CutterLead.GetActorReference() && prisonerActor != earlierQuest.Alias_CutterA.GetActorReference() && prisonerActor != earlierQuest.Alias_CutterB.GetActorReference() && prisonerActor != earlierQuest.Alias_CutterC.GetActorReference()
@@ -333,6 +364,9 @@ bool Function BindPrisoner(Actor prisonerActor, int originalRole, ObjectReferenc
 		Return false
 	EndIf
 	Alias_Condemned.ForceRefTo(prisonerActor)
+	If Person(Alias_Condemned) != prisonerActor
+		Return false
+	EndIf
 	prisonerRole = originalRole
 	prisonerStaged = true
 	Publish()
@@ -1139,4 +1173,9 @@ EndFunction
 
 bool Function GalleryOpen()
 	Return Open() && GetStageDone(40) && !innerClosed && !mouthClosed
+EndFunction
+
+
+bool Function HasPrisoner()
+	Return prisonerStaged
 EndFunction

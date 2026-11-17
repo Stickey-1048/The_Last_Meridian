@@ -199,7 +199,7 @@ Container (3)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
   000AA8  TLM_CONT_RH_Rope  "Rope attachment: projectile target"
   000AA9  TLM_CONT_RH_TollBox  "Court payment box"
-Message (377)
+Message (378)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -1381,9 +1381,15 @@ The warned active-time deadline has expired. The cage brings you out before Blev
           button 1: "Pause the scene"
   000AED  TLM_MSG_RH_Clock  [box]  "[Local deadline]
 
-600 active seconds initially; 30 after an expired warning is renewed. Only loaded Mouth/Nine/gallery gameplay counts. Menus, dialogue, transit, absence and load gaps pause it. Accept?"
+600 active seconds; 30 after expired-warning renewal. Loaded Mouth/Nine/gallery play only. Standard menu edges, dialogue, transit, absence and load gaps pause. Detected menu uncertainty blocks; renew warning to resume."
           button 0: "Accept local deadline"
           button 1: "Not now"
+  000BF9  TLM_MSG_RH_PendingRescue  [box]  "[Unfinished rescue]
+
+Retry the remaining survivors, or return below to inspect unfinished fates. Delivered miners stay safe; the unfinished rescue still pauses the deadline."
+          button 0: "Retry survivors"
+          button 1: "Inspect below"
+          button 2: "Not now"
   000BF0  TLM_MSG_RH_HoistBelow  [box]  "[Staged hoist]
 
 Bring the shift up, or return alone. Return alone does not rescue anybody."
@@ -1392,12 +1398,12 @@ Bring the shift up, or return alone. Return alone does not rescue anybody."
           button 2: "Stay"
   000BF1  TLM_MSG_RH_NoWarning  [box]  "[Rescue fallback]
 
-The living warning speaker is unavailable. You can operate the staged hoist without arming a deadline. No ghost gives the warning."
+No warned rescue deadline has been accepted. You can operate the staged hoist without arming one."
           button 0: "Start rescue without deadline"
           button 1: "Not now"
   000BF2  TLM_MSG_RH_ReportFacts  [box]  "[Current Red Hollow facts]
 
-Court %g; mine %g; safe survivors %g; observed deaths %g (player %g; other %g). Entombment is separate."
+Court %g; mine %g; safe survivors %g; observed deaths %g (player %g; known nonplayer %g; unknown %g). Entombment is separate."
           button 0: "Continue"
   000BF3  TLM_MSG_RH_ReportEvidence  [box]  "[Evidence and undertaking]
 
@@ -2810,6 +2816,7 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
            Alias_Condemned = alias 97 on TLM_RH
            CastFrom = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH]
            CastInto = [alias 0 on TLM_MQ02C, alias 2 on TLM_MQ02C, alias 1 on TLM_MQ02C, alias 3 on TLM_MQ02C, alias 5 on TLM_MQ02C, alias 6 on TLM_MQ02C, alias 7 on TLM_MQ02C, alias 8 on TLM_MQ02C, alias 9 on TLM_MQ02C, alias 10 on TLM_MQ02C, alias 11 on TLM_MQ02C, alias 12 on TLM_MQ02C, alias 13 on TLM_MQ02C, alias 14 on TLM_MQ02C, alias 15 on TLM_MQ02C]
+           ClockMenus = ["LoadingMenu", "Console", "LevelUpMenu", "MessageBoxMenu", "ContainerMenu", "ExamineMenu", "CookingMenu", "ExamineConfirmMenu", "RobotModMenu", "PowerArmorModMenu", "WorkshopMenu", "PromptMenu", "SitWaitMenu", "SleepWaitMenu", "DialogueMenu", "BarterMenu", "LockpickingMenu", "BookMenu", "SPECIALMenu", "FavoritesMenu", "PauseMenu", "VATSMenu", "PipboyMenu", "PipboyHolotapeMenu", "TerminalMenu", "LooksMenu"]
            ZoneOn = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 15 on TLM_RH, alias 17 on TLM_RH, alias 19 on TLM_RH, alias 20 on TLM_RH, alias 21 on TLM_RH, alias 22 on TLM_RH, alias 23 on TLM_RH, alias 24 on TLM_RH, alias 25 on TLM_RH, alias 26 on TLM_RH, alias 27 on TLM_RH, alias 28 on TLM_RH, alias 29 on TLM_RH, alias 30 on TLM_RH, alias 31 on TLM_RH, alias 32 on TLM_RH, alias 33 on TLM_RH, alias 34 on TLM_RH, alias 35 on TLM_RH, alias 36 on TLM_RH, alias 37 on TLM_RH, alias 38 on TLM_RH, alias 39 on TLM_RH, alias 41 on TLM_RH, alias 43 on TLM_RH, alias 44 on TLM_RH, alias 45 on TLM_RH, alias 46 on TLM_RH, alias 47 on TLM_RH, alias 48 on TLM_RH, alias 49 on TLM_RH, alias 50 on TLM_RH, alias 51 on TLM_RH, alias 52 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH]
            Alias_MercyTravel = alias 0 on TLM_RH
            Alias_MercyReturn = alias 1 on TLM_RH
@@ -2962,6 +2969,7 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
            Seal = TLM_MSG_RH_Seal
            Final = TLM_MSG_RH_Final
            Clock = TLM_MSG_RH_Clock
+           PendingRescue = TLM_MSG_RH_PendingRescue
            HoistBelow = TLM_MSG_RH_HoistBelow
            NoWarning = TLM_MSG_RH_NoWarning
            ReportFacts = TLM_MSG_RH_ReportFacts

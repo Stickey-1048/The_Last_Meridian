@@ -62,7 +62,7 @@ class Hollow:
     def answer(self,**choices):
         answers={}
         for name,choice in choices.items():
-            if name in ('Travel','StageTravel','Descend','Rescue','Resolve','Blast','Seal','Final','Clock','NoOperator','NoWarning','Court','Watch','Drop','Referral','Receipt','Report','Status','Fine','HoistBelow','Knocking','Lamp','Silver','Exit','End','ReportFacts','ReportEvidence','ReportLamp','Prisoner','NoTranscript','Rope'):
+            if name in ('Travel','StageTravel','Descend','Rescue','Resolve','Blast','Seal','Final','Clock','NoOperator','NoWarning','Court','Watch','Drop','Referral','Receipt','Report','Status','Fine','HoistBelow','Knocking','Lamp','Silver','Exit','End','ReportFacts','ReportEvidence','ReportLamp','Prisoner','NoTranscript','Rope','PendingRescue'):
                 answers[P+name]=[choice]
             else:
                 pages=sorted((mid for mid in self.messages if mid.startswith(P+'S_'+name+'_')),key=lambda x:int(x.rsplit('_',1)[1]))

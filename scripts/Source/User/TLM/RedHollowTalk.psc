@@ -27,7 +27,13 @@ EndEvent
 Event OnDeath(Actor akKiller)
 	TLM:RedHollowWalk greybox = Walk()
 	If greybox
-		greybox.Died(Who, akKiller == Game.GetPlayer())
+		int causeCode = 0
+		If akKiller == Game.GetPlayer()
+			causeCode = 1
+		ElseIf akKiller
+			causeCode = 2
+		EndIf
+		greybox.HollowActorDied(Who, causeCode, GetActorReference())
 	EndIf
 EndEvent
 

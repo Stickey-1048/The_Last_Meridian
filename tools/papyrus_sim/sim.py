@@ -393,6 +393,8 @@ class Session:
         self.order = 0
         self.distance_watches: List[dict] = []
         self.hit_watches = []
+        self.menu_watches = {}
+        self.open_menus = set()
         self.menu_mode = False
         self.papyrus_log: List[str] = []
         self.user_logs: Dict[str, List[str]] = {}
@@ -1326,6 +1328,21 @@ class Session:
             if wanted is target and (attacker is None or attacker is aggressor):
                 self.hit_watches.remove(watch)
                 self.send_event(inst, "OnHit", [target, aggressor, source, projectile, power, sneak, bash, block, material])
+
+    def n_scriptobject_registerformenuopencloseevent(self, obj, context, menu_name):
+        inst = self._need_context(context, "RegisterForMenuOpenCloseEvent")
+        self.menu_watches.setdefault(menu_name, {})[id(inst)] = inst
+
+    def menu_event(self, menu_name, opening):
+        """Seed an actual named menu edge, delivered only to its registered script.
+        API/event shape is SDK documented; native inventory/delivery remain a game gate."""
+        if opening:
+            self.open_menus.add(menu_name)
+        else:
+            self.open_menus.discard(menu_name)
+        self.menu_mode = bool(self.open_menus)
+        for inst in self.menu_watches.get(menu_name, {}).values():
+            self.send_event(inst, "OnMenuOpenCloseEvent", [menu_name, bool(opening)])
 
     def g_utility_isinmenumode(self):
         return self.menu_mode

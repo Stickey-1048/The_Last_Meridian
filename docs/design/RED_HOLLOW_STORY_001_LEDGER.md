@@ -54,3 +54,7 @@ No Papyrus compiler, owned game master, licensed package, save, profile, install
 
 
 The uncommitted firing display is restored if the player/operator/cohort context disappears during an effect. A failed safe-player move remains pending and can be retried from either cage with a fresh explicit final/order acknowledgement; cancellation restores an open unfinished scene rather than silently firing later. An actual inner-break collapse disables gallery travel. Pritchard's detail pages compare a current-fact snapshot as well as living recipient/player context, including current custody and observed death causes.
+
+## Consolidated review repair after799c
+
+See RED_HOLLOW_STORY_001_REPAIR_RECEIPT.md for the seven-group disposition and exact independent report hashes. Current mapping has99messages/400new IDs, retaining the entire799c prefix. Genuine delivered death identity/cause is distinct from local observation; cause3 is unknown rather than a proven different killer. A labelled surface-cage player-only return preserves pending2 and delivered miners for inspection/retry. Failed staging/startup can be retried without resetting the original encounter or resolved facts. Both named menu edges invalidate timing,26standard names are explicit, and detected coverage uncertainty blocks until renewed warning. Earlier799c counts/results above remain historical.

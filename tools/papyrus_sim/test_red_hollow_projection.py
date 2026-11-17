@@ -22,7 +22,7 @@ class RedHollowProjection(unittest.TestCase):
         rows=sum((self.map[k] for k in ('speech','documents','transcripts','ui')),[])
         ids=[r['record'] for r in rows];self.assertEqual(len(ids),len(set(ids)))
         self.assertEqual(set(ids),{n for n in self.msg if n.startswith('TLM_MSG_RH_')})
-        self.assertEqual(len(ids),98)
+        self.assertEqual(len(ids),99)
         for name in ids:
             m=self.msg[name];self.assertTrue(m['Box']);self.assertLessEqual(len(m['Text']),240,name);self.assertLessEqual(len(m['Buttons']),4,name)
             for b in m['Buttons']:self.assertFalse(b['Conditions']);self.assertLessEqual(len(b['Text']),48,name)
@@ -74,3 +74,12 @@ class RedHollowProjection(unittest.TestCase):
         self.assertIn('RegisterForHitEvent(Ref(Alias_Rope), Game.GetPlayer())',source)
         self.assertNotIn('GetCurrentGameTime',source)
         for local in re.findall(r'^\s*(?:int|ObjectReference)\s+(\w+)\s*=',source,re.M):self.assertNotIn(local.lower(),('scene','sound','action'))
+
+    def test_repair_preserves_799c_prefix_and_exact_standard_menu_bindings(self):
+        old=subprocess.run(['git','show','799c5e8:tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
+        current=(ROOT/'tools/PluginBuilder/formkeys.txt').read_text().splitlines();self.assertEqual(current[:len(old)],old)
+        stage=next(q for q in self.plugin['Quests'] if q['EditorId']=='TLM_RH')
+        names=next(p['Value'] for p in stage['Scripts'][0]['Props'] if p['Name']=='ClockMenus')
+        self.assertEqual(names,self.map['clockMenuCoverage']['names']);self.assertEqual(len(names),26);self.assertEqual(len(set(names)),26);self.assertNotIn('*',names)
+        self.assertTrue({'PauseMenu','PipboyMenu','ContainerMenu','TerminalMenu','LooksMenu'}.issubset(names))
+        self.assertTrue({'HUDMenu','PowerArmorHUDMenu','VignetteMenu','CursorMenu','FaderMenu'}.isdisjoint(names))

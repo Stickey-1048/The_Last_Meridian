@@ -216,6 +216,12 @@ Message Property T_cutter_rope_1 Auto Const Mandatory
 
 Message Property T_cutter_rope_missed_1 Auto Const Mandatory
 
+Message Property PendingRescue Auto Const Mandatory
+string[] Property ClockMenus Auto Const Mandatory
+bool[] menuStates
+bool menuUncertain = false
+bool menusRegistered = false
+
 bool busy = false
 bool setUpDone = false
 float lastSample = -1.0
@@ -655,18 +661,26 @@ bool Function Paper(string paperId, ObjectReference paperRef)
 	Return true
 EndFunction
 
-Function OpenDoor()
+bool Function OpenDoor()
 	If !IsRunning()
-		Start()
+		If !Start() || !IsRunning()
+			Return false
+		EndIf
 	EndIf
 	If Ref(Alias_MercyTravel)
 		Ref(Alias_MercyTravel).Enable()
 	EndIf
 	lastSample = -1.0
+	RegisterClockMenus()
 	StartTimer(1.0, 1)
+	Return true
 EndFunction
 
 Function Loaded()
+	If !IsRunning()
+		Return
+	EndIf
+	RegisterClockMenus()
 	; Never charge real save/load downtime or replay a missed timer interval.
 	lastSample = -1.0
 	ArmRope()
@@ -674,14 +688,18 @@ Function Loaded()
 EndFunction
 
 bool Function SetUp()
-	If setUpDone
-		Return true
-	EndIf
-	If !Road().Commissioned()
+	If !IsRunning() || !Road().Commissioned()
 		Return false
 	EndIf
 	If !TLM_MQ02C.IsRunning()
-		TLM_MQ02C.Start()
+		If !TLM_MQ02C.Start() || !TLM_MQ02C.IsRunning()
+			Return false
+		EndIf
+	EndIf
+	RegisterClockMenus()
+	If setUpDone
+		StagePrisoner()
+		Return true
 	EndIf
 	int castIndex = 0
 	While castIndex < CastFrom.Length
@@ -706,10 +724,13 @@ bool Function SetUp()
 EndFunction
 
 Function StagePrisoner()
-	If Ref(Alias_Condemned)
+	If !IsRunning() || !TLM_MQ02C.IsRunning() || !setUpDone || !Road().Commissioned() || Road().HasPrisoner() || Road().CourtOutcome() != 0 || Road().CourtPending() != 0 || Ref(Alias_Condemned)
 		Return
 	EndIf
 	TLM:MQ01Quest original = TLM_MQ01 as TLM:MQ01Quest
+	If !original
+		Return
+	EndIf
 	Actor candidate = original.Alias_CutterLead.GetActorReference()
 	int roleIndex = 1
 	If !candidate || candidate.IsDead() || candidate.IsInCombat()
@@ -925,7 +946,8 @@ Function Warn(Actor roarkActor)
 		Return
 	EndIf
 	int clockAnswer = Clock.Show()
-	If clockAnswer == 0 && TalkOK(roarkActor) && ShiftSafeToSpeak() && Road().OperatorReady(Ref(Alias_FiringControl))
+	If clockAnswer == 0 && menusRegistered && TalkOK(roarkActor) && ShiftSafeToSpeak() && Road().OperatorReady(Ref(Alias_FiringControl))
+		menuUncertain = false
 		Road().AcceptRescue(true, Ref(Alias_FiringControl))
 		Debug.Notification("Red Hollow: " + Road().SecondsLeft() + " active seconds remain; menus and absence pause the deadline.")
 	EndIf
@@ -1071,7 +1093,7 @@ Function RescueShift()
 		EndIf
 		If minerActor.IsDead()
 			; The death must have been observed by the local alias callback or a nearby inspection.
-			If Road().Fate(minerIndex) != 4
+			If Road().Fate(minerIndex) != 4 && !Road().ObserveDeliveredDeath(minerIndex)
 				Return
 			EndIf
 		ElseIf Road().At(minerActor,Ref(SurfaceSlots[minerIndex]))
@@ -1232,6 +1254,9 @@ Function UseControl(int who)
 	If !Ready() || !Local()
 		Return
 	EndIf
+	If who == 2 || who == 7 || who == 13
+		StagePrisoner()
+	EndIf
 	If who == 2
 		CourtTalk()
 	ElseIf who == 3
@@ -1267,7 +1292,7 @@ Function UseControl(int who)
 		TravelLocal(Ref(Alias_ToGap),Ref(Alias_GapArrival))
 	ElseIf who == 16 && Near(Ref(Alias_CageControl))
 		If Road().MinePending() == 2
-			RescueShift()
+			RecoverRescue()
 		ElseIf Road().MinePending() == 4 || Road().MinePending() == 5
 			ResumeFiring()
 		Else
@@ -1470,14 +1495,17 @@ Function Entered(int who)
 	EndIf
 EndFunction
 
-Function Died(int who, bool byPlayer)
-	If who >= 101 && who <= 111 && Local() && Near(Road().Miner(who - 101),2048.0)
-		Road().ObserveDeath(who - 101,byPlayer)
+Function HollowActorDied(int who, int causeCode, Actor eventActor)
+	If who >= 101 && who <= 111
+		Road().RecordDeathEvent(who - 101,eventActor,causeCode)
+		If Local() && Near(eventActor,2048.0) && eventActor == Road().Miner(who - 101)
+			Road().ObserveDeliveredDeath(who - 101)
+		EndIf
 	EndIf
-	If who == 32 && Local() && Road().At(Game.GetPlayer(),Ref(Alias_Gallows),512.0)
+	If who == 32 && eventActor == Alias_Condemned.GetActorReference() && Local() && Road().At(Game.GetPlayer(),Ref(Alias_Gallows),512.0)
 		Road().FinishExecution(Ref(Alias_Gallows))
 	EndIf
-	If who == 4
+	If who == 4 && eventActor == Alias_Blevins.GetActorReference() && eventActor.IsDead()
 		Road().AbortDisabledFire(Ref(Alias_FiringControl))
 		Road().BlockDeadline()
 	EndIf
@@ -1507,9 +1535,14 @@ Event OnTimer(int aiTimerID)
 	ElseIf MineArea()
 		currentArea = 2
 	EndIf
-	bool eligible = !busy && currentArea > 0 && currentArea == lastArea && !Utility.IsInMenuMode() && lastSample >= 0.0 && elapsedSeconds > 0.0 && elapsedSeconds <= 2.5
+	bool eligible = menusRegistered && !menuUncertain && !KnownMenuOpen() && !busy && currentArea > 0 && currentArea == lastArea && !Utility.IsInMenuMode() && lastSample >= 0.0 && elapsedSeconds > 0.0 && elapsedSeconds <= 2.5
 	lastSample = sampleNow
 	lastArea = currentArea
+	If Utility.IsInMenuMode() && !KnownMenuOpen()
+		menuUncertain = true
+		Road().BlockDeadline()
+		Road().StopWatching()
+	EndIf
 	Road().RefreshEvidence(TLM_MercyBriefing as TLM:MercyBriefing)
 	If eligible && Ready()
 		if currentArea == 1
@@ -1539,7 +1572,7 @@ Event OnTimer(int aiTimerID)
 			EndIf
 		EndIf
 	EndIf
-	If busy || !Local() || Utility.IsInMenuMode()
+	If busy || !Local() || Utility.IsInMenuMode() || KnownMenuOpen() || menuUncertain
 		; No absent/menu time is charged; first safe sample only primes the clock.
 		lastSample = -1.0
 	EndIf
@@ -1583,7 +1616,7 @@ int Function OfferReport(Actor sheriffActor)
 		Return 3
 	EndIf
 	string reportBefore = ReportMark()
-	int detailAnswer = ReportFacts.Show(Road().CourtOutcome(),Road().MineOutcome(),Road().SafeCount(SurfaceSlots),Road().DeathCount(),Road().DeathCauseCount(1),Road().DeathCauseCount(2))
+	int detailAnswer = ReportFacts.Show(Road().CourtOutcome(),Road().MineOutcome(),Road().SafeCount(SurfaceSlots),Road().DeathCount(),Road().DeathCauseCount(1),Road().DeathCauseCount(2),Road().DeathCauseCount(3))
 	If detailAnswer != 0 || !ReportContext(sheriffActor) || ReportMark() != reportBefore
 		busy = false
 		Return 3
@@ -1627,10 +1660,6 @@ bool Function Transcript(string node)
 		EndIf
 	ElseIf node == "cutter_rope"
 		answer = T_cutter_rope_1.Show()
-		If answer != 0 || !Near(Ref(Alias_Transcript)) || !Road().HasStatement()
-			Return false
-		EndIf
-		answer = T_cutter_rope_missed_1.Show()
 		If answer != 0 || !Near(Ref(Alias_Transcript)) || !Road().HasStatement()
 			Return false
 		EndIf
@@ -1692,5 +1721,78 @@ EndFunction
 
 string Function ReportMark()
 	Road().RefreshEvidence(TLM_MercyBriefing as TLM:MercyBriefing)
-	Return "" + Road().CourtMark() + ":" + Road().MineMark() + ":" + Road().SafeCount(SurfaceSlots) + ":" + Road().DeathCount() + ":" + Road().TLM_G_MQ02C_LampTaken.GetValueInt() + ":" + Road().TLM_G_MQ02C_Docket2298Held.GetValueInt() + ":" + Road().TermsDelivered() + ":" + Road().TLM_G_MQ02C_Entombed.GetValueInt() + ":" + Road().TLM_G_MQ02C_SilverMine.GetValueInt() + ":" + Road().TLM_G_MQ02C_SilverRoad.GetValueInt() + ":" + Road().LampOrigin() + ":" + Road().DeathCauseCount(1) + ":" + Road().DeathCauseCount(2)
+	Return "" + Road().CourtMark() + ":" + Road().MineMark() + ":" + Road().SafeCount(SurfaceSlots) + ":" + Road().DeathCount() + ":" + Road().TLM_G_MQ02C_LampTaken.GetValueInt() + ":" + Road().TLM_G_MQ02C_Docket2298Held.GetValueInt() + ":" + Road().TermsDelivered() + ":" + Road().TLM_G_MQ02C_Entombed.GetValueInt() + ":" + Road().TLM_G_MQ02C_SilverMine.GetValueInt() + ":" + Road().TLM_G_MQ02C_SilverRoad.GetValueInt() + ":" + Road().LampOrigin() + ":" + Road().DeathCauseCount(1) + ":" + Road().DeathCauseCount(2) + ":" + Road().DeathCauseCount(3)
 EndFunction
+
+
+Function RecoverRescue()
+	If !Ready() || Road().MinePending() != 2 || !Near(Ref(Alias_CageControl)) || !Road().At(Game.GetPlayer(),Ref(Alias_CageSurface),256.0)
+		Return
+	EndIf
+	int mineBefore = Road().MineMark()
+	int answer = PendingRescue.Show()
+	If !Ready() || Road().MineMark() != mineBefore || !Near(Ref(Alias_CageControl))
+		Return
+	EndIf
+	If answer == 0
+		RescueShift()
+	ElseIf answer == 1
+		; Only the player returns; delivered miners and pending2 remain untouched.
+		MovePlayer(Ref(Alias_CageBelow))
+	EndIf
+EndFunction
+
+Function RegisterClockMenus()
+	lastSample = -1.0
+	lastArea = 0
+	menusRegistered = false
+	If !ClockMenus || ClockMenus.Length != 26
+		menuUncertain = true
+		Return
+	EndIf
+	If !menuStates || menuStates.Length != ClockMenus.Length
+		menuStates = new bool[26]
+	EndIf
+	int menuIndex = 0
+	While menuIndex < ClockMenus.Length
+		RegisterForMenuOpenCloseEvent(ClockMenus[menuIndex])
+		menuIndex += 1
+	EndWhile
+	menusRegistered = true
+EndFunction
+
+bool Function KnownMenuOpen()
+	If !menuStates
+		Return false
+	EndIf
+	int menuIndex = 0
+	While menuIndex < menuStates.Length
+		If menuStates[menuIndex]
+			Return true
+		EndIf
+		menuIndex += 1
+	EndWhile
+	Return false
+EndFunction
+
+Event OnMenuOpenCloseEvent(string asMenuName, bool abOpening)
+	; Both edges discard the interval, including a menu wholly between ticks.
+	lastSample = -1.0
+	lastArea = 0
+	If !ClockMenus || !menuStates
+		menuUncertain = true
+		Return
+	EndIf
+	int menuIndex = 0
+	While menuIndex < ClockMenus.Length
+		If ClockMenus[menuIndex] == asMenuName
+			menuStates[menuIndex] = abOpening
+			Return
+		EndIf
+		menuIndex += 1
+	EndWhile
+	; No wildcard API exists. An unexpected delivered name never earns time.
+	menuUncertain = true
+	Road().BlockDeadline()
+	Road().StopWatching()
+EndEvent

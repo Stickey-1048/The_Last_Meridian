@@ -2032,3 +2032,5 @@ TLM_MSG_RH_T_cutter_rope_1
 3063
 TLM_MSG_RH_T_cutter_rope_missed_1
 3064
+TLM_MSG_RH_PendingRescue
+3065

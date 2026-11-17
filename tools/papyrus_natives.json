@@ -1269,6 +1269,35 @@
     ],
     "source": "Read-only local Creation Kit Base/ScriptObject.psc line 282; no native delivery claim"
    }
+  ],
+  "RegisterForMenuOpenCloseEvent": [
+   {
+    "global": false,
+    "kind": "function",
+    "owner": "ScriptObject",
+    "min_args": 1,
+    "max_args": 1,
+    "params": [
+     "string"
+    ],
+    "returns": "none",
+    "source": "Read-only local Creation Kit Base/ScriptObject.psc line109; named registration only, no wildcard API"
+   }
+  ],
+  "OnMenuOpenCloseEvent": [
+   {
+    "global": false,
+    "kind": "event",
+    "owner": "ScriptObject",
+    "min_args": 2,
+    "max_args": 2,
+    "params": [
+     "string",
+     "bool"
+    ],
+    "returns": "none",
+    "source": "Read-only local Creation Kit Base/ScriptObject.psc line301; open and close both invalidate clock prime"
+   }
   ]
  }
 }

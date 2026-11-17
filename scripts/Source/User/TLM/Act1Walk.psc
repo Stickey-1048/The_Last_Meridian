@@ -1207,5 +1207,8 @@ int Function OfferHollowReport(Actor akWho)
 	If !akWho || !TLM_RedHollow || !TLM_MQ01.GetStageDone(100) || TLM_G_MQ01_Done.GetValueInt() != 1
 		Return RIVER_REPORT_NONE
 	EndIf
+	If !(TLM_RedHollow as TLM:RedHollowWalk).OpenDoor()
+		Return RIVER_REPORT_NONE
+	EndIf
 	Return (TLM_RedHollow as TLM:RedHollowWalk).OfferReport(akWho)
 EndFunction
