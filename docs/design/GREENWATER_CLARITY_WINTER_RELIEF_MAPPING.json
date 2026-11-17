@@ -529,6 +529,13 @@
       }
     ]
   },
+  "reviewRepair": {
+    "previousSource": "1e5f4ff577663dbda42cde6c0c6d8d513d0da2f6",
+    "judgmentConsent": "Original speaker, prisoner, required recipient/object and road stamp captured before the initiating choice; passed through confirmation and validated against actual authoritative aliases at effect and yielding receipt boundaries. No replacement actor selected.",
+    "hangingReceipt": "HangActor retains the captured execution actor; observed death is attributed to that actual actor, never a dead replacement alias. Genuine already-issued effects remain facts.",
+    "reliefPages": "Originating activation epoch is passed through all later pages. UseCurrent reads native local control context first and validates the captured generation last. Mutable newer requestEpoch cannot reauthorize an old frame.",
+    "evidence": "Actual PSC plus explicitly seeded alias changes/load/native scheduling; not a game observation. Original reports, source and probes preserved; no native measurements inferred."
+  },
   "measuredNative": {
     "compiler": null,
     "ownedMasterBuild": null,

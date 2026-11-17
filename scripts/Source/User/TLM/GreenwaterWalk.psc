@@ -625,7 +625,7 @@ Function Died(int aiWho, bool abByPlayer)
 		Return
 	EndIf
 	If aiWho == GW_HATCHER
-		river.HatcherDied()
+		river.HatcherDied(Alias_Hatcher.GetActorReference())
 	EndIf
 	If abByPlayer
 		Attacked(aiWho)
@@ -810,6 +810,10 @@ EndFunction
 Function JudgeBeforeOpal(TLM:MQ02BQuest akRiver)
 	{The barge is home, Hatcher lives and is free, and she asks what is to be done with him.}
 	Actor opal = Alias_Opal.GetActorReference()
+	Actor hatcher = Alias_Hatcher.GetActorReference()
+	Actor recipient = akRiver.Person(akRiver.Alias_MercySheriff)
+	ObjectReference ring = Piece(akRiver.Alias_Steeple)
+	int mark = akRiver.Stamp()
 	bool sheriff = akRiver.SheriffCanReceive()
 	int pick = -1
 	If sheriff
@@ -828,24 +832,27 @@ Function JudgeBeforeOpal(TLM:MQ02BQuest akRiver)
 		Return
 	EndIf
 	If pick == 0
-		Judge(akRiver, 60)
+		Judge(akRiver, 60, hatcher, opal, ring, opal, Alias_Opal, mark)
 	ElseIf pick == 1
-		If Judge(akRiver, 61)
-			Deny(akRiver)
+		If Judge(akRiver, 61, hatcher, recipient, None, opal, Alias_Opal, mark)
+			Deny(akRiver, opal)
 		EndIf
 	ElseIf pick == 2
-		If Judge(akRiver, 1)
-			Deny(akRiver)
+		If Judge(akRiver, 1, hatcher, None, None, opal, Alias_Opal, mark)
+			Deny(akRiver, opal)
 		EndIf
 	EndIf
 EndFunction
 
-Function Deny(TLM:MQ02BQuest akRiver)
-	If !akRiver.OpalCanSpeak() || akRiver.IsDeniedSaid()
+Function Deny(TLM:MQ02BQuest akRiver, Actor akOpal = None)
+	If !akOpal
+		akOpal = Alias_Opal.GetActorReference()
+	EndIf
+	If !LocalSpeaker(akOpal, Alias_Opal) || akRiver.Person(akRiver.Alias_Opal) != akOpal || !akRiver.OpalCanSpeak() || akRiver.IsDeniedSaid()
 		Return
 	EndIf
 	If Said(SayOpalDenied)
-		If akRiver.OpalCanSpeak()
+		If LocalSpeaker(akOpal, Alias_Opal) && akRiver.Person(akRiver.Alias_Opal) == akOpal && akRiver.OpalCanSpeak()
 			akRiver.MarkDenied()
 		EndIf
 	EndIf
@@ -1114,6 +1121,10 @@ Function JudgeAtTable(TLM:MQ02BQuest akRiver)
 	nobody dead or absent is handed a prisoner, and with Opal not there his
 	question about her is not put.}
 	Actor hatcher = Alias_Hatcher.GetActorReference()
+	Actor opalRecipient = Alias_Opal.GetActorReference()
+	Actor sheriffRecipient = akRiver.Person(akRiver.Alias_MercySheriff)
+	ObjectReference ring = Piece(akRiver.Alias_Steeple)
+	int mark = akRiver.Stamp()
 	If !akRiver.HatcherAtTable() || !akRiver.HatcherCanBeJudged()
 		Return
 	EndIf
@@ -1160,20 +1171,18 @@ Function JudgeAtTable(TLM:MQ02BQuest akRiver)
 	If !LocalSpeaker(hatcher, Alias_Hatcher)
 		Return
 	EndIf
-	Judge(akRiver, verdict, true)
+	Actor recipient = None
+	If verdict == 60
+		recipient = opalRecipient
+	ElseIf verdict == 61
+		recipient = sheriffRecipient
+	EndIf
+	Judge(akRiver, verdict, hatcher, recipient, ring, hatcher, Alias_Hatcher, mark)
 EndFunction
 
-bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict, bool abAtTable = false)
-	{60 the steeple, 61 Pritchard, 1 his boat. Whoever it needs is asked for again by the road itself.}
-	ReferenceAlias speakerAlias = Alias_Opal
-	If abAtTable
-		speakerAlias = Alias_Hatcher
-	EndIf
-	Actor speaker = speakerAlias.GetActorReference()
-	If !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged()
-		Return false
-	EndIf
-	If !LocalSpeaker(speaker, speakerAlias)
+bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict, Actor akHatcher, Actor akRecipient, ObjectReference akRing, Actor akSpeaker, ReferenceAlias akSpeakerAlias, int aiStamp)
+	{The original choice's participants survive the confirmation and actual effect.}
+	If !LocalSpeaker(akSpeaker, akSpeakerAlias) || !akRiver.JudgmentContext(aiVerdict, akHatcher, akRecipient, akRing, akSpeaker, akSpeakerAlias, aiStamp)
 		Return false
 	EndIf
 	int confirmed = -1
@@ -1184,18 +1193,18 @@ bool Function Judge(TLM:MQ02BQuest akRiver, int aiVerdict, bool abAtTable = fals
 	ElseIf aiVerdict == 1
 		confirmed = ShowBox(ConfirmRelease)
 	EndIf
-	If confirmed != 0 || !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged() || !LocalSpeaker(speaker, speakerAlias)
+	If confirmed != 0 || !LocalSpeaker(akSpeaker, akSpeakerAlias) || !akRiver.JudgmentContext(aiVerdict, akHatcher, akRecipient, akRing, akSpeaker, akSpeakerAlias, aiStamp)
 		Return false
 	EndIf
 	bool done = false
 	If aiVerdict == 60
-		done = akRiver.Hang()
+		done = akRiver.Hang(akHatcher, akRecipient, akRing, akSpeaker, akSpeakerAlias, aiStamp)
 	ElseIf aiVerdict == 61
-		done = akRiver.Custody()
+		done = akRiver.Custody(akHatcher, akRecipient, akSpeaker, akSpeakerAlias, aiStamp)
 	ElseIf aiVerdict == 1
-		done = akRiver.Release()
+		done = akRiver.Release(akHatcher, akSpeaker, akSpeakerAlias, aiStamp)
 	EndIf
-	If !done
+	If !done && LocalSpeaker(akSpeaker, akSpeakerAlias) && akRiver.JudgmentContext(aiVerdict, akHatcher, akRecipient, akRing, akSpeaker, akSpeakerAlias, aiStamp)
 		ShowBox(NoteJudgmentFailed)
 	EndIf
 	Return done

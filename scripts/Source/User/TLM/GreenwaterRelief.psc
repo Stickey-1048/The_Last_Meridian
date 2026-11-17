@@ -106,6 +106,13 @@ bool Function LocalControl(int aiKind, ObjectReference akControl)
 	Return player.GetParentCell() == expected.GetParentCell() && player.GetDistance(expected) <= 256.0
 EndFunction
 
+bool Function UseCurrent(int aiKind, ObjectReference akControl, int aiEpoch)
+	{A newer request never lends its generation to a resumed older page.}
+	bool local = LocalControl(aiKind, akControl)
+	; Native context reads may yield: the captured activation is checked LAST.
+	Return local && aiEpoch == loadEpoch
+EndFunction
+
 bool Function Initialize()
 	If initialized
 		Return true
@@ -169,28 +176,32 @@ Function Use(int aiKind, ObjectReference akControl)
 	EndIf
 	menuBusy = true
 	int useEpoch = loadEpoch
-	If !LocalControl(aiKind, akControl) || useEpoch != loadEpoch
+	If !UseCurrent(aiKind, akControl, useEpoch)
 		If useEpoch == loadEpoch
 			menuBusy = false
 		EndIf
 		Return
 	EndIf
-	If !Initialize()
-		Box(NotReady)
-	ElseIf useEpoch != loadEpoch
-		; A pre-load activation cannot become fresh consent after resumption.
+	bool ready = Initialize()
+	If !UseCurrent(aiKind, akControl, useEpoch)
+		If useEpoch == loadEpoch
+			menuBusy = false
+		EndIf
 		Return
+	EndIf
+	If !ready
+		Box(NotReady)
 	ElseIf pendingOperation != 0
 		; Status is safe even when no new inventory/step request is allowed.
-		If Box(Blocked) == 0 && useEpoch == loadEpoch && LocalControl(aiKind, akControl)
-			ShowStatus(aiKind, akControl)
+		If Box(Blocked) == 0 && UseCurrent(aiKind, akControl, useEpoch)
+			ShowStatus(aiKind, akControl, useEpoch)
 		EndIf
 	ElseIf completionLatched
-		If Box(CompleteMenu) == 0 && useEpoch == loadEpoch && LocalControl(aiKind, akControl)
-			ShowStatus(aiKind, akControl)
+		If Box(CompleteMenu) == 0 && UseCurrent(aiKind, akControl, useEpoch)
+			ShowStatus(aiKind, akControl, useEpoch)
 		EndIf
 	ElseIf aiKind == 2
-		Shop(akControl)
+		Shop(akControl, useEpoch)
 	Else
 		int pick = -1
 		If stepIndex < 6
@@ -198,13 +209,13 @@ Function Use(int aiKind, ObjectReference akControl)
 		Else
 			pick = Box(StoresFinal)
 		EndIf
-		If useEpoch == loadEpoch && LocalControl(1, akControl) && pendingOperation == 0
+		If UseCurrent(1, akControl, useEpoch) && pendingOperation == 0
 			If pick == 0
-				ShowStatus(1, akControl)
+				ShowStatus(1, akControl, useEpoch)
 			ElseIf pick == 1 && !completionLatched
-				Donate(akControl)
+				Donate(akControl, useEpoch)
 			ElseIf pick == 2 && stepIndex < 6
-				Advance(akControl)
+				Advance(akControl, useEpoch)
 			EndIf
 		EndIf
 	EndIf
@@ -213,15 +224,14 @@ Function Use(int aiKind, ObjectReference akControl)
 	EndIf
 EndFunction
 
-Function ShowStatus(int aiKind, ObjectReference akControl)
-	int useEpoch = loadEpoch
-	If useEpoch != loadEpoch || !LocalControl(aiKind, akControl)
+Function ShowStatus(int aiKind, ObjectReference akControl, int aiEpoch)
+	If !UseCurrent(aiKind, akControl, aiEpoch)
 		Return
 	EndIf
 	If !Status || Status.Show(stepIndex, Reserve(), Shortfall(), RemainingDemand(), donatedUnits) != 0
 		Return
 	EndIf
-	If useEpoch != loadEpoch || !LocalControl(aiKind, akControl)
+	If !UseCurrent(aiKind, akControl, aiEpoch)
 		Return
 	EndIf
 	int pick = -1
@@ -230,7 +240,7 @@ Function ShowStatus(int aiKind, ObjectReference akControl)
 	Else
 		pick = Box(ForecastNeeded)
 	EndIf
-	If pick == 0 && useEpoch == loadEpoch && LocalControl(aiKind, akControl) && everShortfall
+	If pick == 0 && UseCurrent(aiKind, akControl, aiEpoch) && everShortfall
 		Box(PastHunger)
 	EndIf
 EndFunction
@@ -275,9 +285,12 @@ bool Function RequestCurrent(int aiOperation, int aiKind)
 EndFunction
 
 Function BlockRequest()
+	int blockedEpoch = requestEpoch
 	uncertain = true
 	Debug.Trace("TLM_GW_Relief: BLOCKED request=" + requestNonce + " kind=" + pendingOperation + " step=" + requestStep + " quantity=" + requestQuantity + " actor=" + requestActor + " control=" + requestControl + " epoch=" + requestEpoch + "/" + loadEpoch + " beforeCorn=" + beforeFood + " afterCorn=" + observedFood + " beforeCaps=" + beforeCaps + " afterCaps=" + observedCaps + " removalAsked=" + removalAsked + " deliveryAsked=" + deliveryAsked, 2)
-	If requestEpoch == loadEpoch && Game.GetPlayer() && !Game.GetPlayer().IsDead()
+	Actor player = Game.GetPlayer()
+	bool alive = player && !player.IsDead()
+	If alive && blockedEpoch == loadEpoch
 		Box(Unavailable)
 	EndIf
 EndFunction
@@ -287,10 +300,12 @@ Function CommitRequest()
 	pendingOperation = 0
 EndFunction
 
-Function Donate(ObjectReference akControl)
-	int useEpoch = loadEpoch
+Function Donate(ObjectReference akControl, int useEpoch)
 	Actor player = Game.GetPlayer()
 	int count = player.GetItemCount(Corn)
+	If !UseCurrent(1, akControl, useEpoch)
+		Return
+	EndIf
 	int pick = -1
 	int quantity = 0
 	If count >= 10
@@ -317,7 +332,7 @@ Function Donate(ObjectReference akControl)
 		Box(NoFood)
 		Return
 	EndIf
-	If quantity == 0 || useEpoch != loadEpoch || !LocalControl(1, akControl) || pendingOperation != 0 || donatedUnits > LIMIT_UNITS - 10 * quantity
+	If quantity == 0 || !UseCurrent(1, akControl, useEpoch) || pendingOperation != 0 || donatedUnits > LIMIT_UNITS - 10 * quantity
 		Return
 	EndIf
 	int clearDebt = 10 * quantity
@@ -351,33 +366,36 @@ Function Donate(ObjectReference akControl)
 		SetStage(20)
 	EndIf
 	MaybeComplete()
-	If requestEpoch == loadEpoch && LocalControl(1, akControl)
-		If Box(Donated) == 0 && requestEpoch == loadEpoch && completionLatched && LocalControl(1, akControl)
+	If UseCurrent(1, akControl, useEpoch)
+		If Box(Donated) == 0 && completionLatched && UseCurrent(1, akControl, useEpoch)
 			Box(CompleteNotice)
 		EndIf
 	EndIf
 EndFunction
 
-Function Shop(ObjectReference akControl)
-	int useEpoch = loadEpoch
-	If !Supply
+Function Shop(ObjectReference akControl, int useEpoch)
+	If !Supply || !UseCurrent(2, akControl, useEpoch)
 		Return
 	EndIf
 	int pick = Supply.Show(30 - purchasedThisStep)
-	If useEpoch != loadEpoch || !LocalControl(2, akControl)
+	If !UseCurrent(2, akControl, useEpoch)
 		Return
 	EndIf
 	If pick == 1
-		ShowStatus(2, akControl)
+		ShowStatus(2, akControl, useEpoch)
 		Return
 	ElseIf pick != 0
 		Return
 	EndIf
 	Actor player = Game.GetPlayer()
-	If !LocalControl(2, akControl) || pendingOperation != 0
+	If !UseCurrent(2, akControl, useEpoch) || pendingOperation != 0
 		Return
 	EndIf
-	If purchasedThisStep > 20 || player.GetItemCount(Caps) < 20 || player.GetItemCount(Corn) > 99990
+	bool suppliesUnavailable = purchasedThisStep > 20 || player.GetItemCount(Caps) < 20 || player.GetItemCount(Corn) > 99990
+	If !UseCurrent(2, akControl, useEpoch)
+		Return
+	EndIf
+	If suppliesUnavailable
 		Box(NoStock)
 		Return
 	EndIf
@@ -410,14 +428,13 @@ Function Shop(ObjectReference akControl)
 	EndIf
 	purchasedThisStep += 10
 	CommitRequest()
-	If requestEpoch == loadEpoch && LocalControl(2, akControl)
+	If UseCurrent(2, akControl, useEpoch)
 		Box(Purchased)
 	EndIf
 EndFunction
 
-Function Advance(ObjectReference akControl)
-	int useEpoch = loadEpoch
-	If stepIndex >= 6 || pendingOperation != 0 || !LocalControl(1, akControl)
+Function Advance(ObjectReference akControl, int useEpoch)
+	If stepIndex >= 6 || pendingOperation != 0 || !UseCurrent(1, akControl, useEpoch)
 		Return
 	EndIf
 	int projected = Balance() - 150
@@ -450,8 +467,8 @@ Function Advance(ObjectReference akControl)
 		SetStage(30)
 	EndIf
 	MaybeComplete()
-	If requestEpoch == loadEpoch && LocalControl(1, akControl)
-		If Box(StepDone) == 0 && requestEpoch == loadEpoch && completionLatched && LocalControl(1, akControl)
+	If UseCurrent(1, akControl, useEpoch)
+		If Box(StepDone) == 0 && completionLatched && UseCurrent(1, akControl, useEpoch)
 			Box(CompleteNotice)
 		EndIf
 	EndIf

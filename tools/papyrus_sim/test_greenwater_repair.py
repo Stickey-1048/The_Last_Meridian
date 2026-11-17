@@ -315,7 +315,7 @@ def no_ring_no_hanging(t, scripts=SCRIPTS):
         else:
             a.s.placed[R + "Steeple"].disabled = True              # SEEDED
         shown = choose_hanging(a)
-        t.assertEqual(shown, ["HatcherTable", "CardStakes", "HatcherLost", "ConfirmHang", "NoteJudgmentFailed"], how)
+        t.assertEqual(shown, ["HatcherTable", "CardStakes", "HatcherLost"], how)
         not_hanged(t, a, what="the ring " + how)
         t.assertEqual(where(a.who["hatcher"]), at_table, "he was moved with the ring " + how)
         t.assertEqual((a.asked_of("moveto", "hatcher"), a.asked_of("kill", "hatcher")), (0, 0), how)
@@ -356,7 +356,7 @@ def somebody_gone_before_the_kill(t, scripts=SCRIPTS):
                 a.who[who].combat_target = a.who["crew1"]          # SEEDED
         a.just_before("moveto", "hatcher", meanwhile)
         shown = choose_hanging(a)
-        t.assertEqual(shown[-1], "NoteJudgmentFailed", who)
+        t.assertEqual(shown[-1], "ConfirmHang", who)
         not_hanged(t, a, what="%s %s before the kill" % (who, what))
         t.assertEqual(a.asked_of("kill", "hatcher"), 0, who)
         t.assertEqual(a.g("Hatcher"), gw.RV_H_FREE)
@@ -432,20 +432,21 @@ def the_event_and_the_wait_agree(t, scripts=SCRIPTS):
     a.win_and_say_nothing()                                        # won; his question left
     t.assertFalse(a.s.invoke(ROAD, "RecordHanging", []))
     a.rules.vars["hangintent"] = 2                                 # SEEDED: an execution under way
+    a.rules.vars["hangactor"] = a.who["hatcher"]                   # SEEDED exact intended actor, not whichever alias is later present
     t.assertFalse(a.s.invoke(ROAD, "RecordHanging", []), "recorded with him alive")
-    a.s.invoke(ROAD, "HatcherDied", [])
+    a.s.invoke(ROAD, "HatcherDied", [a.who["hatcher"]])
     t.assertEqual((60 in a.road.done, a.g("Hatcher")), (False, gw.RV_H_FREE), "an event with him alive recorded something")
     a.who["hatcher"].dead = True                                   # SEEDED
-    a.s.invoke(ROAD, "HatcherDied", [])
+    a.s.invoke(ROAD, "HatcherDied", [a.who["hatcher"]])
     t.assertEqual((a.road.done.count(60), a.g("Hatcher"), a.g("HatcherHanged"), a.rules.vars["hangintent"]), (1, gw.RV_H_HANGED, 1, 3))
-    a.s.invoke(ROAD, "HatcherDied", [])
+    a.s.invoke(ROAD, "HatcherDied", [a.who["hatcher"]])
     t.assertTrue(a.s.invoke(ROAD, "RecordHanging", []))
     t.assertEqual((a.road.done.count(60), a.g("Hatcher")), (1, gw.RV_H_HANGED))
 
     b = beaten(t, scripts)
     b.win_and_say_nothing()
     b.who["hatcher"].dead = True                                   # SEEDED: no execution under way
-    b.s.invoke(ROAD, "HatcherDied", [])
+    b.s.invoke(ROAD, "HatcherDied", [b.who["hatcher"]])
     t.assertEqual((60 in b.road.done, b.g("HatcherHanged"), b.g("Hatcher")), (False, 0, gw.RV_H_DEAD))
 
 
@@ -1084,11 +1085,12 @@ class WhatTheRepairProbesCatch(unittest.TestCase):
         another script: where the walk and the road each keep a guard, both have to go for the fault to show)."""
         scripts = changed_scripts(file_name, old, new)
         if also:
-            path = scripts / also[0]
-            text = path.read_text()
-            if text.count(also[1]) != 1:
-                raise AssertionError("%s: %r is there %d times" % (also[0], also[1], text.count(also[1])))
-            path.write_text(text.replace(also[1], also[2]))
+            for change in (also if isinstance(also,list) else [also]):
+                path = scripts / change[0]
+                text = path.read_text()
+                if text.count(change[1]) != 1:
+                    raise AssertionError("%s: %r is there %d times" % (change[0], change[1], text.count(change[1])))
+                path.write_text(text.replace(change[1], change[2]))
         try:
             probe(self, scripts)
         except (AssertionError, SimError) as e:
@@ -1125,9 +1127,15 @@ class WhatTheRepairProbesCatch(unittest.TestCase):
                                          "	If who && !who.IsDead() && !who.IsDisabled()\n		who.StartCombat(akTarget)\n"))
 
     def test_killed_without_a_ring(self):
-        self.assertIsNotNone(self.caught(no_ring_no_hanging, "MQ02BQuest.psc",
-                                         "	If !ring || ring.IsDisabled()\n		Debug.Trace(\"TLM_MQ02B: no hanging: the steeple's ring is missing",
-                                         "	If false\n		Debug.Trace(\"TLM_MQ02B: no hanging: the steeple's ring is missing"))
+        # Current independent guards must all go before a disabled ring permits
+        # a real kill. Original missing-ring cases remain frozen historically.
+        def probe(t,scripts=SCRIPTS):
+            a=beaten(t,scripts);a.s.placed[R+'Steeple'].disabled=True
+            choose_hanging(a);t.assertFalse(a.who['hatcher'].dead);t.assertNotIn(60,a.road.done)
+        probe(self)
+        self.assertIsNotNone(self.caught(probe, "MQ02BQuest.psc",
+            "\tIf !ring || ring.IsDisabled()\n", "\tIf false\n",
+            also=('MQ02BQuest.psc',' || akRing.IsDisabled()\n','\n')))
 
     def test_killed_where_he_stood(self):
         for probe in (not_at_the_ring_no_kill, somebody_gone_before_the_kill):
@@ -1143,9 +1151,12 @@ class WhatTheRepairProbesCatch(unittest.TestCase):
             t.assertEqual(shown, ["HatcherTable", "CardStakes", "HatcherLost", "ConfirmHang"])
             not_hanged(t, a)
         probe(self)
-        old = '\tIf confirmed != 0 || !akRiver.RoadOpen() || !akRiver.HatcherCanBeJudged() || !LocalSpeaker(speaker, speakerAlias)\n'
+        old = '\tIf confirmed != 0 || !LocalSpeaker(akSpeaker, akSpeakerAlias) || !akRiver.JudgmentContext(aiVerdict, akHatcher, akRecipient, akRing, akSpeaker, akSpeakerAlias, aiStamp)\n'
         self.assertIsNotNone(self.caught(probe, "GreenwaterWalk.psc", old,
-                                        '\tIf confirmed != 0 || !akRiver.RoadOpen()\n'))
+            '\tIf confirmed != 0\n',also=[
+                ('MQ02BQuest.psc',' || !HatcherCanBeJudged()\n','\n'),
+                ('MQ02BQuest.psc','\tIf akHatcher.IsDead() || akHatcher.IsDisabled() || akHatcher.IsInCombat() || akSpeaker.IsDead() || akSpeaker.IsDisabled() || akSpeaker.IsInCombat()\n',
+                 '\tIf akHatcher.IsDead() || akHatcher.IsDisabled() || akSpeaker.IsDead() || akSpeaker.IsDisabled()\n')]))
 
     def test_a_death_looked_for_once(self):
         self.assertIsNotNone(self.caught(the_death_comes_late, "MQ02BQuest.psc", "int RV_DEATH_POLLS = 30 Const", "int RV_DEATH_POLLS = 0 Const"))
@@ -1196,7 +1207,7 @@ class WhatTheRepairProbesCatch(unittest.TestCase):
                "	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak()\n		Return\n	EndIf\n")
         old += "\tIf !LocalSpeaker(opal, Alias_Opal)\n\t\tReturn\n\tEndIf\n"
         self.assertIsNotNone(self.caught(her_question_answered_to_her, "GreenwaterWalk.psc", old, "",
-                                         also=("GreenwaterWalk.psc", "\tIf !LocalSpeaker(speaker, speakerAlias)\n\t\tReturn false\n\tEndIf\n", "")))
+                                         also=("GreenwaterWalk.psc", "\tIf !LocalSpeaker(akSpeaker, akSpeakerAlias) || !akRiver.JudgmentContext(aiVerdict, akHatcher, akRecipient, akRing, akSpeaker, akSpeakerAlias, aiStamp)\n", "\tIf false\n")))
 
     def test_a_report_not_answered_falling_through(self):
         self.assertIsNotNone(self.caught(report_not_answered_closes, "GreenwaterWalk.psc",

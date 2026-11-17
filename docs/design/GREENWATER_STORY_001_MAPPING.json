@@ -1293,5 +1293,5 @@
     "TLM_MSG_A1_PritchardHandOff, _PritchardAfter, _PritchardAfterAndMore": "Opening complete. Only Greenwater is playable.",
     "TLM:Act1Guide, once the chapter is over": "Greenwater is available at Greenwater story test. Iron Junction, Red Hollow and the fair are not playable. Optional Mercy evidence and briefs remain available."
   },
-  "candidate_extra_guards": "Clarity successor preserves all accepted NPC words. Payment, lie, card and judgment confirmations additionally retain the captured participant identity, current player/context and exact valid answer. Receipt/transfer flags remain separate."
+  "candidate_extra_guards": "Clarity successor preserves all accepted NPC words. Payment, lie, card and judgment confirmations retain captured participants, current player/context and exact valid answers. Judgment captures prisoner, speaker and required recipient/object before the first choice, passes those identities through rules effects and checks yielding receipts against authoritative aliases. Hanging observes its actual persisted execution actor; replacement alias deaths cannot substitute. Receipt/transfer flags remain separate."
 }
