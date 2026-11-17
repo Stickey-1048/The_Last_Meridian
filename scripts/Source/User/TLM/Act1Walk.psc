@@ -392,12 +392,12 @@ EndFunction
 ; ==================================================================== talk
 
 Function Spoken(int aiWho, Actor akWho)
+	{Called by TLM:Act1Talk when the player activates somebody.}
 	; The same living earlier-road actor can be staged at Red Hollow. Its new
 	; alias owns that activation there; neither old encounter nor alias is reset.
 	If TLM_RedHollow && (TLM_RedHollow as TLM:RedHollowWalk).BorrowsActor(akWho)
 		Return
 	EndIf
-	{Called by TLM:Act1Talk when the player activates somebody.}
 	; Nothing between the test and the claim calls into the game, so two
 	; activations cannot both pass.
 	If quiet || talking
