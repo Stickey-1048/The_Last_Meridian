@@ -121,4 +121,20 @@ Root's: the build and read-back against the game's master, the compile, measured
 
 ## 9. What was done
 
-To be completed when the work is finished.
+Added when the work was finished, 17 November 2026. The sections above are as they were committed in `f475c9b`; nothing in them was edited.
+
+The whole bounded road was implemented as planned in sections 3 to 5: the two quests, the three scripts, the records, the exterior clone, the candidate's text, the model and the tests. The full account is `GREENWATER_STORY_001_LEDGER.md`; the text and guard mapping is `GREENWATER_STORY_001_MAPPING.json`; the provenance is `tools/win/greenwater-story-candidate.json`.
+
+**Read back, not planned** (section 4 said these would be): 162 ids, 2217 to 2378, after the untouched 338 lines; `TLM_MQ02B` with 14 stages, 6 objectives and 11 aliases; `TLM_GW` with 31 aliases, 27 of them scripted; 87 messages. From the plugin built against the stand-in master only.
+
+**Where the work differs from this receipt:**
+
+- Section 6 did not name every path. Also changed: `tools/PluginBuilder/Builder.cs` (one more kind of record found by the name a player sees, for the meal), `tools/papyrus_natives.json` (three natives, marked unverified), `tools/papyrus_sim/sim.py` (the player's actor values), `tools/WorldSliceBuilder/Program.cs`, the earlier tests and the earlier mapping that pinned the replaced availability strings, `tools/README.md`. Also new: `tools/WorldSliceBuilder/StoryCloneCheck.cs`, `tools/papyrus_sim/greenwater_player.py`, `tools/win/Build-Greenwater.ps1`.
+- The meal is looked up under five names a player sees, in order, not one.
+- The off-side trigger was moved and made smaller than first laid out, because the builder refuses overlapping trigger boxes.
+- `MercyBriefing.pex` is taken from the fresh compile although its source is unchanged since a8: no measured digest of a compiled `MercyBriefing` is recorded to check a reviewed file against. So the selection is 17 reviewed and 6 fresh, 23 in all.
+- `tools/win/mercy-briefing-candidate.json` and its check were not edited (section 7). The check refuses this checkout, as foreseen.
+
+**Not done, and not claimed:** a Papyrus compile; a build against the game's master; the exterior build as a whole; any PowerShell run, including of `Build-Greenwater.ps1`, which has never been run or parsed; a launcher for this candidate; anything in the game. Crew retaliation, hanging, custody, travel and the ground the pieces stand on are unobserved natively (ledger, section 9).
+
+**Checks run here:** `tools/run_checks.sh` without its one PowerShell-dependent line: exit 0, 65 of 65 scenarios, 1628 checks, on the stand-in engine. The Greenwater tests: model 27, scripts 93 (20 of them mutation trials), projection 14, exterior clone 11, candidate 27. Not a compile and not a game test.

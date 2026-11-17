@@ -29,7 +29,8 @@ Event OnActivate(ObjectReference akActionRef)
 	; Completed flags, not numeric stage comparisons: an early town visit can
 	; set 40/34 without the dispatch's stage20 ever having happened.
 	If TLM_MQ01.GetStageDone(60)
-		next = "First-section demo complete. Greenwater, Red Hollow and Iron Junction are not implemented here; there are no onward route choices. Optional rail evidence can still be explored, or you can exit the game."
+		; GREENWATER-STORY-001 (order, item 1): in this candidate Greenwater is playable.
+		next = "Greenwater is available at Greenwater story test. Iron Junction, Red Hollow and the fair are not playable. Optional Mercy evidence and briefs remain available."
 	ElseIf !TLM_MQ01.GetStageDone(20)
 		If Place == 1
 			next = "Next: search the ground here beside the marshal for the dispatch case. Other papers are optional evidence; this guide is only help."

@@ -1,6 +1,6 @@
 TheLastMeridian.esp  (masters: Fallout4.esm; header version 0.95; lowest FormID 0x800)
 
-Global (19)
+Global (31)
   000800  TLM_G_DataVersion
   000801  TLM_G_CaravanOutcome
   000802  TLM_G_CaravanMethod
@@ -20,19 +20,34 @@ Global (19)
   000810  TLM_G_SQ01_VaneHasLedger
   000811  TLM_G_SQ01_HaskellScapegoated
   000822  TLM_G_DevScenario
-Faction (3)
+  0008A9  TLM_G_MQ02B_Outcome
+  0008AA  TLM_G_MQ02B_Cargo
+  0008AB  TLM_G_MQ02B_Recovered
+  0008AC  TLM_G_MQ02B_Hatcher
+  0008AD  TLM_G_MQ02B_GrainHome
+  0008AE  TLM_G_MQ02B_GrainSold
+  0008AF  TLM_G_MQ02B_QueenBurned
+  0008B0  TLM_G_MQ02B_HatcherHanged
+  0008B1  TLM_G_MQ02B_HatcherFriend
+  0008B2  TLM_G_MQ02B_HatcherHunting
+  0008B3  TLM_G_MQ02B_SilverRiver
+  0008B4  TLM_G_MQ02B_Reported
+Faction (5)
   000812  TLM_Fac_Cutters
   000813  TLM_Fac_Caravan
   000814  TLM_Fac_MercyCrossing
+  0008B5  TLM_Fac_Greenwater
+  0008B6  TLM_Fac_QueenCrew
 MiscItem (3)
   000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
   000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
   000823  TLM_MISC_TrialObject  "Trial Object"
-Book (3)
+Book (4)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
   00089E  TLM_BOOK_Docket2298  "Mercy Road Case: 2298 Review Copy"
-Activator (10)
+  0008D2  TLM_BOOK_LetterOfHire  "A Letter of Hire"
+Activator (31)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
   000834  TLM_TRIG_TownGate
@@ -43,9 +58,30 @@ Activator (10)
   000898  TLM_ACTI_GuideWreck  "Demo guide - Wreck directions"
   000899  TLM_ACTI_GuideRoad  "Demo guide - Caravan road directions"
   00089A  TLM_ACTI_GuideMercy  "Demo guide - Mercy Crossing directions"
+  0008B7  TLM_ACTI_GW_Travel  "Greenwater story test"
+  0008B8  TLM_ACTI_GW_LabelChute  "Greybox: Hangman's Chute"
+  0008B9  TLM_TRIG_GW_ReturnDock
+  0008BA  TLM_ACTI_GW_Exit  "Skiff to Mercy"
+  0008BB  TLM_TRIG_GW_Landing
+  0008BC  TLM_ACTI_GW_LabelLanding  "Greybox: Greenwater landing and cook-shed"
+  0008BD  TLM_ACTI_GW_CargoWhole  "Grain barge (whole, at the landing)"
+  0008BE  TLM_ACTI_GW_CargoReduced  "Grain barge (part of its cargo, at the landing)"
+  0008BF  TLM_ACTI_GW_Steeple  "Greybox: steeple mooring ring"
+  0008C0  TLM_ACTI_GW_RationBoard  "Ration Board, Greenwater"
+  0008C1  TLM_ACTI_GW_Skiff  "Rafferty's skiff (to the Queen's off side)"
+  0008C2  TLM_TRIG_GW_Gangway
+  0008C3  TLM_ACTI_GW_LabelQueen  "Greybox: the Queen of Tellico's deck"
+  0008C4  TLM_ACTI_GW_Table  "Faro table"
+  0008C5  TLM_ACTI_GW_Strongbox  "Hatcher's strongbox"
+  0008C6  TLM_ACTI_GW_FireControl  "Boiler firebox"
+  0008C7  TLM_ACTI_GW_Burnt  "Greybox: the Queen, burned"
+  0008C8  TLM_TRIG_GW_OffSide
+  0008C9  TLM_ACTI_GW_CargoLashed  "Grain barge (lashed to the Queen)"
+  0008CA  TLM_ACTI_GW_Chain  "Anchor chain and barge lashing"
+  0008CB  TLM_ACTI_GW_Pilot  "Barge pilot lever"
 Container (1)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
-Message (64)
+Message (151)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -149,15 +185,15 @@ Message (64)
           button 0: "Continue"
   000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
 
-[First-section demo complete. Later routes are not playable.]"  title: "Owen Pritchard"
+[Opening complete. Only Greenwater is playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[First-section demo complete. Later routes are not playable.]"  title: "Owen Pritchard"
+[Opening complete. Only Greenwater is playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
   000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
 
-[First-section demo complete. Later routes are not playable.]"  title: "Owen Pritchard"
+[Opening complete. Only Greenwater is playable.]"  title: "Owen Pritchard"
           button 0: "Continue"
           button 1: "There's something else from that train."
   00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Pike. I fix what shoots. Forty-fours are scarce, so make yours count.""  title: "Ada Pike"
@@ -190,7 +226,7 @@ Message (64)
           button 0: "Continue"
   0008A0  TLM_MSG_MB_Hub  [box]  "Owen Pritchard: "Which road do you want to ask about? Tell me what you know, or ask what to look for."
 
-[Mercy briefing only. The three destinations are not playable in this build.]"  title: "Owen Pritchard"
+[Mercy briefing. Greenwater is playable; the other roads are not.]"  title: "Owen Pritchard"
           button 0: "The rail."
           button 1: "The river."
           button 2: "Red Hollow."
@@ -211,7 +247,345 @@ Message (64)
   0008A7  TLM_MSG_MB_CopyPendingNote  [notification]  "Review copy hand-over unconfirmed. None is given again. Report this to the tester."
   0008A8  TLM_MSG_MB_HandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
 
-[Opening complete. Ask again for Mercy briefs; roads unbuilt.]"  title: "Owen Pritchard"
+[Opening complete. Ask for briefings or use Greenwater story test.]"  title: "Owen Pritchard"
+          button 0: "Continue"
+  0008D5  TLM_MSG_GW_OpalDefault  [box]  "Opal Starnes: "Back of the line, bless you. Everybody eats or nobody does.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008D6  TLM_MSG_GW_OpalFirst  [box]  "Opal Starnes: "Pritchard sent you? He might have sent corn. Nine days in the bin, child, and ninety till the dogwood. And yonder sits my grain, tied to that painted hussy of a boat, with Lyle Hatcher selling it back by the cup.""  title: "Opal Starnes"
+          button 0: "What do you want done?"
+          button 1: "Why not take it back yourselves?"
+          button 2: "(Take a bowl)"
+  0008D7  TLM_MSG_GW_OpalWants  [box]  "Opal Starnes: "The barge at my landing. And Lyle on that steeple by his neck, where the children can see what stealing bread comes to. I held him at his christening. I'll hold the rope. Mose has a skiff. Go on.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008D8  TLM_MSG_GW_OpalGuns  [box]  "Opal Starnes: "He's two swivel guns on the rail and I've nine men who can stand up straight. I can count, child. It's the one thing I've left that works.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008D9  TLM_MSG_GW_OpalBowl  [box]  "Opal Starnes: "That's a quarter cup short and I know it, so don't look at it like that. Eat. You'll want it. I'd tell you I've had mine, but the Lord's listening.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008DA  TLM_MSG_GW_OpalAfterWon  [box]  "Opal Starnes: "You won the barge from Hatcher? Every sack? Then we'll count it home. Now tell me what you mean to do with him. I want him on the steeple, and you know what that means.""  title: "Opal Starnes"
+          button 0: "He's yours, Opal."
+          button 1: "He goes to Pritchard, alive."
+          button 2: "Let him keep his boat."
+  0008DB  TLM_MSG_GW_OpalAfterWonNoSheriff  [box]  "Opal Starnes: "You won the barge from Hatcher? Every sack? Then we'll count it home. Now tell me what you mean to do with him. I want him on the steeple, and you know what that means.""  title: "Opal Starnes"
+          button 0: "He's yours, Opal."
+          button 1: "Let him keep his boat."
+  0008DC  TLM_MSG_GW_OpalWonHatcherDead  [box]  "Opal Starnes: "The grain is ours. Hatcher is dead. I can count both those facts without calling them the same kind of victory.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008DD  TLM_MSG_GW_OpalDenied  [box]  "Opal Starnes: "Then eat somewhere else. I'll feed a thief's dog before I feed the hand that turned him loose. Bless you for the corn. Now get off my planks.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008DE  TLM_MSG_GW_OpalAfterChute  [box]  "Opal Starnes: "We brought back less than we needed. Enough to stretch the pot, not enough to stop counting. We'll measure what came home before anybody calls it a victory. Thank you for what you brought.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008DF  TLM_MSG_GW_OpalAfterFire  [box]  "Opal Starnes: "I asked for the grain and one man's answer. Now the cargo's burned and people are missing. Don't give me a number you haven't counted. Bring the living to the planks. We'll need every hand.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008E0  TLM_MSG_GW_OpalAfterShare  [box]  "Opal Starnes: "The Chute. Yes. It had my husband and it had my daughter and now it's had the corn. You tried, child. Here. It's a short cup, but you earned it.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008E1  TLM_MSG_GW_OpalAfterHanging  [box]  "Opal Starnes: "It's done. I thought I'd feel fed. ...Fifty years ago I put a spoon in that boy's mouth. Go on, child. There's corn. There's corn for everybody.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008E2  TLM_MSG_GW_RaffertyDefault  [box]  "Mose Rafferty: "River's up. River's always something.""  title: "Mose Rafferty"
+          button 0: "Continue"
+  0008E3  TLM_MSG_GW_RaffertySkiff  [box]  "Mose Rafferty: "Granny send you? Then I'm to row you out. Front way's the gangway: buy a drink, look rich. Back way's her off side, where the barge is. Anchor chain's rotten at the third link. I, uh. I know that barge pretty well.""  title: "Mose Rafferty"
+          button 0: "The gangway."
+          button 1: "The off side."
+          button 2: "How do you know the barge?"
+  0008E4  TLM_MSG_GW_RaffertyConfess  [box]  "Mose Rafferty: "I towed it out. He said safe keeping. He gave me a dollar. I didn't know, I swear on the river I didn't. Don't tell her. I'll run the Chute for you at night, loaded, blind. Only don't tell her.""  title: "Mose Rafferty"
+          button 0: "Continue"
+  0008E5  TLM_MSG_GW_RaffertyChain  [box]  "Mose Rafferty: "One cut frees the barge for the Chute. Or burn the Queen. Thirty people are aboard - crew, cooks, the fiddler - and the winter grain is still lashed alongside. Fire can take them and the cargo. Say what you're ordering.""  title: "Mose Rafferty"
+          button 0: "Cut the barge loose."
+          button 1: "Burn the occupied Queen."
+          button 2: "Not yet."
+  0008E6  TLM_MSG_GW_RaffertyRan  [box]  "Mose Rafferty: "WE'RE THROUGH! Look at what's gone over the side. Granny's going to count every sack we brought home. We'll count the loss before we start calling it a victory.""  title: "Mose Rafferty"
+          button 0: "Continue"
+  0008E7  TLM_MSG_GW_RaffertyBurned  [box]  "Mose Rafferty: "The cook was still aboard. The fiddler too; she taught me to waltz. We knew they were there. I can hear them in the water. Don't tell me this was only a boat.""  title: "Mose Rafferty"
+          button 0: "Continue"
+  0008E8  TLM_MSG_GW_HatcherDefault  [box]  "Lyle Hatcher: "Welcome aboard the Queen, friend. The first drink is on the house and the last one is on you.""  title: "Lyle Hatcher"
+          button 0: "Continue"
+  0008E9  TLM_MSG_GW_HatcherTable  [box]  "Lyle Hatcher: "Sit, sit. Lyle Hatcher, Commodore by acclamation. You're Opal's new terrier. Now that barge was adrift, and I put a line on her, and that is salvage, friend, by a law older than this lake. Card?""  title: "Lyle Hatcher"
+          button 0: "Deal. The barge against my gun."
+          button 1: "Sell me a share, Commodore."
+          button 2: "Who paid you to hold it?"
+          button 3: "(Leave the table)"
+  0008EA  TLM_MSG_GW_HatcherTableNoShare  [box]  "Lyle Hatcher: "Sit, sit. Lyle Hatcher, Commodore by acclamation. You're Opal's new terrier. Now that barge was adrift, and I put a line on her, and that is salvage, friend, by a law older than this lake. Card?""  title: "Lyle Hatcher"
+          button 0: "Deal. The barge against my gun."
+          button 1: "Who paid you to hold it?"
+          button 2: "(Leave the table)"
+  0008EB  TLM_MSG_GW_HatcherLost  [box]  "Lyle Hatcher: "Well, I will be eternally... Ladies! Gentlemen! The house stands a round, for I have just been skinned by an artist. She's yours, friend, every sack. Now. Do you mean to give me to Opal? She means it this year.""  title: "Lyle Hatcher"
+          button 0: "He's yours, Opal."
+          button 1: "He goes to Pritchard, alive."
+          button 2: "Let him keep his boat."
+  0008EC  TLM_MSG_GW_HatcherLostNoSheriff  [box]  "Lyle Hatcher: "Well, I will be eternally... Ladies! Gentlemen! The house stands a round, for I have just been skinned by an artist. She's yours, friend, every sack. Now. Do you mean to give me to Opal? She means it this year.""  title: "Lyle Hatcher"
+          button 0: "He's yours, Opal."
+          button 1: "Let him keep his boat."
+          button 2: "(Say nothing)"
+  0008ED  TLM_MSG_GW_HatcherLostNoOpal  [box]  "Lyle Hatcher: "Well, I will be eternally... Ladies! Gentlemen! The house stands a round, for I have just been skinned by an artist. She's yours, friend, every sack.""  title: "Lyle Hatcher"
+          button 0: "He goes to Pritchard, alive."
+          button 1: "Let him keep his boat."
+          button 2: "(Say nothing)"
+  0008EE  TLM_MSG_GW_HatcherLostAlone  [box]  "Lyle Hatcher: "Well, I will be eternally... Ladies! Gentlemen! The house stands a round, for I have just been skinned by an artist. She's yours, friend, every sack.""  title: "Lyle Hatcher"
+          button 0: "Let him keep his boat."
+          button 1: "(Say nothing)"
+  0008EF  TLM_MSG_GW_HatcherWon  [box]  "Lyle Hatcher: "Ah. The lady turns, and she's mine. No, no, keep your iron, I've a drawer full. You have sand, friend, and I've a use for sand. There's a quarter of that barge in it if Greenwater hears she went down in the Chute.""  title: "Lyle Hatcher"
+          button 0: "Sell me a share, Commodore."
+          button 1: "(Leave the table)"
+  0008F0  TLM_MSG_GW_HatcherWonNoShare  [box]  "Lyle Hatcher: "Ah. The lady turns, and she's mine. No, no, keep your iron, I've a drawer full. You have sand, friend, and I've a use for sand. There's a quarter of that barge in it if Greenwater hears she went down in the Chute.""  title: "Lyle Hatcher"
+          button 0: "(Leave the table)"
+  0008F1  TLM_MSG_GW_HatcherShare  [box]  "Lyle Hatcher: "Two hundred, and a berth. Tell Opal the Chute took it. Delegate Belden has a soup wagon; he'll offer a bowl. I'm selling you a share, not a promise that his pot replaces the winter grain.""  title: "Lyle Hatcher"
+          button 0: "Done."
+          button 1: "No."
+  0008F2  TLM_MSG_GW_HatcherPaidA  [box]  "Lyle Hatcher: "Paid? ...You've been in my box. Or you're guessing, and I've told you. Ha! Yes. Silver, square mark: hold her till first frost, then turn her loose.""  title: "Lyle Hatcher"
+          button 0: "Continue"
+  0008F3  TLM_MSG_GW_HatcherPaidB  [box]  "Lyle Hatcher: "But a man sees that much corn and that many hungry folk and thinks: Lyle, that's a market.""  title: "Lyle Hatcher"
+          button 0: "Square mark. Go on."
+  0008F4  TLM_MSG_GW_BeldenRelief  [box]  "Tomas Belden: "Delegate Belden. The pot is for people who need it. We can discuss an agreement after supper, and you may refuse it. This wagon won't replace a winter's grain. It can keep people fed while they decide.""  title: "Tomas Belden"
+          button 0: "Continue"
+  0008F5  TLM_MSG_GW_ReportKnown  [box]  "Owen Pritchard: "You have a hire-payment lead for Greenwater. Tell me its source. Going there isn't the only way to hear a claim, and hearing one doesn't prove it.""  title: "Owen Pritchard"
+          button 0: "[Report on Greenwater]"
+          button 1: "[Later]"
+  0008F6  TLM_MSG_GW_ReportUnknown  [box]  "Owen Pritchard: "If you haven't been to Greenwater, ask me the way. If you have, tell me what became of the grain and how you learned it.""  title: "Owen Pritchard"
+          button 0: "[Report on Greenwater]"
+          button 1: "[Later]"
+  0008F7  TLM_MSG_GW_AskTravel  [box]  "[Greenwater story test]
+
+Only the Greenwater road is playable in this candidate. It is a greybox: flat ground and labelled stand-ins. Travel there now?"
+          button 0: "Travel to Greenwater"
+          button 1: "Not now"
+  0008F8  TLM_MSG_GW_AskTravelAgain  [box]  "[Greenwater story test]
+
+The Greenwater road is complete. You can go back: what was settled stays settled."
+          button 0: "Travel to Greenwater"
+          button 1: "Not now"
+  0008F9  TLM_MSG_GW_NoteTravelNotYet  [box]  "[Greenwater story test]
+
+Not yet. Deliver the marshal's dispatch to Sheriff Pritchard and hear him out first."
+          button 0: "Continue"
+  0008FA  TLM_MSG_GW_NoteTravelFailed  [box]  "[Greenwater story test]
+
+Greenwater could not be set up. Nothing was changed. See the script log."
+          button 0: "Continue"
+  0008FB  TLM_MSG_GW_AskChain  [box]  "[Anchor chain]
+
+One cut frees the barge for the Chute. Or burn the Queen. Thirty people are aboard - crew, cooks, the fiddler - and the winter grain is still lashed alongside. Fire can take them and the cargo. Say what you're ordering."
+          button 0: "Cut the barge loose."
+          button 1: "Burn the occupied Queen."
+          button 2: "Not yet."
+  0008FC  TLM_MSG_GW_NoteChainCut  [box]  "[Anchor chain]
+
+The chain is cut. From here there are no cards, no share and no fire: use the barge's pilot lever to run the Chute."
+          button 0: "Continue"
+  0008FD  TLM_MSG_GW_NoteChainNothing  [box]  "[Greenwater story test]
+
+There is nothing more to do here."
+          button 0: "Continue"
+  0008FE  TLM_MSG_GW_NoteFireNotWarned  [box]  "[Boiler firebox]
+
+Not yet. Find out who and what is aboard first: the anchor chain, where the barge is lashed."
+          button 0: "Continue"
+  0008FF  TLM_MSG_GW_NoteFireWarned  [box]  "[Greenwater story test]
+
+Nothing is burning. The order is given at the boiler firebox on the Queen's deck, and cannot be taken back."
+          button 0: "Continue"
+  000900  TLM_MSG_GW_AskFire  [box]  "[Boiler firebox]
+
+Thirty people are aboard and the winter grain is lashed alongside. This cannot be undone."
+          button 0: "Burn the occupied Queen."
+          button 1: "Not yet."
+  000901  TLM_MSG_GW_NoteFireScene  [box]  "[Greybox]
+
+The occupied Queen burns with the grain lashed alongside. The fire is shown by the marker on her deck. Nobody's death is counted here."
+          button 0: "Continue"
+  000902  TLM_MSG_GW_NoteFireFailed  [box]  "[Greenwater story test]
+
+The fire could not be shown, so nothing is recorded. Use the firebox again."
+          button 0: "Continue"
+  000903  TLM_MSG_GW_NotePilotNothing  [box]  "[Barge pilot lever]
+
+The barge is still lashed to the Queen."
+          button 0: "Continue"
+  000904  TLM_MSG_GW_NoteChuteScene  [box]  "[Greybox]
+
+Hangman's Chute is a short walk in this build. Walk to the return dock: the run counts when you reach it."
+          button 0: "Continue"
+  000905  TLM_MSG_GW_NoteTowScene  [box]  "[Greybox]
+
+The barge you won is brought round to the landing. Walk to the return dock: the grain is home when you reach it."
+          button 0: "Continue"
+  000906  TLM_MSG_GW_NoteSkiffScene  [box]  "[Greybox]
+
+Rafferty's skiff sets you down at the Queen's off side, by the barge. Walk aboard from there."
+          button 0: "Continue"
+  000907  TLM_MSG_GW_NoteHomeWhole  [box]  "[Greenwater story test]
+
+The whole barge is at the landing: 12 of 12 measures. The count is this build's bookkeeping."
+          button 0: "Continue"
+  000908  TLM_MSG_GW_NoteHomePiloted  [box]  "[Greenwater story test]
+
+Part of the cargo came through the Chute: 8 of 12 measures. The count is this build's bookkeeping."
+          button 0: "Continue"
+  000909  TLM_MSG_GW_NoteHomeAlone  [box]  "[Greenwater story test]
+
+Part of the cargo came through the Chute: 6 of 12 measures. The count is this build's bookkeeping."
+          button 0: "Continue"
+  00090A  TLM_MSG_GW_AskLie  [box]  "[Greenwater story test]
+
+Opal Starnes has not heard what became of the barge."
+          button 0: "Tell her the Chute took it"
+          button 1: "Say nothing of it"
+  00090B  TLM_MSG_GW_NoteShareFailed  [box]  "[Greenwater story test]
+
+No share was paid and no deal was made. See the script log."
+          button 0: "Continue"
+  00090C  TLM_MSG_GW_NoteTableEmpty  [box]  "[Faro table]
+
+Nobody is dealing here."
+          button 0: "Continue"
+  00090D  TLM_MSG_GW_NoteHatcherCustody  [box]  "[Greenwater story test]
+
+Lyle Hatcher is in Sheriff Pritchard's custody."
+          button 0: "Continue"
+  00090E  TLM_MSG_GW_NoteNoMeal  [box]  "[Greenwater story test]
+
+No food item is built into this candidate. Nothing was given."
+          button 0: "Continue"
+  00090F  TLM_MSG_GW_NoteJudgmentFailed  [box]  "[Greenwater story test]
+
+That could not be carried out. Nothing was changed."
+          button 0: "Continue"
+  000910  TLM_MSG_GW_AskLeaveResolved  [box]  "[Skiff to Mercy]
+
+Leave Greenwater? The road is complete once you are back at Mercy Crossing."
+          button 0: "Leave for Mercy"
+          button 1: "Stay"
+  000911  TLM_MSG_GW_AskLeaveUnresolved  [box]  "[Skiff to Mercy]
+
+Nothing is settled at Greenwater. Leaving settles nothing; you can come back."
+          button 0: "Leave for Mercy"
+          button 1: "Stay"
+  000912  TLM_MSG_GW_AskLeaveAgain  [box]  "[Skiff to Mercy]
+
+Leave Greenwater?"
+          button 0: "Leave for Mercy"
+          button 1: "Stay"
+  000913  TLM_MSG_GW_NoteRoadComplete  [box]  "[Greenwater story test]
+
+The Greenwater road is complete. Sheriff Pritchard will hear what became of the grain."
+          button 0: "Continue"
+  000914  TLM_MSG_GW_NoteLeftUnresolved  [box]  "[Greenwater story test]
+
+You left Greenwater with nothing settled. The road is still open."
+          button 0: "Continue"
+  000915  TLM_MSG_GW_ReportWhole  [box]  "[River report]
+
+The whole grain barge reached Greenwater."
+          button 0: "Continue"
+  000916  TLM_MSG_GW_ReportReduced  [box]  "[River report]
+
+Part of the grain reached Greenwater through Hangman's Chute."
+          button 0: "Continue"
+  000917  TLM_MSG_GW_ReportDestroyed  [box]  "[River report]
+
+The occupied Queen burned with the grain lashed alongside. None of it was recovered."
+          button 0: "Continue"
+  000918  TLM_MSG_GW_ReportSold  [box]  "[River report]
+
+You accepted Hatcher's share. The grain remains aboard the Queen."
+          button 0: "Continue"
+  000919  TLM_MSG_GW_ReportEndKnown  [box]  "[River report]
+
+You learned that Hatcher was paid in stamped silver to hold the grain. Who paid is not known.
+
+Greenwater road complete. The other roads and the fair are not playable in this candidate."
+          button 0: "Continue"
+  00091A  TLM_MSG_GW_ReportEndUnknown  [box]  "[River report]
+
+You did not learn why Hatcher held the grain.
+
+Greenwater road complete. The other roads and the fair are not playable in this candidate."
+          button 0: "Continue"
+  00091B  TLM_MSG_GW_LabelLanding  [box]  "[Greybox: Greenwater landing and cook-shed]
+
+Opal Starnes keeps the stores here. The ration board, Rafferty's skiff and the skiff back to Mercy are close by. The gangway to the Queen leads on from here."
+          button 0: "Continue"
+  00091C  TLM_MSG_GW_LabelQueen  [box]  "[Greybox: the Queen of Tellico's deck]
+
+Flat ground stands for the deck: the faro table, the strongbox and the boiler firebox. On her off side: the barge, its chain and its pilot lever."
+          button 0: "Continue"
+  00091D  TLM_MSG_GW_LabelChute  [box]  "[Greybox: Hangman's Chute]
+
+A short strip stands for the fast water. The return dock is at its end."
+          button 0: "Continue"
+  00091E  TLM_MSG_GW_LabelSteeple  [box]  "[Greybox: the steeple's mooring ring]
+
+The steeple stands out of the lake here. Boats tie up to its ring."
+          button 0: "Continue"
+  00091F  TLM_MSG_GW_LabelBurnt  [box]  "[Greybox: the Queen, burned]
+
+This marker stands for the burned boat."
+          button 0: "Continue"
+  000920  TLM_MSG_GW_LabelCargoLashed  [box]  "[Grain barge]
+
+Greenwater's winter grain, lashed to the Queen's off side."
+          button 0: "Continue"
+  000921  TLM_MSG_GW_LabelCargoWhole  [box]  "[Grain barge]
+
+At the landing, whole: 12 of 12 measures."
+          button 0: "Continue"
+  000922  TLM_MSG_GW_LabelCargoPiloted  [box]  "[Grain barge]
+
+At the landing, with part of its cargo: 8 of 12 measures."
+          button 0: "Continue"
+  000923  TLM_MSG_GW_LabelCargoAlone  [box]  "[Grain barge]
+
+At the landing, with part of its cargo: 6 of 12 measures."
+          button 0: "Continue"
+  000924  TLM_MSG_GW_BoardPage1  [box]  "[Ration Board, Greenwater, page 1 of 4]
+
+GREENWATER STORES
+O. Starnes keeps the count."
+          button 0: "Continue"
+  000925  TLM_MSG_GW_BoardPage2  [box]  "[Ration Board, Greenwater, page 2 of 4]
+
+Meal in the bin:        9 days
+Days to the dogwood:    90
+Grown:                  1 cup, morning
+Under twelve:           1 cup, morning. 1/2 cup, night"
+          button 0: "Continue"
+  000926  TLM_MSG_GW_BoardPage3  [box]  "[Ration Board, Greenwater, page 3 of 4]
+
+Nursing:                as under twelve, and ask
+Sick:                   ask
+
+Nobody is fed twice. Nobody is fed first.
+If you think the count is wrong, come and count it."
+          button 0: "Continue"
+  000927  TLM_MSG_GW_BoardPage4  [box]  "[Ration Board, Greenwater, page 4 of 4]
+
+The grain barge is not lost.
+Everybody can see where it is."
+          button 0: "Continue"
+  000928  TLM_MSG_GW_LetterPage1  [box]  "[A Letter of Hire, page 1 of 4]
+
+Commodore,
+
+Enclosed, forty. Count them."
+          button 0: "Continue"
+  000929  TLM_MSG_GW_LetterPage2  [box]  "[A Letter of Hire, page 2 of 4]
+
+You will take the Greenwater barge under tow on the night of
+the new moon and hold it at your anchorage. You will say it
+was adrift. You will hold it until first frost and then let it
+be found."
+          button 0: "Continue"
+  00092A  TLM_MSG_GW_LetterPage3  [box]  "[A Letter of Hire, page 3 of 4]
+
+You are not asked to sink it, sell it or open a sack.
+You are asked for a delay.
+
+Forty more on release.
+
+Do not write back. Do not ask the bearer who sends this.
+The bearer does not know."
+          button 0: "Continue"
+  00092B  TLM_MSG_GW_LetterPage4  [box]  "[A Letter of Hire, page 4 of 4]
+
+(no signature. Pressed into the wax, a small plain square.)"
           button 0: "Continue"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
@@ -490,6 +864,7 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            TLM_MQ01 = TLM_MQ01
            TLM_SQ01 = TLM_SQ01
            TLM_MercyBriefing = TLM_MercyBriefing
+           TLM_Greenwater = TLM_GW
            TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
            TLM_G_CaravanMethod = TLM_G_CaravanMethod
            TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
@@ -657,12 +1032,272 @@ Quest TLM_MercyBriefing  00089F  "Mercy briefing"  type=SideQuests priority=35 f
            CopyPendingNote = TLM_MSG_MB_CopyPendingNote
            HandOffLine = TLM_MSG_MB_HandOff
   structure: 2 of 2 stages have one item with its flags subrecord; 1 of 1 objectives have flags; condition marker present
-  stage   10  "Mercy briefing only. The three destinations are not playable in this build."
-  stage   20 [complete]  "Mercy briefing complete. Destinations are not playable in this build."
+  stage   10  "Mercy briefing. Greenwater is playable; the other roads are not."
+  stage   20 [complete]  "Mercy briefing complete. Only Greenwater is playable; other roads and fair are not."
   objective 10: "Ask Pritchard about the three roads."  -> alias 0
   alias  0 Briefer  (reference) [Optional]
 
-Not wired yet (160):
+Quest TLM_MQ02B  0008D3  "The Queen of Tellico"  type=MainQuest priority=55 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MQ02BQuest
+           TLM_MQ01 = TLM_MQ01
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           Alias_MercySheriff = alias 4 on TLM_MQ01
+           Alias_Opal = alias 0 on TLM_MQ02B
+           Alias_Hatcher = alias 1 on TLM_MQ02B
+           Alias_Rafferty = alias 2 on TLM_MQ02B
+           Alias_Belden = alias 3 on TLM_MQ02B
+           Alias_Crew1 = alias 4 on TLM_MQ02B
+           Alias_Crew2 = alias 5 on TLM_MQ02B
+           Alias_Steeple = alias 6 on TLM_MQ02B
+           TLM_G_MQ02B_Outcome = TLM_G_MQ02B_Outcome
+           TLM_G_MQ02B_Cargo = TLM_G_MQ02B_Cargo
+           TLM_G_MQ02B_Recovered = TLM_G_MQ02B_Recovered
+           TLM_G_MQ02B_Hatcher = TLM_G_MQ02B_Hatcher
+           TLM_G_MQ02B_GrainHome = TLM_G_MQ02B_GrainHome
+           TLM_G_MQ02B_GrainSold = TLM_G_MQ02B_GrainSold
+           TLM_G_MQ02B_QueenBurned = TLM_G_MQ02B_QueenBurned
+           TLM_G_MQ02B_HatcherHanged = TLM_G_MQ02B_HatcherHanged
+           TLM_G_MQ02B_HatcherFriend = TLM_G_MQ02B_HatcherFriend
+           TLM_G_MQ02B_HatcherHunting = TLM_G_MQ02B_HatcherHunting
+           TLM_G_MQ02B_SilverRiver = TLM_G_MQ02B_SilverRiver
+           TLM_G_MQ02B_Reported = TLM_G_MQ02B_Reported
+           HireLetter = TLM_BOOK_LetterOfHire
+  structure: 14 of 14 stages have one item with its flags subrecord; 6 of 6 objectives have flags; condition marker present
+  stage   10  "Greenwater is a town on stilts with a queue from the cook-shed to the water. Everybody in the queue is looking at the same boat."
+  stage   20  "Opal Starnes has corn for nine days and a town for ninety. Her grain is on Lyle Hatcher's boat. She wants it back, and she wants him on the steeple."
+  stage   30  "The Queen of Tellico has a band, a bar and a faro bank. The stake at the high table is a cup of Greenwater's own corn."
+  stage   40  "Commodore Hatcher deals without looking at his hands. He says the barge is salvage, the law is on his side, and would you care for a card."
+  stage   41  "You took the barge off Lyle Hatcher with his own deck. He stood the house a round and called it the best hand he ever lost."
+  stage   42  "The grain barge reached Greenwater through Hangman's Chute. Some cargo was lost in the rapids."
+  stage   43  "The occupied Queen burned with the grain lashed alongside. People tried to reach the water. The cargo is lost; the crew's account still needs witnesses."
+  stage   44  "You accepted Hatcher's share. The grain remains aboard the Queen."
+  stage   45  "Lyle Hatcher won your gun on the turn of a card and gave it back with a bow. He says you may still buy in."
+  stage   46  "You told Greenwater the barge went down in the Chute. Hatcher counted your share onto the felt, and Opal Starnes thanked you for trying."
+  stage   50  "There is a letter in Hatcher's strongbox. He was paid in stamped silver to hold the grain past first frost. Selling it back was his own idea."
+  stage   60  "Greenwater rang the steeple bell and hanged Lyle Hatcher from the mooring ring. Opal Starnes held the ladle the whole time."
+  stage   61  "Lyle Hatcher left Greenwater in irons in the bottom of a skiff, still talking."
+  stage  100 [complete]  (Left Greenwater with one course carried through)
+  objective 10: "Find who keeps the stores at Greenwater"  -> alias 0
+  objective 20: "Get aboard the Queen of Tellico"  -> alias 7
+  objective 40: "Get the grain barge off Commodore Hatcher, or get paid"  -> alias 7
+  objective 50: "(Optional) Find out why a gambler wanted a town's corn"  -> alias 8
+  objective 60: "Use the barge's pilot lever and bring the grain to the landing"  -> alias 9
+  objective 80: "Take the skiff back to Mercy Crossing"  -> alias 10
+  alias  0 Opal  (reference) [Optional]
+  alias  1 Hatcher  (reference) [Optional]
+  alias  2 Rafferty  (reference) [Optional]
+  alias  3 Belden  (reference) [Optional]
+  alias  4 Crew1  (reference) [Optional]
+  alias  5 Crew2  (reference) [Optional]
+  alias  6 Steeple  (reference) [Optional]
+  alias  7 Table  (reference) [Optional]
+  alias  8 Strongbox  (reference) [Optional]
+  alias  9 Pilot  (reference) [Optional]
+  alias 10 Exit  (reference) [Optional]
+
+Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:GreenwaterWalk
+           TLM_MQ02B = TLM_MQ02B
+           TLM_MQ01 = TLM_MQ01
+           TLM_G_MQ01_Done = TLM_G_MQ01_Done
+           ZoneOn = [alias 1 on TLM_GW, alias 2 on TLM_GW, alias 3 on TLM_GW, alias 4 on TLM_GW, alias 5 on TLM_GW, alias 6 on TLM_GW, alias 7 on TLM_GW, alias 8 on TLM_GW, alias 11 on TLM_GW, alias 12 on TLM_GW, alias 13 on TLM_GW, alias 15 on TLM_GW, alias 16 on TLM_GW, alias 17 on TLM_GW, alias 18 on TLM_GW, alias 19 on TLM_GW, alias 20 on TLM_GW, alias 21 on TLM_GW, alias 22 on TLM_GW, alias 23 on TLM_GW, alias 24 on TLM_GW, alias 26 on TLM_GW, alias 27 on TLM_GW, alias 28 on TLM_GW, alias 29 on TLM_GW, alias 30 on TLM_GW]
+           CastFrom = [alias 5 on TLM_GW, alias 11 on TLM_GW, alias 12 on TLM_GW, alias 14 on TLM_GW, alias 15 on TLM_GW, alias 19 on TLM_GW, alias 20 on TLM_GW, alias 21 on TLM_GW, alias 22 on TLM_GW, alias 23 on TLM_GW, alias 30 on TLM_GW]
+           CastInto = [alias 10 on TLM_MQ02B, alias 6 on TLM_MQ02B, alias 0 on TLM_MQ02B, alias 3 on TLM_MQ02B, alias 2 on TLM_MQ02B, alias 7 on TLM_MQ02B, alias 1 on TLM_MQ02B, alias 8 on TLM_MQ02B, alias 4 on TLM_MQ02B, alias 5 on TLM_MQ02B, alias 9 on TLM_MQ02B]
+           CastNames = ["the skiff to Mercy as Exit of TLM_MQ02B", "the steeple's mooring ring as Steeple of TLM_MQ02B", "Opal Starnes as Opal of TLM_MQ02B", "Tomas Belden as Belden of TLM_MQ02B", "Mose Rafferty as Rafferty of TLM_MQ02B", "the faro table as Table of TLM_MQ02B", "Lyle Hatcher as Hatcher of TLM_MQ02B", "Hatcher's strongbox as Strongbox of TLM_MQ02B", "one of the Queen's crew as Crew1 of TLM_MQ02B", "another of the Queen's crew as Crew2 of TLM_MQ02B", "the barge's pilot lever as Pilot of TLM_MQ02B"]
+           Alias_MercyTravel = alias 0 on TLM_GW
+           Alias_MercyReturn = alias 1 on TLM_GW
+           Alias_Arrival = alias 6 on TLM_GW
+           Alias_OffSideArrival = alias 26 on TLM_GW
+           Alias_ChuteStart = alias 2 on TLM_GW
+           Alias_Opal = alias 12 on TLM_GW
+           Alias_Hatcher = alias 20 on TLM_GW
+           Alias_Rafferty = alias 15 on TLM_GW
+           Alias_Belden = alias 14 on TLM_GW
+           Alias_Crew1 = alias 22 on TLM_GW
+           Alias_Crew2 = alias 23 on TLM_GW
+           Alias_CargoLashed = alias 28 on TLM_GW
+           Alias_CargoWhole = alias 9 on TLM_GW
+           Alias_CargoReduced = alias 10 on TLM_GW
+           Alias_Table = alias 19 on TLM_GW
+           Alias_Chain = alias 29 on TLM_GW
+           Alias_Pilot = alias 30 on TLM_GW
+           Alias_FireControl = alias 24 on TLM_GW
+           Alias_Burnt = alias 25 on TLM_GW
+           SayOpalDefault = TLM_MSG_GW_OpalDefault
+           SayOpalFirst = TLM_MSG_GW_OpalFirst
+           SayOpalWants = TLM_MSG_GW_OpalWants
+           SayOpalGuns = TLM_MSG_GW_OpalGuns
+           SayOpalBowl = TLM_MSG_GW_OpalBowl
+           SayOpalAfterWon = TLM_MSG_GW_OpalAfterWon
+           SayOpalAfterWonNoSheriff = TLM_MSG_GW_OpalAfterWonNoSheriff
+           SayOpalWonHatcherDead = TLM_MSG_GW_OpalWonHatcherDead
+           SayOpalDenied = TLM_MSG_GW_OpalDenied
+           SayOpalAfterChute = TLM_MSG_GW_OpalAfterChute
+           SayOpalAfterFire = TLM_MSG_GW_OpalAfterFire
+           SayOpalAfterShare = TLM_MSG_GW_OpalAfterShare
+           SayOpalAfterHanging = TLM_MSG_GW_OpalAfterHanging
+           SayRaffertyDefault = TLM_MSG_GW_RaffertyDefault
+           SayRaffertySkiff = TLM_MSG_GW_RaffertySkiff
+           SayRaffertyConfess = TLM_MSG_GW_RaffertyConfess
+           SayRaffertyChain = TLM_MSG_GW_RaffertyChain
+           SayRaffertyRan = TLM_MSG_GW_RaffertyRan
+           SayRaffertyBurned = TLM_MSG_GW_RaffertyBurned
+           SayHatcherDefault = TLM_MSG_GW_HatcherDefault
+           SayHatcherTable = TLM_MSG_GW_HatcherTable
+           SayHatcherTableNoShare = TLM_MSG_GW_HatcherTableNoShare
+           SayHatcherLost = TLM_MSG_GW_HatcherLost
+           SayHatcherLostNoSheriff = TLM_MSG_GW_HatcherLostNoSheriff
+           SayHatcherLostNoOpal = TLM_MSG_GW_HatcherLostNoOpal
+           SayHatcherLostAlone = TLM_MSG_GW_HatcherLostAlone
+           SayHatcherWon = TLM_MSG_GW_HatcherWon
+           SayHatcherWonNoShare = TLM_MSG_GW_HatcherWonNoShare
+           SayHatcherShare = TLM_MSG_GW_HatcherShare
+           SayHatcherPaidA = TLM_MSG_GW_HatcherPaidA
+           SayHatcherPaidB = TLM_MSG_GW_HatcherPaidB
+           SayBeldenRelief = TLM_MSG_GW_BeldenRelief
+           SayReportKnown = TLM_MSG_GW_ReportKnown
+           SayReportUnknown = TLM_MSG_GW_ReportUnknown
+           AskTravel = TLM_MSG_GW_AskTravel
+           AskTravelAgain = TLM_MSG_GW_AskTravelAgain
+           NoteTravelNotYet = TLM_MSG_GW_NoteTravelNotYet
+           NoteTravelFailed = TLM_MSG_GW_NoteTravelFailed
+           AskChain = TLM_MSG_GW_AskChain
+           NoteChainCut = TLM_MSG_GW_NoteChainCut
+           NoteChainNothing = TLM_MSG_GW_NoteChainNothing
+           NoteFireNotWarned = TLM_MSG_GW_NoteFireNotWarned
+           NoteFireWarned = TLM_MSG_GW_NoteFireWarned
+           AskFire = TLM_MSG_GW_AskFire
+           NoteFireScene = TLM_MSG_GW_NoteFireScene
+           NoteFireFailed = TLM_MSG_GW_NoteFireFailed
+           NotePilotNothing = TLM_MSG_GW_NotePilotNothing
+           NoteChuteScene = TLM_MSG_GW_NoteChuteScene
+           NoteTowScene = TLM_MSG_GW_NoteTowScene
+           NoteSkiffScene = TLM_MSG_GW_NoteSkiffScene
+           NoteHomeWhole = TLM_MSG_GW_NoteHomeWhole
+           NoteHomePiloted = TLM_MSG_GW_NoteHomePiloted
+           NoteHomeAlone = TLM_MSG_GW_NoteHomeAlone
+           AskLie = TLM_MSG_GW_AskLie
+           NoteShareFailed = TLM_MSG_GW_NoteShareFailed
+           NoteTableEmpty = TLM_MSG_GW_NoteTableEmpty
+           NoteHatcherCustody = TLM_MSG_GW_NoteHatcherCustody
+           NoteNoMeal = TLM_MSG_GW_NoteNoMeal
+           NoteJudgmentFailed = TLM_MSG_GW_NoteJudgmentFailed
+           AskLeaveResolved = TLM_MSG_GW_AskLeaveResolved
+           AskLeaveUnresolved = TLM_MSG_GW_AskLeaveUnresolved
+           AskLeaveAgain = TLM_MSG_GW_AskLeaveAgain
+           NoteRoadComplete = TLM_MSG_GW_NoteRoadComplete
+           NoteLeftUnresolved = TLM_MSG_GW_NoteLeftUnresolved
+           ReportWhole = TLM_MSG_GW_ReportWhole
+           ReportReduced = TLM_MSG_GW_ReportReduced
+           ReportDestroyed = TLM_MSG_GW_ReportDestroyed
+           ReportSold = TLM_MSG_GW_ReportSold
+           ReportEndKnown = TLM_MSG_GW_ReportEndKnown
+           ReportEndUnknown = TLM_MSG_GW_ReportEndUnknown
+           LabelLanding = TLM_MSG_GW_LabelLanding
+           LabelQueen = TLM_MSG_GW_LabelQueen
+           LabelChute = TLM_MSG_GW_LabelChute
+           LabelSteeple = TLM_MSG_GW_LabelSteeple
+           LabelBurnt = TLM_MSG_GW_LabelBurnt
+           LabelCargoLashed = TLM_MSG_GW_LabelCargoLashed
+           LabelCargoWhole = TLM_MSG_GW_LabelCargoWhole
+           LabelCargoPiloted = TLM_MSG_GW_LabelCargoPiloted
+           LabelCargoAlone = TLM_MSG_GW_LabelCargoAlone
+           BoardPage1 = TLM_MSG_GW_BoardPage1
+           BoardPage2 = TLM_MSG_GW_BoardPage2
+           BoardPage3 = TLM_MSG_GW_BoardPage3
+           BoardPage4 = TLM_MSG_GW_BoardPage4
+           LetterPage1 = TLM_MSG_GW_LetterPage1
+           LetterPage2 = TLM_MSG_GW_LetterPage2
+           LetterPage3 = TLM_MSG_GW_LetterPage3
+           LetterPage4 = TLM_MSG_GW_LetterPage4
+  structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  alias  0 MercyTravel  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 1
+  alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
+  alias  2 ChuteStart  (reference) [Optional, AllowDisabled]
+  alias  3 LabelChute  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 22
+  alias  4 ReturnDock  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 15
+  alias  5 Exit  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 16
+  alias  6 Arrival  (reference) [Optional, AllowDisabled]
+  alias  7 LandingSight  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 2
+  alias  8 LabelLanding  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 20
+  alias  9 CargoWhole  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 23
+  alias 10 CargoReduced  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 23
+  alias 11 Steeple  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 24
+  alias 12 Opal  (reference) [Optional, AllowDisabled, Protected]
+           script TLM:GreenwaterTalk
+                    Who = 3
+  alias 13 RationBoard  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 4
+  alias 14 Belden  (reference) [Optional, AllowDisabled, Protected]
+           script TLM:GreenwaterTalk
+                    Who = 17
+  alias 15 Rafferty  (reference) [Optional, AllowDisabled, Protected]
+           script TLM:GreenwaterTalk
+                    Who = 5
+  alias 16 Skiff  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 6
+  alias 17 GangwaySight  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 7
+  alias 18 LabelQueen  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 21
+  alias 19 Table  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 10
+  alias 20 Hatcher  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 9
+  alias 21 Strongbox  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 11
+  alias 22 Crew1  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 18
+  alias 23 Crew2  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 19
+  alias 24 FireControl  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 14
+  alias 25 Burnt  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 25
+  alias 26 OffSideArrival  (reference) [Optional, AllowDisabled]
+  alias 27 OffSideSight  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 8
+  alias 28 CargoLashed  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 23
+  alias 29 Chain  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 12
+  alias 30 Pilot  (reference) [Optional, AllowDisabled]
+           script TLM:GreenwaterTalk
+                    Who = 13
+
+Not wired yet (249):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -673,6 +1308,23 @@ Not wired yet (160):
   - TLM_ACTI_GuideWreck: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_GuideRoad: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_GuideMercy: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Travel: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_LabelChute: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Exit: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_LabelLanding: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_CargoWhole: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_CargoReduced: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Steeple: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_RationBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Skiff: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_LabelQueen: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Table: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Strongbox: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_FireControl: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Burnt: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_CargoLashed: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Chain: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_GW_Pilot: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: empty (it holds 'Caps001', which needs Fallout4.esm)
   - TLM_NPC_TrialPerson: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
@@ -690,9 +1342,16 @@ Not wired yet (160):
   - TLM_NPC_CUTTER_01: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_CUTTER_02: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_CUTTER_03: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_WARDEN_GREENWATER: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_PILOT_GREENWATER: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_DELEGATE_COMMONWEALTH: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_COMMODORE_QUEEN: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_QUEEN_CREW_01: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_QUEEN_CREW_02: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_MarshalLog: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_Docket2298: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_LetterOfHire: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTrigger: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is in Fallout4.esm)
@@ -737,6 +1396,37 @@ Not wired yet (160):
   - TLM_REF_A1_GuideWreck: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_A1_GuideRoad: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_REF_A1_GuideMercy: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_ChuteStart: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_LabelChute: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_ReturnDock: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Exit: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Arrival: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_LandingSight: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_LabelLanding: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_CargoWhole: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_CargoReduced: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Steeple: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Opal: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_RationBoard: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Belden: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Rafferty: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Skiff: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_GangwaySight: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_LabelQueen: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Table: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Hatcher: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Strongbox: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Crew1: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Crew2: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_FireControl: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Burnt: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_OffSideArrival: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_OffSideSight: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_CargoLashed: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Chain: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_REF_GW_Pilot: not placed (the cell 'QASmoke' is in Fallout4.esm)
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -823,3 +1513,37 @@ Not wired yet (160):
   - TLM_A1 alias GuideWreck: its reference TLM_REF_A1_GuideWreck is not placed
   - TLM_A1 alias GuideRoad: its reference TLM_REF_A1_GuideRoad is not placed
   - TLM_A1 alias GuideMercy: its reference TLM_REF_A1_GuideMercy is not placed
+  - TLM_MQ02B script TLM:MQ02BQuest.Caps: needs 'Caps001' from Fallout4.esm
+  - TLM_MQ02B script TLM:MQ02BQuest.Charisma: needs 'Charisma' from Fallout4.esm
+  - TLM_MQ02B script TLM:MQ02BQuest.Meal: needs a Ingestible named 'Corn' or 'Vegetable Soup' or 'Noodle Cup' or 'Tato' or 'Mutfruit' from Fallout4.esm
+  - TLM_GW alias MercyTravel: its reference TLM_REF_GW_MercyTravel is not placed
+  - TLM_GW alias MercyReturn: its reference TLM_REF_GW_MercyReturn is not placed
+  - TLM_GW alias ChuteStart: its reference TLM_REF_GW_ChuteStart is not placed
+  - TLM_GW alias LabelChute: its reference TLM_REF_GW_LabelChute is not placed
+  - TLM_GW alias ReturnDock: its reference TLM_REF_GW_ReturnDock is not placed
+  - TLM_GW alias Exit: its reference TLM_REF_GW_Exit is not placed
+  - TLM_GW alias Arrival: its reference TLM_REF_GW_Arrival is not placed
+  - TLM_GW alias LandingSight: its reference TLM_REF_GW_LandingSight is not placed
+  - TLM_GW alias LabelLanding: its reference TLM_REF_GW_LabelLanding is not placed
+  - TLM_GW alias CargoWhole: its reference TLM_REF_GW_CargoWhole is not placed
+  - TLM_GW alias CargoReduced: its reference TLM_REF_GW_CargoReduced is not placed
+  - TLM_GW alias Steeple: its reference TLM_REF_GW_Steeple is not placed
+  - TLM_GW alias Opal: its reference TLM_REF_GW_Opal is not placed
+  - TLM_GW alias RationBoard: its reference TLM_REF_GW_RationBoard is not placed
+  - TLM_GW alias Belden: its reference TLM_REF_GW_Belden is not placed
+  - TLM_GW alias Rafferty: its reference TLM_REF_GW_Rafferty is not placed
+  - TLM_GW alias Skiff: its reference TLM_REF_GW_Skiff is not placed
+  - TLM_GW alias GangwaySight: its reference TLM_REF_GW_GangwaySight is not placed
+  - TLM_GW alias LabelQueen: its reference TLM_REF_GW_LabelQueen is not placed
+  - TLM_GW alias Table: its reference TLM_REF_GW_Table is not placed
+  - TLM_GW alias Hatcher: its reference TLM_REF_GW_Hatcher is not placed
+  - TLM_GW alias Strongbox: its reference TLM_REF_GW_Strongbox is not placed
+  - TLM_GW alias Crew1: its reference TLM_REF_GW_Crew1 is not placed
+  - TLM_GW alias Crew2: its reference TLM_REF_GW_Crew2 is not placed
+  - TLM_GW alias FireControl: its reference TLM_REF_GW_FireControl is not placed
+  - TLM_GW alias Burnt: its reference TLM_REF_GW_Burnt is not placed
+  - TLM_GW alias OffSideArrival: its reference TLM_REF_GW_OffSideArrival is not placed
+  - TLM_GW alias OffSideSight: its reference TLM_REF_GW_OffSideSight is not placed
+  - TLM_GW alias CargoLashed: its reference TLM_REF_GW_CargoLashed is not placed
+  - TLM_GW alias Chain: its reference TLM_REF_GW_Chain is not placed
+  - TLM_GW alias Pilot: its reference TLM_REF_GW_Pilot is not placed

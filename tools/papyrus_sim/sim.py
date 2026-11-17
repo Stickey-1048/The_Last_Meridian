@@ -413,6 +413,10 @@ class Session:
         # What Utility.RandomInt gives. None: the lowest number it may give.
         self.random_int: Optional[int] = None
         self.god_mode = False
+        # For a test: the player's actor values by the record's EditorID. Base values, and current values
+        # where they differ from the base (a drink, a hat). Without an entry: 4.0 (see _actor_value).
+        self.player_base_values: Dict[str, float] = {}
+        self.player_values: Dict[str, float] = {}
         self.ended = None                             # 'quit' | 'idle' | 'timeout'
         self.unknown_scripts = set()
         self.calls_on_none = 0
@@ -1761,6 +1765,31 @@ class Session:
         if form is None:
             return sum(ref.inventory.values())
         return ref.inventory.get(form, 0)
+
+    # Actor values (GREENWATER-STORY-001: the card check reads the player's Charisma).
+    def _actor_value(self, ref, av, base: bool) -> float:
+        """[documented, from memory of the wiki; see tools/papyrus_natives.json] GetValue "gets the current
+        value of the specified actor value", GetBaseValue its base value. [given] by the order of
+        GREENWATER-STORY-001, not measured by this project: a fresh character in the owner's set-up has
+        seven SPECIAL values of 4. The stand-in knows the player's values a test gives it (base, and current
+        where it differs) and 4.0 for the rest; for anybody else it knows none and says so."""
+        av = unwrap(av)
+        if av is None:
+            self.papyrus_error("GetValue: the actor value is None")
+            return 0.0
+        if ref is not self.player:
+            raise SimError("the stand-in does not know the actor values of %r" % (ref,))
+        name = getattr(av, "editor_id", str(av))
+        base_value = float(self.player_base_values.get(name, 4.0))
+        if base:
+            return base_value
+        return float(self.player_values.get(name, base_value))
+
+    def n_objectreference_getvalue(self, ref, context, av):
+        return self._actor_value(ref, av, base=False)
+
+    def n_objectreference_getbasevalue(self, ref, context, av):
+        return self._actor_value(ref, av, base=True)
 
     def n_objectreference_removeallitems(self, ref, context, transfer_to=None, keep_ownership=False):
         ref.inventory = {}                          # [seen] through the wagon alias

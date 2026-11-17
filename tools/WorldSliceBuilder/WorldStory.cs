@@ -7,6 +7,100 @@ using Noggog;
 // every new quest/reference; main/side quest rules stay in the explicit master.
 public static class WorldStory
 {
+    // GREENWATER-STORY-001: where the Greenwater greybox stands in the owner's world. Free flat ground south of
+    // the bypass road: x 1250-2850, y 200-700, at least 600 units from every tree and rock the expansion places
+    // and 150 from the bypass's hidden posts; Mercy's two pieces stand in the yard, between the gateway and
+    // Pritchard. The same numbers as tools/PluginBuilder/SpecGreenwater.cs (Greenwater.Parts); a test compares
+    // the two. Nothing of the first section's 29 references moves.
+    public static readonly Dictionary<string,(float X,float Y,float Z)> GreenwaterSites=new(){
+        ["MercyTravel"]=(3150,2620,12),["MercyReturn"]=(3150,2700,0),
+        ["ChuteStart"]=(1300,480,0),["LabelChute"]=(1380,580,12),["ReturnDock"]=(1640,480,100),
+        ["Exit"]=(1760,380,12),["Arrival"]=(1800,300,0),["LandingSight"]=(1900,440,100),["LabelLanding"]=(1880,580,12),
+        ["CargoWhole"]=(1960,650,12),["CargoReduced"]=(2040,650,12),["Steeple"]=(2000,300,12),["Opal"]=(2100,560,0),
+        ["RationBoard"]=(2180,620,12),["Belden"]=(2200,400,0),["Rafferty"]=(2280,360,0),["Skiff"]=(2330,300,12),
+        ["GangwaySight"]=(2450,500,100),["LabelQueen"]=(2520,600,12),["Table"]=(2600,540,12),["Hatcher"]=(2650,600,0),
+        ["Strongbox"]=(2700,520,12),["Crew1"]=(2560,660,0),["Crew2"]=(2740,660,0),["FireControl"]=(2760,440,12),
+        ["Burnt"]=(2620,440,12),["OffSideArrival"]=(2560,230,0),["OffSideSight"]=(2620,370,100),
+        ["CargoLashed"]=(2680,300,12),["Chain"]=(2740,300,12),["Pilot"]=(2790,340,12)
+    };
+    const string GreenwaterQuest="TLM_GW";const string GreenwaterClone="TLM_WS_GW";const string RoadQuest="TLM_MQ02B";
+    static readonly ModKey StoryMaster=ModKey.FromNameAndExtension("TheLastMeridian.esp");
+
+    // The greybox quest, cloned as the first section is: its own persistent references at the sites above, its
+    // own aliases and alias scripts, and every property that pointed at the original pointing at the clone.
+    // What it puts its references INTO (the aliases of TLM_MQ02B) and the road itself stay in the story master.
+    static object? AddGreenwater(Fallout4Mod mod,Worldspace world,IFallout4ModGetter source,Dictionary<FormKey,IPlacedGetter> sourceRefs,QuestAdapter firstSection)
+    {
+        var original=source.Quests.SingleOrDefault(q=>q.EditorID==GreenwaterQuest);
+        var bound=firstSection.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.Where(p=>p.Name=="TLM_Greenwater").ToArray();
+        if(original==null){
+            // A source built before the road existed has neither the quest nor the binding.
+            if(bound.Length!=0)throw new InvalidDataException("Greenwater binding without a Greenwater quest");
+            return null;
+        }
+        var road=source.Quests.SingleOrDefault(q=>q.EditorID==RoadQuest)??throw new InvalidDataException("Greenwater greybox without its road quest");
+        if(bound.Length!=1||bound[0] is not ScriptObjectProperty door||door.Alias!=-1||door.Object.FormKey!=original.FormKey)throw new InvalidDataException("First section is not bound to the story master's Greenwater greybox");
+        var clone=original.Duplicate(mod.GetNextFormKey());
+        clone.EditorID=GreenwaterClone;clone.Name="The Last Meridian - exterior Greenwater greybox (development)";
+        mod.Quests.Add(clone);
+        var aliases=clone.Aliases??throw new InvalidDataException("Missing Greenwater alias table");
+        if(aliases.Count!=GreenwaterSites.Count||aliases.Any(a=>a is not QuestReferenceAlias r||!GreenwaterSites.ContainsKey(r.Name??"")))throw new InvalidDataException("Unexpected Greenwater alias contract");
+        var mapping=new List<object>();
+        foreach(var a in aliases.Cast<QuestReferenceAlias>()){
+            if(a.ForcedReference.IsNull||!sourceRefs.TryGetValue(a.ForcedReference.FormKey,out var old))throw new InvalidDataException("Missing Greenwater source placement: "+a.Name);
+            var at=GreenwaterSites[a.Name!];var key=mod.GetNextFormKey();IPlaced placed;
+            if(old is IPlacedNpcGetter npc){var p=npc.Duplicate(key);p.Position=new P3Float(at.X,at.Y,at.Z);p.Rotation=new P3Float(0,0,MathF.PI);p.EditorID="TLM_WS_ST_GW_"+a.Name;placed=p;}
+            else if(old is IPlacedObjectGetter obj){var p=obj.Duplicate(key);p.Position=new P3Float(at.X,at.Y,at.Z);p.Rotation=new P3Float(0,0,0);p.EditorID="TLM_WS_ST_GW_"+a.Name;placed=p;}
+            else throw new InvalidDataException("Unsupported Greenwater source placement: "+a.Name);
+            placed.MajorRecordFlagsRaw|=0xC00; // own persistent, initially disabled
+            world.TopCell!.Persistent.Add(placed);a.ForcedReference.SetTo(key);
+            mapping.Add(new{alias=a.Name,id=a.ID,source=old.FormKey.ToString(),reference=key.ToString(),x=at.X,y=at.Y,z=at.Z});
+        }
+        var adapter=clone.VirtualMachineAdapter??throw new InvalidDataException("Missing Greenwater VMAD");
+        void Remap(ScriptObjectProperty obj){if(obj.Object.FormKey==original.FormKey)obj.Object.SetTo(clone.FormKey);}
+        void Script(ScriptEntry script){foreach(var p in script.Properties){
+            if(p is ScriptObjectProperty obj)Remap(obj);
+            if(p is ScriptObjectListProperty list)foreach(var o in list.Objects)Remap(o);
+        }}
+        foreach(var s in adapter.Scripts)Script(s);
+        foreach(var b in adapter.Aliases){Remap(b.Property);foreach(var s in b.Scripts)Script(s);}
+        // The exterior first section opens the exterior greybox, not the test room's.
+        door.Object.SetTo(clone.FormKey);
+        return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),references=mapping.Count,mapping};
+    }
+
+    static void ValidateGreenwater(IFallout4ModGetter addon,IQuestGetter firstSection)
+    {
+        var clone=addon.Quests.SingleOrDefault(q=>q.EditorID==GreenwaterClone);
+        var door=firstSection.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.Where(p=>p.Name=="TLM_Greenwater").ToArray();
+        if(clone==null){if(door.Length!=0)throw new InvalidDataException("Greenwater binding without the exterior greybox");return;}
+        if(door.Length!=1||door[0] is not IScriptObjectPropertyGetter opened||opened.Alias!=-1||opened.Object.FormKey!=clone.FormKey)throw new InvalidDataException("Exterior first section does not open the exterior Greenwater greybox");
+        var aliases=clone.Aliases?.OfType<IQuestReferenceAliasGetter>().ToArray()??throw new InvalidDataException("Greenwater alias table missing");
+        if(aliases.Length!=GreenwaterSites.Count||aliases.Any(a=>a.ForcedReference.IsNull||a.ForcedReference.FormKey.ModKey!=addon.ModKey))throw new InvalidDataException("Greenwater aliases must bind exactly their own new references");
+        var refs=addon.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
+        foreach(var a in aliases){
+            if(!refs.TryGetValue(a.ForcedReference.FormKey,out var placed))throw new InvalidDataException("Greenwater alias points outside new persistent world refs");
+            var at=GreenwaterSites[a.Name!];
+            P3Float? pos=placed switch {IPlacedNpcGetter n=>n.Position,IPlacedObjectGetter o=>o.Position,_=>null};
+            if(pos is not {} got||got.X!=at.X||got.Y!=at.Y||got.Z!=at.Z)throw new InvalidDataException("Greenwater reference is not at its site: "+a.Name);
+            if((placed.MajorRecordFlagsRaw&0xC00)!=0xC00)throw new InvalidDataException("Greenwater reference is not persistent and initially disabled: "+a.Name);
+        }
+        var vmad=clone.VirtualMachineAdapter??throw new InvalidDataException("Greenwater VMAD missing");
+        var ids=aliases.Select(a=>a.ID).ToHashSet();
+        if(vmad.Aliases.Any(a=>a.Property.Object.FormKey!=clone.FormKey||!ids.Contains((uint)a.Property.Alias)||a.Scripts.Any(s=>s.Name!="TLM:GreenwaterTalk")))throw new InvalidDataException("Greenwater alias script ownership not remapped");
+        var walk=vmad.Scripts.Single(s=>s.Name=="TLM:GreenwaterWalk");
+        foreach(var p in walk.Properties){
+            if(p is IScriptObjectPropertyGetter obj){
+                if(obj.Alias>=0&&obj.Object.FormKey!=clone.FormKey)throw new InvalidDataException("Greenwater own alias property points at preview: "+p.Name);
+                if(obj.Alias<0&&obj.Object.FormKey.ModKey!=StoryMaster)throw new InvalidDataException("Greenwater form property does not point into the story master: "+p.Name);
+            }
+            if(p is IScriptObjectListPropertyGetter list){
+                if(p.Name!="CastInto"&&list.Objects.Any(o=>o.Object.FormKey!=clone.FormKey))throw new InvalidDataException("Greenwater own alias array points at preview: "+p.Name);
+                if(p.Name=="CastInto"&&list.Objects.Any(o=>o.Object.FormKey.ModKey!=StoryMaster))throw new InvalidDataException("Road aliases were not preserved in master");
+            }
+        }
+        if(addon.Quests.Any(q=>q.EditorID==RoadQuest))throw new InvalidDataException("The road quest was copied into the addon");
+    }
     public static void Validate(IFallout4ModGetter addon)
     {
         var section=addon.Quests.Single(q=>q.EditorID=="TLM_WS_A1");
@@ -38,6 +132,7 @@ public static class WorldStory
         if(player.ID!=0||player.ForcedReference.FormKey!=FormKey.Factory("000014:Fallout4.esm")||guard.Property.Object.FormKey!=entry.FormKey||guard.Property.Alias!=0||guard.Scripts.Single().Name!="TLM:WorldEntryPlayer")throw new InvalidDataException("Missing saved-load cancellation guard");
         var playerProperty=entry.VirtualMachineAdapter.Scripts.Single().Properties.OfType<IScriptObjectPropertyGetter>().Single(p=>p.Name=="FreshPlayer");
         if(playerProperty.Object.FormKey!=entry.FormKey||playerProperty.Alias!=0)throw new InvalidDataException("Missing guarded player-alias property");
+        ValidateGreenwater(addon,section);
     }
     public static object Add(Fallout4Mod mod, Worldspace world, Cell clearing, IFallout4ModGetter source)
     {
@@ -112,6 +207,9 @@ public static class WorldStory
         var briefing=source.Quests.SingleOrDefault(q=>q.EditorID=="TLM_MercyBriefing");
         var bound=adapter.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.Where(p=>p.Name=="TLM_MercyBriefing").ToArray();
         if(briefing==null?bound.Length!=0:bound.Length!=1||bound[0] is not ScriptObjectProperty helper||helper.Alias!=-1||helper.Object.FormKey!=briefing.FormKey)throw new InvalidDataException("Mercy briefing binding missing or not the story master's TLM_MercyBriefing");
-        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
+        // GREENWATER-STORY-001: the second clone, after everything of the first section is allocated, so that the
+        // first section's 29 references and both quests keep the ids they had.
+        var greenwater=AddGreenwater(mod,world,source,sourceRefs,adapter);
+        return new{section=section.EditorID,sectionForm=section.FormKey.ToString(),entry=entry.EditorID,entryForm=entry.FormKey.ToString(),explicitCommand="cqf TLM_WS_Entry Begin",mapping,greenwater,limitations="Fresh dev session only; no navmesh or pursuit/combat proof. Existing quest rules reused, not overridden."};
     }
 }

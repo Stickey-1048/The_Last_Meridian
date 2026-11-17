@@ -158,6 +158,10 @@ Group Preview
 	{TLM_MercyBriefing, with TLM:MercyBriefing on it: the optional Mercy
 	briefing (ACT1-RUNTIME-001). None, or not that script: the section ends
 	as it always did.}
+	Quest Property TLM_Greenwater Auto Const
+	{TLM_GW, with TLM:GreenwaterWalk on it: the Greenwater greybox
+	(GREENWATER-STORY-001). None, or not that script: there is no travel
+	point and no river report, and nothing else changes.}
 EndGroup
 
 ; ----------------------------------------------------------------- constants
@@ -253,6 +257,7 @@ Function Begin()
 	EndIf
 	OpenTheRoad()
 	WearPipBoy()
+	OpenGreenwater()
 	Debug.Trace("TLM_A1: the first section is set up; aliases left empty: " + unfilled + ", people not there: " + missing)
 	If SayBegin
 		SayBegin.Show()
@@ -616,11 +621,56 @@ Function TalkPritchard(Actor akWho = None)
 		If after == 1
 			Report()
 		ElseIf after == 0
-			OfferBriefing(akWho)
+			AfterTheChapter(akWho)
 		EndIf
-	ElseIf !OfferBriefing(akWho)
+	ElseIf !AfterTheChapter(akWho)
 		ShowLine(SayPritchardAfter)
 	EndIf
+EndFunction
+
+bool Function AfterTheChapter(Actor akWho)
+	{What Pritchard has for the player once the chapter is over: the river
+	report if Greenwater was finished and not yet reported, otherwise the
+	Mercy briefing. One conversation, inside this script's own claim on it.
+	True if either took this activation.}
+	If OfferRiverReport(akWho)
+		Return true
+	EndIf
+	Return OfferBriefing(akWho)
+EndFunction
+
+TLM:GreenwaterWalk Function Greenwater()
+	{The Greenwater greybox's script, if it is bound. None otherwise.}
+	If !TLM_Greenwater
+		Return None
+	EndIf
+	Return TLM_Greenwater as TLM:GreenwaterWalk
+EndFunction
+
+Function OpenGreenwater()
+	{At set-up: the Mercy travel point is switched on. Nothing of Greenwater is.}
+	TLM:GreenwaterWalk greybox = Greenwater()
+	If greybox
+		greybox.OpenDoor()
+	EndIf
+EndFunction
+
+bool Function OfferRiverReport(Actor akWho)
+	{After the chapter and after the Greenwater road: Pritchard hears what
+	became of the grain (GREENWATER-STORY-001). False, with nothing shown or
+	changed, if the greybox is not bound, nobody was passed on, the main quest
+	is not complete, or there is nothing to report or it is left for later.}
+	If !akWho
+		Return false
+	EndIf
+	If !TLM_MQ01.GetStageDone(100) || TLM_G_MQ01_Done.GetValueInt() != 1
+		Return false
+	EndIf
+	TLM:GreenwaterWalk greybox = Greenwater()
+	If !greybox
+		Return false
+	EndIf
+	Return greybox.OfferReport(akWho)
 EndFunction
 
 TLM:MercyBriefing Function Briefing()

@@ -621,7 +621,9 @@ class TheTask(unittest.TestCase):
         a = Asker(self)
         for v in (NOT_NOW, RAIL, RIVER, PIKE, ASK, TAKE, TAKE):
             a.ask(v)                       # each compares the whole world outside the briefing with what it was
-        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_MQ01", "TLM_MercyBriefing", "TLM_SQ01", "TLM_Trial"])
+        # (TLM_MQ02B and TLM_GW are GREENWATER-STORY-001's; the briefing sets nothing on them either: see a.world().)
+        self.assertEqual(sorted(a.s.quests), ["TLM_A1", "TLM_Core", "TLM_GW", "TLM_MQ01", "TLM_MQ02B", "TLM_MercyBriefing", "TLM_SQ01", "TLM_Trial"])
+        self.assertEqual((a.s.quests["TLM_MQ02B"].running, a.s.quests["TLM_MQ02B"].done), (False, []))
         self.assertEqual(a.p.has("Caps001") if "Caps001" in a.s.forms else a.p.has(a.p.caps), a.before["carried"].get("Caps001", 0))
         source = (SCRIPTS / "MercyBriefing.psc").read_text()
         code = "\n".join(l.split(";")[0] for l in source.split("}", 1)[1].splitlines())
@@ -1178,8 +1180,8 @@ class WhatTheseTestsCatch(unittest.TestCase):
                 self.assertEqual(good.offer(), (False, []))
 
     def test_the_report_button_taken_for_continue(self):
-        scripts = changed_scripts("Act1Walk.psc", "		int after = ShowLine(SayPritchardAfterAndMore)\n		If after == 1\n			Report()\n		ElseIf after == 0\n			OfferBriefing(akWho)\n		EndIf\n",
-                                  "		ShowLine(SayPritchardAfterAndMore)\n		OfferBriefing(akWho)\n")
+        scripts = changed_scripts("Act1Walk.psc", "		int after = ShowLine(SayPritchardAfterAndMore)\n		If after == 1\n			Report()\n		ElseIf after == 0\n			AfterTheChapter(akWho)\n		EndIf\n",
+                                  "		ShowLine(SayPritchardAfterAndMore)\n		AfterTheChapter(akWho)\n")
         with self.assertRaises((AssertionError, SimError)):
             a = Asker(self, with_ledger=True, scripts=scripts)
             a.p.press("Pritchard", {"PritchardAfterAndMore": [1], "PritchardReported": [0]}, ["sq_report"])
@@ -1188,7 +1190,7 @@ class WhatTheseTestsCatch(unittest.TestCase):
 
     def test_anything_but_the_report_taken_for_continue(self):
         # The plain Else that the review found: no answer, or a number that is no button, opened the briefing.
-        scripts = changed_scripts("Act1Walk.psc", "		ElseIf after == 0\n			OfferBriefing(akWho)\n		EndIf\n", "		Else\n			OfferBriefing(akWho)\n		EndIf\n")
+        scripts = changed_scripts("Act1Walk.psc", "		ElseIf after == 0\n			AfterTheChapter(akWho)\n		EndIf\n", "		Else\n			AfterTheChapter(akWho)\n		EndIf\n")
         for value in (-1, 9):
             with self.subTest(value=value):
                 with self.assertRaises((AssertionError, SimError)):

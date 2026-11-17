@@ -14,6 +14,16 @@ wrong.
 It lives here, with the stand-in engine's tests, only so that
 tools/run_checks.sh runs it without being changed. It needs no build.
 
+SINCE GREENWATER-STORY-001 THIS MANIFEST IS A FROZEN EARLIER ONE. It
+describes the a8 source (a8f6d64), not this checkout: Act1Walk and Act1Guide
+have changed since and three scripts were added. The manifest and its check
+are unchanged, and what is tested now is that
+  - the check REFUSES this checkout, and for those reasons;
+  - on the a8 source itself, taken from Git, it still passes and still
+    notices every kind of damage it did.
+The Greenwater candidate has its own manifest
+(tools/win/greenwater-story-candidate.json, test_greenwater_candidate.py).
+
 Source provenance only. Not a compile and not a game test.
 """
 import json
@@ -30,19 +40,22 @@ sys.path.insert(0, str(ROOT / "tools"))
 import mercy_briefing_candidate as candidate                      # noqa: E402
 
 COMPOSITION = "2efe2dbbaba543f7976a3df86bb81a96463aaa90"
+# The source this manifest describes: the repaired Mercy briefing.
+A8 = "a8f6d6482b4b5dc9d545e197ed4cf2c8f6324306"
 NEEDED = (("scripts/Source/User/TLM", True), ("tools/PluginBuilder", False), ("tools/WorldSliceBuilder", False),
           ("tools/win", False), ("assets/incoming/act1/story", False))
 
 
 def copy_of_the_tree():
-    """A copy of just what the check reads."""
+    """Just what the check reads, AS IT WAS AT a8, taken out of Git: the source the manifest describes.
+    None if that commit is not in this copy."""
+    names = ("scripts/Source/User/TLM",) + candidate.BUILDER_SOURCES + candidate.OLD_MANIFESTS + (
+        "tools/win/mercy-briefing-candidate.json", "assets/incoming/act1/story/documents.json")
+    packed = subprocess.run(["git", "archive", "--format=tar", A8, "--"] + list(names), cwd=ROOT, capture_output=True)
+    if packed.returncode != 0:
+        return None
     root = Path(tempfile.mkdtemp(prefix="tlm-candidate-"))
-    for name in ("scripts/Source/User/TLM",):
-        shutil.copytree(ROOT / name, root / name)
-    for name in candidate.BUILDER_SOURCES + candidate.OLD_MANIFESTS + ("tools/win/mercy-briefing-candidate.json",
-                                                                         "assets/incoming/act1/story/documents.json"):
-        (root / name).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy(ROOT / name, root / name)
+    subprocess.run(["tar", "-x", "-C", str(root)], input=packed.stdout, check=True)
     return root
 
 
@@ -50,8 +63,29 @@ class TheCandidate(unittest.TestCase):
     def setUp(self):
         self.manifest = json.loads(candidate.MANIFEST.read_text())
 
-    def test_the_checkout_is_the_source_the_manifest_describes(self):
-        self.assertEqual(candidate.problems(), [])
+    def test_the_manifest_and_its_check_are_the_ones_a8_had(self):
+        for name in ("tools/win/mercy-briefing-candidate.json", "tools/mercy_briefing_candidate.py"):
+            got = subprocess.run(["git", "diff", "--quiet", A8, "--", name], cwd=ROOT)
+            if got.returncode not in (0, 1):
+                self.skipTest("the a8 commit is not in this copy")
+            self.assertEqual(got.returncode, 0, name + " differs from a8's: a frozen manifest and its check are not edited")
+
+    def test_the_a8_source_is_the_source_the_manifest_describes(self):
+        root = copy_of_the_tree()
+        if root is None:
+            self.skipTest("the a8 commit is not in this copy")
+        self.assertEqual(candidate.problems(root, root / "tools/win/mercy-briefing-candidate.json"), [])
+
+    def test_this_checkout_is_refused_and_for_the_right_reasons(self):
+        """The Greenwater candidate changed two of the 20 scripts and added three. The a8 manifest must not pass
+        for it, and no compiled script selected by that manifest may be taken for this source's."""
+        said = " | ".join(candidate.problems())
+        self.assertIn("Act1Walk.psc is not the source the manifest describes", said)
+        self.assertIn("Act1Guide.psc is not the source the manifest describes", said)
+        self.assertIn("only here ['GreenwaterTalk.psc', 'GreenwaterWalk.psc', 'MQ02BQuest.psc']", said)
+        self.assertIn("runtimeSelection", said)
+        self.assertNotIn("MercyBriefing.psc is not the source", said)       # that script is a8's, word for word
+        self.assertNotIn("earlierManifestsSha256", said)                    # and the four older manifests are as they were
 
     def test_it_is_twenty_scripts_one_changed_and_one_added(self):
         m = self.manifest
@@ -240,6 +274,8 @@ class TheCandidate(unittest.TestCase):
 class WhatTheCheckCatches(unittest.TestCase):
     def damaged(self, change):
         root = copy_of_the_tree()
+        if root is None:
+            self.skipTest("the a8 commit is not in this copy")
         self.assertEqual(candidate.problems(root, root / "tools/win/mercy-briefing-candidate.json"), [], "the copy is sound before it is damaged")
         change(root)
         return " | ".join(candidate.problems(root, root / "tools/win/mercy-briefing-candidate.json"))

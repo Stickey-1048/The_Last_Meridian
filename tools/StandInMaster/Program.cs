@@ -237,6 +237,11 @@ if (room)
     Paper("StandInMagazine", @"StandIn\Magazine.nif");
     Paper("StandInBookNoModel", null);
     mod.Armors.AddNew("Pipboy");
+    // GREENWATER-STORY-001: what the river road looks up. An actor value by the name the game uses inside,
+    // and a food item by the name a player sees. Invented records: nothing of the game's is here.
+    mod.ActorValueInformation.AddNew("Charisma");
+    var corn = mod.Ingestibles.AddNew("StandInCorn");
+    corn.Name = "Corn";
 
     var marker = mod.Statics.AddNew("XMarker");
     // Synthetic records for DEMO-ORIENT-002 lookup/placement/enable tests.
