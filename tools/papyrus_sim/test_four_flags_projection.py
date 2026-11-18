@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 from test_sim import ROOT,PLUGIN
 from test_greenwater_world_clone import clone,stand_in_story
-from source_snapshot import snapshot,built_greenwater_relief,GREENWATER_RELIEF
+from source_snapshot import snapshot,built_greenwater_relief,GREENWATER_RELIEF,built_four_flags,FOUR_FLAGS
 
 
 class FourFlagsProjection(unittest.TestCase):
@@ -57,7 +57,7 @@ class FourFlagsProjection(unittest.TestCase):
 
     def test_allocation_is_append_only_to_accepted_relief_not_a_shift(self):
         before=subprocess.run(['git','show',GREENWATER_RELIEF+':tools/PluginBuilder/formkeys.txt'],cwd=ROOT,capture_output=True,check=True).stdout.decode().splitlines()
-        now=(ROOT/'tools/PluginBuilder/formkeys.txt').read_text().splitlines()
+        now=(snapshot(FOUR_FLAGS)/'tools/PluginBuilder/formkeys.txt').read_text().splitlines()
         self.assertEqual(now[:len(before)],before)
         rest=now[len(before):];self.assertGreater(len(rest),400)
         self.assertEqual([int(rest[i+1]) for i in range(0,len(rest),2)],list(range(int(before[-1])+1,int(before[-1])+1+len(rest)//2)))
@@ -83,6 +83,7 @@ class FourFlagsProjection(unittest.TestCase):
             self.assertEqual(' '.join(pages),source,name)
 
     def test_every_old_message_is_exact_except_twelve_declared_technical_availability_updates(self):
+        historical_messages={m['EditorId']:m for m in json.loads(built_four_flags().read_text(encoding='utf-8'))['Messages']}
         before=json.loads(built_greenwater_relief().read_text(encoding='utf-8'))
         replacements={
             'Opening complete. All three roads playable; fair unavailable.':'Opening complete. Three roads and Four Flags entry are available.',
@@ -100,15 +101,16 @@ class FourFlagsProjection(unittest.TestCase):
                 text=want['Text'];matches=[(a,b) for a,b in replacements.items() if a in text and (name!='TLM_MSG_MB_Hub' or a.startswith('Mercy briefing.'))]
                 self.assertEqual(len(matches),1,name)
                 a,b=matches[0];want['Text']=text.replace(a,b);changed.add(name)
-            self.assertEqual(self.msg[name],want,name)
+            self.assertEqual(historical_messages[name],want,name)
         self.assertEqual(changed,expected)
-        self.assertTrue(all(len(self.msg[n]['Text'])<=240 for n in changed))
+        self.assertTrue(all(len(historical_messages[n]['Text'])<=240 for n in changed))
 
     def test_whole_accepted_npcs_refs_and_quest_payloads_are_preserved(self):
+        historical=json.loads(built_four_flags().read_text(encoding='utf-8'))
         before=json.loads(built_greenwater_relief().read_text(encoding='utf-8'))
-        self.assertEqual(self.d['Npcs'][:len(before['Npcs'])],before['Npcs'])
-        self.assertEqual({n['EditorId'] for n in self.d['Npcs'][len(before['Npcs']):]},{'TLM_NPC_FF_'+n for n in ('Whitcomb','Brigg','Grey','Flint','Juno')})
-        oldcells={c['EditorId']:c for c in before['Cells']};newcells={c['EditorId']:c for c in self.d['Cells']}
+        self.assertEqual(historical['Npcs'][:len(before['Npcs'])],before['Npcs'])
+        self.assertEqual({n['EditorId'] for n in historical['Npcs'][len(before['Npcs']):]},{'TLM_NPC_FF_'+n for n in ('Whitcomb','Brigg','Grey','Flint','Juno')})
+        oldcells={c['EditorId']:c for c in before['Cells']};newcells={c['EditorId']:c for c in historical['Cells']}
         self.assertEqual(set(newcells),set(oldcells)|{'TLM_CELL_FourFlags'})
         extra=set()
         for n,old in oldcells.items():
@@ -117,7 +119,7 @@ class FourFlagsProjection(unittest.TestCase):
             self.assertEqual({k:v for k,v in old.items() if k!='Placed'},{k:v for k,v in new.items() if k!='Placed'},n)
             extra.update(set(newrefs)-set(oldrefs))
         self.assertEqual(extra,{'TLM_REF_FF_Entry','TLM_REF_FF_MercyReturn'})
-        oldquests={q['EditorId']:q for q in before['Quests']};newquests={q['EditorId']:q for q in self.d['Quests']}
+        oldquests={q['EditorId']:q for q in before['Quests']};newquests={q['EditorId']:q for q in historical['Quests']}
         self.assertEqual(set(newquests),set(oldquests)|{'TLM_MQ03','TLM_FF_Entry'})
         for n,old in oldquests.items():
             new=copy.deepcopy(newquests[n])
@@ -175,7 +177,12 @@ class FourFlagsProjection(unittest.TestCase):
         oldroot=snapshot(GREENWATER_RELIEF);oldplugin=built_greenwater_relief().with_suffix('.esp')
         got=subprocess.run(['dotnet','run','--project',str(oldroot/'tools/WorldSliceBuilder'),'--','--story-clone-check',str(oldplugin),str(Path(tempfile.mkdtemp(prefix='tlm-ff-oldclone-')))],cwd=oldroot,capture_output=True,text=True)
         self.assertEqual(got.returncode,0,got.stdout+got.stderr);before=json.loads(got.stdout[got.stdout.index('{'):])
-        got=clone();self.assertEqual(got.returncode,0,got.stdout+got.stderr);after=json.loads(got.stdout)
+        # The current cloner must preserve the actual accepted Four Flags source.
+        # Current environment deltas are independently compared to this frozen
+        # source by test_red_hollow_environment_projection, without repinning it.
+        from test_greenwater_world_clone import DLL
+        got=subprocess.run(['dotnet',str(DLL),'--story-clone-check',str(built_four_flags().with_suffix('.esp')),str(Path(tempfile.mkdtemp(prefix='tlm-ff-historical-clone-')))],cwd=ROOT,capture_output=True,text=True)
+        self.assertEqual(got.returncode,0,got.stdout+got.stderr);after=json.loads(got.stdout)
         self.assertEqual(after['quests'],before['quests']+['TLM_WS_FF_Entry'])
         self.assertEqual(after['persistentReferences'],before['persistentReferences']+2)
         self.assertEqual(after['masters'],before['masters'])

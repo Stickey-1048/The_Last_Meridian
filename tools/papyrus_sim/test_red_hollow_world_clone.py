@@ -10,12 +10,12 @@ class RedHollowClone(unittest.TestCase):
         got=clone()
         if got.returncode:raise AssertionError(got.stdout+got.stderr)
         cls.out=json.loads(got.stdout)
-    def test_99_aliases_have_exact_mixed_ownership_and_no_new_condemned(self):
+    def test_101_aliases_have_exact_mixed_ownership_and_no_new_condemned(self):
         q=self.out['redHollow'];self.assertEqual(q['script'],'TLM:RedHollowWalk')
-        aliases=q['aliases'];self.assertEqual(len(aliases),99);self.assertEqual(len({a['id'] for a in aliases}),99)
+        aliases=q['aliases'];self.assertEqual(len(aliases),101);self.assertEqual(len({a['id'] for a in aliases}),101)
         exterior={a['name']:a for a in aliases if a['owner']=='TLMWorldSlice.esp'}
         self.assertEqual(set(exterior),{'MercyTravel','MercyReturn'})
-        self.assertEqual(sum(a['owner']=='TheLastMeridian.esp' for a in aliases),95)
+        self.assertEqual(sum(a['owner']=='TheLastMeridian.esp' for a in aliases),97)
         self.assertEqual(next(a for a in aliases if a['name']=='Condemned')['reference'],'script-filled')
         self.assertEqual(next(a for a in aliases if a['name']=='Player')['owner'],'Fallout4.esm')
         self.assertEqual(self.out['persistentReferences'],68)

@@ -7,7 +7,11 @@ from test_sim import ROOT
 from test_greenwater_world_clone import stand_in_story,DLL
 from source_snapshot import built_four_flags
 sys.path.insert(0,str(ROOT/'tools'))
-import check_plugin_layout as layout
+# Historical projection tests intentionally import frozen layout readers.
+# Load this candidate's actual reader explicitly, independent of module cache.
+import importlib.util
+_layout_spec=importlib.util.spec_from_file_location('rhe_current_layout',ROOT/'tools/check_plugin_layout.py')
+layout=importlib.util.module_from_spec(_layout_spec);_layout_spec.loader.exec_module(layout)
 
 
 def decoded(path):
@@ -49,6 +53,15 @@ class EnvironmentProjection(unittest.TestCase):
         self.assertEqual(len(old['Aliases']),99);self.assertEqual(now['Aliases'][:99],old['Aliases']);self.assertEqual([a['Name'] for a in now['Aliases'][99:]],['SurfaceFall','GalleryFall'])
         self.assertEqual(self.mapping['aliases'],[{'id':a['Id'],'name':a['Name'],'fill':a['Fill']} for a in now['Aliases']])
         self.assertEqual(len([q for q in self.data['Quests'] if q['EditorId']=='TLM_MQ02C']),1)
+    def test_all241_new_allocations_match_actual_append_and_raw_emission(self):
+        before=subprocess.check_output(['git','show',self.mapping['baseline']+':tools/PluginBuilder/formkeys.txt'],cwd=ROOT).decode().splitlines()
+        current=(ROOT/'tools/PluginBuilder/formkeys.txt').read_text().splitlines();self.assertEqual(current[:len(before)],before)
+        tail=current[len(before):];rows=self.mapping['allocation']['append'];self.assertEqual(len(rows),241)
+        actual={fid&0xffffff for tag,fid in self.records}
+        self.assertEqual(rows,[{'record':tail[i],'id':int(tail[i+1]),'emittedInFreshSynthetic':int(tail[i+1]) in actual} for i in range(0,len(tail),2)])
+        self.assertEqual(sum(row['emittedInFreshSynthetic'] for row in rows),236)
+        self.assertEqual(self.mapping['allocation']['reservedOnly'],[row['record'] for row in rows if not row['emittedInFreshSynthetic']])
+
     def test_complete116_row_transform_and_parent_ledger_match_fresh_records(self):
         old={p['EditorId']:(c,p) for c in self.old['Cells'] for p in c['Placed']};now={p['EditorId']:(c,p) for c in self.data['Cells'] for p in c['Placed']}
         self.assertEqual(len(self.mapping['rehoming']),116)

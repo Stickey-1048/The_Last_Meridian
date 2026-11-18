@@ -1,6 +1,6 @@
 # Red Hollow Environment001 construction ledger
 
-**Work in progress, not independent source/artifact/native acceptance.** Baseline d43bd336 and completed PR41/native artifacts/normal34 launcher remain preserved. The construction read receipt was committed7c332fb; first substantive new master-world/shell/light WIP was pushed933caf0. Continue implementation/checks rather than stop at this record.
+**Implementation complete; final aggregate/CI and independent source/artifact/native acceptance pending.** Baseline d43bd336 and completed PR41/native artifacts/normal34 launcher remain preserved. The construction read receipt was committed7c332fb; first substantive new master-world/shell/light WIP was pushed933caf0. Continue implementation/checks rather than stop at this record.
 
 ## Adopted donor fallback and metadata
 
@@ -36,10 +36,16 @@ Both break safety calls pass actual fixed underground control/anchor and all11su
 
 Original99RHalias prefix retained. Two fall aliases append99SurfaceFall/100GalleryFall. OriginalFall retains its identity, now centered6912/384/-700 with1024/768/120half-box; separate surface2048/896/-700(2048/896/120) and gallery9984/512/-700(1024/768/120) boxes cover their actual regions. Recovery validates actual trigger/destination CELL, boundedXY and fallingZ, then only verified position transfer. No healing/fate/deadline reset. New ordinary labels/directions distinguish outside/hoist/below/gallery and honest staged travel.
 
-Source discovery now explicitly reads only the allowed RH master world/top/grid and declared surface names/positions; thin Mercy addon clone remains presentation-only, binds same master originals, and never duplicates MQ02C/actors/miners. Old source without this new world retains the frozen older discovery path. Strict101/current versus99/historical clone validation is being completed.
+Source discovery now explicitly reads only the allowed RH master world/top/grid and declared surface names/positions; thin Mercy addon clone remains presentation-only, binds same master originals, and never duplicates MQ02C/actors/miners. Old source without this new world retains the frozen older discovery path. Strict101/current versus99/historical clone validation is implemented; current and frozen source paths remain distinct.
 
 ## Checkpoint and remaining work
 
 Synthetic source build/readback/self-check and thin clone produced actual new world/light/rehoming records; first46existing actual-PSC RH tests passed19.013s after explicit native-reference property-model support. Earlier compile/binding/fixture failures were retained and corrected, not waived. No licensed master build/compiler/game/native test occurred.
 
-Before final freeze: finish source typed/passive/layout/sky/light/fall/clone and all11blast/transition adversarial/mutation tests; exact rehoming/allocation/geometry/light ledgers; own composed source verifier/manifest/opt-in full-before-output package and refusal tests; immutable historical candidate tests via actual git exports plus current old-content delta comparisons; full checks/fresh CI; direct existing Sam/Nora whole-feature reviews. Do not repin/relax previous candidate verifiers. Current WIP is not accepted. Owner LATER remains in force with no new availability question. Root owns fresh full required compile, owned-master package, raw artifact audit and actual sky/visibility/support/controller/rescue/return/reload gates.
+The focused environment suite passed39tests in122.787s, including the actual-PSC adversarial/transition/fall/blast checks, ten deliberately broken actual-source mutants, six own source-candidate checks, and nine initial raw/projection cases. A subsequent combined projection run passed78tests in71.868s, including an additional allocation-to-raw-ID check. Five own full-before-output package refusal checks passed. These are source/synthetic checks only.
+
+The first full aggregate stopped at the old interior-only raw reader. The second completed all1011tests with10 failures in945.830s; its complete diagnostics are preserved. Four failures compared new environment content to frozen Four Flags composition, five raw subcases used a cached historical reader, and one current clone assertion retained99aliases. Repair uses actual accepted d43Git exports for historical comparisons, uniquely loads the actual current raw reader, and asserts exact101current/97master-owned aliases. Earlier verifiers/manifests are unchanged. Final full aggregate and exact-head remote checks are still required before review; green tests alone are not source acceptance.
+
+The complete allocation ledger appends241reserved keys after the exact d43prefix. Fresh serialized synthetic output contains236; five early shelter WIP keys remain reserved without reassignment. Geometry audits1609protected/path sample points with minimum224headroom; all96typed emitters and all11survivor slots are separately checked. These measurements describe the constructed source/metadata, not observed gameplay.
+
+Owner LATER remains in force with no new availability question. Root owns fresh full required compile, owned-master package, raw artifact audit and actual sky/visibility/support/controller/rescue/return/healthy-reload gates. No licensed author compiler/build, installed changes or native game test occurred.

@@ -5133,1209 +5133,1217 @@
       {
         "record": "TLM_WRLD_RH_Surface",
         "id": 3319,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_CELL_RH_SurfacePersistent",
         "id": 3320,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_CELL_RH_Surface",
         "id": 3321,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_LAND_RH_Surface",
         "id": 3322,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor6144_0",
         "id": 3323,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof6144_0",
         "id": 3324,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor6144_512",
         "id": 3325,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof6144_512",
         "id": 3326,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor6144_1024",
         "id": 3327,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof6144_1024",
         "id": 3328,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor6656_0",
         "id": 3329,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof6656_0",
         "id": 3330,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor6656_512",
         "id": 3331,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof6656_512",
         "id": 3332,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor6656_1024",
         "id": 3333,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof6656_1024",
         "id": 3334,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor7168_0",
         "id": 3335,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof7168_0",
         "id": 3336,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor7168_512",
         "id": 3337,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof7168_512",
         "id": 3338,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor7168_1024",
         "id": 3339,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof7168_1024",
         "id": 3340,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor7680_0",
         "id": 3341,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof7680_0",
         "id": 3342,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor7680_512",
         "id": 3343,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof7680_512",
         "id": 3344,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineFloor7680_1024",
         "id": 3345,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineRoof7680_1024",
         "id": 3346,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineSouth6144",
         "id": 3347,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineNorth6144",
         "id": 3348,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineSouth6656",
         "id": 3349,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineNorth6656",
         "id": 3350,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineSouth7168",
         "id": 3351,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineNorth7168",
         "id": 3352,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineSouth7680",
         "id": 3353,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineNorth7680",
         "id": 3354,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineWest0",
         "id": 3355,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineEast0",
         "id": 3356,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineWest512",
         "id": 3357,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineEast512",
         "id": 3358,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineWest1024",
         "id": 3359,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_NineEast1024",
         "id": 3360,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor9216_0",
         "id": 3361,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof9216_0",
         "id": 3362,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor9216_512",
         "id": 3363,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof9216_512",
         "id": 3364,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor9216_1024",
         "id": 3365,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof9216_1024",
         "id": 3366,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor9728_0",
         "id": 3367,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof9728_0",
         "id": 3368,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor9728_512",
         "id": 3369,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof9728_512",
         "id": 3370,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor9728_1024",
         "id": 3371,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof9728_1024",
         "id": 3372,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor10240_0",
         "id": 3373,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof10240_0",
         "id": 3374,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor10240_512",
         "id": 3375,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof10240_512",
         "id": 3376,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor10240_1024",
         "id": 3377,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof10240_1024",
         "id": 3378,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor10752_0",
         "id": 3379,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof10752_0",
         "id": 3380,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor10752_512",
         "id": 3381,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof10752_512",
         "id": 3382,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryFloor10752_1024",
         "id": 3383,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryRoof10752_1024",
         "id": 3384,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GallerySouth9216",
         "id": 3385,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryNorth9216",
         "id": 3386,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GallerySouth9728",
         "id": 3387,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryNorth9728",
         "id": 3388,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GallerySouth10240",
         "id": 3389,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryNorth10240",
         "id": 3390,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GallerySouth10752",
         "id": 3391,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryNorth10752",
         "id": 3392,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryWest0",
         "id": 3393,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryEast0",
         "id": 3394,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryWest512",
         "id": 3395,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryEast512",
         "id": 3396,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryWest1024",
         "id": 3397,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GalleryEast1024",
         "id": 3398,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South256",
         "id": 3399,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North256",
         "id": 3400,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South768",
         "id": 3401,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North768",
         "id": 3402,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South1280",
         "id": 3403,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North1280",
         "id": 3404,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South1792",
         "id": 3405,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North1792",
         "id": 3406,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South2304",
         "id": 3407,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North2304",
         "id": 3408,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South2816",
         "id": 3409,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North2816",
         "id": 3410,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South3328",
         "id": 3411,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North3328",
         "id": 3412,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_South3840",
         "id": 3413,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_North3840",
         "id": 3414,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_West256",
         "id": 3415,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_East256",
         "id": 3416,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_West768",
         "id": 3417,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_East768",
         "id": 3418,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_West1280",
         "id": 3419,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_East1280",
         "id": 3420,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees256",
         "id": 3421,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge256",
         "id": 3422,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees768",
         "id": 3423,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge768",
         "id": 3424,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees1280",
         "id": 3425,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge1280",
         "id": 3426,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees1792",
         "id": 3427,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge1792",
         "id": 3428,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees2304",
         "id": 3429,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge2304",
         "id": 3430,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees2816",
         "id": 3431,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge2816",
         "id": 3432,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees3328",
         "id": 3433,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge3328",
         "id": 3434,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Trees3840",
         "id": 3435,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_QuarryEdge3840",
         "id": 3436,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtBack",
         "id": 3437,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtRoof",
         "id": 3438,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_HoistBack",
         "id": 3439,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": false
       },
       {
         "record": "TLM_REF_RHE_HoistRoof",
         "id": 3440,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light0",
         "id": 3441,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light1",
         "id": 3442,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light2",
         "id": 3443,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light3",
         "id": 3444,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light4",
         "id": 3445,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light5",
         "id": 3446,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light6",
         "id": 3447,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light7",
         "id": 3448,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light8",
         "id": 3449,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light9",
         "id": 3450,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light10",
         "id": 3451,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light11",
         "id": 3452,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light12",
         "id": 3453,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light13",
         "id": 3454,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light14",
         "id": 3455,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light15",
         "id": 3456,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light16",
         "id": 3457,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light17",
         "id": 3458,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light18",
         "id": 3459,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light19",
         "id": 3460,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light20",
         "id": 3461,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light21",
         "id": 3462,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light22",
         "id": 3463,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light23",
         "id": 3464,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light24",
         "id": 3465,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light25",
         "id": 3466,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light26",
         "id": 3467,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light27",
         "id": 3468,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light28",
         "id": 3469,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light29",
         "id": 3470,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light30",
         "id": 3471,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light31",
         "id": 3472,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light32",
         "id": 3473,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light33",
         "id": 3474,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light34",
         "id": 3475,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light35",
         "id": 3476,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light36",
         "id": 3477,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light37",
         "id": 3478,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light38",
         "id": 3479,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light39",
         "id": 3480,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light40",
         "id": 3481,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light41",
         "id": 3482,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light42",
         "id": 3483,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light43",
         "id": 3484,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light44",
         "id": 3485,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light45",
         "id": 3486,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light46",
         "id": 3487,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light47",
         "id": 3488,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light48",
         "id": 3489,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light49",
         "id": 3490,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light50",
         "id": 3491,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light51",
         "id": 3492,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light52",
         "id": 3493,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light53",
         "id": 3494,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light54",
         "id": 3495,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light55",
         "id": 3496,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light56",
         "id": 3497,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light57",
         "id": 3498,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light58",
         "id": 3499,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light59",
         "id": 3500,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light60",
         "id": 3501,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light61",
         "id": 3502,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light62",
         "id": 3503,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light63",
         "id": 3504,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light64",
         "id": 3505,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light65",
         "id": 3506,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light66",
         "id": 3507,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light67",
         "id": 3508,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light68",
         "id": 3509,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light69",
         "id": 3510,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light70",
         "id": 3511,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light71",
         "id": 3512,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light72",
         "id": 3513,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light73",
         "id": 3514,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light74",
         "id": 3515,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light75",
         "id": 3516,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light76",
         "id": 3517,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light77",
         "id": 3518,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light78",
         "id": 3519,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light79",
         "id": 3520,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light80",
         "id": 3521,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light81",
         "id": 3522,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light82",
         "id": 3523,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light83",
         "id": 3524,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light84",
         "id": 3525,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light85",
         "id": 3526,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light86",
         "id": 3527,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light87",
         "id": 3528,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light88",
         "id": 3529,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light89",
         "id": 3530,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light90",
         "id": 3531,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light91",
         "id": 3532,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light92",
         "id": 3533,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light93",
         "id": 3534,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light94",
         "id": 3535,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_Light95",
         "id": 3536,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtPost-112_-112",
         "id": 3537,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtPost-112_112",
         "id": 3538,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtPost112_-112",
         "id": 3539,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtPost112_112",
         "id": 3540,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_HoistPost-112_-112",
         "id": 3541,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": false
       },
       {
         "record": "TLM_REF_RHE_HoistPost-112_112",
         "id": 3542,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": false
       },
       {
         "record": "TLM_REF_RHE_HoistPost112_-112",
         "id": 3543,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": false
       },
       {
         "record": "TLM_REF_RHE_HoistPost112_112",
         "id": 3544,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": false
       },
       {
         "record": "TLM_ACTI_RHE_SurfaceFall",
         "id": 3545,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RH_SurfaceFall",
         "id": 3546,
-        "emittedInLatestSkeletonReport": true
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_ACTI_RHE_GalleryFall",
         "id": 3547,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RH_GalleryFall",
         "id": 3548,
-        "emittedInLatestSkeletonReport": true
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_HoistDeskRoof",
         "id": 3549,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_HoistPost2704_400",
         "id": 3550,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_HoistPost2704_624",
         "id": 3551,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_HoistPost3184_400",
         "id": 3552,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_HoistPost3184_624",
         "id": 3553,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtGatePost128",
         "id": 3554,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtGatePost384",
         "id": 3555,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_CourtGateRoof",
         "id": 3556,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GallerySeal0",
         "id": 3557,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GallerySeal512",
         "id": 3558,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       },
       {
         "record": "TLM_REF_RHE_GallerySeal1024",
         "id": 3559,
-        "emittedInLatestSkeletonReport": false
+        "emittedInFreshSynthetic": true
       }
     ],
-    "reservationPolicy": "Append-only; non-emitted WIP reservations remain reserved and are never reassigned. Master and full/skeleton builds allocate the same keys."
+    "reservationPolicy": "Append-only; non-emitted WIP reservations remain reserved and are never reassigned. Master and full/skeleton builds allocate the same keys.",
+    "evidence": "Independent raw FormID scan of fresh synthetic master; skeleton intentionally emits none of the typed environment world/shell/lights.",
+    "reservedOnly": [
+      "TLM_REF_RHE_HoistBack",
+      "TLM_REF_RHE_HoistPost-112_-112",
+      "TLM_REF_RHE_HoistPost-112_112",
+      "TLM_REF_RHE_HoistPost112_-112",
+      "TLM_REF_RHE_HoistPost112_112"
+    ]
   }
 }
