@@ -1,0 +1,9 @@
+# Red Hollow Environment001 engineering read receipt
+
+Luis read FULL frozen Nora contractF2CD5E066395A3E1ACA9854D33AEC20DA13FC5D7BC02EBCBD9AC52CAE3B2CFA2, Sam feasibility6E034CAA020BCE75FFE6C6333C17CD0BDA5DAAA817AAD61426B3C79DC1CD948D and root order830DEF3D9F6FD6308EDFD98F2D3268CBD4294291F3A0724F47084DDD1F039479. Actual runtime/donor intake remains preserved separately. New isolated worktree work/red-hollow-environment-001, branch feat/red-hollow-environment-001, exact baseline d43bd336fde2837c9c499b273c4becdee3f4cef9. No AGENTS.md present in this checkout.
+
+Implementation is authorized now: master-owned genuine new outdoor Gap/Mouth WORLD/CELL/LAND with original surface FormKeys rehomed, whole MouthXminus1024, retained enclosed/lit underground Nine/gallery, bounded evaluated Dunwich donor geometry and strict real LIGH/settings. Explicit flat-LAND fallback is permitted when safe donor height import is not demonstrated. No whole-donor behavior/navigation/previs inheritance, fake sky, generic interior flag change or bare-floor delivery.
+
+All runtime/clock/menu/transition/blast safety and exact99alias-prefix clauses are adopted. Both inner-break safety predicates must use individual actual safe surface receipts, never arbitrary different-cell distance. Preserve original actors/miners/prisoner, pending recovery, fates, history, old routes and all unrelated IDs/geometry/canon. New candidate/provenance/strict fixtures and independent Sam/Nora review follow full actual implementation, not this receipt alone.
+
+No licensed author build/compiler/native/input/install/profile/save/provider/workflow/merge or licensed asset upload. Root owns native/artifact/compiler gates. Owner LATER remains in force; no further question. Spectacle/Boston are future concepts outside this feature. Proceeding directly to source construction after this first receipt commit.
