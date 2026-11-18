@@ -2,6 +2,32 @@ Scriptname TLM:RedHollowTalk extends ReferenceAlias
 {Alias event forwarding only. Source candidate; no native acceptance.}
 
 int Property Who Auto Const Mandatory
+; Supported CK ReferenceAlias events; prime invalidation only. Actual delivery
+; timing is a native gate, not inferred from explicit synthetic event probes.
+Event OnCellAttach()
+	InvalidatePlayerSample()
+EndEvent
+
+Event OnCellDetach()
+	InvalidatePlayerSample()
+EndEvent
+
+Event OnCellLoad()
+	InvalidatePlayerSample()
+EndEvent
+
+Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+	InvalidatePlayerSample()
+EndEvent
+
+Function InvalidatePlayerSample()
+	If Who == -1
+		TLM:RedHollowWalk controller = Walk()
+		If controller
+			controller.FairTransitGap()
+		EndIf
+	EndIf
+EndFunction
 TLM:RedHollowWalk Function Walk()
 	Return GetOwningQuest() as TLM:RedHollowWalk
 EndFunction

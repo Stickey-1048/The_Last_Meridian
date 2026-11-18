@@ -1,4 +1,5 @@
 using Tlm.PluginBuilder;
+if(args.Length==2&&args[0]=="--rh-environment-geometry-check")return RedHollowGeometryAudit.Fixture(args[1]);
 
 // Usage:
 //   dotnet run --project tools/PluginBuilder -- [--out <dir>] [--fallout4-esm <path to Fallout4.esm>]

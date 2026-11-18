@@ -4,7 +4,9 @@ using Noggog;
 
 public static partial class WorldStory
 {
+    public static readonly string[] RedHollowOriginalAliases="MercyTravel MercyReturn GapArrival MouthArrival CageSurface CageBelow GalleryArrival Gallows Released Custody DornWithdraw Quill Roark Blevins Dorn Rope RopeBroken CourtRecord ReferralSent TollBoard Docket Transcript TollBox Bypass Watch ToMouth ToGap CageControl BelowControl FiringControl BreakControl Roster Gallery FromGallery GalleryLamp CotLamp Silver Shovel Knocking MouthOpen MouthClosed BreakOpen BreakClosed StoneDoor Exit Resolve BodyKey LabelGap LabelMouth LabelCage LabelNine LabelGallery Fall Miner01 Miner02 Miner03 Miner04 Miner05 Miner06 Miner07 Miner08 Miner09 Miner10 Miner11 Below01 Cage01 Surface01 Below02 Cage02 Surface02 Below03 Cage03 Surface03 Below04 Cage04 Surface04 Below05 Cage05 Surface05 Below06 Cage06 Surface06 Below07 Cage07 Surface07 Below08 Cage08 Surface08 Below09 Cage09 Surface09 Below10 Cage10 Surface10 Below11 Cage11 Surface11 Condemned Player".Split(' ');
     public static readonly Dictionary<string,(float X,float Y,float Z)> RedHollowSurfaceSites=new(){
+        ["SurfaceFall"]=(2048,896,-700),
         ["GapArrival"]=(256,256,16),
         ["MouthArrival"]=(2304,256,16),
         ["CageSurface"]=(2560,256,16),
@@ -52,6 +54,10 @@ public static partial class WorldStory
         ["Surface10"]=(2816,1024,16),
         ["Surface11"]=(2944,1024,16),
     };
+    public static void ValidateRedHollowAliasPrefix(IQuestReferenceAliasGetter[] aliases,bool environment){
+        if(aliases.Length!=(environment?101:99)||!aliases.Take(99).Select(a=>a.Name).SequenceEqual(RedHollowOriginalAliases)||!aliases.Select(a=>a.ID).SequenceEqual(Enumerable.Range(0,aliases.Length).Select(n=>(uint)n)))throw new InvalidDataException("RH original99alias prefix changed");
+        if(environment&&(aliases[99].Name!="SurfaceFall"||aliases[100].Name!="GalleryFall"))throw new InvalidDataException("RH region-fall append changed");
+    }
     public static IEnumerable<IPlacedGetter> RedHollowSurfaceReferences(IFallout4ModGetter source){
         var world=source.Worldspaces.SingleOrDefault(w=>w.EditorID=="TLM_WRLD_RH_Surface");
         if(world==null)return Array.Empty<IPlacedGetter>(); // frozen earlier source

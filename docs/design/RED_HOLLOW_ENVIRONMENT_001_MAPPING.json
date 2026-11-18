@@ -1,0 +1,6341 @@
+{
+  "feature": "RED-HOLLOW-ENVIRONMENT-001",
+  "baseline": "d43bd336fde2837c9c499b273c4becdee3f4cef9",
+  "evidence": "SOURCE mapping measured from explicit fresh synthetic serialization; same owned source keys/declared coordinates, NOT native artifact/lighting/physics acceptance",
+  "terrain": {
+    "mode": "NEW flat LAND plus evaluated passive Dunwich geometry; no donor sculpted LAND imported",
+    "surveyedCell": "0000DA22:Fallout4.esm",
+    "surveyedLand": "0000F65F:Fallout4.esm",
+    "rawHeightOffset": 146,
+    "heightGrid": [
+      33,
+      33
+    ],
+    "donorTextureLayers": 20,
+    "reason": "No demonstrated bounded donor height/texture/seam remapper; root authorized immediate flat-LAND fallback",
+    "newHeight": 0,
+    "newGrid": [
+      0,
+      0
+    ]
+  },
+  "worldRecords": {
+    "TLM_WRLD_RH_Surface": 3319,
+    "TLM_CELL_RH_SurfacePersistent": 3320,
+    "TLM_CELL_RH_Surface": 3321,
+    "TLM_LAND_RH_Surface": 3322
+  },
+  "rehoming": [
+    {
+      "reference": "TLM_REF_RH_GapArrival",
+      "key": "000B17:TheLastMeridian.esp",
+      "before": [
+        256,
+        256,
+        16
+      ],
+      "after": [
+        256,
+        256,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_MouthArrival",
+      "key": "000B18:TheLastMeridian.esp",
+      "before": [
+        3328,
+        256,
+        16
+      ],
+      "after": [
+        2304,
+        256,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_CageSurface",
+      "key": "000B19:TheLastMeridian.esp",
+      "before": [
+        3584,
+        256,
+        16
+      ],
+      "after": [
+        2560,
+        256,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Gallows",
+      "key": "000B1C:TheLastMeridian.esp",
+      "before": [
+        768,
+        512,
+        16
+      ],
+      "after": [
+        768,
+        512,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Released",
+      "key": "000B1D:TheLastMeridian.esp",
+      "before": [
+        1024,
+        256,
+        16
+      ],
+      "after": [
+        1024,
+        256,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Custody",
+      "key": "000B1E:TheLastMeridian.esp",
+      "before": [
+        512,
+        512,
+        16
+      ],
+      "after": [
+        512,
+        512,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Quill",
+      "key": "000B20:TheLastMeridian.esp",
+      "before": [
+        512,
+        512,
+        16
+      ],
+      "after": [
+        512,
+        512,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Roark",
+      "key": "000B21:TheLastMeridian.esp",
+      "before": [
+        3328,
+        512,
+        16
+      ],
+      "after": [
+        2304,
+        512,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Blevins",
+      "key": "000B22:TheLastMeridian.esp",
+      "before": [
+        3840,
+        512,
+        16
+      ],
+      "after": [
+        2816,
+        512,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Rope",
+      "key": "000B24:TheLastMeridian.esp",
+      "before": [
+        768,
+        512,
+        120
+      ],
+      "after": [
+        768,
+        512,
+        120
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_RopeBroken",
+      "key": "000B25:TheLastMeridian.esp",
+      "before": [
+        768,
+        512,
+        120
+      ],
+      "after": [
+        768,
+        512,
+        120
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_CourtRecord",
+      "key": "000B26:TheLastMeridian.esp",
+      "before": [
+        576,
+        640,
+        12
+      ],
+      "after": [
+        576,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_ReferralSent",
+      "key": "000B27:TheLastMeridian.esp",
+      "before": [
+        640,
+        640,
+        12
+      ],
+      "after": [
+        640,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_TollBoard",
+      "key": "000B28:TheLastMeridian.esp",
+      "before": [
+        128,
+        512,
+        12
+      ],
+      "after": [
+        128,
+        512,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Docket",
+      "key": "000B29:TheLastMeridian.esp",
+      "before": [
+        512,
+        640,
+        12
+      ],
+      "after": [
+        512,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Transcript",
+      "key": "000B2A:TheLastMeridian.esp",
+      "before": [
+        704,
+        640,
+        12
+      ],
+      "after": [
+        704,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_TollBox",
+      "key": "000B2B:TheLastMeridian.esp",
+      "before": [
+        256,
+        512,
+        12
+      ],
+      "after": [
+        256,
+        512,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Bypass",
+      "key": "000B2C:TheLastMeridian.esp",
+      "before": [
+        1280,
+        256,
+        12
+      ],
+      "after": [
+        1280,
+        256,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Watch",
+      "key": "000B2D:TheLastMeridian.esp",
+      "before": [
+        768,
+        640,
+        12
+      ],
+      "after": [
+        768,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_ToMouth",
+      "key": "000B2E:TheLastMeridian.esp",
+      "before": [
+        1536,
+        256,
+        12
+      ],
+      "after": [
+        1536,
+        256,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_ToGap",
+      "key": "000B2F:TheLastMeridian.esp",
+      "before": [
+        3072,
+        256,
+        12
+      ],
+      "after": [
+        2048,
+        256,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_CageControl",
+      "key": "000B30:TheLastMeridian.esp",
+      "before": [
+        3584,
+        384,
+        12
+      ],
+      "after": [
+        2560,
+        384,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_FiringControl",
+      "key": "000B32:TheLastMeridian.esp",
+      "before": [
+        3840,
+        384,
+        12
+      ],
+      "after": [
+        2816,
+        384,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_CotLamp",
+      "key": "000B38:TheLastMeridian.esp",
+      "before": [
+        4096,
+        512,
+        12
+      ],
+      "after": [
+        3072,
+        512,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Silver",
+      "key": "000B39:TheLastMeridian.esp",
+      "before": [
+        4096,
+        640,
+        12
+      ],
+      "after": [
+        3072,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Shovel",
+      "key": "000B3A:TheLastMeridian.esp",
+      "before": [
+        3328,
+        640,
+        12
+      ],
+      "after": [
+        2304,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Knocking",
+      "key": "000B3B:TheLastMeridian.esp",
+      "before": [
+        3328,
+        384,
+        12
+      ],
+      "after": [
+        2304,
+        384,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_MouthOpen",
+      "key": "000B3C:TheLastMeridian.esp",
+      "before": [
+        3584,
+        640,
+        12
+      ],
+      "after": [
+        2560,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_MouthClosed",
+      "key": "000B3D:TheLastMeridian.esp",
+      "before": [
+        3584,
+        640,
+        12
+      ],
+      "after": [
+        2560,
+        640,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Exit",
+      "key": "000B41:TheLastMeridian.esp",
+      "before": [
+        3200,
+        128,
+        12
+      ],
+      "after": [
+        2176,
+        128,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Resolve",
+      "key": "000B42:TheLastMeridian.esp",
+      "before": [
+        3584,
+        128,
+        12
+      ],
+      "after": [
+        2560,
+        128,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_BodyKey",
+      "key": "000B43:TheLastMeridian.esp",
+      "before": [
+        3968,
+        384,
+        12
+      ],
+      "after": [
+        2944,
+        384,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_LabelGap",
+      "key": "000B44:TheLastMeridian.esp",
+      "before": [
+        256,
+        64,
+        12
+      ],
+      "after": [
+        256,
+        64,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_LabelMouth",
+      "key": "000B45:TheLastMeridian.esp",
+      "before": [
+        3328,
+        64,
+        12
+      ],
+      "after": [
+        2304,
+        64,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_LabelCage",
+      "key": "000B46:TheLastMeridian.esp",
+      "before": [
+        3584,
+        64,
+        12
+      ],
+      "after": [
+        2560,
+        64,
+        12
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface01",
+      "key": "000B57:TheLastMeridian.esp",
+      "before": [
+        3712,
+        768,
+        16
+      ],
+      "after": [
+        2688,
+        768,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface02",
+      "key": "000B5A:TheLastMeridian.esp",
+      "before": [
+        3840,
+        768,
+        16
+      ],
+      "after": [
+        2816,
+        768,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface03",
+      "key": "000B5D:TheLastMeridian.esp",
+      "before": [
+        3968,
+        768,
+        16
+      ],
+      "after": [
+        2944,
+        768,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface04",
+      "key": "000B60:TheLastMeridian.esp",
+      "before": [
+        3584,
+        896,
+        16
+      ],
+      "after": [
+        2560,
+        896,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface05",
+      "key": "000B63:TheLastMeridian.esp",
+      "before": [
+        3712,
+        896,
+        16
+      ],
+      "after": [
+        2688,
+        896,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface06",
+      "key": "000B66:TheLastMeridian.esp",
+      "before": [
+        3840,
+        896,
+        16
+      ],
+      "after": [
+        2816,
+        896,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface07",
+      "key": "000B69:TheLastMeridian.esp",
+      "before": [
+        3968,
+        896,
+        16
+      ],
+      "after": [
+        2944,
+        896,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface08",
+      "key": "000B6C:TheLastMeridian.esp",
+      "before": [
+        3584,
+        1024,
+        16
+      ],
+      "after": [
+        2560,
+        1024,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface09",
+      "key": "000B6F:TheLastMeridian.esp",
+      "before": [
+        3712,
+        1024,
+        16
+      ],
+      "after": [
+        2688,
+        1024,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface10",
+      "key": "000B72:TheLastMeridian.esp",
+      "before": [
+        3840,
+        1024,
+        16
+      ],
+      "after": [
+        2816,
+        1024,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Surface11",
+      "key": "000B75:TheLastMeridian.esp",
+      "before": [
+        3968,
+        1024,
+        16
+      ],
+      "after": [
+        2944,
+        1024,
+        16
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A00",
+      "key": "000B76:TheLastMeridian.esp",
+      "before": [
+        0,
+        0,
+        0
+      ],
+      "after": [
+        0,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A01",
+      "key": "000B77:TheLastMeridian.esp",
+      "before": [
+        0,
+        256,
+        0
+      ],
+      "after": [
+        0,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A02",
+      "key": "000B78:TheLastMeridian.esp",
+      "before": [
+        0,
+        512,
+        0
+      ],
+      "after": [
+        0,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A03",
+      "key": "000B79:TheLastMeridian.esp",
+      "before": [
+        0,
+        768,
+        0
+      ],
+      "after": [
+        0,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A10",
+      "key": "000B7A:TheLastMeridian.esp",
+      "before": [
+        256,
+        0,
+        0
+      ],
+      "after": [
+        256,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A11",
+      "key": "000B7B:TheLastMeridian.esp",
+      "before": [
+        256,
+        256,
+        0
+      ],
+      "after": [
+        256,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A12",
+      "key": "000B7C:TheLastMeridian.esp",
+      "before": [
+        256,
+        512,
+        0
+      ],
+      "after": [
+        256,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A13",
+      "key": "000B7D:TheLastMeridian.esp",
+      "before": [
+        256,
+        768,
+        0
+      ],
+      "after": [
+        256,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A20",
+      "key": "000B7E:TheLastMeridian.esp",
+      "before": [
+        512,
+        0,
+        0
+      ],
+      "after": [
+        512,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A21",
+      "key": "000B7F:TheLastMeridian.esp",
+      "before": [
+        512,
+        256,
+        0
+      ],
+      "after": [
+        512,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A22",
+      "key": "000B80:TheLastMeridian.esp",
+      "before": [
+        512,
+        512,
+        0
+      ],
+      "after": [
+        512,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A23",
+      "key": "000B81:TheLastMeridian.esp",
+      "before": [
+        512,
+        768,
+        0
+      ],
+      "after": [
+        512,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A30",
+      "key": "000B82:TheLastMeridian.esp",
+      "before": [
+        768,
+        0,
+        0
+      ],
+      "after": [
+        768,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A31",
+      "key": "000B83:TheLastMeridian.esp",
+      "before": [
+        768,
+        256,
+        0
+      ],
+      "after": [
+        768,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A32",
+      "key": "000B84:TheLastMeridian.esp",
+      "before": [
+        768,
+        512,
+        0
+      ],
+      "after": [
+        768,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A33",
+      "key": "000B85:TheLastMeridian.esp",
+      "before": [
+        768,
+        768,
+        0
+      ],
+      "after": [
+        768,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A40",
+      "key": "000B86:TheLastMeridian.esp",
+      "before": [
+        1024,
+        0,
+        0
+      ],
+      "after": [
+        1024,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A41",
+      "key": "000B87:TheLastMeridian.esp",
+      "before": [
+        1024,
+        256,
+        0
+      ],
+      "after": [
+        1024,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A42",
+      "key": "000B88:TheLastMeridian.esp",
+      "before": [
+        1024,
+        512,
+        0
+      ],
+      "after": [
+        1024,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A43",
+      "key": "000B89:TheLastMeridian.esp",
+      "before": [
+        1024,
+        768,
+        0
+      ],
+      "after": [
+        1024,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A50",
+      "key": "000B8A:TheLastMeridian.esp",
+      "before": [
+        1280,
+        0,
+        0
+      ],
+      "after": [
+        1280,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A51",
+      "key": "000B8B:TheLastMeridian.esp",
+      "before": [
+        1280,
+        256,
+        0
+      ],
+      "after": [
+        1280,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A52",
+      "key": "000B8C:TheLastMeridian.esp",
+      "before": [
+        1280,
+        512,
+        0
+      ],
+      "after": [
+        1280,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A53",
+      "key": "000B8D:TheLastMeridian.esp",
+      "before": [
+        1280,
+        768,
+        0
+      ],
+      "after": [
+        1280,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A60",
+      "key": "000B8E:TheLastMeridian.esp",
+      "before": [
+        1536,
+        0,
+        0
+      ],
+      "after": [
+        1536,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A61",
+      "key": "000B8F:TheLastMeridian.esp",
+      "before": [
+        1536,
+        256,
+        0
+      ],
+      "after": [
+        1536,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A62",
+      "key": "000B90:TheLastMeridian.esp",
+      "before": [
+        1536,
+        512,
+        0
+      ],
+      "after": [
+        1536,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_A63",
+      "key": "000B91:TheLastMeridian.esp",
+      "before": [
+        1536,
+        768,
+        0
+      ],
+      "after": [
+        1536,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B00",
+      "key": "000B92:TheLastMeridian.esp",
+      "before": [
+        3072,
+        0,
+        0
+      ],
+      "after": [
+        2048,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B01",
+      "key": "000B93:TheLastMeridian.esp",
+      "before": [
+        3072,
+        256,
+        0
+      ],
+      "after": [
+        2048,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B02",
+      "key": "000B94:TheLastMeridian.esp",
+      "before": [
+        3072,
+        512,
+        0
+      ],
+      "after": [
+        2048,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B03",
+      "key": "000B95:TheLastMeridian.esp",
+      "before": [
+        3072,
+        768,
+        0
+      ],
+      "after": [
+        2048,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B04",
+      "key": "000B96:TheLastMeridian.esp",
+      "before": [
+        3072,
+        1024,
+        0
+      ],
+      "after": [
+        2048,
+        1024,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B05",
+      "key": "000B97:TheLastMeridian.esp",
+      "before": [
+        3072,
+        1280,
+        0
+      ],
+      "after": [
+        2048,
+        1280,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B10",
+      "key": "000B98:TheLastMeridian.esp",
+      "before": [
+        3328,
+        0,
+        0
+      ],
+      "after": [
+        2304,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B11",
+      "key": "000B99:TheLastMeridian.esp",
+      "before": [
+        3328,
+        256,
+        0
+      ],
+      "after": [
+        2304,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B12",
+      "key": "000B9A:TheLastMeridian.esp",
+      "before": [
+        3328,
+        512,
+        0
+      ],
+      "after": [
+        2304,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B13",
+      "key": "000B9B:TheLastMeridian.esp",
+      "before": [
+        3328,
+        768,
+        0
+      ],
+      "after": [
+        2304,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B14",
+      "key": "000B9C:TheLastMeridian.esp",
+      "before": [
+        3328,
+        1024,
+        0
+      ],
+      "after": [
+        2304,
+        1024,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B15",
+      "key": "000B9D:TheLastMeridian.esp",
+      "before": [
+        3328,
+        1280,
+        0
+      ],
+      "after": [
+        2304,
+        1280,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B20",
+      "key": "000B9E:TheLastMeridian.esp",
+      "before": [
+        3584,
+        0,
+        0
+      ],
+      "after": [
+        2560,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B21",
+      "key": "000B9F:TheLastMeridian.esp",
+      "before": [
+        3584,
+        256,
+        0
+      ],
+      "after": [
+        2560,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B22",
+      "key": "000BA0:TheLastMeridian.esp",
+      "before": [
+        3584,
+        512,
+        0
+      ],
+      "after": [
+        2560,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B23",
+      "key": "000BA1:TheLastMeridian.esp",
+      "before": [
+        3584,
+        768,
+        0
+      ],
+      "after": [
+        2560,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B24",
+      "key": "000BA2:TheLastMeridian.esp",
+      "before": [
+        3584,
+        1024,
+        0
+      ],
+      "after": [
+        2560,
+        1024,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B25",
+      "key": "000BA3:TheLastMeridian.esp",
+      "before": [
+        3584,
+        1280,
+        0
+      ],
+      "after": [
+        2560,
+        1280,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B30",
+      "key": "000BA4:TheLastMeridian.esp",
+      "before": [
+        3840,
+        0,
+        0
+      ],
+      "after": [
+        2816,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B31",
+      "key": "000BA5:TheLastMeridian.esp",
+      "before": [
+        3840,
+        256,
+        0
+      ],
+      "after": [
+        2816,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B32",
+      "key": "000BA6:TheLastMeridian.esp",
+      "before": [
+        3840,
+        512,
+        0
+      ],
+      "after": [
+        2816,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B33",
+      "key": "000BA7:TheLastMeridian.esp",
+      "before": [
+        3840,
+        768,
+        0
+      ],
+      "after": [
+        2816,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B34",
+      "key": "000BA8:TheLastMeridian.esp",
+      "before": [
+        3840,
+        1024,
+        0
+      ],
+      "after": [
+        2816,
+        1024,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B35",
+      "key": "000BA9:TheLastMeridian.esp",
+      "before": [
+        3840,
+        1280,
+        0
+      ],
+      "after": [
+        2816,
+        1280,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B40",
+      "key": "000BAA:TheLastMeridian.esp",
+      "before": [
+        4096,
+        0,
+        0
+      ],
+      "after": [
+        3072,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B41",
+      "key": "000BAB:TheLastMeridian.esp",
+      "before": [
+        4096,
+        256,
+        0
+      ],
+      "after": [
+        3072,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B42",
+      "key": "000BAC:TheLastMeridian.esp",
+      "before": [
+        4096,
+        512,
+        0
+      ],
+      "after": [
+        3072,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B43",
+      "key": "000BAD:TheLastMeridian.esp",
+      "before": [
+        4096,
+        768,
+        0
+      ],
+      "after": [
+        3072,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B44",
+      "key": "000BAE:TheLastMeridian.esp",
+      "before": [
+        4096,
+        1024,
+        0
+      ],
+      "after": [
+        3072,
+        1024,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B45",
+      "key": "000BAF:TheLastMeridian.esp",
+      "before": [
+        4096,
+        1280,
+        0
+      ],
+      "after": [
+        3072,
+        1280,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B50",
+      "key": "000BB0:TheLastMeridian.esp",
+      "before": [
+        4352,
+        0,
+        0
+      ],
+      "after": [
+        3328,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B51",
+      "key": "000BB1:TheLastMeridian.esp",
+      "before": [
+        4352,
+        256,
+        0
+      ],
+      "after": [
+        3328,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B52",
+      "key": "000BB2:TheLastMeridian.esp",
+      "before": [
+        4352,
+        512,
+        0
+      ],
+      "after": [
+        3328,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B53",
+      "key": "000BB3:TheLastMeridian.esp",
+      "before": [
+        4352,
+        768,
+        0
+      ],
+      "after": [
+        3328,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B54",
+      "key": "000BB4:TheLastMeridian.esp",
+      "before": [
+        4352,
+        1024,
+        0
+      ],
+      "after": [
+        3328,
+        1024,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B55",
+      "key": "000BB5:TheLastMeridian.esp",
+      "before": [
+        4352,
+        1280,
+        0
+      ],
+      "after": [
+        3328,
+        1280,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B60",
+      "key": "000BB6:TheLastMeridian.esp",
+      "before": [
+        4608,
+        0,
+        0
+      ],
+      "after": [
+        3584,
+        0,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B61",
+      "key": "000BB7:TheLastMeridian.esp",
+      "before": [
+        4608,
+        256,
+        0
+      ],
+      "after": [
+        3584,
+        256,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B62",
+      "key": "000BB8:TheLastMeridian.esp",
+      "before": [
+        4608,
+        512,
+        0
+      ],
+      "after": [
+        3584,
+        512,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B63",
+      "key": "000BB9:TheLastMeridian.esp",
+      "before": [
+        4608,
+        768,
+        0
+      ],
+      "after": [
+        3584,
+        768,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B64",
+      "key": "000BBA:TheLastMeridian.esp",
+      "before": [
+        4608,
+        1024,
+        0
+      ],
+      "after": [
+        3584,
+        1024,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    },
+    {
+      "reference": "TLM_REF_RH_Floor_B65",
+      "key": "000BBB:TheLastMeridian.esp",
+      "before": [
+        4608,
+        1280,
+        0
+      ],
+      "after": [
+        3584,
+        1280,
+        0
+      ],
+      "parent": "TLM_CELL_RH_SurfacePersistent",
+      "flags": 3072,
+      "beforeParent": "TLM_CELL_RedHollow",
+      "sourceFlagSemantics": "Original same key; surface floors disabled in favour of LAND. Runtime GetParentCell behavior is a native gate."
+    }
+  ],
+  "otherDeclaredChanges": {
+    "oldUndergroundFloors": "Same C/D keys/positions/parent; disabled to avoid overlap with new continuous quarry floor",
+    "oldFall": {
+      "sameKey": 2889,
+      "before": [
+        5248,
+        384,
+        -700
+      ],
+      "after": [
+        6912,
+        384,
+        -700
+      ],
+      "oldHalfBox": [
+        6000,
+        1400,
+        120
+      ],
+      "newHalfBox": [
+        1024,
+        768,
+        120
+      ]
+    },
+    "oldUndergroundCell": "Same key, RH-only selected donor lighting struct/template and descriptive name; no source quest/refs/culling/navmesh imported"
+  },
+  "aliases": [
+    {
+      "id": 0,
+      "name": "MercyTravel",
+      "fill": "forced 000B14:TheLastMeridian.esp"
+    },
+    {
+      "id": 1,
+      "name": "MercyReturn",
+      "fill": "forced 000B15:TheLastMeridian.esp"
+    },
+    {
+      "id": 2,
+      "name": "GapArrival",
+      "fill": "forced 000B17:TheLastMeridian.esp"
+    },
+    {
+      "id": 3,
+      "name": "MouthArrival",
+      "fill": "forced 000B18:TheLastMeridian.esp"
+    },
+    {
+      "id": 4,
+      "name": "CageSurface",
+      "fill": "forced 000B19:TheLastMeridian.esp"
+    },
+    {
+      "id": 5,
+      "name": "CageBelow",
+      "fill": "forced 000B1A:TheLastMeridian.esp"
+    },
+    {
+      "id": 6,
+      "name": "GalleryArrival",
+      "fill": "forced 000B1B:TheLastMeridian.esp"
+    },
+    {
+      "id": 7,
+      "name": "Gallows",
+      "fill": "forced 000B1C:TheLastMeridian.esp"
+    },
+    {
+      "id": 8,
+      "name": "Released",
+      "fill": "forced 000B1D:TheLastMeridian.esp"
+    },
+    {
+      "id": 9,
+      "name": "Custody",
+      "fill": "forced 000B1E:TheLastMeridian.esp"
+    },
+    {
+      "id": 10,
+      "name": "DornWithdraw",
+      "fill": "forced 000B1F:TheLastMeridian.esp"
+    },
+    {
+      "id": 11,
+      "name": "Quill",
+      "fill": "forced 000B20:TheLastMeridian.esp"
+    },
+    {
+      "id": 12,
+      "name": "Roark",
+      "fill": "forced 000B21:TheLastMeridian.esp"
+    },
+    {
+      "id": 13,
+      "name": "Blevins",
+      "fill": "forced 000B22:TheLastMeridian.esp"
+    },
+    {
+      "id": 14,
+      "name": "Dorn",
+      "fill": "forced 000B23:TheLastMeridian.esp"
+    },
+    {
+      "id": 15,
+      "name": "Rope",
+      "fill": "forced 000B24:TheLastMeridian.esp"
+    },
+    {
+      "id": 16,
+      "name": "RopeBroken",
+      "fill": "forced 000B25:TheLastMeridian.esp"
+    },
+    {
+      "id": 17,
+      "name": "CourtRecord",
+      "fill": "forced 000B26:TheLastMeridian.esp"
+    },
+    {
+      "id": 18,
+      "name": "ReferralSent",
+      "fill": "forced 000B27:TheLastMeridian.esp"
+    },
+    {
+      "id": 19,
+      "name": "TollBoard",
+      "fill": "forced 000B28:TheLastMeridian.esp"
+    },
+    {
+      "id": 20,
+      "name": "Docket",
+      "fill": "forced 000B29:TheLastMeridian.esp"
+    },
+    {
+      "id": 21,
+      "name": "Transcript",
+      "fill": "forced 000B2A:TheLastMeridian.esp"
+    },
+    {
+      "id": 22,
+      "name": "TollBox",
+      "fill": "forced 000B2B:TheLastMeridian.esp"
+    },
+    {
+      "id": 23,
+      "name": "Bypass",
+      "fill": "forced 000B2C:TheLastMeridian.esp"
+    },
+    {
+      "id": 24,
+      "name": "Watch",
+      "fill": "forced 000B2D:TheLastMeridian.esp"
+    },
+    {
+      "id": 25,
+      "name": "ToMouth",
+      "fill": "forced 000B2E:TheLastMeridian.esp"
+    },
+    {
+      "id": 26,
+      "name": "ToGap",
+      "fill": "forced 000B2F:TheLastMeridian.esp"
+    },
+    {
+      "id": 27,
+      "name": "CageControl",
+      "fill": "forced 000B30:TheLastMeridian.esp"
+    },
+    {
+      "id": 28,
+      "name": "BelowControl",
+      "fill": "forced 000B31:TheLastMeridian.esp"
+    },
+    {
+      "id": 29,
+      "name": "FiringControl",
+      "fill": "forced 000B32:TheLastMeridian.esp"
+    },
+    {
+      "id": 30,
+      "name": "BreakControl",
+      "fill": "forced 000B33:TheLastMeridian.esp"
+    },
+    {
+      "id": 31,
+      "name": "Roster",
+      "fill": "forced 000B34:TheLastMeridian.esp"
+    },
+    {
+      "id": 32,
+      "name": "Gallery",
+      "fill": "forced 000B35:TheLastMeridian.esp"
+    },
+    {
+      "id": 33,
+      "name": "FromGallery",
+      "fill": "forced 000B36:TheLastMeridian.esp"
+    },
+    {
+      "id": 34,
+      "name": "GalleryLamp",
+      "fill": "forced 000B37:TheLastMeridian.esp"
+    },
+    {
+      "id": 35,
+      "name": "CotLamp",
+      "fill": "forced 000B38:TheLastMeridian.esp"
+    },
+    {
+      "id": 36,
+      "name": "Silver",
+      "fill": "forced 000B39:TheLastMeridian.esp"
+    },
+    {
+      "id": 37,
+      "name": "Shovel",
+      "fill": "forced 000B3A:TheLastMeridian.esp"
+    },
+    {
+      "id": 38,
+      "name": "Knocking",
+      "fill": "forced 000B3B:TheLastMeridian.esp"
+    },
+    {
+      "id": 39,
+      "name": "MouthOpen",
+      "fill": "forced 000B3C:TheLastMeridian.esp"
+    },
+    {
+      "id": 40,
+      "name": "MouthClosed",
+      "fill": "forced 000B3D:TheLastMeridian.esp"
+    },
+    {
+      "id": 41,
+      "name": "BreakOpen",
+      "fill": "forced 000B3E:TheLastMeridian.esp"
+    },
+    {
+      "id": 42,
+      "name": "BreakClosed",
+      "fill": "forced 000B3F:TheLastMeridian.esp"
+    },
+    {
+      "id": 43,
+      "name": "StoneDoor",
+      "fill": "forced 000B40:TheLastMeridian.esp"
+    },
+    {
+      "id": 44,
+      "name": "Exit",
+      "fill": "forced 000B41:TheLastMeridian.esp"
+    },
+    {
+      "id": 45,
+      "name": "Resolve",
+      "fill": "forced 000B42:TheLastMeridian.esp"
+    },
+    {
+      "id": 46,
+      "name": "BodyKey",
+      "fill": "forced 000B43:TheLastMeridian.esp"
+    },
+    {
+      "id": 47,
+      "name": "LabelGap",
+      "fill": "forced 000B44:TheLastMeridian.esp"
+    },
+    {
+      "id": 48,
+      "name": "LabelMouth",
+      "fill": "forced 000B45:TheLastMeridian.esp"
+    },
+    {
+      "id": 49,
+      "name": "LabelCage",
+      "fill": "forced 000B46:TheLastMeridian.esp"
+    },
+    {
+      "id": 50,
+      "name": "LabelNine",
+      "fill": "forced 000B47:TheLastMeridian.esp"
+    },
+    {
+      "id": 51,
+      "name": "LabelGallery",
+      "fill": "forced 000B48:TheLastMeridian.esp"
+    },
+    {
+      "id": 52,
+      "name": "Fall",
+      "fill": "forced 000B49:TheLastMeridian.esp"
+    },
+    {
+      "id": 53,
+      "name": "Miner01",
+      "fill": "forced 000B4A:TheLastMeridian.esp"
+    },
+    {
+      "id": 54,
+      "name": "Miner02",
+      "fill": "forced 000B4B:TheLastMeridian.esp"
+    },
+    {
+      "id": 55,
+      "name": "Miner03",
+      "fill": "forced 000B4C:TheLastMeridian.esp"
+    },
+    {
+      "id": 56,
+      "name": "Miner04",
+      "fill": "forced 000B4D:TheLastMeridian.esp"
+    },
+    {
+      "id": 57,
+      "name": "Miner05",
+      "fill": "forced 000B4E:TheLastMeridian.esp"
+    },
+    {
+      "id": 58,
+      "name": "Miner06",
+      "fill": "forced 000B4F:TheLastMeridian.esp"
+    },
+    {
+      "id": 59,
+      "name": "Miner07",
+      "fill": "forced 000B50:TheLastMeridian.esp"
+    },
+    {
+      "id": 60,
+      "name": "Miner08",
+      "fill": "forced 000B51:TheLastMeridian.esp"
+    },
+    {
+      "id": 61,
+      "name": "Miner09",
+      "fill": "forced 000B52:TheLastMeridian.esp"
+    },
+    {
+      "id": 62,
+      "name": "Miner10",
+      "fill": "forced 000B53:TheLastMeridian.esp"
+    },
+    {
+      "id": 63,
+      "name": "Miner11",
+      "fill": "forced 000B54:TheLastMeridian.esp"
+    },
+    {
+      "id": 64,
+      "name": "Below01",
+      "fill": "forced 000B55:TheLastMeridian.esp"
+    },
+    {
+      "id": 65,
+      "name": "Cage01",
+      "fill": "forced 000B56:TheLastMeridian.esp"
+    },
+    {
+      "id": 66,
+      "name": "Surface01",
+      "fill": "forced 000B57:TheLastMeridian.esp"
+    },
+    {
+      "id": 67,
+      "name": "Below02",
+      "fill": "forced 000B58:TheLastMeridian.esp"
+    },
+    {
+      "id": 68,
+      "name": "Cage02",
+      "fill": "forced 000B59:TheLastMeridian.esp"
+    },
+    {
+      "id": 69,
+      "name": "Surface02",
+      "fill": "forced 000B5A:TheLastMeridian.esp"
+    },
+    {
+      "id": 70,
+      "name": "Below03",
+      "fill": "forced 000B5B:TheLastMeridian.esp"
+    },
+    {
+      "id": 71,
+      "name": "Cage03",
+      "fill": "forced 000B5C:TheLastMeridian.esp"
+    },
+    {
+      "id": 72,
+      "name": "Surface03",
+      "fill": "forced 000B5D:TheLastMeridian.esp"
+    },
+    {
+      "id": 73,
+      "name": "Below04",
+      "fill": "forced 000B5E:TheLastMeridian.esp"
+    },
+    {
+      "id": 74,
+      "name": "Cage04",
+      "fill": "forced 000B5F:TheLastMeridian.esp"
+    },
+    {
+      "id": 75,
+      "name": "Surface04",
+      "fill": "forced 000B60:TheLastMeridian.esp"
+    },
+    {
+      "id": 76,
+      "name": "Below05",
+      "fill": "forced 000B61:TheLastMeridian.esp"
+    },
+    {
+      "id": 77,
+      "name": "Cage05",
+      "fill": "forced 000B62:TheLastMeridian.esp"
+    },
+    {
+      "id": 78,
+      "name": "Surface05",
+      "fill": "forced 000B63:TheLastMeridian.esp"
+    },
+    {
+      "id": 79,
+      "name": "Below06",
+      "fill": "forced 000B64:TheLastMeridian.esp"
+    },
+    {
+      "id": 80,
+      "name": "Cage06",
+      "fill": "forced 000B65:TheLastMeridian.esp"
+    },
+    {
+      "id": 81,
+      "name": "Surface06",
+      "fill": "forced 000B66:TheLastMeridian.esp"
+    },
+    {
+      "id": 82,
+      "name": "Below07",
+      "fill": "forced 000B67:TheLastMeridian.esp"
+    },
+    {
+      "id": 83,
+      "name": "Cage07",
+      "fill": "forced 000B68:TheLastMeridian.esp"
+    },
+    {
+      "id": 84,
+      "name": "Surface07",
+      "fill": "forced 000B69:TheLastMeridian.esp"
+    },
+    {
+      "id": 85,
+      "name": "Below08",
+      "fill": "forced 000B6A:TheLastMeridian.esp"
+    },
+    {
+      "id": 86,
+      "name": "Cage08",
+      "fill": "forced 000B6B:TheLastMeridian.esp"
+    },
+    {
+      "id": 87,
+      "name": "Surface08",
+      "fill": "forced 000B6C:TheLastMeridian.esp"
+    },
+    {
+      "id": 88,
+      "name": "Below09",
+      "fill": "forced 000B6D:TheLastMeridian.esp"
+    },
+    {
+      "id": 89,
+      "name": "Cage09",
+      "fill": "forced 000B6E:TheLastMeridian.esp"
+    },
+    {
+      "id": 90,
+      "name": "Surface09",
+      "fill": "forced 000B6F:TheLastMeridian.esp"
+    },
+    {
+      "id": 91,
+      "name": "Below10",
+      "fill": "forced 000B70:TheLastMeridian.esp"
+    },
+    {
+      "id": 92,
+      "name": "Cage10",
+      "fill": "forced 000B71:TheLastMeridian.esp"
+    },
+    {
+      "id": 93,
+      "name": "Surface10",
+      "fill": "forced 000B72:TheLastMeridian.esp"
+    },
+    {
+      "id": 94,
+      "name": "Below11",
+      "fill": "forced 000B73:TheLastMeridian.esp"
+    },
+    {
+      "id": 95,
+      "name": "Cage11",
+      "fill": "forced 000B74:TheLastMeridian.esp"
+    },
+    {
+      "id": 96,
+      "name": "Surface11",
+      "fill": "forced 000B75:TheLastMeridian.esp"
+    },
+    {
+      "id": 97,
+      "name": "Condemned",
+      "fill": null
+    },
+    {
+      "id": 98,
+      "name": "Player",
+      "fill": "forced 000856:Fallout4.esm"
+    },
+    {
+      "id": 99,
+      "name": "SurfaceFall",
+      "fill": "forced 000DDA:TheLastMeridian.esp"
+    },
+    {
+      "id": 100,
+      "name": "GalleryFall",
+      "fill": "forced 000DDC:TheLastMeridian.esp"
+    }
+  ],
+  "selectedStaticMetadataOnSyntheticInput": [
+    {
+      "id": "QryFloor01",
+      "key": "000858:Fallout4.esm",
+      "model": "Architecture\\Quarry\\QryFloor01.nif",
+      "min": [
+        -256,
+        -256,
+        0
+      ],
+      "max": [
+        256,
+        256,
+        0
+      ]
+    },
+    {
+      "id": "QryCubeWall01",
+      "key": "000859:Fallout4.esm",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "min": [
+        -256,
+        0,
+        -256
+      ],
+      "max": [
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "id": "CaveRmCeiling512v01",
+      "key": "00085A:Fallout4.esm",
+      "model": "Interiors\\Cave\\Rooms\\CaveRmCeiling512v01.nif",
+      "min": [
+        -256,
+        -256,
+        229
+      ],
+      "max": [
+        256,
+        256,
+        257
+      ]
+    },
+    {
+      "id": "QryRockM01",
+      "key": "00085B:Fallout4.esm",
+      "model": "Architecture\\Quarry\\Rocks\\QryRockM01.nif",
+      "min": [
+        -87,
+        -65,
+        -38
+      ],
+      "max": [
+        106,
+        84,
+        81
+      ]
+    },
+    {
+      "id": "TreeMapleForest6",
+      "key": "00085C:Fallout4.esm",
+      "model": "Landscape\\Trees\\TreeMapleForest6.nif",
+      "min": [
+        -69,
+        -99,
+        -7
+      ],
+      "max": [
+        91,
+        104,
+        1223
+      ]
+    },
+    {
+      "id": "ShackWallFlat02",
+      "key": "00085D:Fallout4.esm",
+      "model": "Architecture\\Shacks\\ShackWallFlat02.nif",
+      "min": [
+        -128,
+        -132,
+        0
+      ],
+      "max": [
+        128,
+        -124,
+        198
+      ]
+    },
+    {
+      "id": "ShackMidRoof01",
+      "key": "00085E:Fallout4.esm",
+      "model": "Architecture\\Shacks\\ShackMidRoof01.nif",
+      "min": [
+        -130,
+        -135,
+        198
+      ],
+      "max": [
+        128,
+        136,
+        210
+      ]
+    },
+    {
+      "id": "FenceWoodPost01",
+      "key": "000834:Fallout4.esm",
+      "model": "SetDressing\\FencesGrates\\Wood\\FenceWoodPost01.nif",
+      "min": [
+        -8,
+        -6,
+        -64
+      ],
+      "max": [
+        8,
+        6,
+        176
+      ]
+    }
+  ],
+  "light": {
+    "expectedOwnedSource": "000560DC:Fallout4.esm",
+    "sourceReference": "0017B5E7:Fallout4.esm",
+    "observedSyntheticMetadata": {
+      "id": "defaultLightWarm01NS",
+      "key": "00085F:Fallout4.esm",
+      "radius": 256,
+      "time": -1,
+      "flags": 8193,
+      "rgb": "5Mu2",
+      "fade": 1,
+      "falloff": 1,
+      "count": 96
+    },
+    "lightingTemplateOwnedSource": "000560DE:Fallout4.esm",
+    "roomOwnedSource": "00049B72:Fallout4.esm",
+    "syntheticRoomReceipt": {
+      "room": "000861:Fallout4.esm",
+      "inherits": 1784,
+      "ambient": "JyYj",
+      "scope": "Lighting struct only; native brightness/occlusion unverified"
+    },
+    "positions": [
+      {
+        "name": "TLM_REF_RHE_Light0",
+        "position": [
+          6016,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light1",
+        "position": [
+          6016,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light2",
+        "position": [
+          6016,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light3",
+        "position": [
+          6016,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light4",
+        "position": [
+          6016,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light5",
+        "position": [
+          6016,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light6",
+        "position": [
+          6272,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light7",
+        "position": [
+          6272,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light8",
+        "position": [
+          6272,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light9",
+        "position": [
+          6272,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light10",
+        "position": [
+          6272,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light11",
+        "position": [
+          6272,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light12",
+        "position": [
+          6528,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light13",
+        "position": [
+          6528,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light14",
+        "position": [
+          6528,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light15",
+        "position": [
+          6528,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light16",
+        "position": [
+          6528,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light17",
+        "position": [
+          6528,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light18",
+        "position": [
+          6784,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light19",
+        "position": [
+          6784,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light20",
+        "position": [
+          6784,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light21",
+        "position": [
+          6784,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light22",
+        "position": [
+          6784,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light23",
+        "position": [
+          6784,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light24",
+        "position": [
+          7040,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light25",
+        "position": [
+          7040,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light26",
+        "position": [
+          7040,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light27",
+        "position": [
+          7040,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light28",
+        "position": [
+          7040,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light29",
+        "position": [
+          7040,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light30",
+        "position": [
+          7296,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light31",
+        "position": [
+          7296,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light32",
+        "position": [
+          7296,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light33",
+        "position": [
+          7296,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light34",
+        "position": [
+          7296,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light35",
+        "position": [
+          7296,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light36",
+        "position": [
+          7552,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light37",
+        "position": [
+          7552,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light38",
+        "position": [
+          7552,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light39",
+        "position": [
+          7552,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light40",
+        "position": [
+          7552,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light41",
+        "position": [
+          7552,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light42",
+        "position": [
+          7808,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light43",
+        "position": [
+          7808,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light44",
+        "position": [
+          7808,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light45",
+        "position": [
+          7808,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light46",
+        "position": [
+          7808,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light47",
+        "position": [
+          7808,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light48",
+        "position": [
+          9088,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light49",
+        "position": [
+          9088,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light50",
+        "position": [
+          9088,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light51",
+        "position": [
+          9088,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light52",
+        "position": [
+          9088,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light53",
+        "position": [
+          9088,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light54",
+        "position": [
+          9344,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light55",
+        "position": [
+          9344,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light56",
+        "position": [
+          9344,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light57",
+        "position": [
+          9344,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light58",
+        "position": [
+          9344,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light59",
+        "position": [
+          9344,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light60",
+        "position": [
+          9600,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light61",
+        "position": [
+          9600,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light62",
+        "position": [
+          9600,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light63",
+        "position": [
+          9600,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light64",
+        "position": [
+          9600,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light65",
+        "position": [
+          9600,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light66",
+        "position": [
+          9856,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light67",
+        "position": [
+          9856,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light68",
+        "position": [
+          9856,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light69",
+        "position": [
+          9856,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light70",
+        "position": [
+          9856,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light71",
+        "position": [
+          9856,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light72",
+        "position": [
+          10112,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light73",
+        "position": [
+          10112,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light74",
+        "position": [
+          10112,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light75",
+        "position": [
+          10112,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light76",
+        "position": [
+          10112,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light77",
+        "position": [
+          10112,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light78",
+        "position": [
+          10368,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light79",
+        "position": [
+          10368,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light80",
+        "position": [
+          10368,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light81",
+        "position": [
+          10368,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light82",
+        "position": [
+          10368,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light83",
+        "position": [
+          10368,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light84",
+        "position": [
+          10624,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light85",
+        "position": [
+          10624,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light86",
+        "position": [
+          10624,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light87",
+        "position": [
+          10624,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light88",
+        "position": [
+          10624,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light89",
+        "position": [
+          10624,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light90",
+        "position": [
+          10880,
+          -128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light91",
+        "position": [
+          10880,
+          128,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light92",
+        "position": [
+          10880,
+          384,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light93",
+        "position": [
+          10880,
+          640,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light94",
+        "position": [
+          10880,
+          896,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      },
+      {
+        "name": "TLM_REF_RHE_Light95",
+        "position": [
+          10880,
+          1152,
+          160
+        ],
+        "parent": "TLM_CELL_RedHollow"
+      }
+    ]
+  },
+  "geometry": {
+    "method": "Typed exact model-bound AABBs;192-unit sampled paths, full128-radius cohort envelopes/support and minimum128headroom. Not native collision/navmesh/visibility proof",
+    "protectedCount": 1609,
+    "minimumHeadroom": 224,
+    "boxes": [
+      {
+        "Name": "NineFloor6144_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof6144_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor6144_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof6144_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor6144_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof6144_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor6656_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof6656_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor6656_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof6656_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor6656_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof6656_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor7168_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof7168_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor7168_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof7168_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor7168_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof7168_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor7680_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof7680_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor7680_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof7680_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineFloor7680_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "NineRoof7680_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "NineSouth6144",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineNorth6144",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 6400,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineSouth6656",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineNorth6656",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 6400,
+        "MaxX": 6912,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineSouth7168",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineNorth7168",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 6912,
+        "MaxX": 7424,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineSouth7680",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineNorth7680",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 7424,
+        "MaxX": 7936,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineWest0",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 5888,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineEast0",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 7936,
+        "MaxX": 7936,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineWest512",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 5888,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineEast512",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 7936,
+        "MaxX": 7936,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineWest1024",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 5888,
+        "MaxX": 5888,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "NineEast1024",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 7936,
+        "MaxX": 7936,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryFloor9216_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof9216_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor9216_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof9216_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor9216_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof9216_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor9728_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof9728_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor9728_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof9728_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor9728_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof9728_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor10240_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof10240_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor10240_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof10240_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor10240_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof10240_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor10752_0",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof10752_0",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor10752_512",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof10752_512",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GalleryFloor10752_1024",
+        "Base": "QryFloor01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 0
+      },
+      {
+        "Name": "GalleryRoof10752_1024",
+        "Base": "CaveRmCeiling512v01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 485,
+        "MaxZ": 513
+      },
+      {
+        "Name": "GallerySouth9216",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryNorth9216",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 9472,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GallerySouth9728",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryNorth9728",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 9472,
+        "MaxX": 9984,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GallerySouth10240",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryNorth10240",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 9984,
+        "MaxX": 10496,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GallerySouth10752",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": -256,
+        "MaxY": -256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryNorth10752",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 10496,
+        "MaxX": 11008,
+        "MinY": 1280,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryWest0",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 8960,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryEast0",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 11008,
+        "MaxX": 11008,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryWest512",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 8960,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryEast512",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 11008,
+        "MaxX": 11008,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryWest1024",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 8960,
+        "MaxX": 8960,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GalleryEast1024",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 11008,
+        "MaxX": 11008,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South256",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 0,
+        "MaxX": 512,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North256",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 0,
+        "MaxX": 512,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South768",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 512,
+        "MaxX": 1024,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North768",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 512,
+        "MaxX": 1024,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South1280",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 1024,
+        "MaxX": 1536,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North1280",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 1024,
+        "MaxX": 1536,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South1792",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 1536,
+        "MaxX": 2048,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North1792",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 1536,
+        "MaxX": 2048,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South2304",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 2048,
+        "MaxX": 2560,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North2304",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 2048,
+        "MaxX": 2560,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South2816",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 2560,
+        "MaxX": 3072,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North2816",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 2560,
+        "MaxX": 3072,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South3328",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 3072,
+        "MaxX": 3584,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North3328",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 3072,
+        "MaxX": 3584,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "South3840",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 3584,
+        "MaxX": 4096,
+        "MinY": 0,
+        "MaxY": 0,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "North3840",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 3584,
+        "MaxX": 4096,
+        "MinY": 1792,
+        "MaxY": 1792,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "West256",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": -1.1190115e-05,
+        "MaxX": 1.1190115e-05,
+        "MinY": 0,
+        "MaxY": 512,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "East256",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 4096,
+        "MaxX": 4096,
+        "MinY": 0,
+        "MaxY": 512,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "West768",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": -1.1190115e-05,
+        "MaxX": 1.1190115e-05,
+        "MinY": 512,
+        "MaxY": 1024,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "East768",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 4096,
+        "MaxX": 4096,
+        "MinY": 512,
+        "MaxY": 1024,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "West1280",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": -1.1190115e-05,
+        "MaxX": 1.1190115e-05,
+        "MinY": 1024,
+        "MaxY": 1536,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "East1280",
+        "Base": "QryCubeWall01",
+        "Outside": true,
+        "MinX": 4096,
+        "MaxX": 4096,
+        "MinY": 1024,
+        "MaxY": 1536,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "Trees256",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 187,
+        "MaxX": 347,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge256",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 169,
+        "MaxX": 362,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "Trees768",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 699,
+        "MaxX": 859,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge768",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 681,
+        "MaxX": 874,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "Trees1280",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 1211,
+        "MaxX": 1371,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge1280",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 1193,
+        "MaxX": 1386,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "Trees1792",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 1723,
+        "MaxX": 1883,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge1792",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 1705,
+        "MaxX": 1898,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "Trees2304",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 2235,
+        "MaxX": 2395,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge2304",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 2217,
+        "MaxX": 2410,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "Trees2816",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 2747,
+        "MaxX": 2907,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge2816",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 2729,
+        "MaxX": 2922,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "Trees3328",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 3259,
+        "MaxX": 3419,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge3328",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 3241,
+        "MaxX": 3434,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "Trees3840",
+        "Base": "TreeMapleForest6",
+        "Outside": true,
+        "MinX": 3771,
+        "MaxX": 3931,
+        "MinY": 2201,
+        "MaxY": 2404,
+        "MinZ": 0,
+        "MaxZ": 1230
+      },
+      {
+        "Name": "QuarryEdge3840",
+        "Base": "QryRockM01",
+        "Outside": true,
+        "MinX": 3753,
+        "MaxX": 3946,
+        "MinY": 1595,
+        "MaxY": 1744,
+        "MinZ": 0,
+        "MaxZ": 119
+      },
+      {
+        "Name": "CourtBack",
+        "Base": "ShackWallFlat02",
+        "Outside": true,
+        "MinX": 1024,
+        "MaxX": 1280,
+        "MinY": 1532,
+        "MaxY": 1540,
+        "MinZ": 0,
+        "MaxZ": 198
+      },
+      {
+        "Name": "CourtRoof",
+        "Base": "ShackMidRoof01",
+        "Outside": true,
+        "MinX": 1022,
+        "MaxX": 1280,
+        "MinY": 1273,
+        "MaxY": 1544,
+        "MinZ": 240,
+        "MaxZ": 252
+      },
+      {
+        "Name": "CourtPost-112_-112",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 1032,
+        "MaxX": 1048,
+        "MinY": 1290,
+        "MaxY": 1302,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "CourtPost-112_112",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 1032,
+        "MaxX": 1048,
+        "MinY": 1514,
+        "MaxY": 1526,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "CourtPost112_-112",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 1256,
+        "MaxX": 1272,
+        "MinY": 1290,
+        "MaxY": 1302,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "CourtPost112_112",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 1256,
+        "MaxX": 1272,
+        "MinY": 1514,
+        "MaxY": 1526,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "HoistRoof",
+        "Base": "ShackMidRoof01",
+        "Outside": true,
+        "MinX": 2686,
+        "MaxX": 2944,
+        "MinY": 377,
+        "MaxY": 648,
+        "MinZ": 240,
+        "MaxZ": 252
+      },
+      {
+        "Name": "HoistDeskRoof",
+        "Base": "ShackMidRoof01",
+        "Outside": true,
+        "MinX": 2942,
+        "MaxX": 3200,
+        "MinY": 377,
+        "MaxY": 648,
+        "MinZ": 240,
+        "MaxZ": 252
+      },
+      {
+        "Name": "HoistPost2704_400",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 2696,
+        "MaxX": 2712,
+        "MinY": 394,
+        "MaxY": 406,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "HoistPost2704_624",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 2696,
+        "MaxX": 2712,
+        "MinY": 618,
+        "MaxY": 630,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "HoistPost3184_400",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 3176,
+        "MaxX": 3192,
+        "MinY": 394,
+        "MaxY": 406,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "HoistPost3184_624",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 3176,
+        "MaxX": 3192,
+        "MinY": 618,
+        "MaxY": 630,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "CourtGatePost128",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 1400,
+        "MaxX": 1416,
+        "MinY": 122,
+        "MaxY": 134,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "CourtGatePost384",
+        "Base": "FenceWoodPost01",
+        "Outside": true,
+        "MinX": 1400,
+        "MaxX": 1416,
+        "MinY": 378,
+        "MaxY": 390,
+        "MinZ": 0,
+        "MaxZ": 240
+      },
+      {
+        "Name": "CourtGateRoof",
+        "Base": "ShackMidRoof01",
+        "Outside": true,
+        "MinX": 1278,
+        "MaxX": 1536,
+        "MinY": 121,
+        "MaxY": 392,
+        "MinZ": 240,
+        "MaxZ": 252
+      },
+      {
+        "Name": "GallerySeal0",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 10528,
+        "MaxX": 10528,
+        "MinY": -256,
+        "MaxY": 256,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GallerySeal512",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 10528,
+        "MaxX": 10528,
+        "MinY": 256,
+        "MaxY": 768,
+        "MinZ": 0,
+        "MaxZ": 512
+      },
+      {
+        "Name": "GallerySeal1024",
+        "Base": "QryCubeWall01",
+        "Outside": false,
+        "MinX": 10528,
+        "MaxX": 10528,
+        "MinY": 768,
+        "MaxY": 1280,
+        "MinZ": 0,
+        "MaxZ": 512
+      }
+    ]
+  },
+  "changedPsc": [
+    "MQ02CQuest.psc",
+    "RedHollowWalk.psc",
+    "RedHollowTalk.psc"
+  ],
+  "scripts": 34,
+  "nativeAcceptance": null,
+  "allocation": {
+    "baseline": "d43bd336fde2837c9c499b273c4becdee3f4cef9",
+    "unchangedPrefixLines": 2542,
+    "append": [
+      {
+        "record": "TLM_WRLD_RH_Surface",
+        "id": 3319,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_CELL_RH_SurfacePersistent",
+        "id": 3320,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_CELL_RH_Surface",
+        "id": 3321,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_LAND_RH_Surface",
+        "id": 3322,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor6144_0",
+        "id": 3323,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof6144_0",
+        "id": 3324,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor6144_512",
+        "id": 3325,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof6144_512",
+        "id": 3326,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor6144_1024",
+        "id": 3327,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof6144_1024",
+        "id": 3328,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor6656_0",
+        "id": 3329,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof6656_0",
+        "id": 3330,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor6656_512",
+        "id": 3331,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof6656_512",
+        "id": 3332,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor6656_1024",
+        "id": 3333,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof6656_1024",
+        "id": 3334,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor7168_0",
+        "id": 3335,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof7168_0",
+        "id": 3336,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor7168_512",
+        "id": 3337,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof7168_512",
+        "id": 3338,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor7168_1024",
+        "id": 3339,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof7168_1024",
+        "id": 3340,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor7680_0",
+        "id": 3341,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof7680_0",
+        "id": 3342,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor7680_512",
+        "id": 3343,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof7680_512",
+        "id": 3344,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineFloor7680_1024",
+        "id": 3345,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineRoof7680_1024",
+        "id": 3346,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineSouth6144",
+        "id": 3347,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineNorth6144",
+        "id": 3348,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineSouth6656",
+        "id": 3349,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineNorth6656",
+        "id": 3350,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineSouth7168",
+        "id": 3351,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineNorth7168",
+        "id": 3352,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineSouth7680",
+        "id": 3353,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineNorth7680",
+        "id": 3354,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineWest0",
+        "id": 3355,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineEast0",
+        "id": 3356,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineWest512",
+        "id": 3357,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineEast512",
+        "id": 3358,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineWest1024",
+        "id": 3359,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_NineEast1024",
+        "id": 3360,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor9216_0",
+        "id": 3361,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof9216_0",
+        "id": 3362,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor9216_512",
+        "id": 3363,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof9216_512",
+        "id": 3364,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor9216_1024",
+        "id": 3365,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof9216_1024",
+        "id": 3366,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor9728_0",
+        "id": 3367,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof9728_0",
+        "id": 3368,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor9728_512",
+        "id": 3369,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof9728_512",
+        "id": 3370,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor9728_1024",
+        "id": 3371,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof9728_1024",
+        "id": 3372,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor10240_0",
+        "id": 3373,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof10240_0",
+        "id": 3374,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor10240_512",
+        "id": 3375,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof10240_512",
+        "id": 3376,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor10240_1024",
+        "id": 3377,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof10240_1024",
+        "id": 3378,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor10752_0",
+        "id": 3379,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof10752_0",
+        "id": 3380,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor10752_512",
+        "id": 3381,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof10752_512",
+        "id": 3382,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryFloor10752_1024",
+        "id": 3383,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryRoof10752_1024",
+        "id": 3384,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GallerySouth9216",
+        "id": 3385,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryNorth9216",
+        "id": 3386,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GallerySouth9728",
+        "id": 3387,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryNorth9728",
+        "id": 3388,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GallerySouth10240",
+        "id": 3389,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryNorth10240",
+        "id": 3390,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GallerySouth10752",
+        "id": 3391,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryNorth10752",
+        "id": 3392,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryWest0",
+        "id": 3393,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryEast0",
+        "id": 3394,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryWest512",
+        "id": 3395,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryEast512",
+        "id": 3396,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryWest1024",
+        "id": 3397,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GalleryEast1024",
+        "id": 3398,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South256",
+        "id": 3399,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North256",
+        "id": 3400,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South768",
+        "id": 3401,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North768",
+        "id": 3402,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South1280",
+        "id": 3403,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North1280",
+        "id": 3404,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South1792",
+        "id": 3405,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North1792",
+        "id": 3406,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South2304",
+        "id": 3407,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North2304",
+        "id": 3408,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South2816",
+        "id": 3409,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North2816",
+        "id": 3410,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South3328",
+        "id": 3411,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North3328",
+        "id": 3412,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_South3840",
+        "id": 3413,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_North3840",
+        "id": 3414,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_West256",
+        "id": 3415,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_East256",
+        "id": 3416,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_West768",
+        "id": 3417,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_East768",
+        "id": 3418,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_West1280",
+        "id": 3419,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_East1280",
+        "id": 3420,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees256",
+        "id": 3421,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge256",
+        "id": 3422,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees768",
+        "id": 3423,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge768",
+        "id": 3424,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees1280",
+        "id": 3425,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge1280",
+        "id": 3426,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees1792",
+        "id": 3427,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge1792",
+        "id": 3428,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees2304",
+        "id": 3429,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge2304",
+        "id": 3430,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees2816",
+        "id": 3431,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge2816",
+        "id": 3432,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees3328",
+        "id": 3433,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge3328",
+        "id": 3434,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Trees3840",
+        "id": 3435,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_QuarryEdge3840",
+        "id": 3436,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtBack",
+        "id": 3437,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtRoof",
+        "id": 3438,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistBack",
+        "id": 3439,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistRoof",
+        "id": 3440,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light0",
+        "id": 3441,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light1",
+        "id": 3442,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light2",
+        "id": 3443,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light3",
+        "id": 3444,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light4",
+        "id": 3445,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light5",
+        "id": 3446,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light6",
+        "id": 3447,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light7",
+        "id": 3448,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light8",
+        "id": 3449,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light9",
+        "id": 3450,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light10",
+        "id": 3451,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light11",
+        "id": 3452,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light12",
+        "id": 3453,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light13",
+        "id": 3454,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light14",
+        "id": 3455,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light15",
+        "id": 3456,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light16",
+        "id": 3457,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light17",
+        "id": 3458,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light18",
+        "id": 3459,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light19",
+        "id": 3460,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light20",
+        "id": 3461,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light21",
+        "id": 3462,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light22",
+        "id": 3463,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light23",
+        "id": 3464,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light24",
+        "id": 3465,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light25",
+        "id": 3466,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light26",
+        "id": 3467,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light27",
+        "id": 3468,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light28",
+        "id": 3469,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light29",
+        "id": 3470,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light30",
+        "id": 3471,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light31",
+        "id": 3472,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light32",
+        "id": 3473,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light33",
+        "id": 3474,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light34",
+        "id": 3475,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light35",
+        "id": 3476,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light36",
+        "id": 3477,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light37",
+        "id": 3478,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light38",
+        "id": 3479,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light39",
+        "id": 3480,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light40",
+        "id": 3481,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light41",
+        "id": 3482,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light42",
+        "id": 3483,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light43",
+        "id": 3484,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light44",
+        "id": 3485,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light45",
+        "id": 3486,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light46",
+        "id": 3487,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light47",
+        "id": 3488,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light48",
+        "id": 3489,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light49",
+        "id": 3490,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light50",
+        "id": 3491,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light51",
+        "id": 3492,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light52",
+        "id": 3493,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light53",
+        "id": 3494,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light54",
+        "id": 3495,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light55",
+        "id": 3496,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light56",
+        "id": 3497,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light57",
+        "id": 3498,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light58",
+        "id": 3499,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light59",
+        "id": 3500,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light60",
+        "id": 3501,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light61",
+        "id": 3502,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light62",
+        "id": 3503,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light63",
+        "id": 3504,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light64",
+        "id": 3505,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light65",
+        "id": 3506,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light66",
+        "id": 3507,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light67",
+        "id": 3508,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light68",
+        "id": 3509,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light69",
+        "id": 3510,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light70",
+        "id": 3511,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light71",
+        "id": 3512,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light72",
+        "id": 3513,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light73",
+        "id": 3514,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light74",
+        "id": 3515,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light75",
+        "id": 3516,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light76",
+        "id": 3517,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light77",
+        "id": 3518,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light78",
+        "id": 3519,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light79",
+        "id": 3520,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light80",
+        "id": 3521,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light81",
+        "id": 3522,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light82",
+        "id": 3523,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light83",
+        "id": 3524,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light84",
+        "id": 3525,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light85",
+        "id": 3526,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light86",
+        "id": 3527,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light87",
+        "id": 3528,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light88",
+        "id": 3529,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light89",
+        "id": 3530,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light90",
+        "id": 3531,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light91",
+        "id": 3532,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light92",
+        "id": 3533,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light93",
+        "id": 3534,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light94",
+        "id": 3535,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_Light95",
+        "id": 3536,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtPost-112_-112",
+        "id": 3537,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtPost-112_112",
+        "id": 3538,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtPost112_-112",
+        "id": 3539,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtPost112_112",
+        "id": 3540,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost-112_-112",
+        "id": 3541,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost-112_112",
+        "id": 3542,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost112_-112",
+        "id": 3543,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost112_112",
+        "id": 3544,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_ACTI_RHE_SurfaceFall",
+        "id": 3545,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RH_SurfaceFall",
+        "id": 3546,
+        "emittedInLatestSkeletonReport": true
+      },
+      {
+        "record": "TLM_ACTI_RHE_GalleryFall",
+        "id": 3547,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RH_GalleryFall",
+        "id": 3548,
+        "emittedInLatestSkeletonReport": true
+      },
+      {
+        "record": "TLM_REF_RHE_HoistDeskRoof",
+        "id": 3549,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost2704_400",
+        "id": 3550,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost2704_624",
+        "id": 3551,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost3184_400",
+        "id": 3552,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_HoistPost3184_624",
+        "id": 3553,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtGatePost128",
+        "id": 3554,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtGatePost384",
+        "id": 3555,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_CourtGateRoof",
+        "id": 3556,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GallerySeal0",
+        "id": 3557,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GallerySeal512",
+        "id": 3558,
+        "emittedInLatestSkeletonReport": false
+      },
+      {
+        "record": "TLM_REF_RHE_GallerySeal1024",
+        "id": 3559,
+        "emittedInLatestSkeletonReport": false
+      }
+    ],
+    "reservationPolicy": "Append-only; non-emitted WIP reservations remain reserved and are never reassigned. Master and full/skeleton builds allocate the same keys."
+  }
+}

@@ -61,6 +61,8 @@ ReferenceAlias Property Alias_LabelCage Auto Const Mandatory
 ReferenceAlias Property Alias_LabelNine Auto Const Mandatory
 ReferenceAlias Property Alias_LabelGallery Auto Const Mandatory
 ReferenceAlias Property Alias_Fall Auto Const Mandatory
+ReferenceAlias Property Alias_SurfaceFall Auto Const Mandatory
+ReferenceAlias Property Alias_GalleryFall Auto Const Mandatory
 ReferenceAlias Property Alias_Miner01 Auto Const Mandatory
 ReferenceAlias Property Alias_Miner02 Auto Const Mandatory
 ReferenceAlias Property Alias_Miner03 Auto Const Mandatory
@@ -680,6 +682,8 @@ bool Function Paper(string paperId, ObjectReference paperRef)
 EndFunction
 
 bool Function OpenDoor()
+	lastSample = -1.0
+	lastArea = 0
 	If !IsRunning()
 		If !Start() || !IsRunning()
 			Return false
@@ -695,6 +699,8 @@ bool Function OpenDoor()
 EndFunction
 
 Function Loaded()
+	lastSample = -1.0
+	lastArea = 0
 	If !IsRunning()
 		Return
 	EndIf
@@ -704,6 +710,8 @@ Function Loaded()
 	lastArea = 0
 	ArmRope()
 	StartTimer(1.0, 1)
+	lastSample = -1.0
+	lastArea = 0
 EndFunction
 
 Function FairTransitGap()
@@ -1063,12 +1071,17 @@ bool Function MovePlayer(ObjectReference targetRef)
 	lastSample = -1.0
 	lastArea = 0
 	If !Road().PlayerAlive() || !targetRef
+		lastSample = -1.0
+		lastArea = 0
 		Return false
 	EndIf
 	Game.GetPlayer().MoveTo(targetRef)
 	lastSample = -1.0
 	lastArea = 0
-	Return Road().PlayerAlive() && Road().At(Game.GetPlayer(),targetRef)
+	bool arrived = Road().PlayerAlive() && Road().At(Game.GetPlayer(),targetRef)
+	lastSample = -1.0
+	lastArea = 0
+	Return arrived
 EndFunction
 
 Function UseHoist()
@@ -1519,9 +1532,47 @@ Function ShowLabel(int who)
 EndFunction
 
 Function Entered(int who)
-	If who == 45 && Local() && Road().PlayerAlive()
-		MovePlayer(Ref(Alias_MouthArrival))
+	If busy || Utility.IsInMenuMode()
+		Return
 	EndIf
+	If who == 45 && FallContext(Alias_Fall,Alias_CageBelow,5888.0,7936.0,-384.0,1152.0)
+		MovePlayer(Ref(Alias_CageBelow))
+	ElseIf who == 46 && FallContext(Alias_SurfaceFall,Alias_GapArrival,0.0,4096.0,0.0,1792.0)
+		If Game.GetPlayer().GetPositionX() < 1792.0
+			MovePlayer(Ref(Alias_GapArrival))
+		Else
+			MovePlayer(Ref(Alias_MouthArrival))
+		EndIf
+	ElseIf who == 47 && FallContext(Alias_GalleryFall,Alias_GalleryArrival,8960.0,11008.0,-256.0,1280.0)
+		MovePlayer(Ref(Alias_GalleryArrival))
+	EndIf
+EndFunction
+
+bool Function RecoverFall()
+	If busy || Utility.IsInMenuMode()
+		Return false
+	EndIf
+	If FallContext(Alias_Fall,Alias_CageBelow,5888.0,7936.0,-384.0,1152.0)
+		Entered(45)
+		Return true
+	ElseIf FallContext(Alias_SurfaceFall,Alias_GapArrival,0.0,4096.0,0.0,1792.0)
+		Entered(46)
+		Return true
+	ElseIf FallContext(Alias_GalleryFall,Alias_GalleryArrival,8960.0,11008.0,-256.0,1280.0)
+		Entered(47)
+		Return true
+	EndIf
+	Return false
+EndFunction
+
+bool Function FallContext(ReferenceAlias fallAlias, ReferenceAlias safeAlias, float minX, float maxX, float minY, float maxY)
+	If !Ready() || !Road().HasArrived() || !Road().PlayerAlive() || !Ref(fallAlias) || !Ref(safeAlias)
+		Return false
+	EndIf
+	If Game.GetPlayer().GetParentCell() != Ref(fallAlias).GetParentCell() || Ref(safeAlias).GetParentCell() != Ref(fallAlias).GetParentCell() || Game.GetPlayer().GetPositionZ() > -400.0
+		Return false
+	EndIf
+	Return Game.GetPlayer().GetPositionX() >= minX && Game.GetPlayer().GetPositionX() <= maxX && Game.GetPlayer().GetPositionY() >= minY && Game.GetPlayer().GetPositionY() <= maxY
 EndFunction
 
 Function HollowActorDied(int who, int causeCode, Actor eventActor)
@@ -1554,6 +1605,12 @@ EndFunction
 
 Event OnTimer(int aiTimerID)
 	If aiTimerID != 1
+		Return
+	EndIf
+	If RecoverFall()
+		lastSample = -1.0
+		lastArea = 0
+		StartTimer(1.0,1)
 		Return
 	EndIf
 	float sampleNow = Utility.GetCurrentRealTime()

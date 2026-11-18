@@ -194,11 +194,11 @@ Activator (112)
   000A9F  TLM_ACTI_RH_Exit  "Return to Mercy Crossing"
   000AA0  TLM_ACTI_RH_Resolve  "Rescue outcome and pending break plan"
   000AA1  TLM_ACTI_RH_BodyKey  "Blevins's body key / hoist fallback"
-  000AA2  TLM_ACTI_RH_LabelGap  "Greybox: toll and gallows"
-  000AA3  TLM_ACTI_RH_LabelMouth  "Greybox: the Mouth"
-  000AA4  TLM_ACTI_RH_LabelCage  "Greybox: supported cage staging"
-  000AA5  TLM_ACTI_RH_LabelNine  "Greybox: the Nine level"
-  000AA6  TLM_ACTI_RH_LabelGallery  "Greybox: sealed gallery"
+  000AA2  TLM_ACTI_RH_LabelGap  "Outside: Gap court and toll"
+  000AA3  TLM_ACTI_RH_LabelMouth  "Outside: mine work yard"
+  000AA4  TLM_ACTI_RH_LabelCage  "Hoist: outside and below"
+  000AA5  TLM_ACTI_RH_LabelNine  "Belowground: Nine level"
+  000AA6  TLM_ACTI_RH_LabelGallery  "Belowground: sealed gallery"
   000AA7  TLM_ACTI_RH_Fall  "Supported-floor return"
   000C23  TLM_ACTI_FF_Entry  "Four Flags: entry, handbill and returns"
   000C24  TLM_ACTI_FF_Exit  "Return to Mercy"
@@ -1408,12 +1408,12 @@ Three roads are playable. Four Flags entry is available after the first section.
           button 1: "Not now"
   000AE6  TLM_MSG_RH_StageTravel  [box]  "[Staged travel]
 
-The supported markers represent the path, not a regional landscape. Continue?"
+A marked transfer links the labelled areas. It pauses the deadline and keeps unfinished work intact. Continue?"
           button 0: "Continue"
           button 1: "Not now"
   000AE7  TLM_MSG_RH_Descend  [box]  "[Staged hoist]
 
-The cage journey is represented by relocation to supported floor. No lift physics or four-minute wait. Continue?"
+Go from the outdoor work yard to the enclosed Nine level. This is a staged transfer; the hoist does not physically move. Continue?"
           button 0: "Continue"
           button 1: "Not now"
   000AE8  TLM_MSG_RH_Rescue  [box]  "[Bring the shift up]
@@ -1574,25 +1574,25 @@ Unsettled work remains unsettled. Return now?"
 
 Red Hollow road complete. Three roads and Four Flags entry remain available."
           button 0: "Continue"
-  000B03  TLM_MSG_RH_LabelGap  [box]  "[Greybox: toll and court]
+  000B03  TLM_MSG_RH_LabelGap  [box]  "[Outside: Gap court]
 
 Court, receipt, rope target and evidence are optional. A supported path goes around the labelled gate to the mine route."
           button 0: "Continue"
-  000B04  TLM_MSG_RH_LabelMouth  [box]  "[Greybox: the Mouth]
+  000B04  TLM_MSG_RH_LabelMouth  [box]  "[Outside: mine work yard]
 
-Hoist, warning, firing control and desk evidence. The board represents current entrance status; no whole settlement crowd is simulated."
+The hoist leads below to the Nine. Warning, firing control and desk evidence are separate choices. The labelled exit returns to Mercy."
           button 0: "Continue"
-  000B05  TLM_MSG_RH_LabelCage  [box]  "[Greybox: cage staging]
+  000B05  TLM_MSG_RH_LabelCage  [box]  "[Hoist: outside and below]
 
 Supported surface/below markers represent the hoist. Transit pauses the deadline. Every miner arrival must be observed."
           button 0: "Continue"
-  000B06  TLM_MSG_RH_LabelNine  [box]  "[Greybox: the Nine level]
+  000B06  TLM_MSG_RH_LabelNine  [box]  "[Belowground: Nine level]
 
-Eleven separate unnamed roles stand at the break. One represents the already authored Pell relationship without a new name or speaking part."
+Night-shift muster, the cage and inner-break control. Bringing the shift up and choosing an inner-break blast are separate decisions."
           button 0: "Continue"
-  000B07  TLM_MSG_RH_LabelGallery  [box]  "[Greybox: sealed gallery]
+  000B07  TLM_MSG_RH_LabelGallery  [box]  "[Belowground: sealed gallery]
 
-Dorn's bounded gallery and lamp. No passage beyond the stone door, player-origin answer or town-wide allegiance is available."
+The sealed gallery ends here. The marked path returns to the Nine level; the hoist leads back to the outdoor yard."
           button 0: "Continue"
   000B08  TLM_MSG_RH_D_toll_board_1  [box]  "[Tolls at the Gap, page 1 of 3]
 
@@ -3479,7 +3479,7 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
            CastFrom = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH]
            CastInto = [alias 0 on TLM_MQ02C, alias 2 on TLM_MQ02C, alias 1 on TLM_MQ02C, alias 3 on TLM_MQ02C, alias 5 on TLM_MQ02C, alias 6 on TLM_MQ02C, alias 7 on TLM_MQ02C, alias 8 on TLM_MQ02C, alias 9 on TLM_MQ02C, alias 10 on TLM_MQ02C, alias 11 on TLM_MQ02C, alias 12 on TLM_MQ02C, alias 13 on TLM_MQ02C, alias 14 on TLM_MQ02C, alias 15 on TLM_MQ02C]
            ClockMenus = ["LoadingMenu", "Console", "LevelUpMenu", "MessageBoxMenu", "ContainerMenu", "ExamineMenu", "CookingMenu", "ExamineConfirmMenu", "RobotModMenu", "PowerArmorModMenu", "WorkshopMenu", "PromptMenu", "SitWaitMenu", "SleepWaitMenu", "DialogueMenu", "BarterMenu", "LockpickingMenu", "BookMenu", "SPECIALMenu", "FavoritesMenu", "PauseMenu", "VATSMenu", "PipboyMenu", "PipboyHolotapeMenu", "TerminalMenu", "LooksMenu"]
-           ZoneOn = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 15 on TLM_RH, alias 17 on TLM_RH, alias 19 on TLM_RH, alias 20 on TLM_RH, alias 21 on TLM_RH, alias 22 on TLM_RH, alias 23 on TLM_RH, alias 24 on TLM_RH, alias 25 on TLM_RH, alias 26 on TLM_RH, alias 27 on TLM_RH, alias 28 on TLM_RH, alias 29 on TLM_RH, alias 30 on TLM_RH, alias 31 on TLM_RH, alias 32 on TLM_RH, alias 33 on TLM_RH, alias 34 on TLM_RH, alias 35 on TLM_RH, alias 36 on TLM_RH, alias 37 on TLM_RH, alias 38 on TLM_RH, alias 39 on TLM_RH, alias 41 on TLM_RH, alias 43 on TLM_RH, alias 44 on TLM_RH, alias 45 on TLM_RH, alias 46 on TLM_RH, alias 47 on TLM_RH, alias 48 on TLM_RH, alias 49 on TLM_RH, alias 50 on TLM_RH, alias 51 on TLM_RH, alias 52 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH]
+           ZoneOn = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 15 on TLM_RH, alias 17 on TLM_RH, alias 19 on TLM_RH, alias 20 on TLM_RH, alias 21 on TLM_RH, alias 22 on TLM_RH, alias 23 on TLM_RH, alias 24 on TLM_RH, alias 25 on TLM_RH, alias 26 on TLM_RH, alias 27 on TLM_RH, alias 28 on TLM_RH, alias 29 on TLM_RH, alias 30 on TLM_RH, alias 31 on TLM_RH, alias 32 on TLM_RH, alias 33 on TLM_RH, alias 34 on TLM_RH, alias 35 on TLM_RH, alias 36 on TLM_RH, alias 37 on TLM_RH, alias 38 on TLM_RH, alias 39 on TLM_RH, alias 41 on TLM_RH, alias 43 on TLM_RH, alias 44 on TLM_RH, alias 45 on TLM_RH, alias 46 on TLM_RH, alias 47 on TLM_RH, alias 48 on TLM_RH, alias 49 on TLM_RH, alias 50 on TLM_RH, alias 51 on TLM_RH, alias 52 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH, alias 99 on TLM_RH, alias 100 on TLM_RH]
            Alias_MercyTravel = alias 0 on TLM_RH
            Alias_MercyReturn = alias 1 on TLM_RH
            Alias_GapArrival = alias 2 on TLM_RH
@@ -3577,6 +3577,8 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
            Alias_Below11 = alias 94 on TLM_RH
            Alias_Cage11 = alias 95 on TLM_RH
            Alias_Surface11 = alias 96 on TLM_RH
+           Alias_SurfaceFall = alias 99 on TLM_RH
+           Alias_GalleryFall = alias 100 on TLM_RH
            BelowSlots = [alias 64 on TLM_RH, alias 67 on TLM_RH, alias 70 on TLM_RH, alias 73 on TLM_RH, alias 76 on TLM_RH, alias 79 on TLM_RH, alias 82 on TLM_RH, alias 85 on TLM_RH, alias 88 on TLM_RH, alias 91 on TLM_RH, alias 94 on TLM_RH]
            CageSlots = [alias 65 on TLM_RH, alias 68 on TLM_RH, alias 71 on TLM_RH, alias 74 on TLM_RH, alias 77 on TLM_RH, alias 80 on TLM_RH, alias 83 on TLM_RH, alias 86 on TLM_RH, alias 89 on TLM_RH, alias 92 on TLM_RH, alias 95 on TLM_RH]
            SurfaceSlots = [alias 66 on TLM_RH, alias 69 on TLM_RH, alias 72 on TLM_RH, alias 75 on TLM_RH, alias 78 on TLM_RH, alias 81 on TLM_RH, alias 84 on TLM_RH, alias 87 on TLM_RH, alias 90 on TLM_RH, alias 93 on TLM_RH, alias 96 on TLM_RH]
@@ -3881,6 +3883,12 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
   alias 98 Player  (reference) [Optional]
            script TLM:RedHollowTalk
                     Who = -1
+  alias 99 SurfaceFall  (reference) [Optional, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 46
+  alias 100 GalleryFall  (reference) [Optional, AllowDisabled]
+           script TLM:RedHollowTalk
+                    Who = 47
 
 Quest TLM_GW_Relief  000C07  "Greenwater winter relief (local ledger)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:GreenwaterRelief
@@ -4178,7 +4186,7 @@ Quest TLM_FF_Entry  000C34  "Four Flags entry adapter"  type=None priority=30 fl
                     FairQuest = TLM_MQ03
   alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
 
-Not wired yet (959):
+Not wired yet (966):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -4831,6 +4839,7 @@ Not wired yet (959):
   - TLM_REF_FF_Floor84: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_FF_Floor85: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_FF_Floor86: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - RH environment requires strict typed owned-master metadata; no outdoor/light construction in skeleton mode
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_Core script TLM:WorldCases.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
@@ -5005,6 +5014,10 @@ Not wired yet (959):
   - TLM_NM alias PlatformExit: its reference TLM_REF_NM_PlatformExit is not placed
   - TLM_NM alias BackFromPlatform: its reference TLM_REF_NM_BackFromPlatform is not placed
   - TLM_NM alias Fall: its reference TLM_REF_NM_Fall is not placed
+  - Strict placed-reference list unavailable: RHOriginalMiners
+  - Strict placed-reference list unavailable: RHSurfaceReceipts
+  - Strict placed-reference binding unavailable: RHBelowAnchor
+  - Strict placed-reference binding unavailable: RHBreakControl
   - TLM_MQ02C script TLM:MQ02CQuest.Caps: needs 'Caps001' from Fallout4.esm
   - TLM_RH alias MercyTravel: its reference TLM_REF_RH_MercyTravel is not placed
   - TLM_RH alias MercyReturn: its reference TLM_REF_RH_MercyReturn is not placed
@@ -5104,6 +5117,8 @@ Not wired yet (959):
   - TLM_RH alias Cage11: its reference TLM_REF_RH_Cage11 is not placed
   - TLM_RH alias Surface11: its reference TLM_REF_RH_Surface11 is not placed
   - TLM_RH alias Player: needs PlayerRef from Fallout4.esm
+  - TLM_RH alias SurfaceFall: its reference TLM_REF_RH_SurfaceFall is not placed
+  - TLM_RH alias GalleryFall: its reference TLM_REF_RH_GalleryFall is not placed
   - STRICT relief unavailable: Corn requires exact Ingestible Corn named 'Corn'; property omitted, ledger fails closed
   - STRICT relief unavailable: Caps requires exact MiscItem Caps001 named 'Bottlecap'; property omitted, ledger fails closed
   - TLM_GW_Relief alias Player: needs PlayerRef from Fallout4.esm

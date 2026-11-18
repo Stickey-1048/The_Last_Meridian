@@ -11,7 +11,7 @@ from test_red_hollow import Hollow,P,R
 def zone(pos):
     x,y,z=pos
     if -128<=x<=1664:return 'court'
-    if 2944<=x<=4864:return 'surface'
+    if 1920<=x<=3840:return 'surface'
     if 6016<=x<=7808:return 'below'
     if 9088<=x<=10624:return 'gallery'
     return None

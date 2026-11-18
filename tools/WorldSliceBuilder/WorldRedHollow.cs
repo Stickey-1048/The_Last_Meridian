@@ -5,8 +5,8 @@ using Noggog;
 
 public static partial class WorldStory
 {
-    // Only these two pieces belong in the exterior. The fifty-one-alias
-    // controller still points at the master's own, separately floored cell.
+    // Only two Mercy-side controls are cloned. Original actors and operative
+    // references remain master-owned in their exact allowlisted RH regions.
     public static readonly Dictionary<string,(float X,float Y,float Z)> RedHollowSites=new(){
         ["MercyTravel"]=(3520,2600,12),["MercyReturn"]=(3490,2570,32)
     };
@@ -28,7 +28,9 @@ public static partial class WorldStory
         var clone=original.Duplicate(mod.GetNextFormKey());clone.EditorID=RedHollowClone;
         clone.Name="The Last Meridian - exterior-linked Red Hollow (development)";
         var aliases=clone.Aliases?.OfType<QuestReferenceAlias>().ToArray()??throw new InvalidDataException("Red Hollow aliases missing");
-        if(aliases.Length!=99||aliases.Select(a=>a.Name).Distinct().Count()!=99||!RedHollowSites.Keys.All(n=>aliases.Any(a=>a.Name==n)))
+        int expectedAliases=surfaceRefs.Count>0?101:99;
+        ValidateRedHollowAliasPrefix(aliases,surfaceRefs.Count>0);
+        if(aliases.Length!=expectedAliases||aliases.Select(a=>a.Name).Distinct().Count()!=expectedAliases||!RedHollowSites.Keys.All(n=>aliases.Any(a=>a.Name==n)))
             throw new InvalidDataException("Unexpected Red Hollow alias contract");
         var mapping=new List<object>();
         foreach(var a in aliases){
@@ -62,7 +64,7 @@ public static partial class WorldStory
         foreach(var s in adapter.Scripts)Script(s);
         foreach(var a in adapter.Aliases){Remap(a.Property);foreach(var s in a.Scripts)Script(s);}
         mod.Quests.Add(clone);door.Object.SetTo(clone.FormKey);
-        return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),references=2,masterCellReferences=95,mapping};
+        return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),references=2,masterCellReferences=aliases.Length-4,surfaceReferences=surfaceRefs.Count>0?aliases.Count(a=>RedHollowSurfaceSites.ContainsKey(a.Name!)):0,mapping};
     }
 
     static void ValidateRedHollow(IFallout4ModGetter addon,IQuestGetter section)
@@ -73,7 +75,9 @@ public static partial class WorldStory
         if(bound.Length!=1||bound[0] is not IScriptObjectPropertyGetter door||door.Alias!=-1||door.Object.FormKey!=clone.FormKey)
             throw new InvalidDataException("Exterior first section does not open its Red Hollow controller");
         var aliases=clone.Aliases?.OfType<IQuestReferenceAliasGetter>().ToArray()??throw new InvalidDataException("Red Hollow aliases missing");
-        if(aliases.Length!=99||aliases.Select(a=>a.ID).Distinct().Count()!=99)throw new InvalidDataException("Red Hollow alias count/identity mismatch");
+        int expectedAliases=aliases.Any(a=>a.Name=="SurfaceFall")?101:99;
+        ValidateRedHollowAliasPrefix(aliases,expectedAliases==101);
+        if(aliases.Length!=expectedAliases||aliases.Select(a=>a.ID).Distinct().Count()!=expectedAliases)throw new InvalidDataException("Red Hollow alias count/identity mismatch");
         var refs=addon.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
         foreach(var a in aliases){
             if(a.Name=="Condemned"){

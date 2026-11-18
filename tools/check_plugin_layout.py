@@ -223,7 +223,8 @@ def placed_from_json(path):
     records numbered after its masters (None if the description names a record it does not list)."""
     if not os.path.exists(path):
         return None
-    data = json.load(open(path, encoding="utf-8-sig"))
+    with open(path, encoding="utf-8-sig") as source:
+        data = json.load(source)
     masters = [m.lower() for m in data.get("Masters", [])]
     own = {}
     for group in ("Records", "Messages", "Quests"):
@@ -232,6 +233,8 @@ def placed_from_json(path):
     out = {}
     for cell in data.get("Cells", []):
         for p in cell["Placed"]:
+            number,_,file=cell['FormKey'].partition(':')
+            p['ParentCellId']=((len(masters) if cell.get('OfThisPlugin') else masters.index(file.lower()))<<24)|int(number,16)
             base = p["Base"]
             if ":" in base:
                 number, _, file = base.partition(":")
@@ -254,7 +257,8 @@ def npcs_from_json(path):
     """EditorID -> what the builder's description says about each actor of the plugin's own, or None without the file."""
     if not os.path.exists(path):
         return None
-    data = json.load(open(path, encoding="utf-8-sig"))
+    with open(path, encoding="utf-8-sig") as source:
+        data = json.load(source)
     return {n["EditorId"]: n for n in data.get("Npcs", [])}
 
 
@@ -262,7 +266,8 @@ def own_ids_from_json(path):
     """EditorID -> the number of each record of the plugin's own, or None without the file."""
     if not os.path.exists(path):
         return None
-    data = json.load(open(path, encoding="utf-8-sig"))
+    with open(path, encoding="utf-8-sig") as source:
+        data = json.load(source)
     return {rec["EditorId"]: int(rec["FormKey"].split(":")[0], 16)
             for group in ("Records", "Messages", "Quests") for rec in data.get(group, [])}
 
@@ -383,6 +388,83 @@ def check_cells(buf, described=None):
     own = own_record_ids(buf, masters)
     cells = refs = 0
     seen = set()
+    def inspect_reference(ref, in_persistent, cell):
+        nonlocal refs
+        name = f"cell {cell:08X}"
+        _, kind, formid, flags, data = ref
+        refs += 1
+        seen.add(formid)
+        who = f"{kind} {formid:08X}"
+        if kind not in ("ACHR", "REFR"):
+            problems.append(f"{name}: holds a {kind} record")
+            return
+        if formid >> 24 != masters:
+            problems.append(f"{who}: is not a reference of this plugin (a master's reference copied into the plugin would replace it)")
+        if bool(flags & PERSISTENT) != in_persistent:
+            problems.append(f"{who}: flagged {'persistent' if flags & PERSISTENT else 'temporary'} "
+                            f"but in the cell's {'persistent' if in_persistent else 'temporary'} group")
+        subs = dict(subrecords(data))
+        base = struct.unpack("<I", subs["NAME"])[0] if len(subs.get("NAME", b"")) == 4 else None
+        if base is None:
+            problems.append(f"{who}: no base (NAME)")
+        elif base >> 24 > masters:
+            problems.append(f"{who}: its base {base:08X} belongs to a file the plugin does not name as a master")
+        elif base >> 24 == masters and base not in own:
+            problems.append(f"{who}: its base {base:08X} would be a record of this plugin, and the file has none with that id")
+        if len(subs.get("DATA", b"")) != 24:
+            problems.append(f"{who}: position and rotation (DATA) are {len(subs.get('DATA', b''))} bytes, expected 24")
+            return
+        box = None
+        if "XPRM" in subs:
+            if len(subs["XPRM"]) != 32:
+                problems.append(f"{who}: the primitive (XPRM) is {len(subs['XPRM'])} bytes, expected 32")
+            else:
+                box = struct.unpack_from("<3f", subs["XPRM"], 0)
+                shape = struct.unpack_from("<I", subs["XPRM"], 28)[0]
+                if shape not in (1, 2, 3, 4, 5):
+                    problems.append(f"{who}: the primitive has the unknown shape {shape}")
+                if "XMBO" in subs:
+                    if len(subs["XMBO"]) != 12:
+                        problems.append(f"{who}: the bound (XMBO) is {len(subs['XMBO'])} bytes, expected 12")
+                    elif any(abs(a - b) > 0.001 for a, b in zip(struct.unpack("<3f", subs["XMBO"]), box)):
+                        problems.append(f"{who}: the bound {struct.unpack('<3f', subs['XMBO'])} is not the box's reach {box}")
+        if "XTRI" in subs and len(subs["XTRI"]) != 4:
+            problems.append(f"{who}: the collision layer (XTRI) is {len(subs['XTRI'])} bytes, expected 4")
+        if described is None:
+            return
+        want = described.get(formid & 0xFFFFFF)
+        if want is None:
+            problems.append(f"{who}: not in the builder's description of the plugin")
+            return
+        if KINDS[kind] != want["Kind"]:
+            problems.append(f"{who}: a {KINDS[kind]} in the file, a {want['Kind']} in the description")
+        if want.get('ParentCellId',cell)!=cell:
+            problems.append(f"{who}: parent cell {cell:08X} differs from description")
+        name = subs.get("EDID", b"").rstrip(b"\0").decode("latin1") or None
+        if name != want["EditorId"]:
+            problems.append(f"{who}: named {name} in the file, {want['EditorId']} in the description")
+        if base is not None and base != want["BaseId"]:
+            problems.append(f"{who}: its base is {base:08X} in the file, {want['Base']} in the description")
+        position = struct.unpack_from("<3f", subs["DATA"], 0)
+        if any(abs(a - b) > 0.001 for a, b in zip(position, want["Position"])):
+            problems.append(f"{who}: at {position} in the file, {want['Position']} in the description")
+        rotation = struct.unpack_from("<3f", subs["DATA"], 12)
+        if any(abs(a - b) > 0.0001 for a, b in zip(rotation, want["Rotation"])):
+            problems.append(f"{who}: turned {rotation} in the file, {want['Rotation']} in the description")
+        shape = SHAPES.get(struct.unpack_from("<I", subs["XPRM"], 28)[0]) if len(subs.get("XPRM", b"")) == 32 else None
+        if shape != want["Primitive"]:
+            problems.append(f"{who}: its primitive is {shape} in the file, {want['Primitive']} in the description")
+        if bool(flags & INITIALLY_DISABLED) != want["InitiallyDisabled"]:
+            problems.append(f"{who}: 'initially disabled' is {bool(flags & INITIALLY_DISABLED)} in the file, {want['InitiallyDisabled']} in the description")
+        if want["Kind"] == "PlacedNpc" and bool(flags & STARTS_DEAD) != bool(want.get("StartsDead")):
+            problems.append(f"{who}: 'starts dead' is {bool(flags & STARTS_DEAD)} in the file, {bool(want.get('StartsDead'))} in the description")
+        if (box is None) != (want["Box"] is None) or (box and any(abs(a - b) > 0.001 for a, b in zip(box, want["Box"]))):
+            problems.append(f"{who}: the box is {box} in the file, {want['Box']} in the description")
+        if ("XMBO" in subs) != (want.get("Bound") is not None):
+            problems.append(f"{who}: the bound is {'in' if 'XMBO' in subs else 'not in'} the file, and {'in' if want.get('Bound') is not None else 'not in'} the description")
+        layer = struct.unpack("<I", subs["XTRI"])[0] if len(subs.get("XTRI", b"")) == 4 else None
+        if layer != want["CollisionLayer"]:
+            problems.append(f"{who}: collision layer {layer} in the file, {want['CollisionLayer']} in the description")
     for item in items(buf, 0, len(buf)):
         if item[0] != "group" or item[1] != GROUP_TOP or item[2] != b"CELL":
             continue
@@ -447,78 +529,52 @@ def check_cells(buf, described=None):
                             if ref[0] != "record":
                                 problems.append(f"{name}: a group inside its list of references")
                                 continue
-                            _, kind, formid, flags, data = ref
-                            refs += 1
-                            seen.add(formid)
-                            who = f"{kind} {formid:08X}"
-                            if kind not in ("ACHR", "REFR"):
-                                problems.append(f"{name}: holds a {kind} record")
-                                continue
-                            if formid >> 24 != masters:
-                                problems.append(f"{who}: is not a reference of this plugin (a master's reference copied into the plugin would replace it)")
-                            if bool(flags & PERSISTENT) != in_persistent:
-                                problems.append(f"{who}: flagged {'persistent' if flags & PERSISTENT else 'temporary'} "
-                                                f"but in the cell's {'persistent' if in_persistent else 'temporary'} group")
-                            subs = dict(subrecords(data))
-                            base = struct.unpack("<I", subs["NAME"])[0] if len(subs.get("NAME", b"")) == 4 else None
-                            if base is None:
-                                problems.append(f"{who}: no base (NAME)")
-                            elif base >> 24 > masters:
-                                problems.append(f"{who}: its base {base:08X} belongs to a file the plugin does not name as a master")
-                            elif base >> 24 == masters and base not in own:
-                                problems.append(f"{who}: its base {base:08X} would be a record of this plugin, and the file has none with that id")
-                            if len(subs.get("DATA", b"")) != 24:
-                                problems.append(f"{who}: position and rotation (DATA) are {len(subs.get('DATA', b''))} bytes, expected 24")
-                                continue
-                            box = None
-                            if "XPRM" in subs:
-                                if len(subs["XPRM"]) != 32:
-                                    problems.append(f"{who}: the primitive (XPRM) is {len(subs['XPRM'])} bytes, expected 32")
-                                else:
-                                    box = struct.unpack_from("<3f", subs["XPRM"], 0)
-                                    shape = struct.unpack_from("<I", subs["XPRM"], 28)[0]
-                                    if shape not in (1, 2, 3, 4, 5):
-                                        problems.append(f"{who}: the primitive has the unknown shape {shape}")
-                                    if "XMBO" in subs:
-                                        if len(subs["XMBO"]) != 12:
-                                            problems.append(f"{who}: the bound (XMBO) is {len(subs['XMBO'])} bytes, expected 12")
-                                        elif any(abs(a - b) > 0.001 for a, b in zip(struct.unpack("<3f", subs["XMBO"]), box)):
-                                            problems.append(f"{who}: the bound {struct.unpack('<3f', subs['XMBO'])} is not the box's reach {box}")
-                            if "XTRI" in subs and len(subs["XTRI"]) != 4:
-                                problems.append(f"{who}: the collision layer (XTRI) is {len(subs['XTRI'])} bytes, expected 4")
-                            if described is None:
-                                continue
-                            want = described.get(formid & 0xFFFFFF)
-                            if want is None:
-                                problems.append(f"{who}: not in the builder's description of the plugin")
-                                continue
-                            if KINDS[kind] != want["Kind"]:
-                                problems.append(f"{who}: a {KINDS[kind]} in the file, a {want['Kind']} in the description")
-                            name = subs.get("EDID", b"").rstrip(b"\0").decode("latin1") or None
-                            if name != want["EditorId"]:
-                                problems.append(f"{who}: named {name} in the file, {want['EditorId']} in the description")
-                            if base is not None and base != want["BaseId"]:
-                                problems.append(f"{who}: its base is {base:08X} in the file, {want['Base']} in the description")
-                            position = struct.unpack_from("<3f", subs["DATA"], 0)
-                            if any(abs(a - b) > 0.001 for a, b in zip(position, want["Position"])):
-                                problems.append(f"{who}: at {position} in the file, {want['Position']} in the description")
-                            rotation = struct.unpack_from("<3f", subs["DATA"], 12)
-                            if any(abs(a - b) > 0.0001 for a, b in zip(rotation, want["Rotation"])):
-                                problems.append(f"{who}: turned {rotation} in the file, {want['Rotation']} in the description")
-                            shape = SHAPES.get(struct.unpack_from("<I", subs["XPRM"], 28)[0]) if len(subs.get("XPRM", b"")) == 32 else None
-                            if shape != want["Primitive"]:
-                                problems.append(f"{who}: its primitive is {shape} in the file, {want['Primitive']} in the description")
-                            if bool(flags & INITIALLY_DISABLED) != want["InitiallyDisabled"]:
-                                problems.append(f"{who}: 'initially disabled' is {bool(flags & INITIALLY_DISABLED)} in the file, {want['InitiallyDisabled']} in the description")
-                            if want["Kind"] == "PlacedNpc" and bool(flags & STARTS_DEAD) != bool(want.get("StartsDead")):
-                                problems.append(f"{who}: 'starts dead' is {bool(flags & STARTS_DEAD)} in the file, {bool(want.get('StartsDead'))} in the description")
-                            if (box is None) != (want["Box"] is None) or (box and any(abs(a - b) > 0.001 for a, b in zip(box, want["Box"]))):
-                                problems.append(f"{who}: the box is {box} in the file, {want['Box']} in the description")
-                            if ("XMBO" in subs) != (want.get("Bound") is not None):
-                                problems.append(f"{who}: the bound is {'in' if 'XMBO' in subs else 'not in'} the file, and {'in' if want.get('Bound') is not None else 'not in'} the description")
-                            layer = struct.unpack("<I", subs["XTRI"])[0] if len(subs.get("XTRI", b"")) == 4 else None
-                            if layer != want["CollisionLayer"]:
-                                problems.append(f"{who}: collision layer {layer} in the file, {want['CollisionLayer']} in the description")
+                            inspect_reference(ref,in_persistent,cell)
+    # Explicit new master-owned RH exterior; interior filing/flags checks above
+    # remain intact. Every exterior reference uses the SAME exact byte checks.
+    for top in items(buf,0,len(buf)):
+        if top[0]!='group' or top[1]!=GROUP_TOP or top[2]!=b'WRLD':continue
+        world_id=None;world_seen=0;world_cells=set();land_count=0
+        def world_items(start,end,level):
+            nonlocal cells,land_count
+            current_cell=None;current_name=None
+            for entry in items(buf,start,end):
+                if entry[0]=='record' and entry[1]=='CELL':
+                    current_cell=entry[2];cells+=1
+                    ss=dict(subrecords(entry[4]));current_name=ss.get('EDID',b'').rstrip(b'\0').decode('ascii')
+                    if current_name not in ('TLM_CELL_RH_SurfacePersistent','TLM_CELL_RH_Surface') or current_name in world_cells:problems.append('RH exterior unknown/duplicate CELL')
+                    world_cells.add(current_name)
+                    if current_cell>>24!=masters or (current_cell&0xffffff) not in (described or {}).get(OWN_CELLS,set()):problems.append('RH exterior CELL is not declared master-owned source')
+                    if len(ss.get('DATA',b''))!=2 or struct.unpack('<H',ss['DATA'])[0]&INTERIOR or 'XCLL' in ss:problems.append('RH exterior must be genuine non-interior CELL')
+                    if current_name=='TLM_CELL_RH_Surface':
+                        if level!=5 or len(ss.get('XCLC',b''))!=12 or struct.unpack_from('<ii',ss['XCLC'])!=(0,0):problems.append('RH exterior grid filing/coordinate mismatch')
+                    elif level!=1 or 'XCLC' in ss or not(entry[3]&PERSISTENT):problems.append('RH exterior persistent CELL filing/flag mismatch')
+                elif entry[0]=='group' and entry[1] in (4,5):
+                    if (entry[1]==4 and level!=1) or (entry[1]==5 and level!=4) or entry[2]!=b'\0'*4:problems.append('RH exterior block/subblock mismatch')
+                    world_items(entry[3],entry[4],entry[1])
+                elif entry[0]=='group' and entry[1]==GROUP_CELL_CHILDREN:
+                    if current_cell is None or struct.unpack('<I',entry[2])[0]!=current_cell:problems.append('RH exterior children label mismatch');continue
+                    for part in items(buf,entry[3],entry[4]):
+                        if part[0]!='group' or part[1] not in (GROUP_CELL_PERSISTENT,GROUP_CELL_TEMPORARY) or struct.unpack('<I',part[2])[0]!=current_cell:problems.append('RH exterior reference group mismatch');continue
+                        for ref in items(buf,part[3],part[4]):
+                            if ref[0]=='record' and ref[1]=='LAND':
+                                land_count+=1;ss=list(subrecords(ref[4]));land=dict(ss)
+                                if current_name!='TLM_CELL_RH_Surface' or part[1]!=GROUP_CELL_TEMPORARY or ref[2]>>24!=masters:problems.append('RH LAND parent/ownership mismatch')
+                                height=land.get('VHGT',b'')
+                                if len(height)!=1096 or struct.unpack_from('<f',height)[0]!=0 or any(height[4:1093]):problems.append('RH declared flat LAND heights mismatch')
+                                if land.get('VNML')!=bytes((0,0,127))*1089 or len([1 for tag,_ in ss if tag=='BTXT'])!=4 or len(land.get('VTEX',b''))!=4:problems.append('RH LAND normals/layers incomplete')
+                            elif ref[0]=='record':inspect_reference(ref,part[1]==GROUP_CELL_PERSISTENT,current_cell)
+                            else:problems.append('RH exterior nested reference group')
+                else:problems.append('RH exterior unexpected record/group')
+        for entry in items(buf,top[3],top[4]):
+            if entry[0]=='record' and entry[1]=='WRLD':
+                world_seen+=1;world_id=entry[2];ss=dict(subrecords(entry[4]))
+                if ss.get('EDID')!=b'TLM_WRLD_RH_Surface\0' or world_id>>24!=masters:problems.append('Only declared RH source world is allowed')
+                climate=ss.get('CNAM',b'')
+                if len(climate)!=4 or struct.unpack('<I',climate)[0]==0 or struct.unpack('<I',climate)[0]>>24>=masters:problems.append('RH real exterior climate missing/foreign')
+            elif entry[0]=='group' and entry[1]==1 and world_id is not None and struct.unpack('<I',entry[2])[0]==world_id:world_items(entry[3],entry[4],1)
+            else:problems.append('RH world children missing/mismatched')
+        if world_seen!=1 or world_cells!={'TLM_CELL_RH_SurfacePersistent','TLM_CELL_RH_Surface'} or land_count!=1:problems.append('RH exterior exact world/two-cell/LAND inventory mismatch')
     if described is not None:
         for formid, want in described.items():
             if formid == OWN_CELLS:
@@ -803,7 +859,7 @@ def main(argv):
     if cells:
         beside = "and agrees with the builder's description" if described is not None else "(no description beside the plugin to compare with)"
         own_cells = len((described or {}).get(OWN_CELLS, set()))
-        whose = "of the game" if not own_cells else f"({cells - own_cells} of the game, {own_cells} of this plugin's own: an interior, named and lit)"
+        whose = "of the game" if not own_cells else f"({cells - own_cells} of the game, {own_cells} declared own cells; interior lighting and explicit RH exterior hierarchy checked separately)"
         print(f"plugin layout: {refs} placed references under {cells} cell record(s) {whose}; each is this plugin's own, filed and flagged as it should be, {beside}")
     else:
         print("plugin layout: no cell records (nothing is placed in the world by this build)")
