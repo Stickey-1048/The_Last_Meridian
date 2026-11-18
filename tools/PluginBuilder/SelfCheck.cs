@@ -268,18 +268,20 @@ public static class SelfCheck
     /// </summary>
     static void CheckPlaced(Report.PluginInfo info, Builder builder, Action<bool, string> Expect)
     {
-        var placedIds = Spec.Placed.Select(p => p.EditorId).ToList();
+        var effective=builder.RedHollowEnvironmentReceipt==null?Spec.Placed:Spec.Placed.Select(RedHollowEnvironment.Effective).Concat(RedHollowEnvironment.AddedPlaced()).ToArray();
+        var placedIds = effective.Select(p => p.EditorId).ToList();
         Expect(placedIds.Distinct(StringComparer.OrdinalIgnoreCase).Count() == placedIds.Count, "two placed references share an EditorID");
 
-        var built = Spec.Placed.Where(p => builder.PlacedKeys.ContainsKey(p.EditorId)).ToList();
+        var built = effective.Where(p => builder.PlacedKeys.ContainsKey(p.EditorId)).ToList();
         var cellNames = built.Select(p => p.Cell).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if(builder.RedHollowEnvironmentReceipt!=null)cellNames.Add(RedHollowEnvironment.Surface);
         Expect(info.Cells.Count == cellNames.Count, $"the plugin has {info.Cells.Count} cell record(s), expected {cellNames.Count}");
 
         foreach (var cell in info.Cells)
         {
             var name = cell.EditorId ?? "(no EditorID)";
             // A cell is the plugin's own exactly when the spec says so; every other is a copy of one of the game's.
-            var ownCell = Spec.OwnCells.Any(c => string.Equals(c.EditorId, name, StringComparison.OrdinalIgnoreCase));
+            var ownCell = Spec.OwnCells.Any(c => string.Equals(c.EditorId, name, StringComparison.OrdinalIgnoreCase)) || (builder.RedHollowEnvironmentReceipt!=null && name is RedHollowEnvironment.Persistent or RedHollowEnvironment.Surface);
             Expect(cell.OfThisPlugin == ownCell, ownCell
                 ? $"cell {name}: the spec makes it a cell of this plugin's own, and the file has it as a copy of a master's"
                 : $"cell {name}: is a new cell of this plugin; the spec names it as one of the game's");

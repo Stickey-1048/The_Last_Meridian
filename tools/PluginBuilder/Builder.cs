@@ -22,7 +22,7 @@ namespace Tlm.PluginBuilder;
 /// The output of either mode has NOT been loaded in the Creation Kit or the
 /// game unless docs/design/BUILD_ENV.md says so.
 /// </summary>
-public sealed class Builder
+public sealed partial class Builder
 {
     public static readonly ModKey Fallout4Esm = ModKey.FromNameAndExtension("Fallout4.esm");
 
@@ -242,6 +242,8 @@ public sealed class Builder
 
         // Before the quests are filled in: their aliases point at these.
         PlaceReferences();
+
+        BuildRedHollowEnvironment();
 
         foreach (var q in Spec.Quests) Fill(quests[q.EditorId], q);
     }
@@ -1600,6 +1602,16 @@ public sealed class Builder
                             Alias = checked((short)AliasIndex(ofQuest, alias)),
                         });
                     entry.Properties.Add(aliases);
+                    break;
+                case ReferenceListProp refs:
+                    if(refs.EditorIds.Any(id=>!_placed.ContainsKey(id))){Pending.Add("Strict placed-reference list unavailable: "+refs.Name);break;}
+                    var originals = new ScriptObjectListProperty { Name = refs.Name, Flags = ScriptProperty.Flag.Edited };
+                    foreach (var id in refs.EditorIds) originals.Objects.Add(new ScriptObjectProperty { Object = _placed[id].ToLink<IFallout4MajorRecordGetter>(), Alias = -1 });
+                    entry.Properties.Add(originals);
+                    break;
+                case PlacedProp placed:
+                    if(_placed.TryGetValue(placed.EditorId,out var originalKey))entry.Properties.Add(new ScriptObjectProperty{Name=placed.Name,Flags=ScriptProperty.Flag.Edited,Object=originalKey.ToLink<IFallout4MajorRecordGetter>(),Alias=-1});
+                    else Pending.Add("Strict placed-reference binding unavailable: "+placed.Name);
                     break;
                 case StringListProp slp:
                     var strings = new ScriptStringListProperty { Name = slp.Name, Flags = ScriptProperty.Flag.Edited };

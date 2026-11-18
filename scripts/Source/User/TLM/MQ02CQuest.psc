@@ -17,6 +17,9 @@ ReferenceAlias Property Alias_Roark Auto Const Mandatory
 ReferenceAlias Property Alias_Dorn Auto Const Mandatory
 ReferenceAlias Property Alias_Condemned Auto Const Mandatory
 ReferenceAlias[] Property Miners Auto Const Mandatory
+ObjectReference[] Property RHSurfaceReceipts Auto Const Mandatory
+ObjectReference Property RHBelowAnchor Auto Const Mandatory
+ObjectReference Property RHBreakControl Auto Const Mandatory
 GlobalVariable Property TLM_G_MQ02C_Court Auto Const Mandatory
 GlobalVariable Property TLM_G_MQ02C_Mine Auto Const Mandatory
 GlobalVariable Property TLM_G_MQ02C_PrisonerRole Auto Const Mandatory
@@ -891,14 +894,28 @@ bool Function BeginBreak(ReferenceAlias[] surfaceSlots)
 	Return true
 EndFunction
 
-bool Function ClearBlastArea(ObjectReference blastRef)
-	If !blastRef || !DistinctRoster()
+bool Function ClearBlastArea(ObjectReference blastRef, ReferenceAlias[] surfaceSlots, ObjectReference controlRef, ObjectReference belowRef)
+	If !blastRef || !controlRef || !belowRef || !surfaceSlots || surfaceSlots.Length != 11 || !RHSurfaceReceipts || RHSurfaceReceipts.Length != 11 || !DistinctRoster() || !PlayerAlive()
+		Return false
+	EndIf
+	If belowRef != RHBelowAnchor || controlRef != RHBreakControl || blastRef.GetParentCell() != belowRef.GetParentCell() || controlRef.GetParentCell() != belowRef.GetParentCell() || !At(Game.GetPlayer(),controlRef,256.0)
 		Return false
 	EndIf
 	int minerIndex = 0
 	While minerIndex < 11
 		Actor minerActor = Miner(minerIndex)
-		If !minerActor || minerActor.IsDisabled() || minerActor.GetDistance(blastRef) < 512.0
+		If !minerActor || minerActor.IsDisabled() || !surfaceSlots[minerIndex]
+			Return false
+		EndIf
+		ObjectReference safeSlot = surfaceSlots[minerIndex].GetReference()
+		If !safeSlot || safeSlot != RHSurfaceReceipts[minerIndex] || !RHSurfaceReceipts[0] || safeSlot.GetParentCell() != RHSurfaceReceipts[0].GetParentCell()
+			Return false
+		EndIf
+		If minerActor.GetParentCell() == blastRef.GetParentCell()
+			If minerActor.GetDistance(blastRef) < 512.0
+				Return false
+			EndIf
+		ElseIf safeSlot.GetParentCell() == blastRef.GetParentCell() || !At(minerActor,safeSlot) || (Fate(minerIndex) != 3 && Fate(minerIndex) != 4) || (Fate(minerIndex) == 3 && minerActor.IsDead()) || (Fate(minerIndex) == 4 && !minerActor.IsDead())
 			Return false
 		EndIf
 		minerIndex += 1
@@ -906,8 +923,8 @@ bool Function ClearBlastArea(ObjectReference blastRef)
 	Return Game.GetPlayer().GetDistance(blastRef) >= 512.0
 EndFunction
 
-bool Function FinishBreak(ObjectReference openRef, ObjectReference closedRef, ObjectReference blastRef, ReferenceAlias[] surfaceSlots)
-	If !Open() || mineIntent != 3 || !KnownSafeSurvivors(surfaceSlots) || !ClearBlastArea(blastRef) || !Off(openRef) || !On(closedRef)
+bool Function FinishBreak(ObjectReference openRef, ObjectReference closedRef, ObjectReference blastRef, ReferenceAlias[] surfaceSlots, ObjectReference controlRef, ObjectReference belowRef)
+	If !Open() || mineIntent != 3 || !KnownSafeSurvivors(surfaceSlots) || !ClearBlastArea(blastRef,surfaceSlots,controlRef,belowRef) || !Off(openRef) || !On(closedRef)
 		Return false
 	EndIf
 	innerClosed = true

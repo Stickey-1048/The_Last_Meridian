@@ -33,6 +33,8 @@ public sealed record IntListProp(string Name, params int[] Values) : Prop(Name);
 public sealed record BoolProp(string Name, bool Value) : Prop(Name);
 // A record in this plugin, by EditorID.
 public sealed record FormProp(string Name, string EditorId) : Prop(Name);
+public sealed record ReferenceListProp(string Name, params string[] EditorIds) : Prop(Name);
+public sealed record PlacedProp(string Name,string EditorId) : Prop(Name);
 // An alias, by alias name: on the owning quest, or on the quest named.
 public sealed record AliasProp(string Name, string Alias, string? Quest = null) : Prop(Name);
 // A list of aliases, each given as (quest, alias name).

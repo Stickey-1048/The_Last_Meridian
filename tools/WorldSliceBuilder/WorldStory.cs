@@ -154,6 +154,9 @@ public static partial class WorldStory
         mod.Quests.Add(section);
         var sourceRefs=source.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(b=>b.Cells)
             .SelectMany(c=>c.Persistent.Concat(c.Temporary)).ToDictionary(p=>p.FormKey);
+        // RED_HOLLOW_ENVIRONMENT_DISCOVERY_BEGIN
+        foreach(var r in RedHollowSurfaceReferences(source))sourceRefs.Add(r.FormKey,r);
+        // RED_HOLLOW_ENVIRONMENT_DISCOVERY_END
         var sites=new Dictionary<string,(float X,float Y,float Z)>{
             ["Marshal"]=(700,1050,0),["Dispatch"]=(740,1000,10),["Revolver"]=(650,1000,10),
             ["Journal"]=(660,1080,10),["Ledger"]=(820,1080,10),["BrakeShoes"]=(850,1000,12),["DrawBar"]=(910,1110,12),

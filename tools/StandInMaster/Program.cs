@@ -415,6 +415,7 @@ if (room && variant != "relief-no-corn")
     strictCorn.Name = variant == "relief-wrong-corn-name" ? "Not Corn" : "Corn";
 }
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
+RhEnvironmentFixture.Add(mod,variant);
 // Real masters use ids below 0x800; a stand-in may too.
 mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();
 Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={(placed == null ? "none" : $"{placed.FormKey} EditorID='{placed.EditorID}'")}{fixtures}");

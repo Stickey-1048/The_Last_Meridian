@@ -24,6 +24,7 @@ public static partial class WorldStory
         var ownCell=source.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(b=>b.Cells).SingleOrDefault(c=>c.EditorID=="TLM_CELL_RedHollow")
             ??throw new InvalidDataException("Red Hollow own cell missing");
         var interiorRefs=ownCell.Persistent.Select(r=>r.FormKey).ToHashSet();
+        var surfaceRefs=RedHollowSurfaceReferences(source).Select(r=>r.FormKey).ToHashSet();
         var clone=original.Duplicate(mod.GetNextFormKey());clone.EditorID=RedHollowClone;
         clone.Name="The Last Meridian - exterior-linked Red Hollow (development)";
         var aliases=clone.Aliases?.OfType<QuestReferenceAlias>().ToArray()??throw new InvalidDataException("Red Hollow aliases missing");
@@ -50,7 +51,8 @@ public static partial class WorldStory
                 world.TopCell!.Persistent.Add(placed);a.ForcedReference.SetTo(placed.FormKey);
                 mapping.Add(new{alias=a.Name,id=a.ID,source=sourceKey.ToString(),reference=placed.FormKey.ToString(),x=at.X,y=at.Y,z=at.Z,exterior=true});
             }else{
-                if(!interiorRefs.Contains(sourceKey))throw new InvalidDataException("Red Hollow interior placement outside its own cell: "+a.Name);
+                bool exteriorSurface=surfaceRefs.Count>0&&RedHollowSurfaceSites.ContainsKey(a.Name!);
+                if(!(exteriorSurface?surfaceRefs:interiorRefs).Contains(sourceKey))throw new InvalidDataException("Red Hollow original outside its declared region: "+a.Name);
                 mapping.Add(new{alias=a.Name,id=a.ID,source=sourceKey.ToString(),reference=sourceKey.ToString(),exterior=false});
             }
         }
