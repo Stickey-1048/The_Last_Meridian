@@ -64,6 +64,14 @@ def preserves_frozen_attributes(before, now):
     return now in (before, before + NIGHT_MAIL_DOC_ATTRIBUTES)
 
 
+def preserves_frozen_workflows(changed, before, now):
+    """Only the owner's exact existing portable job20->40 budget is approved."""
+    if not changed:return now == before
+    if set(changed) != {'.github/workflows/portable-checks.yml'}:return False
+    old='    timeout-minutes: 20\n';approved='    timeout-minutes: 40\n'
+    return before.count(old)==1 and now.count(approved)==1 and now.replace(approved,old)==before
+
+
 def copy_of_the_tree():
     """Just what the frozen check reads, from the exact accepted 016b export."""
     root = Path(tempfile.mkdtemp(prefix="tlm-gw-candidate-"))
@@ -187,9 +195,16 @@ class TheCandidate(unittest.TestCase):
             self.skipTest("the contract commit is not in this copy; the pinned digests were still checked")
         frozen = list(candidate.OLD_MANIFESTS + candidate.FROZEN) + [
             "tools/win/Play-WorldDetails.cmd", "tools/win/Play-WorldNatural.cmd", "tools/win/Play-WorldStory.cmd", "tools/win/Play-WorldExpanded.cmd",
-            "tools/test_world_story_launcher.py", ".github"]
+            "tools/test_world_story_launcher.py"]
         got = subprocess.run(["git", "diff", "--quiet", CONTRACT, "--"] + frozen, cwd=LIVE_ROOT)
         self.assertEqual(got.returncode, 0, "a frozen manifest, verifier, packager, launcher or workflow differs from the contract commit's")
+        changed = subprocess.run(["git", "diff", "--name-only", CONTRACT, "--", ".github"], cwd=LIVE_ROOT,
+                                 capture_output=True, text=True, check=True).stdout.splitlines()
+        before_workflow = subprocess.run(["git", "show", CONTRACT + ":.github/workflows/portable-checks.yml"],
+                                        cwd=LIVE_ROOT, capture_output=True, text=True, check=True).stdout
+        current_workflow = (LIVE_ROOT / ".github/workflows/portable-checks.yml").read_text(encoding="utf-8")
+        self.assertTrue(preserves_frozen_workflows(changed, before_workflow, current_workflow),
+                        "unapproved workflow filename/content change beyond exact portable job20-to40 budget")
         attributes = subprocess.run(["git", "show", CONTRACT + ":.gitattributes"], cwd=LIVE_ROOT,
                                     capture_output=True, text=True, check=True).stdout
         self.assertTrue(preserves_frozen_attributes(attributes, (LIVE_ROOT / ".gitattributes").read_text()),

@@ -40,6 +40,27 @@ class CaseReadCandidate(unittest.TestCase):
                 else:self.assertIn('unrelated accepted baseline file altered: '+name,found)
         m=json.loads(candidate.MANIFEST.read_text(encoding='utf-8'))
         self.assertEqual(candidate.digest(m['baselineFiles']),candidate.BASELINE_FILES_SHA256)
+    def test_historical_workflow_guard_and_exact_test_pin_cannot_be_waived(self):
+        import test_greenwater_candidate as history
+        name='.github/workflows/portable-checks.yml'
+        before=subprocess.check_output(['git','show',history.CONTRACT+':'+name],cwd=ROOT).decode('utf-8').replace('\r\n','\n')
+        approved=(ROOT/name).read_text(encoding='utf-8')
+        cases=[([],before,True),([name],approved,True),
+            (['.github/workflows/other.yml'],approved,False),
+            ([name,'.github/workflows/other.yml'],approved,False),
+            ([name],approved.replace('timeout-minutes: 40','timeout-minutes: 41'),False),
+            ([name],approved.replace('  contents: read','  contents: write'),False),
+            ([name],approved.replace('          tools/run_checks.sh 2>&1 | tee','          true 2>&1 | tee'),False)]
+        for paths,text,expected in cases:
+            with self.subTest(paths=paths,text=text[-50:]):self.assertEqual(history.preserves_frozen_workflows(paths,before,text),expected)
+        for change in ('comment','guard'):
+            root=source_copy();p=root/candidate.APPROVED_HISTORICAL_TEST;text=p.read_text(encoding='utf-8')
+            if change=='comment':text+='\n# another unapproved test edit\n'
+            else:
+                needle='self.assertTrue(preserves_frozen_workflows(changed, before_workflow, current_workflow),'
+                self.assertEqual(text.count(needle),1);text=text.replace(needle,'self.assertTrue(True,')
+            p.write_text(text,encoding='utf-8');repin(root)
+            self.assertIn('unrelated accepted baseline file altered: '+candidate.APPROVED_HISTORICAL_TEST,candidate.problems(root))
     def test_repin_cannot_change_any_unrelated_runtime_geometry_ids_canon_or_workflow(self):
         for name in ('scripts/Source/User/TLM/Core.psc','scripts/Source/User/TLM/RedHollowWalk.psc','scripts/Source/User/TLM/FourFlagsWalk.psc','tools/PluginBuilder/RedHollowEnvironment.cs','tools/WorldSliceBuilder/WorldFourFlags.cs','tools/PluginBuilder/formkeys.txt','docs/design/FOUR_FLAGS_STORY_001_CONTRACT.md','.github/workflows/portable-checks.yml','.gitattributes'):
             with self.subTest(file=name):

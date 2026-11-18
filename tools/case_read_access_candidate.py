@@ -12,6 +12,8 @@ BASELINE_FILES_SHA256='F7EC35979763DFE7B7AF2950F934B5B4B89F0DBF631B34C5D8CA69320
 # Sam signed physical CRLF03FC0450; identical normalized LF text8A432677.
 AUTHORITY_PINS={'docs/design/CASE_READ_ACCESS_001_ORDER.md':'50B7B556F76F8FF3723DA10BF70E69A9DEDE9212040D17B0D4B3EE5FE0B76599','docs/design/CASE_READ_ACCESS_001_ADJUDICATION.md':'8A4326778D8FEE790854CED47D30C2B5BA6C3285DE82E194E9ECC8622C3EBFD6'}
 BASELINE_MQ03_REMAINDER_SHA256='B91AE1CF5987ED60FECEAD99403AEAAD419C6DD87BFB26BDC458084AA64CD8E8'
+APPROVED_HISTORICAL_TEST='tools/papyrus_sim/test_greenwater_candidate.py'
+APPROVED_HISTORICAL_TEST_SHA256='77075879584D5B249FDA9B0340A5FC76327F218EFA22A58B18167365ACCEFF8B'
 ALLOWED_BASELINE_CHANGES=('scripts/Source/User/TLM/MQ03Quest.psc','tools/papyrus_sim/source_snapshot.py','tools/papyrus_sim/test_red_hollow_environment_candidate.py')
 OWN_NAMES=('tools/case_read_access_candidate.py','tools/win/Build-CaseReadAccess.ps1','tools/win/tests/Test-CaseReadAccessPackageSafety.ps1','tools/papyrus_sim/test_case_read_access.py','tools/papyrus_sim/test_case_read_access_candidate.py','docs/design/CASE_READ_ACCESS_001_ORDER.md','docs/design/CASE_READ_ACCESS_001_ADJUDICATION.md','docs/design/CASE_READ_ACCESS_001_RECEIPT.md')
 FROZEN=prior.FROZEN+('tools/red_hollow_environment_candidate.py','tools/win/red-hollow-environment-candidate.json','tools/win/Build-RedHollowEnvironment.ps1','tools/win/tests/Test-RedHollowEnvironmentPackageSafety.ps1')
@@ -52,6 +54,7 @@ def problems(root=ROOT,manifest_path=None):
     for name,pin in baseline.items():
         if name in ALLOWED_BASELINE_CHANGES or content_digest(root/name)==pin:continue
         if name=='.github/workflows/portable-checks.yml' and approved_workflow_timeout(root/name,pin):continue
+        if name==APPROVED_HISTORICAL_TEST and content_digest(root/name)==APPROVED_HISTORICAL_TEST_SHA256:continue
         out.append('unrelated accepted baseline file altered: '+name)
     try:now=describe(root)
     except (OSError,ValueError) as exc:return out+['source inputs unreadable: '+str(exc)]
