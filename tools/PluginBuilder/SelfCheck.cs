@@ -197,8 +197,8 @@ public static class SelfCheck
                     var want = builder.PlacedKeys.TryGetValue(a.Placed ?? "", out var key) ? $"forced {key}" : null;
                     Expect(ga.Fill == want, $"{q.EditorId} alias {a.Name}: fill is '{ga.Fill ?? "none"}', expected '{want ?? "none"}'");
                     Expect(ga.Flags.Contains("Optional"), $"{q.EditorId} alias {a.Name}: an alias for a placed reference must be Optional");
-                    Expect(Spec.Placed.Any(p => p.EditorId == a.Placed), $"{q.EditorId} alias {a.Name}: the spec places no reference '{a.Placed}'");
-                    var spec = Spec.Placed.FirstOrDefault(p => p.EditorId == a.Placed);
+                    Expect(Spec.Placed.Concat(RedHollowEnvironment.AddedPlaced()).Any(p => p.EditorId == a.Placed), $"{q.EditorId} alias {a.Name}: the spec places no reference '{a.Placed}'");
+                    var spec = Spec.Placed.Concat(RedHollowEnvironment.AddedPlaced()).FirstOrDefault(p => p.EditorId == a.Placed);
                     Expect(spec == null || !spec.InitiallyDisabled || a.AllowDisabled,
                         $"{q.EditorId} alias {a.Name}: its reference starts disabled, so the alias needs Allow Disabled");
                 }
@@ -239,6 +239,15 @@ public static class SelfCheck
                     Expect(gp != null && gp.Kind == "object" && gp.Alias == null && gp.Target == expected.ToString(), $"{where}.{p.Name}: strict binding differs from its actual typed lookup");
                 continue;
             }
+            if(p is PlacedProp placed){
+                bool present=builder.PlacedKeys.ContainsKey(placed.EditorId);
+                Expect(present?gp!=null&&gp.Kind=="object"&&gp.Alias==null&&gp.Target==placed.EditorId:gp==null,$"{where}.{p.Name}: strict original-reference binding differs or acquired fallback");continue;
+            }
+            if(p is ReferenceListProp originals){
+                bool present=originals.EditorIds.All(builder.PlacedKeys.ContainsKey);
+                var want=originals.EditorIds.Select(n=>new Report.ObjectInfo(n,null));
+                Expect(present?gp!=null&&gp.Kind=="object[]"&&gp.Value is IEnumerable<Report.ObjectInfo> values&&values.SequenceEqual(want):gp==null,$"{where}.{p.Name}: strict original-reference list differs or acquired partial/fallback binding");continue;
+            }
             if (gp == null) { problems.Add($"{where}: property {p.Name} not written"); continue; }
             switch (p)
             {
@@ -268,18 +277,20 @@ public static class SelfCheck
     /// </summary>
     static void CheckPlaced(Report.PluginInfo info, Builder builder, Action<bool, string> Expect)
     {
-        var placedIds = Spec.Placed.Select(p => p.EditorId).ToList();
+        var effective=builder.RedHollowEnvironmentReceipt==null?Spec.Placed:Spec.Placed.Select(RedHollowEnvironment.Effective).Concat(RedHollowEnvironment.AddedPlaced()).ToArray();
+        var placedIds = effective.Select(p => p.EditorId).ToList();
         Expect(placedIds.Distinct(StringComparer.OrdinalIgnoreCase).Count() == placedIds.Count, "two placed references share an EditorID");
 
-        var built = Spec.Placed.Where(p => builder.PlacedKeys.ContainsKey(p.EditorId)).ToList();
+        var built = effective.Where(p => builder.PlacedKeys.ContainsKey(p.EditorId)).ToList();
         var cellNames = built.Select(p => p.Cell).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if(builder.RedHollowEnvironmentReceipt!=null)cellNames.Add(RedHollowEnvironment.Surface);
         Expect(info.Cells.Count == cellNames.Count, $"the plugin has {info.Cells.Count} cell record(s), expected {cellNames.Count}");
 
         foreach (var cell in info.Cells)
         {
             var name = cell.EditorId ?? "(no EditorID)";
             // A cell is the plugin's own exactly when the spec says so; every other is a copy of one of the game's.
-            var ownCell = Spec.OwnCells.Any(c => string.Equals(c.EditorId, name, StringComparison.OrdinalIgnoreCase));
+            var ownCell = Spec.OwnCells.Any(c => string.Equals(c.EditorId, name, StringComparison.OrdinalIgnoreCase)) || (builder.RedHollowEnvironmentReceipt!=null && name is RedHollowEnvironment.Persistent or RedHollowEnvironment.Surface);
             Expect(cell.OfThisPlugin == ownCell, ownCell
                 ? $"cell {name}: the spec makes it a cell of this plugin's own, and the file has it as a copy of a master's"
                 : $"cell {name}: is a new cell of this plugin; the spec names it as one of the game's");

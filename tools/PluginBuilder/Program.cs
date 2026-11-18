@@ -1,4 +1,5 @@
 using Tlm.PluginBuilder;
+if(args.Length==2&&args[0]=="--rh-environment-geometry-check")return RedHollowGeometryAudit.Fixture(args[1]);
 
 // Usage:
 //   dotnet run --project tools/PluginBuilder -- [--out <dir>] [--fallout4-esm <path to Fallout4.esm>]
@@ -42,6 +43,7 @@ Builder.Write(mod, plugin);
 var info = Report.Read(plugin);
 File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.report.txt"), Report.ToText(info, builder.Pending, builder.VanillaNotes));
 File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.json"), Report.ToJson(info));
+if(builder.RedHollowEnvironmentReceipt!=null)File.WriteAllText(Path.Combine(outDir,"red-hollow-environment.json"),System.Text.Json.JsonSerializer.Serialize(builder.RedHollowEnvironmentReceipt,new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
 // Which of the game's own records the plugin points at. Not in the plugin file
 // itself (it only holds their ids), so it is written beside the description.
 File.WriteAllText(Path.Combine(outDir, "TheLastMeridian.vanilla.json"),

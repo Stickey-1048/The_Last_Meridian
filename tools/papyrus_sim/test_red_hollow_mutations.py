@@ -20,7 +20,7 @@ class MutationDetection(unittest.TestCase):
             ('correct timeout cause','MQ02CQuest.psc','playerOrdered = ordered','playerOrdered = true',cases.MineRoutes,'test_questions_do_not_arm_and_actual_warned_timeout56'),
             ('menu pause','RedHollowWalk.psc','Utility.IsInMenuMode()','false',cases.AdverseContexts,'test_all_menus_absence_and_load_gap_pause_deadline'),
             ('report exact Continue','RedHollowWalk.psc','detailAnswer != 0','detailAnswer == 1',cases.CustodyAndReports,'test_report_each_detail_page_closes_on_invalid_or_participant_loss'),
-            ('living operator','MQ02CQuest.psc','On(controlRef) && Speaking(Alias_Blevins)','On(controlRef)',cases.AdverseContexts,'test_operator_death_or_combat_during_final_ack_does_not_fire'),
+            ('living operator','MQ02CQuest.psc','&& Speaking(Alias_Blevins) && At(operatorActor,controlRef,192.0)','&& At(operatorActor,controlRef,192.0)',cases.AdverseContexts,'test_operator_death_or_combat_during_final_ack_does_not_fire'),
             ('current docket','MQ02CQuest.psc','Return Game.GetPlayer() && Game.GetPlayer().GetItemCount(DocketItem) > 0','Return true',cases.CustodyAndReports,'test_drop_copy_during_ack_never_adjourns_or_refills'),
             ('stop moves on player death','RedHollowWalk.psc','If !Ready() || !minerActor || minerActor.IsDisabled()','If !minerActor || minerActor.IsDisabled()',cases.CustodyAndReports,'test_player_dies_during_rescue_effect_stops_remaining_moves'),
             ('actual collapse','MQ02CQuest.psc',' || !Off(openRef) || !On(closedRef)','',cases.AdverseContexts,'test_refused_collapse_is_pending_and_recoverable'),

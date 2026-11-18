@@ -510,6 +510,10 @@ class Session:
             self.forms[quest.editor_id] = quest
             for a in q["Aliases"]:
                 quest.aliases[a["Id"]] = Alias(quest, a)
+        # Resolve the actual placed identities before attaching constant VMAD
+        # reference properties; attachment must not invent a second reference.
+        # This is synthetic binding order, not native startup/load proof.
+        self._place()
         for q in self.plugin["Quests"]:
             quest = self.quests[q["EditorId"]]
             for bind in q["Scripts"]:
@@ -524,7 +528,6 @@ class Session:
                     inst = self._attach(bind, alias, quest)
                     if inst:
                         alias.scripts.append(inst)
-        self._place()
 
     def _cell(self, editor_id: str) -> Cell:
         key = editor_id.lower()
@@ -582,6 +585,8 @@ class Session:
             trig.inside = {a.id for a in self.actors if self._in_box(trig, a)}
 
     def _target(self, name: str):
+        if name in self.placed:
+            return self.placed[name]
         if name in self.forms:
             return self.forms[name]
         if name in self.by_formkey:

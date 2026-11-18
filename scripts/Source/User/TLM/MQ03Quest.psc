@@ -525,12 +525,46 @@ bool Function RecordCaseRead(ObjectReference original, int capturedEpoch)
 	Return true
 EndFunction
 
-bool Function FinishRead(ObjectReference original, Actor speakerActor, int capturedEpoch)
-	bool eligible = caseHistoricalRead && GetStageDone(60) && !GetStageDone(100) && CaseAccess(original)
-	If speakerActor
-		eligible = eligible && original.GetContainer() == speakerActor && Speaker(speakerActor,0,capturedEpoch)
+bool Function FinalReadAccess(ObjectReference original, Actor speakerActor, int capturedEpoch)
+	{Finite final access observation, not an atomic Papyrus transaction.
+	Context and identity reads precede the final actual original-container receipt.}
+	If !original || original != originalCaseIdentity
+		Return false
 	EndIf
-	If !eligible || Alias_OriginalCase.GetReference() != original || !Current(capturedEpoch)
+	Actor player = Game.GetPlayer()
+	ObjectReference expectedHolder = original.GetContainer()
+	bool eligible = Current(capturedEpoch)
+	Actor requiredSheriff = None
+	If speakerActor
+		requiredSheriff = speakerActor
+		eligible = eligible && expectedHolder == speakerActor
+	ElseIf expectedHolder == player
+		eligible = eligible && player == playerIdentity
+	ElseIf expectedHolder
+		requiredSheriff = Person(0)
+		eligible = eligible && expectedHolder == requiredSheriff
+	EndIf
+	bool currentContext = Current(capturedEpoch)
+	If requiredSheriff
+		eligible = eligible && Speaker(requiredSheriff,0,capturedEpoch)
+	EndIf
+	Actor currentSheriff = None
+	If requiredSheriff
+		currentSheriff = Person(0)
+	EndIf
+	bool currentGround = true
+	If !expectedHolder
+		currentGround = At(player,original,256.0) && !original.IsDisabled()
+	EndIf
+	ObjectReference currentPlayer = Alias_Player.GetReference()
+	ObjectReference currentOriginal = Alias_OriginalCase.GetReference()
+	; This must follow the yielding context/participant/alias work above.
+	ObjectReference currentHolder = original.GetContainer()
+	Return eligible && currentContext && currentGround && currentOriginal == original && original == originalCaseIdentity && currentPlayer == player && player == playerIdentity && (!requiredSheriff || currentSheriff == requiredSheriff) && currentHolder == expectedHolder && capturedEpoch == generation
+EndFunction
+
+bool Function FinishRead(ObjectReference original, Actor speakerActor, int capturedEpoch)
+	If !caseHistoricalRead || !GetStageDone(60) || GetStageDone(100) || !FinalReadAccess(original,speakerActor,capturedEpoch)
 		Return false
 	EndIf
 	SetStage(100)

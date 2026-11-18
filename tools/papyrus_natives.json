@@ -1322,6 +1322,57 @@
     "returns": "bool",
     "source": "Local distributed Actor.psc SDK, line397; signature inspected for FOUR-FLAGS-STORY-001. Not native acceptance."
    }
+  ],
+  "OnCellAttach": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "",
+    "source": "Installed CK Base/ReferenceAlias.psc line248, read 2026-11-17; source signature only, native event delivery unverified"
+   }
+  ],
+  "OnCellDetach": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "",
+    "source": "Installed CK Base/ReferenceAlias.psc line252, read 2026-11-17; source signature only, native event delivery unverified"
+   }
+  ],
+  "OnCellLoad": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "",
+    "source": "Installed CK Base/ReferenceAlias.psc line256, read 2026-11-17; source signature only, native event delivery unverified"
+   }
+  ],
+  "OnLocationChange": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "ReferenceAlias",
+    "params": [
+     "Location akOldLoc",
+     "Location akNewLoc"
+    ],
+    "returns": "",
+    "source": "Installed CK Base/ReferenceAlias.psc line534, read 2026-11-17; source signature only, native event delivery unverified"
+   }
   ]
  }
 }

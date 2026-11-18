@@ -72,3 +72,19 @@ def built_greenwater_relief():
             if got.returncode:
                 raise AssertionError("Frozen a31 stand-in build failed:\n" + got.stdout + got.stderr)
     return out
+
+FOUR_FLAGS = 'd43bd336fde2837c9c499b273c4becdee3f4cef9'
+
+def built_four_flags():
+    root = snapshot(FOUR_FLAGS)
+    out = root / 'build/sim/TheLastMeridian.json'
+    if not out.exists():
+        for args in (['tools/StandInMaster', 'build/standin/Fallout4.esm', 'default'], ['tools/PluginBuilder', '--out', 'build/sim', '--fallout4-esm', 'build/standin/Fallout4.esm']):
+            got = subprocess.run(['dotnet', 'run', '--project', args[0], '--'] + args[1:], cwd=root, capture_output=True, text=True)
+            if got.returncode: raise AssertionError('Frozen d43 stand-in build failed:\n'+got.stdout+got.stderr)
+    return out
+
+RED_HOLLOW_ENVIRONMENT='5c5c82ea438f1f1730480cd8ccd3b4a2d086add3'
+
+def red_hollow_environment_snapshot():
+    return snapshot(RED_HOLLOW_ENVIRONMENT)

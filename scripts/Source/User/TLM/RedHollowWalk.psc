@@ -61,6 +61,8 @@ ReferenceAlias Property Alias_LabelCage Auto Const Mandatory
 ReferenceAlias Property Alias_LabelNine Auto Const Mandatory
 ReferenceAlias Property Alias_LabelGallery Auto Const Mandatory
 ReferenceAlias Property Alias_Fall Auto Const Mandatory
+ReferenceAlias Property Alias_SurfaceFall Auto Const Mandatory
+ReferenceAlias Property Alias_GalleryFall Auto Const Mandatory
 ReferenceAlias Property Alias_Miner01 Auto Const Mandatory
 ReferenceAlias Property Alias_Miner02 Auto Const Mandatory
 ReferenceAlias Property Alias_Miner03 Auto Const Mandatory
@@ -244,7 +246,25 @@ bool Function Ready()
 EndFunction
 
 bool Function Local()
-	Return Road().PlayerAlive() && Ref(Alias_GapArrival) && Game.GetPlayer().GetParentCell() == Ref(Alias_GapArrival).GetParentCell() && Game.GetPlayer().Is3DLoaded()
+	Return Road().PlayerAlive() && Game.GetPlayer().Is3DLoaded() && (SurfaceArea() || UndergroundArea())
+EndFunction
+
+bool Function SurfaceArea()
+	If !Ref(Alias_GapArrival) || Game.GetPlayer().GetParentCell() != Ref(Alias_GapArrival).GetParentCell()
+		Return false
+	EndIf
+	float x = Game.GetPlayer().GetPositionX()
+	float y = Game.GetPlayer().GetPositionY()
+	Return (x >= -128.0 && x <= 1664.0 && y >= -128.0 && y <= 896.0) || (x >= 1920.0 && x <= 3840.0 && y >= -128.0 && y <= 1408.0)
+EndFunction
+
+bool Function UndergroundArea()
+	If !Ref(Alias_CageBelow) || Game.GetPlayer().GetParentCell() != Ref(Alias_CageBelow).GetParentCell()
+		Return false
+	EndIf
+	float x = Game.GetPlayer().GetPositionX()
+	float y = Game.GetPlayer().GetPositionY()
+	Return (x >= 6016.0 && x <= 7808.0 && y >= -128.0 && y <= 896.0) || (x >= 9088.0 && x <= 10624.0 && y >= -128.0 && y <= 896.0)
 EndFunction
 
 bool Function Near(ObjectReference targetRef, float reach = 256.0)
@@ -662,6 +682,8 @@ bool Function Paper(string paperId, ObjectReference paperRef)
 EndFunction
 
 bool Function OpenDoor()
+	lastSample = -1.0
+	lastArea = 0
 	If !IsRunning()
 		If !Start() || !IsRunning()
 			Return false
@@ -677,14 +699,19 @@ bool Function OpenDoor()
 EndFunction
 
 Function Loaded()
+	lastSample = -1.0
+	lastArea = 0
 	If !IsRunning()
 		Return
 	EndIf
 	RegisterClockMenus()
 	; Never charge real save/load downtime or replay a missed timer interval.
 	lastSample = -1.0
+	lastArea = 0
 	ArmRope()
 	StartTimer(1.0, 1)
+	lastSample = -1.0
+	lastArea = 0
 EndFunction
 
 Function FairTransitGap()
@@ -1041,12 +1068,20 @@ Function TakeLamp(int originCode)
 EndFunction
 
 bool Function MovePlayer(ObjectReference targetRef)
+	lastSample = -1.0
+	lastArea = 0
 	If !Road().PlayerAlive() || !targetRef
+		lastSample = -1.0
+		lastArea = 0
 		Return false
 	EndIf
 	Game.GetPlayer().MoveTo(targetRef)
 	lastSample = -1.0
-	Return Road().PlayerAlive() && Road().At(Game.GetPlayer(),targetRef)
+	lastArea = 0
+	bool arrived = Road().PlayerAlive() && Road().At(Game.GetPlayer(),targetRef)
+	lastSample = -1.0
+	lastArea = 0
+	Return arrived
 EndFunction
 
 Function UseHoist()
@@ -1139,13 +1174,13 @@ Function BlastBreak()
 	EndIf
 	int mineBefore = Road().MineMark()
 	int answer = Blast.Show()
-	If answer != 0 || !Near(Ref(Alias_BreakControl)) || Road().MineMark() != mineBefore || !Road().ClearBlastArea(Ref(Alias_BreakClosed))
+	If answer != 0 || !Near(Ref(Alias_BreakControl)) || Road().MineMark() != mineBefore || !Road().ClearBlastArea(Ref(Alias_BreakClosed),SurfaceSlots,Ref(Alias_BreakControl),Ref(Alias_CageBelow))
 		Return
 	EndIf
 	If Road().MinePending() == 3 || Road().BeginBreak(SurfaceSlots)
 		Ref(Alias_BreakOpen).Disable()
 		Ref(Alias_BreakClosed).Enable()
-		Road().FinishBreak(Ref(Alias_BreakOpen),Ref(Alias_BreakClosed),Ref(Alias_BreakClosed),SurfaceSlots)
+		Road().FinishBreak(Ref(Alias_BreakOpen),Ref(Alias_BreakClosed),Ref(Alias_BreakClosed),SurfaceSlots,Ref(Alias_BreakControl),Ref(Alias_CageBelow))
 	EndIf
 EndFunction
 
@@ -1497,9 +1532,47 @@ Function ShowLabel(int who)
 EndFunction
 
 Function Entered(int who)
-	If who == 45 && Local() && Road().PlayerAlive()
-		MovePlayer(Ref(Alias_MouthArrival))
+	If busy || Utility.IsInMenuMode()
+		Return
 	EndIf
+	If who == 45 && FallContext(Alias_Fall,Alias_CageBelow,5888.0,7936.0,-384.0,1152.0)
+		MovePlayer(Ref(Alias_CageBelow))
+	ElseIf who == 46 && FallContext(Alias_SurfaceFall,Alias_GapArrival,0.0,4096.0,0.0,1792.0)
+		If Game.GetPlayer().GetPositionX() < 1792.0
+			MovePlayer(Ref(Alias_GapArrival))
+		Else
+			MovePlayer(Ref(Alias_MouthArrival))
+		EndIf
+	ElseIf who == 47 && FallContext(Alias_GalleryFall,Alias_GalleryArrival,8960.0,11008.0,-256.0,1280.0)
+		MovePlayer(Ref(Alias_GalleryArrival))
+	EndIf
+EndFunction
+
+bool Function RecoverFall()
+	If busy || Utility.IsInMenuMode()
+		Return false
+	EndIf
+	If FallContext(Alias_Fall,Alias_CageBelow,5888.0,7936.0,-384.0,1152.0)
+		Entered(45)
+		Return true
+	ElseIf FallContext(Alias_SurfaceFall,Alias_GapArrival,0.0,4096.0,0.0,1792.0)
+		Entered(46)
+		Return true
+	ElseIf FallContext(Alias_GalleryFall,Alias_GalleryArrival,8960.0,11008.0,-256.0,1280.0)
+		Entered(47)
+		Return true
+	EndIf
+	Return false
+EndFunction
+
+bool Function FallContext(ReferenceAlias fallAlias, ReferenceAlias safeAlias, float minX, float maxX, float minY, float maxY)
+	If !Ready() || !Road().HasArrived() || !Road().PlayerAlive() || !Ref(fallAlias) || !Ref(safeAlias)
+		Return false
+	EndIf
+	If Game.GetPlayer().GetParentCell() != Ref(fallAlias).GetParentCell() || Ref(safeAlias).GetParentCell() != Ref(fallAlias).GetParentCell() || Game.GetPlayer().GetPositionZ() > -400.0
+		Return false
+	EndIf
+	Return Game.GetPlayer().GetPositionX() >= minX && Game.GetPlayer().GetPositionX() <= maxX && Game.GetPlayer().GetPositionY() >= minY && Game.GetPlayer().GetPositionY() <= maxY
 EndFunction
 
 Function HollowActorDied(int who, int causeCode, Actor eventActor)
@@ -1534,6 +1607,12 @@ Event OnTimer(int aiTimerID)
 	If aiTimerID != 1
 		Return
 	EndIf
+	If RecoverFall()
+		lastSample = -1.0
+		lastArea = 0
+		StartTimer(1.0,1)
+		Return
+	EndIf
 	float sampleNow = Utility.GetCurrentRealTime()
 	float elapsedSeconds = sampleNow - lastSample
 	int currentArea = 0
@@ -1542,7 +1621,15 @@ Event OnTimer(int aiTimerID)
 	ElseIf MineArea()
 		currentArea = 2
 	EndIf
-	bool eligible = menusRegistered && !menuUncertain && !KnownMenuOpen() && !busy && currentArea > 0 && currentArea == lastArea && !Utility.IsInMenuMode() && lastSample >= 0.0 && elapsedSeconds > 0.0 && elapsedSeconds <= 2.5
+	bool operatorPaused = false
+	If currentArea == 2 && Road().Armed() && Road().MinePending() == 0
+		If !Road().OperatorValid(Ref(Alias_FiringControl)) || !Road().AllBelow(BelowSlots,CageSlots)
+			Road().BlockDeadline()
+		ElseIf !Road().OperatorReady(Ref(Alias_FiringControl))
+			operatorPaused = true
+		EndIf
+	EndIf
+	bool eligible = !operatorPaused && menusRegistered && !menuUncertain && !KnownMenuOpen() && !busy && currentArea > 0 && currentArea == lastArea && !Utility.IsInMenuMode() && lastSample >= 0.0 && elapsedSeconds > 0.0 && elapsedSeconds <= 2.5
 	lastSample = sampleNow
 	lastArea = currentArea
 	If Utility.IsInMenuMode() && !KnownMenuOpen()
@@ -1568,8 +1655,10 @@ Event OnTimer(int aiTimerID)
 			EndIf
 		ElseIf currentArea == 2
 			If Road().Armed() && Road().MinePending() == 0
-				If !Road().OperatorReady(Ref(Alias_FiringControl)) || !Road().AllBelow(BelowSlots,CageSlots)
+				If !Road().OperatorValid(Ref(Alias_FiringControl)) || !Road().AllBelow(BelowSlots,CageSlots)
 					Road().BlockDeadline()
+				ElseIf !Road().OperatorReady(Ref(Alias_FiringControl))
+					operatorPaused = true
 				ElseIf Road().TickDeadline(elapsedSeconds)
 					busy = true
 					Fire(false)
@@ -1579,9 +1668,12 @@ Event OnTimer(int aiTimerID)
 			EndIf
 		EndIf
 	EndIf
-	If busy || !Local() || Utility.IsInMenuMode() || KnownMenuOpen() || menuUncertain
+	If operatorPaused || busy || !Local() || Utility.IsInMenuMode() || KnownMenuOpen() || menuUncertain
 		; No absent/menu time is charged; first safe sample only primes the clock.
 		lastSample = -1.0
+		If operatorPaused
+			lastArea = 0
+		EndIf
 	EndIf
 	samples += 1
 	If eligible && samples >= 10 && Road().Armed()
@@ -1718,12 +1810,12 @@ bool Function MineArea()
 	EndIf
 	float currentX = Game.GetPlayer().GetPositionX()
 	float currentY = Game.GetPlayer().GetPositionY()
-	Return (currentX >= 2944.0 && currentX <= 4864.0 && currentY >= -128.0 && currentY <= 1408.0) || (currentX >= 6016.0 && currentX <= 7808.0 && currentY >= -128.0 && currentY <= 896.0) || (currentX >= 9088.0 && currentX <= 10624.0 && currentY >= -128.0 && currentY <= 896.0)
+	Return (SurfaceArea() && currentX >= 1920.0 && currentX <= 3840.0 && currentY >= -128.0 && currentY <= 1408.0) || UndergroundArea()
 EndFunction
 
 
 bool Function CourtArea()
-	Return Local() && Game.GetPlayer().GetPositionX() >= -128.0 && Game.GetPlayer().GetPositionX() <= 1664.0 && Game.GetPlayer().GetPositionY() >= -128.0 && Game.GetPlayer().GetPositionY() <= 896.0
+	Return Local() && SurfaceArea() && Game.GetPlayer().GetPositionX() >= -128.0 && Game.GetPlayer().GetPositionX() <= 1664.0 && Game.GetPlayer().GetPositionY() >= -128.0 && Game.GetPlayer().GetPositionY() <= 896.0
 EndFunction
 
 string Function ReportMark()

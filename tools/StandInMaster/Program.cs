@@ -57,7 +57,7 @@ var variant = args.Length > 1 ? args[1] : "default";
 var mod = new Fallout4Mod(ModKey.FromNameAndExtension("Fallout4.esm"), Fallout4Release.Fallout4);
 FormKey Key(uint id) => new(mod.ModKey, id);
 
-var room = variant is "default" or "localized" or "plain-triggers" or "bare-room" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model";
+var room = RhEnvironmentFixture.Variants.Contains(variant) || variant is "default" or "localized" or "plain-triggers" or "bare-room" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model";
 if (variant == "localized") mod.UsingLocalization = true;
 var lowIds = !room;
 var caps = new MiscItem(lowIds ? Key(0xF) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Caps001", Name = "Bottlecap" };
@@ -370,6 +370,7 @@ switch (variant)
     case "localized":
     case "plain-triggers":
     case "bare-room":
+    case var environmentVariant when RhEnvironmentFixture.Variants.Contains(environmentVariant):
         placed = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "PlayerREF" };
         placed.Base.SetTo(player);
         break;
@@ -415,6 +416,7 @@ if (room && variant != "relief-no-corn")
     strictCorn.Name = variant == "relief-wrong-corn-name" ? "Not Corn" : "Corn";
 }
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
+RhEnvironmentFixture.Add(mod,variant);
 // Real masters use ids below 0x800; a stand-in may too.
 mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();
 Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={(placed == null ? "none" : $"{placed.FormKey} EditorID='{placed.EditorID}'")}{fixtures}");

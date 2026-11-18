@@ -110,9 +110,7 @@ public static class Report
         }
 
         var cells = new List<CellInfo>();
-        foreach (var block in mod.Cells.Records)
-            foreach (var sub in block.SubBlocks)
-                foreach (var cell in sub.Cells)
+        foreach (var (cell,blockNumber,subNumber) in RedHollowEnvironment.ReportCells(mod))
                 {
                     var placed = new List<PlacedInfo>();
                     foreach (var (list, name) in new[] { (cell.Persistent, "Persistent"), (cell.Temporary, "Temporary") })
@@ -139,7 +137,7 @@ public static class Report
                                     break;
                             }
                         }
-                    cells.Add(new(cell.EditorID, cell.FormKey.ToString(), cell.FormKey.ModKey == mod.ModKey, block.BlockNumber, sub.BlockNumber, placed,
+                    cells.Add(new(cell.EditorID, cell.FormKey.ToString(), cell.FormKey.ModKey == mod.ModKey, blockNumber, subNumber, placed,
                         NullIfEmpty(cell.Name?.String)));
                 }
 

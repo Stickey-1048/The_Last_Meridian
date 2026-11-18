@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../PluginBuilder/PluginBuilder.csproj" />
     <PackageReference Include="Mutagen.Bethesda.Fallout4" Version="0.53.1" />
   </ItemGroup>
 

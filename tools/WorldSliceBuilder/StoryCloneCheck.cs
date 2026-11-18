@@ -129,6 +129,7 @@ public static class StoryCloneCheck
         catch(InvalidDataException e){Console.Error.WriteLine("REFUSED on read-back: "+e.Message);return 1;}
         var persistent=read.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
         var masterRefs=template.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(s=>s.Cells).SelectMany(c=>c.Persistent.Concat(c.Temporary)).ToDictionary(r=>r.FormKey);
+        foreach(var r in WorldStory.RedHollowSurfaceReferences(template))masterRefs.Add(r.FormKey,r);
         object Quest(string id){
             var q=read.Quests.SingleOrDefault(x=>x.EditorID==id);
             if(q==null)return new{present=false};

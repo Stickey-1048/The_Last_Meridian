@@ -17,6 +17,10 @@ ReferenceAlias Property Alias_Roark Auto Const Mandatory
 ReferenceAlias Property Alias_Dorn Auto Const Mandatory
 ReferenceAlias Property Alias_Condemned Auto Const Mandatory
 ReferenceAlias[] Property Miners Auto Const Mandatory
+ObjectReference[] Property RHSurfaceReceipts Auto Const
+ObjectReference[] Property RHOriginalMiners Auto Const
+ObjectReference Property RHBelowAnchor Auto Const
+ObjectReference Property RHBreakControl Auto Const
 GlobalVariable Property TLM_G_MQ02C_Court Auto Const Mandatory
 GlobalVariable Property TLM_G_MQ02C_Mine Auto Const Mandatory
 GlobalVariable Property TLM_G_MQ02C_PrisonerRole Auto Const Mandatory
@@ -159,13 +163,13 @@ Actor Function Miner(int minerIndex)
 EndFunction
 
 bool Function DistinctRoster()
-	If !Miners || Miners.Length != 11
+	If !Miners || Miners.Length != 11 || !RHOriginalMiners || RHOriginalMiners.Length != 11
 		Return false
 	EndIf
 	int outerIndex = 0
 	While outerIndex < 11
 		Actor outerActor = Miner(outerIndex)
-		If !outerActor
+		If !outerActor || outerActor != RHOriginalMiners[outerIndex]
 			Return false
 		EndIf
 		int innerIndex = 0
@@ -669,9 +673,14 @@ bool Function BreakPlanned()
 	Return breakPlan
 EndFunction
 
+bool Function OperatorValid(ObjectReference controlRef)
+	Actor operatorActor = Person(Alias_Blevins)
+	Return Open() && controlRef && !controlRef.IsDisabled() && Speaking(Alias_Blevins) && At(operatorActor,controlRef,192.0) && operatorActor.GetItemCount(KeyItem) > 0
+EndFunction
+
 bool Function OperatorReady(ObjectReference controlRef)
 	Actor operatorActor = Person(Alias_Blevins)
-	Return Open() && On(controlRef) && Speaking(Alias_Blevins) && operatorActor.Is3DLoaded() && At(operatorActor,controlRef,192.0) && operatorActor.GetItemCount(KeyItem) > 0
+	Return OperatorValid(controlRef) && On(controlRef) && operatorActor.Is3DLoaded()
 EndFunction
 
 bool Function GiveKey()
@@ -891,23 +900,45 @@ bool Function BeginBreak(ReferenceAlias[] surfaceSlots)
 	Return true
 EndFunction
 
-bool Function ClearBlastArea(ObjectReference blastRef)
-	If !blastRef || !DistinctRoster()
+bool Function ClearBlastArea(ObjectReference blastRef, ReferenceAlias[] surfaceSlots, ObjectReference controlRef, ObjectReference belowRef)
+	If !blastRef || !controlRef || !belowRef || !surfaceSlots || surfaceSlots.Length != 11 || !RHSurfaceReceipts || RHSurfaceReceipts.Length != 11 || !DistinctRoster() || !PlayerAlive()
+		Return false
+	EndIf
+	If belowRef != RHBelowAnchor || controlRef != RHBreakControl || !RHSurfaceReceipts[0] || RHSurfaceReceipts[0].GetParentCell() == belowRef.GetParentCell() || blastRef.GetParentCell() != belowRef.GetParentCell() || controlRef.GetParentCell() != belowRef.GetParentCell() || !At(Game.GetPlayer(),controlRef,256.0)
 		Return false
 	EndIf
 	int minerIndex = 0
 	While minerIndex < 11
 		Actor minerActor = Miner(minerIndex)
-		If !minerActor || minerActor.IsDisabled() || minerActor.GetDistance(blastRef) < 512.0
+		If !minerActor || minerActor.IsDisabled() || !surfaceSlots[minerIndex]
+			Return false
+		EndIf
+		ObjectReference safeSlot = surfaceSlots[minerIndex].GetReference()
+		If !safeSlot || safeSlot != RHSurfaceReceipts[minerIndex] || !RHSurfaceReceipts[0] || safeSlot.GetParentCell() != RHSurfaceReceipts[0].GetParentCell()
+			Return false
+		EndIf
+		If (Fate(minerIndex) != 3 && Fate(minerIndex) != 4) || (Fate(minerIndex) == 3 && (minerActor.IsDead() || !At(minerActor,safeSlot))) || (Fate(minerIndex) == 4 && !minerActor.IsDead())
+			Return false
+		EndIf
+		If minerActor.GetParentCell() == blastRef.GetParentCell()
+			If minerActor.GetDistance(blastRef) < 512.0
+				Return false
+			EndIf
+		ElseIf safeSlot.GetParentCell() == blastRef.GetParentCell() || !At(minerActor,safeSlot) || (Fate(minerIndex) != 3 && Fate(minerIndex) != 4) || (Fate(minerIndex) == 3 && minerActor.IsDead()) || (Fate(minerIndex) == 4 && !minerActor.IsDead())
 			Return false
 		EndIf
 		minerIndex += 1
 	EndWhile
-	Return Game.GetPlayer().GetDistance(blastRef) >= 512.0
+	If Game.GetPlayer().GetDistance(blastRef) < 512.0
+		Return false
+	EndIf
+	; The eleven native receipt reads can yield. Revalidate the current
+	; underground operator context after them, before any caller's effect.
+	Return blastRef.GetParentCell() == belowRef.GetParentCell() && controlRef.GetParentCell() == belowRef.GetParentCell() && At(Game.GetPlayer(),controlRef,256.0) && PlayerAlive()
 EndFunction
 
-bool Function FinishBreak(ObjectReference openRef, ObjectReference closedRef, ObjectReference blastRef, ReferenceAlias[] surfaceSlots)
-	If !Open() || mineIntent != 3 || !KnownSafeSurvivors(surfaceSlots) || !ClearBlastArea(blastRef) || !Off(openRef) || !On(closedRef)
+bool Function FinishBreak(ObjectReference openRef, ObjectReference closedRef, ObjectReference blastRef, ReferenceAlias[] surfaceSlots, ObjectReference controlRef, ObjectReference belowRef)
+	If !Open() || mineIntent != 3 || !KnownSafeSurvivors(surfaceSlots) || !Off(openRef) || !On(closedRef) || !ClearBlastArea(blastRef,surfaceSlots,controlRef,belowRef)
 		Return false
 	EndIf
 	innerClosed = true

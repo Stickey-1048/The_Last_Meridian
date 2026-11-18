@@ -1,0 +1,43 @@
+# Red Hollow Environment001 — independent technical feasibility
+
+**Disposition: feasible as a bounded NEW candidate, with the two concrete engineering clauses below adopted before implementation.**
+
+Signed: **Sam, independent technical reviewer**, 2026-11-17.
+
+Reviewed frozen contract `F2CD5E066395A3E1ACA9854D33AEC20DA13FC5D7BC02EBCBD9AC52CAE3B2CFA2`, Luis donor addendumABE44/runtime intake, and actual accepted d43bd336 RedHollowWalk/MQ02CQuest/SpecRedHollow/WorldRedHollow/WorldStory/Builder code. Source-design review only: no implementation, donor import, builder/compiler, game/UI/install, settings/save/profile/provider or owner question.
+
+## 1. Make the surface world owner explicit
+
+**Smallest coherent choice: NEW Red Hollow surface WRLD/CELL/LAND in the story MASTER, retaining the SAME master-owned Gap/Mouth reference FormKeys and rehoming only the declared surface cohort.** Keep the existing underground own CELL for Nine/gallery. Existing Mercy exterior addon still contains its own world and the thin cloned RH presentation controller; it binds to master-owned actual RH references. No vanilla donor override, original actor clone, second MQ02C or duplicate miner/prisoner is required.
+
+This needs a specific small record-construction extension, not a flag flip: current PluginBuilder.MakeOwnCell is an interior-only constructor; reuse the already grounded WorldSlice-style exterior serialization principles for a separately named environment world, with explicit new keys/flat or safely selected donor LAND/climate. Do not modify generic MakeOwnCell for other roads.
+
+**Actual source gap:** WorldStory.cs155 builds `sourceRefs` only from `source.Cells`; WorldRedHollow.cs24–57 insists every non-Mercy reference belongs to the old interior. A rehomed surface reference would disappear or be rejected. Extend discovery/membership only for the explicitly approved RH surface world/cell/cohort; preserve99alias prefix, exact IDs, canonical master reference identity, Player/Condemned special handling and all other clone rejection rules. Both persistent-top-cell and selected grid-cell records must be included deliberately. Never replace these checks with “any cell/world is allowed.”
+
+If engineering chooses addon-owned surface instead, that is a DIFFERENT explicit ownership plan requiring enumerated master-owned reference overrides and parent/group readback. Do not silently copy actors into new IDs. The master-owned plan above avoids that extra override mechanism and is recommended.
+
+Publish full same-ID parent/XYZ/height transform ledger before adoption. Apply MouthXminus1024 to ALL surface members/slots/effects, not merely arrivals. Distinguish related changed surface/grid records from untouched old data; byte-exact claims cannot include rehomed refs. Old packages/launchers/saves remain frozen fallbacks. Support and boundary controls must keep players from drifting beyond the single4096grid cell, including the contract's small negative clock-rectangle margins.
+
+## 2. Handle the actual cross-cell blast-clearance predicate
+
+The contract correctly covers same-cell At receipts, but one additional direct-distance call matters: **MQ02CQuest.psc894–906 ClearBlastArea** loops all11miners and calls `minerActor.GetDistance(blastRef)`, then uses the player's direct distance. After the proposed split, delivered survivors are in the surface CELL while the inner-break marker remains underground. That check can no longer depend on a meaningful cross-cell distance.
+
+Narrow clause: establish each original miner's actual current safe surface-slot receipt/current fate using the existing KnownSafeSurvivors/At rules. Those verified survivors may count as outside the underground blast region by EXPLICIT allowed region/receipt, not arbitrary different-cell status. Actors in the blast CELL still require the existing512distance clearance. Unknown, substituted, missing, unverified/off-slot or inappropriate-region actors must fail closed; no count-only rescue/death or global distance waiver. Keep the current player near the actual BreakControl and same allowed underground cell before the512distance check; wrong-cell numeric coordinates are not safety proof.
+
+Update both the BlastBreak precommit call and FinishBreak's final predicate coherently. Tests must include all11verified surface survivors plus underground player succeeding, a same-blast-cell actor inside512blocking, wrong-cell/off-slot/missing identity blocking, and changed context across the warning page blocking. This is a topology-induced dependency, not a newly alleged defect in the previously single-cell accepted runtime.
+
+## Other existing contract clauses are sufficient if implemented literally
+
+- **Local/clock regions:** RedHollowWalk.Local246currently ties all paths to Gap's parent CELL; MineArea1715hardcodes Mouth2944..4864 and two underground rectangles. Use explicit alias-cell AND bounded-zone membership: Gap/court and transformed Mouth1920..3840 outside, Nine/gallery in retained inside cell. Keep same-CELL At in MQ02CQuest132; all operative actor/marker pairs remain together. Do not globally permit other vanilla/Mercy/fair cells.
+- **Transitions:** MovePlayer1043currently invalidates lastSample only AFTER MoveTo. Invalidate prime/lastArea before AND after every outbound/inbound player transition (including failed/partial/load and same-tick movement), preserving seconds/warnings/intents/menu uncertainty. Also preserve11individual miner move receipts/pending2/player-only return and court original-prisoner identity. Local area presence alone must not charge unobserved intervals or suppress legitimate underground recovery.
+- **Falls/boundaries:** retain oldFallalias identity, but explicitly allocate/validate any additional per-region triggers or enclosure-boundary recovery required. One old trigger cannot protect both worlds. Recovery changes player position only after real acknowledged safe target, not fates/outcomes/warnings. New alias append must be reflected in the strict clone contract rather than weakening99prefix preservation.
+- **Actual lighting:** adding a strict typed LIGH placement/readback path is necessary and feasible with the existing typed-native lookup model. Select real light base/radius/flags/position and optional LTMP/room settings from owned metadata; reject scripts/links/enable parents/hazards from both donor REFERENCES and BASE records. Decorative GalleryLamp is not a light. Keep generic cell lighting untouched for other roads. Native emitter/occlusion/brightness proof is later, not a reason to invent an unaudited FormID now.
+- **Donor scope:** DunwichExt03plus a measured mine-kit subset is a reasonable small survey-first palette. The supplied counts/templates do not establish terrain support or dependency closure. Select exact statics/models/bounds and placement closure, exclude behavior and invalid precombine/previs/navmesh links, and generate new local output only. If safe donor LAND remap is not demonstrated, the contract's explicit flat-LAND plus evaluated quarry/mine geometry fallback is the smallest supported path. No whole-cell/5405ref/horror/actor copy or DLC prerequisite is needed.
+
+## Concrete minimum engineering gate
+
+One coherent outside+enclosed-lit-inside candidate; no new story/services/quests/cast. Complete source/record changes are bounded to environment world/placement/light declarations and serialization; RH locality/transition/blast safety; explicit alias/cell binding/clone validation; same-ID transform/allocation/selected-donor dependency ledger; and a NEW composed verifier/package preserving old frozen verifiers/artifacts. Include literal geometry-clearance/height/headroom/192approach checks for every original operative pair and all11slots, not just arrival.
+
+Source fixtures should exercise each allowed/forbidden cell/domain, same-coordinate wrong-cell, actual receipt vs request, warning/menu/load/transition gaps, all11partial deliveries/deaths and retained pending recovery, original court identity, unchanged choices/rewards/history and the explicit new blast rule. Then root owns real source compilation, licensed raw group/alias/LAND/light/model/dependency audit, staged launcher review and later actual sky/lighting/collision/input/normal-return/healthy-reload tests. No source/probe was executed here and no existing aggregate was repeated.
+
+No further narrative/canon or owner decision is needed for this scope. Owner LATER remains binding and this feasibility disposition commissions no native run. It does not establish donor suitability, terrain inheritance, navmesh, visual/collision completion or playability.
