@@ -132,6 +132,44 @@ class CrossCellBlast(unittest.TestCase):
         a.s.on_box=lambda m:setattr(miner,'cell',a.s._cell('ChangedAtWarning')) if m==P+'Blast' else None
         a.use('BreakControl',Blast=0);self.assertFalse(a.v('innerClosed'));self.assertEqual(a.g('MinePending'),0)
         a.s.on_box=None;miner.cell=original;a.use('BreakControl',Blast=0);self.assertEqual(a.g('Mine'),52)
+    def test_late_native_receipt_player_context_closes_before_effect_and_recovers(self):
+        for mode in ('cell','distance','dead'):
+            with self.subTest(mode=mode):
+                a=self.prepared();old=a.s.n_objectreference_getparentcell;armed=[];fired=[]
+                def late(ref,context,*args):
+                    value=old(ref,context,*args)
+                    if armed and ref is a.ref('Miner11') and not fired:
+                        fired.append(True)
+                        if mode=='cell':a.s.player.cell=a.ref('Surface01').cell
+                        elif mode=='distance':a.s.player.pos=(a.s.player.pos[0]+1024,a.s.player.pos[1],a.s.player.pos[2])
+                        else:a.s.player.dead=True
+                    return value
+                a.s.n_objectreference_getparentcell=late
+                a.s.on_box=lambda m:armed.append(True) if m==P+'Blast' else None
+                before=len(a.calls);a.answer(Blast=0);a.pos('BreakControl');a.s.press_activate('TLM_REF_RH_BreakControl');a.wait()
+                self.assertTrue(fired);self.assertEqual(a.g('MinePending'),0);self.assertFalse(a.v('innerClosed'))
+                self.assertEqual([c for c in a.calls[before:] if c[0] in ('enable','disable') and c[1] in (a.s._whom(a.ref('BreakOpen')),a.s._whom(a.ref('BreakClosed')))],[])
+                self.assertEqual(a.g('Survivors'),11);self.assertEqual(a.v('minerfates'),[3]*11)
+                # Explicit test-only restoration; gameplay code never resurrects.
+                a.s.player.dead=False;a.s.on_box=None;a.s.n_objectreference_getparentcell=old
+                a.use('BreakControl',Blast=0);self.assertEqual(a.g('Mine'),52)
+    def test_final_commit_rechecks_player_after_late11th_receipt(self):
+        a=self.prepared();self.assertTrue(road_call(a,'BeginBreak',a.walk.props['surfaceslots']))
+        a.ref('BreakOpen').disabled=True;a.ref('BreakClosed').disabled=False
+        old=a.s.n_objectreference_getparentcell;seen=[];fired=[]
+        def late(ref,context,*args):
+            value=old(ref,context,*args)
+            if ref is a.ref('Miner11'):
+                seen.append(True)
+                # First is KnownSafeSurvivors; second is clearance itself.
+                if len(seen)==2:a.s.player.cell=a.ref('Surface01').cell;fired.append(True)
+            return value
+        a.s.n_objectreference_getparentcell=late
+        self.assertFalse(road_call(a,'FinishBreak',a.ref('BreakOpen'),a.ref('BreakClosed'),*self.args(a)))
+        self.assertTrue(fired);self.assertEqual(a.g('MinePending'),3);self.assertFalse(a.v('innerClosed'));self.assertEqual(a.g('Survivors'),11)
+        a.s.n_objectreference_getparentcell=old;a.pos('BreakControl')
+        self.assertTrue(road_call(a,'FinishBreak',a.ref('BreakOpen'),a.ref('BreakClosed'),*self.args(a)));self.assertEqual(a.g('Mine'),52)
+
     def test_known_actual_dead_identity_preserved_and_same_blast_cell_requires512(self):
         a=self.prepared();miner=a.ref('Miner01');miner.dead=True;road_call(a,'ObserveDeath',0)
         self.assertEqual(a.v('minerfates')[0],4);self.assertTrue(road_call(a,'ClearBlastArea',*self.args(a)))

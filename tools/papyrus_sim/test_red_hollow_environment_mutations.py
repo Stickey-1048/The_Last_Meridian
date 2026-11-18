@@ -20,6 +20,7 @@ class EnvironmentMutations(unittest.TestCase):
             ('final blast','MQ02CQuest.psc',' || !ClearBlastArea(blastRef,surfaceSlots,controlRef,belowRef)','',cases.CrossCellBlast,'test_final_predicate_blocks_wrong_player_cell_with_all11_still_safe'),
             ('precommit blast','RedHollowWalk.psc',' || !Road().ClearBlastArea(Ref(Alias_BreakClosed),SurfaceSlots,Ref(Alias_BreakControl),Ref(Alias_CageBelow))','',cases.CrossCellBlast,'test_precommit_guard_blocks_any_effect_for_wrong_but_nearby_slot_alias'),
             ('only player transition','RedHollowTalk.psc','Function InvalidatePlayerSample()\n\tIf Who == -1','Function InvalidatePlayerSample()\n\tIf Who >= -1',cases.RegionsAndPrime,'test_nonplayer_cell_events_do_not_invalidate_player_prime'),
+            ('late operator context','MQ02CQuest.psc','Return blastRef.GetParentCell() == belowRef.GetParentCell() && controlRef.GetParentCell() == belowRef.GetParentCell() && At(Game.GetPlayer(),controlRef,256.0) && PlayerAlive()','Return true',cases.CrossCellBlast,'test_late_native_receipt_player_context_closes_before_effect_and_recovers'),
             ('fall cell','RedHollowWalk.psc','Game.GetPlayer().GetParentCell() != Ref(fallAlias).GetParentCell()','false',cases.RegionFalls,'test_wrong_cell_nonfall_other_actor_and_dead_player_do_not_recover')
         ]
         original=driver.SCRIPTS_NOW

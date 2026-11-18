@@ -924,7 +924,12 @@ bool Function ClearBlastArea(ObjectReference blastRef, ReferenceAlias[] surfaceS
 		EndIf
 		minerIndex += 1
 	EndWhile
-	Return Game.GetPlayer().GetDistance(blastRef) >= 512.0
+	If Game.GetPlayer().GetDistance(blastRef) < 512.0
+		Return false
+	EndIf
+	; The eleven native receipt reads can yield. Revalidate the current
+	; underground operator context after them, before any caller's effect.
+	Return blastRef.GetParentCell() == belowRef.GetParentCell() && controlRef.GetParentCell() == belowRef.GetParentCell() && At(Game.GetPlayer(),controlRef,256.0) && PlayerAlive()
 EndFunction
 
 bool Function FinishBreak(ObjectReference openRef, ObjectReference closedRef, ObjectReference blastRef, ReferenceAlias[] surfaceSlots, ObjectReference controlRef, ObjectReference belowRef)
