@@ -548,8 +548,6 @@ bool Function FinalReadAccess(ObjectReference original, Actor speakerActor, int 
 	If requiredSheriff
 		eligible = eligible && Speaker(requiredSheriff,0,capturedEpoch)
 	EndIf
-	ObjectReference currentOriginal = Alias_OriginalCase.GetReference()
-	ObjectReference currentPlayer = Alias_Player.GetReference()
 	Actor currentSheriff = None
 	If requiredSheriff
 		currentSheriff = Person(0)
@@ -558,6 +556,8 @@ bool Function FinalReadAccess(ObjectReference original, Actor speakerActor, int 
 	If !expectedHolder
 		currentGround = At(player,original,256.0) && !original.IsDisabled()
 	EndIf
+	ObjectReference currentPlayer = Alias_Player.GetReference()
+	ObjectReference currentOriginal = Alias_OriginalCase.GetReference()
 	; This must follow the yielding context/participant/alias work above.
 	ObjectReference currentHolder = original.GetContainer()
 	Return eligible && currentContext && currentGround && currentOriginal == original && original == originalCaseIdentity && currentPlayer == player && player == playerIdentity && (!requiredSheriff || currentSheriff == requiredSheriff) && currentHolder == expectedHolder && capturedEpoch == generation

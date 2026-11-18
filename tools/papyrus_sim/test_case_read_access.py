@@ -76,6 +76,36 @@ class CurrentReadAccess(unittest.TestCase):
                 else:original.pos=(90000,90000,16)
             fired,restore=self.final_hook(a,change);a.read();self.assertEqual(len(fired),1)
             self.assertIn(60,a.q.done);self.assertNotIn(100,a.q.done);self.assertIsNone(original.container);restore()
+    def test_late_ground_and_final_public_participant_alias_changes_close_then_recover(self):
+        for public in (False,True):
+            with self.subTest(public=public):
+                a=self.prepared(held=public);original=a.s.placed[R+'OriginalCase'];replacement=a.s.placed[R+'OriginalSilver']
+                oldcall=a.s.call;olddisabled=a.s.n_objectreference_isdisabled;oldactor=a.s.n_alias_getactorreference;stack=[];fired=[]
+                def call(inst,fn,args,named=None):
+                    stack.append(fn.name.lower())
+                    try:return (yield from oldcall(inst,fn,args,named))
+                    finally:stack.pop()
+                def disabled(ref,ctx):
+                    result=olddisabled(ref,ctx)
+                    if not public and 'finishread' in stack and ref is original and not fired:
+                        fired.append(True);a.rules.props['alias_originalcase'].ref=replacement
+                    return result
+                def actor(alias,ctx):
+                    result=oldactor(alias,ctx)
+                    # Final direct Person(0), not an earlier nested Speaker read.
+                    if public and len(stack)>=2 and stack[-2:]==['finalreadaccess','person'] and alias is a.rules.props['cast'][0] and not fired:
+                        fired.append(True);a.rules.props['alias_originalcase'].ref=replacement
+                    return result
+                a.s.call=call;a.s.n_objectreference_isdisabled=disabled;a.s.n_alias_getactorreference=actor;a.read(public)
+                self.assertEqual(len(fired),1);self.assertIs(a.rules.props['alias_originalcase'].ref,replacement)
+                self.assertIn(60,a.q.done);self.assertIn(70,a.q.done);self.assertTrue(a.v('caseHistoricalRead'));self.assertNotIn(100,a.q.done);self.assertNotIn(101,a.q.done)
+                if public:self.assertIn(44,a.q.done);self.assertTrue(a.v('caseTaken'));self.assertIs(original.container,a.originals[0])
+                else:self.assertIn(41,a.q.done);self.assertIsNone(original.container)
+                a.s.call=oldcall;a.s.n_objectreference_isdisabled=olddisabled;a.s.n_alias_getactorreference=oldactor
+                # Explicit test-only alias restoration of the SAME original.
+                a.rules.props['alias_originalcase'].ref=original;a.read(public)
+                self.assertIn(100,a.q.done);self.assertEqual(101 in a.q.done,public)
+
     def test_historical44_is_not_rolled_back_by_later_real_loss(self):
         a=Fair(self);original=a.s.placed[R+'OriginalCase'];outsider=a.s.placed[R+'Flint'];oldadd=a.s.n_objectreference_additem;oldread=a.s.n_objectreference_getcontainer;oldscene=a.s.n_actor_isinscene
         issued=[];observed=[];moved=[]
@@ -99,6 +129,7 @@ class CurrentReadAccess(unittest.TestCase):
 class AccessMutants(unittest.TestCase):
     def test_current_custody_and_final_generation_mutants_are_behaviorally_detected(self):
         trials=[('currentHolder == expectedHolder','true','test_late_current_custody_loss_refuses_solo_and_public_and_recovers'),('&& capturedEpoch == generation\nEndFunction\n\nbool Function FinishRead','\nEndFunction\n\nbool Function FinishRead','test_generation_is_checked_after_final_native_container_read')]
+        trials.append(('\tActor currentSheriff = None\n\tIf requiredSheriff\n\t\tcurrentSheriff = Person(0)\n\tEndIf\n\tbool currentGround = true\n\tIf !expectedHolder\n\t\tcurrentGround = At(player,original,256.0) && !original.IsDisabled()\n\tEndIf\n\tObjectReference currentPlayer = Alias_Player.GetReference()\n\tObjectReference currentOriginal = Alias_OriginalCase.GetReference()\n','\tObjectReference currentOriginal = Alias_OriginalCase.GetReference()\n\tObjectReference currentPlayer = Alias_Player.GetReference()\n\tActor currentSheriff = None\n\tIf requiredSheriff\n\t\tcurrentSheriff = Person(0)\n\tEndIf\n\tbool currentGround = true\n\tIf !expectedHolder\n\t\tcurrentGround = At(player,original,256.0) && !original.IsDisabled()\n\tEndIf\n','test_late_ground_and_final_public_participant_alias_changes_close_then_recover'))
         for needle,replacement,method in trials:
             with self.subTest(guard=needle),tempfile.TemporaryDirectory() as t:
                 folder=Path(t)
