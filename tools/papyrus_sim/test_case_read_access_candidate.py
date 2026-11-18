@@ -22,6 +22,24 @@ class CaseReadCandidate(unittest.TestCase):
             with tempfile.TemporaryDirectory() as t:
                 p=Path(t)/'file';p.write_bytes(raw);self.assertEqual(candidate.content_digest(p),m['baselineFiles'][name])
         self.assertTrue(all(v is None for v in m['measured'].values()));self.assertEqual((len(m['runtimeSelection']['reusedReviewedPex']),len(m['runtimeSelection']['freshlyCompiled'])),(17,17))
+    def test_only_exact_owner_approved_timeout40_and_original20_are_allowed(self):
+        name='.github/workflows/portable-checks.yml'
+        approved=(ROOT/name).read_text(encoding='utf-8');self.assertEqual(approved.count('    timeout-minutes: 40\n'),1)
+        original=approved.replace('    timeout-minutes: 40\n','    timeout-minutes: 20\n')
+        cases=[('original20',original,True),('approved40',approved,True),
+            ('unapproved41',approved.replace('timeout-minutes: 40','timeout-minutes: 41'),False),
+            ('writepermission',approved.replace('  contents: read','  contents: write'),False),
+            ('changedcommand',approved.replace('          tools/run_checks.sh 2>&1 | tee','          true 2>&1 | tee'),False),
+            ('duplicatebudget',approved+'    timeout-minutes: 40\n',False),
+            ('othercomment',approved+'\n# unrelated workflow edit\n',False)]
+        for label,text,allowed in cases:
+            with self.subTest(workflow=label):
+                self.assertNotEqual(text,approved) if label not in ('approved40',) else None
+                root=source_copy();(root/name).write_text(text,encoding='utf-8');repin(root);found=candidate.problems(root)
+                if allowed:self.assertEqual(found,[])
+                else:self.assertIn('unrelated accepted baseline file altered: '+name,found)
+        m=json.loads(candidate.MANIFEST.read_text(encoding='utf-8'))
+        self.assertEqual(candidate.digest(m['baselineFiles']),candidate.BASELINE_FILES_SHA256)
     def test_repin_cannot_change_any_unrelated_runtime_geometry_ids_canon_or_workflow(self):
         for name in ('scripts/Source/User/TLM/Core.psc','scripts/Source/User/TLM/RedHollowWalk.psc','scripts/Source/User/TLM/FourFlagsWalk.psc','tools/PluginBuilder/RedHollowEnvironment.cs','tools/WorldSliceBuilder/WorldFourFlags.cs','tools/PluginBuilder/formkeys.txt','docs/design/FOUR_FLAGS_STORY_001_CONTRACT.md','.github/workflows/portable-checks.yml','.gitattributes'):
             with self.subTest(file=name):

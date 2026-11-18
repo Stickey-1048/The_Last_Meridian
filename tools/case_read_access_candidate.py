@@ -24,6 +24,16 @@ def content_digest(path):
     try:data=data.decode('utf-8').replace('\r\n','\n').replace('\r','\n').encode('utf-8')
     except UnicodeDecodeError:pass
     return hashlib.sha256(data).hexdigest().upper()
+def approved_workflow_timeout(path, baseline_pin):
+    # Owner approved ONLY the existing job budget20->40. All other bytes of
+    # normalized workflow text must still match the anchored original file.
+    try:text=path.read_text(encoding='utf-8').replace('\r\n','\n').replace('\r','\n')
+    except (OSError,UnicodeError):return False
+    approved='    timeout-minutes: 40\n'
+    if text.count(approved)!=1:return False
+    original=text.replace(approved,'    timeout-minutes: 20\n')
+    return hashlib.sha256(original.encode()).hexdigest().upper()==baseline_pin
+
 def mq03_remainder(text):
     # Freeze all other MQ03 functions/properties/history, especially real44.
     return re.sub(r'(?ms)^bool Function (?:FinalReadAccess|FinishRead)\([^\n]*\)\n.*?^EndFunction\n*','',text.replace('\r\n','\n').replace('\r','\n'))
@@ -40,7 +50,9 @@ def problems(root=ROOT,manifest_path=None):
     for name,pin in AUTHORITY_PINS.items():
         if content_digest(root/name)!=pin:out.append('approved authority altered: '+name)
     for name,pin in baseline.items():
-        if name not in ALLOWED_BASELINE_CHANGES and content_digest(root/name)!=pin:out.append('unrelated accepted baseline file altered: '+name)
+        if name in ALLOWED_BASELINE_CHANGES or content_digest(root/name)==pin:continue
+        if name=='.github/workflows/portable-checks.yml' and approved_workflow_timeout(root/name,pin):continue
+        out.append('unrelated accepted baseline file altered: '+name)
     try:now=describe(root)
     except (OSError,ValueError) as exc:return out+['source inputs unreadable: '+str(exc)]
     for key,value in now.items():
