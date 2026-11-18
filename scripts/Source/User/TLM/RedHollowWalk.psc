@@ -1621,7 +1621,15 @@ Event OnTimer(int aiTimerID)
 	ElseIf MineArea()
 		currentArea = 2
 	EndIf
-	bool eligible = menusRegistered && !menuUncertain && !KnownMenuOpen() && !busy && currentArea > 0 && currentArea == lastArea && !Utility.IsInMenuMode() && lastSample >= 0.0 && elapsedSeconds > 0.0 && elapsedSeconds <= 2.5
+	bool operatorPaused = false
+	If currentArea == 2 && Road().Armed() && Road().MinePending() == 0
+		If !Road().OperatorValid(Ref(Alias_FiringControl)) || !Road().AllBelow(BelowSlots,CageSlots)
+			Road().BlockDeadline()
+		ElseIf !Road().OperatorReady(Ref(Alias_FiringControl))
+			operatorPaused = true
+		EndIf
+	EndIf
+	bool eligible = !operatorPaused && menusRegistered && !menuUncertain && !KnownMenuOpen() && !busy && currentArea > 0 && currentArea == lastArea && !Utility.IsInMenuMode() && lastSample >= 0.0 && elapsedSeconds > 0.0 && elapsedSeconds <= 2.5
 	lastSample = sampleNow
 	lastArea = currentArea
 	If Utility.IsInMenuMode() && !KnownMenuOpen()
@@ -1647,8 +1655,10 @@ Event OnTimer(int aiTimerID)
 			EndIf
 		ElseIf currentArea == 2
 			If Road().Armed() && Road().MinePending() == 0
-				If !Road().OperatorReady(Ref(Alias_FiringControl)) || !Road().AllBelow(BelowSlots,CageSlots)
+				If !Road().OperatorValid(Ref(Alias_FiringControl)) || !Road().AllBelow(BelowSlots,CageSlots)
 					Road().BlockDeadline()
+				ElseIf !Road().OperatorReady(Ref(Alias_FiringControl))
+					operatorPaused = true
 				ElseIf Road().TickDeadline(elapsedSeconds)
 					busy = true
 					Fire(false)
@@ -1658,9 +1668,12 @@ Event OnTimer(int aiTimerID)
 			EndIf
 		EndIf
 	EndIf
-	If busy || !Local() || Utility.IsInMenuMode() || KnownMenuOpen() || menuUncertain
+	If operatorPaused || busy || !Local() || Utility.IsInMenuMode() || KnownMenuOpen() || menuUncertain
 		; No absent/menu time is charged; first safe sample only primes the clock.
 		lastSample = -1.0
+		If operatorPaused
+			lastArea = 0
+		EndIf
 	EndIf
 	samples += 1
 	If eligible && samples >= 10 && Road().Armed()

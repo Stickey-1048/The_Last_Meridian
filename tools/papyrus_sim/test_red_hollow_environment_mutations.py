@@ -5,6 +5,7 @@ import io,shutil,tempfile,unittest
 from pathlib import Path
 import test_red_hollow as driver
 import test_red_hollow_environment as cases
+import test_red_hollow_environment_review_repairs as review_cases
 from test_sim import SCRIPTS
 
 
@@ -21,6 +22,9 @@ class EnvironmentMutations(unittest.TestCase):
             ('precommit blast','RedHollowWalk.psc',' || !Road().ClearBlastArea(Ref(Alias_BreakClosed),SurfaceSlots,Ref(Alias_BreakControl),Ref(Alias_CageBelow))','',cases.CrossCellBlast,'test_precommit_guard_blocks_any_effect_for_wrong_but_nearby_slot_alias'),
             ('only player transition','RedHollowTalk.psc','Function InvalidatePlayerSample()\n\tIf Who == -1','Function InvalidatePlayerSample()\n\tIf Who >= -1',cases.RegionsAndPrime,'test_nonplayer_cell_events_do_not_invalidate_player_prime'),
             ('late operator context','MQ02CQuest.psc','Return blastRef.GetParentCell() == belowRef.GetParentCell() && controlRef.GetParentCell() == belowRef.GetParentCell() && At(Game.GetPlayer(),controlRef,256.0) && PlayerAlive()','Return true',cases.CrossCellBlast,'test_late_native_receipt_player_context_closes_before_effect_and_recovers'),
+            ('final effect receipt order','MQ02CQuest.psc','!KnownSafeSurvivors(surfaceSlots) || !Off(openRef) || !On(closedRef) || !ClearBlastArea(blastRef,surfaceSlots,controlRef,belowRef)','!KnownSafeSurvivors(surfaceSlots) || !ClearBlastArea(blastRef,surfaceSlots,controlRef,belowRef) || !Off(openRef) || !On(closedRef)',review_cases.FinalEffectContext,'test_last_effect_receipt_context_loss_preserves_pending_and_recovers'),
+            ('temporary unload latches','RedHollowWalk.psc','ElseIf !Road().OperatorReady(Ref(Alias_FiringControl))\n\t\t\toperatorPaused = true','ElseIf !Road().OperatorReady(Ref(Alias_FiringControl))\n\t\t\tRoad().BlockDeadline()',review_cases.OperatorObservation,'test_operator_and_control_unload_pause_then_prime_and_resume_without_catchup'),
+            ('unload sample catchup','RedHollowWalk.psc','If operatorPaused || busy || !Local()','If busy || !Local()',review_cases.OperatorObservation,'test_operator_and_control_unload_pause_then_prime_and_resume_without_catchup'),
             ('fall cell','RedHollowWalk.psc','Game.GetPlayer().GetParentCell() != Ref(fallAlias).GetParentCell()','false',cases.RegionFalls,'test_wrong_cell_nonfall_other_actor_and_dead_player_do_not_recover')
         ]
         original=driver.SCRIPTS_NOW

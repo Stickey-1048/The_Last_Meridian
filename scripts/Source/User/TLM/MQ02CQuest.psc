@@ -673,9 +673,14 @@ bool Function BreakPlanned()
 	Return breakPlan
 EndFunction
 
+bool Function OperatorValid(ObjectReference controlRef)
+	Actor operatorActor = Person(Alias_Blevins)
+	Return Open() && controlRef && !controlRef.IsDisabled() && Speaking(Alias_Blevins) && At(operatorActor,controlRef,192.0) && operatorActor.GetItemCount(KeyItem) > 0
+EndFunction
+
 bool Function OperatorReady(ObjectReference controlRef)
 	Actor operatorActor = Person(Alias_Blevins)
-	Return Open() && On(controlRef) && Speaking(Alias_Blevins) && operatorActor.Is3DLoaded() && At(operatorActor,controlRef,192.0) && operatorActor.GetItemCount(KeyItem) > 0
+	Return OperatorValid(controlRef) && On(controlRef) && operatorActor.Is3DLoaded()
 EndFunction
 
 bool Function GiveKey()
@@ -933,7 +938,7 @@ bool Function ClearBlastArea(ObjectReference blastRef, ReferenceAlias[] surfaceS
 EndFunction
 
 bool Function FinishBreak(ObjectReference openRef, ObjectReference closedRef, ObjectReference blastRef, ReferenceAlias[] surfaceSlots, ObjectReference controlRef, ObjectReference belowRef)
-	If !Open() || mineIntent != 3 || !KnownSafeSurvivors(surfaceSlots) || !ClearBlastArea(blastRef,surfaceSlots,controlRef,belowRef) || !Off(openRef) || !On(closedRef)
+	If !Open() || mineIntent != 3 || !KnownSafeSurvivors(surfaceSlots) || !Off(openRef) || !On(closedRef) || !ClearBlastArea(blastRef,surfaceSlots,controlRef,belowRef)
 		Return false
 	EndIf
 	innerClosed = true
