@@ -9,9 +9,13 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from test_sim import ROOT
+from test_sim import ROOT as LIVE_ROOT
+from source_snapshot import red_hollow_environment_snapshot
+ROOT=red_hollow_environment_snapshot()
 sys.path.insert(0,str(ROOT/'tools'))
-import red_hollow_environment_candidate as candidate
+import importlib.util
+_spec=importlib.util.spec_from_file_location('frozen_rhe_candidate',ROOT/'tools/red_hollow_environment_candidate.py')
+candidate=importlib.util.module_from_spec(_spec);_spec.loader.exec_module(candidate)
 
 
 def source_copy():
@@ -26,11 +30,11 @@ class RedHollowEnvironmentCandidate(unittest.TestCase):
         self.assertEqual(candidate.problems(),[])
         m=json.loads(candidate.MANIFEST.read_text());self.assertEqual(m['scripts'],34)
         for name in candidate.FROZEN:
-            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
+            old=subprocess.run(['git','show',candidate.BASELINE+':'+name],cwd=LIVE_ROOT,capture_output=True,check=True).stdout.decode().replace('\r\n','\n')
             self.assertEqual((ROOT/name).read_text(encoding='utf-8'),old,name)
         self.assertTrue(all(v is None for v in m['measured'].values()))
         self.assertEqual((len(m['runtimeSelection']['reusedReviewedPex']),len(m['runtimeSelection']['freshlyCompiled'])),(17,17))
-        old=json.loads(subprocess.run(['git','show',candidate.BASELINE+':tools/win/four-flags-candidate.json'],cwd=ROOT,capture_output=True,check=True).stdout)
+        old=json.loads(subprocess.run(['git','show',candidate.BASELINE+':tools/win/four-flags-candidate.json'],cwd=LIVE_ROOT,capture_output=True,check=True).stdout)
         self.assertEqual(m['baselineSourceTextSha256'],old['sourceTextSha256'])
 
     def test_repinning_cannot_waive_an_unrelated_accepted_script_change(self):

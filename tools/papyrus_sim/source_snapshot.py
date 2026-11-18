@@ -83,3 +83,8 @@ def built_four_flags():
             got = subprocess.run(['dotnet', 'run', '--project', args[0], '--'] + args[1:], cwd=root, capture_output=True, text=True)
             if got.returncode: raise AssertionError('Frozen d43 stand-in build failed:\n'+got.stdout+got.stderr)
     return out
+
+RED_HOLLOW_ENVIRONMENT='5c5c82ea438f1f1730480cd8ccd3b4a2d086add3'
+
+def red_hollow_environment_snapshot():
+    return snapshot(RED_HOLLOW_ENVIRONMENT)
