@@ -6,10 +6,22 @@ public static class RedHollowGeometryAudit
     public sealed record Box(string Name,string Base,bool Outside,float MinX,float MaxX,float MinY,float MaxY,float MinZ,float MaxZ);
     public static Box Bounds(RedHollowEnvironment.Piece p){
         var b=RedHollowEnvironment.Assets.Single(a=>a.Id==p.Base).Bounds;
-        var corners=(from x in new[]{b[0],b[3]} from y in new[]{b[1],b[4]} select (X:p.X+x*MathF.Cos(p.Yaw)-y*MathF.Sin(p.Yaw),Y:p.Y+x*MathF.Sin(p.Yaw)+y*MathF.Cos(p.Yaw))).ToArray();
+        var corners=(from x in new[]{b[0],b[3]} from y in new[]{b[1],b[4]} select (X:p.X+x*MathF.Cos(p.Yaw)+y*MathF.Sin(p.Yaw),Y:p.Y-x*MathF.Sin(p.Yaw)+y*MathF.Cos(p.Yaw))).ToArray();
         return new(p.Name,p.Base,p.Outside,corners.Min(c=>c.X),corners.Max(c=>c.X),corners.Min(c=>c.Y),corners.Max(c=>c.Y),p.Z+b[2],p.Z+b[5]);
     }
     public static object Check(RedHollowEnvironment.Piece[] pieces){
+        // Actual QryCubeWall01 triangles/packed normals are local-Y; the
+        // measured Dunwich wall/floor pair establishes clockwise native yaw.
+        foreach(var p in pieces.Where(p=>!p.Outside&&p.Base=="QryCubeWall01")){
+            float targetX=p.Name.StartsWith("Nine")?6912:9984,targetY=512;
+            float nx=-MathF.Sin(p.Yaw),ny=-MathF.Cos(p.Yaw);
+            if(nx*(targetX-p.X)+ny*(targetY-p.Y)<=0)throw new InvalidDataException("RH perimeter face points away from room: "+p.Name);
+        }
+        for(int y=0;y<=32;y++)for(int x=0;x<=32;x++){
+            int h=RedHollowTerrain.Height(x,y);
+            if(h%8!=0||y<=16&&h!=0)throw new InvalidDataException("RH story pad/terrain quantization changed");
+            if(x>0&&Math.Abs(h-RedHollowTerrain.Height(x-1,y))>64||y>0&&Math.Abs(h-RedHollowTerrain.Height(x,y-1))>64)throw new InvalidDataException("RH terrain step exceeds64per128");
+        }
         var boxes=pieces.Select(Bounds).ToArray();int protectedCount=0;float minimumHeadroom=float.MaxValue;
         var emitters=RedHollowEnvironment.AddedPlaced().Where(p=>p.Base=="defaultLightWarm01NS").ToArray();
         void Point(string name,bool outside,float x,float y,float radius){
@@ -51,6 +63,25 @@ public static class RedHollowGeometryAudit
         foreach(var route in routes)for(int segment=1;segment<route.Item3.Length;segment++)for(int sample=0;sample<=100;sample++){
             var a=route.Item3[segment-1];var b=route.Item3[segment];float t=sample/100f;Point(route.Item1,route.Item2,a.Item1+(b.Item1-a.Item1)*t,a.Item2+(b.Item2-a.Item2)*t,96);
         }
+        // New routes keep192width and sampled LAND rise <=32per128units.
+        foreach(var route in RedHollowTerrain.Routes)for(int segment=1;segment<route.Points.Length;segment++)for(int sample=0;sample<=100;sample++){
+            var a=route.Points[segment-1];var b=route.Points[segment];float t=sample/100f;
+            float x=a.X+(b.X-a.X)*t,y=a.Y+(b.Y-a.Y)*t,ground=RedHollowTerrain.Ground(x,y);
+            foreach(var offset in new[]{(-96f,0f),(96f,0f),(0f,-96f),(0f,96f)}){
+                float px=x+offset.Item1,py=y+offset.Item2;
+                if(px<0||px>4096||py<0||py>4096)throw new InvalidDataException("RH route leaves LAND");
+                float dx=(RedHollowTerrain.Ground(px+8,py)-RedHollowTerrain.Ground(px-8,py))/16;
+                float dy=(RedHollowTerrain.Ground(px,py+8)-RedHollowTerrain.Ground(px,py-8))/16;
+                if(MathF.Sqrt(dx*dx+dy*dy)>0.36f)throw new InvalidDataException("RH route LAND slope too steep: "+route.Name);
+            }
+            foreach(var box in boxes.Where(box=>box.Outside)){
+                float dx=MathF.Max(MathF.Max(box.MinX-x,0),x-box.MaxX),dy=MathF.Max(MathF.Max(box.MinY-y,0),y-box.MaxY);
+                if(dx*dx+dy*dy>=96*96-0.01)continue;
+                if(box.Base=="workshop_ShackMidFloor01B"||box.MaxZ<=ground+16.01||box.MinZ>=ground+192)continue;
+                throw new InvalidDataException("RH new route obstructed: "+route.Name+" / "+box.Name);
+            }
+            protectedCount++;
+        }
         // The original court projectile target's direct approach is unobstructed
         // at its actual target height, not merely a player-floor point.
         foreach(var b in boxes.Where(b=>b.Outside&&b.MinZ<=128&&b.MaxZ>=120))if(b.MinX<=768&&b.MaxX>=768&&b.MinY<=512&&b.MaxY>=256)throw new InvalidDataException("RH rope projectile corridor blocked: "+b.Name);
@@ -62,7 +93,7 @@ public static class RedHollowGeometryAudit
             foreach(var edit in json.RootElement.EnumerateArray()){
                 string name=edit.GetProperty("name").GetString()!;int index=Array.FindIndex(pieces,p=>p.Name==name);
                 if(index<0)throw new InvalidDataException("Unknown RH geometry edit");var old=pieces[index];
-                pieces[index]=old with{X=edit.TryGetProperty("x",out var x)?x.GetSingle():old.X,Y=edit.TryGetProperty("y",out var y)?y.GetSingle():old.Y,Z=edit.TryGetProperty("z",out var z)?z.GetSingle():old.Z};
+                pieces[index]=old with{X=edit.TryGetProperty("x",out var x)?x.GetSingle():old.X,Y=edit.TryGetProperty("y",out var y)?y.GetSingle():old.Y,Z=edit.TryGetProperty("z",out var z)?z.GetSingle():old.Z,Yaw=edit.TryGetProperty("yaw",out var yaw)?yaw.GetSingle():old.Yaw};
             }
             Console.WriteLine(JsonSerializer.Serialize(Check(pieces)));return 0;
         }catch(InvalidDataException e){Console.Error.WriteLine("REFUSED: "+e.Message);return 1;}
