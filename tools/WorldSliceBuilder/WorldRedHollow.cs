@@ -26,9 +26,9 @@ public static partial class WorldStory
         var interiorRefs=ownCell.Persistent.Select(r=>r.FormKey).ToHashSet();
         var surfaceRefs=RedHollowSurfaceReferences(source).Select(r=>r.FormKey).ToHashSet();
         var clone=original.Duplicate(mod.GetNextFormKey());clone.EditorID=RedHollowClone;
-        clone.Name="The Last Meridian - exterior-linked Red Hollow (development)";
         var aliases=clone.Aliases?.OfType<QuestReferenceAlias>().ToArray()??throw new InvalidDataException("Red Hollow aliases missing");
         bool guidance=aliases.Any(a=>a.Name=="GuideSheriff");
+        clone.Name=guidance?"Red Hollow: directions":"The Last Meridian - exterior-linked Red Hollow (development)";
         int expectedAliases=(surfaceRefs.Count>0?101:99)+(guidance?1:0);
         ValidateRedHollowAliasPrefix(aliases,surfaceRefs.Count>0);
         ValidateRedHollowGuideBinding(original,aliases);

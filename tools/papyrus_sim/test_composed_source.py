@@ -1,5 +1,5 @@
 """Current combined source and raw-record boundary checks; no native proof."""
-import json,shutil,struct,sys,tempfile,unittest
+import json,shutil,struct,subprocess,sys,tempfile,unittest
 from pathlib import Path
 from test_sim import ROOT
 sys.path.insert(0,str(ROOT/'tools'))
@@ -71,5 +71,16 @@ class CurrentComposition(unittest.TestCase):
         for damage in ('report-guide-forced','report-guide-alias-id','report-guide-binding-removed','report-guide-binding-wrong','report-guide-protected'):
             with self.subTest(damage=damage):
                 bad=clone(damage);self.assertEqual(bad.returncode,1,bad.stdout+bad.stderr);self.assertIn('REFUSED',bad.stderr)
+    def test_guidance_quest_name_is_natural_and_legacy_name_stays_exact(self):
+        from test_greenwater_world_clone import DLL,stand_in_story
+        from composed_test_contexts import context,FD7
+        from rh_terrain_projection import records,subs
+        legacy=context(FD7)/'build/flat-layout/TheLastMeridian.esp'
+        for source,expected in ((stand_in_story(),'Red Hollow: directions'),(legacy,'The Last Meridian - exterior-linked Red Hollow (development)')):
+            with self.subTest(source=source),tempfile.TemporaryDirectory(prefix='tlm-clone-name-') as t:
+                output=Path(t)/'world';result=subprocess.run(['dotnet',str(DLL),'--story-clone-check',str(source),str(output)],cwd=ROOT,capture_output=True,text=True)
+                self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+                rows,names=records((output/'TLMWorldSlice.esp').read_bytes())
+                self.assertEqual(dict(subs(rows[names['TLM_WS_RH']][1]))[b'FULL'].rstrip(b'\0').decode(),expected)
 
 if __name__=='__main__':unittest.main()

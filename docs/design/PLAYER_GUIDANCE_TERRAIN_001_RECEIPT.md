@@ -1,4 +1,4 @@
-# Player guidance + terrain 001 — explicit source composition
+# Player guidance + terrain 001 â€” explicit source composition
 
 New isolated successor from published fd7ed54181a23ff100b47ddad60caac802eb019c. Cherry-picked Luis read/implementation541d9fc+5a2b373 and Nora environmentf601820. All standalone module manifests/verifiers and frozen history remain unchanged. No installed/profile/launcher/save/game/provider/workflow action.
 
@@ -11,3 +11,9 @@ Explicit test-context dispatcher replaces only stage5 unittest invocation in run
 Combined verifier anchors full420fd7inventory, exact accepted component module pins and explicit reviewed integration deltas; all other source remains baseline-exact, additions have exact declared membership. Runtime remains34scripts,16source-identical reviewed+18fresh. Native/artifact fields stay null. Source success string: Player guidance + terrain source candidate PASS.
 
 Status: current repair3methods, syntheticC# build and strict rawlayout39damage passed. Fresh fixture preparation passed. Full aggregate and final source review pending; no cloud/native acceptance claimed. Exact final log receipts will be appended after execution.
+
+## Independent review name correction
+
+Sam signed exactd2d0ba9 HOLD81C40BAADE568393584E6BEBECB2195AAEB86E4AB121C875DD6F16F878780121 for only the player-visible cloned journal name; other bounded source/guard checks cleared in his signed scope. Root stopped aggregate1/session85666 before ANY source edit; process exited1 and remaining children were verified gone. Its preserved portable1 log establishes stages1–4PASS and partial stage5 ONLY, never a complete aggregate pass.
+
+Bounded correction: the exact new GuideSheriff guidance variant clones as Red Hollow: directions; legacy sources retain their old exact development label. No PSC, alias, custody, placement or behavior change. New synthetic binary name test checks both current and actualfd7legacy cloned FULL payloads. Current source pin/manifest updated; prior evidence preserved. Full aggregate restarts after this exact frozen commit.
