@@ -2227,11 +2227,13 @@ bool Function Aftermath(Actor speakerActor, bool isRoark)
 	int row = AftermathRow()
 	Message leadMessage = AftermathLead(row,isRoark)
 	string before = AftermathMark()
-	If !leadMessage || AftermathRow() != row || AftermathMark() != before || !AftermathContext(speakerActor,isRoark,playerActor,generation)
+	; Finite post-context cohort/mark observations: later context getters may yield.
+	; No alternating loop or atomic-world snapshot is claimed.
+	If !leadMessage || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
 		Return false
 	EndIf
 	int answer = leadMessage.Show()
-	If answer != 0 || AftermathRow() != row || AftermathMark() != before || !AftermathContext(speakerActor,isRoark,playerActor,generation)
+	If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
 		Return true
 	EndIf
 	Message decisionMessage = None
@@ -2244,9 +2246,9 @@ bool Function Aftermath(Actor speakerActor, bool isRoark)
 			decisionMessage = RhaOpen
 		EndIf
 	EndIf
-	If decisionMessage && AftermathRow() == row && AftermathMark() == before && AftermathContext(speakerActor,isRoark,playerActor,generation)
+	If decisionMessage && AftermathContext(speakerActor,isRoark,playerActor,generation) && AftermathRow() == row && AftermathMark() == before
 		answer = decisionMessage.Show()
-		If answer != 0 || AftermathRow() != row || AftermathMark() != before || !AftermathContext(speakerActor,isRoark,playerActor,generation)
+		If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
 			Return true
 		EndIf
 	EndIf

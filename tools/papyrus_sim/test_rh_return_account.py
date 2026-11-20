@@ -121,9 +121,9 @@ class ReturnAccount(unittest.TestCase):
             copy=Path(folder)/'TLM';shutil.copytree(original,copy)
             path=copy/'RedHollowWalk.psc';text=path.read_text(encoding='utf-8')
             start=text.index('bool Function Aftermath(Actor')
-            tail=text[start:];old='If answer != 0 || AftermathRow() != row'
+            tail=text[start:];old='If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation)'
             self.assertEqual(tail.count(old),2)
-            tail=tail.replace(old,'If false || AftermathRow() != row',1)
+            tail=tail.replace(old,'If false || !AftermathContext(speakerActor,isRoark,playerActor,generation)',1)
             path.write_text(text[:start]+tail,encoding='utf-8')
             try:
                 rh.SCRIPTS_NOW=copy;a=self.settle();a.raw[P+'RhaRoarkAll']=-1
@@ -169,5 +169,63 @@ class ReturnAccount(unittest.TestCase):
         try:
             self.assertFalse(a.s.invoke('TLM_RH','ReportReceiptContext',[a.s.placed['TLM_REF_A1_Pritchard'],before,generation,player]))
         finally:a.s.player=player
+
+    def test_sam_late_cohort_changes_close_lead_postpage_and_optional_boundaries(self):
+        for boundary in (1,2,3,4):
+            for mode in ('disabled','missing','displaced','mark'):
+                with self.subTest(boundary=boundary,mode=mode):
+                    a=self.settle();oldcall=a.s.call;old=a.s.n_objectreference_isindialoguewithplayer
+                    stack=[];contexts=[];fired=[];after_rows=[];before=a.snapshot();stages=list(a.q.done);inventory=dict(a.s.player.inventory)
+                    def call(inst,fn,args,named=None):
+                        name=fn.name.lower();stack.append(name)
+                        if name=='aftermathcontext':contexts.append(True)
+                        try:
+                            value=yield from oldcall(inst,fn,args,named)
+                            if name=='aftermathrow' and fired:after_rows.append(value)
+                            return value
+                        finally:stack.pop()
+                    def late(ref,ctx,*args):
+                        value=old(ref,ctx,*args)
+                        if 'aftermathcontext' in stack and len(contexts)==boundary and ref is a.ref('Roark') and not fired:
+                            fired.append(True)
+                            if mode=='disabled':a.ref('Miner03').disabled=True
+                            elif mode=='missing':a.rules.props['miners'][2].ref=None
+                            elif mode=='displaced':a.ref('Miner03').pos=(99999,0,0)
+                            else:a.rules.vars['breakplan']=True
+                        return value
+                    a.s.call=call;a.s.n_objectreference_isindialoguewithplayer=late
+                    shown=self.say(a,RhaRoarkAll=0,RhaOpen=0)
+                    self.assertEqual(fired,[True]);self.assertTrue(after_rows)
+                    if mode!='mark':self.assertIn(-1,after_rows)
+                    if boundary==1:self.assertNotIn(P+'RhaRoarkAll',shown)
+                    if boundary<4:self.assertNotIn(P+'RhaOpen',shown)
+                    # Facts may truthfully refresh current survivor diagnostics after an unavailable miner.
+                    current=a.snapshot();self.assertEqual(current[:2]+current[3:],before[:2]+before[3:])
+                    self.assertEqual(a.q.done,stages);self.assertEqual(a.s.player.inventory,inventory)
+                    if mode=='disabled' and boundary==1:
+                        a.ref('Miner03').disabled=False;a.s.n_objectreference_isindialoguewithplayer=old
+                        self.assertIn(P+'RhaOpen',self.say(a,RhaRoarkAll=0,RhaOpen=0))
+    def test_old_context_last_order_mutant_reproduces_sams_false_count(self):
+        import tempfile,shutil
+        from pathlib import Path
+        import test_red_hollow as rh
+        original=rh.SCRIPTS_NOW
+        with tempfile.TemporaryDirectory() as folder:
+            copy=Path(folder)/'TLM';shutil.copytree(original,copy);p=copy/'RedHollowWalk.psc'
+            source=p.read_text(encoding='utf-8')
+            good='If !leadMessage || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before'
+            bad='If !leadMessage || AftermathRow() != row || AftermathMark() != before || !AftermathContext(speakerActor,isRoark,playerActor,generation)'
+            self.assertEqual(source.count(good),1);p.write_text(source.replace(good,bad),encoding='utf-8')
+            try:
+                rh.SCRIPTS_NOW=copy;a=self.settle();old=a.s.n_objectreference_isindialoguewithplayer;fired=[]
+                def late(ref,ctx,*args):
+                    value=old(ref,ctx,*args)
+                    if ref is a.ref('Roark') and not fired:fired.append(True);a.ref('Miner03').disabled=True
+                    return value
+                a.s.n_objectreference_isindialoguewithplayer=late
+                shown=self.say(a,RhaRoarkAll=0)
+                self.assertEqual(fired,[True]);self.assertIn(P+'RhaRoarkAll',shown)
+                self.assertEqual(a.s.invoke('TLM_RH','AftermathRow',[]),-1)
+            finally:rh.SCRIPTS_NOW=original
 
 if __name__=='__main__':unittest.main()
