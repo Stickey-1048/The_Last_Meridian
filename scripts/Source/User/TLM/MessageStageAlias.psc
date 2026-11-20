@@ -22,6 +22,9 @@ Use it for one-button observation messages.}
 int Property RequireStageDone = 0 Auto Const
 {If above 0, nothing happens until the owning quest has this stage done.}
 
+string[] Property ResolvedText Auto Const
+{Optional truthful feedback after the blocked stage; never changes an outcome.}
+
 int Property BlockIfStageDone = 0 Auto Const
 {If above 0, nothing happens once the owning quest has this stage done.}
 
@@ -30,10 +33,13 @@ Event OnActivate(ObjectReference akActionRef)
 		Return
 	EndIf
 	Quest q = GetOwningQuest()
-	If RequireStageDone > 0 && !q.GetStageDone(RequireStageDone)
+	If BlockIfStageDone > 0 && q.GetStageDone(BlockIfStageDone)
+		If ResolvedText && ResolvedText.Length > 0
+			Debug.MessageBox(ResolvedText[0])
+		EndIf
 		Return
 	EndIf
-	If BlockIfStageDone > 0 && q.GetStageDone(BlockIfStageDone)
+	If RequireStageDone > 0 && !q.GetStageDone(RequireStageDone)
 		Return
 	EndIf
 	int button = MessageToShow.Show()
