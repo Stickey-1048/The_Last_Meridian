@@ -1906,7 +1906,7 @@ int Function OfferReport(Actor sheriffActor)
 		Return 3
 	EndIf
 	; Only this successful finalizer can authorize the acknowledgment.
-	If ReportReceiptContext(sheriffActor,reportBefore,reportEpoch)
+	If ReportReceiptContext(sheriffActor,reportBefore,reportEpoch,reportPlayer)
 		RhaReport.Show()
 	EndIf
 	UpdateGuidance()
@@ -2082,6 +2082,10 @@ bool Function AftermathContext(Actor speakerActor, bool isRoark, Actor playerAct
 		roadSpeaker = Road().Person(Road().Alias_Roark)
 		originalSpeaker = RhaOriginalRoark
 	EndIf
+	; Scene/dialogue/region/alias reads can yield; refresh participants after those reads.
+	If !TalkOK(speakerActor) || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded() || speakerActor.IsDead() || playerActor.IsDead()
+		Return false
+	EndIf
 	Return speakerActor == originalSpeaker && speakerActor == currentSpeaker && speakerActor == roadSpeaker && playerActor == Game.GetPlayer() && generation == aftermathEpoch
 EndFunction
 
@@ -2249,13 +2253,18 @@ bool Function Aftermath(Actor speakerActor, bool isRoark)
 	Return true
 EndFunction
 
-bool Function ReportReceiptContext(Actor sheriffActor, string before, int generation)
-	Actor playerActor = Game.GetPlayer()
+bool Function ReportReceiptContext(Actor sheriffActor, string before, int generation, Actor playerActor)
 	If !playerActor || !Road().PlayerAlive() || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded() || !sheriffActor || sheriffActor.IsDead() || sheriffActor.IsDisabled() || sheriffActor.IsInCombat() || !sheriffActor.Is3DLoaded() || !Road().At(playerActor,sheriffActor,320.0)
 		Return false
 	EndIf
 	If Road().TLM_G_MQ02C_Reported.GetValueInt() != 1 || ReportMark() != before
 		Return false
 	EndIf
-	Return sheriffActor == Road().Person(Road().Alias_Sheriff) && playerActor == Game.GetPlayer() && generation == aftermathEpoch
+	Actor currentSheriff = Road().Person(Road().Alias_Sheriff)
+	; Evidence and alias reads above can yield after the genuine report commits.
+	; Suppress a stale utterance without rolling back that historical receipt.
+	If sheriffActor.IsDisabled() || sheriffActor.IsInCombat() || !sheriffActor.Is3DLoaded() || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded() || !Road().At(playerActor,sheriffActor,320.0) || sheriffActor.IsDead() || playerActor.IsDead()
+		Return false
+	EndIf
+	Return sheriffActor == currentSheriff && playerActor == Game.GetPlayer() && generation == aftermathEpoch
 EndFunction

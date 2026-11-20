@@ -130,4 +130,44 @@ class ReturnAccount(unittest.TestCase):
                 shown=self.say(a,RhaOpen=0);self.assertIn(P+'RhaOpen',shown)
             finally:rh.SCRIPTS_NOW=original
 
+    def test_nora_late_dialogue_context_death_disable_combat_and_alias_loss_close(self):
+        for mode in ('dead','disabled','combat','alias'):
+            a=self.settle();roark=a.ref('Roark');fired=[]
+            old=a.s.n_objectreference_isindialoguewithplayer
+            def late(ref,context,*args):
+                value=old(ref,context,*args)
+                if ref is roark and not fired:
+                    fired.append(True)
+                    if mode=='dead':roark.dead=True
+                    elif mode=='disabled':roark.disabled=True
+                    elif mode=='combat':roark.combat_target=a.s.player
+                    else:a.walk.props['alias_roark'].ref=a.ref('Blevins')
+                return value
+            a.s.n_objectreference_isindialoguewithplayer=late
+            shown=self.say(a);self.assertEqual(fired,[True]);self.assertFalse(any('Rha' in x for x in shown))
+    def test_nora_post_real_report_late_inventory_context_loss_suppresses_only_speech(self):
+        for mode in ('dead','disabled','combat','alias'):
+            a=self.settle();sheriff=a.s.placed['TLM_REF_A1_Pritchard'];fired=[]
+            old=a.s.n_objectreference_getitemcount
+            def late(ref,context,*args):
+                value=old(ref,context,*args)
+                if a.g('Reported')==1 and ref is a.s.player and not fired:
+                    fired.append(True)
+                    if mode=='dead':sheriff.dead=True
+                    elif mode=='disabled':sheriff.disabled=True
+                    elif mode=='combat':sheriff.combat_target=a.s.player
+                    else:a.rules.props['alias_sheriff'].ref=a.ref('Roark')
+                return value
+            a.s.n_objectreference_getitemcount=late;a.return_report()
+            self.assertEqual(fired,[True]);self.assertEqual(a.g('Reported'),1)
+            self.assertNotIn(P+'RhaReport',a.s.messages_shown)
+            self.assertEqual(a.s.invoke('TLM_RH','OfferReport',[sheriff]),0)
+    def test_report_ack_requires_original_captured_player(self):
+        a=self.settle();a.return_report();before=a.s.invoke('TLM_RH','ReportMark',[])
+        player=a.s.player;generation=a.walk.vars['aftermathepoch']
+        a.s.player=a.ref('Roark')
+        try:
+            self.assertFalse(a.s.invoke('TLM_RH','ReportReceiptContext',[a.s.placed['TLM_REF_A1_Pritchard'],before,generation,player]))
+        finally:a.s.player=player
+
 if __name__=='__main__':unittest.main()

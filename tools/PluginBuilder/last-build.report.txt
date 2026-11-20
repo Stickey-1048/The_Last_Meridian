@@ -214,7 +214,7 @@ Container (3)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
   000AA8  TLM_CONT_RH_Rope  "Rope attachment: projectile target"
   000AA9  TLM_CONT_RH_TollBox  "Court payment box"
-Message (515)
+Message (547)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
   00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
@@ -1400,6 +1400,134 @@ I ran it anyway. A."
   000AE3  TLM_MSG_RH_S_pritchard_hears_pike_after_fair_1  [box]  "Owen Pritchard: "You have a payment lead about Red Hollow. Say how you learned it. If you've been to the Mouth, tell me that account separately.""  title: "Owen Pritchard"
           button 0: "Continue"
   000AE4  TLM_MSG_RH_S_pritchard_hears_pike_after_fair_unknown_1  [box]  "Owen Pritchard: "If Red Hollow is still ahead of you, ask me the way. If you've been, tell me what happened at the Mouth. Leave the payment column blank unless you've learned it.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  000E30  TLM_MSG_RH_RhaRoarkOrdered  [box]  "[Roark]
+
+You told Captain Blevins to seal it with miners below."
+          button 0: "Continue"
+  000E31  TLM_MSG_RH_RhaRoarkDeadline  [box]  "[Roark]
+
+Captain Blevins sealed it with miners below."
+          button 0: "Continue"
+  000E32  TLM_MSG_RH_RhaRoarkAll  [box]  "[Roark]
+
+They're here. All eleven."
+          button 0: "Continue"
+  000E33  TLM_MSG_RH_RhaRoarkNone  [box]  "[Roark]
+
+They're dead. All eleven."
+          button 0: "Continue"
+  000E34  TLM_MSG_RH_RhaRoarkPartial1  [box]  "[Roark]
+
+We've got one here alive. Ten are dead."
+          button 0: "Continue"
+  000E35  TLM_MSG_RH_RhaRoarkPartial2  [box]  "[Roark]
+
+We've got two here alive. Nine are dead."
+          button 0: "Continue"
+  000E36  TLM_MSG_RH_RhaRoarkPartial3  [box]  "[Roark]
+
+We've got three here alive. Eight are dead."
+          button 0: "Continue"
+  000E37  TLM_MSG_RH_RhaRoarkPartial4  [box]  "[Roark]
+
+We've got four here alive. Seven are dead."
+          button 0: "Continue"
+  000E38  TLM_MSG_RH_RhaRoarkPartial5  [box]  "[Roark]
+
+We've got five here alive. Six are dead."
+          button 0: "Continue"
+  000E39  TLM_MSG_RH_RhaRoarkPartial6  [box]  "[Roark]
+
+We've got six here alive. Five are dead."
+          button 0: "Continue"
+  000E3A  TLM_MSG_RH_RhaRoarkPartial7  [box]  "[Roark]
+
+We've got seven here alive. Four are dead."
+          button 0: "Continue"
+  000E3B  TLM_MSG_RH_RhaRoarkPartial8  [box]  "[Roark]
+
+We've got eight here alive. Three are dead."
+          button 0: "Continue"
+  000E3C  TLM_MSG_RH_RhaRoarkPartial9  [box]  "[Roark]
+
+We've got nine here alive. Two are dead."
+          button 0: "Continue"
+  000E3D  TLM_MSG_RH_RhaRoarkPartial10  [box]  "[Roark]
+
+We've got ten here alive. One is dead."
+          button 0: "Continue"
+  000E3E  TLM_MSG_RH_RhaBlevinsOrdered  [box]  "[Blevins]
+
+You gave the order. The Mouth is shut."
+          button 0: "Continue"
+  000E3F  TLM_MSG_RH_RhaBlevinsDeadline  [box]  "[Blevins]
+
+I fired. The Mouth is shut."
+          button 0: "Continue"
+  000E40  TLM_MSG_RH_RhaBlevinsAll  [box]  "[Blevins]
+
+All eleven. I can see them."
+          button 0: "Continue"
+  000E41  TLM_MSG_RH_RhaBlevinsNone  [box]  "[Blevins]
+
+Eleven dead. I won't call that a rescue."
+          button 0: "Continue"
+  000E42  TLM_MSG_RH_RhaBlevinsPartial1  [box]  "[Blevins]
+
+One here alive. Ten dead. That is the count."
+          button 0: "Continue"
+  000E43  TLM_MSG_RH_RhaBlevinsPartial2  [box]  "[Blevins]
+
+Two here alive. Nine dead. That is the count."
+          button 0: "Continue"
+  000E44  TLM_MSG_RH_RhaBlevinsPartial3  [box]  "[Blevins]
+
+Three here alive. Eight dead. That is the count."
+          button 0: "Continue"
+  000E45  TLM_MSG_RH_RhaBlevinsPartial4  [box]  "[Blevins]
+
+Four here alive. Seven dead. That is the count."
+          button 0: "Continue"
+  000E46  TLM_MSG_RH_RhaBlevinsPartial5  [box]  "[Blevins]
+
+Five here alive. Six dead. That is the count."
+          button 0: "Continue"
+  000E47  TLM_MSG_RH_RhaBlevinsPartial6  [box]  "[Blevins]
+
+Six here alive. Five dead. That is the count."
+          button 0: "Continue"
+  000E48  TLM_MSG_RH_RhaBlevinsPartial7  [box]  "[Blevins]
+
+Seven here alive. Four dead. That is the count."
+          button 0: "Continue"
+  000E49  TLM_MSG_RH_RhaBlevinsPartial8  [box]  "[Blevins]
+
+Eight here alive. Three dead. That is the count."
+          button 0: "Continue"
+  000E4A  TLM_MSG_RH_RhaBlevinsPartial9  [box]  "[Blevins]
+
+Nine here alive. Two dead. That is the count."
+          button 0: "Continue"
+  000E4B  TLM_MSG_RH_RhaBlevinsPartial10  [box]  "[Blevins]
+
+Ten here alive. One dead. That is the count."
+          button 0: "Continue"
+  000E4C  TLM_MSG_RH_RhaTerms  [box]  "[Roark]
+
+I've heard the terms. The town hasn't agreed to them."
+          button 0: "Continue"
+  000E4D  TLM_MSG_RH_RhaBreak  [box]  "[Roark]
+
+The break is shut."
+          button 0: "Continue"
+  000E4E  TLM_MSG_RH_RhaOpen  [box]  "[Roark]
+
+They're up. The break is still open."
+          button 0: "Continue"
+  000E4F  TLM_MSG_RH_RhaReport  [box]  "[Pritchard]
+
+I've got your account of Red Hollow."
           button 0: "Continue"
   000AE5  TLM_MSG_RH_Travel  [box]  "[Red Hollow story test]
 
@@ -3627,6 +3755,38 @@ Quest TLM_RH  000ABA  "Red Hollow: directions"  type=SideQuests priority=30 flag
            S_roark_after_deadline_1 = TLM_MSG_RH_S_roark_after_deadline_1
            S_pritchard_hears_pike_after_fair_1 = TLM_MSG_RH_S_pritchard_hears_pike_after_fair_1
            S_pritchard_hears_pike_after_fair_unknown_1 = TLM_MSG_RH_S_pritchard_hears_pike_after_fair_unknown_1
+           RhaRoarkOrdered = TLM_MSG_RH_RhaRoarkOrdered
+           RhaRoarkDeadline = TLM_MSG_RH_RhaRoarkDeadline
+           RhaRoarkAll = TLM_MSG_RH_RhaRoarkAll
+           RhaRoarkNone = TLM_MSG_RH_RhaRoarkNone
+           RhaRoarkPartial1 = TLM_MSG_RH_RhaRoarkPartial1
+           RhaRoarkPartial2 = TLM_MSG_RH_RhaRoarkPartial2
+           RhaRoarkPartial3 = TLM_MSG_RH_RhaRoarkPartial3
+           RhaRoarkPartial4 = TLM_MSG_RH_RhaRoarkPartial4
+           RhaRoarkPartial5 = TLM_MSG_RH_RhaRoarkPartial5
+           RhaRoarkPartial6 = TLM_MSG_RH_RhaRoarkPartial6
+           RhaRoarkPartial7 = TLM_MSG_RH_RhaRoarkPartial7
+           RhaRoarkPartial8 = TLM_MSG_RH_RhaRoarkPartial8
+           RhaRoarkPartial9 = TLM_MSG_RH_RhaRoarkPartial9
+           RhaRoarkPartial10 = TLM_MSG_RH_RhaRoarkPartial10
+           RhaBlevinsOrdered = TLM_MSG_RH_RhaBlevinsOrdered
+           RhaBlevinsDeadline = TLM_MSG_RH_RhaBlevinsDeadline
+           RhaBlevinsAll = TLM_MSG_RH_RhaBlevinsAll
+           RhaBlevinsNone = TLM_MSG_RH_RhaBlevinsNone
+           RhaBlevinsPartial1 = TLM_MSG_RH_RhaBlevinsPartial1
+           RhaBlevinsPartial2 = TLM_MSG_RH_RhaBlevinsPartial2
+           RhaBlevinsPartial3 = TLM_MSG_RH_RhaBlevinsPartial3
+           RhaBlevinsPartial4 = TLM_MSG_RH_RhaBlevinsPartial4
+           RhaBlevinsPartial5 = TLM_MSG_RH_RhaBlevinsPartial5
+           RhaBlevinsPartial6 = TLM_MSG_RH_RhaBlevinsPartial6
+           RhaBlevinsPartial7 = TLM_MSG_RH_RhaBlevinsPartial7
+           RhaBlevinsPartial8 = TLM_MSG_RH_RhaBlevinsPartial8
+           RhaBlevinsPartial9 = TLM_MSG_RH_RhaBlevinsPartial9
+           RhaBlevinsPartial10 = TLM_MSG_RH_RhaBlevinsPartial10
+           RhaTerms = TLM_MSG_RH_RhaTerms
+           RhaBreak = TLM_MSG_RH_RhaBreak
+           RhaOpen = TLM_MSG_RH_RhaOpen
+           RhaReport = TLM_MSG_RH_RhaReport
            Travel = TLM_MSG_RH_Travel
            StageTravel = TLM_MSG_RH_StageTravel
            Descend = TLM_MSG_RH_Descend
@@ -4203,7 +4363,7 @@ Quest TLM_FF_Entry  000C34  "Four Flags entry adapter"  type=None priority=30 fl
                     FairQuest = TLM_MQ03
   alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
 
-Not wired yet (966):
+Not wired yet (968):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -5036,6 +5196,8 @@ Not wired yet (966):
   - Strict placed-reference binding unavailable: RHBelowAnchor
   - Strict placed-reference binding unavailable: RHBreakControl
   - TLM_MQ02C script TLM:MQ02CQuest.Caps: needs 'Caps001' from Fallout4.esm
+  - Strict placed-reference binding unavailable: RhaOriginalRoark
+  - Strict placed-reference binding unavailable: RhaOriginalBlevins
   - TLM_RH alias MercyTravel: its reference TLM_REF_RH_MercyTravel is not placed
   - TLM_RH alias MercyReturn: its reference TLM_REF_RH_MercyReturn is not placed
   - TLM_RH alias GapArrival: its reference TLM_REF_RH_GapArrival is not placed

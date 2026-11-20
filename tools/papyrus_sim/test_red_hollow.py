@@ -68,6 +68,8 @@ class Hollow:
                 pages=sorted((mid for mid in self.messages if mid.startswith(P+'S_'+name+'_')),key=lambda x:int(x.rsplit('_',1)[1]))
                 self.t.assertTrue(pages,name)
                 answers.update({mid:[choice if i==len(pages)-1 else 0] for i,mid in enumerate(pages)})
+        # The new successful-report acknowledgment has exactly one Continue button.
+        if choices.get('Report')==0:answers[P+'RhaReport']=[0]
         self.s.answers=answers
     def use(self,name,**choices):
         self.answer(**choices);self.pos(name);self.s.press_activate(R+name);self.wait()
@@ -87,7 +89,6 @@ class Hollow:
     def return_report(self,known=False):
         self.exit();self.s.walk_to('TLM_REF_A1_Pritchard')
         self.answer(Report=0,**{('pritchard_hears_pike_after_fair' if known else 'pritchard_hears_pike_after_fair_unknown'):0},ReportFacts=0,ReportEvidence=0,ReportLamp=0)
-        self.s.answers[P+'RhaReport']=[0]
         self.s.press_activate('TLM_REF_A1_Pritchard');self.wait()
     def shoot(self,projectile=True,attacker=None,bash=False):
         self.pos('Watch')
