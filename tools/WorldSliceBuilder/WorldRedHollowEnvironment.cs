@@ -55,8 +55,17 @@ public static partial class WorldStory
         ["Surface11"]=(2944,1024,16),
     };
     public static void ValidateRedHollowAliasPrefix(IQuestReferenceAliasGetter[] aliases,bool environment){
-        if(aliases.Length!=(environment?101:99)||!aliases.Take(99).Select(a=>a.Name).SequenceEqual(RedHollowOriginalAliases)||!aliases.Select(a=>a.ID).SequenceEqual(Enumerable.Range(0,aliases.Length).Select(n=>(uint)n)))throw new InvalidDataException("RH original99alias prefix changed");
+        bool guidance=aliases.Any(a=>a.Name=="GuideSheriff");
+        if(guidance&&!environment)throw new InvalidDataException("RH report guide requires the accepted environment prefix");
+        if(aliases.Length!=(environment?101:99)+(guidance?1:0)||!aliases.Take(99).Select(a=>a.Name).SequenceEqual(RedHollowOriginalAliases)||!aliases.Select(a=>a.ID).SequenceEqual(Enumerable.Range(0,aliases.Length).Select(n=>(uint)n)))throw new InvalidDataException("RH original99alias prefix changed");
         if(environment&&(aliases[99].Name!="SurfaceFall"||aliases[100].Name!="GalleryFall"))throw new InvalidDataException("RH region-fall append changed");
+        if(guidance&&(aliases[101].Name!="GuideSheriff"||!aliases[101].ForcedReference.IsNull||aliases[101].Flags!=(AQuestAlias.Flag.Optional|AQuestAlias.Flag.AllowDead|AQuestAlias.Flag.AllowDisabled)))throw new InvalidDataException("RH report guide must be the unprotected script-filled final alias101");
+    }
+    static void ValidateRedHollowGuideBinding(IQuestGetter quest,IQuestReferenceAliasGetter[] aliases){
+        bool guidance=aliases.Any(a=>a.Name=="GuideSheriff");
+        var bindings=quest.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:RedHollowWalk").Properties.Where(p=>p.Name=="Alias_GuideSheriff").ToArray();
+        if(!guidance){if(bindings.Length!=0)throw new InvalidDataException("RH report guide binding without its alias");return;}
+        if(bindings.Length!=1||bindings[0] is not IScriptObjectPropertyGetter p||p.Alias!=101||p.Object.FormKey!=quest.FormKey)throw new InvalidDataException("RH report guide binding is not its exact current alias101");
     }
     public static IEnumerable<IPlacedGetter> RedHollowSurfaceReferences(IFallout4ModGetter source){
         var world=source.Worldspaces.SingleOrDefault(w=>w.EditorID=="TLM_WRLD_RH_Surface");

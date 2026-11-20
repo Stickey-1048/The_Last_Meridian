@@ -1,0 +1,125 @@
+{
+  "scope": "Owned-stock selected numerical metadata only; no assets copied",
+  "assets": {
+    "workshop_ShackMidFloor01B": {
+      "key": "001C501C",
+      "model": "Architecture\\Shacks\\ShackMidFloor01B.nif",
+      "bounds": [
+        -128,
+        -128,
+        -14,
+        128,
+        128,
+        0
+      ],
+      "passive": true
+    },
+    "NpcBedWoodLay01Static": {
+      "key": "0019AF8E",
+      "model": "SetDressing\\Building\\BedWood01.nif",
+      "bounds": [
+        -73,
+        -100,
+        0,
+        72,
+        98,
+        83
+      ],
+      "passive": true
+    },
+    "FenceWoodStr01": {
+      "key": "00117D37",
+      "model": "SetDressing\\FencesGrates\\Wood\\FenceWoodStr01.nif",
+      "bounds": [
+        0,
+        -2,
+        3,
+        128,
+        4,
+        168
+      ],
+      "passive": true
+    },
+    "NPCCouchModernDomesticSit01Static": {
+      "key": "000D8F87",
+      "model": "Furniture\\ModernDomestic\\ModernDomesticCouch01.nif",
+      "bounds": [
+        -88,
+        -34,
+        0,
+        84,
+        23,
+        62
+      ],
+      "passive": true
+    },
+    "RockPileM01": {
+      "key": "0003D721",
+      "model": "Landscape\\Rocks\\RockPileM01.nif",
+      "bounds": [
+        -159,
+        -175,
+        -44,
+        114,
+        195,
+        98
+      ],
+      "passive": true
+    },
+    "QryCubeWall01": {
+      "key": "0002CBDC",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ],
+      "passive": true
+    }
+  },
+  "wallMesh": {
+    "sha256": "2DC6E48BFFEA757025CAAA90BC1FC465BCC26DBF0637E2A49D49C37655B6DF25",
+    "shapes": [
+      {
+        "triangles": 2,
+        "vertices": 4,
+        "localFaceNormal": [
+          0,
+          -1,
+          0
+        ],
+        "packedNormalsAgree": true
+      }
+    ],
+    "collisionBlockPresent": true,
+    "limits": "Face direction and block presence only; material sidedness, Havok and native visibility not certified"
+  },
+  "nativeDonorPair": {
+    "0004CBE9": {
+      "base": "0002CBD6",
+      "positionRotation": [
+        -704.0,
+        1600.0,
+        960.0,
+        0.0,
+        -0.0,
+        4.71238899230957
+      ]
+    },
+    "0004CBEA": {
+      "base": "0002CBDC",
+      "positionRotation": [
+        -960.0,
+        1600.0,
+        1216.0,
+        0.0,
+        -0.0,
+        4.71238899230957
+      ]
+    }
+  },
+  "rotationEvidence": "Wall at west edge of adjacent floor has yaw-PI/2; local-Y face points+X with clockwise native yaw. Perimeter desired SouthPI/North0/West-PI/2/East+PI/2. GallerySeal+PI/2 already faces west."
+}

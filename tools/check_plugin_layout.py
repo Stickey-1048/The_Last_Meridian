@@ -384,6 +384,9 @@ def own_record_ids(buf, masters):
 def check_cells(buf, described=None):
     """Returns (problems, number of cell records, number of references under them)."""
     problems = []
+    from player_guidance_terrain_layout import context,land_problems
+    terrain,terrain_issues=context(buf)
+    problems.extend(terrain_issues)
     masters = master_count(buf)
     own = own_record_ids(buf, masters)
     cells = refs = 0
@@ -561,8 +564,12 @@ def check_cells(buf, described=None):
                                 land_count+=1;ss=list(subrecords(ref[4]));land=dict(ss)
                                 if current_name!='TLM_CELL_RH_Surface' or part[1]!=GROUP_CELL_TEMPORARY or ref[2]>>24!=masters:problems.append('RH LAND parent/ownership mismatch')
                                 height=land.get('VHGT',b'')
-                                if len(height)!=1096 or struct.unpack_from('<f',height)[0]!=0 or any(height[4:1093]):problems.append('RH declared flat LAND heights mismatch')
-                                if land.get('VNML')!=bytes((0,0,127))*1089 or len([1 for tag,_ in ss if tag=='BTXT'])!=4 or len(land.get('VTEX',b''))!=4:problems.append('RH LAND normals/layers incomplete')
+                                if terrain:
+                                    problems.extend(land_problems(height,land.get('VNML',b'')))
+                                else:
+                                    if len(height)!=1096 or struct.unpack_from('<f',height)[0]!=0 or any(height[4:1093]):problems.append('RH declared flat LAND heights mismatch')
+                                    if land.get('VNML')!=bytes((0,0,127))*1089:problems.append('RH flat LAND normals mismatch')
+                                if len([1 for tag,_ in ss if tag=='BTXT'])!=4 or len(land.get('VTEX',b''))!=4:problems.append('RH LAND normals/layers incomplete')
                             elif ref[0]=='record':inspect_reference(ref,part[1]==GROUP_CELL_PERSISTENT,current_cell)
                             else:problems.append('RH exterior nested reference group')
                 else:problems.append('RH exterior unexpected record/group')

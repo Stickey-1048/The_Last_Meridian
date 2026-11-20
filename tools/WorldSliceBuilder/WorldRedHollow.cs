@@ -26,15 +26,17 @@ public static partial class WorldStory
         var interiorRefs=ownCell.Persistent.Select(r=>r.FormKey).ToHashSet();
         var surfaceRefs=RedHollowSurfaceReferences(source).Select(r=>r.FormKey).ToHashSet();
         var clone=original.Duplicate(mod.GetNextFormKey());clone.EditorID=RedHollowClone;
-        clone.Name="The Last Meridian - exterior-linked Red Hollow (development)";
         var aliases=clone.Aliases?.OfType<QuestReferenceAlias>().ToArray()??throw new InvalidDataException("Red Hollow aliases missing");
-        int expectedAliases=surfaceRefs.Count>0?101:99;
+        bool guidance=aliases.Any(a=>a.Name=="GuideSheriff");
+        clone.Name=guidance?"Red Hollow: directions":"The Last Meridian - exterior-linked Red Hollow (development)";
+        int expectedAliases=(surfaceRefs.Count>0?101:99)+(guidance?1:0);
         ValidateRedHollowAliasPrefix(aliases,surfaceRefs.Count>0);
+        ValidateRedHollowGuideBinding(original,aliases);
         if(aliases.Length!=expectedAliases||aliases.Select(a=>a.Name).Distinct().Count()!=expectedAliases||!RedHollowSites.Keys.All(n=>aliases.Any(a=>a.Name==n)))
             throw new InvalidDataException("Unexpected Red Hollow alias contract");
         var mapping=new List<object>();
         foreach(var a in aliases){
-            if(a.Name=="Condemned"){
+            if(a.Name=="Condemned"||a.Name=="GuideSheriff"){
                 if(!a.ForcedReference.IsNull)throw new InvalidDataException("Red Hollow prisoner must remain script-filled; never clone an earlier-road actor");
                 continue;
             }
@@ -64,7 +66,7 @@ public static partial class WorldStory
         foreach(var s in adapter.Scripts)Script(s);
         foreach(var a in adapter.Aliases){Remap(a.Property);foreach(var s in a.Scripts)Script(s);}
         mod.Quests.Add(clone);door.Object.SetTo(clone.FormKey);
-        return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),references=2,masterCellReferences=aliases.Length-4,surfaceReferences=surfaceRefs.Count>0?aliases.Count(a=>RedHollowSurfaceSites.ContainsKey(a.Name!)):0,mapping};
+        return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),references=2,masterCellReferences=aliases.Length-(guidance?5:4),surfaceReferences=surfaceRefs.Count>0?aliases.Count(a=>RedHollowSurfaceSites.ContainsKey(a.Name!)):0,mapping};
     }
 
     static void ValidateRedHollow(IFallout4ModGetter addon,IQuestGetter section)
@@ -75,12 +77,14 @@ public static partial class WorldStory
         if(bound.Length!=1||bound[0] is not IScriptObjectPropertyGetter door||door.Alias!=-1||door.Object.FormKey!=clone.FormKey)
             throw new InvalidDataException("Exterior first section does not open its Red Hollow controller");
         var aliases=clone.Aliases?.OfType<IQuestReferenceAliasGetter>().ToArray()??throw new InvalidDataException("Red Hollow aliases missing");
-        int expectedAliases=aliases.Any(a=>a.Name=="SurfaceFall")?101:99;
-        ValidateRedHollowAliasPrefix(aliases,expectedAliases==101);
+        bool environment=aliases.Any(a=>a.Name=="SurfaceFall"),guidance=aliases.Any(a=>a.Name=="GuideSheriff");
+        int expectedAliases=(environment?101:99)+(guidance?1:0);
+        ValidateRedHollowAliasPrefix(aliases,environment);
+        ValidateRedHollowGuideBinding(clone,aliases);
         if(aliases.Length!=expectedAliases||aliases.Select(a=>a.ID).Distinct().Count()!=expectedAliases)throw new InvalidDataException("Red Hollow alias count/identity mismatch");
         var refs=addon.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
         foreach(var a in aliases){
-            if(a.Name=="Condemned"){
+            if(a.Name=="Condemned"||a.Name=="GuideSheriff"){
                 if(!a.ForcedReference.IsNull)throw new InvalidDataException("Red Hollow prisoner alias unexpectedly forced");
                 continue;
             }

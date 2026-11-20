@@ -14,7 +14,7 @@ public static class RedHollowEnvironment
 {
     public const string World="TLM_WRLD_RH_Surface",Persistent="TLM_CELL_RH_SurfacePersistent",Surface="TLM_CELL_RH_Surface",Land="TLM_LAND_RH_Surface";
     public sealed record Asset(string Id,string Model,short[] Bounds);
-    public static readonly Asset[] Assets={
+    public static readonly Asset[] Assets=new Asset[]{
         new("QryFloor01",@"Architecture\Quarry\QryFloor01.nif",new short[]{-256,-256,0,256,256,0}),
         new("QryCubeWall01",@"Architecture\Quarry\QryCubeWall01.nif",new short[]{-256,0,-256,256,0,256}),
         new("CaveRmCeiling512v01",@"Interiors\Cave\Rooms\CaveRmCeiling512v01.nif",new short[]{-256,-256,229,256,256,257}),
@@ -23,7 +23,7 @@ public static class RedHollowEnvironment
         new("ShackWallFlat02",@"Architecture\Shacks\ShackWallFlat02.nif",new short[]{-128,-132,0,128,-124,198}),
         new("ShackMidRoof01",@"Architecture\Shacks\ShackMidRoof01.nif",new short[]{-130,-135,198,128,136,210})
         ,new("FenceWoodPost01",@"SetDressing\FencesGrates\Wood\FenceWoodPost01.nif",new short[]{-8,-6,-64,8,6,176})
-    };
+    }.Concat(RedHollowTerrain.Assets).ToArray();
     public sealed record Piece(string Name,string Base,float X,float Y,float Z,float Yaw=0,bool Outside=false);
     public static Piece[] Geometry(){
         var p=new List<Piece>();
@@ -34,13 +34,13 @@ public static class RedHollowEnvironment
                 Put(room.Item1+"Floor"+x+"_"+y,"QryFloor01",x,y,0);
                 Put(room.Item1+"Roof"+x+"_"+y,"CaveRmCeiling512v01",x,y,256);
             }
-            for(int x=room.Item2+256;x<room.Item3;x+=512){Put(room.Item1+"South"+x,"QryCubeWall01",x,-256,256);Put(room.Item1+"North"+x,"QryCubeWall01",x,1280,256,MathF.PI);}
-            for(int y=0;y<1536;y+=512){Put(room.Item1+"West"+y,"QryCubeWall01",room.Item2,y,256,MathF.PI/2);Put(room.Item1+"East"+y,"QryCubeWall01",room.Item3,y,256,-MathF.PI/2);}
+            for(int x=room.Item2+256;x<room.Item3;x+=512){Put(room.Item1+"South"+x,"QryCubeWall01",x,-256,256,MathF.PI);Put(room.Item1+"North"+x,"QryCubeWall01",x,1280,256,0);}
+            for(int y=0;y<1536;y+=512){Put(room.Item1+"West"+y,"QryCubeWall01",room.Item2,y,256,-MathF.PI/2);Put(room.Item1+"East"+y,"QryCubeWall01",room.Item3,y,256,MathF.PI/2);}
         }
         // Actual outdoor boundary/context; central court/bypass/work-yard clear.
-        for(int x=256;x<4096;x+=512){Put("South"+x,"QryCubeWall01",x,0,256,0,true);Put("North"+x,"QryCubeWall01",x,1792,256,MathF.PI,true);}
-        for(int y=256;y<1792;y+=512){Put("West"+y,"QryCubeWall01",0,y,256,MathF.PI/2,true);Put("East"+y,"QryCubeWall01",4096,y,256,-MathF.PI/2,true);}
-        for(int x=256;x<4096;x+=512){Put("Trees"+x,"TreeMapleForest6",x,2300,7,0,true);Put("QuarryEdge"+x,"QryRockM01",x,1660,38,0,true);}
+        for(int x=256;x<4096;x+=512){Put("South"+x,"QryCubeWall01",x,0,256,MathF.PI,true);Put("North"+x,"QryCubeWall01",x,4096,MathF.Min(RedHollowTerrain.Ground(Math.Max(0,x-256),4096),RedHollowTerrain.Ground(Math.Min(4096,x+256),4096))+256,0,true);}
+        for(int y=256;y<1792;y+=512){Put("West"+y,"QryCubeWall01",0,y,256,-MathF.PI/2,true);Put("East"+y,"QryCubeWall01",4096,y,256,MathF.PI/2,true);}
+        for(int x=256;x<4096;x+=512){Put("Trees"+x,"TreeMapleForest6",x,2300,RedHollowTerrain.Ground(x,2300)+7,0,true);Put("QuarryEdge"+x,"QryRockM01",x,1660,38,0,true);}
         // Readable small court and hoist shelters, outside operative envelopes.
         Put("CourtBack","ShackWallFlat02",1152,1664,0,0,true);
         Put("CourtRoof","ShackMidRoof01",1152,1408,42,0,true);
@@ -50,6 +50,7 @@ public static class RedHollowEnvironment
         foreach(int y in new[]{128,384})Put("CourtGatePost"+y,"FenceWoodPost01",1408,y,64,0,true);
         Put("CourtGateRoof","ShackMidRoof01",1408,256,42,0,true);
         for(int y=0;y<1536;y+=512)Put("GallerySeal"+y,"QryCubeWall01",10528,y,256,MathF.PI/2);
+        p.AddRange(RedHollowTerrain.Pieces());
         return p.ToArray();
     }
     public static bool IsSurface(string name)=>RedHollow.Pieces.Any(p=>"TLM_REF_RH_"+p.Alias==name&&!p.Mercy&&p.X<5000&&p.Alias!="Fall")||name.StartsWith("TLM_REF_RH_Floor_A")||name.StartsWith("TLM_REF_RH_Floor_B");
@@ -107,7 +108,8 @@ public sealed partial class Builder
         world.TopCell=new Cell(keys[RedHollowEnvironment.Persistent],Fallout4Release.Fallout4){EditorID=RedHollowEnvironment.Persistent,MajorRecordFlagsRaw=0x400};
         var surface=new Cell(keys[RedHollowEnvironment.Surface],Fallout4Release.Fallout4){EditorID=RedHollowEnvironment.Surface,Name="Red Hollow: outside at the Gap and Mouth",Grid=new CellGrid{Point=new P2Int(0,0)},WaterHeight=-2048};
         var block=new WorldspaceBlock{BlockNumberX=0,BlockNumberY=0,GroupType=GroupTypeEnum.ExteriorCellBlock};var sub=new WorldspaceSubBlock{BlockNumberX=0,BlockNumberY=0,GroupType=GroupTypeEnum.ExteriorCellSubBlock};world.SubCells.Add(block);block.Items.Add(sub);sub.Items.Add(surface);
-        var land=new Landscape(keys[RedHollowEnvironment.Land],Fallout4Release.Fallout4){DATA=new byte[]{0x1D,0,0,0},VertexNormals=new Array2d<P3UInt8>(33,33,new P3UInt8(0,0,127)),VertexHeightMap=new LandscapeVertexHeightMap{Offset=0,HeightMap=new Array2d<byte>(33,33,0)},Textures=new()};
+        var terrain=RedHollowTerrain.Land();
+        var land=new Landscape(keys[RedHollowEnvironment.Land],Fallout4Release.Fallout4){DATA=new byte[]{0x1D,0,0,0},VertexNormals=terrain.Normals,VertexHeightMap=new LandscapeVertexHeightMap{Offset=0,HeightMap=terrain.Heights},Textures=new()};
         foreach(var q in Enum.GetValues<Quadrant>())land.Layers.Add(new BaseLayer{Header=new LayerHeader{Texture=new FormLink<ILandscapeTextureGetter>(texture.FormKey),Quadrant=q,LayerNumber=0}});land.Textures.Add(texture.ToLink<ILandscapeTextureGetter>());surface.Landscape=land;
         var below=_mod.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(b=>b.Cells).Single(c=>c.EditorID==RedHollow.CellId);
         foreach(var c in new[]{world.TopCell,surface}){CellsFiled[c.EditorID!]=(0,0);CellNames[c.EditorID!]=c.Name?.String;Arrivals.Add(new(c.EditorID!,c.FormKey.ToString(),new[]{0f,0f,0f},0,true));}
@@ -138,7 +140,7 @@ public sealed partial class Builder
             if(WritesBoxBound)placed.BoundHalfExtents=new P3Float(h[0],h[1],h[2]);
             if(f.Cell==RedHollowEnvironment.Persistent)world.TopCell.Persistent.Add(placed);else below.Persistent.Add(placed);_placed[f.EditorId]=placed.FormKey;
         }
-        RedHollowEnvironmentReceipt=new{policy="New supported flat LAND plus selected evaluated passive Dunwich quarry/mine geometry; no imported sculpted terrain or donor behavior",world=world.EditorID,surface=surface.EditorID,underground=below.EditorID,rehomed=moved,geometryAudit,selectedStatics=assets.Values.Select(a=>new{id=a.EditorID,key=a.FormKey.ToString(),model=a.Model?.File?.ToString(),min=new[]{a.ObjectBounds.First.X,a.ObjectBounds.First.Y,a.ObjectBounds.First.Z},max=new[]{a.ObjectBounds.Second.X,a.ObjectBounds.Second.Y,a.ObjectBounds.Second.Z}}).ToArray(),emitter=new{id=light.EditorID,key=light.FormKey.ToString(),radius=light.Radius,time=light.Time,flags=(uint)light.Flags,rgb=new[]{light.Color.R,light.Color.G,light.Color.B},fade=light.FadeValue,falloff=light.FalloffExponent,count=index},template=template.FormKey.ToString(),lightingSource=new{room=lightRoom.FormKey.ToString(),inherits=(uint)below.Lighting.Inherits,ambient=new[]{below.Lighting.AmbientColor.R,below.Lighting.AmbientColor.G,below.Lighting.AmbientColor.B},scope="Lighting struct only; native brightness/occlusion unverified"},native="Sky/brightness/support/Havok/navmesh/culling/controller/reload unverified"};
+        RedHollowEnvironmentReceipt=new{policy="RH-TERRAIN-002: shaped original LAND, preserved story pad, northern camp/apron, evidence-based inward perimeter faces; no imported donor LAND/behavior",world=world.EditorID,surface=surface.EditorID,underground=below.EditorID,rehomed=moved,geometryAudit,selectedStatics=assets.Values.Select(a=>new{id=a.EditorID,key=a.FormKey.ToString(),model=a.Model?.File?.ToString(),min=new[]{a.ObjectBounds.First.X,a.ObjectBounds.First.Y,a.ObjectBounds.First.Z},max=new[]{a.ObjectBounds.Second.X,a.ObjectBounds.Second.Y,a.ObjectBounds.Second.Z}}).ToArray(),emitter=new{id=light.EditorID,key=light.FormKey.ToString(),radius=light.Radius,time=light.Time,flags=(uint)light.Flags,rgb=new[]{light.Color.R,light.Color.G,light.Color.B},fade=light.FadeValue,falloff=light.FalloffExponent,count=index},template=template.FormKey.ToString(),lightingSource=new{room=lightRoom.FormKey.ToString(),inherits=(uint)below.Lighting.Inherits,ambient=new[]{below.Lighting.AmbientColor.R,below.Lighting.AmbientColor.G,below.Lighting.AmbientColor.B},scope="Lighting struct only; native brightness/occlusion unverified"},native="Sky/brightness/support/Havok/navmesh/culling/controller/reload unverified"};
     }
     static IEnumerable<PlacedSpec> AddedFallSpecs()=>RedHollowEnvironment.AddedPlaced().Where(p=>p.BoxHalfExtents!=null);
 }
