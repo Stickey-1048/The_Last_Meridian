@@ -694,6 +694,7 @@ bool Function OpenDoor()
 	EndIf
 	lastSample = -1.0
 	RegisterClockMenus()
+	UpdateGuidance()
 	StartTimer(1.0, 1)
 	Return true
 EndFunction
@@ -705,6 +706,7 @@ Function Loaded()
 		Return
 	EndIf
 	RegisterClockMenus()
+	UpdateGuidance()
 	; Never charge real save/load downtime or replay a missed timer interval.
 	lastSample = -1.0
 	lastArea = 0
@@ -816,10 +818,68 @@ bool Function ReleasePrisoner()
 	EndIf
 	prisonerActor.MoveTo(Ref(Alias_Released))
 	If Road().FinishRelease(Ref(Alias_Released), Ref(Alias_Rope), Ref(Alias_RopeBroken))
-		; No forty-yard boast or future companion system is claimed.
+		; Only the confirmed original arrival earns a release acknowledgment.
+		AcknowledgeRelease(prisonerActor)
 		Return true
 	EndIf
 	Return false
+EndFunction
+
+Function AcknowledgeRelease(Actor releasedActor)
+	If !Ready() || !releasedActor || releasedActor.IsDead() || releasedActor.IsDisabled() || (Road().CourtOutcome() != 11 && Road().CourtOutcome() != 12) || !Road().At(releasedActor,Ref(Alias_Released))
+		Return
+	EndIf
+	If releasedActor != Alias_Condemned.GetActorReference() || releasedActor != Road().Person(Road().Alias_Condemned)
+		Return
+	EndIf
+	SetObjectiveDisplayed(70,true)
+	Debug.Notification("Freed prisoner: I'm clear of the rope.")
+	Debug.Notification("The prisoner waits beside the court.")
+EndFunction
+
+Function UpdateGuidance()
+	{Read-only directions: no rescue, court, evidence or mine outcome is changed.}
+	If !IsRunning() || !Road().Commissioned()
+		Return
+	EndIf
+	int nextGoal = 0
+	If !Road().HasArrived()
+		nextGoal = 5
+	ElseIf Local()
+		If SurfaceArea() && Game.GetPlayer().GetPositionX() < 1792.0
+			nextGoal = 10
+		ElseIf UndergroundArea()
+			If Game.GetPlayer().GetPositionX() >= 8960.0
+				nextGoal = 80
+			ElseIf Road().MineOutcome() != 0
+				nextGoal = 85
+			ElseIf Road().MinePending() == 3
+				nextGoal = 55
+			ElseIf Road().GetStageDone(45)
+				nextGoal = 40
+			Else
+				nextGoal = 30
+			EndIf
+		ElseIf Road().MineOutcome() != 0
+			nextGoal = 60
+		ElseIf Road().MinePending() == 2 || Road().MinePending() == 3 || Road().MinePending() == 4 || Road().MinePending() == 5
+			nextGoal = 20
+		ElseIf Road().SafeCount(SurfaceSlots) > 0
+			nextGoal = 50
+		Else
+			nextGoal = 20
+		EndIf
+	EndIf
+	int index = 5
+	While index <= 85
+		If index == 5 || index == 10 || index == 20 || index == 30 || index == 40 || index == 50 || index == 55 || index == 60 || index == 80 || index == 85
+			SetObjectiveDisplayed(index,index == nextGoal)
+		EndIf
+		index += 5
+	EndWhile
+	If !Local() || !SurfaceArea() || Game.GetPlayer().GetPositionX() >= 1792.0
+		SetObjectiveDisplayed(70,false)
+	EndIf
 EndFunction
 
 bool Function ShiftSafeToSpeak()
@@ -911,6 +971,12 @@ EndFunction
 Function PrisonerTalk()
 	Actor prisonerActor = Alias_Condemned.GetActorReference()
 	If !TalkOK(prisonerActor)
+		Return
+	EndIf
+	If Road().CourtOutcome() == 11 || Road().CourtOutcome() == 12
+		If Road().At(prisonerActor,Ref(Alias_Released)) && prisonerActor == Road().Person(Road().Alias_Condemned) && prisonerActor == Alias_Condemned.GetActorReference()
+			Debug.MessageBox("Freed prisoner: I'm clear of the rope.")
+		EndIf
 		Return
 	EndIf
 	TLM:MQ01Quest original = TLM_MQ01 as TLM:MQ01Quest
@@ -1265,6 +1331,15 @@ Function Facts()
 	Road().PublishSurvivors(SurfaceSlots)
 	Debug.Notification("Red Hollow: safe survivors " + Road().SafeCount(SurfaceSlots) + "; observed deaths " + Road().DeathCount() + ".")
 	Debug.Notification("Court outcome " + Road().CourtOutcome() + "; mine outcome " + Road().MineOutcome() + "; unfinished scene " + Road().MinePending() + ".")
+	If Road().MinePending() != 0
+		Debug.Notification("There is unfinished work. Return to the hoist control to continue.")
+	ElseIf UndergroundArea()
+		Debug.Notification("Use the hoist to bring the miners up. Returning alone leaves them below.")
+	ElseIf Road().MineOutcome() == 0
+		Debug.Notification("Outside, use Rescue outcome and pending break plan to decide what happens next.")
+	Else
+		Debug.Notification("Use Return to Mercy Crossing in the outdoor yard, then tell Pritchard what happened.")
+	EndIf
 EndFunction
 
 Function Used(int who)
@@ -1274,6 +1349,7 @@ Function Used(int who)
 	busy = true
 	UseControl(who)
 	Road().RefreshEvidence(TLM_MercyBriefing as TLM:MercyBriefing)
+	UpdateGuidance()
 	busy = false
 	lastSample = -1.0
 EndFunction
@@ -1392,6 +1468,7 @@ Function UseControl(int who)
 		int answer = Exit.Show()
 		If answer == 0 && Near(Ref(Alias_Exit)) && Road().MineMark() == mineBefore && Road().MinePending() == 0 && MovePlayer(Ref(Alias_MercyReturn))
 			If Road().CompleteAtMercy(Ref(Alias_MercyReturn))
+				Debug.Notification("Back in Mercy Crossing. Tell Sheriff Pritchard what happened at Red Hollow.")
 				End.Show()
 			EndIf
 		EndIf
@@ -1607,6 +1684,9 @@ Event OnTimer(int aiTimerID)
 	If aiTimerID != 1
 		Return
 	EndIf
+	If !busy && !Road().HasArrived() && !IsObjectiveDisplayed(5)
+		UpdateGuidance()
+	EndIf
 	If RecoverFall()
 		lastSample = -1.0
 		lastArea = 0
@@ -1674,6 +1754,9 @@ Event OnTimer(int aiTimerID)
 		If operatorPaused
 			lastArea = 0
 		EndIf
+	EndIf
+	If !busy && Road().MineOutcome() != 0 && Local() && !IsObjectiveDisplayed(60) && !IsObjectiveDisplayed(85)
+		UpdateGuidance()
 	EndIf
 	samples += 1
 	If eligible && samples >= 10 && Road().Armed()
