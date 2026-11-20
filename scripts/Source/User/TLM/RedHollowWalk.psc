@@ -5,6 +5,7 @@ Quest Property TLM_MQ02C Auto Const Mandatory
 Quest Property TLM_MQ01 Auto Const Mandatory
 Quest Property TLM_MercyBriefing Auto Const Mandatory
 ReferenceAlias Property Alias_Condemned Auto Const Mandatory
+ReferenceAlias Property Alias_GuideSheriff Auto Const Mandatory
 ReferenceAlias[] Property CastFrom Auto Const Mandatory
 ReferenceAlias[] Property CastInto Auto Const Mandatory
 ReferenceAlias[] Property ZoneOn Auto Const Mandatory
@@ -855,7 +856,9 @@ Function UpdateGuidance()
 				nextGoal = 85
 			ElseIf Road().MinePending() == 3
 				nextGoal = 55
-			ElseIf Road().GetStageDone(45)
+			ElseIf Road().MinePending() == 4 || Road().MinePending() == 5
+				nextGoal = 86
+			ElseIf Road().ShiftFound()
 				nextGoal = 40
 			Else
 				nextGoal = 30
@@ -870,13 +873,23 @@ Function UpdateGuidance()
 			nextGoal = 20
 		EndIf
 	EndIf
+	If !Local() && Road().ReportDue()
+		Actor reportRecipient = Road().Person(Road().Alias_Sheriff)
+		If reportRecipient && !reportRecipient.IsDead() && !reportRecipient.IsDisabled()
+			Alias_GuideSheriff.ForceRefTo(reportRecipient)
+			If Alias_GuideSheriff.GetActorReference() == Road().Person(Road().Alias_Sheriff)
+				nextGoal = 90
+			EndIf
+		EndIf
+	EndIf
 	int index = 5
-	While index <= 85
-		If index == 5 || index == 10 || index == 20 || index == 30 || index == 40 || index == 50 || index == 55 || index == 60 || index == 80 || index == 85
+	While index <= 90
+		If index == 5 || index == 10 || index == 20 || index == 30 || index == 40 || index == 50 || index == 55 || index == 60 || index == 80 || index == 85 || index == 90
 			SetObjectiveDisplayed(index,index == nextGoal)
 		EndIf
 		index += 5
 	EndWhile
+	SetObjectiveDisplayed(86,nextGoal == 86)
 	If !Local() || !SurfaceArea() || Game.GetPlayer().GetPositionX() >= 1792.0
 		SetObjectiveDisplayed(70,false)
 	EndIf
@@ -1329,16 +1342,33 @@ EndFunction
 
 Function Facts()
 	Road().PublishSurvivors(SurfaceSlots)
-	Debug.Notification("Red Hollow: safe survivors " + Road().SafeCount(SurfaceSlots) + "; observed deaths " + Road().DeathCount() + ".")
-	Debug.Notification("Court outcome " + Road().CourtOutcome() + "; mine outcome " + Road().MineOutcome() + "; unfinished scene " + Road().MinePending() + ".")
-	If Road().MinePending() != 0
-		Debug.Notification("There is unfinished work. Return to the hoist control to continue.")
+	Debug.Notification("Miners safely above ground: " + Road().SafeCount(SurfaceSlots) + ". Deaths witnessed: " + Road().DeathCount() + ".")
+	If !Local()
+		If Road().ReportDue()
+			Debug.Notification("Tell Sheriff Pritchard what happened at Red Hollow.")
+		ElseIf Road().TLM_G_MQ02C_Reported.GetValueInt() == 1
+			Debug.Notification("Pritchard has heard your report.")
+		EndIf
+	ElseIf Road().MineOutcome() != 0
+		If UndergroundArea()
+			Debug.Notification("The work here is finished. Take the hoist back to the yard; the miners already above do not need another rescue.")
+		Else
+			Debug.Notification("Use Return to Mercy Crossing, then tell Pritchard what happened.")
+		EndIf
+	ElseIf Road().MinePending() == 3
+		If UndergroundArea()
+			Debug.Notification("Finish the inner-break work at the Inner-break charge control.")
+		Else
+			Debug.Notification("Take the hoist below, then use the Inner-break charge control to finish the work.")
+		EndIf
+	ElseIf Road().MinePending() == 4 || Road().MinePending() == 5
+		Debug.Notification("Use the cage or firing control to finish the interrupted firing operation.")
+	ElseIf Road().MinePending() == 2
+		Debug.Notification("Some miners have not reached safety. Use the hoist control to continue bringing them up, or inspect below.")
 	ElseIf UndergroundArea()
-		Debug.Notification("Use the hoist to bring the miners up. Returning alone leaves them below.")
-	ElseIf Road().MineOutcome() == 0
-		Debug.Notification("Outside, use Rescue outcome and pending break plan to decide what happens next.")
+		Debug.Notification("Use the hoist to bring the surviving miners up. Returning alone leaves those still below.")
 	Else
-		Debug.Notification("Use Return to Mercy Crossing in the outdoor yard, then tell Pritchard what happened.")
+		Debug.Notification("Use Rescue outcome and pending break plan to decide what happens next.")
 	EndIf
 EndFunction
 
@@ -1821,6 +1851,7 @@ int Function OfferReport(Actor sheriffActor)
 		Return 3
 	EndIf
 	Facts()
+	UpdateGuidance()
 	busy = false
 	Return 1
 EndFunction

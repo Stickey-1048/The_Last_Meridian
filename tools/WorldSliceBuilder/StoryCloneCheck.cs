@@ -25,7 +25,8 @@ public static class StoryCloneCheck
         "source-without-greenwater","night-mail-binding-removed","night-mail-binding-to-another-quest","night-mail-binding-as-alias",
         "night-mail-alias-dropped","night-mail-placement-missing","night-mail-placement-substituted","night-mail-road-missing",
         "night-mail-cell-missing","night-mail-interior-moved","source-without-night-mail","red-hollow-binding-removed","red-hollow-binding-to-another-quest","red-hollow-alias-dropped","red-hollow-placement-missing","red-hollow-road-missing","red-hollow-cell-missing","red-hollow-prisoner-forced","source-without-red-hollow","relief-ledger-missing","relief-control-substituted","relief-model-missing","relief-model-oversized","relief-ledger-binding-wrong",
-        "fair-binding-removed","fair-ledger-missing","fair-cell-missing","fair-entry-substituted","fair-case-alias-substituted","fair-original-cast-forced","fair-dedicated-cast-substituted","fair-case-model-missing"};
+        "fair-binding-removed","fair-ledger-missing","fair-cell-missing","fair-entry-substituted","fair-case-alias-substituted","fair-original-cast-forced","fair-dedicated-cast-substituted","fair-case-model-missing",
+        "report-guide-forced","report-guide-alias-id","report-guide-binding-removed","report-guide-binding-wrong","report-guide-protected"};
 
     static IFallout4ModGetter Damaged(string story,string damage)
     {
@@ -45,6 +46,11 @@ public static class StoryCloneCheck
         void RemoveRedHollow(){RemoveFair();if(rh==null)return;walk.Properties.Remove(Prop("TLM_RedHollow"));bad.Quests.Remove(rh.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02C").FormKey);}
         void RemoveNightMail(){RemoveRedHollow();walk.Properties.Remove(Prop("TLM_NightMail"));bad.Quests.Remove(nm!.FormKey);bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ02A").FormKey);}
         switch(damage){
+            case "report-guide-forced":rh!.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="GuideSheriff").ForcedReference.SetTo(((QuestReferenceAlias)rh!.Aliases![0]).ForcedReference.FormKey);break;
+            case "report-guide-alias-id":rh!.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="GuideSheriff").ID=102;break;
+            case "report-guide-protected":rh!.Aliases!.OfType<QuestReferenceAlias>().Single(a=>a.Name=="GuideSheriff").Flags|=AQuestAlias.Flag.Essential;break;
+            case "report-guide-binding-removed":rh!.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:RedHollowWalk").Properties.RemoveAll(p=>p.Name=="Alias_GuideSheriff");break;
+            case "report-guide-binding-wrong":rh!.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:RedHollowWalk").Properties.OfType<ScriptObjectProperty>().Single(p=>p.Name=="Alias_GuideSheriff").Alias=100;break;
             case "fair-binding-removed":walk.Properties.Remove(Prop("TLM_FourFlagsEntry"));break;
             case "fair-ledger-missing":bad.Quests.Remove(bad.Quests.Single(q=>q.EditorID=="TLM_MQ03").FormKey);break;
             case "fair-cell-missing":foreach(var b in bad.Cells.Records)foreach(var s in b.SubBlocks)s.Cells.RemoveAll(c=>c.EditorID=="TLM_CELL_FourFlags");break;

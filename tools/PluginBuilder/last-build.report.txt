@@ -163,7 +163,7 @@ Activator (112)
   000981  TLM_ACTI_NM_PlatformExit  "Road to Mercy Crossing"
   000982  TLM_ACTI_NM_BackFromPlatform  "Line Back to Iron Junction"
   000983  TLM_TRIG_NM_Fall
-  000A83  TLM_ACTI_RH_MercyTravel  "Red Hollow story test"
+  000A83  TLM_ACTI_RH_MercyTravel  "Travel to Red Hollow: court and mine"
   000A84  TLM_ACTI_RH_RopeBroken  "Broken rope attachment"
   000A85  TLM_ACTI_RH_CourtRecord  "Court recording board"
   000A86  TLM_ACTI_RH_ReferralSent  "Both dockets referred (court record)"
@@ -175,7 +175,7 @@ Activator (112)
   000A8C  TLM_ACTI_RH_ToMouth  "Path to the Mouth"
   000A8D  TLM_ACTI_RH_ToGap  "Path to the gap"
   000A8E  TLM_ACTI_RH_CageControl  "Hoist: descend, return or rescue"
-  000A8F  TLM_ACTI_RH_BelowControl  "Cage: bring the shift up"
+  000A8F  TLM_ACTI_RH_BelowControl  "Hoist: bring miners up or return alone"
   000A90  TLM_ACTI_RH_FiringControl  "Mouth firing key control"
   000A91  TLM_ACTI_RH_BreakControl  "Inner-break charge control"
   000A92  TLM_ACTI_RH_Roster  "Find and muster the night shift"
@@ -186,7 +186,7 @@ Activator (112)
   000A97  TLM_ACTI_RH_Silver  "Inspect the hoist-house desk"
   000A98  TLM_ACTI_RH_Shovel  "Chalk on a Shovel Blade"
   000A99  TLM_ACTI_RH_Knocking  "Listen at the Mouth (knocking stand-in)"
-  000A9A  TLM_ACTI_RH_MouthOpen  "Mouth open (stand-in)"
+  000A9A  TLM_ACTI_RH_MouthOpen  "Mine opening marker: use the hoist control"
   000A9B  TLM_ACTI_RH_MouthClosed  "Sealed Mouth rubble (stand-in)"
   000A9C  TLM_ACTI_RH_BreakOpen  "Inner break open"
   000A9D  TLM_ACTI_RH_BreakClosed  "Collapsed inner break (stand-in)"
@@ -1515,7 +1515,7 @@ Report current court, miner, mine, evidence and lamp facts. No fair or town-wide
           button 1: "Later"
   000AF5  TLM_MSG_RH_Status  [box]  "[Red Hollow]
 
-Use the labelled controls. Missing effects remain unfinished; no failed move, missing actor or unacknowledged choice is a success."
+Use the labelled controls. At the mine, use the hoist control, muster below, then bring the shift up. Outside, use Rescue outcome and pending break plan, then Return to Mercy Crossing. Missing arrivals remain unfinished."
           button 0: "Continue"
   000AF6  TLM_MSG_RH_Failed  [box]  "[Unfinished scene]
 
@@ -1584,11 +1584,11 @@ The hoist leads below to the Nine. Warning, firing control and desk evidence are
           button 0: "Continue"
   000B05  TLM_MSG_RH_LabelCage  [box]  "[Hoist: outside and below]
 
-Supported surface/below markers represent the hoist. Transit pauses the deadline. Every miner arrival must be observed."
+Use Hoist: descend, return or rescue to go below. The mine opening clipboard is only a marker. Below: Find and muster the night shift, then Hoist: bring miners up or return alone. Return alone rescues nobody."
           button 0: "Continue"
   000B06  TLM_MSG_RH_LabelNine  [box]  "[Belowground: Nine level]
 
-Night-shift muster, the cage and inner-break control. Bringing the shift up and choosing an inner-break blast are separate decisions."
+First use Find and muster the night shift. Then use Hoist: bring miners up or return alone; choose Bring the shift up to attempt rescue. Outside, use Rescue outcome and pending break plan. The gallery is optional; rescue does not itself blast the break."
           button 0: "Continue"
   000B07  TLM_MSG_RH_LabelGallery  [box]  "[Belowground: sealed gallery]
 
@@ -2507,12 +2507,14 @@ Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOn
                     ButtonStages = [42, 43, 44, 0]
                     RequireStageDone = 20
                     BlockIfStageDone = 50
+                    ResolvedText = ["The ledger matter is settled. There is nothing further to post here."]
   alias 11 Stove  (reference) [Optional]
            script TLM:MessageStageAlias
                     MessageToShow = TLM_MSG_BurnLedger
                     ButtonStages = [46, 0]
                     RequireStageDone = 10
                     BlockIfStageDone = 50
+                    ResolvedText = ["The ledger matter is settled. This is the ledger-disposal stove, not a cooking station."]
 
 Quest TLM_Trial  000825  "The Last Meridian (placed-content trial)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:PlacedTrial
@@ -3470,12 +3472,13 @@ Quest TLM_MQ02C  000AB9  "What Knocks in Red Hollow"  type=MainQuest priority=56
   alias 14 Miner10  (reference) [Optional, AllowDead, AllowDisabled]
   alias 15 Miner11  (reference) [Optional, AllowDead, AllowDisabled]
 
-Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+Quest TLM_RH  000ABA  "Red Hollow: directions"  type=SideQuests priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:RedHollowWalk
            TLM_MQ02C = TLM_MQ02C
            TLM_MQ01 = TLM_MQ01
            TLM_MercyBriefing = TLM_MercyBriefing
            Alias_Condemned = alias 97 on TLM_RH
+           Alias_GuideSheriff = alias 101 on TLM_RH
            CastFrom = [alias 11 on TLM_RH, alias 12 on TLM_RH, alias 13 on TLM_RH, alias 14 on TLM_RH, alias 53 on TLM_RH, alias 54 on TLM_RH, alias 55 on TLM_RH, alias 56 on TLM_RH, alias 57 on TLM_RH, alias 58 on TLM_RH, alias 59 on TLM_RH, alias 60 on TLM_RH, alias 61 on TLM_RH, alias 62 on TLM_RH, alias 63 on TLM_RH]
            CastInto = [alias 0 on TLM_MQ02C, alias 2 on TLM_MQ02C, alias 1 on TLM_MQ02C, alias 3 on TLM_MQ02C, alias 5 on TLM_MQ02C, alias 6 on TLM_MQ02C, alias 7 on TLM_MQ02C, alias 8 on TLM_MQ02C, alias 9 on TLM_MQ02C, alias 10 on TLM_MQ02C, alias 11 on TLM_MQ02C, alias 12 on TLM_MQ02C, alias 13 on TLM_MQ02C, alias 14 on TLM_MQ02C, alias 15 on TLM_MQ02C]
            ClockMenus = ["LoadingMenu", "Console", "LevelUpMenu", "MessageBoxMenu", "ContainerMenu", "ExamineMenu", "CookingMenu", "ExamineConfirmMenu", "RobotModMenu", "PowerArmorModMenu", "WorkshopMenu", "PromptMenu", "SitWaitMenu", "SleepWaitMenu", "DialogueMenu", "BarterMenu", "LockpickingMenu", "BookMenu", "SPECIALMenu", "FavoritesMenu", "PauseMenu", "VATSMenu", "PipboyMenu", "PipboyHolotapeMenu", "TerminalMenu", "LooksMenu"]
@@ -3681,7 +3684,20 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
            T_dunmore_tells_2 = TLM_MSG_RH_T_dunmore_tells_2
            T_cutter_rope_1 = TLM_MSG_RH_T_cutter_rope_1
            T_cutter_rope_missed_1 = TLM_MSG_RH_T_cutter_rope_missed_1
-  structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  structure: 0 of 0 stages have one item with its flags subrecord; 13 of 13 objectives have flags; condition marker present
+  objective 5: "Take the road to Red Hollow from Mercy Crossing"  -> alias 0
+  objective 10: "Follow Path to the Mouth to reach the mine"  -> alias 25
+  objective 20: "Use the hoist control at the mine entrance"  -> alias 27
+  objective 30: "Find and muster the night shift below"  -> alias 31
+  objective 40: "Bring the miners up using the hoist"  -> alias 28
+  objective 50: "Check the miners and decide what to do at the inner break"  -> alias 45
+  objective 55: "Return to the inner-break charge control to finish the work"  -> alias 30
+  objective 60: "Return to Mercy Crossing and tell Pritchard what happened"  -> alias 44
+  objective 70: "Speak to the freed prisoner beside the court"  -> alias 97
+  objective 80: "Return to the Nine level, then take the hoist up"  -> alias 33
+  objective 85: "Take the hoist back to the mine yard"  -> alias 28
+  objective 86: "Use the cage control to finish the interrupted operation"  -> alias 28
+  objective 90: "Tell Sheriff Pritchard what happened at Red Hollow"  -> alias 101
   alias  0 MercyTravel  (reference) [Optional, AllowDead, AllowDisabled]
            script TLM:RedHollowTalk
                     Who = 1
@@ -3889,6 +3905,7 @@ Quest TLM_RH  000ABA  "Red Hollow story greybox (development)"  type=None priori
   alias 100 GalleryFall  (reference) [Optional, AllowDisabled]
            script TLM:RedHollowTalk
                     Who = 47
+  alias 101 GuideSheriff  (reference) [Optional, AllowDead, AllowDisabled]
 
 Quest TLM_GW_Relief  000C07  "Greenwater winter relief (local ledger)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:GreenwaterRelief
