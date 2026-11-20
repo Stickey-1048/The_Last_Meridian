@@ -257,8 +257,8 @@ Message Property RhaTerms Auto Const Mandatory
 Message Property RhaBreak Auto Const Mandatory
 Message Property RhaOpen Auto Const Mandatory
 Message Property RhaReport Auto Const Mandatory
-ObjectReference Property RhaOriginalRoark Auto Const Mandatory
-ObjectReference Property RhaOriginalBlevins Auto Const Mandatory
+ObjectReference Property RhaOriginalRoark Auto Const
+ObjectReference Property RhaOriginalBlevins Auto Const
 int aftermathEpoch = 0
 bool busy = false
 bool setUpDone = false
