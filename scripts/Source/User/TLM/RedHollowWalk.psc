@@ -225,6 +225,41 @@ bool[] menuStates
 bool menuUncertain = false
 bool menusRegistered = false
 
+Message Property RhaRoarkOrdered Auto Const Mandatory
+Message Property RhaRoarkDeadline Auto Const Mandatory
+Message Property RhaRoarkAll Auto Const Mandatory
+Message Property RhaRoarkNone Auto Const Mandatory
+Message Property RhaRoarkPartial1 Auto Const Mandatory
+Message Property RhaRoarkPartial2 Auto Const Mandatory
+Message Property RhaRoarkPartial3 Auto Const Mandatory
+Message Property RhaRoarkPartial4 Auto Const Mandatory
+Message Property RhaRoarkPartial5 Auto Const Mandatory
+Message Property RhaRoarkPartial6 Auto Const Mandatory
+Message Property RhaRoarkPartial7 Auto Const Mandatory
+Message Property RhaRoarkPartial8 Auto Const Mandatory
+Message Property RhaRoarkPartial9 Auto Const Mandatory
+Message Property RhaRoarkPartial10 Auto Const Mandatory
+Message Property RhaBlevinsOrdered Auto Const Mandatory
+Message Property RhaBlevinsDeadline Auto Const Mandatory
+Message Property RhaBlevinsAll Auto Const Mandatory
+Message Property RhaBlevinsNone Auto Const Mandatory
+Message Property RhaBlevinsPartial1 Auto Const Mandatory
+Message Property RhaBlevinsPartial2 Auto Const Mandatory
+Message Property RhaBlevinsPartial3 Auto Const Mandatory
+Message Property RhaBlevinsPartial4 Auto Const Mandatory
+Message Property RhaBlevinsPartial5 Auto Const Mandatory
+Message Property RhaBlevinsPartial6 Auto Const Mandatory
+Message Property RhaBlevinsPartial7 Auto Const Mandatory
+Message Property RhaBlevinsPartial8 Auto Const Mandatory
+Message Property RhaBlevinsPartial9 Auto Const Mandatory
+Message Property RhaBlevinsPartial10 Auto Const Mandatory
+Message Property RhaTerms Auto Const Mandatory
+Message Property RhaBreak Auto Const Mandatory
+Message Property RhaOpen Auto Const Mandatory
+Message Property RhaReport Auto Const Mandatory
+ObjectReference Property RhaOriginalRoark Auto Const
+ObjectReference Property RhaOriginalBlevins Auto Const
+int aftermathEpoch = 0
 bool busy = false
 bool setUpDone = false
 float lastSample = -1.0
@@ -701,6 +736,7 @@ bool Function OpenDoor()
 EndFunction
 
 Function Loaded()
+	aftermathEpoch += 1
 	lastSample = -1.0
 	lastArea = 0
 	If !IsRunning()
@@ -1026,10 +1062,17 @@ Function RoarkTalk()
 	If !TalkOK(roarkActor)
 		Return
 	EndIf
-	If Road().PactMade() && Road().SafeCount(SurfaceSlots) == 11
+	If Road().PactMade() && AftermathRow() == 11 && AftermathContext(roarkActor,true,Game.GetPlayer(),aftermathEpoch)
 		; Compound kitchen, elapsed-knocking and feeding claims are withheld.
 		Road().DeliverTerms()
+		Aftermath(roarkActor,true)
 		Facts()
+		Return
+	EndIf
+	If Road().MineOutcome() != 0 || Road().MinePending() != 0
+		If !Aftermath(roarkActor,true)
+			Facts()
+		EndIf
 		Return
 	EndIf
 	If !ShiftSafeToSpeak() || !Road().OperatorReady(Ref(Alias_FiringControl))
@@ -1067,6 +1110,12 @@ EndFunction
 
 Function BlevinsTalk()
 	Actor captainActor = Alias_Blevins.GetActorReference()
+	If TalkOK(captainActor) && (Road().MineOutcome() != 0 || Road().MinePending() != 0)
+		If !Aftermath(captainActor,false)
+			Facts()
+		EndIf
+		Return
+	EndIf
 	If !TalkOK(captainActor) || !ShiftSafeToSpeak()
 		Return
 	EndIf
@@ -1803,9 +1852,11 @@ int Function OfferReport(Actor sheriffActor)
 	If !ReportContext(sheriffActor)
 		Return 3
 	EndIf
+	Actor reportPlayer = Game.GetPlayer()
+	int reportEpoch = aftermathEpoch
 	busy = true
 	int answer = Report.Show()
-	If !ReportContext(sheriffActor)
+	If (!ReportContext(sheriffActor) || reportPlayer != Game.GetPlayer() || reportEpoch != aftermathEpoch)
 		busy = false
 		Return 3
 	EndIf
@@ -1823,26 +1874,30 @@ int Function OfferReport(Actor sheriffActor)
 	EndIf
 	; Exact source speech under documented completed-road projection, never a fair claim.
 	int reply = Say(node,sheriffActor)
-	If reply != 0 || !ReportContext(sheriffActor)
+	If reply != 0 || (!ReportContext(sheriffActor) || reportPlayer != Game.GetPlayer() || reportEpoch != aftermathEpoch)
 		busy = false
 		Return 3
 	EndIf
 	string reportBefore = ReportMark()
 	int detailAnswer = ReportFacts.Show(Road().CourtOutcome(),Road().MineOutcome(),Road().SafeCount(SurfaceSlots),Road().DeathCount(),Road().DeathCauseCount(1),Road().DeathCauseCount(2),Road().DeathCauseCount(3))
-	If detailAnswer != 0 || !ReportContext(sheriffActor) || ReportMark() != reportBefore
+	If detailAnswer != 0 || (!ReportContext(sheriffActor) || reportPlayer != Game.GetPlayer() || reportEpoch != aftermathEpoch) || ReportMark() != reportBefore
 		busy = false
 		Return 3
 	EndIf
 	reportBefore = ReportMark()
 	detailAnswer = ReportEvidence.Show(Road().TLM_G_MQ02C_SilverRoad.GetValueInt(),Road().TLM_G_MQ02C_SilverMine.GetValueInt(),Road().TLM_G_MQ02C_HollowLine.GetValueInt(),Road().TermsDelivered() as int)
-	If detailAnswer != 0 || !ReportContext(sheriffActor) || ReportMark() != reportBefore
+	If detailAnswer != 0 || (!ReportContext(sheriffActor) || reportPlayer != Game.GetPlayer() || reportEpoch != aftermathEpoch) || ReportMark() != reportBefore
 		busy = false
 		Return 3
 	EndIf
 	Road().RefreshEvidence(TLM_MercyBriefing as TLM:MercyBriefing)
 	reportBefore = ReportMark()
 	detailAnswer = ReportLamp.Show(Road().LampOrigin(),Road().TLM_G_MQ02C_LampTaken.GetValueInt(),Road().TLM_G_MQ02C_Docket2298Held.GetValueInt(),Road().TLM_G_MQ02C_Entombed.GetValueInt())
-	If detailAnswer != 0 || !ReportContext(sheriffActor) || ReportMark() != reportBefore
+	If detailAnswer != 0 || (!ReportContext(sheriffActor) || reportPlayer != Game.GetPlayer() || reportEpoch != aftermathEpoch) || ReportMark() != reportBefore
+		busy = false
+		Return 3
+	EndIf
+	If ReportMark() != reportBefore || !ReportContext(sheriffActor) || reportPlayer != Game.GetPlayer() || reportEpoch != aftermathEpoch
 		busy = false
 		Return 3
 	EndIf
@@ -1850,7 +1905,10 @@ int Function OfferReport(Actor sheriffActor)
 		busy = false
 		Return 3
 	EndIf
-	Facts()
+	; Only this successful finalizer can authorize the acknowledgment.
+	If ReportReceiptContext(sheriffActor,reportBefore,reportEpoch,reportPlayer)
+		RhaReport.Show()
+	EndIf
 	UpdateGuidance()
 	busy = false
 	Return 1
@@ -2009,3 +2067,206 @@ Event OnMenuOpenCloseEvent(string asMenuName, bool abOpening)
 	Road().BlockDeadline()
 	Road().StopWatching()
 EndEvent
+
+
+; Presentation only; no new outcome, inventory, reward or evidence receipt.
+bool Function AftermathContext(Actor speakerActor, bool isRoark, Actor playerActor, int generation)
+	If !playerActor || playerActor.IsDead() || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded() || !TalkOK(speakerActor) || playerActor.IsInScene() || speakerActor.IsInScene() || speakerActor.IsInDialogueWithPlayer() || !SurfaceArea()
+		Return false
+	EndIf
+	Actor currentSpeaker = Alias_Blevins.GetActorReference()
+	Actor roadSpeaker = Road().Person(Road().Alias_Blevins)
+	ObjectReference originalSpeaker = RhaOriginalBlevins
+	If isRoark
+		currentSpeaker = Alias_Roark.GetActorReference()
+		roadSpeaker = Road().Person(Road().Alias_Roark)
+		originalSpeaker = RhaOriginalRoark
+	EndIf
+	; Scene/dialogue/region/alias reads can yield; refresh participants after those reads.
+	If !TalkOK(speakerActor) || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded() || speakerActor.IsDead() || playerActor.IsDead()
+		Return false
+	EndIf
+	Return speakerActor == originalSpeaker && speakerActor == currentSpeaker && speakerActor == roadSpeaker && playerActor == Game.GetPlayer() && generation == aftermathEpoch
+EndFunction
+
+int Function AftermathRow()
+	int resultCode = Road().MineOutcome()
+	If Road().MinePending() != 0 || !Road().GetStageDone(resultCode)
+		Return -1
+	EndIf
+	If resultCode == 53 || resultCode == 56
+		If Road().TLM_G_MQ02C_MouthShut.GetValueInt() == 1 && Road().Off(Ref(Alias_MouthOpen)) && Road().On(Ref(Alias_MouthClosed))
+			Return resultCode
+		EndIf
+		Return -1
+	EndIf
+	If resultCode != 51 && resultCode != 52 && resultCode != 57 && resultCode != 58
+		Return -1
+	EndIf
+	If !SurfaceSlots || SurfaceSlots.Length != 11 || !Road().KnownSafeSurvivors(SurfaceSlots) || !Road().DistinctRoster() || !Road().RHSurfaceReceipts || Road().RHSurfaceReceipts.Length != 11
+		Return -1
+	EndIf
+	int index = 0
+	While index < 11
+		Actor minerActor = Road().Miner(index)
+		ObjectReference slotRef = Ref(SurfaceSlots[index])
+		If !minerActor || minerActor != Road().RHOriginalMiners[index] || !slotRef || slotRef != Road().RHSurfaceReceipts[index]
+			Return -1
+		EndIf
+		If minerActor.IsDead()
+			If Road().Fate(index) != 4
+				Return -1
+			EndIf
+		ElseIf minerActor.IsDisabled() || !minerActor.Is3DLoaded() || !Road().At(minerActor,slotRef)
+			Return -1
+		EndIf
+		index += 1
+	EndWhile
+	int safeNumber = Road().SafeCount(SurfaceSlots)
+	If safeNumber + Road().DeathCount() != 11
+		Return -1
+	EndIf
+	Return safeNumber
+EndFunction
+
+string Function AftermathMark()
+	Return "" + Road().MineMark() + ":" + Road().TermsDelivered() + ":" + Road().TLM_G_MQ02C_BreakBlown.GetValueInt() + ":" + Road().TLM_G_MQ02C_MouthShut.GetValueInt() + ":" + AftermathRow()
+EndFunction
+
+Message Function AftermathLead(int row, bool isRoark)
+	If row == 53
+		If isRoark
+			Return RhaRoarkOrdered
+		EndIf
+		Return RhaBlevinsOrdered
+	EndIf
+	If row == 56
+		If isRoark
+			Return RhaRoarkDeadline
+		EndIf
+		Return RhaBlevinsDeadline
+	EndIf
+	If row == 11
+		If isRoark
+			Return RhaRoarkAll
+		EndIf
+		Return RhaBlevinsAll
+	EndIf
+	If row == 0
+		If isRoark
+			Return RhaRoarkNone
+		EndIf
+		Return RhaBlevinsNone
+	EndIf
+	If row == 1
+		If isRoark
+			Return RhaRoarkPartial1
+		EndIf
+		Return RhaBlevinsPartial1
+	EndIf
+	If row == 2
+		If isRoark
+			Return RhaRoarkPartial2
+		EndIf
+		Return RhaBlevinsPartial2
+	EndIf
+	If row == 3
+		If isRoark
+			Return RhaRoarkPartial3
+		EndIf
+		Return RhaBlevinsPartial3
+	EndIf
+	If row == 4
+		If isRoark
+			Return RhaRoarkPartial4
+		EndIf
+		Return RhaBlevinsPartial4
+	EndIf
+	If row == 5
+		If isRoark
+			Return RhaRoarkPartial5
+		EndIf
+		Return RhaBlevinsPartial5
+	EndIf
+	If row == 6
+		If isRoark
+			Return RhaRoarkPartial6
+		EndIf
+		Return RhaBlevinsPartial6
+	EndIf
+	If row == 7
+		If isRoark
+			Return RhaRoarkPartial7
+		EndIf
+		Return RhaBlevinsPartial7
+	EndIf
+	If row == 8
+		If isRoark
+			Return RhaRoarkPartial8
+		EndIf
+		Return RhaBlevinsPartial8
+	EndIf
+	If row == 9
+		If isRoark
+			Return RhaRoarkPartial9
+		EndIf
+		Return RhaBlevinsPartial9
+	EndIf
+	If row == 10
+		If isRoark
+			Return RhaRoarkPartial10
+		EndIf
+		Return RhaBlevinsPartial10
+	EndIf
+	Return None
+EndFunction
+
+bool Function Aftermath(Actor speakerActor, bool isRoark)
+	int generation = aftermathEpoch
+	Actor playerActor = Game.GetPlayer()
+	int row = AftermathRow()
+	Message leadMessage = AftermathLead(row,isRoark)
+	string before = AftermathMark()
+	; Finite post-context cohort/mark observations: later context getters may yield.
+	; No alternating loop or atomic-world snapshot is claimed.
+	If !leadMessage || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+		Return false
+	EndIf
+	int answer = leadMessage.Show()
+	If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+		Return true
+	EndIf
+	Message decisionMessage = None
+	If isRoark && row >= 0 && row <= 11
+		If Road().MineOutcome() == 51 && row == 11 && Road().PactMade() && Road().TermsDelivered()
+			decisionMessage = RhaTerms
+		ElseIf Road().MineOutcome() == 52 && Road().TLM_G_MQ02C_BreakBlown.GetValueInt() == 1
+			decisionMessage = RhaBreak
+		ElseIf Road().MineOutcome() == 57 && row == 11 && !Road().PactMade() && !Road().BreakPlanned() && Road().TLM_G_MQ02C_BreakBlown.GetValueInt() == 0
+			decisionMessage = RhaOpen
+		EndIf
+	EndIf
+	If decisionMessage && AftermathContext(speakerActor,isRoark,playerActor,generation) && AftermathRow() == row && AftermathMark() == before
+		answer = decisionMessage.Show()
+		If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+			Return true
+		EndIf
+	EndIf
+	Return true
+EndFunction
+
+bool Function ReportReceiptContext(Actor sheriffActor, string before, int generation, Actor playerActor)
+	If !playerActor || !Road().PlayerAlive() || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded() || !sheriffActor || sheriffActor.IsDead() || sheriffActor.IsDisabled() || sheriffActor.IsInCombat() || !sheriffActor.Is3DLoaded() || !Road().At(playerActor,sheriffActor,320.0)
+		Return false
+	EndIf
+	If Road().TLM_G_MQ02C_Reported.GetValueInt() != 1 || ReportMark() != before
+		Return false
+	EndIf
+	Actor currentSheriff = Road().Person(Road().Alias_Sheriff)
+	; Evidence and alias reads above can yield after the genuine report commits.
+	; Suppress a stale utterance without rolling back that historical receipt.
+	If sheriffActor.IsDisabled() || sheriffActor.IsInCombat() || !sheriffActor.Is3DLoaded() || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded() || !Road().At(playerActor,sheriffActor,320.0) || sheriffActor.IsDead() || playerActor.IsDead()
+		Return false
+	EndIf
+	Return sheriffActor == currentSheriff && playerActor == Game.GetPlayer() && generation == aftermathEpoch
+EndFunction

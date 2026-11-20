@@ -5,7 +5,9 @@ ROOT=Path(__file__).resolve().parent.parent
 FD7='fd7ed54181a23ff100b47ddad60caac802eb019c'
 GUIDANCE='5a2b373b3759e9e7cea8ad33d6835cf6a27cc588'
 TERRAIN='f601820b7bc4bb1b9d658bd9c29c2053dfd7d11f'
-CONTEXT_DIGESTS={'fd7ed54181a23ff100b47ddad60caac802eb019c': '9C38382BD59BF25BC3DAD7829ECA538FD039C687B72A422E12E0D3B6D46B990D', '5a2b373b3759e9e7cea8ad33d6835cf6a27cc588': '0BA58ECE56E59F7E4AF0B8C8C8AF1F4FF72FEDD95BC5E6DAC372FA85B3570356', 'f601820b7bc4bb1b9d658bd9c29c2053dfd7d11f': '18F1895D85895C5943A6A35476542FA9CF0EDF3472B76CC1097AD72A42992C75'}
+AFTERMATH_BASE='13c8f26209ed022ff23ba38e10a4134bc6e58ba1'
+SKELETON_BASE='b93b79035ec97972243668bde0c0f796d4164c9c'
+CONTEXT_DIGESTS={SKELETON_BASE:'059AC8A7A7E8500B08649F974631052326368B9183D68D1D753D1BE6C1F2F0DD',AFTERMATH_BASE:'555AFD359E1A94D4D08CC14EDA4627E12C6CBE75AFD0CC01238C6B5A8E0A0F0E','fd7ed54181a23ff100b47ddad60caac802eb019c': '9C38382BD59BF25BC3DAD7829ECA538FD039C687B72A422E12E0D3B6D46B990D', '5a2b373b3759e9e7cea8ad33d6835cf6a27cc588': '0BA58ECE56E59F7E4AF0B8C8C8AF1F4FF72FEDD95BC5E6DAC372FA85B3570356', 'f601820b7bc4bb1b9d658bd9c29c2053dfd7d11f': '18F1895D85895C5943A6A35476542FA9CF0EDF3472B76CC1097AD72A42992C75'}
 
 def digest(data):return hashlib.sha256(data).hexdigest().upper()
 def text_digest(data):
@@ -59,7 +61,7 @@ def prepare():
     target.mkdir(parents=True,exist_ok=True)
     for name,data in source.items():
         p=target/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data)
-    overlays=('scripts/Source/User/TLM/MessageStageAlias.psc','scripts/Source/User/TLM/RedHollowWalk.psc','tools/PluginBuilder/Spec.cs','tools/PluginBuilder/SpecRedHollow.cs')
+    overlays=('scripts/Source/User/TLM/MessageStageAlias.psc','scripts/Source/User/TLM/RedHollowWalk.psc','tools/PluginBuilder/Spec.cs','tools/PluginBuilder/SpecRedHollow.cs','tools/PluginBuilder/formkeys.txt')
     for name in overlays:shutil.copyfile(ROOT/name,target/name)
     baseline=ROOT/'build/terrain-002/baseline-projection';build(target,master,baseline,'current-guidance-only')
     # Standalone provenance/preservation tests run their actual accepted source,

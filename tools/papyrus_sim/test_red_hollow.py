@@ -68,6 +68,8 @@ class Hollow:
                 pages=sorted((mid for mid in self.messages if mid.startswith(P+'S_'+name+'_')),key=lambda x:int(x.rsplit('_',1)[1]))
                 self.t.assertTrue(pages,name)
                 answers.update({mid:[choice if i==len(pages)-1 else 0] for i,mid in enumerate(pages)})
+        # The new successful-report acknowledgment has exactly one Continue button.
+        if choices.get('Report')==0:answers[P+'RhaReport']=[0]
         self.s.answers=answers
     def use(self,name,**choices):
         self.answer(**choices);self.pos(name);self.s.press_activate(R+name);self.wait()

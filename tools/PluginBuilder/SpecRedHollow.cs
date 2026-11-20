@@ -88,6 +88,38 @@ public static class RedHollow
     public static readonly PlacedSpec[] Placed=Pieces.Select(p=>new PlacedSpec("TLM_REF_RH_"+p.Alias,p.Mercy?Spec.TrialCell:CellId,p.Base,p.Base=="XMarker"?"Static":null,p.Mercy?620+(p.Alias=="MercyReturn"?40:0):p.Y,p.Mercy?100:p.X,p.Z,true,p.Box)).Concat(Floors()).ToArray();
     static MessageSpec Ui(string id,string text,params string[] buttons)=>new(Prefix+id,null,text,true,(buttons.Length==0?new[]{"Continue"}:buttons).Select(b=>new ButtonSpec(b)).ToArray());
     public static readonly Dictionary<string,(string Text,string[] Buttons)> UiText=new(){
+        ["RhaRoarkOrdered"]=("[Roark]\n\nYou told Captain Blevins to seal it with miners below.",new[]{"Continue"}),
+        ["RhaRoarkDeadline"]=("[Roark]\n\nCaptain Blevins sealed it with miners below.",new[]{"Continue"}),
+        ["RhaRoarkAll"]=("[Roark]\n\nThey're here. All eleven.",new[]{"Continue"}),
+        ["RhaRoarkNone"]=("[Roark]\n\nThey're dead. All eleven.",new[]{"Continue"}),
+        ["RhaRoarkPartial1"]=("[Roark]\n\nWe've got one here alive. Ten are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial2"]=("[Roark]\n\nWe've got two here alive. Nine are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial3"]=("[Roark]\n\nWe've got three here alive. Eight are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial4"]=("[Roark]\n\nWe've got four here alive. Seven are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial5"]=("[Roark]\n\nWe've got five here alive. Six are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial6"]=("[Roark]\n\nWe've got six here alive. Five are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial7"]=("[Roark]\n\nWe've got seven here alive. Four are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial8"]=("[Roark]\n\nWe've got eight here alive. Three are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial9"]=("[Roark]\n\nWe've got nine here alive. Two are dead.",new[]{"Continue"}),
+        ["RhaRoarkPartial10"]=("[Roark]\n\nWe've got ten here alive. One is dead.",new[]{"Continue"}),
+        ["RhaBlevinsOrdered"]=("[Blevins]\n\nYou gave the order. The Mouth is shut.",new[]{"Continue"}),
+        ["RhaBlevinsDeadline"]=("[Blevins]\n\nI fired. The Mouth is shut.",new[]{"Continue"}),
+        ["RhaBlevinsAll"]=("[Blevins]\n\nAll eleven. I can see them.",new[]{"Continue"}),
+        ["RhaBlevinsNone"]=("[Blevins]\n\nEleven dead. I won't call that a rescue.",new[]{"Continue"}),
+        ["RhaBlevinsPartial1"]=("[Blevins]\n\nOne here alive. Ten dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial2"]=("[Blevins]\n\nTwo here alive. Nine dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial3"]=("[Blevins]\n\nThree here alive. Eight dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial4"]=("[Blevins]\n\nFour here alive. Seven dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial5"]=("[Blevins]\n\nFive here alive. Six dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial6"]=("[Blevins]\n\nSix here alive. Five dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial7"]=("[Blevins]\n\nSeven here alive. Four dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial8"]=("[Blevins]\n\nEight here alive. Three dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial9"]=("[Blevins]\n\nNine here alive. Two dead. That is the count.",new[]{"Continue"}),
+        ["RhaBlevinsPartial10"]=("[Blevins]\n\nTen here alive. One dead. That is the count.",new[]{"Continue"}),
+        ["RhaTerms"]=("[Roark]\n\nI've heard the terms. The town hasn't agreed to them.",new[]{"Continue"}),
+        ["RhaBreak"]=("[Roark]\n\nThe break is shut.",new[]{"Continue"}),
+        ["RhaOpen"]=("[Roark]\n\nThey're up. The break is still open.",new[]{"Continue"}),
+        ["RhaReport"]=("[Pritchard]\n\nI've got your account of Red Hollow.",new[]{"Continue"}),
         ["Travel"]=("[Red Hollow story test]\n\n"+Available+" Travel to the gap?",new[]{"Travel","Not now"}),
         ["StageTravel"]=("[Staged travel]\n\nA marked transfer links the labelled areas. It pauses the deadline and keeps unfinished work intact. Continue?",new[]{"Continue","Not now"}),
         ["Descend"]=("[Staged hoist]\n\nGo from the outdoor work yard to the enclosed Nine level. This is a staged transfer; the hoist does not physically move. Continue?",new[]{"Continue","Not now"}),
@@ -160,7 +192,7 @@ public static class RedHollow
             new(86,"Use the cage control to finish the interrupted operation","BelowControl"),
             new(90,"Tell Sheriff Pritchard what happened at Red Hollow","GuideSheriff")},
         Pieces.Select(p=>new AliasSpec(p.Alias,Fill.Placed,AllowDisabled:true,AllowDead:true,Placed:"TLM_REF_RH_"+p.Alias,Scripts:p.Who==0?Array.Empty<ScriptBind>():new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",p.Who))})).Concat(new[]{new AliasSpec("Condemned",Fill.ScriptFilled,AllowDead:true,AllowDisabled:true,Scripts:new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",32))}),new AliasSpec("Player",Fill.Player,Scripts:new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",-1))})}).Concat(RedHollowEnvironment.FallAliases).Concat(new[]{new AliasSpec("GuideSheriff",Fill.ScriptFilled,AllowDead:true,AllowDisabled:true)}).ToArray(),
-        new ScriptBind("TLM:RedHollowWalk",new Prop[]{new FormProp("TLM_MQ02C",RoadId),new FormProp("TLM_MQ01","TLM_MQ01"),new FormProp("TLM_MercyBriefing",MercyBriefing.QuestId),new AliasProp("Alias_Condemned","Condemned"),new AliasProp("Alias_GuideSheriff","GuideSheriff"),new AliasListProp("CastFrom",Pieces.Where(p=>p.Person).Select(p=>(StageId,p.Alias)).ToArray()),new AliasListProp("CastInto",Pieces.Where(p=>p.Person).Select(p=>(RoadId,p.Alias)).ToArray()),new StringListProp("ClockMenus",ClockMenus),new AliasListProp("ZoneOn",Pieces.Where(p=>p.On&&!p.Mercy).Select(p=>(StageId,p.Alias)).Concat(RedHollowEnvironment.FallAliases.Select(a=>(StageId,a.Name))).ToArray())}.Concat(Pieces.Select(p=>(Prop)new AliasProp("Alias_"+p.Alias,p.Alias))).Concat(RedHollowEnvironment.FallAliases.Select(a=>(Prop)new AliasProp("Alias_"+a.Name,a.Name)))
+        new ScriptBind("TLM:RedHollowWalk",new Prop[]{new PlacedProp("RhaOriginalRoark","TLM_REF_RH_Roark"),new PlacedProp("RhaOriginalBlevins","TLM_REF_RH_Blevins"),new FormProp("TLM_MQ02C",RoadId),new FormProp("TLM_MQ01","TLM_MQ01"),new FormProp("TLM_MercyBriefing",MercyBriefing.QuestId),new AliasProp("Alias_Condemned","Condemned"),new AliasProp("Alias_GuideSheriff","GuideSheriff"),new AliasListProp("CastFrom",Pieces.Where(p=>p.Person).Select(p=>(StageId,p.Alias)).ToArray()),new AliasListProp("CastInto",Pieces.Where(p=>p.Person).Select(p=>(RoadId,p.Alias)).ToArray()),new StringListProp("ClockMenus",ClockMenus),new AliasListProp("ZoneOn",Pieces.Where(p=>p.On&&!p.Mercy).Select(p=>(StageId,p.Alias)).Concat(RedHollowEnvironment.FallAliases.Select(a=>(StageId,a.Name))).ToArray())}.Concat(Pieces.Select(p=>(Prop)new AliasProp("Alias_"+p.Alias,p.Alias))).Concat(RedHollowEnvironment.FallAliases.Select(a=>(Prop)new AliasProp("Alias_"+a.Name,a.Name)))
         .Concat(new[]{"Below","Cage","Surface"}.Select(n=>(Prop)new AliasListProp(n+"Slots",Enumerable.Range(1,11).Select(i=>(StageId,n+$"{i:00}")).ToArray())))
         .Concat(Messages.Select(m=>(Prop)new FormProp(m.EditorId[Prefix.Length..],m.EditorId))).ToArray()));
 }
