@@ -37,6 +37,16 @@ def context(revision):
     return target
 def build(root,master,output,label):
     execute(['dotnet','run','--project','tools/PluginBuilder','--','--out',output,'--fallout4-esm',master],root,ROOT/'build/composed'/('fixture-'+label+'.txt'))
+def ordinary_master(revision):
+    root=context(revision);master=root/'build/composed-own/Fallout4.esm'
+    execute(['dotnet','run','--project','tools/StandInMaster','--',master,'default'],root,ROOT/'build/composed'/('historical-master-'+revision[:8]+'.txt'))
+    return master
+def check_ordinary_fixture(revision,master,description):
+    root=context(revision)
+    if master!=root/'build/composed-own/Fallout4.esm':raise AssertionError('Historical ordinary fixture borrowed another source master')
+    if description!=root/'build/sim/TheLastMeridian.json' or not description.is_file():raise AssertionError('Historical ordinary build/sim JSON absent or wrong-context')
+    if not master.is_file():raise AssertionError('Historical own-source master absent')
+    return {'generationSource':revision,'master':str(master),'masterSha256':digest(master.read_bytes()),'description':str(description),'descriptionSha256':digest(description.read_bytes())}
 def prepare():
     """Always construct BOTH current and comparison inputs from source this run."""
     for revision in CONTEXT_DIGESTS:context(revision)
@@ -54,10 +64,18 @@ def prepare():
     baseline=ROOT/'build/terrain-002/baseline-projection';build(target,master,baseline,'current-guidance-only')
     # Standalone provenance/preservation tests run their actual accepted source,
     # never an environment override of current behavioral tests.
-    build(context(GUIDANCE),master,context(GUIDANCE)/'build/sim','guidance-accepted')
-    build(context(TERRAIN),master,context(TERRAIN)/'build/terrain-002/projection','terrain-accepted')
-    build(context(FD7),master,context(TERRAIN)/'build/terrain-002/baseline-projection','fd7-environment')
-    stamp={'scope':'Fresh synthetic same-master fixtures only; no owned master/native claim','masterSha256':digest(master.read_bytes()),'historicalContextDigests':CONTEXT_DIGESTS,'currentGuidanceOverlayPins':{n:text_digest((ROOT/n).read_bytes()) for n in overlays}}
+    ordinary={};masters={}
+    for revision in CONTEXT_DIGESTS:
+        own_master=ordinary_master(revision);masters[revision]=own_master
+        description=context(revision)/'build/sim/TheLastMeridian.json'
+        build(context(revision),own_master,description.parent,'ordinary-'+revision[:8])
+        ordinary[revision]=check_ordinary_fixture(revision,own_master,description)
+    # The frozen terrain comparison also needs a same-master pair. Its own
+    # accepted generator supplies that master; ordinary fd7/5a identity tests
+    # above never consume this different source's synthetic identities.
+    build(context(TERRAIN),masters[TERRAIN],context(TERRAIN)/'build/terrain-002/projection','terrain-accepted')
+    build(context(FD7),masters[TERRAIN],context(TERRAIN)/'build/terrain-002/baseline-projection','terrain-baseline-pair')
+    stamp={'scope':'Fresh synthetic same-master current comparison and separate own-source historical ordinary fixtures; no owned master/native claim','masterSha256':digest(master.read_bytes()),'historicalContextDigests':CONTEXT_DIGESTS,'historicalOrdinary':ordinary,'terrainHistoricalComparisonMasterSource':TERRAIN,'currentGuidanceOverlayPins':{n:text_digest((ROOT/n).read_bytes()) for n in overlays}}
     (ROOT/'build/composed/fixture-provenance.json').write_text(json.dumps(stamp,indent=2)+'\n',encoding='utf-8')
 
 if __name__=='__main__':prepare()

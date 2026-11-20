@@ -9,10 +9,14 @@ public static class RhEnvironmentFixture
 {
     public static readonly string[] Variants={"rhe-no-light","rhe-light-radius","rhe-light-off","rhe-light-script","rhe-light-color","rhe-template","rhe-room-template","rhe-static-model","rhe-floor-height","rhe-no-climate","rhe-decorative-only"};
     public static void Add(Fallout4Mod mod,string variant){
-        foreach(var expected in RedHollowEnvironment.Assets){
+        void Apply(RedHollowEnvironment.Asset expected){
             var s=mod.Statics.SingleOrDefault(s=>s.EditorID==expected.Id)??mod.Statics.AddNew(expected.Id);s.Model=new Model{File=expected.Model};
             var b=expected.Bounds;s.ObjectBounds.First=new P3Int16(b[0],b[1],b[2]);s.ObjectBounds.Second=new P3Int16(b[3],b[4],b[5]);
         }
+        // Preserve every legacy allocation before appending new terrain-only
+        // records. In particular the existing typed light must remain 085F.
+        var terrainIds=RedHollowTerrain.Assets.Select(a=>a.Id).ToHashSet();
+        foreach(var expected in RedHollowEnvironment.Assets.Where(a=>!terrainIds.Contains(a.Id)))Apply(expected);
         var light=mod.Lights.AddNew("defaultLightWarm01NS");light.Radius=256;light.Time=-1;light.Flags=(Light.Flag)8193;light.FadeValue=1;light.FalloffExponent=1;light.Color=System.Drawing.Color.FromArgb(0,228,203,182);
         var template=mod.LightingTemplates.AddNew("QuarryLightingTemplate");template.AmbientColor=System.Drawing.Color.FromArgb(255,39,38,35);template.DirectionalColor=System.Drawing.Color.FromArgb(255,20,20,20);template.FogNear=1200;template.FogFar=10000;
         var room=new Cell(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="DunwichBorers01",Flags=Cell.Flag.IsInteriorCell};room.LightingTemplate.SetTo(template.FormKey);room.Lighting=new CellLighting{AmbientColor=System.Drawing.Color.FromArgb(255,39,38,35),FogFar=10000,Inherits=(CellLighting.Inherit)1784};
@@ -33,6 +37,14 @@ public static class RhEnvironmentFixture
             case "rhe-floor-height":mod.Statics.Single(s=>s.EditorID=="QryFloor01").ObjectBounds.Second=new P3Int16(256,256,64);break;
             case "rhe-no-climate":world.Climate.SetTo(Mutagen.Bethesda.Plugins.FormKey.Null);break;
             case "rhe-decorative-only":mod.Lights.Remove(light.FormKey);mod.Statics.AddNew("defaultLightWarm01NS").Model=new Model{File="Synthetic\\DecorativeLamp.nif"};break;
+        }
+        foreach(var expected in RedHollowTerrain.Assets){
+            // These three floor fixtures are deliberate inputs to the real
+            // floor guard, including a missing model and malformed width.
+            // Ordinary terrain needs the native-looking 14-unit floor bound;
+            // it must never sanitize those separate adverse variants.
+            if(expected.Id=="workshop_ShackMidFloor01B"&&variant.StartsWith("four-flags-floor",StringComparison.Ordinal))continue;
+            Apply(expected);
         }
     }
 }
