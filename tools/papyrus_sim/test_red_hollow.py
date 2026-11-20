@@ -87,6 +87,7 @@ class Hollow:
     def return_report(self,known=False):
         self.exit();self.s.walk_to('TLM_REF_A1_Pritchard')
         self.answer(Report=0,**{('pritchard_hears_pike_after_fair' if known else 'pritchard_hears_pike_after_fair_unknown'):0},ReportFacts=0,ReportEvidence=0,ReportLamp=0)
+        self.s.answers[P+'RhaReport']=[0]
         self.s.press_activate('TLM_REF_A1_Pritchard');self.wait()
     def shoot(self,projectile=True,attacker=None,bash=False):
         self.pos('Watch')
