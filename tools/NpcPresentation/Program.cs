@@ -1,0 +1,58 @@
+using Mutagen.Bethesda;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Records;
+using Noggog;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Color=System.Drawing.Color;
+try {
+ if(args.Length!=2){Console.Error.WriteLine("NpcPresentation ABSOLUTE-OWNED-Fallout4.esm NEW-project-build-directory");return 2;}
+ using var safe=SafeBuild.Open(args[0],args[1]);string workspace=Path.GetFullPath("../../../..",SafeBuild.ProjectRoot);string basePath=Path.Combine(workspace,"work/rh-return-account-build-f491eeb/build/licensed-return-account-skeleton-001/bundle");
+ using var storyLock=LockedInput.Open(Path.Combine(basePath,"TheLastMeridian.esp"),"5C22EE73009BF1F6B75CFBD5C5E52A749B2086ABA847521B5B294E3ED66E81FF");using var worldLock=LockedInput.Open(Path.Combine(basePath,"TLMWorldSlice.esp"),"ACE5F0A233A1E8124555B15812FFC445FF1AB23DAAA4D672FCDEC231C1D93FAF");
+ OwnedAssets.Verify(safe.Source);
+ using var native=Fallout4Mod.CreateFromBinaryOverlay(safe.Source,Fallout4Release.Fallout4);using var story=Fallout4Mod.CreateFromBinaryOverlay(storyLock.Path,Fallout4Release.Fallout4);using var existingWorld=Fallout4Mod.CreateFromBinaryOverlay(worldLock.Path,Fallout4Release.Fallout4);
+ var mod=new Fallout4Mod(ModKey.FromNameAndExtension("TLMNpcPresentation.esp"),Fallout4Release.Fallout4);mod.ModHeader.Stats.Version=.95f;foreach(var m in new[]{"Fallout4.esm","TheLastMeridian.esp","TLMWorldSlice.esp"})mod.ModHeader.MasterReferences.Add(new MasterReference{Master=ModKey.FromNameAndExtension(m)});
+ var cell=new Cell(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_NPC_Audition",Name="Appearance studies - prototype audition",Flags=Cell.Flag.IsInteriorCell,Lighting=new CellLighting{AmbientColor=Color.FromArgb(255,150,150,150),DirectionalColor=Color.FromArgb(255,200,200,200),DirectionalFade=1f}};
+ int bn=(int)(cell.FormKey.ID%10),sn=(int)(cell.FormKey.ID/10%10);var block=new CellBlock{BlockNumber=bn,GroupType=GroupTypeEnum.InteriorCellBlock};var sub=new CellSubBlock{BlockNumber=sn,GroupType=GroupTypeEnum.InteriorCellSubBlock};block.SubBlocks.Add(sub);sub.Cells.Add(cell);mod.Cells.Records.Add(block);
+ var world=existingWorld.Worldspaces.Single(w=>w.FormKey.ID==0x800&&w.EditorID=="TLM_WS_Meridian");var header=world.DeepCopy();header.SubCells.Clear();header.TopCell!.Persistent.Clear();header.TopCell.Temporary.Clear();header.TopCell.NavigationMeshes.Clear();header.TopCell.Landscape=null;mod.Worldspaces.Add(header);
+ var staticReceipt=new List<object>();
+ void Piece(string name,string donor,float x,float y,float z=0,float yaw=0){
+  var a=native.Statics.Single(s=>s.EditorID==donor);if(a.VirtualMachineAdapter!=null)throw new InvalidDataException("Nonpassive room piece");var r=new PlacedObject(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_NPC_ROOM_"+name,Position=new P3Float(x,y,z),Rotation=new P3Float(0,0,yaw)};r.Base.SetTo(a.FormKey);cell.Temporary.Add(r);staticReceipt.Add(new{name,key=r.FormKey.ToString(),donor=a.FormKey.ToString(),a.EditorID,model=a.Model?.File?.ToString(),position=new[]{x,y,z},yaw,bounds=new[]{a.ObjectBounds.First.X,a.ObjectBounds.First.Y,a.ObjectBounds.First.Z,a.ObjectBounds.Second.X,a.ObjectBounds.Second.Y,a.ObjectBounds.Second.Z}});
+ }
+ foreach(int x in new[]{-512,0,512})foreach(int y in new[]{0,512}){Piece("Floor"+x+"_"+y,"QryFloor01",x,y);Piece("Roof"+x+"_"+y,"CaveRmCeiling512v01",x,y,256);}
+ foreach(int x in new[]{-512,0,512}){Piece("South"+x,"QryCubeWall01",x,-256,256,MathF.PI);Piece("North"+x,"QryCubeWall01",x,768,256);}
+ foreach(int y in new[]{0,512}){Piece("West"+y,"QryCubeWall01",-768,y,256,-MathF.PI/2);Piece("East"+y,"QryCubeWall01",768,y,256,MathF.PI/2);}
+ var actorReceipt=new List<object>();
+ foreach(var role in new[]{(Id:"Owen",Source:0x83Au,Donor:0x24A024u,Armor:0xB2D8Du,Name:"Owen Pritchard",Label:"sheriff study",Female:false,X:-384),(Id:"Ada",Source:0x83Bu,Donor:0x113348u,Armor:0x1C26B9u,Name:"Ada Pike",Label:"gunsmith study",Female:true,X:0),(Id:"Miriam",Source:0x83Du,Donor:0x24A01Bu,Armor:0x178B68u,Name:"Miriam Keene",Label:"physician study",Female:true,X:384)}){
+  var original=story.Npcs.Single(n=>n.FormKey.ID==role.Source);var donor=native.Npcs.Single(n=>n.FormKey.ID==role.Donor);
+  if(donor.UseTemplateActors.HasFlag(Npc.TemplateActorType.Traits)||donor.Race.FormKey.ID!=0x13746||donor.Flags.HasFlag(Npc.Flag.Female)!=role.Female||original.TemplateActors?.TraitTemplate.FormKey==donor.FormKey)throw new InvalidDataException("Nonterminal/wrong sex/race/unchanged face donor");
+  var armor=native.Armors.Single(a=>a.FormKey.ID==role.Armor);if(armor.VirtualMachineAdapter!=null||armor.Armatures.Count==0)throw new InvalidDataException("Unsupported outfit donor");var models=new List<string>();
+  foreach(var link in armor.Armatures){var arm=native.ArmorAddons.Single(a=>a.FormKey==link.ArmorAddon.FormKey);var model=role.Female?arm.WorldModel?.Female?.File?.ToString():arm.WorldModel?.Male?.File?.ToString();if(string.IsNullOrWhiteSpace(model))throw new InvalidDataException("No sex-appropriate clothing model");models.Add(model);}
+  var outfit=new Outfit(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_NPC_OUTFIT_"+role.Id,Items=new ExtendedList<IFormLinkGetter<IOutfitTargetGetter>>{armor.ToLink<IOutfitTargetGetter>()}};
+  if(role.Id=="Miriam"){var glasses=native.Armors.Single(a=>a.FormKey.ID==0x1C4BE8);outfit.Items.Add(glasses.ToLink<IOutfitTargetGetter>());}mod.Outfits.Add(outfit);
+  var npc=original.Duplicate(mod.GetNextFormKey());npc.EditorID="TLM_NPC_STUDY_"+role.Id;npc.Name=role.Name+" ["+role.Label+"; prototype]";npc.ShortName=null;npc.IsCompressed=false;
+  npc.VirtualMachineAdapter=null;npc.Packages.Clear();npc.DefaultPackageList.Clear();npc.Factions.Clear();npc.CrimeFaction.Clear();npc.Items=null;npc.DeathItem.Clear();npc.SleepingOutfit.Clear();npc.UseTemplateActors=Npc.TemplateActorType.Traits;npc.TemplateActors=new TemplateActors();npc.TemplateActors.TraitTemplate.SetTo(donor.FormKey);npc.DefaultTemplate.SetTo(donor.FormKey);npc.DefaultOutfit.SetTo(outfit.FormKey);
+  npc.Flags=(npc.Flags&~(Npc.Flag.Female|Npc.Flag.Essential|Npc.Flag.Unique))|(role.Female?Npc.Flag.Female:0)|Npc.Flag.Protected;npc.Aggression=Npc.AggressionType.Unaggressive;npc.Assistance=Npc.AssistanceType.HelpsNobody;npc.Confidence=Npc.ConfidenceType.Foolhardy;mod.Npcs.Add(npc);
+  var actor=new PlacedNpc(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_NPC_ACTOR_"+role.Id,Position=new P3Float(role.X,384,16),Rotation=new P3Float(0,0,MathF.PI),MajorRecordFlagsRaw=0x400};actor.Base.SetTo(npc.FormKey);cell.Persistent.Add(actor);
+  var hair=native.Colors.Single(c=>c.FormKey==donor.HairColor.FormKey);
+  actorReceipt.Add(new{role.Id,role.Name,label=npc.Name?.String,original=original.FormKey.ToString(),originalTrait=original.TemplateActors?.TraitTemplate.FormKey.ToString(),prototype=npc.FormKey.ToString(),placed=actor.FormKey.ToString(),position=new[]{role.X,384,16},traits=donor.FormKey.ToString(),donor.EditorID,donorTemplateFlags=(uint)donor.UseTemplateActors,prototypeTemplateFlags=(uint)npc.UseTemplateActors,female=role.Female,race=donor.Race.FormKey.ToString(),hair=hair.EditorID,voice=donor.Voice.FormKey.ToString(),headParts=donor.HeadParts.Count,tintLayers=donor.FaceTintingLayers?.Count,faceMorphs=donor.FaceMorphs?.Count,vanillaFaceGeom="Meshes/Actors/Character/FaceGenData/FaceGeom/Fallout4.esm/"+role.Donor.ToString("X8")+".nif",outfit=outfit.FormKey.ToString(),armor=armor.FormKey.ToString(),armorEditorId=armor.EditorID,armorModels=models});
+ }
+ var sourceDoor=native.Doors.Single(d=>d.FormKey.ID==0x52576&&d.EditorID=="ShackDoor01");if(sourceDoor.VirtualMachineAdapter!=null)throw new InvalidDataException("Scripted door donor");
+ Door DoorBase(string id,string name){var d=sourceDoor.Duplicate(mod.GetNextFormKey());d.EditorID=id;d.Name=name;d.VirtualMachineAdapter=null;mod.Doors.Add(d);return d;}
+ var enterBase=DoorBase("TLM_NPC_DOOR_Enter","[Prototype] Appearance audition");var exitBase=DoorBase("TLM_NPC_DOOR_Exit","Return to Meridian road preview");
+ var entry=new PlacedObject(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_NPC_REF_Enter",Position=new P3Float(640,512,0),Rotation=new P3Float(0,0,0),MajorRecordFlagsRaw=0x400};entry.Base.SetTo(enterBase.FormKey);header.TopCell!.Persistent.Add(entry);
+ var exit=new PlacedObject(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_NPC_REF_Exit",Position=new P3Float(0,-240,0),Rotation=new P3Float(0,0,0),MajorRecordFlagsRaw=0x400};exit.Base.SetTo(exitBase.FormKey);cell.Persistent.Add(exit);
+ entry.TeleportDestination=new TeleportDestination{Position=new P3Float(0,0,16),Rotation=new P3Float(0,0,0)};entry.TeleportDestination.Door.SetTo(exit.FormKey);exit.TeleportDestination=new TeleportDestination{Position=new P3Float(640,384,16),Rotation=new P3Float(0,0,0)};exit.TeleportDestination.Door.SetTo(entry.FormKey);
+ if(mod.Npcs.Count!=3||mod.Outfits.Count!=3||mod.Doors.Count!=2||mod.Quests.Count!=0||mod.VoiceTypes.Count!=0||cell.NavigationMeshes.Count!=0||cell.Persistent.Count!=4||header.TopCell.Persistent.Count!=1||staticReceipt.Count!=22)throw new InvalidDataException("Unexpected audition topology");
+ using var bytes=new MemoryStream();mod.WriteToBinary(bytes);safe.CreateOutput();safe.WriteNew(mod.ModKey.FileName,bytes.ToArray());
+ using var back=Fallout4Mod.CreateFromBinaryOverlay(Path.Combine(safe.Output,mod.ModKey.FileName),Fallout4Release.Fallout4);if(back.Npcs.Count!=3||back.Outfits.Count!=3||back.Doors.Count!=2||back.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(s=>s.Cells).Single().Persistent.Count!=4)throw new InvalidDataException("Serialized audition topology differs");
+
+ var readCell=back.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(s=>s.Cells).Single();
+ foreach(var n in back.Npcs){
+  if(n.UseTemplateActors!=Npc.TemplateActorType.Traits||n.TemplateActors==null||n.TemplateActors.TraitTemplate.IsNull||n.DefaultTemplate.FormKey!=n.TemplateActors.TraitTemplate.FormKey||n.VirtualMachineAdapter!=null||n.Packages.Count!=0||!n.DefaultPackageList.IsNull||n.Factions.Count!=0||n.Items?.Count>0||n.DefaultOutfit.IsNull)throw new InvalidDataException("Written prototype inheritance/outfit behavior drift");
+  if(readCell.Persistent.OfType<IPlacedNpcGetter>().Count(a=>a.Base.FormKey==n.FormKey)!=1)throw new InvalidDataException("Prototype not actually placed once");
+ }
+ var readDoors=readCell.Persistent.OfType<IPlacedObjectGetter>().Concat(back.Worldspaces.Single().TopCell!.Persistent.OfType<IPlacedObjectGetter>()).ToArray();if(readDoors.Length!=2||readDoors.Any(r=>r.TeleportDestination==null||!readDoors.Any(d=>d.FormKey==r.TeleportDestination.Door.FormKey)))throw new InvalidDataException("Written reciprocal door targets missing");
+ var receipt=new{scope="Opt-in stock appearance studies; no original actor edits, no custom morph or native FaceGen/render acceptance",pluginSha256=Convert.ToHexString(SHA256.HashData(bytes.ToArray())),sourceStory=storyLock.Hash,sourceWorld=worldLock.Hash,cell=cell.FormKey.ToString(),cell.EditorID,actors=actorReceipt,room=staticReceipt,entry=new{key=entry.FormKey.ToString(),at=new[]{640,512,0},destination=exit.FormKey.ToString(),landing=new[]{0,0,16}},exit=new{key=exit.FormKey.ToString(),at=new[]{0,-240,0},destination=entry.FormKey.ToString(),landing=new[]{640,384,16}},nativeAcceptance=(string?)null};safe.WriteNew("audition-receipt.json",JsonSerializer.SerializeToUtf8Bytes(receipt,new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine(JsonSerializer.Serialize(receipt,new JsonSerializerOptions{WriteIndented=true}));return 0;
+}catch(Exception e){Console.Error.WriteLine("NPC AUDITION FAILED; partials preserved: "+e);return 1;}

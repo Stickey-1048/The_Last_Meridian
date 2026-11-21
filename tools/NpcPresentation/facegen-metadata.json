@@ -1,0 +1,93 @@
+{
+  "scope": "Selected owned NIF metadata only; no original bytes exported. FaceGeom and worn clothing NIFs are present; native inherited skin/tint rendering remains a gate.",
+  "entries": [
+    {
+      "path": "meshes/clothes/vaulttecscientist/vtscientistfvariant.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 199687,
+      "sha256": "6F240801A0BE37E35E181A2B15347596937806272EEE5B7CDAF2C661699C5691",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/armor/raiderheavy/munderarmor.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 255201,
+      "sha256": "BFCE7D1B0D0F2D9642633180281EBBF9D0EA4EB5480D82B188694794F3B584C1",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/clothes/redrocketjumpsuit/redrocketjumpsuitf.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 86518,
+      "sha256": "D4FE72D2483A54360E90A95770A29C36C572B7F72659FBF40E948C75DD3E957F",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/architecture/quarry/qryfloor01.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 2234,
+      "sha256": "71B5B9337637C311D7542EE3753B6ADF41062A1BBDE418992A18D27D80D56C5B",
+      "collisionBlockNamesPresent": true,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/architecture/quarry/qrycubewall01.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 3032,
+      "sha256": "2DC6E48BFFEA757025CAAA90BC1FC465BCC26DBF0637E2A49D49C37655B6DF25",
+      "collisionBlockNamesPresent": true,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/architecture/shacks/shackdoor01.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 37824,
+      "sha256": "0659762EBDB20AC259E49132A5BA2320A256900AA0899C1571D3A0EFF703139E",
+      "collisionBlockNamesPresent": true,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/00113348.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 432550,
+      "sha256": "930D689C19299F430A5F82F53F018F339E75A3F9292B00014B402FFE06FF14C3",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/interiors/cave/rooms/cavermceiling512v01.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 8111,
+      "sha256": "68809B7C9794ED07E69E07701B1D740D166ABA458CA21431FB9ACC48F7B2F36F",
+      "collisionBlockNamesPresent": true,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/clothes/shortsleeves/fglasses.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 24844,
+      "sha256": "7502BC42A586E7F02214E4970BF678299807B5298624ACD33EAE63C4CFD2E6F7",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/0024a01b.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 404555,
+      "sha256": "4DEA908B482CC5B4005C093C17D93E3388788D20B340E36DC9AB34DC0D96DE47",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    },
+    {
+      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/0024a024.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 467728,
+      "sha256": "4FE361D1A7D1EF79BEC83443DF91989551A2E2A5E3B0481D33673A9439E1AA8B",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    }
+  ]
+}

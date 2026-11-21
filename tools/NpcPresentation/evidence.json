@@ -1,0 +1,61 @@
+{
+  "task": "NPC-PRESENTATION-003",
+  "baselineSource": "f491eeb4e670d306530446b60f82785950dbb747",
+  "artifact": "build/audition-003/TLMNpcPresentation.esp",
+  "artifactSha256": "A0719A3D59C811E91FB157FCB7A218DB974DB51B1D007FEAE25DCD4216CF6EF2",
+  "build": {
+    "cachedOfflineOnly": true,
+    "warnings": 0,
+    "errors": 0,
+    "typedPostWriteActorOutfitInheritancePlacementAndDoorChecks": "PASS"
+  },
+  "focused": {
+    "methods": 8,
+    "seconds": 2.44,
+    "status": "PASS",
+    "logSha256": "57C10FB424974B9DED3A4A2D53593A04DB12C9EFEDEB91804C11A08F1AC96584"
+  },
+  "actualCounts": {
+    "newNpcBases": 3,
+    "newPlacedActors": 3,
+    "newOutfits": 3,
+    "newDoorBases": 2,
+    "doorRefs": 2,
+    "passiveRoomRefs": 22,
+    "headerOnlyOverrides": 2,
+    "totalRawRecords": 39,
+    "runtimeScripts": 0
+  },
+  "canonRead": {
+    "pritchard": {
+      "sex": "male",
+      "age": 61,
+      "source": "assets/incoming/act1/story/characters.json"
+    },
+    "pike": {
+      "sex": "female",
+      "age": 43,
+      "source": "assets/incoming/act1/story/characters.json"
+    },
+    "keene": {
+      "sex": "female",
+      "source": "docs/design/TLM_ACT1_first_section.md",
+      "castingAgeOptions": [
+        53,
+        57
+      ],
+      "castingApproval": "UNAPPROVED references only"
+    }
+  },
+  "nativeAppearanceLimits": [
+    "Stock face targets and baked assets verified; not a native rendered-face proof",
+    "Exact age, skin, scars, star and jewellers glass not reproduced/certified",
+    "Native inherited tint/FaceGen lookup, outfit fit, head/body seam pending",
+    "Interior kit visibility/collision/lighting and reciprocal door merge/travel pending"
+  ],
+  "unchangedFrozen43": {
+    "wrapper": "68B1E23FDFC5D6396CCAEBD83CD59109C3C634470AE0D6EC613AA96574B822A0",
+    "trial": "DE5EA4B3958FA42400E5FF67CC679F365539E5B94C68035B13117708D588A6AB"
+  },
+  "nativeAcceptance": null
+}

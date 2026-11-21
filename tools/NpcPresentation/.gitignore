@@ -1,0 +1,6 @@
+bin/
+obj/
+build/
+__pycache__/
+*.esp
+*.pex

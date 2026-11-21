@@ -1,0 +1,599 @@
+{
+  "scope": "Opt-in stock appearance studies; no original actor edits, no custom morph or native FaceGen/render acceptance",
+  "pluginSha256": "A0719A3D59C811E91FB157FCB7A218DB974DB51B1D007FEAE25DCD4216CF6EF2",
+  "sourceStory": "5C22EE73009BF1F6B75CFBD5C5E52A749B2086ABA847521B5B294E3ED66E81FF",
+  "sourceWorld": "ACE5F0A233A1E8124555B15812FFC445FF1AB23DAAA4D672FCDEC231C1D93FAF",
+  "cell": "000800:TLMNpcPresentation.esp",
+  "EditorID": "TLM_NPC_Audition",
+  "actors": [
+    {
+      "Id": "Owen",
+      "Name": "Owen Pritchard",
+      "label": "Owen Pritchard [sheriff study; prototype]",
+      "original": "00083A:TheLastMeridian.esp",
+      "originalTrait": "113340:Fallout4.esm",
+      "prototype": "000818:TLMNpcPresentation.esp",
+      "placed": "000819:TLMNpcPresentation.esp",
+      "position": [
+        -384,
+        384,
+        16
+      ],
+      "traits": "24A024:Fallout4.esm",
+      "EditorID": "EncWorkshopNPCMaleFarmer03b",
+      "donorTemplateFlags": 8126,
+      "prototypeTemplateFlags": 1,
+      "female": false,
+      "race": "013746:Fallout4.esm",
+      "hair": "HairColor10SteelGray",
+      "voice": "023323:Fallout4.esm",
+      "headParts": 11,
+      "tintLayers": 8,
+      "faceMorphs": 30,
+      "vanillaFaceGeom": "Meshes/Actors/Character/FaceGenData/FaceGeom/Fallout4.esm/0024A024.nif",
+      "outfit": "000817:TLMNpcPresentation.esp",
+      "armor": "0B2D8D:Fallout4.esm",
+      "armorEditorId": "Armor_Wastelander_Light",
+      "armorModels": [
+        "Armor\\RaiderHeavy\\MUnderArmor.nif"
+      ]
+    },
+    {
+      "Id": "Ada",
+      "Name": "Ada Pike",
+      "label": "Ada Pike [gunsmith study; prototype]",
+      "original": "00083B:TheLastMeridian.esp",
+      "originalTrait": "113346:Fallout4.esm",
+      "prototype": "00081B:TLMNpcPresentation.esp",
+      "placed": "00081C:TLMNpcPresentation.esp",
+      "position": [
+        0,
+        384,
+        16
+      ],
+      "traits": "113348:Fallout4.esm",
+      "EditorID": "EncWorkshopNPCFemaleFarmer03",
+      "donorTemplateFlags": 8126,
+      "prototypeTemplateFlags": 1,
+      "female": true,
+      "race": "013746:Fallout4.esm",
+      "hair": "HairColor13JetBlack",
+      "voice": "00002E:Fallout4.esm",
+      "headParts": 9,
+      "tintLayers": 11,
+      "faceMorphs": 30,
+      "vanillaFaceGeom": "Meshes/Actors/Character/FaceGenData/FaceGeom/Fallout4.esm/00113348.nif",
+      "outfit": "00081A:TLMNpcPresentation.esp",
+      "armor": "1C26B9:Fallout4.esm",
+      "armorEditorId": "ClothesGenericJumpsuit",
+      "armorModels": [
+        "Clothes\\RedRocketJumpsuit\\RedRocketJumpsuitF.nif"
+      ]
+    },
+    {
+      "Id": "Miriam",
+      "Name": "Miriam Keene",
+      "label": "Miriam Keene [physician study; prototype]",
+      "original": "00083D:TheLastMeridian.esp",
+      "originalTrait": "113347:Fallout4.esm",
+      "prototype": "00081E:TLMNpcPresentation.esp",
+      "placed": "00081F:TLMNpcPresentation.esp",
+      "position": [
+        384,
+        384,
+        16
+      ],
+      "traits": "24A01B:Fallout4.esm",
+      "EditorID": "EncWorkshopNPCFemaleFarmer07b",
+      "donorTemplateFlags": 8126,
+      "prototypeTemplateFlags": 1,
+      "female": true,
+      "race": "013746:Fallout4.esm",
+      "hair": "HairColor10SteelGray",
+      "voice": "00002E:Fallout4.esm",
+      "headParts": 9,
+      "tintLayers": 12,
+      "faceMorphs": 30,
+      "vanillaFaceGeom": "Meshes/Actors/Character/FaceGenData/FaceGeom/Fallout4.esm/0024A01B.nif",
+      "outfit": "00081D:TLMNpcPresentation.esp",
+      "armor": "178B68:Fallout4.esm",
+      "armorEditorId": "ClothesScientist_VariantWasteland",
+      "armorModels": [
+        "Clothes\\VaultTecScientist\\VTScientistFVariant.nif"
+      ]
+    }
+  ],
+  "room": [
+    {
+      "name": "Floor-512_0",
+      "key": "000801:TLMNpcPresentation.esp",
+      "donor": "02CBD6:Fallout4.esm",
+      "EditorID": "QryFloor01",
+      "model": "Architecture\\Quarry\\QryFloor01.nif",
+      "position": [
+        -512,
+        0,
+        0
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        0,
+        256,
+        256,
+        0
+      ]
+    },
+    {
+      "name": "Roof-512_0",
+      "key": "000802:TLMNpcPresentation.esp",
+      "donor": "03AD4E:Fallout4.esm",
+      "EditorID": "CaveRmCeiling512v01",
+      "model": "Interiors\\Cave\\Rooms\\CaveRmCeiling512v01.nif",
+      "position": [
+        -512,
+        0,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        229,
+        256,
+        256,
+        257
+      ]
+    },
+    {
+      "name": "Floor-512_512",
+      "key": "000803:TLMNpcPresentation.esp",
+      "donor": "02CBD6:Fallout4.esm",
+      "EditorID": "QryFloor01",
+      "model": "Architecture\\Quarry\\QryFloor01.nif",
+      "position": [
+        -512,
+        512,
+        0
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        0,
+        256,
+        256,
+        0
+      ]
+    },
+    {
+      "name": "Roof-512_512",
+      "key": "000804:TLMNpcPresentation.esp",
+      "donor": "03AD4E:Fallout4.esm",
+      "EditorID": "CaveRmCeiling512v01",
+      "model": "Interiors\\Cave\\Rooms\\CaveRmCeiling512v01.nif",
+      "position": [
+        -512,
+        512,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        229,
+        256,
+        256,
+        257
+      ]
+    },
+    {
+      "name": "Floor0_0",
+      "key": "000805:TLMNpcPresentation.esp",
+      "donor": "02CBD6:Fallout4.esm",
+      "EditorID": "QryFloor01",
+      "model": "Architecture\\Quarry\\QryFloor01.nif",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        0,
+        256,
+        256,
+        0
+      ]
+    },
+    {
+      "name": "Roof0_0",
+      "key": "000806:TLMNpcPresentation.esp",
+      "donor": "03AD4E:Fallout4.esm",
+      "EditorID": "CaveRmCeiling512v01",
+      "model": "Interiors\\Cave\\Rooms\\CaveRmCeiling512v01.nif",
+      "position": [
+        0,
+        0,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        229,
+        256,
+        256,
+        257
+      ]
+    },
+    {
+      "name": "Floor0_512",
+      "key": "000807:TLMNpcPresentation.esp",
+      "donor": "02CBD6:Fallout4.esm",
+      "EditorID": "QryFloor01",
+      "model": "Architecture\\Quarry\\QryFloor01.nif",
+      "position": [
+        0,
+        512,
+        0
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        0,
+        256,
+        256,
+        0
+      ]
+    },
+    {
+      "name": "Roof0_512",
+      "key": "000808:TLMNpcPresentation.esp",
+      "donor": "03AD4E:Fallout4.esm",
+      "EditorID": "CaveRmCeiling512v01",
+      "model": "Interiors\\Cave\\Rooms\\CaveRmCeiling512v01.nif",
+      "position": [
+        0,
+        512,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        229,
+        256,
+        256,
+        257
+      ]
+    },
+    {
+      "name": "Floor512_0",
+      "key": "000809:TLMNpcPresentation.esp",
+      "donor": "02CBD6:Fallout4.esm",
+      "EditorID": "QryFloor01",
+      "model": "Architecture\\Quarry\\QryFloor01.nif",
+      "position": [
+        512,
+        0,
+        0
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        0,
+        256,
+        256,
+        0
+      ]
+    },
+    {
+      "name": "Roof512_0",
+      "key": "00080A:TLMNpcPresentation.esp",
+      "donor": "03AD4E:Fallout4.esm",
+      "EditorID": "CaveRmCeiling512v01",
+      "model": "Interiors\\Cave\\Rooms\\CaveRmCeiling512v01.nif",
+      "position": [
+        512,
+        0,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        229,
+        256,
+        256,
+        257
+      ]
+    },
+    {
+      "name": "Floor512_512",
+      "key": "00080B:TLMNpcPresentation.esp",
+      "donor": "02CBD6:Fallout4.esm",
+      "EditorID": "QryFloor01",
+      "model": "Architecture\\Quarry\\QryFloor01.nif",
+      "position": [
+        512,
+        512,
+        0
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        0,
+        256,
+        256,
+        0
+      ]
+    },
+    {
+      "name": "Roof512_512",
+      "key": "00080C:TLMNpcPresentation.esp",
+      "donor": "03AD4E:Fallout4.esm",
+      "EditorID": "CaveRmCeiling512v01",
+      "model": "Interiors\\Cave\\Rooms\\CaveRmCeiling512v01.nif",
+      "position": [
+        512,
+        512,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        -256,
+        229,
+        256,
+        256,
+        257
+      ]
+    },
+    {
+      "name": "South-512",
+      "key": "00080D:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        -512,
+        -256,
+        256
+      ],
+      "yaw": 3.1415927,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "North-512",
+      "key": "00080E:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        -512,
+        768,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "South0",
+      "key": "00080F:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        0,
+        -256,
+        256
+      ],
+      "yaw": 3.1415927,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "North0",
+      "key": "000810:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        0,
+        768,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "South512",
+      "key": "000811:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        512,
+        -256,
+        256
+      ],
+      "yaw": 3.1415927,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "North512",
+      "key": "000812:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        512,
+        768,
+        256
+      ],
+      "yaw": 0,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "West0",
+      "key": "000813:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        -768,
+        0,
+        256
+      ],
+      "yaw": -1.5707964,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "East0",
+      "key": "000814:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        768,
+        0,
+        256
+      ],
+      "yaw": 1.5707964,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "West512",
+      "key": "000815:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        -768,
+        512,
+        256
+      ],
+      "yaw": -1.5707964,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    },
+    {
+      "name": "East512",
+      "key": "000816:TLMNpcPresentation.esp",
+      "donor": "02CBDC:Fallout4.esm",
+      "EditorID": "QryCubeWall01",
+      "model": "Architecture\\Quarry\\QryCubeWall01.nif",
+      "position": [
+        768,
+        512,
+        256
+      ],
+      "yaw": 1.5707964,
+      "bounds": [
+        -256,
+        0,
+        -256,
+        256,
+        0,
+        256
+      ]
+    }
+  ],
+  "entry": {
+    "key": "000822:TLMNpcPresentation.esp",
+    "at": [
+      640,
+      512,
+      0
+    ],
+    "destination": "000823:TLMNpcPresentation.esp",
+    "landing": [
+      0,
+      0,
+      16
+    ]
+  },
+  "exit": {
+    "key": "000823:TLMNpcPresentation.esp",
+    "at": [
+      0,
+      -240,
+      0
+    ],
+    "destination": "000822:TLMNpcPresentation.esp",
+    "landing": [
+      640,
+      384,
+      16
+    ]
+  },
+  "nativeAcceptance": null
+}
