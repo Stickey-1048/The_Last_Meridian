@@ -23,6 +23,7 @@ Message Property EarlierChoice Auto Const Mandatory
 Message Property Missing Auto Const Mandatory
 Message Property Pending Auto Const Mandatory
 Message Property SliceEnd Auto Const Mandatory
+Message Property BlackstoneReady Auto Const
 Message Property TaskBeckett Auto Const Mandatory
 Message Property TaskPorch Auto Const Mandatory
 Message Property TaskReturn Auto Const Mandatory
@@ -542,7 +543,7 @@ Bool Function OfferActor(Actor actorRef, Int roleNumber)
             answer = Say("vane_after_read",actorRef,1,capturedEpoch)
             If answer == 0 && Say("vane_names",actorRef,1,capturedEpoch) == 0
                 If Road().LearnBlackstone(actorRef,1,capturedEpoch)
-                    SliceEnd.Show()
+                    ShowBlackstoneDirections()
                 EndIf
             EndIf
         ElseIf !Road().GetStageDone(30)
@@ -559,7 +560,7 @@ Bool Function OfferActor(Actor actorRef, Int roleNumber)
         answer = Say("haskell_sheet",actorRef,2,capturedEpoch)
         If answer == 0 && Say("haskell_tells",actorRef,2,capturedEpoch) == 0
             If Road().LearnBlackstone(actorRef,2,capturedEpoch)
-                SliceEnd.Show()
+                ShowBlackstoneDirections()
             EndIf
         EndIf
     EndIf
@@ -599,7 +600,7 @@ Function PublicReading()
         Int answer = Say("vane_after_read",vaneActor,1,capturedEpoch)
         If answer == 0 && Say("vane_names",vaneActor,1,capturedEpoch) == 0
             If Road().LearnBlackstone(vaneActor,1,capturedEpoch)
-                SliceEnd.Show()
+                ShowBlackstoneDirections()
             EndIf
         EndIf
     EndIf
@@ -626,7 +627,7 @@ Function FinishEncounter()
     ReturnOriginals(Road().Epoch())
     If !visitPending[0] && !visitPending[1]
         If Road().CompleteChapter(Road().Epoch())
-            SliceEnd.Show()
+            ShowBlackstoneDirections()
         EndIf
     EndIf
     busy = false
@@ -639,5 +640,13 @@ Function CurrentTask()
         TaskPorch.Show()
     Else
         TaskBeckett.Show()
+    EndIf
+EndFunction
+
+Function ShowBlackstoneDirections()
+    If BlackstoneReady && Road().BlackstoneRouteAvailable()
+        BlackstoneReady.Show()
+    Else
+        SliceEnd.Show()
     EndIf
 EndFunction

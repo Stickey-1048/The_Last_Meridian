@@ -2,6 +2,7 @@ Scriptname TLM:MQ04Quest extends Quest
 {Black Ledger authority. Existing roads remain independent. Permission, physical
 original custody, public reading and source knowledge are separate receipts.}
 Quest Property TLM_MQ03 Auto Const Mandatory
+Quest Property TLM_MQ05 Auto Const
 ReferenceAlias Property Alias_Player Auto Const Mandatory
 ReferenceAlias Property Alias_SheriffSource Auto Const Mandatory
 ReferenceAlias Property Alias_VaneSource Auto Const Mandatory
@@ -452,6 +453,9 @@ Bool Function LearnBlackstone(Actor sourceActor, Int sourceKind, Int capturedEpo
     SetStage(100)
     SetObjectiveCompleted(61)
     SetObjectiveDisplayed(100)
+    If TLM_MQ05
+        (TLM_MQ05 as TLM:MQ05Quest).OpenLead()
+    EndIf
     ; Knowledge does not resolve an outstanding porch scene or any earlier road.
     Return true
 EndFunction
@@ -510,4 +514,11 @@ Bool Function EffectParticipants(Int kind, Int capturedEpoch)
         Return false
     EndIf
     Return capturedEpoch == generation
+EndFunction
+
+Bool Function BlackstoneRouteAvailable()
+    If !BlackstoneKnown() || !TLM_MQ05
+        Return false
+    EndIf
+    Return (TLM_MQ05 as TLM:MQ05Quest).RouteReady()
 EndFunction

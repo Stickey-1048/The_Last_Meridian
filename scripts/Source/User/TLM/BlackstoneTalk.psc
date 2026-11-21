@@ -23,3 +23,9 @@ Event OnPlayerLoadGame()
         (TLM_MQ05 as TLM:BlackstoneWalk).Loaded()
     EndIf
 EndEvent
+
+Event OnLoad()
+    If Who == 4
+        (TLM_MQ05 as TLM:MQ05Quest).AnchorDiagram(GetReference())
+    EndIf
+EndEvent

@@ -411,3 +411,34 @@ Function Directions()
         SetObjectiveDisplayed(60)
     EndIf
 EndFunction
+
+Bool Function RouteReady()
+    Return initialized && GetStageDone(10) && Current(generation)
+EndFunction
+
+ObjectReference Function DoorReference()
+    Return originalDoor
+EndFunction
+Bool Function PassDoorContext(Int capturedEpoch)
+    If !Current(capturedEpoch) || !GetStageDone(60) || !passAcknowledged
+        Return false
+    EndIf
+    ObjectReference doorRef = Alias_ServiceDoor.GetReference()
+    If doorRef != originalDoor || doorRef.IsDisabled() || !At(originalPlayer,doorRef,192.0)
+        Return false
+    EndIf
+    Bool heldOriginal = PassHeld()
+    Return heldOriginal && capturedEpoch == generation
+EndFunction
+Function AnchorDiagram(ObjectReference itemRef)
+    ; SDK Motion_Keyframed is2. Only this immutable new poster is affected;
+    ; this request is not native physics/support acceptance or a quest receipt.
+    If !initialized || !itemRef || itemRef != Document(4) || Documents[4].GetReference() != itemRef || itemRef.IsDisabled() || !itemRef.Is3DLoaded() || itemRef.GetContainer()
+        Return
+    EndIf
+    itemRef.SetMotionType(2)
+EndFunction
+
+ObjectReference Function LowerReference()
+    Return originalLower
+EndFunction

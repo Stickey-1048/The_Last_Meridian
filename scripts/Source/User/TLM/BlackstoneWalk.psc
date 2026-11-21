@@ -4,6 +4,8 @@ No outcome on refusal, no artificial actor rescue, no automatic road completion.
 Quest Property TLM_MQ05 Auto Const Mandatory
 ReferenceAlias[] Property Controls Auto Const Mandatory
 ReferenceAlias[] Property Destinations Auto Const Mandatory
+ObjectReference[] Property ControlIdentity Auto Const
+ObjectReference[] Property DestinationIdentity Auto Const
 Message[] Property Speech Auto Const Mandatory
 Int[] Property NodeStart Auto Const Mandatory
 Int[] Property NodeSize Auto Const Mandatory
@@ -28,16 +30,16 @@ Bool Function SetUp()
         Return false
     EndIf
     If !originalControls
-        If !Controls || Controls.Length != 7 || !Destinations || Destinations.Length != 7
+        If !Controls || Controls.Length != 7 || !Destinations || Destinations.Length != 7 || !ControlIdentity || ControlIdentity.Length != 7 || !DestinationIdentity || DestinationIdentity.Length != 7
             Return false
         EndIf
         ObjectReference[] controlsNow = new ObjectReference[7]
         ObjectReference[] destinationsNow = new ObjectReference[7]
         Int index = 0
         While index < 7
-            controlsNow[index] = Controls[index].GetReference()
-            destinationsNow[index] = Destinations[index].GetReference()
-            If !controlsNow[index] || !destinationsNow[index]
+            controlsNow[index] = ControlIdentity[index]
+            destinationsNow[index] = DestinationIdentity[index]
+            If !controlsNow[index] || !destinationsNow[index] || Controls[index].GetReference() != controlsNow[index] || Destinations[index].GetReference() != destinationsNow[index]
                 Return false
             EndIf
             index += 1
@@ -101,6 +103,9 @@ Bool Function MovePlayer(Int route, Int capturedEpoch)
     Return Road().Current(capturedEpoch) && Road().At(playerActor,destination,128.0) && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
 EndFunction
 Bool Function ReadPages(Int kind, Int capturedEpoch)
+    If kind == 4
+        Road().AnchorDiagram(Road().Document(4))
+    EndIf
     If !Road().BeginDocument(kind,capturedEpoch)
         Return false
     EndIf
@@ -118,7 +123,7 @@ Bool Function ReadPages(Int kind, Int capturedEpoch)
             ElseIf kind == 3
                 acknowledgment = 21
             EndIf
-            If acknowledgment >= 0 && Speech[NodeStart[acknowledgment]].Show() != 0
+            If acknowledgment >= 0 && Panel(acknowledgment,capturedEpoch) != 0
                 Return false
             EndIf
         EndIf
@@ -136,7 +141,7 @@ Function ReadDocument(Int kind)
     Int capturedEpoch = busyEpoch
     If ReadPages(kind,capturedEpoch)
         If kind == 0
-            If TravelContext(0,capturedEpoch) && Speech[NodeStart[0]].Show() == 0 && Road().GetStageDone(20)
+            If TravelContext(0,capturedEpoch) && Panel(0,capturedEpoch) == 0 && Road().GetStageDone(20)
                 If MovePlayer(0,capturedEpoch)
                     If Road().AcknowledgeUpper(capturedEpoch)
                         UpperDirections.Show()
@@ -158,7 +163,7 @@ Function ReadDocument(Int kind)
                 EndIf
             EndIf
         ElseIf kind == 4
-            Int answer = Speech[NodeStart[22]].Show()
+            Int answer = Panel(22,capturedEpoch)
             If Road().DocumentAccess(4,capturedEpoch)
                 If answer == 0
                     If ReadPages(5,capturedEpoch)
@@ -223,7 +228,7 @@ Function Mechanical(Int capturedEpoch)
     If MechanicalPrompt.Show() != 0 || !Road().MechanicalContext(capturedEpoch)
         Return
     EndIf
-    ObjectReference doorRef = Road().Alias_ServiceDoor.GetReference()
+    ObjectReference doorRef = Road().DoorReference()
     If capturedEpoch != Road().Epoch()
         Return
     EndIf
@@ -248,10 +253,13 @@ Function UseLowerDoor()
         Return
     EndIf
     Int capturedEpoch = busyEpoch
-    If Road().PassHeld() && Road().Current(capturedEpoch) && Road().At(Game.GetPlayer(),Road().Alias_ServiceDoor.GetReference(),192.0)
-        Road().Alias_ServiceDoor.GetReference().Lock(false)
+    If TravelContext(4,capturedEpoch) && Road().PassDoorContext(capturedEpoch)
+        ObjectReference doorRef = Road().DoorReference()
+        If capturedEpoch == Road().Epoch()
+            doorRef.Lock(false)
+        EndIf
     EndIf
-    If Road().DoorContext(capturedEpoch) && Speech[NodeStart[23]].Show() == 0 && Road().BeginEntry(capturedEpoch)
+    If Road().DoorContext(capturedEpoch) && Panel(23,capturedEpoch) == 0 && Road().BeginEntry(capturedEpoch)
         If MovePlayer(4,capturedEpoch)
             If Road().CompleteAtLower(capturedEpoch)
                 Boundary(capturedEpoch)
@@ -268,7 +276,7 @@ Function Boundary(Int capturedEpoch)
     If !Road().GetStageDone(100) || !Road().Current(capturedEpoch) || !Road().At(Game.GetPlayer(),Road().Alias_LowerArrival.GetReference(),384.0)
         Return
     EndIf
-    Int answer = Speech[NodeStart[24]].Show()
+    Int answer = Panel(24,capturedEpoch)
     If answer == 1 && Road().Current(capturedEpoch)
         MovePlayer(6,capturedEpoch)
     EndIf
@@ -314,4 +322,44 @@ Function ReadSign(ObjectReference signRef)
         UpperDirections.Show()
     EndIf
     Release(capturedEpoch)
+EndFunction
+
+Bool Function PanelCurrent(Int node, Int capturedEpoch)
+    If !Road().Current(capturedEpoch)
+        Return false
+    EndIf
+    If node == 0
+        Return Road().GetStageDone(20) && TravelContext(0,capturedEpoch)
+    ElseIf node == 8
+        Return Road().DocumentAccess(1,capturedEpoch)
+    ElseIf node == 9
+        Return Road().DocumentAccess(2,capturedEpoch)
+    ElseIf node == 21
+        Return Road().DocumentAccess(3,capturedEpoch)
+    ElseIf node == 22
+        Return Road().GetStageDone(60) && Road().DocumentAccess(4,capturedEpoch)
+    ElseIf node == 23
+        Return Road().DoorContext(capturedEpoch)
+    ElseIf node == 24
+        Return Road().GetStageDone(100) && Road().At(Game.GetPlayer(),Road().LowerReference(),384.0) && capturedEpoch == Road().Epoch()
+    EndIf
+    Return false
+EndFunction
+Int Function Panel(Int node, Int capturedEpoch)
+    Int page = 0
+    Int answer = -1
+    While page < NodeSize[node]
+        If !PanelCurrent(node,capturedEpoch)
+            Return -1
+        EndIf
+        answer = Speech[NodeStart[node] + page].Show()
+        If !PanelCurrent(node,capturedEpoch) || (page < NodeSize[node] - 1 && answer != 0)
+            Return -1
+        EndIf
+        page += 1
+    EndWhile
+    If answer < 0 || answer >= Road().ChoiceCount[node]
+        Return -1
+    EndIf
+    Return answer
 EndFunction

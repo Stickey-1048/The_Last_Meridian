@@ -1385,6 +1385,75 @@
     "returns": "bool",
     "source": "Owned Fallout 4 SDK Actor.psc native declaration; actual Papyrus2.8.0.4 compile verified"
    }
+  ],
+  "BlockActivation": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "bool abBlocked = true",
+     "bool abHideActivateText = false"
+    ],
+    "returns": "",
+    "source": "Actual owned SDK Base/ObjectReference.psc line239; source gate, not native runtime proof"
+   }
+  ],
+  "Lock": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "bool abLock = true",
+     "bool abAsOwner = false"
+    ],
+    "returns": "",
+    "source": "Actual owned SDK Base/ObjectReference.psc line646; source gate, not native runtime proof"
+   }
+  ],
+  "IsLocked": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "bool",
+    "source": "Actual owned SDK Base/ObjectReference.psc line615; source gate, not native runtime proof"
+   }
+  ],
+  "GetWorldSpace": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "WorldSpace",
+    "source": "Actual owned SDK Base/ObjectReference.psc line522; source gate, not native runtime proof"
+   }
+  ],
+  "SetMotionType": [
+   {
+    "global": false,
+    "kind": "function",
+    "owner": "ObjectReference",
+    "min_args": 1,
+    "max_args": 2,
+    "params": [
+     "int aeMotionType",
+     "bool abAllowActivate = true"
+    ],
+    "returns": "",
+    "source": "Owned SDK ObjectReference.psc native declaration; Motion_Keyframed property2; source-level only"
+   }
   ]
  }
 }
