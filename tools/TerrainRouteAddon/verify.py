@@ -127,12 +127,18 @@ def verify(raw=None):
     return {'records':len(r),'ownPersistentReferences':3,'headerOverrides':4,'returnControlTrailClearance':clearance,'directMasters':expected_masters,'transitiveStoryMaster':'TheLastMeridian.esp','terrainDestination':'000806:TLMSpectacleTerrainPrototype.esp','returnAnchor':'000804:TLMOptionalTerrainRoute.esp','nativeAcceptance':None}
 
 
+def source_pin(path):
+    raw=path.read_bytes()
+    try:raw=raw.decode('utf-8-sig').replace('\r\n','\n').replace('\r','\n').encode()
+    except UnicodeDecodeError:pass
+    return hashlib.sha256(raw).hexdigest().upper()
+
 def verify_source():
     import subprocess
     manifest=json.loads((ROOT/'source-receipt.json').read_text(encoding='utf-8'))
-    for name,pin in manifest['sourceFilesSha256'].items():
-        assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest().upper()==pin,'Component source changed: '+name
-    source=set(manifest['sourceFilesSha256'])|{'source-receipt.json'}
+    for name,pin in manifest['sourceFilesTextSha256'].items():
+        assert source_pin(ROOT/name)==pin,'Component source changed: '+name
+    source=set(manifest['sourceFilesTextSha256'])|{'source-receipt.json'}
     files={p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.is_file() and not any(n in ('build','bin','obj','__pycache__') for n in p.relative_to(ROOT).parts)}
     assert source==files,'Undeclared component source'
     tree=ROOT.parents[1]
