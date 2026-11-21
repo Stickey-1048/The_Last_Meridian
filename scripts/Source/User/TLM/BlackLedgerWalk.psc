@@ -240,6 +240,16 @@ Bool Function Transfer(Int kind, Int capturedEpoch)
     If holder || itemRef != Road().TransferReference(kind) || receiver != Road().TransferReceiver(kind) || !Road().Current(capturedEpoch)
         Return false
     EndIf
+    If !Road().EffectParticipants(kind,capturedEpoch)
+        Return false
+    EndIf
+    ; Physical source/recipient receipt follows the yielding participant reads.
+    ObjectReference finalReceiver = Road().TransferReceiver(kind)
+    ObjectReference finalReference = Road().TransferReference(kind)
+    ObjectReference finalHolder = itemRef.GetContainer()
+    If finalHolder || finalReceiver != receiver || finalReference != itemRef || capturedEpoch != Road().Epoch()
+        Return false
+    EndIf
     receiver.AddItem(itemRef,1,true)
     Return Road().AckTransfer(kind,capturedEpoch)
 EndFunction
@@ -291,6 +301,11 @@ Bool Function StageOriginals(Int capturedEpoch)
         If visitors[index] != who
             Return false
         EndIf
+        ; Saved-state/native context reads can invalidate an initially eligible
+        ; actor. Observe its current original identity/readiness before moving.
+        If !Road().Current(capturedEpoch) || first.BlackLedgerActor(index) != who || who.IsInScene() || who.IsInDialogueWithPlayer() || who.IsTalking() || who.IsDisabled() || who.IsInCombat() || who.IsDead() || capturedEpoch != Road().Epoch()
+            Return false
+        EndIf
         visitPending[index] = true
         who.MoveTo(anchor)
         If !Road().At(who,anchor,96.0) || !Road().Current(capturedEpoch) || first.BlackLedgerActor(index) != who
@@ -312,7 +327,7 @@ Function ReturnOriginals(Int capturedEpoch)
                 visitPending[index] = false
                 staged[index] = false
                 saved[index] = false
-            ElseIf who && who == Road().OriginalActor(index) && home && !who.IsInScene() && !who.IsInDialogueWithPlayer() && !who.IsInCombat() && Road().Current(capturedEpoch)
+            ElseIf who && home && Road().Current(capturedEpoch) && who == Road().OriginalActor(index) && !who.IsInScene() && !who.IsInDialogueWithPlayer() && !who.IsTalking() && !who.IsDisabled() && !who.IsInCombat() && !who.IsDead() && capturedEpoch == Road().Epoch()
                 who.MoveTo(home)
                 If Road().At(who,home,96.0) && Road().Current(capturedEpoch) && who == Road().OriginalActor(index)
                     If wasDisabled[index]
@@ -386,6 +401,9 @@ Function PreparePorch(Int capturedEpoch)
         Else
             anchor.MoveTo(porchRef)
         EndIf
+        If !Road().Current(capturedEpoch) || who != Road().OriginalActor(visitorIndex) || who.IsInScene() || who.IsInDialogueWithPlayer() || who.IsTalking() || who.IsDisabled() || who.IsInCombat() || who.IsDead() || capturedEpoch != Road().Epoch()
+            Return
+        EndIf
         who.MoveTo(anchor)
         If !Road().At(who,anchor,96.0) || !Road().Current(capturedEpoch)
             Return
@@ -405,6 +423,9 @@ Function PreparePorch(Int capturedEpoch)
             anchor.MoveTo(porchRef,-220.0,220.0,16.0)
         EndIf
         witnessActor.Enable()
+        If !Road().Current(capturedEpoch) || Road().Witnesses[index].GetActorReference() != witnessActor || witnessActor.IsInScene() || witnessActor.IsInDialogueWithPlayer() || witnessActor.IsTalking() || witnessActor.IsDisabled() || witnessActor.IsInCombat() || witnessActor.IsDead() || capturedEpoch != Road().Epoch()
+            Return
+        EndIf
         witnessActor.MoveTo(anchor)
         If !Road().At(witnessActor,anchor,96.0) || !Road().Current(capturedEpoch)
             Return

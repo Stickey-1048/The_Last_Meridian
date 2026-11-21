@@ -299,14 +299,19 @@ Bool Function RecordLawfulAccess(Int capturedEpoch)
 EndFunction
 
 Bool Function BookAccess(ObjectReference bookRef, Int capturedEpoch)
-    If !GetStageDone(21) || !bookRef || bookRef != originalBook || bookRef != Alias_BlackBook.GetReference() || !Current(capturedEpoch)
+    If !GetStageDone(21) || !bookRef || bookRef != originalBook || !Current(capturedEpoch)
         Return false
     EndIf
-    ObjectReference holder = bookRef.GetContainer()
-    If holder
-        Return holder == playerIdentity && Current(capturedEpoch)
+    If bookRef != Alias_BlackBook.GetReference() || !Current(capturedEpoch)
+        Return false
     EndIf
-    Return !bookRef.IsDisabled() && At(Game.GetPlayer(),bookRef,256.0) && Current(capturedEpoch)
+    ; Finish yielding actor context before observing the actual physical book.
+    ; Ground observations precede identity snapshots and final container receipt.
+    Bool onGround = !bookRef.IsDisabled() && At(playerIdentity,bookRef,256.0)
+    ObjectReference aliasIdentity = Alias_BlackBook.GetReference()
+    Actor currentPlayer = Game.GetPlayer()
+    ObjectReference holder = bookRef.GetContainer()
+    Return (holder == playerIdentity || (!holder && onGround)) && aliasIdentity == originalBook && bookRef == originalBook && currentPlayer == playerIdentity && capturedEpoch == generation
 EndFunction
 
 Bool Function BeginRead(ObjectReference bookRef, Int capturedEpoch)
@@ -320,6 +325,9 @@ EndFunction
 
 Bool Function AckReadPage(ObjectReference bookRef, Int pageNumber, Int capturedEpoch)
     If readingEpoch != capturedEpoch || pageNumber != readPage || !BookAccess(bookRef,capturedEpoch)
+        Return false
+    EndIf
+    If readingEpoch != capturedEpoch || capturedEpoch != generation || pageNumber != readPage
         Return false
     EndIf
     readPage += 1
@@ -367,7 +375,11 @@ Bool Function PorchContext(Int capturedEpoch)
         EndIf
         index += 1
     EndWhile
-    Return Current(capturedEpoch) && BookHeld()
+    If !Current(capturedEpoch)
+        Return false
+    EndIf
+    Bool stillHeld = BookHeld()
+    Return stillHeld && capturedEpoch == generation
 EndFunction
 
 Bool Function BeginPorch(Int capturedEpoch)
@@ -393,12 +405,18 @@ Bool Function AckPublicPage(Int pageNumber, Int capturedEpoch)
     If publicEpoch != capturedEpoch || publicPage != pageNumber || !PorchContext(capturedEpoch)
         Return false
     EndIf
+    If publicEpoch != capturedEpoch || capturedEpoch != generation || pageNumber != publicPage
+        Return false
+    EndIf
     publicPage += 1
     Return true
 EndFunction
 
 Bool Function CommitPublicRead(Int capturedEpoch)
     If publicEpoch != capturedEpoch || publicPage != BookPageCount || !PorchContext(capturedEpoch)
+        Return false
+    EndIf
+    If publicEpoch != capturedEpoch || capturedEpoch != generation || publicPage != BookPageCount
         Return false
     EndIf
     resolution = 61
@@ -474,4 +492,22 @@ Bool Function CompleteChapter(Int capturedEpoch)
     EndIf
     SetStage(110)
     Return true
+EndFunction
+
+Bool Function EffectParticipants(Int kind, Int capturedEpoch)
+    ; Called after the controller's yielding player context, before AddItem.
+    ; No recursive Current at the tail: party readiness follows that context.
+    Actor sheriffActor = OriginalActor(0)
+    If !sheriffActor || sheriffActor.IsInScene() || sheriffActor.IsInDialogueWithPlayer() || sheriffActor.IsTalking() || !sheriffActor.Is3DLoaded() || !At(playerIdentity,sheriffActor) || sheriffActor.IsDisabled() || sheriffActor.IsInCombat() || sheriffActor.IsDead()
+        Return false
+    EndIf
+    If kind == 2 || kind == 3
+        Actor beckettActor = Alias_Beckett.GetActorReference()
+        If beckettActor != originalBeckett || !beckettActor || beckettActor.IsInScene() || beckettActor.IsInDialogueWithPlayer() || beckettActor.IsTalking() || !beckettActor.Is3DLoaded() || !At(playerIdentity,beckettActor) || beckettActor.IsDisabled() || beckettActor.IsInCombat() || beckettActor.IsDead()
+            Return false
+        EndIf
+    ElseIf kind != 1
+        Return false
+    EndIf
+    Return capturedEpoch == generation
 EndFunction
