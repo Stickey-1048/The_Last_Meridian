@@ -1,3 +1,15 @@
+# NPC presentation005: neutral lighting successor
+
+Bounded successor of8041eb9 after actual004 native screenshot showed unreadably dark silhouettes/high-contrast room. That image is lighting evidence, not proof of texture corruption. No face, outfit, actor, room geometry, door or material target changes.
+
+Own audition CELL copies the COMPLETE native QASmoke01F7A9 Lighting block (including directional ambient colours/inheritance mask), LTMP0300E2 and ImageSpace0016C4. Three actual non-shadow white fill lights face the actors at x-384/0/384,y256,z160. New own LIGH copies native DefaultLightWhite01NS0517B0 with only radius512 and EditorID changed; its three refs append after every old record. No mood/texture modification.
+
+Actual ignored build/lit-001/TLMNpcPresentation.esp SHA5DED15950DC3226A4CB81D98CAD26631CD897565A0D4E7EAEB91BC67FB51C906. Cached build0warnings/errors; full new raw readback PASS. Two focused delta methods PASS4.591s, including damaged ambient/radius/fill refusal. All old records except TES4 bookkeeping and the intended CELL lighting tags remain byte/parent exact. 1LIGH+3REFR append;43records total. Old actor/face/material gates carry by exact equality, not a repeated healthy suite. Actual illumination/face render remains native to observe.
+
+Separate capture005 uses keyboard0/new identities while retaining normal FOV/window settings and the reviewed diagnostic-only startup. Root owns the authorized walkthrough/capture; no stage/game/profile/save action occurred here. Previous004 source/package/preparation remains untouched.
+
+Historical004 design and proof context follows; its own39record/275F artifact identities describe that parent only.
+
 # NPC presentation 004: resolved stock appearance studies
 
 Corrected opt-in successor of historical c9ca2225a76ee1993d3b36b420e4fbf5fe6e6b89, whose two grey-haired b-template donors remain on material-lookup HOLD. Foundation is exact f491eeb4e670d306530446b60f82785950dbb747. No old source/package/preparation is rebound. Nothing is installed or launched; original quest actors stay untouched.

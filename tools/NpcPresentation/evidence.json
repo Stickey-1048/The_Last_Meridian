@@ -1,8 +1,8 @@
 {
-  "task": "NPC-PRESENTATION-004",
+  "task": "NPC-PRESENTATION-005",
   "baselineSource": "f491eeb4e670d306530446b60f82785950dbb747",
-  "artifact": "build/resolved-001/TLMNpcPresentation.esp",
-  "artifactSha256": "275F154AFC7DF46197D432675B45D8568A96282850F5926A0B7684A26972EC36",
+  "artifact": "build/lit-001/TLMNpcPresentation.esp",
+  "artifactSha256": "5DED15950DC3226A4CB81D98CAD26631CD897565A0D4E7EAEB91BC67FB51C906",
   "build": {
     "cachedOfflineOnly": true,
     "warnings": 0,
@@ -66,5 +66,19 @@
     "missing": 0,
     "allThreeFaceDiffuseNormalSpecTriplesPresent": true,
     "actualNifAndDdsChunkChecksBeforeWrite": "PASS"
+  },
+  "parentSource": "8041eb9ef5ec44c4a1233284985e2a3f32e081f1",
+  "lightingDelta": {
+    "completeNativeLightingCell": "01F7A9:Fallout4.esm",
+    "template": "0300E2:Fallout4.esm",
+    "imageSpace": "0016C4:Fallout4.esm",
+    "fillSource": "0517B0:Fallout4.esm",
+    "fillRadius": 512,
+    "fillRefs": 3,
+    "unchangedActorsFacesOutfitsGeometry": "raw bytes/parents exact",
+    "tests": 2,
+    "seconds": 4.591,
+    "status": "PASS",
+    "logSha256": "FA7400D302C862AAA0ED6FF1BD0D6A299DAFA072A1541C757502139750B61B91"
   }
 }

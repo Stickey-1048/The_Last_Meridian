@@ -1,6 +1,6 @@
 {
   "scope": "Opt-in stock appearance studies; no original actor edits, no custom morph or native FaceGen/render acceptance",
-  "pluginSha256": "275F154AFC7DF46197D432675B45D8568A96282850F5926A0B7684A26972EC36",
+  "pluginSha256": "5DED15950DC3226A4CB81D98CAD26631CD897565A0D4E7EAEB91BC67FB51C906",
   "sourceStory": "5C22EE73009BF1F6B75CFBD5C5E52A749B2086ABA847521B5B294E3ED66E81FF",
   "sourceWorld": "ACE5F0A233A1E8124555B15812FFC445FF1AB23DAAA4D672FCDEC231C1D93FAF",
   "cell": "000800:TLMNpcPresentation.esp",
@@ -567,6 +567,19 @@
       ]
     }
   ],
+  "lighting": {
+    "donor": "01F7A9:Fallout4.esm",
+    "template": "0300E2:Fallout4.esm",
+    "imageSpace": "0016C4:Fallout4.esm",
+    "fill": "000824:TLMNpcPresentation.esp",
+    "nativeFill": "0517B0:Fallout4.esm",
+    "radius": 512,
+    "refs": [
+      "000825:TLMNpcPresentation.esp",
+      "000826:TLMNpcPresentation.esp",
+      "000827:TLMNpcPresentation.esp"
+    ]
+  },
   "entry": {
     "key": "000822:TLMNpcPresentation.esp",
     "at": [

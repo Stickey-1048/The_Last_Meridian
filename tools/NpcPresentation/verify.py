@@ -2,7 +2,7 @@
 from pathlib import Path
 import struct,zlib,json,collections,hashlib,subprocess
 ROOT=Path(__file__).resolve().parent
-OUT=ROOT/'build/resolved-001/TLMNpcPresentation.esp'
+OUT=ROOT/'build/lit-001/TLMNpcPresentation.esp'
 BASE=ROOT.parents[3]/'work/rh-return-account-build-f491eeb/build/licensed-return-account-skeleton-001/bundle'
 MASTER=Path('C:/Program Files (x86)/GOG Galaxy/Games/Fallout 4 GOTY/Data/Fallout4.esm')
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest().upper()
@@ -45,12 +45,21 @@ def inputs():
  return plan,assets,native(ids),rows((BASE/'TheLastMeridian.esp').read_bytes()),rows((BASE/'TLMWorldSlice.esp').read_bytes())
 
 def verify(raw,plan,assets,stock,story,world):
- r=rows(raw);counts=collections.Counter(k[0].decode()for k in r);assert counts=={'TES4':1,'WRLD':1,'CELL':2,'REFR':24,'NPC_':3,'ACHR':3,'OTFT':3,'DOOR':2},'Wrong record topology'
+ r=rows(raw);counts=collections.Counter(k[0].decode()for k in r);assert counts=={'TES4':1,'WRLD':1,'CELL':2,'REFR':27,'NPC_':3,'ACHR':3,'OTFT':3,'DOOR':2,'LIGH':1},'Wrong record topology'
  head=dict(subs(r[b'TES4',0][1]));assert [b.rstrip(b'\0').decode()for k,b in subs(r[b'TES4',0][1])if k==b'MAST']==['Fallout4.esm','TLMWorldSlice.esp']
  assert abs(struct.unpack('<f',head[b'HEDR'][:4])[0]-.95)<.00001
  assert {k for k in r if k[1]>>24!=2}=={(b'TES4',0),(b'WRLD',0x01000800),(b'CELL',0x01000801)},'Unexpected old override'
  for tag,key in [(b'WRLD',0x800),(b'CELL',0x801)]:assert r[tag,0x01000000+key][:2]==world[tag,0x02000000+key][:2],'Old header changed'
  cellId=int(plan['cell'].split(':')[0],16)|0x02000000;cell=dict(subs(r[b'CELL',cellId][1]));assert struct.unpack('<H',cell[b'DATA'])[0]&1
+ qa=native({0x1f7a9})[b'CELL',0x1f7a9]
+ for tag in [b'XCLL',b'LTMP',b'XCIM']:assert cell[tag]==qa[tag],'Incomplete native lighting/template/image-space copy'
+ fill=int(plan['lighting']['fill'].split(':')[0],16)|0x02000000;assert (b'LIGH',fill)in r
+ light=dict(subs(r[b'LIGH',fill][1]));stockLight=native({0x517b0})[b'LIGH',0x517b0]
+ for tag,value in stockLight.items():
+  if tag not in [b'EDID',b'DATA']:assert light[tag]==value
+ data=bytearray(stockLight[b'DATA']);struct.pack_into('<I',data,4,512);assert light[b'DATA']==bytes(data),'Light differs beyond radius'
+ for key,x in zip(plan['lighting']['refs'],[-384,0,384]):
+  rid=int(key.split(':')[0],16)|0x02000000;flags,body,parents=r[b'REFR',rid];s=dict(subs(body));assert flags==0 and struct.unpack('<I',s[b'NAME'])[0]==fill and struct.unpack('<6f',s[b'DATA'])==(x,256,160,0,0,0),'Wrong actual face fill'
  assert cell[b'EDID'].rstrip(b'\0')==b'TLM_NPC_Audition' and b'XCLL'in cell
  entries={e['path'].lower():e for e in assets['entries']};assert len(entries)==11
  proof=assets['textureProof'];te={e['path']:e for e in proof['entries']};needed={p for paths in proof['references'].values()for p in paths};assert not proof['missing'] and len(te)==86 and set(te)==needed,'Texture inventory incomplete'
