@@ -1,0 +1,29 @@
+# Roark character depth 003
+
+Five approved optional dialogue nodes now execute through the original Roark activation in a separate f491 successor. Source basis is exact f491eeb4e670d306530446b60f82785950dbb747; reviewed Iris packet ed6d8a20c8b0cf47d450d7d6026662429a493d61068d157bbd93619018e6a711, independently editorial-cleared by Sam03CE622F. approved-nodes.json preserves exactly the five linked nodes. No new canon, NPC, prop, voice claim, report/reward/item/hostility change or authoritative quest ledger was added.
+
+## Actual player route
+
+After a genuinely settled all-eleven rescue, activate Roark. The existing factual 'They're here. All eleven.' page retains Continue and adds the technical optional Talk with Roark button. That opens roark_quiet_all; its authored choices lead to roark_tired or roark_thanks, or leave her alone. Separately, after the existing actual personal-terms delivery and acknowledgment, Ask about the town's terms opens roark_town_terms and its linked roark_terms_answer. All five exact speech/choice strings match the approved packet, speech≤240characters/buttons≤48. No automatic monologue follows Continue, and no new notifications are added.
+
+Quiet branch is conservatively limited to settled outcomes51/57, no pending operation, Mouth/inner firing flag or conflicting mark. The extra factual-page button is hidden by existing firing globals when inapplicable; old factual speech/Continue remains available. Terms require actual51/PactMade/TermsDelivered on every page. Existing RoarkTalk's genuine DeliverTerms behavior is retained; the new branch does not manufacture or revoke delivery. It promises neither town ratification nor a built vote/service.
+
+Every entry/page/postpage uses accepted AftermathContext, then current receipts and original eleven-slot row/mark refresh. Same living, enabled, loaded, local original Roark/player and exact11original live surface slots remain required. Missing, disabled, displaced, replaced or dead miners suppress this all-eleven branch; ordinary current-count aftermath remains. No rescue is inferred from story flags alone. Cancel/unsupported choices/load/context changes close without a new receipt; voluntary reentry has no reward loop. Finite checks do not claim atomic engine observations.
+
+## Source and actual checks
+
+Only four old paths change: one existing cancellation mutant is matched to the split current cancellation predicate without changing its forbidden-speech assertion; the production paths are RedHollowWalk.psc, SpecRedHollow.cs and append-only formkeys.txt. Five new message IDs3664–3668 preserve every old key. New source files live only under tools/RoarkDepth. verify.py anchors the complete450-entry f491 Git tree, exact changed/new membership, exact source pins, old allocation prefix and34source selection. No old manifest/verifier/workflow/provenance guard was repinned or routed away. Full historical/current cloud aggregate is NOT claimed for this standalone successor.
+
+Fifteen new current source/artifact/PSC methods pass8.522s; the existing17aftermath methods are separately checked. They exercise ordinary activation and all five links, preserved Continue, cancel/invalid answers, each of the eleven miner slots independently, actual and later-lost terms delivery, speaker/state/load/pending interruption, no new stage/report/inventory effects, explicit repeat, fired late-context cohort loss and a new guard-removal mutant exposing a false all-eleven page. Speech/choice JSON projection also matches the approved packet. These are synthetic engine assumptions, not native playtest facts.
+
+Actual one-script Papyrus2.8.0.4 compile002 succeeds1/0 with current source-first imports. compile001 was a project-path failure and is preserved; it is not accepted proof. The other33runtime bytes are carried exactly from independently accepted f491; normal Core is unchanged. Do not call all34newly compiled. Actual skeleton/synthetic and owned-master builder readbacks/selfchecks pass; unchanged builders retain their known nullable warnings only.
+
+The actual natural exterior rebuild uses the SAME accepted --natural --private-shelter-detail flags. First exploratory world001 omitted the shelter variant and002 used the fence-comparison variant; their outputs/preservation diagnostics remain historical, not accepted candidate. Final world003 has exactly371records, no removed/added IDs and only TLM_WS_RH controller VMAD changed. The master has exactly5newMESG, oldbody changes limited to two optional button lists, TLM_RH's five property bindings and TES4 bookkeeping; all other raw payloads/flags/group parents remain exact. No terrain/LAND/actor changes are included.
+
+package.py creates a new workspace-only36payload candidate: two freshly rebuilt plugins,33exact f491runtime copies and one fresh RedHollowWalk PEX. It uses whole-ancestor/reparse/new-output checks and exclusive per-file copies/readback; it never writes an installed mod/profile/save. Artifacts stay ignored; only small hashes/receipts are tracked. No original licensed data is uploaded.
+
+## Open gates
+
+Independent full source/compiler/actual artifact review; any required final portable/cloud composition; root's separate private integration and native player comprehension/reentry/cancel/restoration tests. New recordings are NOT attached to these five pages yet. Existing a37voice pilot/package003,39payload terrain candidate, all old packages/launchers/profiles and saves remain frozen. This source has not been installed, launched, merged or published.
+
+One existing cancellation mutation originally searched the old combined answer/context line and failed its two-occurrence structural assertion; the failed log is preserved. Its replacement targets the two current ElseIf answer!=0 guards and still requires cancellation to wrongly reach RhaOpen in the mutant. This is an actual current behavior adaptation, not a skipped or weakened cancellation check.

@@ -257,6 +257,11 @@ Message Property RhaTerms Auto Const Mandatory
 Message Property RhaBreak Auto Const Mandatory
 Message Property RhaOpen Auto Const Mandatory
 Message Property RhaReport Auto Const Mandatory
+Message Property RdcQuiet Auto Const Mandatory
+Message Property RdcTired Auto Const Mandatory
+Message Property RdcThanks Auto Const Mandatory
+Message Property RdcTerms Auto Const Mandatory
+Message Property RdcTermsAnswer Auto Const Mandatory
 ObjectReference Property RhaOriginalRoark Auto Const
 ObjectReference Property RhaOriginalBlevins Auto Const
 int aftermathEpoch = 0
@@ -2233,7 +2238,13 @@ bool Function Aftermath(Actor speakerActor, bool isRoark)
 		Return false
 	EndIf
 	int answer = leadMessage.Show()
-	If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+	If !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+		Return true
+	EndIf
+	If answer == 1 && isRoark && row == 11
+		RoarkDepth(speakerActor,false,playerActor,generation,before)
+		Return true
+	ElseIf answer != 0
 		Return true
 	EndIf
 	Message decisionMessage = None
@@ -2248,11 +2259,65 @@ bool Function Aftermath(Actor speakerActor, bool isRoark)
 	EndIf
 	If decisionMessage && AftermathContext(speakerActor,isRoark,playerActor,generation) && AftermathRow() == row && AftermathMark() == before
 		answer = decisionMessage.Show()
-		If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+		If !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+			Return true
+		EndIf
+		If answer == 1 && decisionMessage == RhaTerms
+			RoarkDepth(speakerActor,true,playerActor,generation,before)
+			Return true
+		ElseIf answer != 0
 			Return true
 		EndIf
 	EndIf
 	Return true
+EndFunction
+
+; Five optional character pages; all authority stays in MQ02C and its live cohort.
+bool Function RoarkDepthContext(Actor speakerActor, bool terms, Actor playerActor, int generation, string before)
+	If !AftermathContext(speakerActor,true,playerActor,generation)
+		Return false
+	EndIf
+	If Road().MineOutcome() != 51 && Road().MineOutcome() != 57
+		Return false
+	EndIf
+	If Road().MinePending() != 0 || Road().TLM_G_MQ02C_BreakBlown.GetValueInt() != 0 || Road().TLM_G_MQ02C_MouthShut.GetValueInt() != 0
+		Return false
+	EndIf
+	If terms && (Road().MineOutcome() != 51 || !Road().PactMade() || !Road().TermsDelivered())
+		Return false
+	EndIf
+	; Cohort and mark follow all yielding context/receipt reads, as in accepted aftermath.
+	Return AftermathRow() == 11 && AftermathMark() == before
+EndFunction
+
+Function RoarkDepth(Actor speakerActor, bool terms, Actor playerActor, int generation, string before)
+	If !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
+	Message firstPage = RdcQuiet
+	If terms
+		firstPage = RdcTerms
+	EndIf
+	int answer = firstPage.Show()
+	If !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
+	Message nextPage = None
+	If terms && answer == 1
+		nextPage = RdcTermsAnswer
+	ElseIf !terms && answer == 0
+		nextPage = RdcTired
+	ElseIf !terms && answer == 1
+		nextPage = RdcThanks
+	EndIf
+	If !nextPage || !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
+	answer = nextPage.Show()
+	; Acknowledgment, cancellation and stale state all close with no effect.
+	If answer != 0 || !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
 EndFunction
 
 bool Function ReportReceiptContext(Actor sheriffActor, string before, int generation, Actor playerActor)

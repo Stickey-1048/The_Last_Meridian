@@ -121,9 +121,9 @@ class ReturnAccount(unittest.TestCase):
             copy=Path(folder)/'TLM';shutil.copytree(original,copy)
             path=copy/'RedHollowWalk.psc';text=path.read_text(encoding='utf-8')
             start=text.index('bool Function Aftermath(Actor')
-            tail=text[start:];old='If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation)'
+            tail=text[start:];old='ElseIf answer != 0'
             self.assertEqual(tail.count(old),2)
-            tail=tail.replace(old,'If false || !AftermathContext(speakerActor,isRoark,playerActor,generation)',1)
+            tail=tail.replace(old,'ElseIf false',1)
             path.write_text(text[:start]+tail,encoding='utf-8')
             try:
                 rh.SCRIPTS_NOW=copy;a=self.settle();a.raw[P+'RhaRoarkAll']=-1

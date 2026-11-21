@@ -1,0 +1,111 @@
+{
+  "sourcePacketSha256": "ed6d8a20c8b0cf47d450d7d6026662429a493d61068d157bbd93619018e6a711",
+  "nodes": [
+    {
+      "id": "roark_quiet_all",
+      "speaker": "roark",
+      "source_mapping": "optional follow-up after genuine reviewed rhra_all_here; never before/inside active rescue",
+      "requires": [
+        "same original eleven now alive enabled at verified surface slots",
+        "no mine operation pending",
+        "reviewed non-firing settled rescue outcome",
+        "roark has current firsthand view"
+      ],
+      "text": "I keep counting. Eleven. Turn round, count again. I know how many eleven is. My hands haven't caught up yet.",
+      "choices": [
+        {
+          "label": "You can rest now.",
+          "then": "roark_tired"
+        },
+        {
+          "label": "You don't have to thank me.",
+          "then": "roark_thanks"
+        },
+        {
+          "label": "I'll give you a moment.",
+          "close": true
+        }
+      ],
+      "effect_request": "none",
+      "next_objective": "Existing rescue/account objective stays authoritative. This optional conversation does not complete a report."
+    },
+    {
+      "id": "roark_tired",
+      "speaker": "roark",
+      "source_mapping": "new optional continuation from all-eleven quiet moment",
+      "requires": [
+        "same verified all-eleven living surface receipt",
+        "direct current link"
+      ],
+      "text": "In a minute. Don't turn that into an order as well. You did a good thing. Let me decide when I'm finished being frightened.",
+      "choices": [
+        {
+          "label": "Fair enough.",
+          "close": true
+        }
+      ],
+      "effect_request": "none; no sleep package or inferred household scene",
+      "next_objective": "Return to the actual current objective, not a new task."
+    },
+    {
+      "id": "roark_thanks",
+      "speaker": "roark",
+      "source_mapping": "new optional continuation",
+      "requires": [
+        "same verified all-eleven living surface receipt",
+        "direct current link"
+      ],
+      "text": "Wasn't asking permission. Thank you. That's mine to say. What the town owes you is for the town to settle.",
+      "choices": [
+        {
+          "label": "I'll leave that to you.",
+          "close": true
+        }
+      ],
+      "effect_request": "none; no favor debt, new reward or automatic town consent",
+      "next_objective": "Existing return/report direction."
+    },
+    {
+      "id": "roark_town_terms",
+      "speaker": "roark",
+      "source_mapping": "optional addition after actual rhra_terms_received; not a substitute for delivering terms",
+      "requires": [
+        "actual rescue outcome51",
+        "current all-eleven receipt",
+        "PactMade and TermsDelivered actually acknowledged",
+        "no subsequent conflicting outcome"
+      ],
+      "text": "I'll put the terms in front of them. They may say no. They may ask you questions you can't answer. Bringing our people up earns you a hearing. It doesn't make you the Hollow.",
+      "choices": [
+        {
+          "label": "I promised for myself. The town chooses.",
+          "close": true
+        },
+        {
+          "label": "I thought rescuing them would settle it.",
+          "then": "roark_terms_answer"
+        }
+      ],
+      "effect_request": "none; neither choice ratifies or breaks the town's agreement",
+      "next_objective": "Existing report task. No unimplemented town vote is promised as the next required step."
+    },
+    {
+      "id": "roark_terms_answer",
+      "speaker": "roark",
+      "source_mapping": "new optional continuation",
+      "requires": [
+        "same delivered-terms/current survivor receipt",
+        "direct current link"
+      ],
+      "text": "It settled whether eleven people came out. That matters. Let it matter without buying the rest of us.",
+      "choices": [
+        {
+          "label": "All right.",
+          "close": true
+        }
+      ],
+      "effect_request": "none; no hostility or faction shift",
+      "next_objective": "Existing report task."
+    }
+  ]
+}

@@ -86,7 +86,11 @@ public static class RedHollow
     public static readonly OwnCellSpec[] Cells={new(CellId,"Red Hollow: Nine level and sealed gallery")};
     static IEnumerable<PlacedSpec> Floors()=>new[]{("A",0,7,4),("B",3072,7,6),("C",6144,7,4),("D",9216,6,4)}.SelectMany(f=>Enumerable.Range(0,f.Item3).SelectMany(x=>Enumerable.Range(0,f.Item4).Select(y=>new PlacedSpec($"TLM_REF_RH_Floor_{f.Item1}{x}{y}",CellId,"workshop_ShackMidFloor01B","Static",y*256,f.Item2+x*256,0))));
     public static readonly PlacedSpec[] Placed=Pieces.Select(p=>new PlacedSpec("TLM_REF_RH_"+p.Alias,p.Mercy?Spec.TrialCell:CellId,p.Base,p.Base=="XMarker"?"Static":null,p.Mercy?620+(p.Alias=="MercyReturn"?40:0):p.Y,p.Mercy?100:p.X,p.Z,true,p.Box)).Concat(Floors()).ToArray();
-    static MessageSpec Ui(string id,string text,params string[] buttons)=>new(Prefix+id,null,text,true,(buttons.Length==0?new[]{"Continue"}:buttons).Select(b=>new ButtonSpec(b)).ToArray());
+    static MessageSpec Ui(string id,string text,params string[] buttons){
+        if(id=="RhaRoarkAll")return new(Prefix+id,null,text,true,new ButtonSpec("Continue"),new ButtonSpec("Talk with Roark",new GlobalEquals("TLM_G_MQ02C_BreakBlown",0),new GlobalEquals("TLM_G_MQ02C_MouthShut",0)));
+        if(id=="RhaTerms")return new(Prefix+id,null,text,true,new ButtonSpec("Continue"),new ButtonSpec("Ask about the town's terms"));
+        return new(Prefix+id,null,text,true,(buttons.Length==0?new[]{"Continue"}:buttons).Select(b=>new ButtonSpec(b)).ToArray());
+    }
     public static readonly Dictionary<string,(string Text,string[] Buttons)> UiText=new(){
         ["RhaRoarkOrdered"]=("[Roark]\n\nYou told Captain Blevins to seal it with miners below.",new[]{"Continue"}),
         ["RhaRoarkDeadline"]=("[Roark]\n\nCaptain Blevins sealed it with miners below.",new[]{"Continue"}),
@@ -161,6 +165,11 @@ public static class RedHollow
         ["LabelCage"]=("[Hoist: outside and below]\n\nUse Hoist: descend, return or rescue to go below. The mine opening clipboard is only a marker. Below: Find and muster the night shift, then Hoist: bring miners up or return alone. Return alone rescues nobody.",new[]{"Continue"}),
         ["LabelNine"]=("[Belowground: Nine level]\n\nFirst use Find and muster the night shift. Then use Hoist: bring miners up or return alone; choose Bring the shift up to attempt rescue. Outside, use Rescue outcome and pending break plan. The gallery is optional; rescue does not itself blast the break.",new[]{"Continue"}),
         ["LabelGallery"]=("[Belowground: sealed gallery]\n\nThe sealed gallery ends here. The marked path returns to the Nine level; the hoist leads back to the outdoor yard.",new[]{"Continue"}),
+        ["RdcQuiet"]=("[Roark]\n\n"+"I keep counting. Eleven. Turn round, count again. I know how many eleven is. My hands haven't caught up yet.",new[]{"You can rest now.","You don't have to thank me.","I'll give you a moment."}),
+        ["RdcTired"]=("[Roark]\n\n"+"In a minute. Don't turn that into an order as well. You did a good thing. Let me decide when I'm finished being frightened.",new[]{"Fair enough."}),
+        ["RdcThanks"]=("[Roark]\n\n"+"Wasn't asking permission. Thank you. That's mine to say. What the town owes you is for the town to settle.",new[]{"I'll leave that to you."}),
+        ["RdcTerms"]=("[Roark]\n\n"+"I'll put the terms in front of them. They may say no. They may ask you questions you can't answer. Bringing our people up earns you a hearing. It doesn't make you the Hollow.",new[]{"I promised for myself. The town chooses.","I thought rescuing them would settle it."}),
+        ["RdcTermsAnswer"]=("[Roark]\n\n"+"It settled whether eleven people came out. That matters. Let it matter without buying the rest of us.",new[]{"All right."}),
     };
     static IEnumerable<MessageSpec> Speech(){foreach(var node in NodeNames){var parts=SpeechPages(node);var who=SpeakerName(Lines[node].GetProperty("speaker").GetString()!);for(int i=0;i<parts.Length;i++)yield return new(Prefix+"S_"+node+"_"+(i+1),who,MercyBriefing.Spoken(who,parts[i]),true,(i==parts.Length-1?Labels(node):new[]{"Continue"}).Select(b=>new ButtonSpec(b)).ToArray());}}
     public static readonly string[] DocumentIds={"toll_board","quill_docket","docket_2298","chalk_message"};
