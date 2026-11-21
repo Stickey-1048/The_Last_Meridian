@@ -1,0 +1,20 @@
+{
+  "status": "WIP source integration, not accepted/native",
+  "sourceLayoutHead": "6c9fce1e03b6281548bdede62aef91d29fd0b2b8",
+  "sourceLayoutReviewSha256": "FFC8FD8BD259336ED3821220DA9273ABA5A4DFB645078CDC0D2ED1F8E7C9B89C",
+  "inputRawPins": {
+    "layout-placements.json": "337EF1C5C34BCD13B57A2ACD11FBB48097D3E8AF904AF88D5A138EF406AFDA49",
+    "layout-models.json": "55228B9F681DB9350AB978E9C86413248D87AD26EE6F6A3AABF5D769A1EB31FA",
+    "layout-light.json": "F45651ED9565BBE336B667BBACC74E64D5998770A478D120FA9E9ECC748061B2",
+    "layout-provenance.json": "5AE29ECC1C4D4F9B7CD429E1B765C37EE218C7FE9653B08AEEDB564911DEB3AD",
+    "layout-repair-evidence.json": "EB241450409D04C55CA3A8BECEFA6BE09761B1D7E0F4DDF47AEC8CC3255B5F38"
+  },
+  "passiveReferences": 96,
+  "servicePassPose": [
+    128,
+    512
+  ],
+  "paperSupport": 56,
+  "old001": "Preserved ignored build/historical-layout-001; not final input",
+  "currentMilestone": "Actual initial owned projection selfcheck18quests632messages143stages; runtime/adverse/fullcompiler/package unfinished"
+}

@@ -1,0 +1,171 @@
+{
+  "task": "BLACKSTONE-SCENE-LAYOUT-002",
+  "parentHead": "41daf074d3e7b0cb2af0deb6fa17d428b120174b",
+  "historicalHoldReport": "work/reviews/sam-blackstone-scene-layout-001-review.md",
+  "holdReportSha256": "3F743C02FD87D73CB860F291B44E9E3F9E423F5EF99AD431860FE0F091CCB57D",
+  "productionConventionEvidence": {
+    "path": "tools/WorldSliceBuilder/Program.cs",
+    "sourceGameHead": "3374f81312b6d69fc9e839eeff6348a925af361e",
+    "line": 125,
+    "formula": "worldX=x+bx*cos(yaw)+by*sin(yaw); worldY=y+by*cos(yaw)-bx*sin(yaw)",
+    "explicitBasis": {
+      "+quarterturnLocalX": "world-Y",
+      "+quarterturnLocalY": "world+X"
+    }
+  },
+  "poseChanges": [
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_0",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_1",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_1",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_2",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_2",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_3",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_3",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_4",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_4",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_5",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_0_0",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_0_1",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_3_1",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_0_2",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_3_2",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_3_3",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceBenchWest",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceBenchEast",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceLocker",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerBenchWest",
+      "oldYaw": 1.5707963267948966,
+      "newYaw": -1.5707963267948966
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerBenchEast",
+      "oldYaw": -1.5707963267948966,
+      "newYaw": 1.5707963267948966
+    }
+  ],
+  "existing94WorldBoundsPreserved": true,
+  "addedSymbols": [
+    "TLM_REF_BS_Decor_ServicePassDesk",
+    "TLM_REF_BS_Decor_JunctionRouteDesk"
+  ],
+  "scope": "96 refs, same52 shell tiles/11emitters/14metadata NIFs, existing NightMail parent referenced not created. No new cells, quests or passive mechanisms.",
+  "junctionContext": {
+    "source": "work\\black-ledger-final-read-fix-001\\tools\\PluginBuilder\\SpecNightMail.cs",
+    "sourceRawSha256": "042B4195F3D21FC157F8C30D8FC31D7B5C21B92F5549627AFE20CD5B6C578E25",
+    "sourceGrid": "floorA tile centers x=0,256,512,768,1024; y=0,256,512; surface0",
+    "nativeFloorRecordMetadata": {
+      "type": "STAT",
+      "edid": "workshop_ShackMidFloor01B",
+      "id": "001C501C",
+      "model": "Architecture\\Shacks\\ShackMidFloor01B.nif",
+      "obnd": [
+        -128,
+        -128,
+        -14,
+        128,
+        128,
+        0
+      ],
+      "scripted": false
+    },
+    "candidateDeskAabb": [
+      505.15625,
+      393.90625,
+      0,
+      615.0,
+      446.53125,
+      56.0
+    ],
+    "supportedSourceTile": [
+      384,
+      384,
+      640,
+      640
+    ],
+    "boundaries": "Source header + actual stock record footprint only; exact emitted current room/floor/Havok/other old obstacles still require final engineering owned raw readback and native gate."
+  },
+  "checks": {
+    "methods": 18,
+    "result": "PASS 0.036s",
+    "mutants": "actual old yaw normals and CCW generator/checker transforms rejected using independent explicit engine basis",
+    "compiler": null,
+    "native": null
+  }
+}

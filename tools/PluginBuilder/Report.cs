@@ -89,6 +89,8 @@ public static class Report
         }).ToList());
 
         var simple = new List<SimpleInfo>();
+        foreach(var d in mod.Doors)simple.Add(new("Door",d.EditorID!,d.FormKey.ToString(),d.Name?.String,NullIfEmpty(d.Model?.File)));
+        foreach(var l in mod.Lights)simple.Add(new("Light",l.EditorID!,l.FormKey.ToString(),l.Name?.String,NullIfEmpty(l.Model?.File)));
         foreach (var g in mod.Globals) simple.Add(new("Global", g.EditorID!, g.FormKey.ToString(), null));
         foreach (var f in mod.Factions) simple.Add(new("Faction", f.EditorID!, f.FormKey.ToString(), f.Name?.String));
         foreach (var m in mod.MiscItems) simple.Add(new("MiscItem", m.EditorID!, m.FormKey.ToString(), m.Name?.String, NullIfEmpty(m.Model?.File)));
@@ -110,7 +112,7 @@ public static class Report
         }
 
         var cells = new List<CellInfo>();
-        foreach (var (cell,blockNumber,subNumber) in RedHollowEnvironment.ReportCells(mod))
+        foreach (var (cell,blockNumber,subNumber) in BlackstoneEnvironment.ReportCells(mod))
                 {
                     var placed = new List<PlacedInfo>();
                     foreach (var (list, name) in new[] { (cell.Persistent, "Persistent"), (cell.Temporary, "Temporary") })

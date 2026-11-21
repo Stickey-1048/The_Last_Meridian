@@ -1,0 +1,40 @@
+{
+  "task": "BLACKSTONE-SCENE-LAYOUT-002",
+  "gameBaseline": "3374f81312b6d69fc9e839eeff6348a925af361e",
+  "packetSha256": "E25DAE5FC8D387322EDA59A58EB7D6B804C1BD240929FD5112319A6B1E6A8B82",
+  "ownedMaster": {
+    "path": "C:/Program Files (x86)/GOG Galaxy/Games/Fallout 4 GOTY/Data/Fallout4.esm",
+    "sha256": "AE7BE31A59052F926474A767D9DBFBCC7F19AF4AD2070491F7F40D821B2520EB"
+  },
+  "files": {
+    "make_layout.py": "8D238A7035B3644318A49D5B3B45779B95668C6BC81EF0C647AD2AE44B0E1ED1",
+    "probe_selected.py": "B7303693BC2B0DC12CAA2FE718E39ADAA10A5F7920586B11C1D8915FCB0F9A8A",
+    "probe_light.py": "6DA7BFC94EB136A9E77B577C50D098F03101C4D80A4E7E4D9A666F580BA635F9",
+    "owned-donor-metadata.json": "55228B9F681DB9350AB978E9C86413248D87AD26EE6F6A3AABF5D769A1EB31FA",
+    "light-metadata.json": "F45651ED9565BBE336B667BBACC74E64D5998770A478D120FA9E9ECC748061B2",
+    "placements.json": "337EF1C5C34BCD13B57A2ACD11FBB48097D3E8AF904AF88D5A138EF406AFDA49",
+    "verify_layout.py": "5F05E600DBCBCA9D8C7E759514E265F4455D8110284FC20F1335F31CADD2C4CE",
+    "test_layout.py": "036C399AD8A1589694056DD0BE75D910443FB9F8B1FE24F6784742B8833F394B",
+    "repair-evidence.json": "EB241450409D04C55CA3A8BECEFA6BE09761B1D7E0F4DDF47AEC8CC3255B5F38"
+  },
+  "checks": {
+    "actualNifReadInMemory": 14,
+    "meshVerticesOrIndicesExported": false,
+    "placements": 96,
+    "shellTiles": 52,
+    "stockDerivedWhiteEmitters": 11,
+    "targetedMethods": 18,
+    "testResult": "PASS 0.036s",
+    "coverage": "Independent explicit engine basis; actual named-mesh inward normals; rejected shared CCW mutants; all94 existing worldbounds preserved after21yaw corrections;96membership+twodesk supports/routes; no native claim",
+    "native": null,
+    "compilerOrPluginBuild": null
+  },
+  "limitations": [
+    "No decoded Havok collision shapes or native collision proof",
+    "No navmesh/NPC walking proof",
+    "Lighting radius checks are numeric reach only, not exposure/occlusion/native visibility",
+    "Upper LAND support belongs to final engineering builder",
+    "No doors/quests/stages/interactive authority allocated by layout author"
+  ],
+  "historicalParent": "41daf074d3e7b0cb2af0deb6fa17d428b120174b"
+}

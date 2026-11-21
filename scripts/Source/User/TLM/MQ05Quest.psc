@@ -4,6 +4,8 @@ arrival remain separate receipts. No player-origin/faction/companion outcomes.}
 Quest Property TLM_MQ04 Auto Const Mandatory
 ReferenceAlias Property Alias_Player Auto Const Mandatory
 ReferenceAlias Property Alias_Mara Auto Const Mandatory
+ObjectReference Property MaraIdentity Auto Const
+ObjectReference[] Property DocumentIdentity Auto Const
 ReferenceAlias[] Property Documents Auto Const Mandatory
 Int[] Property DocumentPages Auto Const Mandatory
 ReferenceAlias Property Alias_Mechanical Auto Const Mandatory
@@ -13,9 +15,13 @@ ReferenceAlias Property Alias_LowerArrival Auto Const Mandatory
 ReferenceAlias Property Alias_JunctionReturn Auto Const Mandatory
 Int[] Property ChoiceCount Auto Const Mandatory
 Int[] Property NextNode Auto Const Mandatory
+Bool initialized = false
 Actor originalPlayer = None
 Actor originalMara = None
 ObjectReference[] originalDocuments
+ObjectReference originalUpper = None
+ObjectReference originalLower = None
+ObjectReference originalJunction = None
 ObjectReference originalDoor = None
 ObjectReference originalMechanical = None
 Int generation = 0
@@ -70,29 +76,29 @@ Bool Function OpenLead()
     Return true
 EndFunction
 Bool Function Initialize()
-    If originalPlayer
+    If initialized
         Return Game.GetPlayer() == originalPlayer && Alias_Player.GetActorReference() == originalPlayer
     EndIf
-    If !IsRunning() || !Documents || Documents.Length != 6 || !DocumentPages || DocumentPages.Length != 6 || ChoiceCount.Length != 25 || NextNode.Length != 100
+    If !IsRunning() || !Documents || Documents.Length != 6 || !DocumentIdentity || DocumentIdentity.Length != 6 || !DocumentPages || DocumentPages.Length != 6 || ChoiceCount.Length != 25 || NextNode.Length != 100
         Return false
     EndIf
     Actor playerActor = Game.GetPlayer()
-    Actor maraActor = Alias_Mara.GetActorReference()
+    Actor maraActor = MaraIdentity as Actor
     ObjectReference doorRef = Alias_ServiceDoor.GetReference()
     ObjectReference releaseRef = Alias_Mechanical.GetReference()
-    If !playerActor || Alias_Player.GetActorReference() != playerActor || !maraActor || !doorRef || !releaseRef
+    If !playerActor || Alias_Player.GetActorReference() != playerActor || !doorRef || !releaseRef
         Return false
     EndIf
     ObjectReference[] originals = new ObjectReference[6]
     Int index = 0
     While index < 6
-        ObjectReference itemRef = Documents[index].GetReference()
-        If !itemRef || DocumentPages[index] < 1
+        ObjectReference itemRef = DocumentIdentity[index]
+        If DocumentPages[index] < 1
             Return false
         EndIf
         Int prior = 0
         While prior < index
-            If originals[prior] == itemRef
+            If itemRef && originals[prior] == itemRef
                 Return false
             EndIf
             prior += 1
@@ -100,11 +106,28 @@ Bool Function Initialize()
         originals[index] = itemRef
         index += 1
     EndWhile
+    ObjectReference upperRef = Alias_UpperArrival.GetReference()
+    ObjectReference lowerRef = Alias_LowerArrival.GetReference()
+    ObjectReference junctionRef = Alias_JunctionReturn.GetReference()
+    If !upperRef || !lowerRef || !junctionRef
+        Return false
+    EndIf
     originalPlayer = playerActor
     originalMara = maraActor
     originalDocuments = originals
+    originalUpper = upperRef
+    originalLower = lowerRef
+    originalJunction = junctionRef
     originalDoor = doorRef
     originalMechanical = releaseRef
+    initialized = true
+    Int blockIndex = 0
+    While blockIndex < 6
+        If originalDocuments[blockIndex]
+            originalDocuments[blockIndex].BlockActivation(true)
+        EndIf
+        blockIndex += 1
+    EndWhile
     Return true
 EndFunction
 Bool Function Current(Int capturedEpoch)
@@ -112,7 +135,14 @@ Bool Function Current(Int capturedEpoch)
     Return originalPlayer && IsRunning() && SourceKnown() && playerActor && !playerActor.IsInScene() && !playerActor.IsDisabled() && playerActor.Is3DLoaded() && !playerActor.IsInCombat() && !playerActor.IsDead() && Alias_Player.GetActorReference() == playerActor && playerActor == originalPlayer && capturedEpoch == generation
 EndFunction
 Bool Function At(ObjectReference who, ObjectReference target, Float radius = 256.0)
-    Return who && target && who.GetParentCell() == target.GetParentCell() && who.GetDistance(target) <= radius
+    If !who || !target
+        Return false
+    EndIf
+    WorldSpace outside = who.GetWorldSpace()
+    If outside
+        Return outside == target.GetWorldSpace() && who.GetDistance(target) <= radius
+    EndIf
+    Return who.GetParentCell() == target.GetParentCell() && who.GetDistance(target) <= radius
 EndFunction
 ObjectReference Function Document(Int kind)
     If kind < 0 || kind >= 6 || !originalDocuments
@@ -130,6 +160,16 @@ Bool Function DocumentAccess(Int kind, Int capturedEpoch)
     Actor playerActor = Game.GetPlayer()
     ObjectReference holder = itemRef.GetContainer()
     Return (holder == originalPlayer || (!holder && onDesk)) && aliasIdentity == itemRef && playerActor == originalPlayer && capturedEpoch == generation
+EndFunction
+Bool Function DocumentPresent(Int kind, Int capturedEpoch)
+    ObjectReference itemRef = Document(kind)
+    If !itemRef || !Current(capturedEpoch)
+        Return false
+    EndIf
+    Bool inRoom = !itemRef.IsDisabled() && At(originalPlayer,itemRef,1536.0)
+    ObjectReference aliasIdentity = Documents[kind].GetReference()
+    ObjectReference holder = itemRef.GetContainer()
+    Return (holder == originalPlayer || (!holder && inRoom)) && aliasIdentity == itemRef && capturedEpoch == generation
 EndFunction
 Bool Function BeginDocument(Int kind, Int capturedEpoch)
     If !DocumentAccess(kind,capturedEpoch)
@@ -200,9 +240,9 @@ Bool Function NodeAllowed(Int node, Int capturedEpoch)
     ElseIf node == 15 || node == 16 || node == 17
         Return GetStageDone(55) || node == 17
     ElseIf node == 3
-        Return DocumentAccess(1,capturedEpoch) && DocumentAccess(2,capturedEpoch)
+        Return DocumentPresent(1,capturedEpoch) && DocumentPresent(2,capturedEpoch) && SpeakerCurrent(capturedEpoch)
     ElseIf node == 4
-        Return DocumentAccess(2,capturedEpoch)
+        Return DocumentPresent(2,capturedEpoch) && SpeakerCurrent(capturedEpoch)
     EndIf
     Return capturedEpoch == generation
 EndFunction
@@ -326,7 +366,7 @@ Bool Function BeginEntry(Int capturedEpoch)
     Return true
 EndFunction
 Bool Function AcknowledgeUpper(Int capturedEpoch)
-    If !GetStageDone(20) || !Current(capturedEpoch) || !At(originalPlayer,Alias_UpperArrival.GetReference(),128.0) || capturedEpoch != generation
+    If !GetStageDone(20) || !Current(capturedEpoch) || Alias_UpperArrival.GetReference() != originalUpper || !At(originalPlayer,originalUpper,128.0) || capturedEpoch != generation
         Return false
     EndIf
     If !GetStageDone(30)
@@ -336,7 +376,7 @@ Bool Function AcknowledgeUpper(Int capturedEpoch)
     Return true
 EndFunction
 Bool Function CompleteAtLower(Int capturedEpoch)
-    If entryEpoch != capturedEpoch || !GetStageDone(40) || !GetStageDone(45) || !GetStageDone(70) || !Current(capturedEpoch) || !At(originalPlayer,Alias_LowerArrival.GetReference(),128.0)
+    If entryEpoch != capturedEpoch || !GetStageDone(40) || !GetStageDone(45) || !GetStageDone(70) || !Current(capturedEpoch) || Alias_LowerArrival.GetReference() != originalLower || !At(originalPlayer,originalLower,128.0)
         Return false
     EndIf
     If entryEpoch != capturedEpoch || capturedEpoch != generation || originalPlayer != Game.GetPlayer()

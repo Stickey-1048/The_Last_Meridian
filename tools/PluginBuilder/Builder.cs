@@ -241,9 +241,11 @@ public sealed partial class Builder
         }
 
         // Before the quests are filled in: their aliases point at these.
+        BuildBlackstoneBases();
         PlaceReferences();
 
         BuildRedHollowEnvironment();
+        CompleteBlackstoneEnvironment();
 
         foreach (var q in Spec.Quests) Fill(quests[q.EditorId], q);
     }
@@ -946,6 +948,11 @@ public sealed partial class Builder
                 cell = MakeOwnCell(own, ownKey);
                 arrival = new Arrival(new P3Float(0, 0, 0), 0f, true);
                 Arrivals.Add(new(group.Key, ownKey.ToString(), new[] { 0f, 0f, 0f }, 0f, true));
+            }
+            else if (group.Key == Blackstone.Persistent)
+            {
+                cell = _mod.Worldspaces.Single(w=>w.EditorID==Blackstone.World).TopCell!;
+                arrival = new Arrival(new P3Float(0,0,0),0,true);
             }
             else
             {

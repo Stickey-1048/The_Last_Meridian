@@ -1,0 +1,3735 @@
+{
+  "task": "BLACKSTONE-SCENE-LAYOUT-002",
+  "schema": 2,
+  "rotationConvention": "engine clockwise: +pi/2 maps local +X to world -Y and +Y to +X",
+  "inputGameHead": "3374f81312b6d69fc9e839eeff6348a925af361e",
+  "scope": "Passive owned-stock placement data for Luis single master builder; no stage effects or independent mod",
+  "allocation": "symbolic names only; engineering allocates append-only IDs",
+  "cells": {
+    "TLM_CELL_BS_Service": {
+      "footprint": [
+        -768,
+        -512,
+        768,
+        1024
+      ],
+      "floorZ": 0,
+      "tileGrid": [
+        6,
+        6
+      ],
+      "tileStep": 256,
+      "ceilingBand": [
+        208,
+        244
+      ]
+    },
+    "TLM_CELL_BS_Lower": {
+      "footprint": [
+        -512,
+        -512,
+        512,
+        512
+      ],
+      "floorZ": 0,
+      "tileGrid": [
+        4,
+        4
+      ],
+      "tileStep": 256,
+      "ceilingBand": [
+        208,
+        244
+      ]
+    },
+    "TLM_CELL_NightMail": {
+      "scope": "Existing original cell; no cell or enclosure created by this data. Engineering final owned readback must verify original floor/support/other runtime obstacles.",
+      "sourceFloorA": "SpecNightMail.cs FloorTile workshop_ShackMidFloor01B, columns5 rows3 step256, surfaceZ0; desk lies inside tilecenter512,512",
+      "candidateSupportRect": [
+        384,
+        384,
+        640,
+        640
+      ],
+      "candidateFloorZ": 0,
+      "currentArrival": [
+        256,
+        160,
+        16
+      ]
+    },
+    "TLM_CELL_BS_Upper": {
+      "scope": "open-air genuine LAND supplied by engineering; canopy and off-route freight props, no floor/LAND overlap imported"
+    }
+  },
+  "reservedRoutes": [
+    {
+      "cell": "TLM_CELL_BS_Service",
+      "width": 192,
+      "polyline": [
+        [
+          0,
+          -256
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          576,
+          0
+        ],
+        [
+          576,
+          576
+        ],
+        [
+          384,
+          576
+        ],
+        [
+          384,
+          640
+        ],
+        [
+          512,
+          640
+        ],
+        [
+          512,
+          768
+        ]
+      ]
+    },
+    {
+      "cell": "TLM_CELL_BS_Lower",
+      "width": 192,
+      "polyline": [
+        [
+          0,
+          -256
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          256
+        ]
+      ]
+    },
+    {
+      "cell": "TLM_CELL_BS_Upper",
+      "width": 192,
+      "polyline": [
+        [
+          256,
+          768
+        ],
+        [
+          512,
+          768
+        ],
+        [
+          1408,
+          768
+        ]
+      ]
+    }
+  ],
+  "actorEnvelopes": [
+    {
+      "cell": "TLM_CELL_BS_Service",
+      "role": "Mara",
+      "center": [
+        384,
+        384,
+        16
+      ],
+      "width": 128,
+      "height": 192
+    }
+  ],
+  "interactionAnchors": {
+    "ServiceDoor": [
+      512,
+      768,
+      0
+    ],
+    "MechanicalRelease": [
+      384,
+      640,
+      96
+    ],
+    "ServiceArrival": [
+      0,
+      0,
+      16
+    ],
+    "UpperExit": [
+      0,
+      -256,
+      0
+    ],
+    "LowerArrival": [
+      0,
+      0,
+      16
+    ],
+    "LowerReturn": [
+      0,
+      -256,
+      0
+    ],
+    "LowerEndPanel": [
+      0,
+      128,
+      12
+    ]
+  },
+  "deskSupports": [
+    {
+      "control": "FreightRegister",
+      "deskSymbol": "TLM_REF_BS_Decor_RegisterDesk0",
+      "surfaceZ": 56,
+      "controlXY": [
+        -256,
+        256
+      ],
+      "note": "Engineering proposed controlZ72 is activation marker only until actual visible item bottom is aligned to measured tabletop56"
+    },
+    {
+      "control": "RiderIndex",
+      "deskSymbol": "TLM_REF_BS_Decor_RegisterDesk1",
+      "surfaceZ": 56,
+      "controlXY": [
+        -64,
+        256
+      ],
+      "note": "Engineering proposed controlZ72 is activation marker only until actual visible item bottom is aligned to measured tabletop56"
+    },
+    {
+      "control": "MaraNote",
+      "deskSymbol": "TLM_REF_BS_Decor_RegisterDesk2",
+      "surfaceZ": 56,
+      "controlXY": [
+        128,
+        256
+      ],
+      "note": "Engineering proposed controlZ72 is activation marker only until actual visible item bottom is aligned to measured tabletop56"
+    },
+    {
+      "control": "ServicePass",
+      "deskSymbol": "TLM_REF_BS_Decor_ServicePassDesk",
+      "surfaceZ": 56,
+      "controlXY": [
+        128,
+        512
+      ],
+      "note": "new explicit support; read stance128,384; desk maxX183 leaves105units before release corridor minX288"
+    },
+    {
+      "control": "JunctionRouteSheet",
+      "deskSymbol": "TLM_REF_BS_Decor_JunctionRouteDesk",
+      "surfaceZ": 56,
+      "controlXY": [
+        560,
+        420
+      ],
+      "note": "Candidate support fits existing floorAtile; final support and all other old obstacles require engineering actual output readback. No new cell or prior obstacle-free claim."
+    }
+  ],
+  "lighting": {
+    "templateDonor": "0001F7A9:Fallout4.esm",
+    "templateDonorEditorID": "QASmoke",
+    "copy": "Complete actual lighting block including inheritance/directional ambient plus LTMP000300E2 and ImageSpace000016C4; already observed readable in NPC005, not native proof here",
+    "lightBase": "000517B0:Fallout4.esm",
+    "stockRadius": 256,
+    "radius": 512,
+    "colorRGB": [
+      255,
+      255,
+      255
+    ],
+    "policy": "stock no-shadow white fill; no scripted prerequisite or claimed native exposure"
+  },
+  "derivedBases": [
+    {
+      "symbol": "TLM_LIGH_BS_NeutralFill",
+      "recordType": "LIGH",
+      "source": "000517B0:Fallout4.esm",
+      "sourceEditorID": "DefaultLightWhite01NS",
+      "overrides": {
+        "EditorID": "TLM_LIGH_BS_NeutralFill",
+        "Radius": 512
+      },
+      "preserve": "Every other native field unchanged; engineering allocates single append-onlybase"
+    }
+  ],
+  "placements": [
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        -640,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -754.00002,
+        -498.00002,
+        -4e-05,
+        -511.99998,
+        -255.99998,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -754.00002,
+        -498.00002,
+        -4e-05,
+        -511.99998,
+        -255.99998,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_1_0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -512.0,
+        -498.0,
+        -4e-05,
+        -256.0,
+        -256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -512.0,
+        -498.0,
+        -4e-05,
+        -256.0,
+        -256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_2_0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        -498.0,
+        -4e-05,
+        0.0,
+        -256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        -498.0,
+        -4e-05,
+        0.0,
+        -256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_3_0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -0.0,
+        -498.0,
+        -4e-05,
+        256.0,
+        -256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -0.0,
+        -498.0,
+        -4e-05,
+        256.0,
+        -256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_4_0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        -498.0,
+        -4e-05,
+        512.0,
+        -256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        -498.0,
+        -4e-05,
+        512.0,
+        -256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        511.99998,
+        -498.00002,
+        -4e-05,
+        754.00002,
+        -255.99998,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        511.99998,
+        -498.00002,
+        -4e-05,
+        754.00002,
+        -255.99998,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -640,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -754.0,
+        -256.0,
+        -4e-05,
+        -512.0,
+        0.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -754.0,
+        -256.0,
+        -4e-05,
+        -512.0,
+        0.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_1_1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -512.0,
+        -256.0,
+        -4e-05,
+        -256.0,
+        0.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -512.0,
+        -256.0,
+        -4e-05,
+        -256.0,
+        0.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_2_1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        -256.0,
+        -4e-05,
+        0.0,
+        0.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        -256.0,
+        -4e-05,
+        0.0,
+        0.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_3_1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        -256.0,
+        -4e-05,
+        256.0,
+        0.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        -256.0,
+        -4e-05,
+        256.0,
+        0.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_4_1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        -256.0,
+        -4e-05,
+        512.0,
+        0.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        -256.0,
+        -4e-05,
+        512.0,
+        0.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        512.0,
+        -256.0,
+        -4e-05,
+        754.0,
+        0.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        512.0,
+        -256.0,
+        -4e-05,
+        754.0,
+        0.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -640,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -754.0,
+        -0.0,
+        -4e-05,
+        -512.0,
+        256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -754.0,
+        -0.0,
+        -4e-05,
+        -512.0,
+        256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_1_2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -512.0,
+        0.0,
+        -4e-05,
+        -256.0,
+        256.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -512.0,
+        0.0,
+        -4e-05,
+        -256.0,
+        256.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_2_2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        0.0,
+        -4e-05,
+        0.0,
+        256.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        0.0,
+        -4e-05,
+        0.0,
+        256.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_3_2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        0.0,
+        -4e-05,
+        256.0,
+        256.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        0.0,
+        -4e-05,
+        256.0,
+        256.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_4_2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        0.0,
+        -4e-05,
+        512.0,
+        256.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        0.0,
+        -4e-05,
+        512.0,
+        256.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        512.0,
+        -0.0,
+        -4e-05,
+        754.0,
+        256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        512.0,
+        -0.0,
+        -4e-05,
+        754.0,
+        256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_3",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -640,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -754.0,
+        256.0,
+        -4e-05,
+        -512.0,
+        512.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -754.0,
+        256.0,
+        -4e-05,
+        -512.0,
+        512.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_1_3",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -512.0,
+        256.0,
+        -4e-05,
+        -256.0,
+        512.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -512.0,
+        256.0,
+        -4e-05,
+        -256.0,
+        512.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_2_3",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        256.0,
+        -4e-05,
+        0.0,
+        512.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        256.0,
+        -4e-05,
+        0.0,
+        512.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_3_3",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        256.0,
+        -4e-05,
+        256.0,
+        512.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        256.0,
+        -4e-05,
+        256.0,
+        512.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_4_3",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        256.0,
+        -4e-05,
+        512.0,
+        512.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        256.0,
+        -4e-05,
+        512.0,
+        512.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_3",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        512.0,
+        256.0,
+        -4e-05,
+        754.0,
+        512.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        512.0,
+        256.0,
+        -4e-05,
+        754.0,
+        512.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_4",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -640,
+        640,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -754.0,
+        512.0,
+        -4e-05,
+        -512.0,
+        768.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -754.0,
+        512.0,
+        -4e-05,
+        -512.0,
+        768.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_1_4",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        640,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -512.0,
+        512.0,
+        -4e-05,
+        -256.0,
+        768.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -512.0,
+        512.0,
+        -4e-05,
+        -256.0,
+        768.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_2_4",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        640,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        512.0,
+        -4e-05,
+        0.0,
+        768.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        512.0,
+        -4e-05,
+        0.0,
+        768.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_3_4",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        640,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        512.0,
+        -4e-05,
+        256.0,
+        768.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        512.0,
+        -4e-05,
+        256.0,
+        768.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_4_4",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        640,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        512.0,
+        -4e-05,
+        512.0,
+        768.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        512.0,
+        -4e-05,
+        512.0,
+        768.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_4",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        640,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        512.0,
+        512.0,
+        -4e-05,
+        754.0,
+        768.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        512.0,
+        512.0,
+        -4e-05,
+        754.0,
+        768.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_0_5",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        -640,
+        896,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -754.00002,
+        767.99998,
+        -4e-05,
+        -511.99998,
+        1010.00002,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -754.00002,
+        767.99998,
+        -4e-05,
+        -511.99998,
+        1010.00002,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_1_5",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        896,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -512.0,
+        768.0,
+        -4e-05,
+        -256.0,
+        1010.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -512.0,
+        768.0,
+        -4e-05,
+        -256.0,
+        1010.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_2_5",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        896,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        768.0,
+        -4e-05,
+        0.0,
+        1010.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        768.0,
+        -4e-05,
+        0.0,
+        1010.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_3_5",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        896,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        768.0,
+        -4e-05,
+        256.0,
+        1010.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        768.0,
+        -4e-05,
+        256.0,
+        1010.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_4_5",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        896,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        768.0,
+        -4e-05,
+        512.0,
+        1010.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        768.0,
+        -4e-05,
+        512.0,
+        1010.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Shell_5_5",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        896,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        511.99998,
+        767.99998,
+        -4e-05,
+        754.00002,
+        1010.00002,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        511.99998,
+        767.99998,
+        -4e-05,
+        754.00002,
+        1010.00002,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_0_0",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -498.00002,
+        -498.00002,
+        -4e-05,
+        -255.99998,
+        -255.99998,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -498.00002,
+        -498.00002,
+        -4e-05,
+        -255.99998,
+        -255.99998,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_1_0",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        -498.0,
+        -4e-05,
+        0.0,
+        -256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        -498.0,
+        -4e-05,
+        0.0,
+        -256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_2_0",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -0.0,
+        -498.0,
+        -4e-05,
+        256.0,
+        -256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -0.0,
+        -498.0,
+        -4e-05,
+        256.0,
+        -256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_3_0",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        -384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        3.141592653589793
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        255.99998,
+        -498.00002,
+        -4e-05,
+        498.00002,
+        -255.99998,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        255.99998,
+        -498.00002,
+        -4e-05,
+        498.00002,
+        -255.99998,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_0_1",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -498.0,
+        -256.0,
+        -4e-05,
+        -256.0,
+        0.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -498.0,
+        -256.0,
+        -4e-05,
+        -256.0,
+        0.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_1_1",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        -256.0,
+        -4e-05,
+        0.0,
+        0.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        -256.0,
+        -4e-05,
+        0.0,
+        0.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_2_1",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        -256.0,
+        -4e-05,
+        256.0,
+        0.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        -256.0,
+        -4e-05,
+        256.0,
+        0.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_3_1",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        -128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        -256.0,
+        -4e-05,
+        498.0,
+        0.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        -256.0,
+        -4e-05,
+        498.0,
+        0.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_0_2",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -498.0,
+        -0.0,
+        -4e-05,
+        -256.0,
+        256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -498.0,
+        -0.0,
+        -4e-05,
+        -256.0,
+        256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_1_2",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        0.0,
+        -4e-05,
+        0.0,
+        256.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        0.0,
+        -4e-05,
+        0.0,
+        256.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_2_2",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BD:Fallout4.esm",
+      "editorID": "SubSmRoomCenter01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        0.0,
+        -4e-05,
+        256.0,
+        256.0,
+        244.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        0.0,
+        -4e-05,
+        256.0,
+        256.0,
+        244.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_3_2",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        256.0,
+        -0.0,
+        -4e-05,
+        498.0,
+        256.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        256.0,
+        -0.0,
+        -4e-05,
+        498.0,
+        256.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_0_3",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        -384,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -498.00002,
+        255.99998,
+        -4e-05,
+        -255.99998,
+        498.00002,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -498.00002,
+        255.99998,
+        -4e-05,
+        -255.99998,
+        498.00002,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_1_3",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        -128,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        -256.0,
+        256.0,
+        -4e-05,
+        0.0,
+        498.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -256.0,
+        256.0,
+        -4e-05,
+        0.0,
+        498.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_2_3",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302C1:Fallout4.esm",
+      "editorID": "SubSmRoomWall01",
+      "recordType": "STAT",
+      "position": [
+        128,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        0.0,
+        256.0,
+        -4e-05,
+        256.0,
+        498.0,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        0.0,
+        256.0,
+        -4e-05,
+        256.0,
+        498.0,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Shell_3_3",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000302BF:Fallout4.esm",
+      "editorID": "SubSmRoomCorner01",
+      "recordType": "STAT",
+      "position": [
+        384,
+        384,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "shell-floor-wall-ceiling",
+      "worldRenderAabb": [
+        255.99998,
+        255.99998,
+        -4e-05,
+        498.00002,
+        498.00002,
+        246.0
+      ],
+      "conservativeEnvelopeAabb": [
+        255.99998,
+        255.99998,
+        -4e-05,
+        498.00002,
+        498.00002,
+        246.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_RegisterDesk0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001A6E6A:Fallout4.esm",
+      "editorID": "HighTechDesk01_Main_DirtyStatic",
+      "recordType": "STAT",
+      "position": [
+        -256,
+        256,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -310.84375,
+        229.90625,
+        0.01596,
+        -201.0,
+        282.53125,
+        56.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -310.84375,
+        229.90625,
+        0,
+        -201.0,
+        282.53125,
+        56.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_RegisterDesk1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001A6E6A:Fallout4.esm",
+      "editorID": "HighTechDesk01_Main_DirtyStatic",
+      "recordType": "STAT",
+      "position": [
+        -64,
+        256,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -118.84375,
+        229.90625,
+        0.01596,
+        -9.0,
+        282.53125,
+        56.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -118.84375,
+        229.90625,
+        0,
+        -9.0,
+        282.53125,
+        56.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_RegisterDesk2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001A6E6A:Fallout4.esm",
+      "editorID": "HighTechDesk01_Main_DirtyStatic",
+      "recordType": "STAT",
+      "position": [
+        128,
+        256,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        73.15625,
+        229.90625,
+        0.01596,
+        183.0,
+        282.53125,
+        56.0
+      ],
+      "conservativeEnvelopeAabb": [
+        73.15625,
+        229.90625,
+        0,
+        183.0,
+        282.53125,
+        56.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_RegisterLamp",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "0008E79A:Fallout4.esm",
+      "editorID": "DeskLamp02On",
+      "recordType": "STAT",
+      "position": [
+        -64,
+        268,
+        55.99421310424805
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "tabletop-dressing",
+      "worldRenderAabb": [
+        -80.78125,
+        263.11328,
+        56.0,
+        -47.21875,
+        280.98487,
+        75.82234
+      ],
+      "conservativeEnvelopeAabb": [
+        -80.78125,
+        263.11328,
+        55.99421,
+        -47.21875,
+        280.98487,
+        75.82234
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceBenchWest",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000D8F8C:Fallout4.esm",
+      "editorID": "NPCBenchParkSit01Static",
+      "recordType": "STAT",
+      "position": [
+        -672,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -684.66408,
+        46.0,
+        0.0,
+        -628.34374,
+        210.0,
+        62.875
+      ],
+      "conservativeEnvelopeAabb": [
+        -684.66408,
+        46.0,
+        0,
+        -628.34374,
+        210.0,
+        62.875
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceBenchEast",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "000D8F8C:Fallout4.esm",
+      "editorID": "NPCBenchParkSit01Static",
+      "recordType": "STAT",
+      "position": [
+        720,
+        128,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        676.34374,
+        46.0,
+        0.0,
+        732.66408,
+        210.0,
+        62.875
+      ],
+      "conservativeEnvelopeAabb": [
+        676.34374,
+        46.0,
+        0,
+        732.66408,
+        210.0,
+        62.875
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceFreightA",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001467CB:Fallout4.esm",
+      "editorID": "CrateLargeGrayRusty",
+      "recordType": "STAT",
+      "position": [
+        -544,
+        640,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -677.625,
+        560.0,
+        -2e-05,
+        -416.0,
+        720.875,
+        166.125
+      ],
+      "conservativeEnvelopeAabb": [
+        -677.625,
+        560.0,
+        -2e-05,
+        -416.0,
+        720.875,
+        166.125
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceFreightB",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001467CB:Fallout4.esm",
+      "editorID": "CrateLargeGrayRusty",
+      "recordType": "STAT",
+      "position": [
+        -544,
+        -288,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -677.625,
+        -368.0,
+        -2e-05,
+        -416.0,
+        -207.125,
+        166.125
+      ],
+      "conservativeEnvelopeAabb": [
+        -677.625,
+        -368.0,
+        -2e-05,
+        -416.0,
+        -207.125,
+        166.125
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceLocker",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "0011EB55:Fallout4.esm",
+      "editorID": "Prewar_Locker_WallEmpty02",
+      "recordType": "STAT",
+      "position": [
+        -720,
+        880,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -736.53125,
+        773.9375,
+        0.0,
+        -703.46875,
+        986.0625,
+        148.5
+      ],
+      "conservativeEnvelopeAabb": [
+        -736.53125,
+        773.9375,
+        0.0,
+        -703.46875,
+        986.0625,
+        148.5
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServicePipeA",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001E4621:Fallout4.esm",
+      "editorID": "PipeAStraightHalf01",
+      "recordType": "STAT",
+      "position": [
+        -256,
+        1008,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -280.3125,
+        951.90625,
+        -0.0,
+        -244.0,
+        975.90625,
+        128.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -280.3125,
+        951.90625,
+        -0.0,
+        -244.0,
+        976.0,
+        128.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServicePipeB",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001E4621:Fallout4.esm",
+      "editorID": "PipeAStraightHalf01",
+      "recordType": "STAT",
+      "position": [
+        -512,
+        1008,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -536.3125,
+        951.90625,
+        -0.0,
+        -500.0,
+        975.90625,
+        128.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -536.3125,
+        951.90625,
+        -0.0,
+        -500.0,
+        976.0,
+        128.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceRouteFlankWest",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "00031CC2:Fallout4.esm",
+      "editorID": "SubPlatformCol01",
+      "recordType": "STAT",
+      "position": [
+        352,
+        816,
+        -16
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        328.0,
+        792.0,
+        -16.00001,
+        376.0,
+        840.0,
+        208.0
+      ],
+      "conservativeEnvelopeAabb": [
+        328.0,
+        792.0,
+        -16.00001,
+        376.0,
+        840.0,
+        208.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServiceRouteFlankEast",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "00031CC2:Fallout4.esm",
+      "editorID": "SubPlatformCol01",
+      "recordType": "STAT",
+      "position": [
+        672,
+        816,
+        -16
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        648.0,
+        792.0,
+        -16.00001,
+        696.0,
+        840.0,
+        208.0
+      ],
+      "conservativeEnvelopeAabb": [
+        648.0,
+        792.0,
+        -16.00001,
+        696.0,
+        840.0,
+        208.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerCrateWest",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "001467CB:Fallout4.esm",
+      "editorID": "CrateLargeGrayRusty",
+      "recordType": "STAT",
+      "position": [
+        -320,
+        256,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -453.625,
+        176.0,
+        -2e-05,
+        -192.0,
+        336.875,
+        166.125
+      ],
+      "conservativeEnvelopeAabb": [
+        -453.625,
+        176.0,
+        -2e-05,
+        -192.0,
+        336.875,
+        166.125
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerCrateEast",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "001467CB:Fallout4.esm",
+      "editorID": "CrateLargeGrayRusty",
+      "recordType": "STAT",
+      "position": [
+        320,
+        256,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        186.375,
+        176.0,
+        -2e-05,
+        448.0,
+        336.875,
+        166.125
+      ],
+      "conservativeEnvelopeAabb": [
+        186.375,
+        176.0,
+        -2e-05,
+        448.0,
+        336.875,
+        166.125
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerBenchWest",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000D8F8C:Fallout4.esm",
+      "editorID": "NPCBenchParkSit01Static",
+      "recordType": "STAT",
+      "position": [
+        -352,
+        -256,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        -1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -364.66408,
+        -338.0,
+        0.0,
+        -308.34374,
+        -174.0,
+        62.875
+      ],
+      "conservativeEnvelopeAabb": [
+        -364.66408,
+        -338.0,
+        0,
+        -308.34374,
+        -174.0,
+        62.875
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerBenchEast",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "000D8F8C:Fallout4.esm",
+      "editorID": "NPCBenchParkSit01Static",
+      "recordType": "STAT",
+      "position": [
+        352,
+        -256,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        308.34374,
+        -338.0,
+        0.0,
+        364.66408,
+        -174.0,
+        62.875
+      ],
+      "conservativeEnvelopeAabb": [
+        308.34374,
+        -338.0,
+        0,
+        364.66408,
+        -174.0,
+        62.875
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerPipeWest",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "001E4621:Fallout4.esm",
+      "editorID": "PipeAStraightHalf01",
+      "recordType": "STAT",
+      "position": [
+        -256,
+        496,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -280.3125,
+        439.90625,
+        -0.0,
+        -244.0,
+        463.90625,
+        128.0
+      ],
+      "conservativeEnvelopeAabb": [
+        -280.3125,
+        439.90625,
+        -0.0,
+        -244.0,
+        464.0,
+        128.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerPipeEast",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "001E4621:Fallout4.esm",
+      "editorID": "PipeAStraightHalf01",
+      "recordType": "STAT",
+      "position": [
+        256,
+        496,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        231.6875,
+        439.90625,
+        -0.0,
+        268.0,
+        463.90625,
+        128.0
+      ],
+      "conservativeEnvelopeAabb": [
+        231.6875,
+        439.90625,
+        -0.0,
+        268.0,
+        464.0,
+        128.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_LowerLocker",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "0011EB55:Fallout4.esm",
+      "editorID": "Prewar_Locker_WallEmpty02",
+      "recordType": "STAT",
+      "position": [
+        0,
+        464,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        -106.0625,
+        447.46875,
+        0.0,
+        106.0625,
+        480.53125,
+        148.5
+      ],
+      "conservativeEnvelopeAabb": [
+        -106.0625,
+        447.46875,
+        0.0,
+        106.0625,
+        480.53125,
+        148.5
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperFreightA",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "001467CB:Fallout4.esm",
+      "editorID": "CrateLargeGrayRusty",
+      "recordType": "STAT",
+      "position": [
+        1088,
+        1280,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        954.375,
+        1200.0,
+        -2e-05,
+        1216.0,
+        1360.875,
+        166.125
+      ],
+      "conservativeEnvelopeAabb": [
+        954.375,
+        1200.0,
+        -2e-05,
+        1216.0,
+        1360.875,
+        166.125
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperFreightB",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "001467CB:Fallout4.esm",
+      "editorID": "CrateLargeGrayRusty",
+      "recordType": "STAT",
+      "position": [
+        1408,
+        1280,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        1274.375,
+        1200.0,
+        -2e-05,
+        1536.0,
+        1360.875,
+        166.125
+      ],
+      "conservativeEnvelopeAabb": [
+        1274.375,
+        1200.0,
+        -2e-05,
+        1536.0,
+        1360.875,
+        166.125
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperBench",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "000D8F8C:Fallout4.esm",
+      "editorID": "NPCBenchParkSit01Static",
+      "recordType": "STAT",
+      "position": [
+        640,
+        1312,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        558.0,
+        1268.34374,
+        0.0,
+        722.0,
+        1324.66408,
+        62.875
+      ],
+      "conservativeEnvelopeAabb": [
+        558.0,
+        1268.34374,
+        0,
+        722.0,
+        1324.66408,
+        62.875
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperRailA",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "0005E1D2:Fallout4.esm",
+      "editorID": "DamLockRailStraightA01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        1500,
+        7
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        517.75,
+        1499.70288,
+        0.0,
+        762.75,
+        1506.42578,
+        72.25
+      ],
+      "conservativeEnvelopeAabb": [
+        517.75,
+        1499.70288,
+        0.0,
+        762.75,
+        1506.42578,
+        72.25
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperRailB",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "0005E1D2:Fallout4.esm",
+      "editorID": "DamLockRailStraightA01",
+      "recordType": "STAT",
+      "position": [
+        896,
+        1500,
+        7
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        773.75,
+        1499.70288,
+        0.0,
+        1018.75,
+        1506.42578,
+        72.25
+      ],
+      "conservativeEnvelopeAabb": [
+        773.75,
+        1499.70288,
+        0.0,
+        1018.75,
+        1506.42578,
+        72.25
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperCanopyRoofA",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "00028BAF:Fallout4.esm",
+      "editorID": "ShackMidRoof01",
+      "recordType": "STAT",
+      "position": [
+        640,
+        1280,
+        16
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "canopy",
+      "worldRenderAabb": [
+        509.49997,
+        1144.12502,
+        203.25004,
+        767.99999,
+        1416.25002,
+        235.25005
+      ],
+      "conservativeEnvelopeAabb": [
+        509.49997,
+        1144.12502,
+        203.25004,
+        768.0,
+        1416.25002,
+        235.25005
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperCanopyRoofB",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "00028BAF:Fallout4.esm",
+      "editorID": "ShackMidRoof01",
+      "recordType": "STAT",
+      "position": [
+        896,
+        1280,
+        16
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "canopy",
+      "worldRenderAabb": [
+        765.49997,
+        1144.12502,
+        203.25004,
+        1023.99999,
+        1416.25002,
+        235.25005
+      ],
+      "conservativeEnvelopeAabb": [
+        765.49997,
+        1144.12502,
+        203.25004,
+        1024.0,
+        1416.25002,
+        235.25005
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperCanopyPost0",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "00031CC2:Fallout4.esm",
+      "editorID": "SubPlatformCol01",
+      "recordType": "STAT",
+      "position": [
+        536,
+        1168,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        512.0,
+        1144.0,
+        -1e-05,
+        560.0,
+        1192.0,
+        224.0
+      ],
+      "conservativeEnvelopeAabb": [
+        512.0,
+        1144.0,
+        -1e-05,
+        560.0,
+        1192.0,
+        224.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperCanopyPost1",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "00031CC2:Fallout4.esm",
+      "editorID": "SubPlatformCol01",
+      "recordType": "STAT",
+      "position": [
+        1000,
+        1168,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        976.0,
+        1144.0,
+        -1e-05,
+        1024.0,
+        1192.0,
+        224.0
+      ],
+      "conservativeEnvelopeAabb": [
+        976.0,
+        1144.0,
+        -1e-05,
+        1024.0,
+        1192.0,
+        224.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperCanopyPost2",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "00031CC2:Fallout4.esm",
+      "editorID": "SubPlatformCol01",
+      "recordType": "STAT",
+      "position": [
+        536,
+        1392,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        512.0,
+        1368.0,
+        -1e-05,
+        560.0,
+        1416.0,
+        224.0
+      ],
+      "conservativeEnvelopeAabb": [
+        512.0,
+        1368.0,
+        -1e-05,
+        560.0,
+        1416.0,
+        224.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_UpperCanopyPost3",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "00031CC2:Fallout4.esm",
+      "editorID": "SubPlatformCol01",
+      "recordType": "STAT",
+      "position": [
+        1000,
+        1392,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        976.0,
+        1368.0,
+        -1e-05,
+        1024.0,
+        1416.0,
+        224.0
+      ],
+      "conservativeEnvelopeAabb": [
+        976.0,
+        1368.0,
+        -1e-05,
+        1024.0,
+        1416.0,
+        224.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Fill0",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        -384,
+        -128,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        -393.0,
+        -138.0,
+        126,
+        -375.0,
+        -118.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        -393.0,
+        -138.0,
+        126,
+        -375.0,
+        -118.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Fill1",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        384,
+        -128,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        375.0,
+        -138.0,
+        126,
+        393.0,
+        -118.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        375.0,
+        -138.0,
+        126,
+        393.0,
+        -118.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Fill2",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        -384,
+        640,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        -393.0,
+        630.0,
+        126,
+        -375.0,
+        650.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        -393.0,
+        630.0,
+        126,
+        -375.0,
+        650.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Fill3",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        384,
+        640,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        375.0,
+        630.0,
+        126,
+        393.0,
+        650.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        375.0,
+        630.0,
+        126,
+        393.0,
+        650.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Service_Fill4",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        -64,
+        192,
+        128
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        -73.0,
+        182.0,
+        110,
+        -55.0,
+        202.0,
+        140
+      ],
+      "conservativeEnvelopeAabb": [
+        -73.0,
+        182.0,
+        110,
+        -55.0,
+        202.0,
+        140
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Fill0",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        -256,
+        -256,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        -265.0,
+        -266.0,
+        126,
+        -247.0,
+        -246.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        -265.0,
+        -266.0,
+        126,
+        -247.0,
+        -246.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Fill1",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        256,
+        -256,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        247.0,
+        -266.0,
+        126,
+        265.0,
+        -246.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        247.0,
+        -266.0,
+        126,
+        265.0,
+        -246.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Fill2",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        -256,
+        256,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        -265.0,
+        246.0,
+        126,
+        -247.0,
+        266.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        -265.0,
+        246.0,
+        126,
+        -247.0,
+        266.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Lower_Fill3",
+      "cell": "TLM_CELL_BS_Lower",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        256,
+        256,
+        144
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        247.0,
+        246.0,
+        126,
+        265.0,
+        266.0,
+        156
+      ],
+      "conservativeEnvelopeAabb": [
+        247.0,
+        246.0,
+        126,
+        265.0,
+        266.0,
+        156
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Upper_Fill0",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        768,
+        1184,
+        160
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        759.0,
+        1174.0,
+        142,
+        777.0,
+        1194.0,
+        172
+      ],
+      "conservativeEnvelopeAabb": [
+        759.0,
+        1174.0,
+        142,
+        777.0,
+        1194.0,
+        172
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_Upper_Fill1",
+      "cell": "TLM_CELL_BS_Upper",
+      "base": "TLM_LIGH_BS_NeutralFill",
+      "editorID": "DefaultLightWhite01NS",
+      "recordType": "LIGH",
+      "position": [
+        1280,
+        1184,
+        160
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "illumination",
+      "worldRenderAabb": [
+        1271.0,
+        1174.0,
+        142,
+        1289.0,
+        1194.0,
+        172
+      ],
+      "conservativeEnvelopeAabb": [
+        1271.0,
+        1174.0,
+        142,
+        1289.0,
+        1194.0,
+        172
+      ],
+      "collisionEvidence": "light has no gameplay collision role"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_ServicePassDesk",
+      "cell": "TLM_CELL_BS_Service",
+      "base": "001A6E6A:Fallout4.esm",
+      "editorID": "HighTechDesk01_Main_DirtyStatic",
+      "recordType": "STAT",
+      "position": [
+        128,
+        512,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        73.15625,
+        485.90625,
+        0.01596,
+        183.0,
+        538.53125,
+        56.0
+      ],
+      "conservativeEnvelopeAabb": [
+        73.15625,
+        485.90625,
+        0,
+        183.0,
+        538.53125,
+        56.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    },
+    {
+      "symbol": "TLM_REF_BS_Decor_JunctionRouteDesk",
+      "cell": "TLM_CELL_NightMail",
+      "base": "001A6E6A:Fallout4.esm",
+      "editorID": "HighTechDesk01_Main_DirtyStatic",
+      "recordType": "STAT",
+      "position": [
+        560,
+        420,
+        0
+      ],
+      "rotationRadians": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "purpose": "dressing",
+      "worldRenderAabb": [
+        505.15625,
+        393.90625,
+        0.01596,
+        615.0,
+        446.53125,
+        56.0
+      ],
+      "conservativeEnvelopeAabb": [
+        505.15625,
+        393.90625,
+        0,
+        615.0,
+        446.53125,
+        56.0
+      ],
+      "collisionEvidence": "actual bhkNPCollisionObject/bhkPhysicsSystem present; envelope uses union of record OBND and render bounds, not decoded Havok shape"
+    }
+  ],
+  "nativeGates": [
+    "Havok shape not decoded: conservative offline envelopes, no actual collision/traversal certification",
+    "No NAVM supplied; NPC walking behavior absent",
+    "Native lights/exposure/material seams/doorway sightline/visibility and furniture activation remain unobserved",
+    "Ordinary door and quest bindings owned solely by engineering; no text/quest stage added here",
+    "Upper LAND ground/support and canopy visibility require actual final builder readback/native observation"
+  ]
+}

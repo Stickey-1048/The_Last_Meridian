@@ -1,0 +1,27 @@
+{
+  "ownedMaster": "C:\\Program Files (x86)\\GOG Galaxy\\Games\\Fallout 4 GOTY\\Data\\Fallout4.esm",
+  "candidates": [
+    {
+      "type": "LIGH",
+      "edid": "DefaultLightWhite01NS",
+      "id": "000517B0",
+      "model": "",
+      "obnd": [
+        -9,
+        -10,
+        -18,
+        9,
+        10,
+        12
+      ],
+      "scripted": false,
+      "radius": 256,
+      "colorRGB": [
+        255,
+        255,
+        255
+      ],
+      "dataBytes": 60
+    }
+  ]
+}

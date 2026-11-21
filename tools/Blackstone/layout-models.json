@@ -1,0 +1,1660 @@
+{
+  "scope": "Selected owned numerical metadata only; no mesh bytes/vertices exported",
+  "assets": {
+    "PipeAStraightHalf01": {
+      "id": "001E4621",
+      "model": "SetDressing\\Pipes\\PipeAStraightHalf01.nif",
+      "bounds": [
+        -24,
+        -56,
+        0,
+        12,
+        -32,
+        128
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "E29F4B9647017901236CB39B2ECFE651AE7416784804D79B3790C686DFB48273",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              1.9311904907226562e-05,
+              0.0,
+              0.0
+            ],
+            "name": "PipeAStraightHalf01:6 - L2_PipeAStraightHalf01:6",
+            "localBounds": [
+              -24.3125,
+              -56.09375,
+              -3.814697265625e-06,
+              12.0,
+              -32.09375,
+              128.0
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 318,
+            "triangles": 280,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -24.3125,
+          -56.09375,
+          -3.814697265625e-06,
+          12.0,
+          -32.09375,
+          128.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -24.3125,
+          -56.09375,
+          -3.814697265625e-06,
+          12.0,
+          -32.09375,
+          0.0
+        ]
+      }
+    },
+    "DamLockRailStraightA01": {
+      "id": "0005E1D2",
+      "model": "Architecture\\Dam\\DamLockRailStraightA01.nif",
+      "bounds": [
+        -122,
+        0,
+        -7,
+        122,
+        6,
+        65
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "196B7EC7D03F7E687A37065081A4B1291F2163CFBE8429194DC3897EAE5E8B11",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -17.5386004447937
+            ],
+            "name": "RailStraight01:1",
+            "localBounds": [
+              -122.25,
+              -0.297117880433575,
+              -7.0,
+              122.75,
+              6.425782510191425,
+              65.25
+            ],
+            "type": "BSTriShape",
+            "vertices": 329,
+            "triangles": 288,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -122.25,
+          -0.297117880433575,
+          -7.0,
+          122.75,
+          6.425782510191425,
+          65.25
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -101.9375,
+          -0.297117880433575,
+          -7.0,
+          102.0625,
+          0.924805947691425,
+          -7.0
+        ]
+      }
+    },
+    "HighTechDesk01_Main_DirtyStatic": {
+      "id": "001A6E6A",
+      "model": "SetDressing\\HighTech\\HighTechTable01_Main.nif",
+      "bounds": [
+        -54,
+        -26,
+        0,
+        55,
+        26,
+        56
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "30B0F399184ACE187EE5A43AC93BBB09D5160271EFE34A1810E11CE4B20C9FC1",
+        "blocks": {
+          "NiNode": 3,
+          "BSXFlags": 1,
+          "NiControllerManager": 1,
+          "NiMultiTargetTransformController": 1,
+          "NiControllerSequence": 2,
+          "NiTransformInterpolator": 2,
+          "NiTransformData": 2,
+          "NiTextKeyExtraData": 2,
+          "NiDefaultAVObjectPalette": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSSkin::Instance": 1,
+          "BSSkin::BoneData": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": false,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              426.3425598144531,
+              100.89599609375,
+              1049.2670288085938
+            ],
+            "name": "SkinnedMesh:0",
+            "localBounds": [
+              -54.84375,
+              -26.09375,
+              0.015960693359375,
+              55.0,
+              26.53125,
+              56.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 1722,
+            "triangles": 1892,
+            "stride": 32,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -54.84375,
+          -26.09375,
+          0.015960693359375,
+          55.0,
+          26.53125,
+          56.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -46.9375,
+          -22.609375,
+          0.015960693359375,
+          42.5,
+          25.046875,
+          0.3955078125
+        ]
+      }
+    },
+    "CrateLargeGrayRusty": {
+      "id": "001467CB",
+      "model": "SetDressing\\Crates\\CrateLarge01.nif",
+      "bounds": [
+        -133,
+        -80,
+        0,
+        128,
+        80,
+        166
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "B13695D75CD7A7B3F1A2EC32319A49B937B951E42D60035025523F7131A743DB",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1,
+          "NiAlphaProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -5.3260475397109985e-05,
+              167.5341796875,
+              0.0
+            ],
+            "name": "CrateLarge01:0",
+            "localBounds": [
+              -133.625,
+              -80.0,
+              -1.52587890625e-05,
+              128.0,
+              80.875,
+              166.125
+            ],
+            "type": "BSTriShape",
+            "vertices": 1136,
+            "triangles": 1074,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -133.625,
+          -80.0,
+          -1.52587890625e-05,
+          128.0,
+          80.875,
+          166.125
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -106.125,
+          -77.125,
+          -1.52587890625e-05,
+          100.5,
+          77.125,
+          6.073713302612305e-05
+        ]
+      }
+    },
+    "Prewar_Locker_WallEmpty02": {
+      "id": "0011EB55",
+      "model": "SetDressing\\Containers\\Prewar_Locker_WallEmpty02.nif",
+      "bounds": [
+        -106,
+        -16,
+        0,
+        106,
+        16,
+        148
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "5AB14B4FAE476CF8FC15F510592315BC2AD81AF4B63021BA437A27FC92F24A72",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              -431.457275390625,
+              -7.926025390625
+            ],
+            "name": "Prewar_Locker_WallEmpty02:2",
+            "localBounds": [
+              -106.0625,
+              -16.53125,
+              0.0,
+              106.0625,
+              16.53125,
+              148.5
+            ],
+            "type": "BSTriShape",
+            "vertices": 934,
+            "triangles": 560,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -106.0625,
+          -16.53125,
+          0.0,
+          106.0625,
+          16.53125,
+          148.5
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -106.0625,
+          -16.53125,
+          0.0,
+          106.0625,
+          16.53125,
+          0.0
+        ]
+      }
+    },
+    "NPCBenchParkSit01Static": {
+      "id": "000D8F8C",
+      "model": "Furniture\\ParkBench01.nif",
+      "bounds": [
+        -82,
+        -43,
+        0,
+        82,
+        12,
+        62
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "53F2D9B928E716FAF182E9A7CF2B21D1B39B2333E81D5F983F783C5DB7D82D49",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": false,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -8.193469010293484,
+              94.408203125,
+              -12.98828125
+            ],
+            "name": "ParkBench01:0 - L2_Details:0 - L1_Details:0",
+            "localBounds": [
+              -82.0,
+              -43.65625,
+              5.960464477539063e-08,
+              82.0,
+              12.6640625,
+              62.875
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 2248,
+            "triangles": 2284,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -82.00000165693481,
+          -43.65626411877842,
+          5.960464477539063e-08,
+          81.99999834306519,
+          12.664076105169604,
+          62.875
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -81.50000144930571,
+          -24.59376414063411,
+          5.960464477539063e-08,
+          81.49999905815618,
+          8.937514151561958,
+          0.98681640625
+        ]
+      }
+    },
+    "DeskLamp02On": {
+      "id": "0008E79A",
+      "model": "SetDressing\\LightFixtures\\DeskLamp02On.nif",
+      "bounds": [
+        -16,
+        -4,
+        0,
+        16,
+        12,
+        19
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "98D20CC6D2990A35A5F119B945190F10EC5026135B7032E1E84740E17979F735",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 4,
+          "BSEffectShaderProperty": 2,
+          "BSEffectShaderPropertyFloatController": 4,
+          "NiFloatInterpolator": 4,
+          "NiFloatData": 4,
+          "NiAlphaProperty": 2,
+          "BSLightingShaderProperty": 2,
+          "BSShaderTextureSet": 2
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              143.83458294913746,
+              -1.714641946820583e-05
+            ],
+            "name": "GlowMesh023:0",
+            "localBounds": [
+              -16.78125,
+              7.573304943722178,
+              11.745251015956455,
+              16.78125,
+              7.573305599838989,
+              17.24915741473521
+            ],
+            "type": "BSTriShape",
+            "vertices": 46,
+            "triangles": 70,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              43.66278649808373,
+              0.0,
+              0.0
+            ],
+            "name": "GlowMesh025:0",
+            "localBounds": [
+              0.11749267578125,
+              0.5239286422729492,
+              12.749156951904297,
+              0.11749267578125,
+              12.98486614227295,
+              17.2491574883461
+            ],
+            "type": "BSTriShape",
+            "vertices": 46,
+            "triangles": 70,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              4.57763671875e-05,
+              -0.6546821594238281,
+              1.5057487487792969
+            ],
+            "name": "DeskLamp02On:0",
+            "localBounds": [
+              -14.1015625,
+              -4.88671875,
+              0.005786895751953125,
+              14.1484375,
+              12.6796875,
+              19.828125
+            ],
+            "type": "BSTriShape",
+            "vertices": 384,
+            "triangles": 480,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "DeskLamp02On:1",
+            "localBounds": [
+              -11.2578125,
+              4.4609375,
+              15.7578125,
+              11.2578125,
+              10.0390625,
+              17.25
+            ],
+            "type": "BSTriShape",
+            "vertices": 24,
+            "triangles": 20,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -16.78125,
+          -4.88671875,
+          0.005786895751953125,
+          16.78125,
+          12.98486614227295,
+          19.828125
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -3.60546875,
+          -4.88671875,
+          0.005786895751953125,
+          3.60546875,
+          5.96875,
+          0.005786895751953125
+        ]
+      }
+    },
+    "SubSmRoomDoorway01": {
+      "id": "0003088C",
+      "model": "Interiors\\Subway\\SmRooms\\SubSmRoomDoorway01.nif",
+      "bounds": [
+        -128,
+        -28,
+        0,
+        128,
+        28,
+        244
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "817B32A60756595CB7C895D07CE0A717072EDE15CAA6F165E3E41813B00195A7",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 5,
+          "BSLightingShaderProperty": 5,
+          "BSShaderTextureSet": 5
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubSmRoomDoorway01:1",
+            "localBounds": [
+              -128.0,
+              -12.0,
+              16.0,
+              128.0,
+              12.0,
+              96.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 32,
+            "triangles": 24,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -3152.0
+            ],
+            "name": "SubSmRoomDoorway01:3",
+            "localBounds": [
+              -128.0,
+              -24.0,
+              96.0,
+              128.0,
+              24.0,
+              212.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 140,
+            "triangles": 124,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubSmRoomDoorway01:5",
+            "localBounds": [
+              -128.0,
+              -16.0,
+              212.0,
+              128.0,
+              16.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 8,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubSmRoomDoorway01:6",
+            "localBounds": [
+              -128.0,
+              -6.0,
+              98.0,
+              128.0,
+              6.0,
+              188.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 44,
+            "triangles": 40,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              -1.0658141036401503e-14,
+              0.0,
+              6656.0
+            ],
+            "name": "SubSmRoomDoorway01:8",
+            "localBounds": [
+              -128.0,
+              -28.0,
+              -3.0517578125e-05,
+              128.0,
+              28.0,
+              172.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 318,
+            "triangles": 368,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -128.0,
+          -28.0,
+          -3.0517578125e-05,
+          128.0,
+          28.0,
+          244.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -128.0,
+          -28.0,
+          -3.0517578125e-05,
+          128.0,
+          28.0,
+          0.5478515625
+        ]
+      }
+    },
+    "SubSmRoomPartition01": {
+      "id": "00030889",
+      "model": "Interiors\\Subway\\SmRooms\\SubSmRoomPartition01.nif",
+      "bounds": [
+        -128,
+        -28,
+        0,
+        128,
+        28,
+        244
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "D70837720F2167F6EA3258C6825FCD420090A925C37B34AC5924A973ABE1727A",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 4,
+          "BSLightingShaderProperty": 4,
+          "BSShaderTextureSet": 4
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubSmRoomPartition01:1",
+            "localBounds": [
+              -128.0,
+              -12.0,
+              16.0,
+              128.0,
+              12.0,
+              96.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 8,
+            "triangles": 4,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              6144.0
+            ],
+            "name": "SubSmRoomPartition01:3",
+            "localBounds": [
+              -128.0,
+              -28.0,
+              -3.0517578125e-05,
+              128.0,
+              28.0,
+              212.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 104,
+            "triangles": 88,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubSmRoomPartition01:5",
+            "localBounds": [
+              -128.0,
+              -16.0,
+              212.0,
+              128.0,
+              16.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 8,
+            "triangles": 4,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubSmRoomPartition01:6",
+            "localBounds": [
+              -128.0,
+              -6.0,
+              100.0,
+              128.0,
+              6.0,
+              188.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 8,
+            "triangles": 4,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -128.0,
+          -28.0,
+          -3.0517578125e-05,
+          128.0,
+          28.0,
+          244.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -128.0,
+          -28.0,
+          -3.0517578125e-05,
+          128.0,
+          28.0,
+          0.544921875
+        ]
+      }
+    },
+    "SubSmRoomWall01": {
+      "id": "000302C1",
+      "model": "Interiors\\Subway\\SmRooms\\SubSmRoomWall01.nif",
+      "bounds": [
+        -128,
+        -128,
+        0,
+        128,
+        114,
+        246
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "EC16250B4E6AAD10F583A5A77EDD7E099F5DC5135942A90C9CF9C9AC19762B20",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 8,
+          "BSLightingShaderProperty": 8,
+          "BSShaderTextureSet": 8
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              -20480.0,
+              0.0
+            ],
+            "name": "SubSmRoomWall01:1",
+            "localBounds": [
+              -128.0,
+              108.0,
+              16.0,
+              128.0,
+              108.0,
+              96.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 4,
+            "triangles": 2,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.007066249847412109,
+              -11008.0068359375,
+              -13149.75
+            ],
+            "name": "SubSmRoomWall01:3",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              -3.814697265625e-05,
+              128.0,
+              114.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 168,
+            "triangles": 142,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -117.087158203125
+            ],
+            "name": "SubSmRoomWall01:4",
+            "localBounds": [
+              -128.0,
+              -35.875,
+              192.375,
+              128.0,
+              109.0,
+              246.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 555,
+            "triangles": 792,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              -6272.0,
+              0.0
+            ],
+            "name": "SubSmRoomWall01:5",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              212.0,
+              128.0,
+              98.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 24,
+            "triangles": 14,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              -22528.0,
+              0.0
+            ],
+            "name": "SubSmRoomWall01:6",
+            "localBounds": [
+              -128.0,
+              114.0,
+              100.0,
+              128.0,
+              114.0,
+              188.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 4,
+            "triangles": 2,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -56058.25
+            ],
+            "name": "SubSmRoomWall01:7",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              244.0,
+              128.0,
+              98.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 18,
+            "triangles": 10,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -1800.0
+            ],
+            "name": "SubSmRoomWall01:8",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              208.0,
+              128.0,
+              -98.0,
+              208.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 12,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0025177001953125,
+              0.0,
+              56320.0
+            ],
+            "name": "SubSmRoomWall01:17",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              -3.814697265625e-05,
+              128.0,
+              92.0,
+              -1.52587890625e-05
+            ],
+            "type": "BSTriShape",
+            "vertices": 6,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -128.0,
+          -128.0,
+          -3.814697265625e-05,
+          128.0,
+          114.0,
+          246.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -128.0,
+          -128.0,
+          -3.814697265625e-05,
+          128.0,
+          96.125,
+          0.544921875
+        ]
+      }
+    },
+    "SubSmRoomCorner01": {
+      "id": "000302BF",
+      "model": "Interiors\\Subway\\SmRooms\\SubSmRoomCorner01.nif",
+      "bounds": [
+        -114,
+        -128,
+        0,
+        128,
+        114,
+        246
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "F263F6BE35C91E9D291B792554B3A6C141603569BAEBADB8DAFE2D01220C18CD",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 8,
+          "BSLightingShaderProperty": 8,
+          "BSShaderTextureSet": 8
+        },
+        "identityParentNodes": false,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              18880.0,
+              -18880.0,
+              0.0
+            ],
+            "name": "SubSmRoomCorner01:1",
+            "localBounds": [
+              -108.0,
+              -128.0,
+              16.0,
+              128.0,
+              108.0,
+              96.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 8,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              10197.915155887604,
+              -10197.910607337952,
+              -7114.875
+            ],
+            "name": "SubSmRoomCorner01:3",
+            "localBounds": [
+              -114.0,
+              -128.0,
+              -3.814697265625e-05,
+              128.0,
+              114.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 169,
+            "triangles": 145,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              -573.2734375,
+              573.2734375,
+              -117.15380859375
+            ],
+            "name": "SubSmRoomCorner01:4",
+            "localBounds": [
+              -109.0,
+              -128.0,
+              192.375,
+              128.0,
+              109.0,
+              246.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 860,
+            "triangles": 1296,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              6272.0,
+              -6272.0,
+              0.0
+            ],
+            "name": "SubSmRoomCorner01:5",
+            "localBounds": [
+              -98.0,
+              -128.0,
+              212.0,
+              128.0,
+              98.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 18,
+            "triangles": 10,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              21296.0,
+              -21296.0,
+              0.0
+            ],
+            "name": "SubSmRoomCorner01:6",
+            "localBounds": [
+              -114.0,
+              -128.0,
+              100.0,
+              128.0,
+              114.0,
+              188.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 8,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -50177.12463173273
+            ],
+            "name": "SubSmRoomCorner01:7",
+            "localBounds": [
+              -98.0,
+              -128.0,
+              244.0,
+              128.0,
+              98.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 18,
+            "triangles": 10,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -900.0
+            ],
+            "name": "SubSmRoomCorner01:8",
+            "localBounds": [
+              98.0,
+              -128.0,
+              208.0,
+              128.0,
+              -98.0,
+              208.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 6,
+            "triangles": 2,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0022048951634587866,
+              0.0013656615088848412,
+              48400.0
+            ],
+            "name": "SubSmRoomCorner01:17",
+            "localBounds": [
+              -92.0,
+              -128.0,
+              -3.814697265625e-05,
+              128.0,
+              92.0,
+              -1.52587890625e-05
+            ],
+            "type": "BSTriShape",
+            "vertices": 7,
+            "triangles": 6,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -114.00001993239306,
+          -128.00001993239306,
+          -3.814697265625e-05,
+          128.0000223802308,
+          114.0000223802308,
+          246.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -96.1250168070288,
+          -128.0000168070288,
+          -3.814697265625e-05,
+          128.0000223802308,
+          96.1250223802308,
+          0.544921875
+        ]
+      }
+    },
+    "SubSmRoomCenter01": {
+      "id": "000302BD",
+      "model": "Interiors\\Subway\\SmRooms\\SubSmRoomCenter01.nif",
+      "bounds": [
+        -128,
+        -128,
+        0,
+        128,
+        128,
+        244
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "B1128ADBD2338BAE0C1F3E00BF41ADD15C576CEE409CF1832B396C591E36921D",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 5,
+          "BSLightingShaderProperty": 5,
+          "BSShaderTextureSet": 5
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -19579.5
+            ],
+            "name": "SubSmRoomCenter01:3",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              208.0,
+              128.0,
+              128.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 188,
+            "triangles": 156,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubSmRoomCenter01:5",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              212.0,
+              128.0,
+              128.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 40,
+            "triangles": 24,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -61940.5
+            ],
+            "name": "SubSmRoomCenter01:7",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              244.0,
+              128.0,
+              128.0,
+              244.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 26,
+            "triangles": 16,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              -3600.0
+            ],
+            "name": "SubSmRoomCenter01:8",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              208.0,
+              128.0,
+              128.0,
+              208.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 24,
+            "triangles": 8,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              65536.0
+            ],
+            "name": "SubSmRoomCenter01:17",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              -3.814697265625e-05,
+              128.0,
+              128.0,
+              -1.52587890625e-05
+            ],
+            "type": "BSTriShape",
+            "vertices": 6,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -128.0,
+          -128.0,
+          -3.814697265625e-05,
+          128.0,
+          128.0,
+          244.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -128.0,
+          -128.0,
+          -3.814697265625e-05,
+          128.0,
+          128.0,
+          -1.52587890625e-05
+        ]
+      }
+    },
+    "ShackMidRoof01": {
+      "id": "00028BAF",
+      "model": "Architecture\\Shacks\\ShackMidRoof01.nif",
+      "bounds": [
+        -130,
+        -135,
+        198,
+        128,
+        136,
+        210
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "FC9021DC4831DC15BF52EE536B5522DB826C7D692C010299B712549A05852A42",
+        "blocks": {
+          "NiNode": 6,
+          "BSXFlags": 1,
+          "BSConnectPoint::Parents": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 2,
+          "BSShaderTextureSet": 2,
+          "BSTriShape": 5,
+          "NiAlphaProperty": 5,
+          "BSEffectShaderProperty": 4
+        },
+        "identityParentNodes": false,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "ShackMidRoof01:5 - L2_Boards:5",
+            "localBounds": [
+              -128.0,
+              -128.0,
+              198.0,
+              128.0,
+              128.0,
+              208.5
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 162,
+            "triangles": 108,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              75116.60653433201
+            ],
+            "name": "ShackMidRoof01:2",
+            "localBounds": [
+              -130.5,
+              -135.875,
+              209.0,
+              128.0,
+              136.25,
+              210.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 181,
+            "triangles": 96,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              -1.5631940186722204e-13,
+              -2.4208506564388915e-14,
+              -2.380383079283831e-13
+            ],
+            "name": "EditorMarker007:1",
+            "localBounds": [
+              -127.99999880790617,
+              -15.999955779850394,
+              187.2500610351571,
+              -111.99998569488515,
+              16.000042312800893,
+              219.25006103515662
+            ],
+            "type": "BSTriShape",
+            "vertices": 132,
+            "triangles": 128,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              8.5116504502155e-14,
+              -2.842170943040401e-14,
+              1.8745011917458906e-14
+            ],
+            "name": "EditorMarker005:1",
+            "localBounds": [
+              -15.999971041187212,
+              -128.00002983406918,
+              187.2500305175791,
+              16.00002895881271,
+              -112.00001525878916,
+              219.25003051757818
+            ],
+            "type": "BSTriShape",
+            "vertices": 132,
+            "triangles": 128,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              2.3447910280083306e-13,
+              -1.8070631389909345e-14,
+              -1.194407935186867e-15
+            ],
+            "name": "EditorMarker008:1",
+            "localBounds": [
+              111.99998664855967,
+              -15.999985343753485,
+              187.25003051757727,
+              127.99999521913278,
+              16.000010841549326,
+              219.25003051757776
+            ],
+            "type": "BSTriShape",
+            "vertices": 132,
+            "triangles": 128,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              1.0029528748310701e-13,
+              -1.2079226507921703e-13,
+              -6.859597876934657e-14
+            ],
+            "name": "EditorMarker006:1",
+            "localBounds": [
+              -15.999993421412306,
+              111.99998474121084,
+              187.25006103515528,
+              16.000006578587772,
+              127.9999993164911,
+              219.2500610351562
+            ],
+            "type": "BSTriShape",
+            "vertices": 132,
+            "triangles": 128,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -130.50002959261045,
+          -135.87498172863974,
+          187.25004170768995,
+          127.99999388040332,
+          136.2500182713609,
+          219.25004984504207
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -128.0000019734514,
+          -127.99999695365617,
+          187.25004170768995,
+          127.99996643607932,
+          128.0000019734449,
+          187.2500498450416
+        ]
+      }
+    },
+    "SubPlatformCol01": {
+      "id": "00031CC2",
+      "model": "Interiors\\Subway\\Platforms\\SubPlatformCol01.nif",
+      "bounds": [
+        -24,
+        -24,
+        0,
+        24,
+        24,
+        224
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "FB3C848F8D56D24157D6A8CA1F3DC4D3A241331B7D5BCDA5FADE240E8568CD7A",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 2,
+          "BSLightingShaderProperty": 2,
+          "BSShaderTextureSet": 2
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubPlatformCol01:3",
+            "localBounds": [
+              -24.0,
+              -24.0,
+              -1.1205673217773438e-05,
+              24.0,
+              24.0,
+              224.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 120,
+            "triangles": 128,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "SubPlatformCol01:5",
+            "localBounds": [
+              -18.0,
+              -18.0,
+              22.0,
+              18.0,
+              18.0,
+              202.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 18,
+            "triangles": 16,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -24.0,
+          -24.0,
+          -1.1205673217773438e-05,
+          24.0,
+          24.0,
+          224.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -24.0,
+          -24.0,
+          -1.1205673217773438e-05,
+          24.0,
+          24.0,
+          -1.1205673217773438e-05
+        ]
+      }
+    }
+  }
+}
