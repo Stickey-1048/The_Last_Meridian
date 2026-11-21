@@ -96,7 +96,7 @@ Bool Function MovePlayer(Int route, Int capturedEpoch)
     EndIf
     Actor playerActor = Game.GetPlayer()
     ObjectReference destination = originalDestinations[route]
-    If capturedEpoch != Road().Epoch()
+    If !TravelEffectReady(route,playerActor,destination,capturedEpoch)
         Return false
     EndIf
     playerActor.MoveTo(destination)
@@ -156,7 +156,7 @@ Function ReadDocument(Int kind)
                 Actor playerActor = Game.GetPlayer()
                 If Road().Current(capturedEpoch) && Road().DocumentAccess(5,capturedEpoch)
                     ObjectReference holder = passRef.GetContainer()
-                    If !holder && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
+                    If !holder && PassEffectReady(passRef,playerActor,capturedEpoch)
                         playerActor.AddItem(passRef,1,true)
                         Road().AckPassIssue(capturedEpoch)
                     EndIf
@@ -186,7 +186,7 @@ Function TakePass(Int capturedEpoch)
     ObjectReference passRef = Road().Document(5)
     Actor playerActor = Game.GetPlayer()
     ObjectReference holder = passRef.GetContainer()
-    If !holder && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
+    If !holder && PassEffectReady(passRef,playerActor,capturedEpoch)
         playerActor.AddItem(passRef,1,true)
         Road().AckPassIssue(capturedEpoch)
     EndIf
@@ -229,7 +229,8 @@ Function Mechanical(Int capturedEpoch)
         Return
     EndIf
     ObjectReference doorRef = Road().DoorReference()
-    If capturedEpoch != Road().Epoch()
+    Actor playerActor = Game.GetPlayer()
+    If !DoorEffectReady(doorRef,playerActor,capturedEpoch,true)
         Return
     EndIf
     doorRef.Lock(false)
@@ -255,7 +256,8 @@ Function UseLowerDoor()
     Int capturedEpoch = busyEpoch
     If TravelContext(4,capturedEpoch) && Road().PassDoorContext(capturedEpoch)
         ObjectReference doorRef = Road().DoorReference()
-        If capturedEpoch == Road().Epoch()
+        Actor playerActor = Game.GetPlayer()
+        If DoorEffectReady(doorRef,playerActor,capturedEpoch,false)
             doorRef.Lock(false)
         EndIf
     EndIf
@@ -362,4 +364,62 @@ Int Function Panel(Int node, Int capturedEpoch)
         Return -1
     EndIf
     Return answer
+EndFunction
+
+; Finite before-effect policy. Preparation/context getters may yield. Observe
+; participants again after them, then check captured identities/epoch last.
+; This is neither an atomic-world promise nor rollback/reissue behavior.
+Bool Function EffectPlayerReady(Actor playerActor, Int capturedEpoch)
+    If !playerActor || !Road().Current(capturedEpoch)
+        Return false
+    EndIf
+    Bool ready = !playerActor.IsInScene() && !playerActor.IsDisabled() && playerActor.Is3DLoaded() && !playerActor.IsInCombat() && !playerActor.IsDead()
+    Return ready && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
+EndFunction
+Bool Function TravelEffectReady(Int route, Actor playerActor, ObjectReference destination, Int capturedEpoch)
+    ObjectReference source = originalControls[route]
+    If !source || !destination || destination != originalDestinations[route]
+        Return false
+    EndIf
+    Bool targetReady = !destination.IsDisabled()
+    Bool sourceReady = !source.IsDisabled() && source.Is3DLoaded() && Road().At(playerActor,source,192.0)
+    ObjectReference currentSource = Controls[route].GetReference()
+    ObjectReference currentTarget = Destinations[route].GetReference()
+    Bool playerReady = EffectPlayerReady(playerActor,capturedEpoch)
+    Return targetReady && sourceReady && currentSource == source && currentTarget == destination && playerReady && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
+EndFunction
+Bool Function PassEffectReady(ObjectReference passRef, Actor playerActor, Int capturedEpoch)
+    If !passRef || passRef != Road().Document(5) || !Road().DocumentAccess(5,capturedEpoch)
+        Return false
+    EndIf
+    ObjectReference currentPass = Road().Documents[5].GetReference()
+    ObjectReference holder = passRef.GetContainer()
+    Bool playerReady = EffectPlayerReady(playerActor,capturedEpoch)
+    Return !holder && currentPass == passRef && passRef == Road().Document(5) && playerReady && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
+EndFunction
+Bool Function DoorEffectReady(ObjectReference doorRef, Actor playerActor, Int capturedEpoch, Bool byMechanical)
+    If !doorRef || doorRef != Road().DoorReference()
+        Return false
+    EndIf
+    ObjectReference source = None
+    If byMechanical
+        If !Road().MechanicalContext(capturedEpoch)
+            Return false
+        EndIf
+        source = Road().Alias_Mechanical.GetReference()
+    Else
+        If !TravelContext(4,capturedEpoch) || !Road().PassDoorContext(capturedEpoch)
+            Return false
+        EndIf
+        source = originalControls[4]
+    EndIf
+    Bool doorReady = !doorRef.IsDisabled() && doorRef.Is3DLoaded()
+    Bool sourceReady = source && !source.IsDisabled() && source.Is3DLoaded() && Road().At(playerActor,source,192.0)
+    ObjectReference currentDoor = Road().Alias_ServiceDoor.GetReference()
+    ObjectReference currentSource = Controls[4].GetReference()
+    If byMechanical
+        currentSource = Road().Alias_Mechanical.GetReference()
+    EndIf
+    Bool playerReady = EffectPlayerReady(playerActor,capturedEpoch)
+    Return doorReady && sourceReady && currentDoor == doorRef && currentSource == source && doorRef == Road().DoorReference() && playerReady && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
 EndFunction
