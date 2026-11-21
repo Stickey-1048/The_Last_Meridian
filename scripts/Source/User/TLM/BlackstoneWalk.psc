@@ -392,10 +392,11 @@ Bool Function PassEffectReady(ObjectReference passRef, Actor playerActor, Int ca
     If !passRef || passRef != Road().Document(5) || !Road().DocumentAccess(5,capturedEpoch)
         Return false
     EndIf
-    ObjectReference currentPass = Road().Documents[5].GetReference()
-    ObjectReference holder = passRef.GetContainer()
     Bool playerReady = EffectPlayerReady(playerActor,capturedEpoch)
-    Return !holder && currentPass == passRef && passRef == Road().Document(5) && playerReady && playerActor == Game.GetPlayer() && capturedEpoch == Road().Epoch()
+    ObjectReference currentPass = Road().Documents[5].GetReference()
+    Actor currentPlayer = Game.GetPlayer()
+    ObjectReference holder = passRef.GetContainer()
+    Return !holder && currentPass == passRef && passRef == Road().Document(5) && playerReady && playerActor == currentPlayer && capturedEpoch == Road().Epoch() && Road().PassIssuePending(capturedEpoch)
 EndFunction
 Bool Function DoorEffectReady(ObjectReference doorRef, Actor playerActor, Int capturedEpoch, Bool byMechanical)
     If !doorRef || doorRef != Road().DoorReference()

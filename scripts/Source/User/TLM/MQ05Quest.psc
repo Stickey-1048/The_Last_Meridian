@@ -442,3 +442,8 @@ EndFunction
 ObjectReference Function LowerReference()
     Return originalLower
 EndFunction
+
+Bool Function PassIssuePending(Int capturedEpoch)
+    ; Pure single-authority intent tail. No yielding native/context read.
+    Return passIssued && !passUncertain && !passAcknowledged && capturedEpoch == generation
+EndFunction

@@ -1,0 +1,9 @@
+# Blackstone pass-custody F1 repair001
+
+Preserved successor to59b85e8 and Sam EBA745 HOLD. Only2old runtime files change: BlackstoneWalk moves EffectPlayerReady before final current alias/player snapshot and actual original GetContainer, then pure identity/player/epoch/PassIssuePending comparisons. MQ05 adds only that pure read-only query of its existing issued/uncertain/acknowledged/generation state. No new ledger/state/effect or property; both transfer callers retain the shared helper. No alternating context checks or atomic-world guarantee.
+
+Actual4new tests PASS1.571s: exact9CFF lateCurrent transfers original toMara, firing1/noAddItem/noack; alias replacement andload alsofire/refuse; genuine original transfer; meaningful old-order mutant fires and produces real forbidden AddItem/ack. Prior5effect tests PASS2.258s and prior24ordinary/adverse PASS7.137s. Original Sam custody program retargeted ONLY tree/output: fired1/addItems[]/finalHolderPlayerfalse/ackfalse/errors[]. Its hardcoded head field identifies historical probe origin59b, not the current candidate; current source/runtime binding is provided by the new manifest/compiler/package receipts.
+
+Fresh actual full41 SDK compile-custody-001 succeeds41/0. New workspace package001 binds16literal reviewed normal runtime+25fresh PEX and the same two frozen a8 plugin bytes (43payloads). All C#/spec/packet/layout/records/words/oldverifiers/manifests remain exact. Wholea8 story/raw/Nora96-placement evidence carries; neither59b nor a8 artifacts/failedprobes are rebound. Native rendering/Havok/travel/controls and the two inherited documentation-checker name-resolution diagnostics remain separate/unwaived. No aggregate/game/staging/install/merge/workflow/provider action.
+
+Current strict guard freezes full511-file59b baseline, exact2runtime delta and exactnew membership. Focused successor source/refusal/package checks and Sam rereview remain required before source acceptance.
