@@ -116,5 +116,3 @@ internal sealed class SafeBuild : IDisposable
     }
     public void Dispose(){sourceLock.Dispose();foreach(var h in directories.Values.Reverse())h.Dispose();}
 }
-
-

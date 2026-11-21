@@ -26,14 +26,14 @@ This is a separate optional addon requiring Fallout4.esm and TLMWorldSlice.esp (
 
 ## Local proof
 
-Actual ignored `build/audition-003/TLMNpcPresentation.esp` SHA256:
+Actual ignored `build/audition-004/TLMNpcPresentation.esp` SHA256:
 `A0719A3D59C811E91FB157FCB7A218DB974DB51B1D007FEAE25DCD4216CF6EF2`.
 
 Cached offline .NET build:0 warnings/errors. Typed readback verifies the3 actors/outfits/doors and actual Traits-only/outfit/package/faction/item/persistent placement and reciprocal door targets. No Papyrus/runtime/compiler or CK export is needed for this no-script source candidate; that does not confer native acceptance.
 
 Independent raw source-side verifier checks39 records:3NPC_,3ACHR,3OTFT,2DOOR,24REFR,2CELL,1WRLD,1TES4. Only the old world/cell headers are overridden and remain payload/flags exact after local-ID remapping. All other records are own new IDs. Native selected donor race/sex/template state, explicit clothes, sex-appropriate model, unique FaceGeom targets, ordered unchanged face payloads, persistent room/actor placement, exact geometry poses and reciprocal door/landing links are checked. Eight focused corruption methods pass, including missing Traits/inherited inventory, swapped donor/outfit, unbound actor/custom morph byte, broken return/landing, room/old-header damage and duplicate face asset hashes. A test exposed that a dictionary dropped repeated face-morph subrecords; the checker now compares the full ordered face-subrecord sequence and the first repeated-morph mutation correctly refuses. The actual plugin did not contain that test mutation.
 
-SafeBuild is copied from the accepted source guard with only its bound project marker changed. It pins the owned master and actual project root, rejects redirected/existing outputs, uses exclusive new writes and preserves partials. Frozen LockedInput pins story/world read-only. No recursive deletion, adoption, SDK/model/service download, installation/profile/save/remote/workflow/provider action or game launch occurred.
+SafeBuild is copied from the accepted source guard with its bound project marker changed and trailing blank lines normalized. It pins the owned master and actual project root, rejects redirected/existing outputs, uses exclusive new writes and preserves partials. Frozen LockedInput pins story/world read-only. No recursive deletion, adoption, SDK/model/service download, installation/profile/save/remote/workflow/provider action or game launch occurred.
 
 Run cached `dotnet build --no-restore`, then guarded builder with exact owned master and a fresh project-build child. `python verify.py` / `python test_audition.py -v` use the new audition artifact and read-only exact base inputs. Old verifiers and manifests were not repinned. Rollback is to keep this opt-in addon out; no installed state changed.
 

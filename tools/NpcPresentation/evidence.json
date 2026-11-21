@@ -1,7 +1,7 @@
 {
   "task": "NPC-PRESENTATION-003",
   "baselineSource": "f491eeb4e670d306530446b60f82785950dbb747",
-  "artifact": "build/audition-003/TLMNpcPresentation.esp",
+  "artifact": "build/audition-004/TLMNpcPresentation.esp",
   "artifactSha256": "A0719A3D59C811E91FB157FCB7A218DB974DB51B1D007FEAE25DCD4216CF6EF2",
   "build": {
     "cachedOfflineOnly": true,
@@ -11,9 +11,9 @@
   },
   "focused": {
     "methods": 8,
-    "seconds": 2.44,
+    "seconds": 2.383,
     "status": "PASS",
-    "logSha256": "57C10FB424974B9DED3A4A2D53593A04DB12C9EFEDEB91804C11A08F1AC96584"
+    "logSha256": "C375FC4E6B6B0DF8FCE09DF050DBA579A52D9E249FDBC105925708EC55A72EAE"
   },
   "actualCounts": {
     "newNpcBases": 3,

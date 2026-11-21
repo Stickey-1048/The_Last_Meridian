@@ -55,6 +55,6 @@ class AuditionProof(unittest.TestCase):
   with self.assertRaisesRegex(AssertionError,'not distinct'):self.check(assets=assets)
  def test_existing_output_refused_without_changing_artifact(self):
   before=v.sha(v.OUT);binary=v.ROOT/'bin/Debug/net8.0/NpcPresentation.dll'
-  r=subprocess.run(['dotnet',str(binary),str(v.MASTER),'build/audition-003'],capture_output=True,text=True)
+  r=subprocess.run(['dotnet',str(binary),str(v.MASTER),str(v.OUT.parent.relative_to(v.ROOT))],capture_output=True,text=True)
   self.assertNotEqual(r.returncode,0);self.assertIn('REFUSED',r.stderr);self.assertEqual(v.sha(v.OUT),before)
 if __name__=='__main__':unittest.main()
