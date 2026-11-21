@@ -1454,6 +1454,18 @@
     "returns": "",
     "source": "Owned SDK ObjectReference.psc native declaration; Motion_Keyframed property2; source-level only"
    }
+  ],
+  "OnLoad": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias/ObjectReference",
+    "params": [],
+    "returns": "",
+    "source": "Actual owned SDK Base/ReferenceAlias.psc294 and ObjectReference.psc1051, Event OnLoad()"
+   }
   ]
  }
 }

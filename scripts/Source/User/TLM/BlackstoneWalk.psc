@@ -73,7 +73,7 @@ Bool Function Claim()
     busyEpoch = Road().Epoch()
     Return true
 EndFunction
-Function Release(Int capturedEpoch)
+Function ReleaseActivation(Int capturedEpoch)
     If busyEpoch == capturedEpoch
         busy = false
         busyEpoch = -1
@@ -177,7 +177,7 @@ Function ReadDocument(Int kind)
             EndIf
         EndIf
     EndIf
-    Release(capturedEpoch)
+    ReleaseActivation(capturedEpoch)
 EndFunction
 Function TakePass(Int capturedEpoch)
     If !Road().BeginPassIssue(capturedEpoch) || !Road().Current(capturedEpoch) || !Road().DocumentAccess(5,capturedEpoch)
@@ -197,7 +197,7 @@ Function Talk(Actor speakerActor)
     EndIf
     Int capturedEpoch = busyEpoch
     If speakerActor != Road().Alias_Mara.GetActorReference()
-        Release(capturedEpoch)
+        ReleaseActivation(capturedEpoch)
         Return
     EndIf
     Int node = Road().BeginTalk(capturedEpoch)
@@ -206,19 +206,19 @@ Function Talk(Actor speakerActor)
         Int answer = -1
         While page < NodeSize[node]
             If !Road().CanShowNode(node,capturedEpoch)
-                Release(capturedEpoch)
+                ReleaseActivation(capturedEpoch)
                 Return
             EndIf
             answer = Speech[NodeStart[node] + page].Show()
             If !Road().CanShowNode(node,capturedEpoch) || (page < NodeSize[node] - 1 && answer != 0)
-                Release(capturedEpoch)
+                ReleaseActivation(capturedEpoch)
                 Return
             EndIf
             page += 1
         EndWhile
         node = Road().AckChoice(node,answer,capturedEpoch)
     EndWhile
-    Release(capturedEpoch)
+    ReleaseActivation(capturedEpoch)
 EndFunction
 Function Mechanical(Int capturedEpoch)
     If !Road().MechanicalContext(capturedEpoch)
@@ -246,7 +246,7 @@ Function UseMechanical()
         ReadPages(4,capturedEpoch)
     EndIf
     Mechanical(capturedEpoch)
-    Release(capturedEpoch)
+    ReleaseActivation(capturedEpoch)
 EndFunction
 Function UseLowerDoor()
     If !Claim()
@@ -270,7 +270,7 @@ Function UseLowerDoor()
             TravelFailed.Show()
         EndIf
     EndIf
-    Release(capturedEpoch)
+    ReleaseActivation(capturedEpoch)
 EndFunction
 Function Boundary(Int capturedEpoch)
     If !Road().GetStageDone(100) || !Road().Current(capturedEpoch) || !Road().At(Game.GetPlayer(),Road().Alias_LowerArrival.GetReference(),384.0)
@@ -296,12 +296,12 @@ Function Travel(Int route)
         Else
             MissingReading.Show()
         EndIf
-        Release(capturedEpoch)
+        ReleaseActivation(capturedEpoch)
         Return
     EndIf
     If route == 0
         ; The original sheet, not a separate free travel menu, owns the journey.
-        Release(capturedEpoch)
+        ReleaseActivation(capturedEpoch)
         ReadDocument(0)
         Return
     EndIf
@@ -310,7 +310,7 @@ Function Travel(Int route)
             UpperDirections.Show()
         EndIf
     EndIf
-    Release(capturedEpoch)
+    ReleaseActivation(capturedEpoch)
 EndFunction
 
 Function ReadSign(ObjectReference signRef)
@@ -321,7 +321,7 @@ Function ReadSign(ObjectReference signRef)
     If Road().Current(capturedEpoch) && Road().At(Game.GetPlayer(),signRef,192.0)
         UpperDirections.Show()
     EndIf
-    Release(capturedEpoch)
+    ReleaseActivation(capturedEpoch)
 EndFunction
 
 Bool Function PanelCurrent(Int node, Int capturedEpoch)

@@ -66,7 +66,7 @@ Bool Function OpenLead()
             Return false
         EndIf
     EndIf
-    If !Initialize() || !Current(generation) || !SourceKnown()
+    If !InitializeStation() || !Current(generation) || !SourceKnown()
         Return false
     EndIf
     If !GetStageDone(10)
@@ -75,7 +75,7 @@ Bool Function OpenLead()
     Directions()
     Return true
 EndFunction
-Bool Function Initialize()
+Bool Function InitializeStation()
     If initialized
         Return Game.GetPlayer() == originalPlayer && Alias_Player.GetActorReference() == originalPlayer
     EndIf

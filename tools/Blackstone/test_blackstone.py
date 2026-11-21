@@ -129,6 +129,21 @@ class Adverse(unittest.TestCase):
   a=self.ready();self.release(a);shown=a.use('ServiceDoor',nodes={23:0,24:1});pages=sorted(n for n in a.messages if n.startswith(P+'N_24_'));self.assertGreater(len(pages),1);self.assertEqual(pages,[n for n in shown if n.startswith(P+'N_24_')]);self.assertIs(a.s.player.cell,a.s.placed[R+'ServiceArrival'].cell)
 
 
+
+class AuthoredBranches(unittest.TestCase):
+ def test_every_linked_mara_node_executes_without_origin_faction_or_reward_effect(self):
+  observed=set()
+  paths=[{1:1,2:0,3:0,4:1,5:0},{7:1,10:0,11:0,12:1,20:0},{7:1,10:1,13:1,18:0,19:0},{7:1,10:2,14:1,16:1,6:0},{7:1,10:2,14:3,17:1},{7:1,10:2,14:0,15:1,17:0}]
+  for i,path in enumerate(paths):
+   with self.subTest(path=i):
+    a=Station(self);a.service();a.use('RiderIndex',nodes={9:0});before={k:g.value for k,g in a.s.forms.items() if g.kind=='Global'}
+    if i:a.use('Mara',nodes={1:2,6:0})
+    shown=a.use('Mara',nodes=path)
+    for name in shown:
+     if name.startswith(P+'N_'):observed.add(int(name.removeprefix(P+'N_').split('_')[0]))
+    self.assertEqual(before,{k:g.value for k,g in a.s.forms.items() if g.kind=='Global'});self.assertNotIn(100,a.q.done);self.assertFalse(a.s.placed[R+'Mara'].dead);self.assertIsNone(a.s.placed[R+'Mara'].combat_target)
+  self.assertEqual({1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,18,19,20},observed)
+
 class FinalBoundaries(unittest.TestCase):
  def test_final_original_container_read_load_blocks_ack_and_allows_retry(self):
   from test_final_read import stacker
