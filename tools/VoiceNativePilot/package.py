@@ -11,7 +11,7 @@ if errors:raise SystemExit(errors)
 source=ROOT/'build/pilot-002';mapping=json.loads((source/'voice-mapping.json').read_text());base=ROOT.parents[3]/'work/rh-return-account-build-f491eeb/build/licensed-return-account-skeleton-001/bundle/TheLastMeridian.esp'
 errors=verify.artifact_problems(source/'TLMVoiceNativePilot.esp',mapping,base)
 if errors:raise SystemExit(errors)
-compile=ROOT/'build/compile-003';log=(compile/'compiler.txt').read_text(encoding='utf-8-sig')
+compile=ROOT/'build/compile-004';log=(compile/'compiler.txt').read_text(encoding='utf-8-sig')
 if '1 succeeded, 0 failed' not in log:raise SystemExit('Compiler gate not clear')
 pex=compile/'Scripts/TLMDev/VoicePilot.pex'
 compiled=json.loads((ROOT/'compile-receipt.json').read_text())
