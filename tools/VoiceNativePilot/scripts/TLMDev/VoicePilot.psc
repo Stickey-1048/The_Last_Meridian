@@ -30,7 +30,7 @@ Bool Function Context(Actor playerActor, Actor speaker, Int capturedGeneration)
 EndFunction
 
 Bool Function EligibleState(Actor playerActor, Actor speaker, Int capturedGeneration)
-    If IsDisabled() || !Is3DLoaded() || playerActor.IsDead() || playerActor.IsInCombat() || speaker.IsDead() || speaker.IsDisabled() || !speaker.Is3DLoaded() || speaker.IsInCombat()
+    If IsDisabled() || !Is3DLoaded() || playerActor.IsDisabled() || !playerActor.Is3DLoaded() || playerActor.IsDead() || playerActor.IsInCombat() || speaker.IsDead() || speaker.IsDisabled() || !speaker.Is3DLoaded() || speaker.IsInCombat()
         Return false
     EndIf
     If playerActor.GetParentCell() != GetParentCell() || speaker.GetParentCell() != GetParentCell() || playerActor.GetDistance(Self) > 384.0 || speaker.GetDistance(Self) > 512.0
@@ -84,7 +84,7 @@ Event OnActivate(ObjectReference akActionRef)
     EndIf
     Bool voiceAvailable = LineTopic && ExpectedVoice && observedVoice == ExpectedVoice && speaker.GetVoiceType() == ExpectedVoice
     ; Finite identity/state tail after all yielding native eligibility observations.
-    If !EligibleState(playerActor,speaker,capturedGeneration)
+    If !Context(playerActor,speaker,capturedGeneration)
         Release(capturedGeneration)
         Return
     EndIf

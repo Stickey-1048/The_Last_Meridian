@@ -104,7 +104,7 @@ class Source(unittest.TestCase):
  def test_removed_context_mutant_exposes_late_death_dispatch(self):
   with tempfile.TemporaryDirectory() as folder:
    p=Path(folder)/'VoicePilot.psc';text=(ROOT/'scripts/TLMDev/VoicePilot.psc').read_text(encoding='utf-8-sig')
-   first=text.index('    VoiceType observedVoice =');tail=text[first:];old='If !Context(playerActor,speaker,capturedGeneration)';self.assertEqual(tail.count(old),1);tail=tail.replace(old,'If false',1);old='If !EligibleState(playerActor,speaker,capturedGeneration)';self.assertEqual(tail.count(old),1);tail=tail.replace(old,'If false',1);p.write_text(text[:first]+tail,encoding='utf-8')
+   first=text.index('    VoiceType observedVoice =');tail=text[first:];old='If !Context(playerActor,speaker,capturedGeneration)';self.assertEqual(tail.count(old),2);tail=tail.replace(old,'If false');p.write_text(text[:first]+tail,encoding='utf-8')
    a=Fixture(Path(folder));fired=[]
    def late(ref,ctx):
     if not fired:fired.append(True);a.speaker.dead=True
@@ -126,6 +126,33 @@ class Source(unittest.TestCase):
    self.assertIn(before,data)
    with tempfile.TemporaryDirectory() as folder:
     p=Path(folder)/'bad.esp';p.write_bytes(data.replace(before,after));self.assertTrue(verify.artifact_problems(p,mapping,baseline))
+ def test_review_initial_disabled_or_unloaded_player_refuses(self):
+  for mode in ('disabled','unloaded'):
+   a=Fixture()
+   if mode=='disabled':a.s.player.disabled=True
+   else:a.s.player.cell=None
+   a.use();self.assertEqual(a.says,[]);self.assertEqual(a.s.messages_shown,[])
+ def test_review_second_voice_read_late_scene_and_talking_fire_refuse_recover(self):
+  for mode in ('talking','scene'):
+   a=Fixture();calls=[];fired=[]
+   def late(ref,ctx):
+    calls.append(True)
+    if len(calls)==2:
+     fired.append(True)
+     if mode=='talking':a.talking=True
+     else:a.speaker.in_scene=True
+    return a.voice
+   a.s.n_objectreference_getvoicetype=late;a.use();self.assertEqual(fired,[True]);self.assertEqual(a.says,[]);self.assertEqual(a.s.messages_shown,['Prompt'])
+   a.talking=False;a.speaker.in_scene=False;a.use();self.assertEqual(len(a.says),1)
+ def test_removed_final_readiness_mutant_reproduces_second_read_talking(self):
+  with tempfile.TemporaryDirectory() as folder:
+   text=(ROOT/'scripts/TLMDev/VoicePilot.psc').read_text(encoding='utf-8');a=text.index('    Bool voiceAvailable');before=text[:a];tail=text[a:];old='If !Context(playerActor,speaker,capturedGeneration)';self.assertEqual(tail.count(old),1);(Path(folder)/'VoicePilot.psc').write_text(before+tail.replace(old,'If false',1),encoding='utf-8')
+   a=Fixture(Path(folder));calls=[]
+   def late(ref,ctx):
+    calls.append(True)
+    if len(calls)==2:a.talking=True
+    return a.voice
+   a.s.n_objectreference_getvoicetype=late;a.use();self.assertEqual(len(calls),2);self.assertEqual(len(a.says),1)
 if __name__=='__main__':unittest.main(verbosity=2)
 
 
