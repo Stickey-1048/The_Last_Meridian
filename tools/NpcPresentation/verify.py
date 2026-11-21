@@ -2,7 +2,7 @@
 from pathlib import Path
 import struct,zlib,json,collections,hashlib,subprocess
 ROOT=Path(__file__).resolve().parent
-OUT=ROOT/'build/lit-001/TLMNpcPresentation.esp'
+OUT=ROOT/'build/photo-001/TLMNpcPresentation.esp'
 BASE=ROOT.parents[3]/'work/rh-return-account-build-f491eeb/build/licensed-return-account-skeleton-001/bundle'
 MASTER=Path('C:/Program Files (x86)/GOG Galaxy/Games/Fallout 4 GOTY/Data/Fallout4.esm')
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest().upper()
@@ -109,4 +109,5 @@ def source_errors():
  return errors
 if __name__=='__main__':
  assert not source_errors(),source_errors()
- print(json.dumps(verify(OUT.read_bytes(),*inputs()),indent=2))
+ from verify_photos import verify_photos
+ print(json.dumps(verify_photos(OUT.read_bytes()),indent=2))

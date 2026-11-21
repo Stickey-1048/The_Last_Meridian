@@ -1,3 +1,15 @@
+# NPC portrait007: spatial closeups, no command timing
+
+Append-only successor of accepted lighting005/e1c33545c750ba1ac69bc3fc4fbf9d861eff2b74. Root observed good native005 lighting;006 post-COC position/FOV framing reset during load. This successor builds composition into three NEW own cells: TLM_NPC_Photo_Owen, TLM_NPC_Photo_Ada, TLM_NPC_Photo_Miriam.
+
+Each copies the same complete proven lighting/template/image-space and22kit geometry refs. Exactly one new placed actor uses the EXACT existing accepted subject NPC base, at0,120,16 yawPi. One new fill at0,0,160 uses the existing own512-radius white LIGH. Native owned STAT000032 was looked up by actual EditorID COCMarkerHeading and is referenced by a new persistent arrival at0,0,16 yaw0. No guessed ID or fallback positioning. No new NPC bases/outfits/material/light bases, scripts, quests or doors.
+
+Every old005record remains byte/flags/parent exact except TES4 record-count bookkeeping. Only3CELL+3ACHR+72REFR append (78newrecords;121total). Two targeted append-only/mutation methods PASS9.311s: exact old records, complete new cell light/header/kit equivalence, exact shared base/actor pose/fill/real native marker and parents; oldoutfit, wrong subjectbase, marker andpose changes refuse. Scoped current check is verify_photos.py/test_photos.py; verify.py main dispatches current proof and source guard. Older standalone verifiers/tests remain historical, not newly counted against007.
+
+Actual ignored build/photo-001/TLMNpcPresentation.esp SHA031F5CB0E88971D7E84ACFA9573FF32ECB7F852AE50126D81DE3DCD831D7AD72. Cached build0warnings/errors. Existing asset/donor/material gates carry unchanged. Source data proves spatial intent, not actual framing/face approval; root must capture three native views. Capture007 uses only per-subject whitelist COC+7normalSPECIAL4+approvedtm, no setpos/angle/FOV commands. Prior005/006 artifacts/evidence remain preserved. No staging/game/profile/save action by author.
+
+Historical005 design/proof follows for unchanged base content.
+
 # NPC presentation005: neutral lighting successor
 
 Bounded successor of8041eb9 after actual004 native screenshot showed unreadably dark silhouettes/high-contrast room. That image is lighting evidence, not proof of texture corruption. No face, outfit, actor, room geometry, door or material target changes.
