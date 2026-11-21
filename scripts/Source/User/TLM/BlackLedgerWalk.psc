@@ -23,6 +23,10 @@ Message Property EarlierChoice Auto Const Mandatory
 Message Property Missing Auto Const Mandatory
 Message Property Pending Auto Const Mandatory
 Message Property SliceEnd Auto Const Mandatory
+Message Property TaskBeckett Auto Const Mandatory
+Message Property TaskPorch Auto Const Mandatory
+Message Property TaskReturn Auto Const Mandatory
+ReferenceAlias Property Alias_EntryGuide Auto Const Mandatory
 Quest sourceOwner = None
 ObjectReference entryPoint = None
 ObjectReference mercyReturn = None
@@ -52,7 +56,7 @@ Bool Function Bind(Quest actualSource, ObjectReference actualEntry, ObjectRefere
 EndFunction
 
 Bool Function SetUp()
-    If !Road().LeadKnown()
+    If !Road().LeadKnown() || Road().GetStageDone(110)
         Return false
     EndIf
     If !IsRunning()
@@ -73,6 +77,7 @@ Bool Function SetUp()
     If !Road().Initialize(actual)
         Return false
     EndIf
+    Alias_EntryGuide.ForceRefTo(entryPoint)
     If !saved
         saved = new Bool[2]
         visitPending = new Bool[2]
@@ -85,6 +90,7 @@ EndFunction
 
 Function Loaded()
     Road().Loaded()
+    ClockGap()
     busy = false
 EndFunction
 
@@ -167,6 +173,11 @@ Bool Function OfferSheriff(Actor sheriffActor)
         Return true
     EndIf
     busy = true
+    If Road().GetStageDone(30)
+        CurrentTask()
+        busy = false
+        Return true
+    EndIf
     If !Road().GetStageDone(10)
         Int answer = Lead.Show()
         If answer != 0 || !Role(sheriffActor,0,capturedEpoch)
@@ -309,7 +320,6 @@ Function ReturnOriginals(Int capturedEpoch)
                     EndIf
                     visitPending[index] = false
                     staged[index] = false
-                    saved[index] = false
                 EndIf
             EndIf
         EndIf
@@ -372,7 +382,7 @@ Function PreparePorch(Int capturedEpoch)
         EndIf
         ObjectReference anchor = RoomSlots[visitorIndex].GetReference()
         If visitorIndex == 0
-            anchor.MoveTo(porchRef,0.0,-200.0,16.0)
+            anchor.MoveTo(porchRef,60.0,-280.0,16.0)
         Else
             anchor.MoveTo(porchRef)
         EndIf
@@ -389,7 +399,11 @@ Function PreparePorch(Int capturedEpoch)
         If !witnessActor || witnessActor.IsDead() || !anchor || !Road().Current(capturedEpoch)
             Return
         EndIf
-        anchor.MoveTo(porchRef,-64.0 + index * 128.0,96.0,16.0)
+        If index == 0
+            anchor.MoveTo(porchRef,60.0,160.0,16.0)
+        Else
+            anchor.MoveTo(porchRef,-220.0,220.0,16.0)
+        EndIf
         witnessActor.Enable()
         witnessActor.MoveTo(anchor)
         If !Road().At(witnessActor,anchor,96.0) || !Road().Current(capturedEpoch)
@@ -454,7 +468,10 @@ Function BeckettTalk(Actor beckettActor)
         Return
     EndIf
     busy = true
-    Int answer = Say("vickers_door",beckettActor,3,capturedEpoch)
+    Int answer = 0
+    If !Road().GetStageDone(43)
+        answer = Say("vickers_door",beckettActor,3,capturedEpoch)
+    EndIf
     If answer == 1
         Say("vickers_glove",beckettActor,3,capturedEpoch)
     ElseIf answer == 0
@@ -484,12 +501,16 @@ Bool Function OfferActor(Actor actorRef, Int roleNumber)
     If busy || !SetUp() || !Role(actorRef,roleNumber,Road().Epoch())
         Return false
     EndIf
+    If roleNumber == 1 && !Road().GetStageDone(10)
+        Return false
+    EndIf
     Int capturedEpoch = Road().Epoch()
     busy = true
     Int answer = EarlierChoice.Show()
     If answer == 1
+        Bool stillCurrent = Role(actorRef,roleNumber,capturedEpoch)
         busy = false
-        Return false
+        Return !stillCurrent
     EndIf
     If answer != 0 || !Role(actorRef,roleNumber,capturedEpoch)
         busy = false
@@ -510,6 +531,8 @@ Bool Function OfferActor(Actor actorRef, Int roleNumber)
             ElseIf answer == 1
                 Say("vane_silver_early",actorRef,1,capturedEpoch)
             EndIf
+        Else
+            CurrentTask()
         EndIf
     ElseIf roleNumber == 2
         answer = Say("haskell_sheet",actorRef,2,capturedEpoch)
@@ -581,7 +604,19 @@ Function FinishEncounter()
     busy = true
     ReturnOriginals(Road().Epoch())
     If !visitPending[0] && !visitPending[1]
-        Road().CompleteChapter(Road().Epoch())
+        If Road().CompleteChapter(Road().Epoch())
+            SliceEnd.Show()
+        EndIf
     EndIf
     busy = false
+EndFunction
+
+Function CurrentTask()
+    If Road().Resolution() == 61
+        TaskReturn.Show()
+    ElseIf Road().GetStageDone(43) && Road().BookHeld()
+        TaskPorch.Show()
+    Else
+        TaskBeckett.Show()
+    EndIf
 EndFunction

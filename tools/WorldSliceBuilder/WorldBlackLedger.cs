@@ -3,7 +3,7 @@ using Mutagen.Bethesda.Fallout4;
 using Mutagen.Bethesda.Plugins;
 using Noggog;
 public static partial class WorldStory {
- public static readonly Dictionary<string,(float X,float Y,float Z)> BlackLedgerSites=new(){["Entry"]=(3370,2510,12),["MercyReturn"]=(3550,2850,16),["Public"]=(3510,3010,12),["Finish"]=(3510,3070,12)};
+ public static readonly Dictionary<string,(float X,float Y,float Z)> BlackLedgerSites=new(){["Entry"]=(3120,2540,12),["MercyReturn"]=(3560,2960,16),["Public"]=(3560,3010,12),["Finish"]=(3560,3070,12)};
  public static object? CompleteBlackLedgerEntry(Fallout4Mod mod,Worldspace world,IFallout4ModGetter source){
   var section=mod.Quests.Single(q=>q.EditorID=="TLM_WS_A1");var walk=section.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:Act1Walk");
   var main=source.Quests.SingleOrDefault(q=>q.EditorID=="TLM_MQ04");var original=source.Quests.SingleOrDefault(q=>q.EditorID=="TLM_BL_Entry");
@@ -11,6 +11,16 @@ public static partial class WorldStory {
   if(main==null&&original==null){if(binding.Length!=0||authority.Length!=0)throw new InvalidDataException("Partial Black Ledger old source");return null;}
   if(main==null||original==null||binding.Length!=1||authority.Length!=1||binding[0] is not ScriptObjectProperty door||door.Object.FormKey!=original.FormKey||authority[0] is not ScriptObjectProperty ledger||ledger.Object.FormKey!=main.FormKey)throw new InvalidDataException("Black Ledger authority/entry substitution");
   if(main.VirtualMachineAdapter?.Scripts.Select(s=>s.Name).OrderBy(s=>s).SequenceEqual(new[]{"TLM:BlackLedgerWalk","TLM:MQ04Quest"})!=true)throw new InvalidDataException("Single Black Ledger ledger/controller required");
+  // Only these new identity properties are translated from source actors to
+  // their already existing exterior originals. Never nominate a new actor.
+  var sourceSection=source.Quests.Single(q=>q.EditorID=="TLM_A1");
+  foreach(var role in new[]{("BlackLedgerOriginalSheriff","Pritchard"),("BlackLedgerOriginalVane","Vane"),("BlackLedgerOriginalHaskell","Haskell")}){
+   var expectedSource=sourceSection.Aliases!.OfType<IQuestReferenceAliasGetter>().Single(a=>a.Name==role.Item2).ForcedReference.FormKey;
+   var expectedExterior=section.Aliases!.OfType<IQuestReferenceAliasGetter>().Single(a=>a.Name==role.Item2).ForcedReference.FormKey;
+   var prop=walk.Properties.OfType<ScriptObjectProperty>().Single(p=>p.Name==role.Item1);
+   if(prop.Alias!=-1||prop.Object.FormKey!=expectedSource)throw new InvalidDataException("Black Ledger source original property substituted "+role.Item2);
+   prop.Object.SetTo(expectedExterior);
+  }
   var refs=source.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(b=>b.Cells).SelectMany(c=>c.Persistent.Concat(c.Temporary)).ToDictionary(r=>r.FormKey);
   var clone=original.Duplicate(mod.GetNextFormKey());clone.EditorID="TLM_WS_BL_Entry";clone.Name="Black Ledger exterior travel/read controls";
   var aliases=clone.Aliases!.OfType<QuestReferenceAlias>().ToArray();if(aliases.Length!=4||!aliases.Select(a=>a.Name!).OrderBy(x=>x).SequenceEqual(BlackLedgerSites.Keys.OrderBy(x=>x)))throw new InvalidDataException("Exact four Black Ledger exterior roles required");
@@ -36,7 +46,7 @@ public static partial class WorldStory {
   }
   var own=addon.Worldspaces.Single().TopCell!.Persistent.ToDictionary(r=>r.FormKey);
   foreach(var a in clone.Aliases!.OfType<IQuestReferenceAliasGetter>()){
-   if(!BlackLedgerSites.TryGetValue(a.Name!,out var at)||!own.TryGetValue(a.ForcedReference.FormKey,out var r)||r.EditorID!="TLM_WS_ST_BL_"+a.Name||r.Position!=new P3Float(at.X,at.Y,at.Z))throw new InvalidDataException("Black Ledger cloned control position/identity mismatch");
+   if(!BlackLedgerSites.TryGetValue(a.Name!,out var at)||!own.TryGetValue(a.ForcedReference.FormKey,out var r)||r is not IPlacedObjectGetter placed||placed.EditorID!="TLM_WS_ST_BL_"+a.Name||placed.Position!=new P3Float(at.X,at.Y,at.Z))throw new InvalidDataException("Black Ledger cloned control position/identity mismatch");
   }
  }
 }

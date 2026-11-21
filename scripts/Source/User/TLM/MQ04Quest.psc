@@ -12,6 +12,8 @@ ReferenceAlias Property Alias_Warrant Auto Const Mandatory
 ReferenceAlias Property Alias_Receipt Auto Const Mandatory
 ReferenceAlias Property Alias_Counter Auto Const Mandatory
 ReferenceAlias Property Alias_Porch Auto Const Mandatory
+ReferenceAlias Property Alias_SheriffGuide Auto Const Mandatory
+ReferenceAlias Property Alias_VaneGuide Auto Const Mandatory
 ReferenceAlias[] Property Witnesses Auto Const Mandatory
 Int Property BookPageCount Auto Const Mandatory
 
@@ -67,7 +69,16 @@ Bool Function Initialize(Actor[] actualSources)
         Return false
     EndIf
     If originalBook
-        Return actualSources[0] == originalSources[0] && actualSources[1] == originalSources[1] && actualSources[2] == originalSources[2]
+        Int index = 0
+        While index < 3
+            ; Missing roles remain unavailable, never nominate replacements or
+            ; prevent an independent surviving Haskell source from speaking.
+            If actualSources[index] && actualSources[index] != originalSources[index]
+                Return false
+            EndIf
+            index += 1
+        EndWhile
+        Return true
     EndIf
     Int index = 0
     While index < 3
@@ -110,6 +121,8 @@ Bool Function Initialize(Actor[] actualSources)
     originalSources = actualSources
     originalWitnesses = crowd
     playerIdentity = Alias_Player.GetActorReference()
+    Alias_SheriffGuide.ForceRefTo(actualSources[0])
+    Alias_VaneGuide.ForceRefTo(actualSources[1])
     originalBook = bookRef
     originalWarrant = warrantRef
     originalReceipt = receiptRef
@@ -276,10 +289,12 @@ Bool Function RecordLawfulAccess(Int capturedEpoch)
     If !GetStageDone(10) || !warrantRequested || !WarrantPresent(capturedEpoch) || !Speaker(OriginalActor(1),1,capturedEpoch) || !At(Game.GetPlayer(),Alias_Counter.GetReference()) || !At(OriginalActor(0),Alias_Counter.GetReference())
         Return false
     EndIf
-    SetStage(21)
-    SetObjectiveCompleted(10)
-    SetObjectiveCompleted(11)
-    SetObjectiveDisplayed(30)
+    If !GetStageDone(21)
+        SetStage(21)
+        SetObjectiveCompleted(10)
+        SetObjectiveCompleted(11)
+        SetObjectiveDisplayed(30)
+    EndIf
     Return true
 EndFunction
 
@@ -308,7 +323,7 @@ Bool Function AckReadPage(ObjectReference bookRef, Int pageNumber, Int capturedE
         Return false
     EndIf
     readPage += 1
-    If readPage == BookPageCount
+    If readPage == BookPageCount && !GetStageDone(30)
         SetStage(30)
         SetObjectiveCompleted(30)
         SetObjectiveDisplayed(40)
@@ -328,9 +343,11 @@ Bool Function AllowInspection(Actor beckettActor, Int capturedEpoch)
     If !GetStageDone(40) || resolution != 0 || !WarrantPresent(capturedEpoch) || !Beckett(beckettActor,capturedEpoch)
         Return false
     EndIf
-    SetStage(43)
-    SetObjectiveCompleted(40)
-    SetObjectiveDisplayed(43)
+    If !GetStageDone(43)
+        SetStage(43)
+        SetObjectiveCompleted(40)
+        SetObjectiveDisplayed(43)
+    EndIf
     Return true
 EndFunction
 
