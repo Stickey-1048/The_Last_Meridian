@@ -272,6 +272,7 @@ if(args.Length==4){
  if(fairSource.Quests.Any(q=>q.EditorID=="TLM_MQ03"))fairFloorAudit=WorldStory.AuditFourFlagsInterior(fairSource,master);
  // AFTER the previously last relief allocations: preserve every earlier ID.
  fourFlags=WorldStory.CompleteFourFlagsEntry(mod,world,fairSource);
+ WorldStory.CompleteBlackLedgerEntry(mod,world,fairSource);
  if(fourFlags!=null){
   var at=WorldStory.FourFlagsSites["Entry"];
   if(at.X<96||at.X>4000||at.Y<96||at.Y>4000||at.Z!=12)throw new InvalidDataException("Fair entry outside supported flat LAND");

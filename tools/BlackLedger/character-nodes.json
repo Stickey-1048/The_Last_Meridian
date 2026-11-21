@@ -1,0 +1,100 @@
+{
+  "sourcePacket": "ed6d8a20c8b0cf47d450d7d6026662429a493d61068d157bbd93619018e6a711",
+  "nodes": [
+    {
+      "id": "pritchard_friend",
+      "speaker": "pritchard",
+      "source_mapping": "optional branch from existing mq04/pritchard_warrant; do not replace its core route",
+      "requires": [
+        "MQ04 genuinely offered after the fair lead",
+        "black book not yet read"
+      ],
+      "text": "Silas knows how I take my coffee. I know which chair he likes. Twenty years of that, and I never asked what paid for the coffee.",
+      "choices": [
+        {
+          "label": "You trusted a friend.",
+          "then": "pritchard_friend_answer"
+        },
+        {
+          "label": "Then ask him now. With a warrant.",
+          "then": "pritchard_warrant_next"
+        },
+        {
+          "label": "I need to think.",
+          "close": true
+        }
+      ],
+      "effect_request": "none",
+      "next_objective": "Unchanged: choose how to get access to Vane's hidden book."
+    },
+    {
+      "id": "pritchard_friend_answer",
+      "speaker": "pritchard",
+      "source_mapping": "new continuation; never automatic greeting",
+      "requires": [
+        "direct current link from pritchard_friend",
+        "same pre-book state"
+      ],
+      "text": "I did. That isn't the charge. The charge is what I stopped asking because the answers might cost me a friend. You bring me evidence. I'll do my part.",
+      "choices": [
+        {
+          "label": "Bring the warrant.",
+          "then": "pritchard_warrant_next"
+        },
+        {
+          "label": "I'll look first, quietly.",
+          "close": true
+        }
+      ],
+      "effect_request": "none",
+      "next_objective": "Unchanged: seek actual access to the black book. No trust meter or automatic acquittal."
+    },
+    {
+      "id": "pritchard_warrant_next",
+      "speaker": "pritchard",
+      "source_mapping": "new continuation before existing lawful access route21",
+      "requires": [
+        "explicit current request for a warrant",
+        "same pre-book state"
+      ],
+      "text": "All right. Meet me at Silas Vane's counter. I'll put the warrant down; you ask to see the second book. If he objects, let him object to me.",
+      "choices": [
+        {
+          "label": "I'll meet you at the trading post.",
+          "effect_request": "request lawful access plan only; stage21 requires actual arrival with warrant and sheriff",
+          "close": true
+        },
+        {
+          "label": "Not yet.",
+          "close": true
+        }
+      ],
+      "effect_request": "none before confirmation",
+      "next_objective": "Meet Pritchard at Vane's trading-post counter."
+    },
+    {
+      "id": "porch_expose_confirm",
+      "speaker": null,
+      "source_mapping": "new clearly labelled player confirmation before existing resolution61",
+      "requires": [
+        "player deliberately selected public reading",
+        "actual accessible original book",
+        "same unresolved porch context"
+      ],
+      "text": "Read the payment records to the crowd. Vane will not be handed to the rope by this choice. His trade and credit may collapse; local winter supplies could become harder to obtain. You can still return and help, but no relief has been delivered yet.",
+      "choices": [
+        {
+          "label": "Read the book publicly.",
+          "effect_request": "begin actual public reading; commit61 only after its required acknowledgment",
+          "close": true
+        },
+        {
+          "label": "Back. I haven't decided.",
+          "close": true
+        }
+      ],
+      "effect_request": "none before confirmation",
+      "next_objective": "On actual61: find a real source naming Blackstone; keep optional supply follow-up separate."
+    }
+  ]
+}

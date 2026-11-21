@@ -1373,6 +1373,18 @@
     "returns": "",
     "source": "Installed CK Base/ReferenceAlias.psc line534, read 2026-11-17; source signature only, native event delivery unverified"
    }
+  ],
+  "IsTalking": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "bool",
+    "source": "Owned Fallout 4 SDK Actor.psc native declaration; actual Papyrus2.8.0.4 compile verified"
+   }
   ]
  }
 }

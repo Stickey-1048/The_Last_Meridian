@@ -1603,6 +1603,11 @@ public sealed partial class Builder
                         });
                     entry.Properties.Add(aliases);
                     break;
+                case FormListProp forms:
+                    var localForms = new ScriptObjectListProperty { Name = forms.Name, Flags = ScriptProperty.Flag.Edited };
+                    foreach (var id in forms.EditorIds) localForms.Objects.Add(new ScriptObjectProperty { Object = Local(id).ToLink<IFallout4MajorRecordGetter>(), Alias = -1 });
+                    entry.Properties.Add(localForms);
+                    break;
                 case ReferenceListProp refs:
                     if(refs.EditorIds.Any(id=>!_placed.ContainsKey(id))){Pending.Add("Strict placed-reference list unavailable: "+refs.Name);break;}
                     var originals = new ScriptObjectListProperty { Name = refs.Name, Flags = ScriptProperty.Flag.Edited };

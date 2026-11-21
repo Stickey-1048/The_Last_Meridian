@@ -144,6 +144,7 @@ public static partial class WorldStory
         ValidateNightMail(addon,section);
         ValidateRedHollow(addon,section);
         ValidateFourFlags(addon,section);
+        ValidateBlackLedger(addon,section);
     }
     public static object Add(Fallout4Mod mod, Worldspace world, Cell clearing, IFallout4ModGetter source)
     {

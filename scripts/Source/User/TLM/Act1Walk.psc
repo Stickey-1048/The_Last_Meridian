@@ -47,6 +47,11 @@ Group Quests
 	Quest Property TLM_SQ01 Auto Const Mandatory
 	Quest Property TLM_FourFlags Auto Const
 	Quest Property TLM_FourFlagsEntry Auto Const
+	Quest Property TLM_BlackLedger Auto Const
+	Quest Property TLM_BlackLedgerEntry Auto Const
+	ObjectReference Property BlackLedgerOriginalSheriff Auto Const
+	ObjectReference Property BlackLedgerOriginalVane Auto Const
+	ObjectReference Property BlackLedgerOriginalHaskell Auto Const
 EndGroup
 
 Group Globals
@@ -268,6 +273,7 @@ Function Begin()
 	OpenNightMail()
 	OpenRedHollow()
 	OpenFourFlags()
+	OpenBlackLedger()
 	Debug.Trace("TLM_A1: the first section is set up; aliases left empty: " + unfilled + ", people not there: " + missing)
 	If SayBegin
 		SayBegin.Show()
@@ -403,6 +409,26 @@ Function Spoken(int aiWho, Actor akWho)
 	; alias owns that activation there; neither old encounter nor alias is reset.
 	If TLM_RedHollow && (TLM_RedHollow as TLM:RedHollowWalk).BorrowsActor(akWho)
 		Return
+	EndIf
+	If TLM_BlackLedger
+		TLM:BlackLedgerWalk ledger = TLM_BlackLedger as TLM:BlackLedgerWalk
+		If ledger && ledger.IsVisiting(akWho)
+			If aiWho == WHO_PRITCHARD
+				ledger.OfferSheriff(akWho)
+			ElseIf aiWho == WHO_VANE
+				ledger.OfferActor(akWho,1)
+			EndIf
+			Return
+		EndIf
+		If ledger && (aiWho == WHO_VANE || aiWho == WHO_HASKELL)
+			int ledgerRole = 1
+			If aiWho == WHO_HASKELL
+				ledgerRole = 2
+			EndIf
+			If ledger.OfferActor(akWho,ledgerRole)
+				Return
+			EndIf
+		EndIf
 	EndIf
 	; Nothing between the test and the claim calls into the game, so two
 	; activations cannot both pass.
@@ -666,6 +692,12 @@ bool Function AfterTheChapter(Actor akWho)
 	If hollow == RIVER_REPORT_GIVEN || hollow == RIVER_REPORT_CLOSED
 		Return true
 	EndIf
+	If TLM_BlackLedger
+		TLM:BlackLedgerWalk ledger = TLM_BlackLedger as TLM:BlackLedgerWalk
+		If ledger && ledger.OfferSheriff(akWho)
+			Return true
+		EndIf
+	EndIf
 	; Nothing was offered, or each was explicitly left for later: the briefing, as before.
 	Return OfferBriefing(akWho)
 EndFunction
@@ -691,6 +723,9 @@ EndFunction
 
 bool Function FairActorAvailable(Actor who)
 	If !CanVisitFair() || !who
+		Return false
+	EndIf
+	If TLM_BlackLedger && (TLM_BlackLedger as TLM:BlackLedgerWalk).IsVisiting(who)
 		Return false
 	EndIf
 	If who == FairActor(0)
@@ -1262,4 +1297,29 @@ int Function OfferHollowReport(Actor akWho)
 		Return RIVER_REPORT_NONE
 	EndIf
 	Return (TLM_RedHollow as TLM:RedHollowWalk).OfferReport(akWho)
+EndFunction
+
+Actor Function BlackLedgerActor(int role)
+	ObjectReference original = BlackLedgerOriginalSheriff
+	int index = 18
+	If role == 1
+		original = BlackLedgerOriginalVane
+		index = 20
+	ElseIf role == 2
+		original = BlackLedgerOriginalHaskell
+		index = 22
+	ElseIf role != 0
+		Return None
+	EndIf
+	If !original || !Everything || Everything.Length <= index || !Everything[index] || Everything[index].GetReference() != original
+		Return None
+	EndIf
+	Return original as Actor
+EndFunction
+
+Function OpenBlackLedger()
+	TLM:BlackLedgerEntry adapter = TLM_BlackLedgerEntry as TLM:BlackLedgerEntry
+	If adapter
+		adapter.OpenFrom(Self)
+	EndIf
 EndFunction

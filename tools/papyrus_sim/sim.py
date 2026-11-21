@@ -1815,6 +1815,10 @@ class Session:
         # synthetic observation. No real inventory/save receipt is implied.
         return ref.container
 
+    def n_actor_istalking(self, actor, context):
+        # [assumed] Synthetic occupied-speaker state only, not native speech completion.
+        return bool(getattr(actor, "talking", False))
+
     def n_actor_isinscene(self, ref, context):
         # [SDK] Actor.psc:397 bool IsInScene(), native. No baseline stand-in
         # scene runs; adverse tests explicitly seed this separate state.
