@@ -48,3 +48,10 @@ Root/Sam must independently review source and the local artifact; root owns actu
 Native gates remain: actual master loading and WRLD/CELL override-child merging; persistent cross-world MoveTo/load/settling/heading; control visibility/activation/cancellation; return accessibility, terrain seam/water/collision/Havok/LOD and absence of unintended engine reactions; controller/save-load/normal closure. Numeric model bounds are not native walkability. No background automation, NPC navigation or ready-demo claim is made.
 
 Source-file receipt pins normalize UTF-8 BOM/CRLF/LF consistently with the accepted source policy; binary dependency/plugin hashes remain exact bytes. A fresh Windows worktree must not fail merely because Git materializes normal CRLF.
+
+
+## Independent F1 repair
+
+Historical3e89c469source was held by Sam's signed review0CFCEBDC7A919D70F94DFFF498512A71D93452F9E19E85FFC99800D14D1F0D96. Its raw artifact/preservation checks passed, but three additional actual-PSC callbacks at the renewed IsInDialogueWithPlayer read allowed travel after the player moved far, changed source world or the destination became disabled. Original failed probe/results remain preserved; earlier eleven nominal passes do not clear those counterexamples.
+
+Current Context now finishes scene/dialogue observations first, then performs one finite final control/destination/world/locality/participant observation and retains captured current-player/generation checks last. No alternating loop, new state, geometry/UI text or outcome API is added. Three asserted-fired late-native regressions require no MoveTo/no success notice and ordinary retry after restoring the prerequisite. An actual historical3e89cscript mutant reproduces the forbidden movement. Existing confirm/cancel, readiness, generation/lock and raw artifact cases remain current. Native calls still yield; no atomic-world guarantee is made. C#builder and serialized addon bytes stay unchanged; only separate current script/test/source receipts change. Root retains actual Papyrus compile/integration/native gates.

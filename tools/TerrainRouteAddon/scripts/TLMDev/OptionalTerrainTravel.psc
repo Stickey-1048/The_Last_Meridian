@@ -17,10 +17,12 @@ bool Function Context(Actor playerActor, int capturedGeneration)
 	If !playerActor || playerActor != Game.GetPlayer() || !Destination || !Prompt || !SourceWorld || !DestinationWorld
 		Return false
 	EndIf
-	If IsDisabled() || !Is3DLoaded() || Destination.IsDisabled() || playerActor.GetWorldSpace() != SourceWorld || GetWorldSpace() != SourceWorld || Destination.GetWorldSpace() != DestinationWorld || playerActor.GetDistance(Self) > 192.0
+	; Finish yielding scene/dialogue observations before final travel-state reads.
+	If playerActor.IsInScene() || IsInDialogueWithPlayer()
 		Return false
 	EndIf
-	If playerActor.IsInScene() || IsInDialogueWithPlayer() || playerActor.IsDisabled() || !playerActor.Is3DLoaded() || playerActor.IsInCombat() || playerActor.IsDead()
+	; One finite final observation, not an alternating atomic-world check loop.
+	If IsDisabled() || !Is3DLoaded() || Destination.IsDisabled() || playerActor.GetWorldSpace() != SourceWorld || GetWorldSpace() != SourceWorld || Destination.GetWorldSpace() != DestinationWorld || playerActor.GetDistance(Self) > 192.0 || playerActor.IsDisabled() || !playerActor.Is3DLoaded() || playerActor.IsInCombat() || playerActor.IsDead()
 		Return false
 	EndIf
 	Return playerActor == Game.GetPlayer() && capturedGeneration == generation

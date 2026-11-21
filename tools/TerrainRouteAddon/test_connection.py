@@ -81,6 +81,35 @@ class TravelSource(unittest.TestCase):
    source=Path(folder);p=source/'OptionalTerrainTravel.psc';text=(ROOT/'scripts/TLMDev/OptionalTerrainTravel.psc').read_text(encoding='utf-8-sig');old='If answer != 0 || !Context(playerActor,capturedGeneration)';self.assertEqual(text.count(old),1);p.write_text(text.replace(old,'If false || !Context(playerActor,capturedGeneration)'),encoding='utf-8')
    a=Fixture(source=source);a.answer=1;a.use();self.assertEqual(len(a.moves),1)
 
+ def test_sam_late_dialogue_read_changes_block_travel_and_ordinary_retry_recovers(self):
+  for mode in ('player-far','wrong-source-world','destination-disabled'):
+   with self.subTest(mode=mode):
+    a=Fixture();old=a.s.n_objectreference_isindialoguewithplayer;fired=[];before=dict(a.s.player.inventory)
+    def late(ref,context):
+     if a.s.messages_shown and not fired:
+      fired.append(True)
+      if mode=='player-far':a.s.player.pos=(9999,0,0)
+      elif mode=='wrong-source-world':a.s.player.cell=a.second
+      else:a.target.disabled=True
+     return old(ref,context)
+    a.s.n_objectreference_isindialoguewithplayer=late;a.use()
+    self.assertEqual(fired,[True]);self.assertEqual(a.moves,[]);self.assertEqual(a.s.notifications,[])
+    self.assertEqual(a.s.player.inventory,before);self.assertEqual(a.s.quests,{})
+    self.assertFalse(a.inst.vars['busy'])
+    a.s.player.pos=(0,0,0);a.s.player.cell=a.first;a.target.disabled=False
+    a.use();self.assertEqual(len(a.moves),1);self.assertIs(a.s.player.cell,a.second)
+ def test_restored_actual_old_context_order_mutant_reproduces_late_wrong_move(self):
+  import subprocess
+  with tempfile.TemporaryDirectory() as folder:
+   source=Path(folder)
+   old=subprocess.check_output(['git','show','3e89c469e63645c042fb138cc4862d5dcfe85378:tools/TerrainRouteAddon/scripts/TLMDev/OptionalTerrainTravel.psc'],cwd=ROOT.parents[1])
+   (source/'OptionalTerrainTravel.psc').write_bytes(old)
+   a=Fixture(source=source);native=a.s.n_objectreference_isindialoguewithplayer;fired=[]
+   def late(ref,context):
+    if a.s.messages_shown and not fired:fired.append(True);a.s.player.pos=(9999,0,0)
+    return native(ref,context)
+   a.s.n_objectreference_isindialoguewithplayer=late;a.use()
+   self.assertEqual(fired,[True]);self.assertEqual(len(a.moves),1)
  def test_unconfirmed_native_move_never_claims_arrival(self):
   a=Fixture(False)
   def refuse(ref,context,*args):return None
