@@ -1,0 +1,37 @@
+{
+  "scope": "SEPARATE source/local serialization only; not integrated/native accepted",
+  "baseSource": "f491eeb4e670d306530446b60f82785950dbb747",
+  "terrainSource": "192a7cccfb2b40e90a9ebc5d311dc93f6b11c822",
+  "sourceFilesSha256": {
+    ".gitignore": "0E93AFB5DF256E08F5591F9AEA012948BBBEE15209525D68B28CC794CEE08D03",
+    "LockedInput.cs": "C9F5D0C92F4B98440B126952CEDF03D24693DA27DA419C7369F2168BF936D7C1",
+    "Program.cs": "DFFE2765575ACCD6B81A84603310C5BFEAB1F6BA294EFF440D3FBAF8470C9CBB",
+    "README.md": "3707F931940E0B0C55196C8DD3F5828C3653C1E84B023B4D3F60515E5754B69C",
+    "SafeBuild.cs": "213F94A1B595E5F22FAC694EEFAD9D6A5A16D246FECD8BF6D689C0A7A7E126C0",
+    "TerrainPrototype.csproj": "C297EEA29E1EB210F3D3D653B85494E141AA4DD77A753CAD0F733CB981D5A22D",
+    "test_connection.py": "39A825E7EBFDFD701ABA022E5115199635980400406563D06D74042E1F1BD23F",
+    "verify.py": "1527C4CCF92D718EE04E431E195C48D148CC5608F31A69492C18468829030A27",
+    "empty-feed/.gitkeep": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "scripts/TLMDev/OptionalTerrainTravel.psc": "301E062A14364AC03D5DBFDB1DEAE82BB1F724BDB429C71D176F7D91E8EF8461"
+  },
+  "pluginSha256": "E9C5F52E47450BB6CA02EBE3AC13B95DF09E76A1CC82906306C04609432658F7",
+  "sourceScriptSha256": "301E062A14364AC03D5DBFDB1DEAE82BB1F724BDB429C71D176F7D91E8EF8461",
+  "rawAudit": {
+    "records": 12,
+    "ownPersistentReferences": 3,
+    "headerOverrides": 4,
+    "returnControlTrailClearance": 124.80785231707178,
+    "directMasters": [
+      "Fallout4.esm",
+      "TLMSpectacleTerrainPrototype.esp",
+      "TLMWorldSlice.esp"
+    ],
+    "transitiveStoryMaster": "TheLastMeridian.esp",
+    "terrainDestination": "000806:TLMSpectacleTerrainPrototype.esp",
+    "returnAnchor": "000804:TLMOptionalTerrainRoute.esp",
+    "nativeAcceptance": null
+  },
+  "nativeAcceptance": null,
+  "papyrusCompile": null,
+  "integration": null
+}
