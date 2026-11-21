@@ -1,0 +1,64 @@
+{
+  "name": "Blevins",
+  "chain": [
+    {
+      "npc": "000AAB:TheLastMeridian.esp",
+      "EditorID": "TLM_NPC_RH_Blevins",
+      "voice": "023324:Fallout4.esm",
+      "flags": "4355",
+      "trait": "24A029:Fallout4.esm",
+      "defaultTemplate": "24A029:Fallout4.esm"
+    },
+    {
+      "npc": "24A029:Fallout4.esm",
+      "EditorID": "EncWorkshopNPCMaleFarmer08b",
+      "voice": "00002D:Fallout4.esm",
+      "flags": "8126",
+      "trait": "Null",
+      "defaultTemplate": "113340:Fallout4.esm"
+    },
+    {
+      "npc": "113340:Fallout4.esm",
+      "EditorID": "EncWorkshopNPCMaleFarmer01Template",
+      "voice": "023323:Fallout4.esm",
+      "flags": "0",
+      "trait": null,
+      "defaultTemplate": "Null"
+    }
+  ]
+}
+{
+  "name": "Roark",
+  "chain": [
+    {
+      "npc": "000AAC:TheLastMeridian.esp",
+      "EditorID": "TLM_NPC_RH_Roark",
+      "voice": "023324:Fallout4.esm",
+      "flags": "4355",
+      "trait": "24A016:Fallout4.esm",
+      "defaultTemplate": "24A016:Fallout4.esm"
+    },
+    {
+      "npc": "24A016:Fallout4.esm",
+      "EditorID": "EncWorkshopNPCFemaleFarmer02b",
+      "voice": "013ADD:Fallout4.esm",
+      "flags": "8126",
+      "trait": "Null",
+      "defaultTemplate": "113340:Fallout4.esm"
+    },
+    {
+      "npc": "113340:Fallout4.esm",
+      "EditorID": "EncWorkshopNPCMaleFarmer01Template",
+      "voice": "023323:Fallout4.esm",
+      "flags": "0",
+      "trait": null,
+      "defaultTemplate": "Null"
+    }
+  ]
+}
+013ADD:Fallout4.esm FemaleEvenToned AllowDefaultDialog, Female
+00002D:Fallout4.esm MaleRough AllowDefaultDialog
+023324:Fallout4.esm FemaleBoston AllowDefaultDialog, Female
+023323:Fallout4.esm MaleBoston AllowDefaultDialog
+ACTOR TLM_WRLD_RH_Surface 000CF7:TheLastMeridian.esp CELL TLM_CELL_RH_SurfacePersistent 000CF8:TheLastMeridian.esp REF TLM_REF_RH_Roark 000B21:TheLastMeridian.esp BASE 000AAC:TheLastMeridian.esp POS 2304, 512, 16
+ACTOR TLM_WRLD_RH_Surface 000CF7:TheLastMeridian.esp CELL TLM_CELL_RH_SurfacePersistent 000CF8:TheLastMeridian.esp REF TLM_REF_RH_Blevins 000B22:TheLastMeridian.esp BASE 000AAB:TheLastMeridian.esp POS 2816, 512, 16

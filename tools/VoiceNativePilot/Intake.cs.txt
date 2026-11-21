@@ -1,0 +1,27 @@
+using Mutagen.Bethesda;
+using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Plugins;
+using System.Text.Json;
+if(args[0]=="schema"){Console.WriteLine(string.Join(",",Enum.GetNames<DialogTopic.SubtypeEnum>()));Console.WriteLine(string.Join(",",Enum.GetNames<DialogTopic.CategoryEnum>()));return;}
+using var vanilla=Fallout4Mod.CreateFromBinaryOverlay(args[0],Fallout4Release.Fallout4);
+using var story=Fallout4Mod.CreateFromBinaryOverlay(args[1],Fallout4Release.Fallout4);
+foreach(var name in new[]{"Blevins","Roark"}){
+ var npc=story.Npcs.Single(n=>n.EditorID=="TLM_NPC_RH_"+name);
+ var chain=new List<object>(); var seen=new HashSet<FormKey>();
+ while(true){
+  if(!seen.Add(npc.FormKey))throw new Exception("Template cycle");
+  chain.Add(new{npc=npc.FormKey.ToString(),npc.EditorID,voice=npc.Voice.FormKey.ToString(),flags=npc.UseTemplateActors.ToString(),trait=npc.TemplateActors?.TraitTemplate.FormKey.ToString(),defaultTemplate=npc.DefaultTemplate.FormKey.ToString()});
+  var key=npc.TemplateActors?.TraitTemplate.FormKey??FormKey.Null;
+  if(key.IsNull)key=npc.DefaultTemplate.FormKey;
+  if(key.IsNull)break;
+  npc=vanilla.Npcs.FirstOrDefault(n=>n.FormKey==key)??throw new Exception("Missing template "+key);
+ }
+ Console.WriteLine(JsonSerializer.Serialize(new{name,chain},new JsonSerializerOptions{WriteIndented=true}));
+}
+Console.WriteLine(string.Join("\n",vanilla.VoiceTypes.Where(v=>new uint[]{0x23324,0x2D,0x13ADD,0x23323}.Contains(v.FormKey.ID)).Select(v=>v.FormKey+" "+v.EditorID+" "+v.Flags)));
+
+using(var world=Fallout4Mod.CreateFromBinaryOverlay("work/rh-return-account-build-f491eeb/build/licensed-return-account-skeleton-001/bundle/TheLastMeridian.esp",Fallout4Release.Fallout4)){
+ foreach(var w in world.Worldspaces) foreach(var c in new[]{w.TopCell}.Where(c=>c!=null).Concat(w.SubCells.SelectMany(b=>b.Items).SelectMany(s=>s.Items)))foreach(var r in c!.Persistent.Concat(c.Temporary).OfType<IPlacedNpcGetter>())if(r.Base.FormKey.ID==0xAAB||r.Base.FormKey.ID==0xAAC)Console.WriteLine($"ACTOR {w.EditorID} {w.FormKey} CELL {c.EditorID} {c.FormKey} REF {r.EditorID} {r.FormKey} BASE {r.Base.FormKey} POS {r.Position}");
+}
+
+

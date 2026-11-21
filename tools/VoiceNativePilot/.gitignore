@@ -1,0 +1,6 @@
+/build/
+/bin/
+/obj/
+/empty-feed/
+/__pycache__/
+/*.log

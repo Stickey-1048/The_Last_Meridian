@@ -1,0 +1,4 @@
+* text eol=lf
+*.esp binary
+*.pex binary
+*.fuz binary
