@@ -2,6 +2,14 @@
   "scope": "Selected owned NIF metadata only; no original bytes exported. FaceGeom and worn clothing NIFs are present; native inherited skin/tint rendering remains a gate.",
   "entries": [
     {
+      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/001d8e1a.nif",
+      "archive": "Fallout4 - Meshes.ba2",
+      "bytes": 250831,
+      "sha256": "D71061656F820D5D86E5F80321DBAF1694D6DAFF31F5B95DD69BB0D4A917FA07",
+      "collisionBlockNamesPresent": false,
+      "payloadExported": false
+    },
+    {
       "path": "meshes/clothes/vaulttecscientist/vtscientistfvariant.nif",
       "archive": "Fallout4 - Meshes.ba2",
       "bytes": 199687,
@@ -50,10 +58,10 @@
       "payloadExported": false
     },
     {
-      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/00113348.nif",
+      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/0003d638.nif",
       "archive": "Fallout4 - Meshes.ba2",
-      "bytes": 432550,
-      "sha256": "930D689C19299F430A5F82F53F018F339E75A3F9292B00014B402FFE06FF14C3",
+      "bytes": 399440,
+      "sha256": "1D2F06E3CCC7204173FBF60D81C718BCA01BD758304092F786F8638F09C05CF5",
       "collisionBlockNamesPresent": false,
       "payloadExported": false
     },
@@ -74,18 +82,10 @@
       "payloadExported": false
     },
     {
-      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/0024a01b.nif",
+      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/000399dd.nif",
       "archive": "Fallout4 - Meshes.ba2",
-      "bytes": 404555,
-      "sha256": "4DEA908B482CC5B4005C093C17D93E3388788D20B340E36DC9AB34DC0D96DE47",
-      "collisionBlockNamesPresent": false,
-      "payloadExported": false
-    },
-    {
-      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/0024a024.nif",
-      "archive": "Fallout4 - Meshes.ba2",
-      "bytes": 467728,
-      "sha256": "4FE361D1A7D1EF79BEC83443DF91989551A2E2A5E3B0481D33673A9439E1AA8B",
+      "bytes": 347670,
+      "sha256": "97AB87CA1BB9AC85A0FB87448FC7F30189715D1A094980F0BC15CF22888D3FCC",
       "collisionBlockNamesPresent": false,
       "payloadExported": false
     }

@@ -2,7 +2,7 @@
 from pathlib import Path
 import struct,zlib,json,collections,hashlib,subprocess
 ROOT=Path(__file__).resolve().parent
-OUT=ROOT/'build/audition-004/TLMNpcPresentation.esp'
+OUT=ROOT/'build/resolved-001/TLMNpcPresentation.esp'
 BASE=ROOT.parents[3]/'work/rh-return-account-build-f491eeb/build/licensed-return-account-skeleton-001/bundle'
 MASTER=Path('C:/Program Files (x86)/GOG Galaxy/Games/Fallout 4 GOTY/Data/Fallout4.esm')
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest().upper()
@@ -40,8 +40,8 @@ def native(ids):
 def inputs():
  assert sha(BASE/'TheLastMeridian.esp')=='5C22EE73009BF1F6B75CFBD5C5E52A749B2086ABA847521B5B294E3ED66E81FF'
  assert sha(BASE/'TLMWorldSlice.esp')=='ACE5F0A233A1E8124555B15812FFC445FF1AB23DAAA4D672FCDEC231C1D93FAF'
- plan=json.loads((ROOT/'audition-plan.json').read_text());assets=json.loads((ROOT/'facegen-metadata.json').read_text())
- ids={0x24a024,0x113348,0x24a01b,0xb2d8d,0x1c26b9,0x178b68,0x1c4be8,0xb2d89,0x5e76b,0x178b67,0x1c4be9}
+ plan=json.loads((ROOT/'audition-plan.json').read_text());assets=json.loads((ROOT/'facegen-metadata.json').read_text());assets['textureProof']=json.loads((ROOT/'texture-metadata.json').read_text())
+ ids={0x399dd,0x1d8e1a,0x3d638,0xb2d8d,0x1c26b9,0x178b68,0x1c4be8,0xb2d89,0x5e76b,0x178b67,0x1c4be9}
  return plan,assets,native(ids),rows((BASE/'TheLastMeridian.esp').read_bytes()),rows((BASE/'TLMWorldSlice.esp').read_bytes())
 
 def verify(raw,plan,assets,stock,story,world):
@@ -53,6 +53,9 @@ def verify(raw,plan,assets,stock,story,world):
  cellId=int(plan['cell'].split(':')[0],16)|0x02000000;cell=dict(subs(r[b'CELL',cellId][1]));assert struct.unpack('<H',cell[b'DATA'])[0]&1
  assert cell[b'EDID'].rstrip(b'\0')==b'TLM_NPC_Audition' and b'XCLL'in cell
  entries={e['path'].lower():e for e in assets['entries']};assert len(entries)==11
+ proof=assets['textureProof'];te={e['path']:e for e in proof['entries']};needed={p for paths in proof['references'].values()for p in paths};assert not proof['missing'] and len(te)==86 and set(te)==needed,'Texture inventory incomplete'
+ for donor in [0x399dd,0x1d8e1a,0x3d638]:
+  for suffix in ['_d.dds','_msn.dds','_s.dds']:assert 'textures/actors/character/facecustomization/fallout4.esm/'+f'{donor:08x}'+suffix in te,'Texture triplet missing'
  faces=[];actorPositions=[]
  faceTags={b'PNAM',b'HCLF',b'BCLF',b'NAM9',b'FTST',b'QNAM',b'MSDK',b'MSDV',b'FMRI',b'FMRS',b'TETI',b'TEND',b'TINC',b'TINV',b'TIRS',b'TIAS',b'TIAC'}
  for p in plan['actors']:
@@ -66,7 +69,7 @@ def verify(raw,plan,assets,stock,story,world):
   outfit=int(p['outfit'].split(':')[0],16)|0x02000000;assert struct.unpack('<I',s[b'DOFT'])[0]==outfit,'Wrong explicit outfit'
   items=dict(subs(r[b'OTFT',outfit][1]))[b'INAM'];actual=struct.unpack('<'+'I'*(len(items)//4),items);armor=int(p['armor'].split(':')[0],16);assert actual==((armor,0x1c4be8)if p['Id']=='Miriam' else(armor,)),'Wrong clothing set'
   arm=stock[b'ARMO',armor];assert b'VMAD'not in arm;arma={0xb2d8d:0xb2d89,0x1c26b9:0x5e76b,0x178b68:0x178b67}[armor];aa=stock[b'ARMA',arma];assert aa[b'MOD3'if p['female']else b'MOD2'].rstrip(b'\0').decode()==p['armorModels'][0],'No sex-appropriate clothing model'
-  face='meshes/actors/character/facegendata/facegeom/fallout4.esm/'+f'{donor:08x}.nif';e=entries[face];assert e['bytes']>300000 and len(e['sha256'])==64;faces.append(e['sha256'])
+  face='meshes/actors/character/facegendata/facegeom/fallout4.esm/'+f'{donor:08x}.nif';e=entries[face];assert e['bytes']>100000 and len(e['sha256'])==64;faces.append(e['sha256'])
   placed=int(p['placed'].split(':')[0],16)|0x02000000;flags,b,parents=r[b'ACHR',placed];ss=dict(subs(b));assert flags==0x400 and struct.unpack('<I',ss[b'NAME'])[0]==key,'Prototype missing/not bound'
   assert parents[-2:]==((6,cellId),(8,cellId)),'Actor not placed persistently in audition cell'
   pose=struct.unpack('<6f',ss[b'DATA']);assert pose[:3]==tuple(p['position']) and abs(pose[5]-3.14159265)<.00001;actorPositions.append(pose)

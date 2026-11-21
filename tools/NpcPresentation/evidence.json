@@ -1,8 +1,8 @@
 {
-  "task": "NPC-PRESENTATION-003",
+  "task": "NPC-PRESENTATION-004",
   "baselineSource": "f491eeb4e670d306530446b60f82785950dbb747",
-  "artifact": "build/audition-004/TLMNpcPresentation.esp",
-  "artifactSha256": "A0719A3D59C811E91FB157FCB7A218DB974DB51B1D007FEAE25DCD4216CF6EF2",
+  "artifact": "build/resolved-001/TLMNpcPresentation.esp",
+  "artifactSha256": "275F154AFC7DF46197D432675B45D8568A96282850F5926A0B7684A26972EC36",
   "build": {
     "cachedOfflineOnly": true,
     "warnings": 0,
@@ -11,9 +11,9 @@
   },
   "focused": {
     "methods": 8,
-    "seconds": 2.383,
+    "seconds": 2.454,
     "status": "PASS",
-    "logSha256": "C375FC4E6B6B0DF8FCE09DF050DBA579A52D9E249FDBC105925708EC55A72EAE"
+    "logSha256": "1103E73A8CD308854040EE0E5F406258DD81338D35D9B8FE5A07FBD49EC38421"
   },
   "actualCounts": {
     "newNpcBases": 3,
@@ -57,5 +57,14 @@
     "wrapper": "68B1E23FDFC5D6396CCAEBD83CD59109C3C634470AE0D6EC613AA96574B822A0",
     "trial": "DE5EA4B3958FA42400E5FF67CC679F365539E5B94C68035B13117708D588A6AB"
   },
-  "nativeAcceptance": null
+  "nativeAcceptance": null,
+  "historicalHoldSource": "c9ca2225a76ee1993d3b36b420e4fbf5fe6e6b89",
+  "materialProof": {
+    "selectedNifs": 11,
+    "explicitDdsReferences": 86,
+    "locatedDds": 86,
+    "missing": 0,
+    "allThreeFaceDiffuseNormalSpecTriplesPresent": true,
+    "actualNifAndDdsChunkChecksBeforeWrite": "PASS"
+  }
 }

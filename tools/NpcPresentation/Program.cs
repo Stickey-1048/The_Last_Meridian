@@ -10,7 +10,7 @@ try {
  if(args.Length!=2){Console.Error.WriteLine("NpcPresentation ABSOLUTE-OWNED-Fallout4.esm NEW-project-build-directory");return 2;}
  using var safe=SafeBuild.Open(args[0],args[1]);string workspace=Path.GetFullPath("../../../..",SafeBuild.ProjectRoot);string basePath=Path.Combine(workspace,"work/rh-return-account-build-f491eeb/build/licensed-return-account-skeleton-001/bundle");
  using var storyLock=LockedInput.Open(Path.Combine(basePath,"TheLastMeridian.esp"),"5C22EE73009BF1F6B75CFBD5C5E52A749B2086ABA847521B5B294E3ED66E81FF");using var worldLock=LockedInput.Open(Path.Combine(basePath,"TLMWorldSlice.esp"),"ACE5F0A233A1E8124555B15812FFC445FF1AB23DAAA4D672FCDEC231C1D93FAF");
- OwnedAssets.Verify(safe.Source);
+ OwnedAssets.Verify(safe.Source);TextureAssets.Verify(safe.Source,new uint[]{0x399DD,0x1D8E1A,0x3D638});
  using var native=Fallout4Mod.CreateFromBinaryOverlay(safe.Source,Fallout4Release.Fallout4);using var story=Fallout4Mod.CreateFromBinaryOverlay(storyLock.Path,Fallout4Release.Fallout4);using var existingWorld=Fallout4Mod.CreateFromBinaryOverlay(worldLock.Path,Fallout4Release.Fallout4);
  var mod=new Fallout4Mod(ModKey.FromNameAndExtension("TLMNpcPresentation.esp"),Fallout4Release.Fallout4);mod.ModHeader.Stats.Version=.95f;foreach(var m in new[]{"Fallout4.esm","TheLastMeridian.esp","TLMWorldSlice.esp"})mod.ModHeader.MasterReferences.Add(new MasterReference{Master=ModKey.FromNameAndExtension(m)});
  var cell=new Cell(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="TLM_NPC_Audition",Name="Appearance studies - prototype audition",Flags=Cell.Flag.IsInteriorCell,Lighting=new CellLighting{AmbientColor=Color.FromArgb(255,150,150,150),DirectionalColor=Color.FromArgb(255,200,200,200),DirectionalFade=1f}};
@@ -24,7 +24,7 @@ try {
  foreach(int x in new[]{-512,0,512}){Piece("South"+x,"QryCubeWall01",x,-256,256,MathF.PI);Piece("North"+x,"QryCubeWall01",x,768,256);}
  foreach(int y in new[]{0,512}){Piece("West"+y,"QryCubeWall01",-768,y,256,-MathF.PI/2);Piece("East"+y,"QryCubeWall01",768,y,256,MathF.PI/2);}
  var actorReceipt=new List<object>();
- foreach(var role in new[]{(Id:"Owen",Source:0x83Au,Donor:0x24A024u,Armor:0xB2D8Du,Name:"Owen Pritchard",Label:"sheriff study",Female:false,X:-384),(Id:"Ada",Source:0x83Bu,Donor:0x113348u,Armor:0x1C26B9u,Name:"Ada Pike",Label:"gunsmith study",Female:true,X:0),(Id:"Miriam",Source:0x83Du,Donor:0x24A01Bu,Armor:0x178B68u,Name:"Miriam Keene",Label:"physician study",Female:true,X:384)}){
+ foreach(var role in new[]{(Id:"Owen",Source:0x83Au,Donor:0x399DDu,Armor:0xB2D8Du,Name:"Owen Pritchard",Label:"sheriff study",Female:false,X:-384),(Id:"Ada",Source:0x83Bu,Donor:0x1D8E1Au,Armor:0x1C26B9u,Name:"Ada Pike",Label:"gunsmith study",Female:true,X:0),(Id:"Miriam",Source:0x83Du,Donor:0x3D638u,Armor:0x178B68u,Name:"Miriam Keene",Label:"physician study",Female:true,X:384)}){
   var original=story.Npcs.Single(n=>n.FormKey.ID==role.Source);var donor=native.Npcs.Single(n=>n.FormKey.ID==role.Donor);
   if(donor.UseTemplateActors.HasFlag(Npc.TemplateActorType.Traits)||donor.Race.FormKey.ID!=0x13746||donor.Flags.HasFlag(Npc.Flag.Female)!=role.Female||original.TemplateActors?.TraitTemplate.FormKey==donor.FormKey)throw new InvalidDataException("Nonterminal/wrong sex/race/unchanged face donor");
   var armor=native.Armors.Single(a=>a.FormKey.ID==role.Armor);if(armor.VirtualMachineAdapter!=null||armor.Armatures.Count==0)throw new InvalidDataException("Unsupported outfit donor");var models=new List<string>();

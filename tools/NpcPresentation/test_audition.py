@@ -57,4 +57,6 @@ class AuditionProof(unittest.TestCase):
   before=v.sha(v.OUT);binary=v.ROOT/'bin/Debug/net8.0/NpcPresentation.dll'
   r=subprocess.run(['dotnet',str(binary),str(v.MASTER),str(v.OUT.parent.relative_to(v.ROOT))],capture_output=True,text=True)
   self.assertNotEqual(r.returncode,0);self.assertIn('REFUSED',r.stderr);self.assertEqual(v.sha(v.OUT),before)
+  assets=copy.deepcopy(self.assets);assets['textureProof']['entries']=[e for e in assets['textureProof']['entries']if not e['path'].endswith('/000399dd_d.dds')]
+  with self.assertRaisesRegex(AssertionError,'Texture'):self.check(assets=assets)
 if __name__=='__main__':unittest.main()
