@@ -1,0 +1,212 @@
+{
+  "scope": "Exact intact stock-trait foundation for isolated Owen appearance study; not a custom caricature sculpt or native approval",
+  "baseline": "9f490b38da8f448bd89f1e072a30c3944a01e263",
+  "oldStockFoundation": {
+    "id": "0399DD:Fallout4.esm",
+    "EditorID": "HenryCooke",
+    "name": "Henry Cooke",
+    "templateFlags": 10,
+    "hair": "19EE5D:Fallout4.esm",
+    "headParts": [
+      {
+        "key": "0E12A4:Fallout4.esm",
+        "EditorID": "Beard01",
+        "type": "FacialHair",
+        "model": "Actors\\Character\\CharacterAssets\\Beards\\HumanBeard1.nif"
+      },
+      {
+        "key": "1D2A61:Fallout4.esm",
+        "EditorID": "HairMale33",
+        "type": "Hair",
+        "model": "Actors\\Character\\CharacterAssets\\Hair\\Male\\Hair33.nif"
+      },
+      {
+        "key": "1D2A60:Fallout4.esm",
+        "EditorID": "HairMale33_Hairline",
+        "type": "Misc",
+        "model": "Actors\\Character\\CharacterAssets\\Hair\\Male\\Hair33_Hairline.nif"
+      },
+      {
+        "key": "12AC13:Fallout4.esm",
+        "EditorID": "MaleEyesHumanBluePale",
+        "type": "Eyes",
+        "model": "actors\\character\\characterassets\\faceparts\\maleeyes.nif"
+      },
+      {
+        "key": "0423AF:Fallout4.esm",
+        "EditorID": "MaleEyesHumanLashes",
+        "type": "Misc",
+        "model": "actors\\character\\characterassets\\faceparts\\EyeParts.nif"
+      },
+      {
+        "key": "0844A7:Fallout4.esm",
+        "EditorID": "MaleEyesHumanAO",
+        "type": "Misc",
+        "model": "actors\\character\\characterassets\\faceparts\\MaleEyesAO.nif"
+      },
+      {
+        "key": "11CCBD:Fallout4.esm",
+        "EditorID": "MaleEyesHumanWet",
+        "type": "Misc",
+        "model": "actors\\character\\characterassets\\faceparts\\MaleEyesWet.nif"
+      },
+      {
+        "key": "01F735:Fallout4.esm",
+        "EditorID": "MaleHeadHumanRearTEMP",
+        "type": "HeadRear",
+        "model": "actors\\character\\characterassets\\faceparts\\maleheadrear.nif"
+      },
+      {
+        "key": "051631:Fallout4.esm",
+        "EditorID": "MaleMouthHumanoidDefault",
+        "type": "Teeth",
+        "model": "Actors\\Character\\CharacterAssets\\FaceParts\\MaleMouth.nif"
+      },
+      {
+        "key": "01EEBB:Fallout4.esm",
+        "EditorID": "MaleHeadHuman",
+        "type": "Face",
+        "model": "Actors\\Character\\CharacterAssets\\BaseMaleHead.nif"
+      }
+    ],
+    "headTexture": "10742F:Fallout4.esm",
+    "headTextureName": "SkinHeadMayor",
+    "hairName": "HairColor10SteelGray",
+    "facialHair": "Null",
+    "faceMorphs": 30,
+    "tints": 11
+  },
+  "selectedStockFoundation": {
+    "id": "03F23D:Fallout4.esm",
+    "EditorID": "AbrahamFinch",
+    "name": "Abraham Finch",
+    "templateFlags": 0,
+    "hair": "19EE5D:Fallout4.esm",
+    "headParts": [
+      {
+        "key": "141091:Fallout4.esm",
+        "EditorID": "MaleMouthHumanoidDirty",
+        "type": "Teeth",
+        "model": "Actors\\Character\\CharacterAssets\\FaceParts\\MaleMouth.nif"
+      },
+      {
+        "key": "1ED508:Fallout4.esm",
+        "EditorID": "BigBeard16",
+        "type": "FacialHair",
+        "model": "Actors\\Character\\CharacterAssets\\Beards\\BigBeard16.nif"
+      },
+      {
+        "key": "1ED507:Fallout4.esm",
+        "EditorID": "BigBeard16_Hairline",
+        "type": "Misc",
+        "model": "Actors\\Character\\CharacterAssets\\Beards\\BigBeard16_Hairline.nif"
+      },
+      {
+        "key": "1E55CB:Fallout4.esm",
+        "EditorID": "MaleEyesHumanLightGrey",
+        "type": "Eyes",
+        "model": "actors\\character\\characterassets\\faceparts\\maleeyes.nif"
+      },
+      {
+        "key": "0423AF:Fallout4.esm",
+        "EditorID": "MaleEyesHumanLashes",
+        "type": "Misc",
+        "model": "actors\\character\\characterassets\\faceparts\\EyeParts.nif"
+      },
+      {
+        "key": "0844A7:Fallout4.esm",
+        "EditorID": "MaleEyesHumanAO",
+        "type": "Misc",
+        "model": "actors\\character\\characterassets\\faceparts\\MaleEyesAO.nif"
+      },
+      {
+        "key": "11CCBD:Fallout4.esm",
+        "EditorID": "MaleEyesHumanWet",
+        "type": "Misc",
+        "model": "actors\\character\\characterassets\\faceparts\\MaleEyesWet.nif"
+      },
+      {
+        "key": "01F735:Fallout4.esm",
+        "EditorID": "MaleHeadHumanRearTEMP",
+        "type": "HeadRear",
+        "model": "actors\\character\\characterassets\\faceparts\\maleheadrear.nif"
+      },
+      {
+        "key": "1477D0:Fallout4.esm",
+        "EditorID": "HairMale18",
+        "type": "Hair",
+        "model": "Actors\\Character\\CharacterAssets\\Hair\\Male\\Hair18.nif"
+      },
+      {
+        "key": "1477CF:Fallout4.esm",
+        "EditorID": "HairMale18_Hairline",
+        "type": "Misc",
+        "model": "Actors\\Character\\CharacterAssets\\Hair\\Male\\Hair18_Hairline.nif"
+      },
+      {
+        "key": "01EEBB:Fallout4.esm",
+        "EditorID": "MaleHeadHuman",
+        "type": "Face",
+        "model": "Actors\\Character\\CharacterAssets\\BaseMaleHead.nif"
+      }
+    ],
+    "headTexture": "128C59:Fallout4.esm",
+    "headTextureName": "SkinHeadOldMale",
+    "hairName": "HairColor10SteelGray",
+    "facialHair": "Null",
+    "faceMorphs": 30,
+    "tints": 11
+  },
+  "ownedMasterSha256": "AE7BE31A59052F926474A767D9DBFBCC7F19AF4AD2070491F7F40D821B2520EB",
+  "matchingFaceGeom": {
+    "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/0003f23d.nif",
+    "archive": "Fallout4 - Meshes.ba2",
+    "bytes": 481025,
+    "sha256": "C32F32490180D5B6F4B8781A2214E526F145BB1AC6EAA02A274C3206EC6DB8B2",
+    "collisionBlockNamesPresent": false,
+    "payloadExported": false
+  },
+  "matchingFaceDds": [
+    {
+      "path": "textures/actors/character/facecustomization/fallout4.esm/0003f23d_d.dds",
+      "archive": "Fallout4 - Textures5.ba2",
+      "width": 1024,
+      "height": 1024,
+      "mips": 11,
+      "dxgiFormat": 71,
+      "chunks": 3,
+      "unpackedBytes": 699064,
+      "unpackedSha256": "25120D73788807A498F5C34B71019D0EBCA24D786CDA4C21C4CE7C45A93C267D"
+    },
+    {
+      "path": "textures/actors/character/facecustomization/fallout4.esm/0003f23d_msn.dds",
+      "archive": "Fallout4 - Textures5.ba2",
+      "width": 1024,
+      "height": 1024,
+      "mips": 11,
+      "dxgiFormat": 71,
+      "chunks": 3,
+      "unpackedBytes": 699064,
+      "unpackedSha256": "EEE0EC556A3A65B4453E316BD0F02378C93DDE2BC9ADA357E6C3172CC2807128"
+    },
+    {
+      "path": "textures/actors/character/facecustomization/fallout4.esm/0003f23d_s.dds",
+      "archive": "Fallout4 - Textures5.ba2",
+      "width": 512,
+      "height": 512,
+      "mips": 10,
+      "dxgiFormat": 83,
+      "chunks": 2,
+      "unpackedBytes": 349552,
+      "unpackedSha256": "ED0C08C98B6718877C2094BD046426693F32BFCA95290CCF31D5F73E6D1F383E"
+    }
+  ],
+  "declaredInterpretation": {
+    "age": "Actual SkinHeadOldMale TXST128C59 replaces SkinHeadMayor10742F",
+    "beard": "Actual full BigBeard16 with matching hairline replaces Beard01 stubble",
+    "color": "Actual HairColor10SteelGray retained",
+    "scar": "No separately authored or verified scar added; all donor morph/tint data remains intact",
+    "customSculpt": "Not implemented: arbitrary new nose/brow/headpart changes require a matching newly generated FaceGen/texture export before safe adoption"
+  },
+  "nativeAcceptance": null
+}

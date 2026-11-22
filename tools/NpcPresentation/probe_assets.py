@@ -1,7 +1,7 @@
 from pathlib import Path
 import struct,zlib,hashlib,json
 D=Path('C:/Program Files (x86)/GOG Galaxy/Games/Fallout 4 GOTY/Data')
-paths=['actors/character/facegendata/facegeom/fallout4.esm/000399dd.nif','actors/character/facegendata/facegeom/fallout4.esm/001d8e1a.nif','actors/character/facegendata/facegeom/fallout4.esm/0003d638.nif','armor/raiderheavy/munderarmor.nif','clothes/redrocketjumpsuit/redrocketjumpsuitf.nif','clothes/vaulttecscientist/vtscientistfvariant.nif','clothes/shortsleeves/fglasses.nif','architecture/quarry/qryfloor01.nif','architecture/quarry/qrycubewall01.nif','interiors/cave/rooms/cavermceiling512v01.nif','architecture/shacks/shackdoor01.nif'];wanted={'meshes/'+p for p in paths};found=[]
+paths=['actors/character/facegendata/facegeom/fallout4.esm/0003f23d.nif','actors/character/facegendata/facegeom/fallout4.esm/001d8e1a.nif','actors/character/facegendata/facegeom/fallout4.esm/0003d638.nif','armor/raiderheavy/munderarmor.nif','clothes/redrocketjumpsuit/redrocketjumpsuitf.nif','clothes/vaulttecscientist/vtscientistfvariant.nif','clothes/shortsleeves/fglasses.nif','architecture/quarry/qryfloor01.nif','architecture/quarry/qrycubewall01.nif','interiors/cave/rooms/cavermceiling512v01.nif','architecture/shacks/shackdoor01.nif'];wanted={'meshes/'+p for p in paths};found=[]
 for archive in [D/'Fallout4 - Meshes.ba2',D/'Fallout4 - MeshesExtra.ba2']:
  with archive.open('rb') as f:
   magic,ver,kind,n,offset=struct.unpack('<4sI4sIQ',f.read(24));assert(magic,ver,kind)==(b'BTDX',1,b'GNRL');rows=[struct.unpack('<I4sIIQIII',f.read(36)) for _ in range(n)];f.seek(offset)

@@ -82,10 +82,10 @@
       "payloadExported": false
     },
     {
-      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/000399dd.nif",
+      "path": "meshes/actors/character/facegendata/facegeom/fallout4.esm/0003f23d.nif",
       "archive": "Fallout4 - Meshes.ba2",
-      "bytes": 347670,
-      "sha256": "97AB87CA1BB9AC85A0FB87448FC7F30189715D1A094980F0BC15CF22888D3FCC",
+      "bytes": 481025,
+      "sha256": "C32F32490180D5B6F4B8781A2214E526F145BB1AC6EAA02A274C3206EC6DB8B2",
       "collisionBlockNamesPresent": false,
       "payloadExported": false
     }

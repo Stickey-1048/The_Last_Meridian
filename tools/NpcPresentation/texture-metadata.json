@@ -113,28 +113,28 @@
       "textures/clothes/shortsleeve/prewarglasses_n.dds",
       "textures/clothes/shortsleeve/prewarglasses_s.dds"
     ],
-    "meshes/actors/character/facegendata/facegeom/fallout4.esm/000399dd.nif": [
+    "meshes/actors/character/facegendata/facegeom/fallout4.esm/0003f23d.nif": [
       "textures/actors/character/basehumanmale/basemalebody_d.dds",
       "textures/actors/character/basehumanmale/basemalebody_n.dds",
       "textures/actors/character/basehumanmale/basemalebody_s.dds",
       "textures/actors/character/basehumanmale/headwrinkles_n.dds",
-      "textures/actors/character/eyes/eyebluepale.dds",
       "textures/actors/character/eyes/eyebrown_n.dds",
       "textures/actors/character/eyes/eyeenvironmentmask_m.dds",
       "textures/actors/character/eyes/eyegloss_n.dds",
       "textures/actors/character/eyes/eyehazel.dds",
-      "textures/actors/character/facecustomization/fallout4.esm/000399dd_d.dds",
-      "textures/actors/character/facecustomization/fallout4.esm/000399dd_msn.dds",
-      "textures/actors/character/facecustomization/fallout4.esm/000399dd_s.dds",
+      "textures/actors/character/eyes/eyelightgrey.dds",
+      "textures/actors/character/facecustomization/fallout4.esm/0003f23d_d.dds",
+      "textures/actors/character/facecustomization/fallout4.esm/0003f23d_msn.dds",
+      "textures/actors/character/facecustomization/fallout4.esm/0003f23d_s.dds",
+      "textures/actors/character/hair/facialhair02_d.dds",
+      "textures/actors/character/hair/facialhair02_n.dds",
+      "textures/actors/character/hair/facialhair02_s.dds",
       "textures/actors/character/hair/hair03_s.dds",
       "textures/actors/character/hair/haircolor_lgrad_d.dds",
-      "textures/actors/character/hair/hairshaved04_d.dds",
-      "textures/actors/character/hair/hairshaved04_n.dds",
-      "textures/actors/character/hair/hairshaved04_s.dds",
       "textures/actors/character/hair/hairshort01_f.dds",
       "textures/actors/character/hair/hairshort01_n.dds",
       "textures/actors/character/hair/hairshort01grayscale_d.dds",
-      "textures/actors/character/humancommon/mouthhuman_d.dds",
+      "textures/actors/character/humancommon/mouthhuman2_d.dds",
       "textures/actors/character/humancommon/mouthhuman_n.dds",
       "textures/actors/character/humancommon/mouthhuman_s.dds",
       "textures/effects/meattile01_d.dds",
@@ -402,39 +402,6 @@
       "unpackedSha256": "42D1768875B11133DD0F048B013E8ADCAE72440F39FB9373B1B6603F3476515A"
     },
     {
-      "path": "textures/actors/character/hair/hairshaved04_n.dds",
-      "archive": "Fallout4 - Textures1.ba2",
-      "width": 128,
-      "height": 128,
-      "mips": 8,
-      "dxgiFormat": 83,
-      "chunks": 1,
-      "unpackedBytes": 21872,
-      "unpackedSha256": "F839C5C35CDDA09332B8710844616EBB1557FDC9266DB0790890E7EE5B958FDF"
-    },
-    {
-      "path": "textures/actors/character/hair/hairshaved04_d.dds",
-      "archive": "Fallout4 - Textures1.ba2",
-      "width": 1024,
-      "height": 1024,
-      "mips": 11,
-      "dxgiFormat": 77,
-      "chunks": 3,
-      "unpackedBytes": 1398128,
-      "unpackedSha256": "97EBFAF2799B34B6059666772B0009F912E989604653BB31BA6AC54CD6F4C8B3"
-    },
-    {
-      "path": "textures/actors/character/hair/hairshaved04_s.dds",
-      "archive": "Fallout4 - Textures1.ba2",
-      "width": 512,
-      "height": 512,
-      "mips": 10,
-      "dxgiFormat": 83,
-      "chunks": 2,
-      "unpackedBytes": 349552,
-      "unpackedSha256": "26CA2C54D992DC04B7FE554828AC6530E9C1A0E2442B63A7017E38C67F238ADE"
-    },
-    {
       "path": "textures/effects/meattile01_d.dds",
       "archive": "Fallout4 - Textures1.ba2",
       "width": 1024,
@@ -589,6 +556,39 @@
       "unpackedSha256": "9A57976F0679DAD098CE0E6447C5DB2EB6F94DE4BB65CC72FEC8ACD523A67DDF"
     },
     {
+      "path": "textures/actors/character/hair/facialhair02_s.dds",
+      "archive": "Fallout4 - Textures1.ba2",
+      "width": 512,
+      "height": 512,
+      "mips": 10,
+      "dxgiFormat": 83,
+      "chunks": 2,
+      "unpackedBytes": 349552,
+      "unpackedSha256": "A2F23C4EF29DB0A54959A8C63F802DC612B20CB95B0AB326CF31CFFFB3676226"
+    },
+    {
+      "path": "textures/actors/character/hair/facialhair02_n.dds",
+      "archive": "Fallout4 - Textures1.ba2",
+      "width": 1024,
+      "height": 1024,
+      "mips": 11,
+      "dxgiFormat": 83,
+      "chunks": 3,
+      "unpackedBytes": 1398128,
+      "unpackedSha256": "DB75487CE21A081644C4B0F86A1429F531CC9FACA8BF1BC66577C23DAD2B10F1"
+    },
+    {
+      "path": "textures/actors/character/hair/facialhair02_d.dds",
+      "archive": "Fallout4 - Textures1.ba2",
+      "width": 1024,
+      "height": 1024,
+      "mips": 11,
+      "dxgiFormat": 77,
+      "chunks": 3,
+      "unpackedBytes": 1398128,
+      "unpackedSha256": "2D9FEABC2205577F0426CC1EFEF4E22ECDFCAD20F75494C38D96734C0CF77080"
+    },
+    {
       "path": "textures/actors/character/basehumanfemale/femalebodydirty_s.dds",
       "archive": "Fallout4 - Textures1.ba2",
       "width": 2048,
@@ -697,17 +697,6 @@
       "chunks": 3,
       "unpackedBytes": 699064,
       "unpackedSha256": "16FBA2FE30AB433B7A6E4B8606A936D1BB02FEE3961AA8592C271FDCBBC28266"
-    },
-    {
-      "path": "textures/actors/character/eyes/eyebluepale.dds",
-      "archive": "Fallout4 - Textures2.ba2",
-      "width": 256,
-      "height": 256,
-      "mips": 9,
-      "dxgiFormat": 77,
-      "chunks": 1,
-      "unpackedBytes": 87408,
-      "unpackedSha256": "C65BE317790ACDBB9AD33FB5FBFC71F4C6610ED55C6E77B46F506111DDDEE61B"
     },
     {
       "path": "textures/actors/character/basehumanfemale/femalebodydirty_d.dds",
@@ -840,6 +829,17 @@
       "chunks": 3,
       "unpackedBytes": 1398128,
       "unpackedSha256": "1667F035B6D76A54E709B07454CFB249EB9AE075BDEA7B37BA02842DF6FE2BCF"
+    },
+    {
+      "path": "textures/actors/character/eyes/eyelightgrey.dds",
+      "archive": "Fallout4 - Textures2.ba2",
+      "width": 256,
+      "height": 256,
+      "mips": 9,
+      "dxgiFormat": 77,
+      "chunks": 1,
+      "unpackedBytes": 87408,
+      "unpackedSha256": "DD4B4488D65A87BA9B678D9F2942BBABFD4E3D2F204191B9CF7358E2CB5DE064"
     },
     {
       "path": "textures/clothes/shortsleeve/prewarglasses_d.dds",
@@ -1051,37 +1051,37 @@
       "unpackedSha256": "DFE3991EDED5514722ACDE09BD0C8A83D3D6687BF24C64462521F63F4A3248DC"
     },
     {
-      "path": "textures/actors/character/facecustomization/fallout4.esm/000399dd_d.dds",
-      "archive": "Fallout4 - Textures4.ba2",
+      "path": "textures/actors/character/facecustomization/fallout4.esm/0003f23d_d.dds",
+      "archive": "Fallout4 - Textures5.ba2",
       "width": 1024,
       "height": 1024,
       "mips": 11,
       "dxgiFormat": 71,
       "chunks": 3,
       "unpackedBytes": 699064,
-      "unpackedSha256": "0D4C110A3C04D3708B6EFCA4FAA6B6E6F42BE103C871934E48AA38A3741AC09C"
+      "unpackedSha256": "25120D73788807A498F5C34B71019D0EBCA24D786CDA4C21C4CE7C45A93C267D"
     },
     {
-      "path": "textures/actors/character/facecustomization/fallout4.esm/000399dd_msn.dds",
-      "archive": "Fallout4 - Textures4.ba2",
+      "path": "textures/actors/character/facecustomization/fallout4.esm/0003f23d_msn.dds",
+      "archive": "Fallout4 - Textures5.ba2",
       "width": 1024,
       "height": 1024,
       "mips": 11,
       "dxgiFormat": 71,
       "chunks": 3,
       "unpackedBytes": 699064,
-      "unpackedSha256": "3A841146CACE3BDE8EF7CE2B9EAF284946847C07620B14A3E5CDFE8EE45FE2B9"
+      "unpackedSha256": "EEE0EC556A3A65B4453E316BD0F02378C93DDE2BC9ADA357E6C3172CC2807128"
     },
     {
-      "path": "textures/actors/character/facecustomization/fallout4.esm/000399dd_s.dds",
-      "archive": "Fallout4 - Textures4.ba2",
+      "path": "textures/actors/character/facecustomization/fallout4.esm/0003f23d_s.dds",
+      "archive": "Fallout4 - Textures5.ba2",
       "width": 512,
       "height": 512,
       "mips": 10,
       "dxgiFormat": 83,
       "chunks": 2,
       "unpackedBytes": 349552,
-      "unpackedSha256": "E193F43A79331FF9E186E48B625E65B7C4EC9FD2BF374F1AAD29288992E89107"
+      "unpackedSha256": "ED0C08C98B6718877C2094BD046426693F32BFCA95290CCF31D5F73E6D1F383E"
     },
     {
       "path": "textures/shared/cubemaps/eyecubemap.dds",
