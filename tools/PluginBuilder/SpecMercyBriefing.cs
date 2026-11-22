@@ -36,6 +36,7 @@ public static class MercyBriefing
     // Product-availability text. Not said by anybody.
     // GREENWATER-STORY-001 (order, item 1): in this candidate Greenwater is playable, so the three strings below
     // no longer say that no destination is. The a8 source and its package keep the earlier wording.
+    public const string UiHubPrompt = "Choose a road for directions.";
     public const string UiBriefingOnly = "Mercy briefing. Three roads and the qualified Four Flags entry are available.";
     public const string UiHandOffFooter = "Opening complete. Ask for briefings or use a story test point.";
     public const string UiJournalComplete = "Mercy briefing complete. Three roads and qualified Four Flags entry remain available.";
@@ -98,7 +99,7 @@ public static class MercyBriefing
     // tools/logic_model/mercy_briefing_model.py.
     public static readonly MessageSpec[] Messages =
     {
-        Ui(Says("Hub", HubText, HubLabels), UiBriefingOnly),
+        Ui(Says("Hub", HubText, HubLabels), UiHubPrompt),
         Says("Rail", RailText, GoOn),
         Says("River", RiverText, GoOn),
         Says("Pike", PikeText, PikeLabels),

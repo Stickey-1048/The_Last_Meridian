@@ -1,0 +1,41 @@
+{
+  "scope": "Source/file evidence; native renderer cause remains undetermined",
+  "base": "edd0afd67cbdf97fa9ee8553cded99d755b6a073",
+  "nativeScreenshot": {
+    "path": "output/combined51-native-controller-20261122/pritchard-road-briefing-garbled-footer.png",
+    "sha256": "2162B6DF68B3EA1557F7A4298AC85B279B771625349556D6F5F2F31552AD8387"
+  },
+  "originalMasterSha256": "7469E9ACC868371727EFD65C558F35B2ABA857F3D70524DBD94ECC7D2E62FC03",
+  "liveMasterReadOnlyEqualAtInspection": true,
+  "originalHub": {
+    "descBytesIncludingNull": 184,
+    "textCharacters": 183,
+    "allAscii": true,
+    "onlyNullOffset": 183,
+    "internalPercentOrMarkup": false
+  },
+  "localRendererMetadata": [
+    {
+      "path": "Fallout4 - Interface.ba2:interface/messageboxmenu.swf",
+      "bytes": 19928,
+      "sha256": "A2B32CC72929C213C3A6CE621FF20E549C635B20DD1E65DAA62AD618278F52A6",
+      "format": "CWS"
+    },
+    {
+      "path": "Fallout4 - Interface.ba2:interface/fontconfig.txt",
+      "bytes": 1023,
+      "sha256": "FC441462173B92C490D9737B603E099D836E0ADF6D1CF0B40CCD2678102ACA7B"
+    }
+  ],
+  "checkedOverridePaths": {
+    "combined51BundleInterfaceFiles": 0,
+    "GameDataInterface": "Only __folder_managed_by_vortex markers, no loose SWF/font file",
+    "moOverwriteInterfaceFiles": 0,
+    "enabledMeridianMods": [
+      "TheLastMeridian-FirstScenesBlackstoneControllerPrep001"
+    ]
+  },
+  "interpretation": "Plugin text/terminator/record sizes are correct. Layout/wrapping/font/Scaleform/runtime corruption cannot be distinguished by static files or one screenshot; no overflow root-cause claim. Short prompt is a bounded UI mitigation pending native test.",
+  "markerEvidenceFromRoot": "Owner selected Rail and Continue; subsequent Pip-Boy screenshot identifies selected active Red Hollow: directions / Take the road to Red Hollow from Mercy Crossing; Mercy briefing appears dim. Therefore persistent sheriff-area marker is not evidence of a stuck MercyBriefing quest. Rail brief does not select a rail-travel objective; separate UX handoff gap remains.",
+  "futureNative": null
+}
