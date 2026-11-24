@@ -79,6 +79,8 @@ Group Speech
 	Message Property SayOpalFirst Auto Const
 	{Buttons: what do you want done, why not take it back, take a bowl.}
 	Message Property SayOpalWants Auto Const
+	Message Property SayOpalStay Auto Const
+	Message Property SayOpalAfterGrain Auto Const
 	Message Property SayOpalGuns Auto Const
 	Message Property SayOpalBowl Auto Const
 	Message Property SayOpalAfterWon Auto Const
@@ -790,6 +792,7 @@ Function FirstMeeting(TLM:MQ02BQuest akRiver)
 	If !LocalSpeaker(opal, Alias_Opal)
 		Return
 	EndIf
+	int memoryStamp = akRiver.Stamp()
 	int pick = ShowBox(SayOpalFirst)
 	If !akRiver.RoadOpen() || !akRiver.OpalCanSpeak() || !LocalSpeaker(opal, Alias_Opal)
 		Return
@@ -812,7 +815,23 @@ Function FirstMeeting(TLM:MQ02BQuest akRiver)
 		If Said(SayOpalBowl)
 			Portion(akRiver, RV_GRANT_BOWL)
 		EndIf
+	ElseIf pick == 3
+		; Optional motives only. No quest, knowledge, meal or relief credit.
+		If OpalMemoryContext(akRiver, opal, memoryStamp)
+			int next = ShowBox(SayOpalStay)
+			If next == 0 && OpalMemoryContext(akRiver, opal, memoryStamp)
+				ShowBox(SayOpalAfterGrain)
+			EndIf
+		EndIf
 	EndIf
+EndFunction
+
+bool Function OpalMemoryContext(TLM:MQ02BQuest akRiver, Actor akOpal, int aiStamp)
+	Actor player = Game.GetPlayer()
+	If !player || player.IsDead() || player.IsInCombat() || player.IsTalking() || !akOpal || !akOpal.Is3DLoaded() || akOpal.IsTalking()
+		Return false
+	EndIf
+	Return akRiver.RoadOpen() && akRiver.Stamp() == aiStamp && akRiver.OpalCanSpeak() && akRiver.Outcome() == RV_NONE && !akRiver.GetStageDone(20) && !akRiver.IsEscapePending() && LocalSpeaker(akOpal, Alias_Opal)
 EndFunction
 
 Function JudgeBeforeOpal(TLM:MQ02BQuest akRiver)

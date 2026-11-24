@@ -1,0 +1,439 @@
+{
+  "scope": "Rootapproved051twoLANDlowernativefrontshoulder/exact14Zonly/current050UIpreserved",
+  "baselineSha256": "D9C19C54717EC91E1FB5E0EF8F4ECC03B2E00411411990019B2015F827712804",
+  "baselineSourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+  "equation": "Hnew=round8(Hold-W*max(0,Hold-(sameNativeRangerHeight-7000+128))); W=S(4352,5120,x)*(1-S(6144,7552,x))*S(3072,4352,y)*(1-S(5120,6144,y))",
+  "nativeDonors": {
+    "A7E": "0000F29C",
+    "AAA": "0000F2BD"
+  },
+  "nativeDatum": -6872,
+  "changedVertexSlots": 413,
+  "uniqueChangedVertices": 396,
+  "maximumLowering": 640,
+  "moves": [
+    {
+      "id": "TLM_RIDGE_p1_p1_G1A",
+      "form": "0x2000aab",
+      "asset": "TreeMaplePreWar03Gr",
+      "oldPose": [
+        5764.0,
+        4900.0,
+        1716.367431640625,
+        0.0,
+        0.0,
+        1.8708868026733398
+      ],
+      "proposedPose": [
+        5764.0,
+        4900.0,
+        1108.800962046504,
+        0.0,
+        0.0,
+        1.8708868026733398
+      ],
+      "range": 12.197979461735486,
+      "maxEmbed": 15.4286044708997,
+      "criticalPoints": 10,
+      "pivotXYunchanged": true,
+      "base": 398912,
+      "scale": 0.7200000286102295,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1B",
+      "form": "0x2000aac",
+      "asset": "TreeMaplePreWar03Gr",
+      "oldPose": [
+        6228.0,
+        4700.0,
+        1752.61474609375,
+        0.0,
+        0.0,
+        2.1808881759643555
+      ],
+      "proposedPose": [
+        6228.0,
+        4700.0,
+        1120.1425966111626,
+        0.0,
+        0.0,
+        2.1808881759643555
+      ],
+      "range": 23.86501645258454,
+      "maxEmbed": 27.153297694947696,
+      "criticalPoints": 8,
+      "pivotXYunchanged": true,
+      "base": 398912,
+      "scale": 0.8999999761581421,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1C",
+      "form": "0x2000aad",
+      "asset": "TreeMaplePreWar06Gr",
+      "oldPose": [
+        6410.0,
+        5860.0,
+        1683.6751708984375,
+        0.0,
+        0.0,
+        2.4908857345581055
+      ],
+      "proposedPose": [
+        6410.0,
+        5860.0,
+        1574.7098115844067,
+        0.0,
+        0.0,
+        2.4908857345581055
+      ],
+      "range": 12.414379700433756,
+      "maxEmbed": 15.606957830835427,
+      "criticalPoints": 8,
+      "pivotXYunchanged": true,
+      "base": 398915,
+      "scale": 0.8500000238418579,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar06Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1D",
+      "form": "0x2000aae",
+      "asset": "TreeMaplePreWar05Gr",
+      "oldPose": [
+        6780.0,
+        5500.0,
+        1809.9112548828125,
+        0.0,
+        0.0,
+        2.800887107849121
+      ],
+      "proposedPose": [
+        6780.0,
+        5500.0,
+        1545.9077790155152,
+        0.0,
+        0.0,
+        2.800887107849121
+      ],
+      "range": 25.213459625757878,
+      "maxEmbed": 28.250569000292217,
+      "criticalPoints": 13,
+      "pivotXYunchanged": true,
+      "base": 398921,
+      "scale": 0.949999988079071,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar05Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1E",
+      "form": "0x2000aaf",
+      "asset": "TreeCedarShrub01",
+      "oldPose": [
+        6180.0,
+        5760.0,
+        1711.044677734375,
+        0.0,
+        0.0,
+        3.1108884811401367
+      ],
+      "proposedPose": [
+        6180.0,
+        5760.0,
+        1512.1910010097504,
+        0.0,
+        0.0,
+        3.1108884811401367
+      ],
+      "range": 0.08817725818698818,
+      "maxEmbed": 3.088177258186988,
+      "criticalPoints": 1,
+      "pivotXYunchanged": true,
+      "base": 1742812,
+      "scale": 0.8999999761581421,
+      "model": "Landscape\\Trees\\Cedar01.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2A",
+      "form": "0x2000ab0",
+      "asset": "TreeMaplePreWar03Gr",
+      "oldPose": [
+        6536.0,
+        5760.0,
+        1724.9251708984375,
+        0.0,
+        0.0,
+        3.4208860397338867
+      ],
+      "proposedPose": [
+        6536.0,
+        5760.0,
+        1552.4356579076627,
+        0.0,
+        0.0,
+        3.4208860397338867
+      ],
+      "range": 38.57451834723702,
+      "maxEmbed": 41.80514335640123,
+      "criticalPoints": 13,
+      "pivotXYunchanged": true,
+      "base": 398912,
+      "scale": 0.7200000286102295,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2B",
+      "form": "0x2000ab1",
+      "asset": "TreeMaplePreWar03Gr",
+      "oldPose": [
+        6760.0,
+        5680.0,
+        1786.3896484375,
+        0.0,
+        0.0,
+        3.7308874130249023
+      ],
+      "proposedPose": [
+        6760.0,
+        5680.0,
+        1607.794212145902,
+        0.0,
+        0.0,
+        3.7308874130249023
+      ],
+      "range": 52.07606022388518,
+      "maxEmbed": 55.364341466248334,
+      "criticalPoints": 10,
+      "pivotXYunchanged": true,
+      "base": 398912,
+      "scale": 0.8999999761581421,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2C",
+      "form": "0x2000ab2",
+      "asset": "TreeMaplePreWar06Gr",
+      "oldPose": [
+        5240.0,
+        5050.0,
+        1301.9874267578125,
+        0.0,
+        0.0,
+        4.040888786315918
+      ],
+      "proposedPose": [
+        5240.0,
+        5050.0,
+        1070.897642253709,
+        0.0,
+        0.0,
+        4.040888786315918
+      ],
+      "range": 4.150994157799005,
+      "maxEmbed": 7.343572288200676,
+      "criticalPoints": 6,
+      "pivotXYunchanged": true,
+      "base": 398915,
+      "scale": 0.8500000238418579,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar06Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2D",
+      "form": "0x2000ab3",
+      "asset": "TreeMaplePreWar05Gr",
+      "oldPose": [
+        5000.0,
+        5260.0,
+        1096.3818359375,
+        0.0,
+        0.0,
+        4.350886344909668
+      ],
+      "proposedPose": [
+        5000.0,
+        5260.0,
+        1057.7994666488153,
+        0.0,
+        0.0,
+        4.350886344909668
+      ],
+      "range": 8.41772482878946,
+      "maxEmbed": 11.454834203323799,
+      "criticalPoints": 10,
+      "pivotXYunchanged": true,
+      "base": 398921,
+      "scale": 0.949999988079071,
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar05Green.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2E",
+      "form": "0x2000ab4",
+      "asset": "TreeCedarShrub01",
+      "oldPose": [
+        4900.0,
+        5000.0,
+        948.3536987304688,
+        0.0,
+        0.0,
+        4.660887718200684
+      ],
+      "proposedPose": [
+        4900.0,
+        5000.0,
+        947.5162499309447,
+        0.0,
+        0.0,
+        4.660887718200684
+      ],
+      "range": 0.8374325111783492,
+      "maxEmbed": 3.837432511178349,
+      "criticalPoints": 1,
+      "pivotXYunchanged": true,
+      "base": 1742812,
+      "scale": 0.8999999761581421,
+      "model": "Landscape\\Trees\\Cedar01.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneA",
+      "form": "0x2000ab5",
+      "asset": "RockBoulder03",
+      "oldPose": [
+        5600.0,
+        4800.0,
+        1705.5001220703125,
+        0.0,
+        0.0,
+        4.970885276794434
+      ],
+      "proposedPose": [
+        5600.0,
+        4800.0,
+        1174.773116715471,
+        0.0,
+        0.0,
+        4.970885276794434
+      ],
+      "range": 4.4687408586164565,
+      "maxEmbed": 8.168740846695528,
+      "criticalPoints": 8,
+      "pivotXYunchanged": true,
+      "base": 194459,
+      "scale": 1.399999976158142,
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneB",
+      "form": "0x2000ab6",
+      "asset": "RockBoulder03",
+      "oldPose": [
+        5140.0,
+        5420.0,
+        1311.084716796875,
+        0.0,
+        0.0,
+        1.5707963705062866
+      ],
+      "proposedPose": [
+        5140.0,
+        5420.0,
+        1175.9925756357047,
+        0.0,
+        0.0,
+        1.5707963705062866
+      ],
+      "range": 18.78105562745577,
+      "maxEmbed": 22.681055603613913,
+      "criticalPoints": 10,
+      "pivotXYunchanged": true,
+      "base": 194459,
+      "scale": 1.7999999523162842,
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop4",
+      "form": "0x2000b10",
+      "asset": "RockBoulder03",
+      "oldPose": [
+        6000.0,
+        4850.0,
+        1865.9974365234375,
+        0.0,
+        0.0,
+        2.8399999141693115
+      ],
+      "proposedPose": [
+        6000.0,
+        4850.0,
+        1225.997439458076,
+        0.0,
+        0.0,
+        2.8399999141693115
+      ],
+      "range": 3.307821898040629,
+      "maxEmbed": 7.307821898040629,
+      "criticalPoints": 10,
+      "pivotXYunchanged": true,
+      "base": 194459,
+      "scale": 2.0,
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop5",
+      "form": "0x2000b11",
+      "asset": "RockBoulder03",
+      "oldPose": [
+        7000.0,
+        5600.0,
+        1859.6639404296875,
+        0.0,
+        0.0,
+        3.549999952316284
+      ],
+      "proposedPose": [
+        7000.0,
+        5600.0,
+        1776.1727206502403,
+        0.0,
+        0.0,
+        3.549999952316284
+      ],
+      "range": 12.736029045505802,
+      "maxEmbed": 16.83602906934766,
+      "criticalPoints": 8,
+      "pivotXYunchanged": true,
+      "base": 194459,
+      "scale": 2.200000047683716,
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "flags": 0,
+      "parentCell": 33557161
+    }
+  ],
+  "normals": "Recomputeonlychangedheightone-vertexneighborhoodswithglobalfield; duplicateinternalY4096normalsmustmatch; allunchangedouter2normalrowsandneighborcellsremainliteral.",
+  "borders": "External2patchheightnormalrowsliteral;internalY4096authorizedcoherentchange;nootherLAND/paint change",
+  "runtimeRequirement": "Mustpairacceptedruntime04965a615/Act1PEX7E4033EEAD3625DED06074DDF2DE5BD640D1CF7EAF1AA8871F4C3B0E4A9A3090 withnew849buttons"
+}

@@ -166,19 +166,29 @@ bool Function DistinctRoster()
 	If !Miners || Miners.Length != 11 || !RHOriginalMiners || RHOriginalMiners.Length != 11
 		Return false
 	EndIf
+	Actor[] observedActors = new Actor[11]
 	int outerIndex = 0
 	While outerIndex < 11
 		Actor outerActor = Miner(outerIndex)
 		If !outerActor || outerActor != RHOriginalMiners[outerIndex]
 			Return false
 		EndIf
+		observedActors[outerIndex] = outerActor
 		int innerIndex = 0
 		While innerIndex < outerIndex
-			If Miner(innerIndex) == outerActor
+			If observedActors[innerIndex] == outerActor
 				Return false
 			EndIf
 			innerIndex += 1
 		EndWhile
+		outerIndex += 1
+	EndWhile
+	; Revalidate every live alias after the finite observation. No cross-call cache.
+	outerIndex = 0
+	While outerIndex < 11
+		If Miner(outerIndex) != observedActors[outerIndex]
+			Return false
+		EndIf
 		outerIndex += 1
 	EndWhile
 	Return true

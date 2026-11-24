@@ -573,3 +573,8 @@ bool Function FinishRead(ObjectReference original, Actor speakerActor, int captu
 	EndIf
 	Return true
 EndFunction
+
+; Historical firsthand lead, available after the player returns from the fair.
+bool Function HasReadLead()
+	Return caseHistoricalRead && entryBasis > 0 && GetStageDone(60) && GetStageDone(100) && FirstComplete()
+EndFunction

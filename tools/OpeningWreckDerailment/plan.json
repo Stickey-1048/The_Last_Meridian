@@ -1,0 +1,53 @@
+{
+  "baselineSha256": "EC103128F47BB9FB5AE080B0C33CFB8ADD398D95D059422F376E2188657DD8C9",
+  "moves": [
+    {
+      "reference": "TLM_WS_EX_WreckBoxcar",
+      "form": "0x2000943",
+      "base": "0005CA0B",
+      "model": "SetDressing\\Railroad\\RRBoxcar01.nif",
+      "nifSha256": "0114B13C609ED0516EF1D130D584F9E75E039681228D58C5B968852649645B81",
+      "oldPose": [
+        850.0,
+        1700.0,
+        -126.0,
+        0.0,
+        0.0,
+        1.5707963705062866
+      ],
+      "candidatePose": [
+        850,
+        1700,
+        -122.27091780702861,
+        0,
+        -0.08,
+        1.5707963267948966
+      ]
+    },
+    {
+      "reference": "TLM_WS_EX_WreckBogie",
+      "form": "0x2000944",
+      "base": "0005CA12",
+      "model": "SetDressing\\Railroad\\RRTrainBogie01.nif",
+      "nifSha256": "CBA718E2C095B375F6620C3CD138E0C13F5F0F4CE08C6EEDED14A99551FF6718",
+      "oldPose": [
+        1100.0,
+        1450.0,
+        -149.875,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidatePose": [
+        1140,
+        1480,
+        -121.22194038143228,
+        0,
+        0.1,
+        0
+      ]
+    }
+  ],
+  "scope": "Only existing943/944DATA; static declaredbasis/private nativeexperiment, no hill/camera/audio/quest edits",
+  "revisionReason": "Opposite4.584degreecarrollavoidsoldStump3;bogie1140,1480/Yroll.1/noYawretainssupportedseparation.Withinrootapproved2refscope."
+}

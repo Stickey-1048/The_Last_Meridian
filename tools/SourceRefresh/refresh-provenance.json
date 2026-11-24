@@ -1,0 +1,225 @@
+{
+  "scope": "AUTHOR source-only refresh; no component history/owned payload import; no cloudaggregate or native claim",
+  "parent": "ba7b38587c0be5a92327cf737134334f3c0fa6e3",
+  "worldBase": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+  "worldCurrent": "e482b720845582e1f2727a22d4a81d11b99fe412",
+  "runtimeBase": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+  "runtimeCurrent": "65a615f780b68904574552748fc50751779eb7f0",
+  "files": [
+    {
+      "path": "tools/WorldSliceBuilder/Program.cs",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "48882B318E824ECE39167B0271DD0B803610C8FA5D4AC39270A8397CBD474A31",
+      "sourceWorkingSha256": "BD89E3C2286787EABECC750DD5AA09C464B74F3BC4C6ABC2EA179577BD8798B9",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 32815,
+      "operation": "replace"
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningHillForestFinish.cs",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "0A37D17C273F5B9A6488E87C85DB38C7351DECC8E342A73CB2094654F22E0F9A",
+      "sourceWorkingSha256": "ACEB6C33A14C0BA18F418944CC95D55B1FA65D0FA432621BB801DD4D7C215EC4",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 6097,
+      "operation": "add"
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningVisibleSlopeFinish.cs",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "6150003613210048F00B200DE20A2EBCA1150175F2B84B7EAC77E09B28E28FD9",
+      "sourceWorkingSha256": "A2993D57D7708C51ADE4166D53E249399A3DC804025CA94AAE06003AD36DEFF2",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 5283,
+      "operation": "add"
+    },
+    {
+      "path": "tools/WorldSliceBuilder/DunmoreSafeChoices.cs",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "6357F35F38A3A17626AE5E367BDD4C8DB0CECFDC92C211DB1FC412DC7B69BB23",
+      "sourceWorkingSha256": "A62681C23CBF611E6027E742ABE09EBD37CCCA1B762A90E51C6468FE2E5DF509",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 1570,
+      "operation": "add"
+    },
+    {
+      "path": "tools/DunmoreSafeChoices/check_world050.py",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "44C7C85B66BE79E79D8AAF0D115E60CE6AB13E69D044B321AC663D6625C06DB4",
+      "sourceWorkingSha256": "215A7BC4217BC2B588DBC3ACBB4E088CB730B6A66E4F812FBC4ABB8ECE2BE36B",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 3325,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningHillForestFinish/.gitattributes",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "7A0DCF4CF4EB96278B0F0B6882EEEBC232235FA0581A9CE8450860A395675F36",
+      "sourceWorkingSha256": "F29A13CA6AC6CFF61265F3948A1034DDD3A2B9D0324DF3B5A434B8AEF9A3FE42",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 34,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningHillForestFinish/plan.json",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "AACF345F57CC0E47313098F6EDF731A8C34F4D1A1929A7D9CE54DA40B9E54A5E",
+      "sourceWorkingSha256": "AACF345F57CC0E47313098F6EDF731A8C34F4D1A1929A7D9CE54DA40B9E54A5E",
+      "lineEndingsOnlyDifference": false,
+      "bytes": 5795,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningHillForestFinish/models.json",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "1CC3C12CF53372459ED4A443E40DC3618629C210CC1432EFA337C336A442229E",
+      "sourceWorkingSha256": "1CC3C12CF53372459ED4A443E40DC3618629C210CC1432EFA337C336A442229E",
+      "lineEndingsOnlyDifference": false,
+      "bytes": 3618,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningHillForestFinish/check.py",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "FF72D06C8591C4E53EB549EEB23628140B9D9E61EC2452C0509CEC0052A21E5E",
+      "sourceWorkingSha256": "5E4929D18A0CA8A3836C58043FF0C0C7F8CDFF92C644BA7878B13638DE6507A9",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 9614,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningHillForestFinish/mesh.py",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "F75992CBB41533F8C9C351134C07F9C2E82CC469DE9BAAC65FBFFF084A1FAC24",
+      "sourceWorkingSha256": "C69257D164DE59622B7E994E029AEA7DDFED4B359DB43AEE2915A81673A76139",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 7790,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningVisibleSlopeFinish/.gitattributes",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "7A0DCF4CF4EB96278B0F0B6882EEEBC232235FA0581A9CE8450860A395675F36",
+      "sourceWorkingSha256": "F29A13CA6AC6CFF61265F3948A1034DDD3A2B9D0324DF3B5A434B8AEF9A3FE42",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 34,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningVisibleSlopeFinish/plan.json",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "5B35730D4B59196600BEE15DC5FA1ABF5764EDFF9B73BBDE91DE05AE30233113",
+      "sourceWorkingSha256": "5B35730D4B59196600BEE15DC5FA1ABF5764EDFF9B73BBDE91DE05AE30233113",
+      "lineEndingsOnlyDifference": false,
+      "bytes": 6091,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningVisibleSlopeFinish/models.json",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "2D9801A8126CF42C929A5FF05D9EF757D841EC925C482015FD2F6557542924F8",
+      "sourceWorkingSha256": "2D9801A8126CF42C929A5FF05D9EF757D841EC925C482015FD2F6557542924F8",
+      "lineEndingsOnlyDifference": false,
+      "bytes": 8387,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningVisibleSlopeFinish/check.py",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "D3BACAEB29E6F97B282ECE2FF108746D2FC73457DDF9F475CA61EBD969B0DD20",
+      "sourceWorkingSha256": "1366A82A12148213C696A24C645D1D780A06C8DC5AAB088D522DCC27792D3190",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 5890,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningVisibleSlopeFinish/mesh.py",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "F75992CBB41533F8C9C351134C07F9C2E82CC469DE9BAAC65FBFFF084A1FAC24",
+      "sourceWorkingSha256": "C69257D164DE59622B7E994E029AEA7DDFED4B359DB43AEE2915A81673A76139",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 7790,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningHillForestFinish/approved-plan.json",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "93C38EB1189695B3FD99432BA6018E8A3E5E1A0FA187CCF11A39CBE8665BFB71",
+      "sourceWorkingSha256": "93C38EB1189695B3FD99432BA6018E8A3E5E1A0FA187CCF11A39CBE8665BFB71",
+      "lineEndingsOnlyDifference": false,
+      "bytes": 5609,
+      "operation": "add"
+    },
+    {
+      "path": "tools/OpeningVisibleSlopeFinish/geometry.py",
+      "sourceComponent": "world050",
+      "sourceHead": "e482b720845582e1f2727a22d4a81d11b99fe412",
+      "gitBlobSha256": "156379D0E3B69F1BC10C4D8F600D4F81C726121177ED0CE80494C4DB07A656BE",
+      "sourceWorkingSha256": "C805B37CBFDD51F5C0FBA4FAB91D2C22C3FCEAF8C7ABDDE2D8B30E0769BE0AA8",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 3613,
+      "operation": "add"
+    },
+    {
+      "path": "scripts/Source/User/TLM/Act1Walk.psc",
+      "sourceComponent": "runtime049",
+      "sourceHead": "65a615f780b68904574552748fc50751779eb7f0",
+      "gitBlobSha256": "7F4EF46FBF68D488C4C2573F3E9050074CB2CBAD24719F95F4A1A59BB2F550E9",
+      "sourceWorkingSha256": "80B800483580EF594034061F36CAD4322CF164DFC6B3A93B414F7BE741B491D5",
+      "lineEndingsOnlyDifference": true,
+      "bytes": 77130,
+      "operation": "replace"
+    }
+  ],
+  "excludedWorldDelta": [
+    "build050-*.log",
+    "emission050*.log",
+    "restore050.log",
+    "component HANDOFF/receipt/preflight/actual checks/build proof outputs",
+    "add_hook050.py/record_world050.py/make_receipt.py authoring/receipt writers"
+  ],
+  "omittedDependencies": [
+    "Owned Fallout4/DLC plugins/BA2 and exact local asset paths",
+    "Current/held emitted world/master projections, previous source worktree fixture paths",
+    "OpeningVisibleSlopeFinish/preflight.json and held042output002 test evidence",
+    "PapyrusSDK/PEX/compiler/actual audio WAVs",
+    "Existing absolute source audio-map inputs and private proof paths from045"
+  ],
+  "sourceConvention": "Each selected file is exact immutable component Git blob. Working-byte/CRLF differences explicit; no component histories merged.",
+  "authorChecks": {
+    "result": "PASS finite exact copy/protected-parent/Python AST/source coupling/text-payload scan",
+    "exactComponentSourceFiles": 18,
+    "protectedParentFiles": 619,
+    "normalPSC": 43,
+    "otherNormalPSCUnchanged": 42,
+    "QAUnchanged": true,
+    "pythonParsed": 7,
+    "newOrSelectedTextFilesScanned": 21,
+    "payloadOrCredentialPatternFindings": 0,
+    "verifierSha256": "66E7549BF8A9856D91C647318A4039033707B8D6572C6692F5FA01277B20A1B3",
+    "notRun": [
+      "C#build",
+      "SDK compile",
+      "Ancestor or geometry suites",
+      "Asset reader imports",
+      "Native game",
+      "Network/publication"
+    ]
+  }
+}

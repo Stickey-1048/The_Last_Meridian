@@ -241,11 +241,18 @@ public sealed partial class Builder
         }
 
         // Before the quests are filled in: their aliases point at these.
+        BuildBlackstoneBases();
         PlaceReferences();
 
         BuildRedHollowEnvironment();
+        CompleteBlackstoneEnvironment();
 
         foreach (var q in Spec.Quests) Fill(quests[q.EditorId], q);
+        BuildQuestRecordings();
+        BuildPritchardWardrobe();
+        BuildAdaWorkwear();
+        BuildAdaBookRecording();
+        BuildDunmoreWardrobe();
     }
 
     // ------------------------------------------------------------- actors
@@ -331,6 +338,7 @@ public sealed partial class Builder
                 try { more += FixLooks(npc, source, spec); }
                 catch (Exception e) { more += $"; NOTE: its looks could not be fixed ({e.GetType().Name}: {e.Message}), so they are drawn as the game draws them"; }
             }
+            ApplyOpeningPresentation(npc, spec);
             // A record of the game's that the library cannot write back would
             // stop the whole build when the plugin is written, long after this.
             // So the copy is written and read on its own first, and left out if that fails.
@@ -935,7 +943,7 @@ public sealed partial class Builder
                 foreach (var p in group)
                     Pending.Add(own != null
                         ? $"{p.EditorId}: not placed (its cell '{p.Cell}' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)"
-                        : $"{p.EditorId}: not placed (the cell '{p.Cell}' is in Fallout4.esm)");
+                        : $"{p.EditorId}: not placed (the cell '{p.Cell}' is not available in this build)");
                 continue;
             }
             ICell cell;
@@ -946,6 +954,11 @@ public sealed partial class Builder
                 cell = MakeOwnCell(own, ownKey);
                 arrival = new Arrival(new P3Float(0, 0, 0), 0f, true);
                 Arrivals.Add(new(group.Key, ownKey.ToString(), new[] { 0f, 0f, 0f }, 0f, true));
+            }
+            else if (group.Key == Blackstone.Persistent)
+            {
+                cell = _mod.Worldspaces.Single(w=>w.EditorID==Blackstone.World).TopCell!;
+                arrival = new Arrival(new P3Float(0,0,0),0,true);
             }
             else
             {
@@ -1602,6 +1615,11 @@ public sealed partial class Builder
                             Alias = checked((short)AliasIndex(ofQuest, alias)),
                         });
                     entry.Properties.Add(aliases);
+                    break;
+                case FormListProp forms:
+                    var localForms = new ScriptObjectListProperty { Name = forms.Name, Flags = ScriptProperty.Flag.Edited };
+                    foreach (var id in forms.EditorIds) localForms.Objects.Add(new ScriptObjectProperty { Object = Local(id).ToLink<IFallout4MajorRecordGetter>(), Alias = -1 });
+                    entry.Properties.Add(localForms);
                     break;
                 case ReferenceListProp refs:
                     if(refs.EditorIds.Any(id=>!_placed.ContainsKey(id))){Pending.Add("Strict placed-reference list unavailable: "+refs.Name);break;}

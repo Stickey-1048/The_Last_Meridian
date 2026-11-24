@@ -65,6 +65,14 @@ public static partial class WorldStory
         void Script(ScriptEntry s){foreach(var p in s.Properties){if(p is ScriptObjectProperty o)Remap(o);if(p is ScriptObjectListProperty l)foreach(var entry in l.Objects)Remap(entry);}}
         foreach(var s in adapter.Scripts)Script(s);
         foreach(var a in adapter.Aliases){Remap(a.Property);foreach(var s in a.Scripts)Script(s);}
+        // Optional opening recording identity: use the EXISTING exterior sheriff.
+        var voiceOriginal=adapter.Scripts.Single(s=>s.Name=="TLM:RedHollowWalk").Properties.OfType<ScriptObjectProperty>().SingleOrDefault(p=>p.Name=="VoiceOriginalSheriff");
+        if(voiceOriginal!=null){
+            var sourceSheriff=source.Quests.Single(q=>q.EditorID=="TLM_A1").Aliases!.OfType<IQuestReferenceAliasGetter>().Single(a=>a.Name=="Pritchard").ForcedReference.FormKey;
+            var exteriorSheriff=mod.Quests.Single(q=>q.EditorID=="TLM_WS_A1").Aliases!.OfType<IQuestReferenceAliasGetter>().Single(a=>a.Name=="Pritchard").ForcedReference.FormKey;
+            if(voiceOriginal.Alias!=-1||voiceOriginal.Object.FormKey!=sourceSheriff)throw new InvalidDataException("Opening voice original sheriff source substitution");
+            voiceOriginal.Object.SetTo(exteriorSheriff);
+        }
         mod.Quests.Add(clone);door.Object.SetTo(clone.FormKey);
         return new{section=clone.EditorID,sectionForm=clone.FormKey.ToString(),road=road.EditorID,roadForm=road.FormKey.ToString(),references=2,masterCellReferences=aliases.Length-(guidance?5:4),surfaceReferences=surfaceRefs.Count>0?aliases.Count(a=>RedHollowSurfaceSites.ContainsKey(a.Name!)):0,mapping};
     }
@@ -103,6 +111,11 @@ public static partial class WorldStory
         if(vmad.Aliases.Any(a=>a.Property.Object.FormKey!=clone.FormKey||!ids.Contains((uint)a.Property.Alias)||a.Scripts.Any(s=>s.Name!="TLM:RedHollowTalk")))throw new InvalidDataException("Red Hollow alias script ownership mismatch");
         var walk=vmad.Scripts.Single(s=>s.Name=="TLM:RedHollowWalk");
         foreach(var p in walk.Properties){
+            if(p.Name=="VoiceOriginalSheriff"){
+                var expected=addon.Quests.Single(q=>q.EditorID=="TLM_WS_A1").Aliases!.OfType<IQuestReferenceAliasGetter>().Single(a=>a.Name=="Pritchard").ForcedReference.FormKey;
+                if(p is not IScriptObjectPropertyGetter voice||voice.Alias!=-1||voice.Object.FormKey!=expected)throw new InvalidDataException("Opening voice must use the original exterior Pritchard");
+                continue;
+            }
             if(p is IScriptObjectPropertyGetter o&&((o.Alias>=0&&o.Object.FormKey!=clone.FormKey)||(o.Alias<0&&o.Object.FormKey.ModKey!=StoryMaster)))throw new InvalidDataException("Red Hollow scalar binding mismatch: "+p.Name);
             if(p is IScriptObjectListPropertyGetter l&&l.Objects.Any(o=>o.Object.FormKey.ModKey!=(p.Name=="CastInto"?StoryMaster:addon.ModKey)))throw new InvalidDataException("Red Hollow alias-list binding mismatch: "+p.Name);
         }

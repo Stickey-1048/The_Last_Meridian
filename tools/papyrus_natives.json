@@ -1373,6 +1373,277 @@
     "returns": "",
     "source": "Installed CK Base/ReferenceAlias.psc line534, read 2026-11-17; source signature only, native event delivery unverified"
    }
+  ],
+  "IsTalking": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Actor",
+    "params": [],
+    "returns": "bool",
+    "source": "Owned Fallout 4 SDK Actor.psc native declaration; actual Papyrus2.8.0.4 compile verified"
+   }
+  ],
+  "BlockActivation": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "bool abBlocked = true",
+     "bool abHideActivateText = false"
+    ],
+    "returns": "",
+    "source": "Actual owned SDK Base/ObjectReference.psc line239; source gate, not native runtime proof"
+   }
+  ],
+  "Lock": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [
+     "bool abLock = true",
+     "bool abAsOwner = false"
+    ],
+    "returns": "",
+    "source": "Actual owned SDK Base/ObjectReference.psc line646; source gate, not native runtime proof"
+   }
+  ],
+  "IsLocked": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "bool",
+    "source": "Actual owned SDK Base/ObjectReference.psc line615; source gate, not native runtime proof"
+   }
+  ],
+  "GetWorldSpace": [
+   {
+    "global": false,
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "WorldSpace",
+    "source": "Actual owned SDK Base/ObjectReference.psc line522; source gate, not native runtime proof"
+   }
+  ],
+  "SetMotionType": [
+   {
+    "global": false,
+    "kind": "function",
+    "owner": "ObjectReference",
+    "min_args": 1,
+    "max_args": 2,
+    "params": [
+     "int aeMotionType",
+     "bool abAllowActivate = true"
+    ],
+    "returns": "",
+    "source": "Owned SDK ObjectReference.psc native declaration; Motion_Keyframed property2; source-level only"
+   }
+  ],
+  "OnLoad": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias/ObjectReference",
+    "params": [],
+    "returns": "",
+    "source": "Actual owned SDK Base/ReferenceAlias.psc294 and ObjectReference.psc1051, Event OnLoad()"
+   }
+  ],
+  "IsActivationBlocked": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "bool",
+    "source": "Local owned FO4 SDK Base/ObjectReference.psc:574; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "SetOverrideVoiceType": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Actor",
+    "params": [
+     "VoiceType akVoiceType"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Actor.psc:723; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "GetVoiceType": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "VoiceType",
+    "source": "Local owned FO4 SDK Base/ObjectReference.psc:516; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "FadeOutGame": [
+   {
+    "kind": "function",
+    "max_args": 5,
+    "min_args": 4,
+    "owner": "Game",
+    "params": [
+     "bool abFadingOut",
+     "bool abBlackFade",
+     "float afSecsBeforeFade",
+     "float afFadeDuration",
+     "bool abStayFaded = false"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Game.psc:25; declaration inspected 2026-11-24",
+    "global": true
+   }
+  ],
+  "Play": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Sound",
+    "params": [
+     "ObjectReference akSource"
+    ],
+    "returns": "int",
+    "source": "Local owned FO4 SDK Base/Sound.psc:5; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "StopInstance": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Sound",
+    "params": [
+     "int aiPlaybackInstance"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Sound.psc:11; declaration inspected 2026-11-24",
+    "global": true
+   }
+  ],
+  "RegisterForRemoteEvent": [
+   {
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "ScriptObject",
+    "params": [
+     "ScriptObject akEventSource",
+     "ScriptEventName asEventName"
+    ],
+    "returns": "bool",
+    "source": "Local owned FO4 SDK Base/ScriptObject.psc:133; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "UnregisterForRemoteEvent": [
+   {
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "ScriptObject",
+    "params": [
+     "ScriptObject akEventSource",
+     "ScriptEventName asEventName"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/ScriptObject.psc:238; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "GetAlias": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiAliasID"
+    ],
+    "returns": "Alias",
+    "source": "Local owned FO4 SDK Base/Quest.psc:101; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "CompleteQuest": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Quest.psc:95; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "Clear": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/ReferenceAlias.psc:8; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "Stop": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Quest.psc:182; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "Actor.OnPlayerLoadGame": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Actor",
+    "params": [
+     "Actor akSender"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Actor.psc:1000 zero-argument event + ScriptObject.psc:126-133 documented remote sender prefix; inspected 2026-11-24"
+   }
   ]
  }
 }

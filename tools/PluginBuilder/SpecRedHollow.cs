@@ -10,7 +10,7 @@ public static class RedHollow
     public const string RoadId="TLM_MQ02C", StageId="TLM_RH", CellId="TLM_CELL_RedHollow", Prefix="TLM_MSG_RH_";
     public const string LampId="TLM_MISC_RH_Lamp", KeyId="TLM_MISC_RH_FiringKey", ReceiptId="TLM_MISC_RH_Receipt";
     public const string Available="Three roads are playable. Four Flags entry is available after the first section.";
-    public const string Complete="Red Hollow road complete. Three roads and Four Flags entry remain available.";
+    public const string Complete="Back in Mercy Crossing. Report your findings to Pritchard. Returning does not settle unfinished court business or the sealed-gallery investigation.";
     public const int Limit=240;
     public static readonly string[] ClockMenus={"LoadingMenu","Console","LevelUpMenu","MessageBoxMenu","ContainerMenu","ExamineMenu","CookingMenu","ExamineConfirmMenu","RobotModMenu","PowerArmorModMenu","WorkshopMenu","PromptMenu","SitWaitMenu","SleepWaitMenu","DialogueMenu","BarterMenu","LockpickingMenu","BookMenu","SPECIALMenu","FavoritesMenu","PauseMenu","VATSMenu","PipboyMenu","PipboyHolotapeMenu","TerminalMenu","LooksMenu"};
     static string StoryRoot(){var d=new DirectoryInfo(AppContext.BaseDirectory);while(d!=null){var p=Path.Combine(d.FullName,"assets/incoming/act1/story");if(Directory.Exists(p))return p;d=d.Parent;}throw new InvalidDataException("Accepted story inputs missing");}
@@ -55,16 +55,16 @@ public static class RedHollow
         new("ToGap","Path to the gap","TLM_ACTI_RH_ToGap",3072,256,12,15),
         new("CageControl","Hoist: descend, return or rescue","TLM_ACTI_RH_CageControl",3584,384,12,16),
         new("BelowControl","Hoist: bring miners up or return alone","TLM_ACTI_RH_BelowControl",6400,384,12,17),
-        new("FiringControl","Mouth firing key control","TLM_ACTI_RH_FiringControl",3840,384,12,18),
+        new("FiringControl","Mouth firing key control","TLM_ACTI_RH_FiringControl",3840,384,56,18),
         new("BreakControl","Inner-break charge control","TLM_ACTI_RH_BreakControl",6912,512,12,19),
-        new("Roster","Find and muster the night shift","TLM_ACTI_RH_Roster",6656,384,12,20),
+        new("Roster","Find and muster the night shift","TLM_ACTI_RH_Roster",6144,640,56,20),
         new("Gallery","Path to the sealed gallery","TLM_ACTI_RH_Gallery",7168,256,12,21),
         new("FromGallery","Return to the Nine level","TLM_ACTI_RH_FromGallery",9216,256,12,22),
         new("GalleryLamp","Gallery lamp","TLM_ACTI_RH_GalleryLamp",9984,384,12,23),
         new("CotLamp","Lamp under Blevins's cot","TLM_ACTI_RH_CotLamp",4096,512,12,24),
         new("Silver","Inspect the hoist-house desk","TLM_ACTI_RH_Silver",4096,640,12,25),
         new("Shovel","Chalk on a Shovel Blade","TLM_ACTI_RH_Shovel",3328,640,12,26),
-        new("Knocking","Listen at the Mouth (knocking stand-in)","TLM_ACTI_RH_Knocking",3328,384,12,27),
+        new("Knocking","Listen at the Mouth","TLM_ACTI_RH_Knocking",3328,384,12,27),
         new("MouthOpen","Mine opening marker: use the hoist control","TLM_ACTI_RH_MouthOpen",3584,640),
         new("MouthClosed","Sealed Mouth rubble (stand-in)","TLM_ACTI_RH_MouthClosed",3584,640,12,On:false),
         new("BreakOpen","Inner break open","TLM_ACTI_RH_BreakOpen",7424,512),
@@ -86,7 +86,11 @@ public static class RedHollow
     public static readonly OwnCellSpec[] Cells={new(CellId,"Red Hollow: Nine level and sealed gallery")};
     static IEnumerable<PlacedSpec> Floors()=>new[]{("A",0,7,4),("B",3072,7,6),("C",6144,7,4),("D",9216,6,4)}.SelectMany(f=>Enumerable.Range(0,f.Item3).SelectMany(x=>Enumerable.Range(0,f.Item4).Select(y=>new PlacedSpec($"TLM_REF_RH_Floor_{f.Item1}{x}{y}",CellId,"workshop_ShackMidFloor01B","Static",y*256,f.Item2+x*256,0))));
     public static readonly PlacedSpec[] Placed=Pieces.Select(p=>new PlacedSpec("TLM_REF_RH_"+p.Alias,p.Mercy?Spec.TrialCell:CellId,p.Base,p.Base=="XMarker"?"Static":null,p.Mercy?620+(p.Alias=="MercyReturn"?40:0):p.Y,p.Mercy?100:p.X,p.Z,true,p.Box)).Concat(Floors()).ToArray();
-    static MessageSpec Ui(string id,string text,params string[] buttons)=>new(Prefix+id,null,text,true,(buttons.Length==0?new[]{"Continue"}:buttons).Select(b=>new ButtonSpec(b)).ToArray());
+    static MessageSpec Ui(string id,string text,params string[] buttons){
+        if(id=="RhaRoarkAll")return new(Prefix+id,null,text,true,new ButtonSpec("Continue"),new ButtonSpec("Talk with Roark",new GlobalEquals("TLM_G_MQ02C_BreakBlown",0),new GlobalEquals("TLM_G_MQ02C_MouthShut",0)));
+        if(id=="RhaTerms")return new(Prefix+id,null,text,true,new ButtonSpec("Continue"),new ButtonSpec("Ask about the town's terms"));
+        return new(Prefix+id,null,text,true,(buttons.Length==0?new[]{"Continue"}:buttons).Select(b=>new ButtonSpec(b)).ToArray());
+    }
     public static readonly Dictionary<string,(string Text,string[] Buttons)> UiText=new(){
         ["RhaRoarkOrdered"]=("[Roark]\n\nYou told Captain Blevins to seal it with miners below.",new[]{"Continue"}),
         ["RhaRoarkDeadline"]=("[Roark]\n\nCaptain Blevins sealed it with miners below.",new[]{"Continue"}),
@@ -123,25 +127,25 @@ public static class RedHollow
         ["Travel"]=("[Red Hollow story test]\n\n"+Available+" Travel to the gap?",new[]{"Travel","Not now"}),
         ["StageTravel"]=("[Staged travel]\n\nA marked transfer links the labelled areas. It pauses the deadline and keeps unfinished work intact. Continue?",new[]{"Continue","Not now"}),
         ["Descend"]=("[Staged hoist]\n\nGo from the outdoor work yard to the enclosed Nine level. This is a staged transfer; the hoist does not physically move. Continue?",new[]{"Continue","Not now"}),
-        ["Rescue"]=("[Bring the shift up]\n\nEvery living unfinished miner must reach the cage and surface. This is a staged batch; incomplete arrivals remain pending. Continue?",new[]{"Continue","Not now"}),
-        ["Resolve"]=("[Rescue and break]\n\nChoose only what is represented. A pending blast is not completed by rescue.",new[]{"Leave the break alone","Plan the inner-break blast","Resolve observed casualties","Not now"}),
+        ["Rescue"]=("[Bring the shift up]\n\nThe miners will go up in groups of up to three. You can stay below to investigate the gallery or ride up with them. Rescuing them does not settle what lies beyond the break.",new[]{"Continue","Not now"}),
+        ["Resolve"]=("[After rescue]\n\nRescued miners need a way home. Leave the passage open, or plan a sealing blast. Planning does not fire it. Use charge control below only after all eleven are accounted for and survivors are safe above. Report to Pritchard.",new[]{"Finish rescue; leave passage open","Plan a separate sealing blast","Record deaths without a rescue","Not now"}),
         ["Blast"]=("[Inner-break blast]\n\nThis closes the gallery break, not the Mouth. Every survivor must already be safe and nobody may remain in the blast area. Continue?",new[]{"Continue","Not now"}),
         ["Seal"]=("[Seal the Mouth]\n\nYou heard the knocking. All eleven are still below. This is your explicit order to entomb the shift. Continue?",new[]{"Give the order","Do not fire"}),
         ["Final"]=("[Deadline final call]\n\nThe warned active-time deadline has expired. The cage brings you out before Blevins fires. Continue acknowledges the warning; it is not your order.",new[]{"Continue","Pause the scene"}),
         ["Clock"]=("[Local deadline]\n\n600 active seconds; 30 after expired-warning renewal. Loaded Mouth/Nine/gallery play only. Standard menu edges, dialogue, transit, absence and load gaps pause. Detected menu uncertainty blocks; renew warning to resume.",new[]{"Accept local deadline","Not now"}),
         ["PendingRescue"]=("[Unfinished rescue]\n\nRetry the remaining survivors, or return below to inspect unfinished fates. Delivered miners stay safe; the unfinished rescue still pauses the deadline.",new[]{"Retry survivors","Inspect below","Not now"}),
-        ["HoistBelow"]=("[Staged hoist]\n\nBring the shift up, or return alone. Return alone does not rescue anybody.",new[]{"Bring the shift up","Return alone","Stay"}),
+        ["HoistBelow"]=("[Hoist]\n\nSend the miners up in small groups and stay below to investigate, or ride up with them. Return alone rescues nobody.",new[]{"Send miners up; stay below","Return alone","Stay","Ride up with the miners"}),
         ["NoWarning"]=("[Rescue fallback]\n\nNo warned rescue deadline has been accepted. You can operate the staged hoist without arming one.",new[]{"Start rescue without deadline","Not now"}),
-        ["ReportFacts"]=("[Current Red Hollow facts]\n\nCourt %g; mine %g; safe survivors %g; observed deaths %g (player %g; known nonplayer %g; unknown %g). Entombment is separate.",new[]{"Continue"}),
-        ["ReportEvidence"]=("[Evidence and undertaking]\n\nCourt-payment testimony %g; mine silver %g; personal undertaking %g; terms actually delivered %g. No town ratification is claimed.",new[]{"Continue"}),
-        ["ReportLamp"]=("[Lamp and custody]\n\nLamp origin %g (1 gallery, 2 cot); presently held %g; 2298 copy presently held %g; entombed %g. Acquisition and current custody are distinct.",new[]{"Continue"}),
+        ["ReportFacts"]=("[Red Hollow report: 1 of 3]\n\nMiners safe above ground: %.0f. Confirmed deaths: %.0f (player-caused: %.0f; other cause: %.0f; cause unknown: %.0f). Entombment is listed on page 3.",new[]{"Continue to 2 of 3"}),
+        ["ReportEvidence"]=("[Red Hollow report: 2 of 3]\n\n1 = yes; 0 = no. Court-payment testimony: %.0f. Mine silver: %.0f. Personal promise: %.0f. Terms delivered: %.0f. The town has not agreed to these terms.",new[]{"Continue to 3 of 3"}),
+        ["ReportLamp"]=("[Red Hollow report: 3 of 3]\n\nLamp origin: %.0f (0 = none; 1 = gallery; 2 = cot). Lamp held: %.0f; 2298 review copy held: %.0f (1 = yes; 0 = no). Miners entombed: %.0f. Finish to give Pritchard this account.",new[]{"Finish report"}),
         ["NoOperator"]=("[Rescue control]\n\nBlevins cannot operate the firing control. No deadline is armed. The hoist remains available for rescue.",new[]{"Start rescue","Not now"}),
         ["Court"]=("[Court scene]\n\nOptional court controls are independent of the mine. The bypass is a supported walk around the gate.",new[]{"Talk to Quill","Watch local execution scene","Record/pay rope fine","Not now"}),
         ["Watch"]=("[Local gallows scene]\n\nThe drop follows 15 active seconds here, after a final warning. Menus, absence or intervention pause/prevent it. Watch?",new[]{"Watch here","Not now"}),
         ["Drop"]=("[Imminent drop]\n\nThe local sentence is about to be carried out. Continue acknowledges witnessing; cancellation prevents the drop.",new[]{"Continue watching","Stop watching"}),
         ["Referral"]=("[Court referral]\n\nThe current docket and the held 2298 review copy will be entered together for review. This is not a pardon. Confirm the represented referral?",new[]{"Refer both dockets","Not now"}),
         ["Receipt"]=("[Court receipt]\n\nSixty caps received; the receipt is in your inventory. Release still requires the living prisoner to reach the supported safe position.",new[]{"Continue"}),
-        ["Report"]=("[Red Hollow report]\n\nReport current court, miner, mine, evidence and lamp facts. No fair or town-wide agreement is implied.",new[]{"Report","Later"}),
+        ["Report"]=("[Report to Pritchard]\n\nGive your account of Red Hollow. There are three short pages. Use Continue on each, then Finish report. Only a completed account is recorded.",new[]{"Begin report","Later"}),
         ["Status"]=("[Red Hollow]\n\nUse the labelled controls. At the mine, use the hoist control, muster below, then bring the shift up. Outside, use Rescue outcome and pending break plan, then Return to Mercy Crossing. Missing arrivals remain unfinished.",new[]{"Continue"}),
         ["Failed"]=("[Unfinished scene]\n\nThe required arrival, item or visible effect was not observed. Nothing further is recorded. Use the same control to retry only unfinished work.",new[]{"Continue"}),
         ["Unavailable"]=("[Court unavailable]\n\nNo eligible surviving earlier-road prisoner is available. Nobody is replaced or resurrected. The bypass and mine remain open.",new[]{"Continue"}),
@@ -149,7 +153,7 @@ public static class RedHollow
         ["Rope"]=("[Rope attachment]\n\nUse a real player projectile on the visible attachment target. Activating this control does not count as shooting or release.",new[]{"Continue"}),
         ["Freed"]=("[Rope release]\n\nThe rope is broken. The prisoner is alive and free. The forty-yard quotation is withheld; recording and payment of any rope fine are separate.",new[]{"Continue"}),
         ["Fine"]=("[Rope record]\n\nQuill records the shot and a four-cap rope fine. A recorded fine is not a paid fine.",new[]{"Record damage","Pay recorded four caps","Not now"}),
-        ["Knocking"]=("[Knocking stand-in]\n\nThis labelled listening interaction represents the authored hoist-code knocking and its slower reply. It supplies no voice or audio acceptance.",new[]{"Listen","Not now"}),
+        ["Knocking"]=("[Listen at the Mouth]\n\nListen down the shaft for the trapped miners and a possible reply. Listening does not start the rescue deadline.",new[]{"Listen","Not now"}),
         ["Prisoner"]=("[Prisoner record]\n\nOnly the actual earlier-road actor is bound here. Freedom, living review custody and death are separate facts.",new[]{"Continue"}),
         ["MineStatus"]=("[Mine status]\n\nRead the counted facts in the notifications. The shift, current survivors, observed deaths and entombment are separate.",new[]{"Continue"}),
         ["Lamp"]=("[Lamp proof]\n\nA world stand-in and one inventory item represent the lamp. No working carried light or later sale is claimed.",new[]{"Take the lamp","Leave it"}),
@@ -161,6 +165,11 @@ public static class RedHollow
         ["LabelCage"]=("[Hoist: outside and below]\n\nUse Hoist: descend, return or rescue to go below. The mine opening clipboard is only a marker. Below: Find and muster the night shift, then Hoist: bring miners up or return alone. Return alone rescues nobody.",new[]{"Continue"}),
         ["LabelNine"]=("[Belowground: Nine level]\n\nFirst use Find and muster the night shift. Then use Hoist: bring miners up or return alone; choose Bring the shift up to attempt rescue. Outside, use Rescue outcome and pending break plan. The gallery is optional; rescue does not itself blast the break.",new[]{"Continue"}),
         ["LabelGallery"]=("[Belowground: sealed gallery]\n\nThe sealed gallery ends here. The marked path returns to the Nine level; the hoist leads back to the outdoor yard.",new[]{"Continue"}),
+        ["RdcQuiet"]=("[Roark]\n\n"+"I keep counting. Eleven. Turn round, count again. I know how many eleven is. My hands haven't caught up yet.",new[]{"You can rest now.","You don't have to thank me.","I'll give you a moment."}),
+        ["RdcTired"]=("[Roark]\n\n"+"In a minute. Don't turn that into an order as well. You did a good thing. Let me decide when I'm finished being frightened.",new[]{"Fair enough."}),
+        ["RdcThanks"]=("[Roark]\n\n"+"Wasn't asking permission. Thank you. That's mine to say. What the town owes you is for the town to settle.",new[]{"I'll leave that to you."}),
+        ["RdcTerms"]=("[Roark]\n\n"+"I'll put the terms in front of them. They may say no. They may ask you questions you can't answer. Bringing our people up earns you a hearing. It doesn't make you the Hollow.",new[]{"I promised for myself. The town chooses.","I thought rescuing them would settle it."}),
+        ["RdcTermsAnswer"]=("[Roark]\n\n"+"It settled whether eleven people came out. That matters. Let it matter without buying the rest of us.",new[]{"All right."}),
     };
     static IEnumerable<MessageSpec> Speech(){foreach(var node in NodeNames){var parts=SpeechPages(node);var who=SpeakerName(Lines[node].GetProperty("speaker").GetString()!);for(int i=0;i<parts.Length;i++)yield return new(Prefix+"S_"+node+"_"+(i+1),who,MercyBriefing.Spoken(who,parts[i]),true,(i==parts.Length-1?Labels(node):new[]{"Continue"}).Select(b=>new ButtonSpec(b)).ToArray());}}
     public static readonly string[] DocumentIds={"toll_board","quill_docket","docket_2298","chalk_message"};
@@ -180,9 +189,15 @@ public static class RedHollow
     public static readonly QuestSpec Stage=new(StageId,"Red Hollow: directions","SideQuests",30,false,Array.Empty<StageSpec>(),new ObjectiveSpec[]{
             new(5,"Take the road to Red Hollow from Mercy Crossing","MercyTravel"),
             new(10,"Follow Path to the Mouth to reach the mine","ToMouth"),
+            new(15,"Listen at the Mouth for the trapped miners","Knocking"),
+            new(18,"Speak to Dinah Roark about starting the rescue","Roark"),
+            new(19,"[Optional] Ask Captain Blevins why he wants the mine sealed","Blevins"),
             new(20,"Use the hoist control at the mine entrance","CageControl"),
             new(30,"Find and muster the night shift below","Roster"),
+            new(35,"Investigate the passage beyond the inner break","Gallery"),
+            new(36,"Speak to the woman at the sealed gallery door","Dorn"),
             new(40,"Bring the miners up using the hoist","BelowControl"),
+            new(45,"Take the hoist up, then check the rescued miners","BelowControl"),
             new(50,"Check the miners and decide what to do at the inner break","Resolve"),
             new(55,"Return to the inner-break charge control to finish the work","BreakControl"),
             new(60,"Return to Mercy Crossing and tell Pritchard what happened","Exit"),
@@ -192,7 +207,7 @@ public static class RedHollow
             new(86,"Use the cage control to finish the interrupted operation","BelowControl"),
             new(90,"Tell Sheriff Pritchard what happened at Red Hollow","GuideSheriff")},
         Pieces.Select(p=>new AliasSpec(p.Alias,Fill.Placed,AllowDisabled:true,AllowDead:true,Placed:"TLM_REF_RH_"+p.Alias,Scripts:p.Who==0?Array.Empty<ScriptBind>():new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",p.Who))})).Concat(new[]{new AliasSpec("Condemned",Fill.ScriptFilled,AllowDead:true,AllowDisabled:true,Scripts:new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",32))}),new AliasSpec("Player",Fill.Player,Scripts:new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",-1))})}).Concat(RedHollowEnvironment.FallAliases).Concat(new[]{new AliasSpec("GuideSheriff",Fill.ScriptFilled,AllowDead:true,AllowDisabled:true)}).ToArray(),
-        new ScriptBind("TLM:RedHollowWalk",new Prop[]{new PlacedProp("RhaOriginalRoark","TLM_REF_RH_Roark"),new PlacedProp("RhaOriginalBlevins","TLM_REF_RH_Blevins"),new FormProp("TLM_MQ02C",RoadId),new FormProp("TLM_MQ01","TLM_MQ01"),new FormProp("TLM_MercyBriefing",MercyBriefing.QuestId),new AliasProp("Alias_Condemned","Condemned"),new AliasProp("Alias_GuideSheriff","GuideSheriff"),new AliasListProp("CastFrom",Pieces.Where(p=>p.Person).Select(p=>(StageId,p.Alias)).ToArray()),new AliasListProp("CastInto",Pieces.Where(p=>p.Person).Select(p=>(RoadId,p.Alias)).ToArray()),new StringListProp("ClockMenus",ClockMenus),new AliasListProp("ZoneOn",Pieces.Where(p=>p.On&&!p.Mercy).Select(p=>(StageId,p.Alias)).Concat(RedHollowEnvironment.FallAliases.Select(a=>(StageId,a.Name))).ToArray())}.Concat(Pieces.Select(p=>(Prop)new AliasProp("Alias_"+p.Alias,p.Alias))).Concat(RedHollowEnvironment.FallAliases.Select(a=>(Prop)new AliasProp("Alias_"+a.Name,a.Name)))
+        new ScriptBind("TLM:RedHollowWalk",new Prop[]{new PlacedProp("RhaOriginalRoark","TLM_REF_RH_Roark"),new PlacedProp("RhaOriginalBlevins","TLM_REF_RH_Blevins"),new PlacedProp("VoiceOriginalSheriff","TLM_REF_A1_Pritchard"),new FormProp("TLM_MQ02C",RoadId),new FormProp("TLM_MQ01","TLM_MQ01"),new FormProp("TLM_MercyBriefing",MercyBriefing.QuestId),new AliasProp("Alias_Condemned","Condemned"),new AliasProp("Alias_GuideSheriff","GuideSheriff"),new AliasListProp("CastFrom",Pieces.Where(p=>p.Person).Select(p=>(StageId,p.Alias)).ToArray()),new AliasListProp("CastInto",Pieces.Where(p=>p.Person).Select(p=>(RoadId,p.Alias)).ToArray()),new StringListProp("ClockMenus",ClockMenus),new AliasListProp("ZoneOn",Pieces.Where(p=>p.On&&!p.Mercy).Select(p=>(StageId,p.Alias)).Concat(RedHollowEnvironment.FallAliases.Select(a=>(StageId,a.Name))).ToArray())}.Concat(Pieces.Select(p=>(Prop)new AliasProp("Alias_"+p.Alias,p.Alias))).Concat(RedHollowEnvironment.FallAliases.Select(a=>(Prop)new AliasProp("Alias_"+a.Name,a.Name)))
         .Concat(new[]{"Below","Cage","Surface"}.Select(n=>(Prop)new AliasListProp(n+"Slots",Enumerable.Range(1,11).Select(i=>(StageId,n+$"{i:00}")).ToArray())))
         .Concat(Messages.Select(m=>(Prop)new FormProp(m.EditorId[Prefix.Length..],m.EditorId))).ToArray()));
 }

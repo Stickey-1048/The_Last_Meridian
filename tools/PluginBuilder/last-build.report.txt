@@ -71,7 +71,7 @@ Global (70)
   000A7C  TLM_G_MQ02C_LampTaken
   000A7D  TLM_G_MQ02C_Docket2298Held
   000A7E  TLM_G_MQ02C_SilverMine
-Faction (9)
+Faction (11)
   000812  TLM_Fac_Cutters
   000813  TLM_Fac_Caravan
   000814  TLM_Fac_MercyCrossing
@@ -81,6 +81,8 @@ Faction (9)
   000962  TLM_Fac_BlackRail
   000A7F  TLM_Fac_RH_Staging
   000C21  TLM_Fac_FF_Staging
+  000E50  TLM_Fac_BL_Staging
+  000EB2  TLM_Fac_BS_Station
 MiscItem (8)
   000815  TLM_MISC_Dispatch  "Sealed Rail Dispatch"
   000816  TLM_MISC_TornTransitPass  "Torn Transit Pass"
@@ -90,14 +92,23 @@ MiscItem (8)
   000A81  TLM_MISC_RH_FiringKey  "Blevins's firing key"
   000A82  TLM_MISC_RH_Receipt  "Sixty-cap court receipt"
   000C22  TLM_MISC_FF_Silver  "Original spent silver cartridge case"
-Book (6)
+Book (15)
   000817  TLM_BOOK_RailMaintLedger  "Maintenance Ledger, Line 14"
   000818  TLM_BOOK_MarshalLog  "Rail Marshal's Journal"
   00089E  TLM_BOOK_Docket2298  "Mercy Road Case: 2298 Review Copy"
   0008D2  TLM_BOOK_LetterOfHire  "A Letter of Hire"
   00098A  TLM_BOOK_HymnalFlyleaf  "Flyleaf of a Hymnal"
   000C32  TLM_BOOK_FF_CourierCase  "Original courier case: ledger and Blackstone sketch"
-Activator (112)
+  000E5A  TLM_BOOK_BL_BlackBook  "Vane's bound black account book"
+  000E5B  TLM_BOOK_BL_Warrant  "Pritchard's warrant for Vane's books"
+  000E5C  TLM_BOOK_BL_Receipt  "Receipt for Vane's bound account book"
+  000EB8  TLM_BOOK_BS_JunctionRoute  "Blackstone Night Freight: Route Sheet"
+  000EB9  TLM_BOOK_BS_Freight  "Blackstone Receiving Register: 4117"
+  000EBA  TLM_BOOK_BS_RiderIndex  "Meridian Field Service: Rider Index"
+  000EBB  TLM_BOOK_BS_MaraNote  "Mara's Field Note"
+  000EBC  TLM_BOOK_BS_Diagram  "Lower Service Entrance"
+  000EBD  TLM_BOOK_BS_ServicePass  "Blackstone bearer service pass"
+Activator (122)
   000824  TLM_ACTI_TrialTrigger
   000833  TLM_TRIG_AmbushSight
   000834  TLM_TRIG_TownGate
@@ -185,7 +196,7 @@ Activator (112)
   000A96  TLM_ACTI_RH_CotLamp  "Lamp under Blevins's cot"
   000A97  TLM_ACTI_RH_Silver  "Inspect the hoist-house desk"
   000A98  TLM_ACTI_RH_Shovel  "Chalk on a Shovel Blade"
-  000A99  TLM_ACTI_RH_Knocking  "Listen at the Mouth (knocking stand-in)"
+  000A99  TLM_ACTI_RH_Knocking  "Listen at the Mouth"
   000A9A  TLM_ACTI_RH_MouthOpen  "Mine opening marker: use the hoist control"
   000A9B  TLM_ACTI_RH_MouthClosed  "Sealed Mouth rubble (stand-in)"
   000A9C  TLM_ACTI_RH_BreakOpen  "Inner break open"
@@ -210,14 +221,24 @@ Activator (112)
   000C2A  TLM_ACTI_FF_Competition  "Optional competition: unavailable"
   000C2B  TLM_ACTI_FF_Status  "Fair facts and original custody"
   000C2C  TLM_ACTI_FF_OccupationBoard  "Dominion order: occupation representation"
+  000E51  TLM_ACTI_BL_Entry  "Vane's counting room: warranted visit"
+  000E52  TLM_ACTI_BL_Public  "Public reading at Vane's counter"
+  000E53  TLM_ACTI_BL_Finish  "Finish Black Ledger encounter / return visitors"
+  000E54  TLM_ACTI_BL_Read  "Read Vane's original black book"
+  000E55  TLM_ACTI_BL_Exit  "Return to Mercy Crossing"
+  000E56  TLM_ACTI_BL_Retry  "Retry warranted access"
+  000EB3  TLM_ACTI_BS_UpperReturn  "Return to Iron Junction"
+  000EB4  TLM_ACTI_BS_StationSign  "Blackstone Station: upper freight platform"
+  000EB5  TLM_ACTI_BS_Mechanical  "Local mechanical door release"
+  000EB6  TLM_ACTI_BS_Boundary  "Freight approach: Act One boundary"
 Container (3)
   000839  TLM_CONT_WagonCargo  "Fenwick's Cargo"
   000AA8  TLM_CONT_RH_Rope  "Rope attachment: projectile target"
   000AA9  TLM_CONT_RH_TollBox  "Court payment box"
-Message (547)
+Message (640)
   00081C  TLM_MSG_Tut_Wake  [notification]  "Search the wreck. Take what you can carry."
   00081D  TLM_MSG_Tut_SixRounds  [notification]  "Six rounds in the cylinder. Count them."
-  00081E  TLM_MSG_E1  [box]  "The shoes are ground to the rivets."  title: "Brake shoes"
+  00081E  TLM_MSG_E1  [box]  "The brake lining is worn down to exposed rivets. That much wear took time. A ledger calling these brakes sound does not match what is here."  title: "Brake shoes"
           button 0: "Step back"
   00081F  TLM_MSG_E2  [box]  "The draw-bar is cracked through. The break is dark with old rust."  title: "Draw-bar"
           button 0: "Step back"
@@ -237,6 +258,7 @@ Message (547)
           button 1: "[Fight] Let them go."
           button 2: "What kind of share?"
           button 3: "[Leave] I'm walking away."
+          button 4: "[Call for help] Sheriff! Over here!"
   00084A  TLM_MSG_A1_DunmoreShare  [box]  "Reese Dunmore: "Half the cargo. The drover won't be a problem.""  title: "Reese Dunmore"
           button 0: "Take the share."
           button 1: "[Leave] No deal. I'm leaving."
@@ -248,18 +270,18 @@ Message (547)
           button 0: "Continue"
   00084E  TLM_MSG_A1_DunmoreAfter  [box]  "Reese Dunmore: "We're done here. Walk on.""  title: "Reese Dunmore"
           button 0: "Continue"
-  00084F  TLM_MSG_A1_NellLive  [box]  "Nell Fenwick: "They want the wagon. Don't make it worse.""  title: "Nell Fenwick"
+  00084F  TLM_MSG_A1_NellLive  [box]  "Nell Fenwick: "They want the wagon. It's my living and Abel's wages. I can reckon a bad axle; I can't reckon what Dunmore will do if somebody starts shooting.""  title: "Nell Fenwick"
           button 0: "Continue"
-  000850  TLM_MSG_A1_NellSaved  [box]  "Nell Fenwick: "They'd have had the wagon and Abel both. Take this. It's what I can spare.""  title: "Nell Fenwick"
+  000850  TLM_MSG_A1_NellSaved  [box]  "Nell Fenwick: "I can spare thirty caps. I'd rather pay a debt than wonder when it'll be called in. You kept the Cutters off my wagon; let that be square between us.""  title: "Nell Fenwick"
           button 0: "Take it."
           button 1: "Keep it."
           button 2: "Who hit you?"
   000851  TLM_MSG_A1_NellWho  [box]  "Nell Fenwick: "Tellico Cutters. Reese Dunmore's lot.""  title: "Nell Fenwick"
           button 0: "Continue"
-  000852  TLM_MSG_A1_NellOffer  [box]  "Nell Fenwick: "Take this. It's what I can spare.""  title: "Nell Fenwick"
+  000852  TLM_MSG_A1_NellOffer  [box]  "Nell Fenwick: "Thirty caps. That's what I can spare and still put a load over the next ridge. Take them, or tell me to keep them.""  title: "Nell Fenwick"
           button 0: "Take it."
           button 1: "Keep it."
-  000853  TLM_MSG_A1_NellSavedAfter  [box]  "Nell Fenwick: "We'll be at the yard in Mercy Crossing. I won't forget it.""  title: "Nell Fenwick"
+  000853  TLM_MSG_A1_NellSavedAfter  [box]  "Nell Fenwick: "I'd like one trip where the climb takes more out of me than the men beside the road. I'll do my reckoning at Mercy's yard. I won't forget your part.""  title: "Nell Fenwick"
           button 0: "Continue"
   000854  TLM_MSG_A1_NellEvaded  [box]  "Nell Fenwick: "You watched. You kept walking.""  title: "Nell Fenwick"
           button 0: "I couldn't."
@@ -268,27 +290,29 @@ Message (547)
   000855  TLM_MSG_A1_NellSilent  [notification]  "Nell Fenwick looks through you and says nothing."  title: "Nell Fenwick"
   000856  TLM_MSG_A1_NellMissed  [box]  "Nell Fenwick: "They took the wagon and they killed Abel. Nobody came.""  title: "Nell Fenwick"
           button 0: "Continue"
-  000857  TLM_MSG_A1_AbelLive  [box]  "Abel Rudd: "Don't look at me. Look at them.""  title: "Abel Rudd"
+  000857  TLM_MSG_A1_AbelLive  [box]  "Abel Rudd: "I'm the drover, not a gunfighter. Dunmore's the one speaking for them. Talk to him if you've a way out of this; I still want to drive this wagon home.""  title: "Abel Rudd"
           button 0: "Continue"
-  000858  TLM_MSG_A1_AbelSaved  [box]  "Abel Rudd: "Thought that was the end of me. Obliged.""  title: "Abel Rudd"
+  000858  TLM_MSG_A1_AbelSaved  [box]  "Abel Rudd: "A steep climb I can work with. Waiting for a man to decide whether I'm worth a bullet is different. Thank you for giving me the road again.""  title: "Abel Rudd"
           button 0: "Continue"
   000859  TLM_MSG_A1_CutterLive  [box]  "Tellico Cutter: "Talk to Dunmore.""  title: "Tellico Cutter"
           button 0: "Continue"
-  00085A  TLM_MSG_A1_PritchardNoCase  [box]  "Owen Pritchard: "Gantt's train never reached us. Where's his case?""  title: "Owen Pritchard"
+  000F74  TLM_MSG_A1_SheriffWarning  [box]  "Owen Pritchard: "That's enough, Dunmore. Take your people and leave the wagon.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  00085A  TLM_MSG_A1_PritchardNoCase  [box]  "Owen Pritchard: "Gantt's train never reached us. I need his dispatch, not another guess about the wreck. Did you find his case?""  title: "Owen Pritchard"
           button 0: "I haven't looked."
           button 1: "Lost it."
           button 2: "I'll go back for it."
-  00085B  TLM_MSG_A1_PritchardNoCaseAndMore  [box]  "Owen Pritchard: "Gantt's train never reached us. Where's his case?""  title: "Owen Pritchard"
+  00085B  TLM_MSG_A1_PritchardNoCaseAndMore  [box]  "Owen Pritchard: "Gantt's train never reached us. I need his dispatch, not another guess about the wreck. Did you find his case?""  title: "Owen Pritchard"
           button 0: "I haven't looked."
           button 1: "Lost it."
           button 2: "I'll go back for it."
           button 3: "There's something else from that train."
-  00085C  TLM_MSG_A1_PritchardMark  [box]  "Owen Pritchard: "Six hours east at the wreck. I'll mark it.""  title: "Owen Pritchard"
+  00085C  TLM_MSG_A1_PritchardMark  [box]  "Owen Pritchard: "Search beside Gantt at the wreck for the sealed dispatch. The road brings you back to Mercy and this cabin.""  title: "Owen Pritchard"
           button 0: "Continue"
-  00085D  TLM_MSG_A1_PritchardCase  [box]  "Owen Pritchard: "Off the Tellico wreck. That's Tobias Gantt's case you're carrying.""  title: "Owen Pritchard"
+  00085D  TLM_MSG_A1_PritchardCase  [box]  "Owen Pritchard: "That's Gantt's case. I need the dispatch inside it before I can send word up the line. Hand it over, or tell me you're keeping it for now.""  title: "Owen Pritchard"
           button 0: "Hand over the dispatch"
           button 1: "Not yet."
-  00085E  TLM_MSG_A1_PritchardCaseAndMore  [box]  "Owen Pritchard: "Off the Tellico wreck. That's Tobias Gantt's case you're carrying.""  title: "Owen Pritchard"
+  00085E  TLM_MSG_A1_PritchardCaseAndMore  [box]  "Owen Pritchard: "That's Gantt's case. I need the dispatch inside it before I can send word up the line. Hand it over, or tell me you're keeping it for now.""  title: "Owen Pritchard"
           button 0: "Hand over the dispatch"
           button 1: "Not yet."
           button 2: "There's something else from that train."
@@ -316,25 +340,25 @@ Message (547)
           button 0: "Continue"
   000866  TLM_MSG_A1_DebriefLost  [box]  "Owen Pritchard: "The line keeps losing marshals. Nell Fenwick's wagon never came in.""  title: "Owen Pritchard"
           button 0: "Continue"
-  000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
+  000867  TLM_MSG_A1_PritchardHandOff  [box]  "Owen Pritchard: "Greenwater needs food. Red Hollow's mine is shut. Iron Junction's rails are being cut. Pick one road. I can't spare people for all three."
 
-[Opening complete. Three roads and Four Flags entry are available.]"  title: "Owen Pritchard"
+[Speak to Pritchard again for directions to the three roads.]"  title: "Owen Pritchard"
           button 0: "Continue"
-  000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
+  000868  TLM_MSG_A1_PritchardAfter  [box]  "Owen Pritchard: "Greenwater by river, Iron Junction by rail, Red Hollow up the pike. Ask what you need to know before you go."
 
-[Opening complete. Three roads and Four Flags entry are available.]"  title: "Owen Pritchard"
+[Speak to Pritchard again for directions to the three roads.]"  title: "Owen Pritchard"
           button 0: "Continue"
-  000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater, Red Hollow or Iron Junction. Pick one."
+  000869  TLM_MSG_A1_PritchardAfterAndMore  [box]  "Owen Pritchard: "Greenwater by river, Iron Junction by rail, Red Hollow up the pike. Ask what you need to know before you go."
 
-[Opening complete. Three roads and Four Flags entry are available.]"  title: "Owen Pritchard"
+[Speak to Pritchard again for directions to the three roads.]"  title: "Owen Pritchard"
           button 0: "Continue"
           button 1: "There's something else from that train."
-  00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Pike. I fix what shoots. Forty-fours are scarce, so make yours count.""  title: "Ada Pike"
+  00086A  TLM_MSG_A1_PikeHello  [box]  "Ada Pike: "Ada Pike. I fix guns; I don't make powder appear. Forty-fours are scarce. Past the next ridge, a wasted shot's a long walk back.""  title: "Ada Pike"
           button 0: "Continue"
   00086B  TLM_MSG_A1_PikeBook  [box]  "Ada Pike: "They used to buy shoes off me every season. Haven't taken a pair since spring. I kept the count. Here, look.""  title: "Ada Pike"
           button 0: "Look at her parts book"
           button 1: "Leave it"
-  00086C  TLM_MSG_A1_PikeAfter  [box]  "Ada Pike: "The count's the count. I don't know who wrote yours.""  title: "Ada Pike"
+  00086C  TLM_MSG_A1_PikeAfter  [box]  "Ada Pike: "The count's the count. Good iron doesn't get cheaper because a man signs a tidy page. Take what I showed you to Pritchard; let him ask whose account it clears.""  title: "Ada Pike"
           button 0: "Continue"
   00086D  TLM_MSG_A1_PikeHaskell  [box]  "Ada Pike: "Corwin signed for freight. That's all he did.""  title: "Ada Pike"
           button 0: "Continue"
@@ -345,9 +369,9 @@ Message (547)
           button 1: "Keep them"
   000870  TLM_MSG_A1_VanePaid  [box]  "Silas Vane: "Paid in full. Good day to you.""  title: "Silas Vane"
           button 0: "Continue"
-  000871  TLM_MSG_A1_KeeneHello  [box]  "Miriam Keene: "Clinic's open. If you're bleeding, sit. If you're not, don't touch anything.""  title: "Miriam Keene"
+  000871  TLM_MSG_A1_KeeneHello  [box]  "Miriam Keene: "Miriam Keene. Tell me where you're hurt; don't make me guess. Clean cloth comes over the same roads as everything else. I've none to waste.""  title: "Miriam Keene"
           button 0: "Continue"
-  000872  TLM_MSG_A1_KeeneNell  [box]  "Miriam Keene: "Nell Fenwick's on the cot. She'll mend. Leave her be.""  title: "Miriam Keene"
+  000872  TLM_MSG_A1_KeeneNell  [box]  "Miriam Keene: "Nell's alive. That's what I can tell you. Give her quiet, and don't make her spend her strength telling you the road again.""  title: "Miriam Keene"
           button 0: "Continue"
   000873  TLM_MSG_A1_KeeneHaskell  [box]  "Miriam Keene: "Corwin signed for freight. That's all he did.""  title: "Miriam Keene"
           button 0: "Continue"
@@ -378,19 +402,25 @@ Message (547)
           button 0: "Continue"
   0008A6  TLM_MSG_MB_CopyIssuedNote  [notification]  "One review copy only. No second copy is given."
   0008A7  TLM_MSG_MB_CopyPendingNote  [notification]  "Review copy hand-over unconfirmed. None is given again. Report this to the tester."
-  0008A8  TLM_MSG_MB_HandOff  [box]  "Owen Pritchard: "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."
+  0008A8  TLM_MSG_MB_HandOff  [box]  "Owen Pritchard: "Greenwater needs food. Red Hollow's mine is shut. Iron Junction's rails are being cut. Pick one road. I can't spare people for all three."
 
-[Opening complete. Ask for briefings or use a story test point.]"  title: "Owen Pritchard"
+[Speak to Pritchard again for directions to the three roads.]"  title: "Owen Pritchard"
           button 0: "Continue"
   0008D5  TLM_MSG_GW_OpalDefault  [box]  "Opal Starnes: "Back of the line, bless you. Everybody eats or nobody does.""  title: "Opal Starnes"
           button 0: "Continue"
-  0008D6  TLM_MSG_GW_OpalFirst  [box]  "Opal Starnes: "Pritchard sent you? He might have sent corn. Nine days in the bin, child, and ninety till the dogwood. And yonder sits my grain, tied to that painted hussy of a boat, with Lyle Hatcher selling it back by the cup.""  title: "Opal Starnes"
+  0008D6  TLM_MSG_GW_OpalFirst  [box]  "Opal Starnes: "Pritchard sent you? Nine days of corn here, ninety till the dogwood. That barge beside Hatcher's Queen holds our winter grain. He sells it back by the cup. Start with me, child. Know whose supper you're handling.""  title: "Opal Starnes"
           button 0: "What do you want done?"
           button 1: "Why not take it back yourselves?"
           button 2: "(Take a bowl)"
-  0008D7  TLM_MSG_GW_OpalWants  [box]  "Opal Starnes: "The barge at my landing. And Lyle on that steeple by his neck, where the children can see what stealing bread comes to. I held him at his christening. I'll hold the rope. Mose has a skiff. Go on.""  title: "Opal Starnes"
+          button 3: "Why not leave Greenwater?"
+  0008D7  TLM_MSG_GW_OpalWants  [box]  "Opal Starnes: "Bring the grain to this landing. I want Lyle hanged from the steeple, too. I held him at his christening; I won't pretend that makes this easy. Mose has a skiff. Getting our food back needn't mean killing him.""  title: "Opal Starnes"
           button 0: "Continue"
-  0008D8  TLM_MSG_GW_OpalGuns  [box]  "Opal Starnes: "He's two swivel guns on the rail and I've nine men who can stand up straight. I can count, child. It's the one thing I've left that works.""  title: "Opal Starnes"
+  000F7C  TLM_MSG_GW_OpalStay  [box]  "Opal Starnes: "Leave for where? Up a ridge with empty packs? These planks are home. I know every bowl by its chipped rim. If we scatter, I stop seeing who's missing. That's what frightens me more than Hatcher.""  title: "Opal Starnes"
+          button 0: "And after we get the grain?"
+          button 1: "Back"
+  000F7D  TLM_MSG_GW_OpalAfterGrain  [box]  "Opal Starnes: "We keep counting. A full barge buys time, not another harvest. Come back when your river work is done. The relief stores take corn. I'll tell you what's short; you decide what you can spare.""  title: "Opal Starnes"
+          button 0: "Continue"
+  0008D8  TLM_MSG_GW_OpalGuns  [box]  "Opal Starnes: "Two swivel guns on his rail. Nine men here fit to stand. A hungry man shakes before he aims. I won't spend them on a charge just so I can say I tried. Find another way to the grain.""  title: "Opal Starnes"
           button 0: "Continue"
   0008D9  TLM_MSG_GW_OpalBowl  [box]  "Opal Starnes: "That's a quarter cup short and I know it, so don't look at it like that. Eat. You'll want it. I'd tell you I've had mine, but the Lord's listening.""  title: "Opal Starnes"
           button 0: "Continue"
@@ -403,9 +433,9 @@ Message (547)
           button 1: "Let him keep his boat."
   0008DC  TLM_MSG_GW_OpalWonHatcherDead  [box]  "Opal Starnes: "The grain is ours. Hatcher is dead. I can count both those facts without calling them the same kind of victory.""  title: "Opal Starnes"
           button 0: "Continue"
-  0008DD  TLM_MSG_GW_OpalDenied  [box]  "Opal Starnes: "Then eat somewhere else. I'll feed a thief's dog before I feed the hand that turned him loose. Bless you for the corn. Now get off my planks.""  title: "Opal Starnes"
+  0008DD  TLM_MSG_GW_OpalDenied  [box]  "Opal Starnes: "You brought the corn and spared him. I can thank your hands and hate your judgment. Get off my planks for now. The relief stores are for the town; my anger doesn't get to own those.""  title: "Opal Starnes"
           button 0: "Continue"
-  0008DE  TLM_MSG_GW_OpalAfterChute  [box]  "Opal Starnes: "We brought back less than we needed. Enough to stretch the pot, not enough to stop counting. We'll measure what came home before anybody calls it a victory. Thank you for what you brought.""  title: "Opal Starnes"
+  0008DE  TLM_MSG_GW_OpalAfterChute  [box]  "Opal Starnes: "Some grain home. Some gone. I'll stretch what you've brought; I won't call the winter settled. Finish your river journey, then come back to the relief stores with corn. Help can be more than one brave afternoon.""  title: "Opal Starnes"
           button 0: "Continue"
   0008DF  TLM_MSG_GW_OpalAfterFire  [box]  "Opal Starnes: "I asked for the grain and one man's answer. Now the cargo's burned and people are missing. Don't give me a number you haven't counted. Bring the living to the planks. We'll need every hand.""  title: "Opal Starnes"
           button 0: "Continue"
@@ -413,30 +443,30 @@ Message (547)
           button 0: "Continue"
   0008E1  TLM_MSG_GW_OpalAfterHanging  [box]  "Opal Starnes: "It's done. I thought I'd feel fed. ...Fifty years ago I put a spoon in that boy's mouth. Go on, child. There's corn. There's corn for everybody.""  title: "Opal Starnes"
           button 0: "Continue"
-  0008E2  TLM_MSG_GW_RaffertyDefault  [box]  "Mose Rafferty: "River's up. River's always something.""  title: "Mose Rafferty"
+  0008E2  TLM_MSG_GW_RaffertyDefault  [box]  "Mose Rafferty: "You watch the boat. I watch the water between us. That's how I got myself into this. Ask Granny what she needs; then ask me how to reach Hatcher's barge.""  title: "Mose Rafferty"
           button 0: "Continue"
-  0008E3  TLM_MSG_GW_RaffertySkiff  [box]  "Mose Rafferty: "Granny send you? Then I'm to row you out. Front way's the gangway: buy a drink, look rich. Back way's her off side, where the barge is. Anchor chain's rotten at the third link. I, uh. I know that barge pretty well.""  title: "Mose Rafferty"
+  0008E3  TLM_MSG_GW_RaffertySkiff  [box]  "Mose Rafferty: "Front gangway takes you to Hatcher's card table. My skiff reaches the grain barge on the Queen's far side. The third chain link is rotten. I know because... well. I know that barge.""  title: "Mose Rafferty"
           button 0: "The gangway."
           button 1: "The off side."
           button 2: "How do you know the barge?"
-  0008E4  TLM_MSG_GW_RaffertyConfess  [box]  "Mose Rafferty: "I towed it out. He said safe keeping. He gave me a dollar. I didn't know, I swear on the river I didn't. Don't tell her. I'll run the Chute for you at night, loaded, blind. Only don't tell her.""  title: "Mose Rafferty"
+  0008E4  TLM_MSG_GW_RaffertyConfess  [box]  "Mose Rafferty: "I towed it out. One dollar for safe keeping, he said. I wanted Granny to see me bring wages home. Instead I took her winter. I'll run the Chute for you. I'm scared of it. I'm going anyway.""  title: "Mose Rafferty"
           button 0: "Continue"
   0008E5  TLM_MSG_GW_RaffertyChain  [box]  "Mose Rafferty: "One cut frees the barge for the Chute. Or burn the Queen. Thirty people are aboard - crew, cooks, the fiddler - and the winter grain is still lashed alongside. Fire can take them and the cargo. Say what you're ordering.""  title: "Mose Rafferty"
           button 0: "Cut the barge loose."
           button 1: "Burn the occupied Queen."
           button 2: "Not yet."
-  0008E6  TLM_MSG_GW_RaffertyRan  [box]  "Mose Rafferty: "WE'RE THROUGH! Look at what's gone over the side. Granny's going to count every sack we brought home. We'll count the loss before we start calling it a victory.""  title: "Mose Rafferty"
+  0008E6  TLM_MSG_GW_RaffertyRan  [box]  "Mose Rafferty: "Through! Don't cheer yet. Those sacks over the side were suppers. Granny will count what we brought home. I'll stand there while she does it. I helped put us here.""  title: "Mose Rafferty"
           button 0: "Continue"
   0008E7  TLM_MSG_GW_RaffertyBurned  [box]  "Mose Rafferty: "The cook was still aboard. The fiddler too; she taught me to waltz. We knew they were there. I can hear them in the water. Don't tell me this was only a boat.""  title: "Mose Rafferty"
           button 0: "Continue"
-  0008E8  TLM_MSG_GW_HatcherDefault  [box]  "Lyle Hatcher: "Welcome aboard the Queen, friend. The first drink is on the house and the last one is on you.""  title: "Lyle Hatcher"
+  0008E8  TLM_MSG_GW_HatcherDefault  [box]  "Lyle Hatcher: "Welcome to the Queen. Warm light, dry cards, nobody asking what you were before you came aboard. First drink's mine. Mind what the next one costs you.""  title: "Lyle Hatcher"
           button 0: "Continue"
-  0008E9  TLM_MSG_GW_HatcherTable  [box]  "Lyle Hatcher: "Sit, sit. Lyle Hatcher, Commodore by acclamation. You're Opal's new terrier. Now that barge was adrift, and I put a line on her, and that is salvage, friend, by a law older than this lake. Card?""  title: "Lyle Hatcher"
+  0008E9  TLM_MSG_GW_HatcherTable  [box]  "Lyle Hatcher: "Lyle Hatcher. Opal wants her barge; I call it salvage. You're standing between a hungry town and a paying house. Play for the grain, hear my offer, or leave. Nobody needs to draw yet.""  title: "Lyle Hatcher"
           button 0: "Deal. The barge against my gun."
           button 1: "Sell me a share, Commodore."
           button 2: "Who paid you to hold it?"
           button 3: "(Leave the table)"
-  0008EA  TLM_MSG_GW_HatcherTableNoShare  [box]  "Lyle Hatcher: "Sit, sit. Lyle Hatcher, Commodore by acclamation. You're Opal's new terrier. Now that barge was adrift, and I put a line on her, and that is salvage, friend, by a law older than this lake. Card?""  title: "Lyle Hatcher"
+  0008EA  TLM_MSG_GW_HatcherTableNoShare  [box]  "Lyle Hatcher: "Lyle Hatcher. Opal wants her barge; I call it salvage. You're standing between a hungry town and a paying house. Play for the grain, hear my offer, or leave. Nobody needs to draw yet.""  title: "Lyle Hatcher"
           button 0: "Deal. The barge against my gun."
           button 1: "Who paid you to hold it?"
           button 2: "(Leave the table)"
@@ -460,7 +490,7 @@ Message (547)
           button 1: "(Leave the table)"
   0008F0  TLM_MSG_GW_HatcherWonNoShare  [box]  "Lyle Hatcher: "Ah. The lady turns, and she's mine. No, no, keep your iron, I've a drawer full. You have sand, friend, and I've a use for sand. There's a quarter of that barge in it if Greenwater hears she went down in the Chute.""  title: "Lyle Hatcher"
           button 0: "(Leave the table)"
-  0008F1  TLM_MSG_GW_HatcherShare  [box]  "Lyle Hatcher: "Two hundred, and a berth. Tell Opal the Chute took it. Delegate Belden has a soup wagon; he'll offer a bowl. I'm selling you a share, not a promise that his pot replaces the winter grain.""  title: "Lyle Hatcher"
+  0008F1  TLM_MSG_GW_HatcherShare  [box]  "Lyle Hatcher: "Two hundred caps to tell Opal the Chute took it. You get paid; she gets no grain. Belden's soup may help today. It won't replace a winter's stores. Still want my share?""  title: "Lyle Hatcher"
           button 0: "Done."
           button 1: "No."
   0008F2  TLM_MSG_GW_HatcherPaidA  [box]  "Lyle Hatcher: "Paid? ...You've been in my box. Or you're guessing, and I've told you. Ha! Yes. Silver, square mark: hold her till first frost, then turn her loose.""  title: "Lyle Hatcher"
@@ -1413,6 +1443,7 @@ Captain Blevins sealed it with miners below."
 
 They're here. All eleven."
           button 0: "Continue"
+          button 1: "Talk with Roark"  if GetGlobalValue TLM_G_MQ02C_BreakBlown EqualTo 0 and GetGlobalValue TLM_G_MQ02C_MouthShut EqualTo 0
   000E33  TLM_MSG_RH_RhaRoarkNone  [box]  "[Roark]
 
 They're dead. All eleven."
@@ -1517,6 +1548,7 @@ Ten here alive. One dead. That is the count."
 
 I've heard the terms. The town hasn't agreed to them."
           button 0: "Continue"
+          button 1: "Ask about the town's terms"
   000E4D  TLM_MSG_RH_RhaBreak  [box]  "[Roark]
 
 The break is shut."
@@ -1546,15 +1578,15 @@ Go from the outdoor work yard to the enclosed Nine level. This is a staged trans
           button 1: "Not now"
   000AE8  TLM_MSG_RH_Rescue  [box]  "[Bring the shift up]
 
-Every living unfinished miner must reach the cage and surface. This is a staged batch; incomplete arrivals remain pending. Continue?"
+The miners will go up in groups of up to three. You can stay below to investigate the gallery or ride up with them. Rescuing them does not settle what lies beyond the break."
           button 0: "Continue"
           button 1: "Not now"
-  000AE9  TLM_MSG_RH_Resolve  [box]  "[Rescue and break]
+  000AE9  TLM_MSG_RH_Resolve  [box]  "[After rescue]
 
-Choose only what is represented. A pending blast is not completed by rescue."
-          button 0: "Leave the break alone"
-          button 1: "Plan the inner-break blast"
-          button 2: "Resolve observed casualties"
+Rescued miners need a way home. Leave the passage open, or plan a sealing blast. Planning does not fire it. Use charge control below only after all eleven are accounted for and survivors are safe above. Report to Pritchard."
+          button 0: "Finish rescue; leave passage open"
+          button 1: "Plan a separate sealing blast"
+          button 2: "Record deaths without a rescue"
           button 3: "Not now"
   000AEA  TLM_MSG_RH_Blast  [box]  "[Inner-break blast]
 
@@ -1582,29 +1614,30 @@ Retry the remaining survivors, or return below to inspect unfinished fates. Deli
           button 0: "Retry survivors"
           button 1: "Inspect below"
           button 2: "Not now"
-  000BF0  TLM_MSG_RH_HoistBelow  [box]  "[Staged hoist]
+  000BF0  TLM_MSG_RH_HoistBelow  [box]  "[Hoist]
 
-Bring the shift up, or return alone. Return alone does not rescue anybody."
-          button 0: "Bring the shift up"
+Send the miners up in small groups and stay below to investigate, or ride up with them. Return alone rescues nobody."
+          button 0: "Send miners up; stay below"
           button 1: "Return alone"
           button 2: "Stay"
+          button 3: "Ride up with the miners"
   000BF1  TLM_MSG_RH_NoWarning  [box]  "[Rescue fallback]
 
 No warned rescue deadline has been accepted. You can operate the staged hoist without arming one."
           button 0: "Start rescue without deadline"
           button 1: "Not now"
-  000BF2  TLM_MSG_RH_ReportFacts  [box]  "[Current Red Hollow facts]
+  000BF2  TLM_MSG_RH_ReportFacts  [box]  "[Red Hollow report: 1 of 3]
 
-Court %g; mine %g; safe survivors %g; observed deaths %g (player %g; known nonplayer %g; unknown %g). Entombment is separate."
-          button 0: "Continue"
-  000BF3  TLM_MSG_RH_ReportEvidence  [box]  "[Evidence and undertaking]
+Miners safe above ground: %.0f. Confirmed deaths: %.0f (player-caused: %.0f; other cause: %.0f; cause unknown: %.0f). Entombment is listed on page 3."
+          button 0: "Continue to 2 of 3"
+  000BF3  TLM_MSG_RH_ReportEvidence  [box]  "[Red Hollow report: 2 of 3]
 
-Court-payment testimony %g; mine silver %g; personal undertaking %g; terms actually delivered %g. No town ratification is claimed."
-          button 0: "Continue"
-  000BF4  TLM_MSG_RH_ReportLamp  [box]  "[Lamp and custody]
+1 = yes; 0 = no. Court-payment testimony: %.0f. Mine silver: %.0f. Personal promise: %.0f. Terms delivered: %.0f. The town has not agreed to these terms."
+          button 0: "Continue to 3 of 3"
+  000BF4  TLM_MSG_RH_ReportLamp  [box]  "[Red Hollow report: 3 of 3]
 
-Lamp origin %g (1 gallery, 2 cot); presently held %g; 2298 copy presently held %g; entombed %g. Acquisition and current custody are distinct."
-          button 0: "Continue"
+Lamp origin: %.0f (0 = none; 1 = gallery; 2 = cot). Lamp held: %.0f; 2298 review copy held: %.0f (1 = yes; 0 = no). Miners entombed: %.0f. Finish to give Pritchard this account."
+          button 0: "Finish report"
   000AEE  TLM_MSG_RH_NoOperator  [box]  "[Rescue control]
 
 Blevins cannot operate the firing control. No deadline is armed. The hoist remains available for rescue."
@@ -1636,10 +1669,10 @@ The current docket and the held 2298 review copy will be entered together for re
 
 Sixty caps received; the receipt is in your inventory. Release still requires the living prisoner to reach the supported safe position."
           button 0: "Continue"
-  000AF4  TLM_MSG_RH_Report  [box]  "[Red Hollow report]
+  000AF4  TLM_MSG_RH_Report  [box]  "[Report to Pritchard]
 
-Report current court, miner, mine, evidence and lamp facts. No fair or town-wide agreement is implied."
-          button 0: "Report"
+Give your account of Red Hollow. There are three short pages. Use Continue on each, then Finish report. Only a completed account is recorded."
+          button 0: "Begin report"
           button 1: "Later"
   000AF5  TLM_MSG_RH_Status  [box]  "[Red Hollow]
 
@@ -1671,9 +1704,9 @@ Quill records the shot and a four-cap rope fine. A recorded fine is not a paid f
           button 0: "Record damage"
           button 1: "Pay recorded four caps"
           button 2: "Not now"
-  000AFC  TLM_MSG_RH_Knocking  [box]  "[Knocking stand-in]
+  000AFC  TLM_MSG_RH_Knocking  [box]  "[Listen at the Mouth]
 
-This labelled listening interaction represents the authored hoist-code knocking and its slower reply. It supplies no voice or audio acceptance."
+Listen down the shaft for the trapped miners and a possible reply. Listening does not start the rescue deadline."
           button 0: "Listen"
           button 1: "Not now"
   000AFD  TLM_MSG_RH_Prisoner  [box]  "[Prisoner record]
@@ -1700,7 +1733,7 @@ Unsettled work remains unsettled. Return now?"
           button 1: "Stay"
   000B02  TLM_MSG_RH_End  [box]  "[Red Hollow]
 
-Red Hollow road complete. Three roads and Four Flags entry remain available."
+Back in Mercy Crossing. Report your findings to Pritchard. Returning does not settle unfinished court business or the sealed-gallery investigation."
           button 0: "Continue"
   000B03  TLM_MSG_RH_LabelGap  [box]  "[Outside: Gap court]
 
@@ -1722,6 +1755,29 @@ First use Find and muster the night shift. Then use Hoist: bring miners up or re
 
 The sealed gallery ends here. The marked path returns to the Nine level; the hoist leads back to the outdoor yard."
           button 0: "Continue"
+  000F7E  TLM_MSG_RH_RdcQuiet  [box]  "[Roark]
+
+I keep counting. Eleven. Turn round, count again. I know how many eleven is. My hands haven't caught up yet."
+          button 0: "You can rest now."
+          button 1: "You don't have to thank me."
+          button 2: "I'll give you a moment."
+  000F7F  TLM_MSG_RH_RdcTired  [box]  "[Roark]
+
+In a minute. Don't turn that into an order as well. You did a good thing. Let me decide when I'm finished being frightened."
+          button 0: "Fair enough."
+  000F80  TLM_MSG_RH_RdcThanks  [box]  "[Roark]
+
+Wasn't asking permission. Thank you. That's mine to say. What the town owes you is for the town to settle."
+          button 0: "I'll leave that to you."
+  000F81  TLM_MSG_RH_RdcTerms  [box]  "[Roark]
+
+I'll put the terms in front of them. They may say no. They may ask you questions you can't answer. Bringing our people up earns you a hearing. It doesn't make you the Hollow."
+          button 0: "I promised for myself. The town chooses."
+          button 1: "I thought rescuing them would settle it."
+  000F82  TLM_MSG_RH_RdcTermsAnswer  [box]  "[Roark]
+
+It settled whether eleven people came out. That matters. Let it matter without buying the rest of us."
+          button 0: "All right."
   000B08  TLM_MSG_RH_D_toll_board_1  [box]  "[Tolls at the Gap, page 1 of 3]
 
 BY ORDER OF THE DOMINION
@@ -2410,6 +2466,332 @@ Complete the first section before calling or entering the fair. No report, injur
 
 That silver case carries a mark from case-working tools I made years ago. Not the bullet mould. Come by after dark and I'll show you the drawings; they don't tell us the customer's name."
           button 0: "Continue"
+  000E5F  TLM_MSG_BL_S_pritchard_warrant_1  [box]  "Owen Pritchard: "Four one one seven is a page in a book. Silas keeps one for the town and one for himself. I've known it twenty years and never asked, for the town one always came out in our favour. I can write a warrant. My hand will""  title: "Owen Pritchard"
+          button 0: "Continue"
+  000E60  TLM_MSG_BL_S_pritchard_warrant_2  [box]  "Owen Pritchard: "manage that much.""  title: "Owen Pritchard"
+          button 0: "Bring your warrant, Sheriff."
+          button 1: "I'll look first. Quietly."
+          button 2: "And if he's guilty?"
+          button 3: "Ask about Vane."
+  000E61  TLM_MSG_BL_S_pritchard_guilty_1  [box]  "Owen Pritchard: "Then I arrest a man who has sat at my table every Sunday since my wife died, and the town goes hungry by Christmas because nobody else knows where anything is. And I'll do it. Don't look at my hand. I'll do it.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  000E62  TLM_MSG_BL_S_pritchard_friend_1  [box]  "Owen Pritchard: "Silas knows how I take my coffee. I know which chair he likes. Twenty years of that, and I never asked what paid for the coffee.""  title: "Owen Pritchard"
+          button 0: "You trusted a friend."
+          button 1: "Then ask him now. With a warrant."
+          button 2: "I need to think."
+  000E63  TLM_MSG_BL_S_pritchard_friend_answer_1  [box]  "Owen Pritchard: "I did. That isn't the charge. The charge is what I stopped asking because the answers might cost me a friend. You bring me evidence. I'll do my part.""  title: "Owen Pritchard"
+          button 0: "Bring the warrant."
+          button 1: "I'll look first, quietly."
+  000E64  TLM_MSG_BL_S_pritchard_warrant_next_1  [box]  "Owen Pritchard: "All right. Meet me at Silas Vane's counter. I'll put the warrant down; you ask to see the second book. If he objects, let him object to me.""  title: "Owen Pritchard"
+          button 0: "I'll meet you at the trading post."
+          button 1: "Not yet."
+  000E65  TLM_MSG_BL_S_vane_two_books_1  [box]  "Silas Vane: "Four one one seven. Yes. I wondered who would come and say it. Sit down; you are letting the damp in. You have questions and I have a supper to carve at six, so let us be efficient.""  title: "Silas Vane"
+          button 0: "I hear you keep two books."
+          button 1: "Where does the silver come from?"
+          button 2: "(Leave)"
+  000E66  TLM_MSG_BL_S_vane_refuses_1  [box]  "Silas Vane: "Every merchant keeps two: the book that says what happened and the book that says what he wishes had. You may see the first for nothing. For the second, bring Owen and a paper, or come when I am not looking. I should respect""  title: "Silas Vane"
+          button 0: "Continue"
+  000E67  TLM_MSG_BL_S_vane_refuses_2  [box]  "Silas Vane: "either.""  title: "Silas Vane"
+          button 0: "Continue"
+  000E68  TLM_MSG_BL_S_vane_silver_early_1  [box]  "Silas Vane: "From people who want what I want, for reasons I have been careful never to learn. That is not evasion. It is the only honest answer I shall give you today, so do write it down.""  title: "Silas Vane"
+          button 0: "Continue"
+  000E69  TLM_MSG_BL_S_vickers_door_1  [box]  "Temperance Beckett: "You have misread the fourth column; that is a seven. Put the book down. I have kept it eleven years and it has never left this room. There are two barrels in this box. I would rather not spoil the carpet. It is his""  title: "Temperance Beckett"
+          button 0: "Continue"
+  000E6A  TLM_MSG_BL_S_vickers_door_2  [box]  "Temperance Beckett: "favourite.""  title: "Temperance Beckett"
+          button 0: "Ask Pritchard to present the warrant."
+          button 1: "Who hands you the silver?"
+          button 2: "Leave the room for now."
+  000E6B  TLM_MSG_BL_S_vickers_glove_1  [box]  "Temperance Beckett: "A hand. From the car door, at twenty past two, every fourth Thursday. A grey glove with a small square stitched on the cuff. It has never spoken. I sign; it withdraws. I have always thought it a very well-kept glove.""  title: "Temperance Beckett"
+          button 0: "Continue"
+  000E6C  TLM_MSG_BL_S_pritchard_warrant_beckett_1  [box]  "Owen Pritchard: "Temperance. The warrant names the books. You'll see what we take, and I'll sign for it. You can stay and watch us read. Let us finish.""  title: "Owen Pritchard"
+          button 0: "Let Beckett answer."
+          button 1: "Not now."
+  000E6D  TLM_MSG_BL_S_beckett_warrant_terms_1  [box]  "Temperance Beckett: "Then every page stays with the book. Read it here. If you take it, Owen signs for it. I won't have eleven years of work turned into a loose handful of accusations.""  title: "Temperance Beckett"
+          button 0: "Read it here under the warrant."
+          button 1: "Ask Pritchard to sign for the book."
+          button 2: "Leave the room for now."
+  000E6E  TLM_MSG_BL_S_pritchard_book_receipt_1  [box]  "Owen Pritchard: "One bound book, every page accounted for. I'll put my name to that. If we read it to the town, we read what it says. We don't improve it to make our case easier.""  title: "Owen Pritchard"
+          button 0: "Accept the receipt and take the book."
+          button 1: "Keep the book here. We'll read it first."
+          button 2: "Not yet."
+  000E6F  TLM_MSG_BL_S_vane_porch_1  [box]  "Silas Vane: "There's a rope below the steps. If you let them take me, they'll hang me here. You've read the book. Speak it, bargain with it, or tell them you won't stop them. At least name what you're choosing.""  title: "Silas Vane"
+          button 0: "Read the book out from the porch."
+          button 1: "Not now"
+  000E70  TLM_MSG_BL_S_pritchard_porch_1  [box]  "Owen Pritchard: "Granger has the rope. I know these people. I'll keep them off the steps while you decide. Leaving to think is not telling them to hang a man. If you mean that, say it where I can hear.""  title: "Owen Pritchard"
+          button 0: "Continue"
+  000E71  TLM_MSG_BL_S_vane_after_read_1  [box]  "Silas Vane: "Every page. Even the receipts for the school roof. That was fair. Nobody has been fair to me in some time, and I find I do not care for it. They will not hang me now. They will only never buy from me again. You have been very""  title: "Silas Vane"
+          button 0: "Continue"
+  000E72  TLM_MSG_BL_S_vane_after_read_2  [box]  "Silas Vane: "cruel.""  title: "Silas Vane"
+          button 0: "Where does the silver come from?"
+  000E73  TLM_MSG_BL_S_vane_names_1  [box]  "Silas Vane: "Blackstone Station. Up the dead line, past the Junction, where the night freight comes from and goes back to. That is all I know, and I have paid a great deal not to know more. If you go, go armed. And do give them my regards.""  title: "Silas Vane"
+          button 0: "(Go)"
+  000E74  TLM_MSG_BL_S_haskell_sheet_1  [box]  "Corwin Haskell: "I sign for what arrives. That is all I do. But if somebody were to ask me a direct question, such as: Corwin, did you ever weigh one of Mr Vane's sealed crates... I should have to answer. Nobody has ever asked.""  title: "Corwin Haskell"
+          button 0: "Corwin. Did you ever weigh one?"
+          button 1: "(Leave him be)"
+  000E75  TLM_MSG_BL_S_haskell_tells_1  [box]  "Corwin Haskell: "Ninety-one pounds. Entered as dry goods, eleven pounds. I wrote it down. It is in the lining of the receiving book. They come off the night freight from past Iron Junction. From Blackstone. There. I have wanted to say that""  title: "Corwin Haskell"
+          button 0: "Continue"
+  000E76  TLM_MSG_BL_S_haskell_tells_2  [box]  "Corwin Haskell: "for a year.""  title: "Corwin Haskell"
+          button 0: "Continue"
+  000E77  TLM_MSG_BL_Book0  [box]  "[Vane's black book: entry 4117, section 1 of 4]
+
+4117
+
+RAIL    Cut, Sawtooth. By E.D.                 30   pd.
+RIVER   Barge held, Greenwater. By L.H.        40   pd.
+        NOTE: L.H. has not released. Not paid the second 40.
+MINE    Mouth kept shut. By H.B.         "
+          button 0: "Continue"
+  000E78  TLM_MSG_BL_Book1  [box]  "[Vane's black book: entry 4117, section 2 of 4]
+
+     25   pd.
+ROAD    Tellico. Four hands, to wait. By R.D.  20   pd.
+        NOTE: R.D. exceeded. A wagon. I did not ask for a wagon.
+
+Paid out, the month                           115
+
+RECEIVED, by the night freight   "
+          button 0: "Continue"
+  000E79  TLM_MSG_BL_Book2  [box]  "[Vane's black book: entry 4117, section 3 of 4]
+
+            150
+        from  [a small square, drawn in ink]
+
+Balance to the school roof, the clinic stove,
+and a widow's account, which I have marked paid.
+
+Six years. No garrison. No list. No gate.
+I should like it"
+          button 0: "Continue"
+  000E7A  TLM_MSG_BL_Book3  [box]  "[Vane's black book: entry 4117, section 4 of 4]
+
+noted that it worked."
+          button 0: "Continue"
+  000E7B  TLM_MSG_BL_Lead  [box]  "Tell Pritchard about account 4117 from the courier's case?"
+          button 0: "Tell him about 4117"
+          button 1: "Later"
+  000E7C  TLM_MSG_BL_Travel  [box]  "Enter Vane's counting room with Pritchard and his warrant? You can return to Mercy Crossing using the exit inside."
+          button 0: "Enter the counting room"
+          button 1: "Not now"
+  000E7D  TLM_MSG_BL_ExitPrompt  [box]  "Leave the counting room? Earlier choices remain. If you carry the original book with a receipt, the public reading can be prepared at Vane's counter."
+          button 0: "Return to Mercy Crossing"
+          button 1: "Stay"
+  000E7E  TLM_MSG_BL_PublicReady  [box]  "Begin the public confrontation at Vane's counter? Leaving never chooses a hanging. This rough cut supports the lawful public-reading resolution; other endings are not implemented."
+          button 0: "Begin the confrontation"
+          button 1: "Not now"
+  000E7F  TLM_MSG_BL_PublicConfirm  [box]  "Read the payment records to the crowd. Vane will not be handed to the rope by this choice. His trade and credit may collapse; local winter supplies could become harder to obtain. You can still return and help, but no relief has been delivered yet."
+          button 0: "Read the book publicly"
+          button 1: "Back"
+  000E80  TLM_MSG_BL_EarlierChoice  [box]  "What did you want to discuss?"
+          button 0: "The black book"
+          button 1: "The earlier train business"
+          button 2: "Not now"
+  000E81  TLM_MSG_BL_Missing  [box]  "Follow the current journal task. This route needs Pritchard, his original warrant and the actual black book. Optional will, faction and earlier-road choices are not requirements."
+          button 0: "Close"
+  000E82  TLM_MSG_BL_Pending  [box]  "The required person or original paper has not arrived. Use Retry warranted access in the counting room, or leave safely. An uncertain item issue is not repeated."
+          button 0: "Close"
+  000EAF  TLM_MSG_BL_TaskBeckett  [box]  "Speak with Temperance Beckett at the counting-room doorway. Ask Pritchard to present his warrant. To carry the book outside, ask for a signed receipt."
+          button 0: "Close"
+  000EB0  TLM_MSG_BL_TaskPorch  [box]  "Return to Mercy Crossing with the book. At Vane's counter, use Public reading to gather the witnesses. You can leave the confrontation without choosing a punishment."
+          button 0: "Close"
+  000EB1  TLM_MSG_BL_TaskReturn  [box]  "Ask Vane where the silver comes from. When you are finished, use Finish Black Ledger encounter beside his counter to return Pritchard to his post."
+          button 0: "Close"
+  000E83  TLM_MSG_BL_SliceEnd  [box]  "Blackstone Station is your next lead. Finish the encounter at Vane's counter to let Pritchard return to his post. Travel to Blackstone is not available in this preview."
+          button 0: "Continue"
+  000EBF  TLM_MSG_BS_N_0_0  [box]  "The route sheet names Blackstone's upper freight platform. Go there to trace the consignments sent to Vane. Your unfinished roads and relief work remain open."
+          button 0: "Travel to Blackstone's upper platform."
+          button 1: "Stay at Iron Junction."
+  000EC0  TLM_MSG_BS_N_1_0  [box]  "Mara Vale: "Good. Someone with both hands free. Lamp's by the door. Or read in the doorway if you don't fancy helping a stranger. Either way, read before you decide whether to believe me.""  title: "Mara Vale"
+          button 0: "What am I looking for?"
+          button 1: "Who are you?"
+          button 2: "I'm not getting involved."
+  000EC1  TLM_MSG_BS_N_2_0  [box]  "Mara Vale: "Mara Vale. That's the easy question. The book answers a few harder ones, including why you shouldn't take my word for things.""  title: "Mara Vale"
+          button 0: "Show me."
+          button 1: "I'll read it myself."
+  000EC2  TLM_MSG_BS_N_3_0  [box]  "Mara Vale: "Freight page first. Four one one seven, same account as Vane. Then the service index. I'm keeping them together. Tear out the page you dislike and you can make a clean story of almost anything.""  title: "Mara Vale"
+          button 0: "Including your story?"
+          button 1: "I'll read both."
+  000EC3  TLM_MSG_BS_N_4_0  [box]  "Mara Vale: "Mine's in the index. It stays there. If I want you to believe what I found, I don't get to tidy away where I stood when I found it.""  title: "Mara Vale"
+          button 0: "That's a start."
+          button 1: "It doesn't make you innocent."
+  000EC4  TLM_MSG_BS_N_5_0  [box]  "Mara Vale: "No. Keep asking that. Preferably after you've looked at the page, so at least one of us is arguing from something.""  title: "Mara Vale"
+          button 0: "I'll look."
+  000EC5  TLM_MSG_BS_N_6_0  [box]  "Mara Vale: "All right. Upper platform takes you back. The book stays on the desk. If you change your mind, start with that. You don't owe me a yes because I asked first.""  title: "Mara Vale"
+          button 0: "I'm leaving for now."
+          button 1: "I can at least read it."
+  000EC6  TLM_MSG_BS_N_7_0  [box]  "Mara Vale: "Still here. So's the book. Have you read the service index, or are we still deciding whether to dislike each other?""  title: "Mara Vale"
+          button 0: "Tell me what to read."
+          button 1: "I read the index. Who was the Fifth Rider?"  if GetStageDone TLM_MQ05 45 EqualTo 1
+          button 2: "Not now."
+  000EC7  TLM_MSG_BS_N_8_0  [box]  "Read Blackstone Receiving Register: 4117."
+          button 0: "I've read the freight page."
+          button 1: "Close without reading further."
+  000EC8  TLM_MSG_BS_N_9_0  [box]  "Read Meridian Field Service: Rider Index."
+          button 0: "I've read the index."
+          button 1: "Close."
+  000EC9  TLM_MSG_BS_N_10_0  [box]  "Mara Vale: "You. That's who I knew as the Fifth Rider. You can tell me I'm wrong. You can walk away. I won't make remembering me the price of seeing the records.""  title: "Mara Vale"
+          button 0: "I remember my life. Don't rewrite it."
+          button 1: "A name in a book isn't proof it's me."
+          button 2: "Why should I care about any of this?"
+          button 3: "I need a minute."
+  000ECA  TLM_MSG_BS_N_11_0  [box]  "Mara Vale: "Then hold on to it. Your childhood isn't mine to fill in. I'm talking about field work last year. If there's a gap there, it doesn't give me the rest of your life.""  title: "Mara Vale"
+          button 0: "What happened last year?"
+          button 1: "What do you want from me now?"
+          button 2: "I'm done talking for now."
+  000ECB  TLM_MSG_BS_N_12_0  [box]  "Mara Vale: "I can tell you what these pages say. I can't hand you a memory, and I'm not going to turn what I don't know into one. Start with the route. Ask me again when we've got more than my word.""  title: "Mara Vale"
+          button 0: "Show me the route."
+          button 1: "You're holding something back."
+          button 2: "Not now."
+  000ECC  TLM_MSG_BS_N_13_0  [box]  "Mara Vale: "It isn't. The pass will open a service door for whoever carries it. I knew you; you have no reason yet to trust that. Check what you can. You don't have to decide the rest today.""  title: "Mara Vale"
+          button 0: "Then I'll check the door."
+          button 1: "What do you want from me?"
+  000ECD  TLM_MSG_BS_N_14_0  [box]  "Mara Vale: "The freight didn't come out of an empty mountain. People live below. And I have reason to believe your family came from there. Not your whole life. Not a story I get to tell you about who you ought to be. A place you can ask""  title: "Mara Vale"
+          button 0: "Continue"
+  000ECE  TLM_MSG_BS_N_14_1  [box]  "Mara Vale: "questions.""  title: "Mara Vale"
+          button 0: "Which family? Names."
+          button 1: "That doesn't make it my home."
+          button 2: "What are you asking me to do?"
+          button 3: "I don't believe you."
+  000ECF  TLM_MSG_BS_N_15_0  [box]  "Mara Vale: "I don't have a family tree to give you. That's why I'm offering a way to the records, not a name to put on your door. If the evidence contradicts me, keep the evidence.""  title: "Mara Vale"
+          button 0: "I'll look for myself."
+          button 1: "Then don't call it certain."
+  000ED0  TLM_MSG_BS_N_16_0  [box]  "Mara Vale: "No. A place can be part of your history without getting to own you. Go down, stay up here, come back later. That choice is still yours.""  title: "Mara Vale"
+          button 0: "I'll inspect the entrance."
+          button 1: "I'm staying up here for now."
+  000ED1  TLM_MSG_BS_N_17_0  [box]  "Mara Vale: "Fair. Keep that doubt. Just give the pages the same hearing you give me. They're on the desk; I'm not standing between you and them.""  title: "Mara Vale"
+          button 0: "I'll read them again."
+          button 1: "I'll look at the route instead."
+  000ED2  TLM_MSG_BS_N_18_0  [box]  "Mara Vale: "Help me keep the record whole, then look at where the freight came from. No oath. No flag. I'd rather you came because you want an answer than because I made it difficult to say no.""  title: "Mara Vale"
+          button 0: "I'll investigate. I'm not promising to follow."
+          button 1: "Why not destroy the part with your name?"
+          button 2: "Not yet."
+  000ED3  TLM_MSG_BS_N_19_0  [box]  "Mara Vale: "Good. If I start treating questions like disloyalty, remind me what I said. Loudly, if you have to. Service door's beside the route board. Upper platform still takes you home.""  title: "Mara Vale"
+          button 0: "I'll check the entrance."
+  000ED4  TLM_MSG_BS_N_20_0  [box]  "Mara Vale: "Yes. Some because I don't know enough. Some because I'm not ready to say it. Those aren't the same, and you shouldn't let me pretend they are. Keep asking. You don't have to like me to do that.""  title: "Mara Vale"
+          button 0: "I'll remember that answer."
+          button 1: "Then I'll trust the evidence first."
+  000ED5  TLM_MSG_BS_N_21_0  [box]  "Read Mara's Field Note."
+          button 0: "I've read the note."
+          button 1: "Close."
+  000ED6  TLM_MSG_BS_N_22_0  [box]  "The marked service door leads to the lower freight approach. Its posted diagram shows a pass reader and a local mechanical release. Neither asks for a name or allegiance."
+          button 0: "Inspect the service pass."
+          button 1: "Inspect the mechanical release."
+          button 2: "Return to the upper platform."
+  000ED7  TLM_MSG_BS_N_23_0  [box]  "Enter the lower freight vestibule. You are investigating a route, not joining a faction, accepting Mara as a companion or agreeing with her account of your past. The return to the upper platform stays available."
+          button 0: "Enter the freight vestibule."
+          button 1: "Not now. Stay above."
+  000ED8  TLM_MSG_BS_N_24_0  [box]  "ACT ONE: THE BROKEN ROADS
+
+You have reached The Deep's freight approach. This private test ends here; the inhabited city is not in this build. You can return to the upper platform and the unfinished roads. Your choices and unanswered"
+          button 0: "Continue"
+  000ED9  TLM_MSG_BS_N_24_1  [box]  "questions remain open."
+          button 0: "Stay at the freight approach."
+          button 1: "Return to the upper platform."
+  000EDA  TLM_MSG_BS_D_0_0  [box]  "[Blackstone Night Freight: Route Sheet — 1/2]
+
+BLACKSTONE NIGHT FREIGHT
+
+Beyond the Junction, take the upper service line to the Blackstone platform. Goods are received through the station service room. Lower freight is entered separately.
+
+Reference account:"
+          button 0: "Continue"
+  000EDB  TLM_MSG_BS_D_0_1  [box]  "[Blackstone Night Freight: Route Sheet — 2/2]
+
+4117.
+
+Return traffic: Iron Junction. Do not enter the lower line on a goods waybill."
+          button 0: "Continue"
+  000EDC  TLM_MSG_BS_D_1_0  [box]  "[Blackstone Receiving Register: 4117 — 1/2]
+
+BLACKSTONE STATION
+UPPER / LOWER FREIGHT
+
+4117 — OUTWARD
+Sealed consignments to S. Vane, by the night freight.
+Origin: lower service stores.
+Contents entered as dry goods.
+
+The upper receiving clerk certifies receipt and"
+          button 0: "Continue"
+  000EDD  TLM_MSG_BS_D_1_1  [box]  "[Blackstone Receiving Register: 4117 — 2/2]
+
+weight, not contents.
+Lower authority and sender are not entered on this page.
+
+Service access: see the route diagram beside this register."
+          button 0: "Continue"
+  000EDE  TLM_MSG_BS_D_2_0  [box]  "[Meridian Field Service: Rider Index — 1/2]
+
+MERIDIAN FIELD SERVICE
+RIDER INDEX — 2316
+
+Mara Vale
+Cassian Voss
+Edda Flint
+Lucien Grey
+Fifth Rider — personal entry held separately
+
+Upper freight / lower service access recorded for the field team.
+A bearer pass"
+          button 0: "Continue"
+  000EDF  TLM_MSG_BS_D_2_1  [box]  "[Meridian Field Service: Rider Index — 2/2]
+
+permits service entry. It is not proof of identity.
+
+This index records an association. It does not certify the conduct of any Rider."
+          button 0: "Continue"
+  000EE0  TLM_MSG_BS_D_3_0  [box]  "[Mara's Field Note — 1/2]
+
+The complete register stays together. My name stays in it.
+
+I knew the person entered as Fifth Rider. I have reason to believe that Rider's family came from the place below, called The Deep. That is a lead, not a family"
+          button 0: "Continue"
+  000EE1  TLM_MSG_BS_D_3_1  [box]  "[Mara's Field Note — 2/2]
+
+tree. The records there may establish what I cannot.
+
+The Rider's recent field work and a family's earlier history are different questions. Do not let anyone answer both with one page.
+
+Mara Vale"
+          button 0: "Continue"
+  000EE2  TLM_MSG_BS_D_4_0  [box]  "[Lower Service Entrance — 1/2]
+
+LOWER FREIGHT APPROACH
+
+Use the service pass at the marked door.
+If the pass reader is unavailable, use the local mechanical release beside it.
+
+Beyond the door: freight vestibule and return access to the upper"
+          button 0: "Continue"
+  000EE3  TLM_MSG_BS_D_4_1  [box]  "[Lower Service Entrance — 2/2]
+
+platform.
+The inhabited levels are farther below.
+
+Close the service door after passage. Do not obstruct the upper return route."
+          button 0: "Continue"
+  000EE4  TLM_MSG_BS_D_5_0  [box]  "[Blackstone bearer service pass — 1/1]
+
+BLACKSTONE SERVICE ACCESS
+
+Bearer service pass. Inspection leaves it on the stand. Taking this original requires an explicit choice. It is a credential for the service door, not proof of personal identity."
+          button 0: "Continue"
+  000EE5  TLM_MSG_BS_MechanicalPrompt  [box]  "Use the local mechanical release to unlock the lower service door? This does not require Mara, a pass, or a statement about your past."
+          button 0: "Operate the release"
+          button 1: "Leave it"
+  000EE6  TLM_MSG_BS_PassPrompt  [box]  "Take this original service pass from the stand? Inspecting it has not put it in your inventory."
+          button 0: "Take the original pass"
+          button 1: "Leave it here"
+  000EE7  TLM_MSG_BS_ReturnPrompt  [box]  "Use this marked route? The route back remains available."
+          button 0: "Go through"
+          button 1: "Not now"
+  000EE8  TLM_MSG_BS_MissingReading  [box]  "The freight approach is here, but you have not yet read both original register sections. Use the return door to the service desk, then choose to enter again."
+          button 0: "Close"
+  000EE9  TLM_MSG_BS_UpperDirections  [box]  "Blackstone Station. Read the freight register and Rider index at the service desk. The marked upper-platform route returns to Iron Junction; the mechanical release opens the separate lower service door."
+          button 0: "Continue"
+  000EEA  TLM_MSG_BS_TravelFailed  [box]  "Arrival could not be confirmed. The marked route remains available to try again. No destination or completed journey has been recorded."
+          button 0: "Close"
+  000EEB  TLM_MSG_BS_MQ04Ready  [box]  "Blackstone Station is the next lead. Finish your business at Vane's counter, then read the Blackstone route sheet at Iron Junction's freight desk. Earlier roads and relief work remain open."
+          button 0: "Continue"
 
 Quest TLM_Core  000819  "The Last Meridian (core)"  type=None priority=50 flags=[StartGameEnabled, RunOnce, WarnOnAliasFillFailure]
   script TLM:Core
@@ -2591,12 +2973,12 @@ Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOn
            JournalItem = TLM_BOOK_MarshalLog
   structure: 17 of 17 stages have one item with its flags subrecord; 2 of 2 objectives have flags; condition marker present
   stage    5  (Running, hidden. Set by MQ01 stage 10.)
-  stage   10  "The train's maintenance ledger says the brakes and couplers were inspected and sound."
+  stage   10  "The maintenance ledger says the brakes and couplers were sound. Inspect the brake shoes or draw-bar at the wreck and compare them with that entry."
   stage   11  (E1 brake shoes examined)
   stage   12  (E2 draw-bar examined)
   stage   13  (E3 marshal's journal taken)
   stage   14  (E4 Ada Pike's parts book seen)
-  stage   20  "The ledger and the wreck don't agree."
+  stage   20  "The damaged part I examined contradicts the maintenance ledger. I can now decide what to do with the evidence."
   stage   25  "Whoever kept this ledger wrote down work that was never done."
   stage   41  (Reported to Pritchard)
   stage   42  (Posted, no name)
@@ -2607,7 +2989,7 @@ Quest TLM_SQ01  00081B  "Signed Clean"  type=SideQuests priority=40 flags=[RunOn
   stage   50  (Resolved)
   stage  100 [complete]  (Completed)
   stage  900  (Recovery)
-  objective 10: "Compare the ledger to the wreck"
+  objective 10: "Inspect the brake shoes or draw-bar at the wreck"  -> alias 4
   objective 20: "Decide what to do with the evidence"
   alias  0 CabLockbox  (reference) [Optional]
   alias  1 Ledger  (reference) [Optional, QuestObject]  fill: create TLM_BOOK_RailMaintLedger In alias 0
@@ -2687,6 +3069,10 @@ Quest TLM_Trial  000825  "The Last Meridian (placed-content trial)"  type=None p
 Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:Act1Walk
            TLM_MQ01 = TLM_MQ01
+           Alias_Pritchard = alias 18 on TLM_A1
+           Alias_Pike = alias 19 on TLM_A1
+           HelpCast = [alias 18 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1]
+           HelpAnchors = [alias 36 on TLM_A1, alias 37 on TLM_A1, alias 38 on TLM_A1, alias 39 on TLM_A1, alias 40 on TLM_A1, alias 41 on TLM_A1]
            TLM_SQ01 = TLM_SQ01
            TLM_MercyBriefing = TLM_MercyBriefing
            TLM_Greenwater = TLM_GW
@@ -2694,6 +3080,8 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            TLM_RedHollow = TLM_RH
            TLM_FourFlags = TLM_MQ03
            TLM_FourFlagsEntry = TLM_FF_Entry
+           TLM_BlackLedger = TLM_MQ04
+           TLM_BlackLedgerEntry = TLM_BL_Entry
            TLM_G_CaravanOutcome = TLM_G_CaravanOutcome
            TLM_G_CaravanMethod = TLM_G_CaravanMethod
            TLM_G_CaravanAliveAtMercy = TLM_G_CaravanAliveAtMercy
@@ -2705,8 +3093,8 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            TLM_G_SQ01_YardAlerted = TLM_G_SQ01_YardAlerted
            TLM_G_SQ01_VaneHasLedger = TLM_G_SQ01_VaneHasLedger
            TLM_G_SQ01_HaskellScapegoated = TLM_G_SQ01_HaskellScapegoated
-           Everything = [alias 0 on TLM_A1, alias 1 on TLM_A1, alias 2 on TLM_A1, alias 3 on TLM_A1, alias 4 on TLM_A1, alias 5 on TLM_A1, alias 6 on TLM_A1, alias 7 on TLM_A1, alias 8 on TLM_A1, alias 9 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 16 on TLM_A1, alias 17 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 21 on TLM_A1, alias 22 on TLM_A1, alias 23 on TLM_A1, alias 24 on TLM_A1, alias 25 on TLM_A1, alias 26 on TLM_A1, alias 27 on TLM_A1, alias 28 on TLM_A1, alias 29 on TLM_A1, alias 30 on TLM_A1, alias 31 on TLM_A1, alias 32 on TLM_A1, alias 33 on TLM_A1, alias 34 on TLM_A1, alias 35 on TLM_A1]
-           EverythingNames = ["Tobias Gantt", "the sealed dispatch", "the marshal's revolver", "the marshal's journal", "the maintenance ledger", "the brake shoes", "the draw-bar", "the place the ambush is seen from", "the middle of the ambush", "the wagon's cargo", "Nell Fenwick", "Abel Rudd", "Reese Dunmore", "the first Cutter", "the second Cutter", "the third Cutter", "the town gate", "Jonah Talbot", "Owen Pritchard", "Ada Pike", "Silas Vane", "Miriam Keene", "Corwin Haskell", "the notice board", "the stove", "the caravan yard", "wreck outer rubble", "wreck rear debris", "road left marker", "road right marker", "Mercy left gatepost", "Mercy right gatepost", "Mercy rear table", "Demo guide - Wreck directions", "Demo guide - Caravan road directions", "Demo guide - Mercy Crossing directions"]
+           Everything = [alias 0 on TLM_A1, alias 1 on TLM_A1, alias 2 on TLM_A1, alias 3 on TLM_A1, alias 4 on TLM_A1, alias 5 on TLM_A1, alias 6 on TLM_A1, alias 7 on TLM_A1, alias 8 on TLM_A1, alias 9 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 16 on TLM_A1, alias 17 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 21 on TLM_A1, alias 22 on TLM_A1, alias 23 on TLM_A1, alias 24 on TLM_A1, alias 25 on TLM_A1, alias 26 on TLM_A1, alias 27 on TLM_A1, alias 28 on TLM_A1, alias 29 on TLM_A1, alias 30 on TLM_A1, alias 31 on TLM_A1, alias 32 on TLM_A1, alias 33 on TLM_A1, alias 34 on TLM_A1, alias 35 on TLM_A1, alias 36 on TLM_A1, alias 37 on TLM_A1, alias 38 on TLM_A1, alias 39 on TLM_A1, alias 40 on TLM_A1, alias 41 on TLM_A1]
+           EverythingNames = ["Tobias Gantt", "the sealed dispatch", "the marshal's revolver", "the marshal's journal", "the maintenance ledger", "the brake shoes", "the draw-bar", "the place the ambush is seen from", "the middle of the ambush", "the wagon's cargo", "Nell Fenwick", "Abel Rudd", "Reese Dunmore", "the first Cutter", "the second Cutter", "the third Cutter", "the town gate", "Jonah Talbot", "Owen Pritchard", "Ada Pike", "Silas Vane", "Miriam Keene", "Corwin Haskell", "the notice board", "the stove", "the caravan yard", "wreck outer rubble", "wreck rear debris", "road left marker", "road right marker", "Mercy left gatepost", "Mercy right gatepost", "Mercy rear table", "Demo guide - Wreck directions", "Demo guide - Caravan road directions", "Demo guide - Mercy Crossing directions", "HelpApproach", "HelpWithdrawA", "HelpWithdrawB", "HelpWithdrawC", "HelpWithdrawD", "HelpHome"]
            People = [alias 0 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 17 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 21 on TLM_A1, alias 22 on TLM_A1]
            PeopleNames = ["Tobias Gantt", "Nell Fenwick", "Abel Rudd", "Reese Dunmore", "the first Cutter", "the second Cutter", "the third Cutter", "Jonah Talbot", "Owen Pritchard", "Ada Pike", "Silas Vane", "Miriam Keene", "Corwin Haskell"]
            CastFrom = [alias 0 on TLM_A1, alias 0 on TLM_A1, alias 1 on TLM_A1, alias 2 on TLM_A1, alias 3 on TLM_A1, alias 4 on TLM_A1, alias 5 on TLM_A1, alias 6 on TLM_A1, alias 7 on TLM_A1, alias 8 on TLM_A1, alias 9 on TLM_A1, alias 10 on TLM_A1, alias 11 on TLM_A1, alias 12 on TLM_A1, alias 13 on TLM_A1, alias 14 on TLM_A1, alias 15 on TLM_A1, alias 16 on TLM_A1, alias 18 on TLM_A1, alias 18 on TLM_A1, alias 19 on TLM_A1, alias 20 on TLM_A1, alias 22 on TLM_A1, alias 23 on TLM_A1, alias 24 on TLM_A1, alias 25 on TLM_A1]
@@ -2743,6 +3131,7 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            SayAbelLive = TLM_MSG_A1_AbelLive
            SayAbelSaved = TLM_MSG_A1_AbelSaved
            SayCutterLive = TLM_MSG_A1_CutterLive
+           SaySheriffWarning = TLM_MSG_A1_SheriffWarning
            SayPritchardNoCase = TLM_MSG_A1_PritchardNoCase
            SayPritchardNoCaseAndMore = TLM_MSG_A1_PritchardNoCaseAndMore
            SayPritchardMark = TLM_MSG_A1_PritchardMark
@@ -2844,6 +3233,12 @@ Quest TLM_A1  000847  "The Last Meridian (Act I, first section: rough cut)"  typ
            script TLM:Act1Guide
                     TLM_MQ01 = TLM_MQ01
                     Place = 3
+  alias 36 HelpApproach  (reference) [Optional, AllowDisabled]
+  alias 37 HelpWithdrawA  (reference) [Optional, AllowDisabled]
+  alias 38 HelpWithdrawB  (reference) [Optional, AllowDisabled]
+  alias 39 HelpWithdrawC  (reference) [Optional, AllowDisabled]
+  alias 40 HelpWithdrawD  (reference) [Optional, AllowDisabled]
+  alias 41 HelpHome  (reference) [Optional, AllowDisabled]
 
 Quest TLM_MercyBriefing  00089F  "Mercy briefing"  type=SideQuests priority=35 flags=[RunOnce, WarnOnAliasFillFailure]
   script TLM:MercyBriefing
@@ -2959,6 +3354,8 @@ Quest TLM_GW  0008D4  "The Last Meridian (Greenwater greybox: development)"  typ
            SayOpalDefault = TLM_MSG_GW_OpalDefault
            SayOpalFirst = TLM_MSG_GW_OpalFirst
            SayOpalWants = TLM_MSG_GW_OpalWants
+           SayOpalStay = TLM_MSG_GW_OpalStay
+           SayOpalAfterGrain = TLM_MSG_GW_OpalAfterGrain
            SayOpalGuns = TLM_MSG_GW_OpalGuns
            SayOpalBowl = TLM_MSG_GW_OpalBowl
            SayOpalAfterWon = TLM_MSG_GW_OpalAfterWon
@@ -3828,6 +4225,11 @@ Quest TLM_RH  000ABA  "Red Hollow: directions"  type=SideQuests priority=30 flag
            LabelCage = TLM_MSG_RH_LabelCage
            LabelNine = TLM_MSG_RH_LabelNine
            LabelGallery = TLM_MSG_RH_LabelGallery
+           RdcQuiet = TLM_MSG_RH_RdcQuiet
+           RdcTired = TLM_MSG_RH_RdcTired
+           RdcThanks = TLM_MSG_RH_RdcThanks
+           RdcTerms = TLM_MSG_RH_RdcTerms
+           RdcTermsAnswer = TLM_MSG_RH_RdcTermsAnswer
            D_toll_board_1 = TLM_MSG_RH_D_toll_board_1
            D_toll_board_2 = TLM_MSG_RH_D_toll_board_2
            D_toll_board_3 = TLM_MSG_RH_D_toll_board_3
@@ -3844,12 +4246,18 @@ Quest TLM_RH  000ABA  "Red Hollow: directions"  type=SideQuests priority=30 flag
            T_dunmore_tells_2 = TLM_MSG_RH_T_dunmore_tells_2
            T_cutter_rope_1 = TLM_MSG_RH_T_cutter_rope_1
            T_cutter_rope_missed_1 = TLM_MSG_RH_T_cutter_rope_missed_1
-  structure: 0 of 0 stages have one item with its flags subrecord; 13 of 13 objectives have flags; condition marker present
+  structure: 0 of 0 stages have one item with its flags subrecord; 19 of 19 objectives have flags; condition marker present
   objective 5: "Take the road to Red Hollow from Mercy Crossing"  -> alias 0
   objective 10: "Follow Path to the Mouth to reach the mine"  -> alias 25
+  objective 15: "Listen at the Mouth for the trapped miners"  -> alias 38
+  objective 18: "Speak to Dinah Roark about starting the rescue"  -> alias 12
+  objective 19: "[Optional] Ask Captain Blevins why he wants the mine sealed"  -> alias 13
   objective 20: "Use the hoist control at the mine entrance"  -> alias 27
   objective 30: "Find and muster the night shift below"  -> alias 31
+  objective 35: "Investigate the passage beyond the inner break"  -> alias 32
+  objective 36: "Speak to the woman at the sealed gallery door"  -> alias 14
   objective 40: "Bring the miners up using the hoist"  -> alias 28
+  objective 45: "Take the hoist up, then check the rescued miners"  -> alias 28
   objective 50: "Check the miners and decide what to do at the inner break"  -> alias 45
   objective 55: "Return to the inner-break charge control to finish the work"  -> alias 30
   objective 60: "Return to Mercy Crossing and tell Pritchard what happened"  -> alias 44
@@ -4363,7 +4771,244 @@ Quest TLM_FF_Entry  000C34  "Four Flags entry adapter"  type=None priority=30 fl
                     FairQuest = TLM_MQ03
   alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
 
-Not wired yet (968):
+Quest TLM_MQ04  000E5D  "The Black Ledger"  type=MainQuest priority=55 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MQ04Quest
+           TLM_MQ03 = TLM_MQ03
+           TLM_MQ05 = TLM_MQ05
+           Alias_Player = alias 21 on TLM_MQ04
+           Alias_SheriffSource = alias 4 on TLM_MQ01
+           Alias_VaneSource = alias 8 on TLM_SQ01
+           Alias_HaskellSource = alias 9 on TLM_SQ01
+           Alias_Beckett = alias 9 on TLM_MQ04
+           Alias_BlackBook = alias 6 on TLM_MQ04
+           Alias_Warrant = alias 7 on TLM_MQ04
+           Alias_Receipt = alias 8 on TLM_MQ04
+           Alias_Counter = alias 1 on TLM_MQ04
+           Alias_Porch = alias 14 on TLM_MQ04
+           Alias_SheriffGuide = alias 18 on TLM_MQ04
+           Alias_VaneGuide = alias 19 on TLM_MQ04
+           Witnesses = [alias 10 on TLM_MQ04, alias 11 on TLM_MQ04]
+           BookPageCount = 4
+  script TLM:BlackLedgerWalk
+           TLM_MQ04 = TLM_MQ04
+           BlackstoneReady = TLM_MSG_BS_MQ04Ready
+           Alias_Arrival = alias 0 on TLM_MQ04
+           Alias_Exit = alias 16 on TLM_MQ04
+           Alias_EntryGuide = alias 20 on TLM_MQ04
+           RoomSlots = [alias 2 on TLM_MQ04, alias 3 on TLM_MQ04]
+           ReturnSlots = [alias 4 on TLM_MQ04, alias 5 on TLM_MQ04]
+           StageOn = [alias 0 on TLM_MQ04, alias 1 on TLM_MQ04, alias 2 on TLM_MQ04, alias 3 on TLM_MQ04, alias 4 on TLM_MQ04, alias 5 on TLM_MQ04, alias 6 on TLM_MQ04, alias 9 on TLM_MQ04, alias 12 on TLM_MQ04, alias 13 on TLM_MQ04, alias 14 on TLM_MQ04, alias 15 on TLM_MQ04, alias 16 on TLM_MQ04, alias 17 on TLM_MQ04]
+           PorchWitnessSlots = [alias 12 on TLM_MQ04, alias 13 on TLM_MQ04]
+           Speech = [TLM_MSG_BL_S_pritchard_warrant_1, TLM_MSG_BL_S_pritchard_warrant_2, TLM_MSG_BL_S_pritchard_guilty_1, TLM_MSG_BL_S_pritchard_friend_1, TLM_MSG_BL_S_pritchard_friend_answer_1, TLM_MSG_BL_S_pritchard_warrant_next_1, TLM_MSG_BL_S_vane_two_books_1, TLM_MSG_BL_S_vane_refuses_1, TLM_MSG_BL_S_vane_refuses_2, TLM_MSG_BL_S_vane_silver_early_1, TLM_MSG_BL_S_vickers_door_1, TLM_MSG_BL_S_vickers_door_2, TLM_MSG_BL_S_vickers_glove_1, TLM_MSG_BL_S_pritchard_warrant_beckett_1, TLM_MSG_BL_S_beckett_warrant_terms_1, TLM_MSG_BL_S_pritchard_book_receipt_1, TLM_MSG_BL_S_vane_porch_1, TLM_MSG_BL_S_pritchard_porch_1, TLM_MSG_BL_S_vane_after_read_1, TLM_MSG_BL_S_vane_after_read_2, TLM_MSG_BL_S_vane_names_1, TLM_MSG_BL_S_haskell_sheet_1, TLM_MSG_BL_S_haskell_tells_1, TLM_MSG_BL_S_haskell_tells_2]
+           SpeechNames = ["pritchard_warrant", "pritchard_guilty", "pritchard_friend", "pritchard_friend_answer", "pritchard_warrant_next", "vane_two_books", "vane_refuses", "vane_silver_early", "vickers_door", "vickers_glove", "pritchard_warrant_beckett", "beckett_warrant_terms", "pritchard_book_receipt", "vane_porch", "pritchard_porch", "vane_after_read", "vane_names", "haskell_sheet", "haskell_tells"]
+           SpeechStart = [0, 2, 3, 4, 5, 6, 7, 9, 10, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22]
+           SpeechSize = [2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2]
+           SpeechButtons = [4, 1, 3, 2, 2, 3, 1, 1, 3, 1, 2, 3, 3, 2, 1, 1, 1, 2, 1]
+           BookPages = [TLM_MSG_BL_Book0, TLM_MSG_BL_Book1, TLM_MSG_BL_Book2, TLM_MSG_BL_Book3]
+           Lead = TLM_MSG_BL_Lead
+           Travel = TLM_MSG_BL_Travel
+           ExitPrompt = TLM_MSG_BL_ExitPrompt
+           PublicReady = TLM_MSG_BL_PublicReady
+           PublicConfirm = TLM_MSG_BL_PublicConfirm
+           EarlierChoice = TLM_MSG_BL_EarlierChoice
+           Missing = TLM_MSG_BL_Missing
+           Pending = TLM_MSG_BL_Pending
+           SliceEnd = TLM_MSG_BL_SliceEnd
+           TaskBeckett = TLM_MSG_BL_TaskBeckett
+           TaskPorch = TLM_MSG_BL_TaskPorch
+           TaskReturn = TLM_MSG_BL_TaskReturn
+  structure: 9 of 9 stages have one item with its flags subrecord; 8 of 8 objectives have flags; condition marker present
+  stage   10  "Pritchard named Vane's private account book after hearing the actual courier-case lead."
+  stage   21  "Pritchard arrived at the counting-room counter carrying the original warrant."
+  stage   30  "You read every represented page of Vane's original black book."
+  stage   40  "Temperance Beckett challenged the book's removal at the doorway."
+  stage   43  "Beckett accepted inspection under Pritchard's warrant. The book must stay complete. Taking it away still needs his receipt and the actual book."
+  stage   50  "You explicitly began the public confrontation with Vane, Pritchard and the local witnesses present."
+  stage   61  "You read the represented original account to the present witnesses. The other porch choices remain unimplemented in this rough cut."
+  stage  100  "An actual living source named Blackstone Station as the origin of the silver. This does not resolve a pending porch scene."
+  stage  110 [complete]  "The public reading is complete, Blackstone has been named by an actual source, and the Black Ledger encounter has ended."
+  objective 10: "Ask Pritchard for a warrant"  -> alias 18
+  objective 11: "Enter Vane's counting room with Pritchard"  -> alias 20
+  objective 30: "Read Vane's original black book"  -> alias 15
+  objective 40: "Speak with Temperance Beckett"  -> alias 9
+  objective 43: "Obtain the receipt and carry the original book to the porch"  -> alias 9
+  objective 50: "Read the book publicly at Vane's counter"  -> alias 14
+  objective 61: "Ask Vane where the silver comes from"  -> alias 19
+  objective 100: "Finish at Vane's counter, then read Blackstone's route sheet at Iron Junction"  -> alias 14
+  alias  0 Arrival  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  1 Counter  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  2 SheriffAnchor  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  3 VaneAnchor  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  4 HomeSheriff  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  5 HomeVane  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  6 BlackBook  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  7 Warrant  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  8 Receipt  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  9 Beckett  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackLedgerTalk
+                    Who = 4
+  alias 10 Witness0  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 11 Witness1  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 12 WitnessSlot0  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 13 WitnessSlot1  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 14 Porch  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 15 Read  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackLedgerTalk
+                    Who = 3
+  alias 16 Exit  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackLedgerTalk
+                    Who = 2
+  alias 17 Retry  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackLedgerTalk
+                    Who = 6
+  alias 18 SheriffGuide  (reference) [Optional]
+  alias 19 VaneGuide  (reference) [Optional]
+  alias 20 EntryGuide  (reference) [Optional]
+  alias 21 Player  (reference) [Optional]
+           script TLM:BlackLedgerTalk
+                    Who = -1
+
+Quest TLM_BL_Entry  000E5E  "Black Ledger Mercy entry adapter"  type=None priority=30 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:BlackLedgerEntry
+           MainQuest = TLM_MQ04
+           Entry = alias 0 on TLM_BL_Entry
+           MercyReturn = alias 1 on TLM_BL_Entry
+           PublicControl = alias 2 on TLM_BL_Entry
+           FinishControl = alias 3 on TLM_BL_Entry
+  structure: 0 of 0 stages have one item with its flags subrecord; 0 of 0 objectives have flags; condition marker present
+  alias  0 Entry  (reference) [Optional, AllowDisabled]
+           script TLM:BlackLedgerTalk
+                    Who = 1
+                    MainQuest = TLM_MQ04
+  alias  1 MercyReturn  (reference) [Optional, AllowDisabled]
+  alias  2 Public  (reference) [Optional, AllowDisabled]
+           script TLM:BlackLedgerTalk
+                    Who = 5
+                    MainQuest = TLM_MQ04
+  alias  3 Finish  (reference) [Optional, AllowDisabled]
+           script TLM:BlackLedgerTalk
+                    Who = 8
+                    MainQuest = TLM_MQ04
+
+Quest TLM_MQ05  000EBE  "The Fifth Rider"  type=MainQuest priority=55 flags=[RunOnce, WarnOnAliasFillFailure]
+  script TLM:MQ05Quest
+           TLM_MQ04 = TLM_MQ04
+           Alias_Player = alias 21 on TLM_MQ05
+           Alias_Mara = alias 12 on TLM_MQ05
+           Documents = [alias 0 on TLM_MQ05, alias 9 on TLM_MQ05, alias 10 on TLM_MQ05, alias 11 on TLM_MQ05, alias 14 on TLM_MQ05, alias 13 on TLM_MQ05]
+           DocumentPages = [2, 2, 2, 2, 2, 1]
+           Alias_Mechanical = alias 15 on TLM_MQ05
+           Alias_ServiceDoor = alias 16 on TLM_MQ05
+           Alias_UpperArrival = alias 2 on TLM_MQ05
+           Alias_LowerArrival = alias 18 on TLM_MQ05
+           Alias_JunctionReturn = alias 1 on TLM_MQ05
+           ChoiceCount = [2, 3, 2, 2, 2, 1, 2, 3, 2, 2, 4, 3, 3, 2, 4, 2, 2, 2, 3, 1, 2, 2, 3, 2, 2]
+           NextNode = [-1, -1, -1, -1, 3, 2, 6, -1, 3, -1, -1, -1, 4, -1, -1, -1, -1, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, 10, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 11, 13, 14, -1, 12, 18, -1, -1, 18, 20, -1, -1, -1, 18, -1, -1, 15, 16, 18, 17, 18, 17, -1, -1, -1, 6, -1, -1, -1, -1, -1, -1, 19, 4, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 23, 23, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+  script TLM:BlackstoneWalk
+           TLM_MQ05 = TLM_MQ05
+           Controls = [alias 0 on TLM_MQ05, alias 3 on TLM_MQ05, alias 4 on TLM_MQ05, alias 8 on TLM_MQ05, alias 16 on TLM_MQ05, alias 19 on TLM_MQ05, alias 20 on TLM_MQ05]
+           Destinations = [alias 2 on TLM_MQ05, alias 1 on TLM_MQ05, alias 7 on TLM_MQ05, alias 5 on TLM_MQ05, alias 18 on TLM_MQ05, alias 17 on TLM_MQ05, alias 17 on TLM_MQ05]
+           Speech = [TLM_MSG_BS_N_0_0, TLM_MSG_BS_N_1_0, TLM_MSG_BS_N_2_0, TLM_MSG_BS_N_3_0, TLM_MSG_BS_N_4_0, TLM_MSG_BS_N_5_0, TLM_MSG_BS_N_6_0, TLM_MSG_BS_N_7_0, TLM_MSG_BS_N_8_0, TLM_MSG_BS_N_9_0, TLM_MSG_BS_N_10_0, TLM_MSG_BS_N_11_0, TLM_MSG_BS_N_12_0, TLM_MSG_BS_N_13_0, TLM_MSG_BS_N_14_0, TLM_MSG_BS_N_14_1, TLM_MSG_BS_N_15_0, TLM_MSG_BS_N_16_0, TLM_MSG_BS_N_17_0, TLM_MSG_BS_N_18_0, TLM_MSG_BS_N_19_0, TLM_MSG_BS_N_20_0, TLM_MSG_BS_N_21_0, TLM_MSG_BS_N_22_0, TLM_MSG_BS_N_23_0, TLM_MSG_BS_N_24_0, TLM_MSG_BS_N_24_1]
+           NodeStart = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+           NodeSize = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2]
+           DocumentText = [TLM_MSG_BS_D_0_0, TLM_MSG_BS_D_0_1, TLM_MSG_BS_D_1_0, TLM_MSG_BS_D_1_1, TLM_MSG_BS_D_2_0, TLM_MSG_BS_D_2_1, TLM_MSG_BS_D_3_0, TLM_MSG_BS_D_3_1, TLM_MSG_BS_D_4_0, TLM_MSG_BS_D_4_1, TLM_MSG_BS_D_5_0]
+           DocumentStart = [0, 2, 4, 6, 8, 10]
+           MechanicalPrompt = TLM_MSG_BS_MechanicalPrompt
+           PassPrompt = TLM_MSG_BS_PassPrompt
+           ReturnPrompt = TLM_MSG_BS_ReturnPrompt
+           MissingReading = TLM_MSG_BS_MissingReading
+           UpperDirections = TLM_MSG_BS_UpperDirections
+           TravelFailed = TLM_MSG_BS_TravelFailed
+  structure: 11 of 11 stages have one item with its flags subrecord; 6 of 6 objectives have flags; condition marker present
+  stage   10  "An actual Chapter4 source named Blackstone. Inspect its original route sheet at Iron Junction."
+  stage   20  "I read Blackstone's original upper-freight route sheet."
+  stage   30  "I reached Blackstone's upper freight platform."
+  stage   40  "I read the original receiving register entry4117. It records freight movement, not a personally inspected cargo or final payer."
+  stage   45  "I read the original Rider index. It records an association, not proof of my identity."
+  stage   50  "Mara calls me the Fifth Rider. That is her personal account, not an imposed memory or established identity."
+  stage   55  "Mara says my family came from The Deep. Her claim is a lead, not verified genealogy."
+  stage   56  "I read Mara's field note. It concerns the Fifth Rider and does not identify its reader."
+  stage   60  "I inspected an actual service route or the original bearer pass. Inspection did not grant custody or prove arrival."
+  stage   70  "I chose to enter the lower freight approach. Arrival still had to be verified."
+  stage  100 [complete]  "After reading both original register sections, I deliberately reached the lower freight vestibule. The private ActOne test ends at the approach; the city remains unavailable."
+  objective 10: "Read the Blackstone route sheet at Iron Junction"  -> alias 0
+  objective 20: "Travel from the Junction route sheet to Blackstone"  -> alias 0
+  objective 30: "Read the original freight register at the service desk"  -> alias 9
+  objective 40: "Read the separate Rider index"  -> alias 10
+  objective 45: "Inspect the posted service route"  -> alias 14
+  objective 60: "Use the service door, or take the marked return"  -> alias 16
+  alias  0 JunctionRoute  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 0
+  alias  1 JunctionReturn  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  2 UpperArrival  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  3 UpperReturn  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 21
+  alias  4 UpperServiceDoor  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 22
+  alias  5 UpperRoomReturn  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  6 StationSign  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 12
+  alias  7 ServiceArrival  (reference) [Optional, AllowDead, AllowDisabled]
+  alias  8 RoomExit  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 23
+  alias  9 Freight  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 1
+  alias 10 RiderIndex  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 2
+  alias 11 MaraNote  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 3
+  alias 12 Mara  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 10
+  alias 13 ServicePass  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 5
+  alias 14 Diagram  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 4
+  alias 15 MechanicalRelease  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 11
+  alias 16 ServiceDoor  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 24
+  alias 17 ServiceReturn  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 18 LowerArrival  (reference) [Optional, AllowDead, AllowDisabled]
+  alias 19 LowerReturn  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 25
+  alias 20 Boundary  (reference) [Optional, AllowDead, AllowDisabled]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = 26
+  alias 21 Player  (reference) [Optional]
+           script TLM:BlackstoneTalk
+                    TLM_MQ05 = TLM_MQ05
+                    Who = -1
+
+Not wired yet (1220):
   - TLM_MISC_Dispatch: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_MISC_TornTransitPass: no world model yet (it exists only in inventories until one is assigned)
   - TLM_MISC_TrialObject: no world model (it borrows the one of 'Caps001', which needs Fallout4.esm)
@@ -4475,6 +5120,16 @@ Not wired yet (968):
   - TLM_ACTI_FF_Competition: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_FF_Status: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_ACTI_FF_OccupationBoard: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BL_Entry: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BL_Public: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BL_Finish: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BL_Read: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BL_Exit: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BL_Retry: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BS_UpperReturn: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BS_StationSign: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BS_Mechanical: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
+  - TLM_ACTI_BS_Boundary: no world model (it borrows the look of one of the game's things, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
   - TLM_CONT_WagonCargo: empty (it holds 'Caps001', which needs Fallout4.esm)
   - TLM_CONT_RH_Rope: no world model (it borrows the look of one of the game's containers, which needs Fallout4.esm)
@@ -4528,95 +5183,119 @@ Not wired yet (968):
   - TLM_NPC_FF_Grey: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_FF_Flint: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_NPC_FF_Juno: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_BL_Beckett: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_BL_Granger: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_BL_Witness: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
+  - TLM_NPC_BS_Mara: not made (it is a copy of 'WorkshopNPC', which needs Fallout4.esm)
   - TLM_BOOK_RailMaintLedger: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_MarshalLog: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_Docket2298: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_LetterOfHire: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_HymnalFlyleaf: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
   - TLM_BOOK_FF_CourierCase: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
-  - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_TrialTrigger: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_TrialObject: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_TrialTriggerNoLayer: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_TrialPersonOwn: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_TrialSettlerOnFloor: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_TrialPersonBare: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Marshal: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Dispatch: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Revolver: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Journal: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Ledger: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_BrakeShoes: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DrawBar: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_AmbushSight: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_AmbushCenter: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Wagon: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Nell: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Abel: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Dunmore: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Cutter1: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Cutter2: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Cutter3: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_TownGate: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Talbot: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Pritchard: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Pike: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Vane: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Keene: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Haskell: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_NoticeBoard: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_Stove: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_CaravanYard: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DecorWreckOuter: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DecorWreckRear: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DecorRoadLeft: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DecorRoadRight: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DecorMercyLeft: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DecorMercyRight: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_DecorMercyCounter: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_GuideWreck: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_GuideRoad: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_A1_GuideMercy: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_ChuteStart: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_LabelChute: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_ReturnDock: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Exit: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Arrival: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_LandingSight: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_LabelLanding: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_CargoWhole: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_CargoReduced: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Steeple: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Opal: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_RationBoard: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Belden: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Rafferty: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Skiff: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_GangwaySight: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_LabelQueen: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Table: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Hatcher: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Strongbox: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Crew1: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Crew2: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_FireControl: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Burnt: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_OffSideArrival: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_OffSideSight: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_CargoLashed: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Chain: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_Pilot: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_ReliefStores: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_GW_ReliefSupply: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_NM_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_NM_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_RH_MercyTravel: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_RH_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_FF_Entry: not placed (the cell 'QASmoke' is in Fallout4.esm)
-  - TLM_REF_FF_MercyReturn: not placed (the cell 'QASmoke' is in Fallout4.esm)
+  - TLM_BOOK_BL_BlackBook: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BL_Warrant: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BL_Receipt: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BS_JunctionRoute: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BS_Freight: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BS_RiderIndex: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BS_MaraNote: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BS_Diagram: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - TLM_BOOK_BS_ServicePass: no world model (it takes after one of the game's notes, which needs Fallout4.esm)
+  - Blackstone owned world/door/light construction requires actual master; no exterior/lighting claim in skeleton
+  - TLM_REF_TrialPerson: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_TrialTrigger: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_TrialTriggerGameBase: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_TrialObject: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_TrialTriggerNoLayer: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_TrialPersonOwn: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_TrialSettlerOnFloor: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_TrialPersonBare: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Marshal: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Dispatch: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Revolver: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Journal: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Ledger: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_BrakeShoes: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DrawBar: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_AmbushSight: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_AmbushCenter: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Wagon: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Nell: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Abel: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Dunmore: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Cutter1: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Cutter2: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Cutter3: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_TownGate: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Talbot: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Pritchard: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Pike: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Vane: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Keene: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Haskell: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_NoticeBoard: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_Stove: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_CaravanYard: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DecorWreckOuter: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DecorWreckRear: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DecorRoadLeft: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DecorRoadRight: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DecorMercyLeft: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DecorMercyRight: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_DecorMercyCounter: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_GuideWreck: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_GuideRoad: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_GuideMercy: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_HelpApproach: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_HelpWithdrawA: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_HelpWithdrawB: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_HelpWithdrawC: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_HelpWithdrawD: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_A1_HelpHome: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_MercyTravel: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_MercyReturn: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_ChuteStart: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_LabelChute: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_ReturnDock: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Exit: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Arrival: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_LandingSight: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_LabelLanding: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_CargoWhole: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_CargoReduced: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Steeple: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Opal: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_RationBoard: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Belden: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Rafferty: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Skiff: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_GangwaySight: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_LabelQueen: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Table: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Hatcher: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Strongbox: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Crew1: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Crew2: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_FireControl: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Burnt: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_OffSideArrival: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_OffSideSight: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_CargoLashed: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Chain: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_Pilot: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_ReliefStores: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_GW_ReliefSupply: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_NM_MercyTravel: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_NM_MercyReturn: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_RH_MercyTravel: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_RH_MercyReturn: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_FF_Entry: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_FF_MercyReturn: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_BL_Entry: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_BL_MercyReturn: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_BL_Public: not placed (the cell 'QASmoke' is not available in this build)
+  - TLM_REF_BL_Finish: not placed (the cell 'QASmoke' is not available in this build)
   - TLM_REF_NM_YardArrival: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_Rules: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_LabelYard: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
@@ -4711,6 +5390,9 @@ Not wired yet (968):
   - TLM_REF_NM_Floor_C20: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_Floor_C21: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_NM_Floor_C22: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_JunctionRoute: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_JunctionReturn: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_JunctionRouteDesk: not placed (its cell 'TLM_CELL_NightMail' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_RH_GapArrival: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_RH_MouthArrival: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_RH_CageSurface: not placed (its cell 'TLM_CELL_RedHollow' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
@@ -5016,6 +5698,158 @@ Not wired yet (968):
   - TLM_REF_FF_Floor84: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_FF_Floor85: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - TLM_REF_FF_Floor86: not placed (its cell 'TLM_CELL_FourFlags' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Arrival: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Counter: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_SheriffAnchor: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_VaneAnchor: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_HomeSheriff: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_HomeVane: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_BlackBook: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Warrant: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Receipt: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Beckett: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Witness0: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Witness1: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_WitnessSlot0: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_WitnessSlot1: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Porch: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Read: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Exit: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Retry: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor00: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor01: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor02: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor03: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor10: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor11: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor12: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor13: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor20: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor21: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor22: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor23: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor30: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor31: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor32: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor33: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor40: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor41: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor42: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BL_Floor43: not placed (its cell 'TLM_CELL_BlackLedger' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_UpperArrival: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_UpperReturn: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_UpperServiceDoor: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_UpperRoomReturn: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_StationSign: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperFreightA: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperFreightB: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperBench: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperRailA: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperRailB: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperCanopyRoofA: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperCanopyRoofB: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperCanopyPost0: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperCanopyPost1: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperCanopyPost2: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_UpperCanopyPost3: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_Upper_Fill0: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_Decor_Upper_Fill1: not placed (the cell 'TLM_CELL_BS_UpperPersistent' is not available in this build)
+  - TLM_REF_BS_ServiceArrival: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_RoomExit: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Freight: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_RiderIndex: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_MaraNote: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Mara: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_ServicePass: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Diagram: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_MechanicalRelease: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_ServiceDoor: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_ServiceReturn: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_0_0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_1_0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_2_0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_3_0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_4_0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_5_0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_0_1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_1_1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_2_1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_3_1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_4_1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_5_1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_0_2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_1_2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_2_2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_3_2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_4_2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_5_2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_0_3: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_1_3: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_2_3: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_3_3: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_4_3: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_5_3: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_0_4: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_1_4: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_2_4: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_3_4: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_4_4: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_5_4: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_0_5: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_1_5: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_2_5: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_3_5: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_4_5: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Shell_5_5: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_RegisterDesk0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_RegisterDesk1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_RegisterDesk2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_RegisterLamp: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServiceBenchWest: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServiceBenchEast: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServiceFreightA: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServiceFreightB: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServiceLocker: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServicePipeA: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServicePipeB: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServiceRouteFlankWest: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServiceRouteFlankEast: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Fill0: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Fill1: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Fill2: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Fill3: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Service_Fill4: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_ServicePassDesk: not placed (its cell 'TLM_CELL_BS_Service' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_LowerArrival: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_LowerReturn: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Boundary: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_0_0: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_1_0: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_2_0: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_3_0: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_0_1: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_1_1: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_2_1: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_3_1: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_0_2: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_1_2: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_2_2: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_3_2: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_0_3: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_1_3: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_2_3: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Shell_3_3: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_LowerCrateWest: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_LowerCrateEast: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_LowerBenchWest: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_LowerBenchEast: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_LowerPipeWest: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_LowerPipeEast: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_LowerLocker: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Fill0: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Fill1: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Fill2: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
+  - TLM_REF_BS_Decor_Lower_Fill3: not placed (its cell 'TLM_CELL_BS_Lower' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)
   - RH environment requires strict typed owned-master metadata; no outdoor/light construction in skeleton mode
   - TLM_Core script TLM:FixtureProbe.FixtureActorBase: needs 'WorkshopNPC' from Fallout4.esm
   - TLM_Core script TLM:FixtureProbe.FixtureMarkerBase: needs 'XMarker' from Fallout4.esm
@@ -5063,6 +5897,11 @@ Not wired yet (968):
   - TLM_Trial alias PersonOwn: its reference TLM_REF_TrialPersonOwn is not placed
   - TLM_Trial alias SettlerOnFloor: its reference TLM_REF_TrialSettlerOnFloor is not placed
   - TLM_Trial alias PersonBare: its reference TLM_REF_TrialPersonBare is not placed
+  - TLM_A1 script TLM:Act1Walk.PritchardOriginalVoice: needs 'MaleBoston' from Fallout4.esm
+  - Strict placed-reference binding unavailable: OpeningOriginalPike
+  - Strict placed-reference binding unavailable: BlackLedgerOriginalSheriff
+  - Strict placed-reference binding unavailable: BlackLedgerOriginalVane
+  - Strict placed-reference binding unavailable: BlackLedgerOriginalHaskell
   - TLM_A1 script TLM:Act1Walk.Caps: needs 'Caps001' from Fallout4.esm
   - TLM_A1 script TLM:Act1Walk.MarkerBase: needs 'XMarker' from Fallout4.esm
   - TLM_A1 script TLM:Act1Walk.PipBoy: needs 'Pipboy' from Fallout4.esm
@@ -5103,6 +5942,12 @@ Not wired yet (968):
   - TLM_A1 alias GuideWreck: its reference TLM_REF_A1_GuideWreck is not placed
   - TLM_A1 alias GuideRoad: its reference TLM_REF_A1_GuideRoad is not placed
   - TLM_A1 alias GuideMercy: its reference TLM_REF_A1_GuideMercy is not placed
+  - TLM_A1 alias HelpApproach: its reference TLM_REF_A1_HelpApproach is not placed
+  - TLM_A1 alias HelpWithdrawA: its reference TLM_REF_A1_HelpWithdrawA is not placed
+  - TLM_A1 alias HelpWithdrawB: its reference TLM_REF_A1_HelpWithdrawB is not placed
+  - TLM_A1 alias HelpWithdrawC: its reference TLM_REF_A1_HelpWithdrawC is not placed
+  - TLM_A1 alias HelpWithdrawD: its reference TLM_REF_A1_HelpWithdrawD is not placed
+  - TLM_A1 alias HelpHome: its reference TLM_REF_A1_HelpHome is not placed
   - TLM_MQ02B script TLM:MQ02BQuest.Caps: needs 'Caps001' from Fallout4.esm
   - TLM_MQ02B script TLM:MQ02BQuest.Charisma: needs 'Charisma' from Fallout4.esm
   - TLM_MQ02B script TLM:MQ02BQuest.Meal: needs a Ingestible named 'Corn' or 'Vegetable Soup' or 'Noodle Cup' or 'Tato' or 'Mutfruit' from Fallout4.esm
@@ -5198,6 +6043,7 @@ Not wired yet (968):
   - TLM_MQ02C script TLM:MQ02CQuest.Caps: needs 'Caps001' from Fallout4.esm
   - Strict placed-reference binding unavailable: RhaOriginalRoark
   - Strict placed-reference binding unavailable: RhaOriginalBlevins
+  - Strict placed-reference binding unavailable: VoiceOriginalSheriff
   - TLM_RH alias MercyTravel: its reference TLM_REF_RH_MercyTravel is not placed
   - TLM_RH alias MercyReturn: its reference TLM_REF_RH_MercyReturn is not placed
   - TLM_RH alias GapArrival: its reference TLM_REF_RH_GapArrival is not placed
@@ -5332,3 +6178,54 @@ Not wired yet (968):
   - TLM_MQ03 alias Player: needs PlayerRef from Fallout4.esm
   - TLM_FF_Entry alias Entry: its reference TLM_REF_FF_Entry is not placed
   - TLM_FF_Entry alias MercyReturn: its reference TLM_REF_FF_MercyReturn is not placed
+  - TLM_MQ04 alias Arrival: its reference TLM_REF_BL_Arrival is not placed
+  - TLM_MQ04 alias Counter: its reference TLM_REF_BL_Counter is not placed
+  - TLM_MQ04 alias SheriffAnchor: its reference TLM_REF_BL_SheriffAnchor is not placed
+  - TLM_MQ04 alias VaneAnchor: its reference TLM_REF_BL_VaneAnchor is not placed
+  - TLM_MQ04 alias HomeSheriff: its reference TLM_REF_BL_HomeSheriff is not placed
+  - TLM_MQ04 alias HomeVane: its reference TLM_REF_BL_HomeVane is not placed
+  - TLM_MQ04 alias BlackBook: its reference TLM_REF_BL_BlackBook is not placed
+  - TLM_MQ04 alias Warrant: its reference TLM_REF_BL_Warrant is not placed
+  - TLM_MQ04 alias Receipt: its reference TLM_REF_BL_Receipt is not placed
+  - TLM_MQ04 alias Beckett: its reference TLM_REF_BL_Beckett is not placed
+  - TLM_MQ04 alias Witness0: its reference TLM_REF_BL_Witness0 is not placed
+  - TLM_MQ04 alias Witness1: its reference TLM_REF_BL_Witness1 is not placed
+  - TLM_MQ04 alias WitnessSlot0: its reference TLM_REF_BL_WitnessSlot0 is not placed
+  - TLM_MQ04 alias WitnessSlot1: its reference TLM_REF_BL_WitnessSlot1 is not placed
+  - TLM_MQ04 alias Porch: its reference TLM_REF_BL_Porch is not placed
+  - TLM_MQ04 alias Read: its reference TLM_REF_BL_Read is not placed
+  - TLM_MQ04 alias Exit: its reference TLM_REF_BL_Exit is not placed
+  - TLM_MQ04 alias Retry: its reference TLM_REF_BL_Retry is not placed
+  - TLM_MQ04 alias Player: needs PlayerRef from Fallout4.esm
+  - TLM_BL_Entry alias Entry: its reference TLM_REF_BL_Entry is not placed
+  - TLM_BL_Entry alias MercyReturn: its reference TLM_REF_BL_MercyReturn is not placed
+  - TLM_BL_Entry alias Public: its reference TLM_REF_BL_Public is not placed
+  - TLM_BL_Entry alias Finish: its reference TLM_REF_BL_Finish is not placed
+  - Strict placed-reference binding unavailable: MaraIdentity
+  - Strict placed-reference list unavailable: DocumentIdentity
+  - Strict placed-reference list unavailable: ControlIdentity
+  - Strict placed-reference list unavailable: DestinationIdentity
+  - TLM_MQ05 alias JunctionRoute: its reference TLM_REF_BS_JunctionRoute is not placed
+  - TLM_MQ05 alias JunctionReturn: its reference TLM_REF_BS_JunctionReturn is not placed
+  - TLM_MQ05 alias UpperArrival: its reference TLM_REF_BS_UpperArrival is not placed
+  - TLM_MQ05 alias UpperReturn: its reference TLM_REF_BS_UpperReturn is not placed
+  - TLM_MQ05 alias UpperServiceDoor: its reference TLM_REF_BS_UpperServiceDoor is not placed
+  - TLM_MQ05 alias UpperRoomReturn: its reference TLM_REF_BS_UpperRoomReturn is not placed
+  - TLM_MQ05 alias StationSign: its reference TLM_REF_BS_StationSign is not placed
+  - TLM_MQ05 alias ServiceArrival: its reference TLM_REF_BS_ServiceArrival is not placed
+  - TLM_MQ05 alias RoomExit: its reference TLM_REF_BS_RoomExit is not placed
+  - TLM_MQ05 alias Freight: its reference TLM_REF_BS_Freight is not placed
+  - TLM_MQ05 alias RiderIndex: its reference TLM_REF_BS_RiderIndex is not placed
+  - TLM_MQ05 alias MaraNote: its reference TLM_REF_BS_MaraNote is not placed
+  - TLM_MQ05 alias Mara: its reference TLM_REF_BS_Mara is not placed
+  - TLM_MQ05 alias ServicePass: its reference TLM_REF_BS_ServicePass is not placed
+  - TLM_MQ05 alias Diagram: its reference TLM_REF_BS_Diagram is not placed
+  - TLM_MQ05 alias MechanicalRelease: its reference TLM_REF_BS_MechanicalRelease is not placed
+  - TLM_MQ05 alias ServiceDoor: its reference TLM_REF_BS_ServiceDoor is not placed
+  - TLM_MQ05 alias ServiceReturn: its reference TLM_REF_BS_ServiceReturn is not placed
+  - TLM_MQ05 alias LowerArrival: its reference TLM_REF_BS_LowerArrival is not placed
+  - TLM_MQ05 alias LowerReturn: its reference TLM_REF_BS_LowerReturn is not placed
+  - TLM_MQ05 alias Boundary: its reference TLM_REF_BS_Boundary is not placed
+  - TLM_MQ05 alias Player: needs PlayerRef from Fallout4.esm
+  - Quest recordings require owned native sound descriptor/category metadata
+  - Ada book recording requires owned sound descriptor metadata

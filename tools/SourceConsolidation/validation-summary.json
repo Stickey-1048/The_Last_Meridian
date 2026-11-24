@@ -1,0 +1,105 @@
+{
+  "scope": "Observed local source-only checks, not portable/full aggregate acceptance",
+  "dotnet": [
+    {
+      "project": "PluginBuilder",
+      "stage": "restore",
+      "exit": 0
+    },
+    {
+      "project": "PluginBuilder",
+      "stage": "build",
+      "exit": 0
+    },
+    {
+      "project": "WorldSliceBuilder",
+      "stage": "restore",
+      "exit": 0
+    },
+    {
+      "project": "WorldSliceBuilder",
+      "stage": "build",
+      "exit": 0
+    }
+  ],
+  "dotnetWarnings": {
+    "PluginBuilder": 1,
+    "WorldSliceBuilder": 2
+  },
+  "pythonAST": {
+    "files": 200,
+    "errors": 0
+  },
+  "consistency": {
+    "status": "FAIL",
+    "exitCode": 1,
+    "defaultProjectionAbsent": true,
+    "fixture": "Accepted B25C owned projection, read only; PLUGIN_JSON redirected in memory only",
+    "diagnostics": [
+      "Act1Walk.psc: event Actor.OnPlayerLoadGame has no documented signature in papyrus_natives.json",
+      "Act1Walk.psc:355: IsActivationBlocked() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:369: IsActivationBlocked() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1431: SetOverrideVoiceType() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1432: GetVoiceType() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1512: FadeOutGame() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1585: Play() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1590: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1596: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1723: RegisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1728: UnregisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1733: Play() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1736: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1778: UnregisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1793: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1808: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1811: UnregisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1852: GetAlias() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1853: GetAlias() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1894: RegisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1899: UnregisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1925: UnregisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "Act1Walk.psc:1954: CompleteQuest() is neither defined in the project nor in papyrus_natives.json",
+      "BlackLedgerWalk.psc:81: Initialize() called with 1 argument(s), takes 0-0",
+      "BlackLedgerWalk.psc:699: Play() is neither defined in the project nor in papyrus_natives.json",
+      "BlackLedgerWalk.psc:705: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "FourFlagsWalk.psc:1574: FinishEncounter() called with 6 argument(s), takes 0-0",
+      "MQ01Quest.psc:973: FadeOutGame() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc: event Actor.OnPlayerLoadGame has no documented signature in papyrus_natives.json",
+      "OpeningPrologue.psc:137: RegisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:195: IsActivationBlocked() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:397: FadeOutGame() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:450: GetAlias() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:452: Clear() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:460: GetAlias() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:530: FadeOutGame() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:544: UnregisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:547: Stop() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:561: UnregisterForRemoteEvent() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:565: Stop() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:654: Play() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:657: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "OpeningPrologue.psc:705: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:1664: Play() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:1671: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:2508: Play() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:2513: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:2552: Play() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:2554: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:2580: StopInstance() is neither defined in the project nor in papyrus_natives.json",
+      "RedHollowWalk.psc:2591: StopInstance() is neither defined in the project nor in papyrus_natives.json"
+    ]
+  },
+  "notRun": [
+    "Plugin emission",
+    "SDK Papyrus compile",
+    "Broad ancestor suites",
+    "Full portable aggregate",
+    "Native game",
+    "Network publication"
+  ],
+  "diffWhitespaceCheck": {
+    "exitCode": 2,
+    "diagnosticLines": 5266,
+    "explanation": "Copied immutable source blobs include CRLF treated as trailing whitespace and inherited blank EOF lines. Exact source pins preserved; no cleanup edits or passing claim."
+  }
+}

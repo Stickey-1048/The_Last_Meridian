@@ -1,0 +1,36 @@
+{
+  "base": "064b11d580147fcb8f5f0db39b28e0c19b0ef0f1",
+  "onlyExistingFileChanged": "tools/logic_model/invariants.py",
+  "sourceChange": "two physical comparison preconditions; no obligations or messages removed",
+  "exactTwoConditionInverse": true,
+  "protectedParentFiles": 642,
+  "unchangedGitLFPins": {
+    "tools/logic_model/tlm_model.py": "71B160E870FC17C54245573952652A174E71E95646D47CBE1BCADF4B2A35365B",
+    "tools/logic_model/test_invariants.py": "CC77D1F48670252C655A83067397A245A2B08D925F27BCAB91D0CCC681C7BA6B",
+    "tools/gen_matrix_cases.py": "C399C1C7B64D83C3E0C82402F7B1E54609F2CDEC2E9C81B64B76F5AF2CF99859",
+    "scripts/Source/User/TLM/MatrixCases.psc": "AF86E71AD74D859255563F972416BA814187A8D1DF4D48914BFE2AA424BF767B",
+    "scripts/Source/User/TLM/SQ01Quest.psc": "E020EA93CB4C3F6DDE23B009829C93B4FC289AF186F98603ACF43954726677D6",
+    "tools/matrix_cases.json": "8B420620D496A3F08278DD374E04C1A6976ECE0636A4FA7E67BDEE927848DB1C",
+    "tools/run_checks.sh": "BF0A38F2C2FD0D06373C10232CAE70ADF4247F5CE33863D16983ECB544B9696D"
+  },
+  "beforeExhaustiveFailure": {
+    "missing20States": 224,
+    "missing25States": 64
+  },
+  "newFocusedMethodsPass": 4,
+  "parentInvariantNegativeControl": "valid-paper regression fails with actual parent function",
+  "existingLogicAggregate": {
+    "tests": 150,
+    "failures": 0,
+    "errors": 0,
+    "unchangedHistoricalSkips": 8,
+    "seconds": 41.889
+  },
+  "generatorCheck": {
+    "cases": 53,
+    "steps": 335,
+    "checks": 1340,
+    "unchangedGeneratedFiles": true
+  },
+  "native": null
+}

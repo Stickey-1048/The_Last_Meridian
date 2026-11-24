@@ -1,0 +1,73 @@
+{
+  "status": "Proposed opening scene implementation copy; no childhood, Rider-history or permanent deputy-rank change. New Gantt voice recordings are not supplied by this file.",
+  "speaker": "Tobias Gantt",
+  "messages": [
+    {
+      "property": "AskForCase",
+      "text": "Gantt: Mind that tool case? Get it behind the brace. I need this door clear. Then come back here a moment.",
+      "buttons": ["Continue"]
+    },
+    {
+      "property": "MotiveChoice",
+      "text": "Gantt: Much obliged. You working your passage, or just trying to get somewhere?",
+      "buttons": ["Trying to find work.", "Trying to reach the next stop.", "Does helping you come with wages?"]
+    },
+    {
+      "property": "ReplyWork",
+      "text": "Gantt: Mercy can always use hands that finish a job. I can't promise you a place, but I can tell you who to ask.",
+      "buttons": ["Continue"]
+    },
+    {
+      "property": "ReplyTravel",
+      "text": "Gantt: Then we're bound for the same stop. Mercy Crossing. Small place, but you'll find a roof and somebody who knows the roads.",
+      "buttons": ["Continue"]
+    },
+    {
+      "property": "ReplyWages",
+      "text": "Gantt: This one's a favor. The sheriff may have paid work when you arrive. I won't promise his money for him.",
+      "buttons": ["Continue"]
+    },
+    {
+      "property": "RequestChoice",
+      "text": "Gantt: Tobias Gantt. Rail marshal. Pritchard at Mercy expects my dispatch. If we get separated, will you put it in his hands?\n\nIt's a delivery, not an arrest. Keep it sealed. If somebody demands it, get yourself clear and tell the sheriff.",
+      "buttons": ["I'll take it to Pritchard.", "Find somebody else.", "Who is Pritchard?"]
+    },
+    {
+      "property": "WhoPritchard",
+      "text": "Gantt: Owen Pritchard. Mercy's sheriff. Green cabin above the road. He'll want what you actually saw, not what somebody talked you into believing.",
+      "buttons": ["Continue"]
+    },
+    {
+      "property": "AcceptReply",
+      "text": "Gantt: Thank you. I'll keep it with me for now. If I can't finish the journey, you know where it belongs. Nobody's asking you to die for a badge.",
+      "buttons": ["Continue"]
+    },
+    {
+      "property": "DeclineReply",
+      "text": "Gantt: Fair enough. Then if you see Pritchard, tell him I'm looking for him. You don't owe me more than you agreed to.",
+      "buttons": ["Continue"]
+    },
+    {
+      "property": "ReadyDeparture",
+      "text": "The case is secured. Continue the journey toward Mercy Crossing?",
+      "buttons": ["Continue the journey.", "Not yet."]
+    },
+    {
+      "property": "EarlyDeath",
+      "text": "Gantt is dead. His dispatch still needs to reach Sheriff Pritchard at Mercy Crossing.",
+      "buttons": ["Continue"]
+    }
+  ],
+  "implementation_rules": [
+    "Use the eleven exact property names and button indices agreed with the controller. These are captions, not a claim of recorded dialogue.",
+    "The ordinary tool-case interaction must visibly secure the case before ReadyDeparture describes it as secured.",
+    "All three motives express a current reason for traveling, not a fixed profession or childhood.",
+    "Record heard request, accepted request and declined request separately. A negative or stale message result records no new agreement.",
+    "WhoPritchard may return to RequestChoice once per ordinary activation; no automatic infinite dialogue loop.",
+    "Gantt retains the dispatch. Do not give the player a duplicate item, caps, deputy rank, faction membership or an early MQ01 pickup stage.",
+    "EarlyDeath is neutral player-facing narration, not speech from a corpse or proof of who killed him. Show it only after observing the original marshal dead.",
+    "ReadyDeparture is neutral narration. Keep any fade, sound or crash claim separate from this confirmation.",
+    "Pritchard's later new dialogue must distinguish an accepted promise from a declined or unheard request, and must not blame the wreck for an observed earlier death.",
+    "Preserve existing recorded Pritchard lines and their matching captions. New words require new matching recordings before voiced-playback claims."
+  ]
+}

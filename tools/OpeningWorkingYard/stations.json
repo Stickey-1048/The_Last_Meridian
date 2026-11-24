@@ -1,0 +1,530 @@
+{
+  "status": "READONLY PROPOSAL,NOTBUILT/NATIVE",
+  "baselineWorldSha256": "FABEB6EB772F768408F696788C8AFADE49629768EE8F281CA0C53DB9783F3900",
+  "purpose": "Threevisible existingMercyrolefrontages; noNPC/quest/stage/AI/newheal/shopclaims",
+  "props": [
+    {
+      "id": "TLM_YARD_RepairBench",
+      "role": "repair",
+      "kind": "FURN",
+      "donor": "workbenchWeaponsB",
+      "donorId": "0017E787",
+      "model": "Furniture\\Workstations\\WorkbenchWeapons\\WorkbenchWeaponsB.nif",
+      "position": [
+        3700,
+        2750,
+        128
+      ],
+      "rotation": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "support": "LAND; nativeWorkbenchScript retained,notclaimedpassive",
+      "renderBounds": [
+        3686.0533599853516,
+        2612.8433837890625,
+        127.07419204711914,
+        3802.5221099853516,
+        2792.9996337890625,
+        268.72946548461914
+      ],
+      "testedBodyBounds": [
+        3686.0533599853516,
+        2612.8433837890625,
+        127.07419204711914,
+        3802.5221099853516,
+        2792.9996337890625,
+        268.72946548461914
+      ],
+      "nearestOperative": "TLM_WS_ST_RH_MercyTravel",
+      "operativeClearance": 166.54930462051743,
+      "nifSha256": "DF8D776F2D2163DAF9DACF328153AE49BFA2E09C31D498B803137CF1AFDE8A97",
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "footBandBottom": 127.07419204711914,
+      "maxFootEmbed": 0.9258079528808594
+    },
+    {
+      "id": "TLM_YARD_FreightStockA",
+      "role": "freight",
+      "kind": "STAT",
+      "donor": "WoodCrate03",
+      "donorId": "000211F7",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate03.nif",
+      "position": [
+        2400,
+        3360,
+        128
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "LAND",
+      "renderBounds": [
+        2374.4375,
+        3307.34375,
+        127.99999237060547,
+        2425.5625,
+        3412.71875,
+        157.984375
+      ],
+      "testedBodyBounds": [
+        2374.4375,
+        3307.34375,
+        127.99999237060547,
+        2425.5625,
+        3412.71875,
+        157.984375
+      ],
+      "nearestOperative": "TLM_WS_ST_Haskell",
+      "operativeClearance": 192.1519504723085,
+      "nifSha256": "D7E9F3F8D8344A6B486D8CBB282E5CF2C7447EDF97CE6657C820DDA7015E5935",
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "footBandBottom": 127.99999237060547,
+      "maxFootEmbed": 7.62939453125e-06
+    },
+    {
+      "id": "TLM_YARD_FreightStockB",
+      "role": "freight",
+      "kind": "STAT",
+      "donor": "WoodCrate03",
+      "donorId": "000211F7",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate03.nif",
+      "position": [
+        2460,
+        3370,
+        128
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "LAND",
+      "renderBounds": [
+        2434.4375,
+        3317.34375,
+        127.99999237060547,
+        2485.5625,
+        3422.71875,
+        157.984375
+      ],
+      "testedBodyBounds": [
+        2434.4375,
+        3317.34375,
+        127.99999237060547,
+        2485.5625,
+        3422.71875,
+        157.984375
+      ],
+      "nearestOperative": "TLM_WS_ST_Haskell",
+      "operativeClearance": 180.65643379163805,
+      "nifSha256": "D7E9F3F8D8344A6B486D8CBB282E5CF2C7447EDF97CE6657C820DDA7015E5935",
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "footBandBottom": 127.99999237060547,
+      "maxFootEmbed": 7.62939453125e-06
+    },
+    {
+      "id": "TLM_YARD_ClinicFrame",
+      "role": "clinic",
+      "kind": "STAT",
+      "donor": "HospitalBed01Frame",
+      "donorId": "0014D093",
+      "model": "Furniture\\Hospital\\HospitalBed01Frame.nif",
+      "position": [
+        2860,
+        2840,
+        145.56579073566556
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "Actual cabinporch fullparentfloor81samples",
+      "renderBounds": [
+        2824.031250031268,
+        2766.062494066179,
+        145.56564685005307,
+        2895.906250031268,
+        2913.937505944749,
+        235.69079073566556
+      ],
+      "testedBodyBounds": [
+        2824.031250031268,
+        2766.062494066179,
+        145.56564685005307,
+        2895.906250031268,
+        2913.937505944749,
+        235.69079073566556
+      ],
+      "nearestOperative": "TLM_WS_ST_NM_MercyTravel",
+      "operativeClearance": 137.17830074711216,
+      "nifSha256": "0EE1C771C6B73C6E5B11F6F01F8D94E61A9E58BB0C0519901601A8E29B63B69B"
+    },
+    {
+      "id": "TLM_YARD_ClinicMattress",
+      "role": "clinic",
+      "kind": "STAT",
+      "donor": "HospitalBed01Mattress_static",
+      "donorId": "000BF9F0",
+      "model": "Furniture\\Hospital\\HospitalBed01Mattress.nif",
+      "position": [
+        2860,
+        2840,
+        145.56579073566556
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "Sameorigin matching stockframe",
+      "renderBounds": [
+        2823.0625,
+        2768.875,
+        171.47204073566556,
+        2896.625,
+        2911.0,
+        189.65954073566556
+      ],
+      "testedBodyBounds": [
+        2823.0625,
+        2768.875,
+        171.47204073566556,
+        2896.625,
+        2911.0,
+        189.65954073566556
+      ],
+      "nearestOperative": "TLM_WS_ST_NM_MercyTravel",
+      "operativeClearance": 139.49070309522423,
+      "nifSha256": "A7C0DDB4F852B473C486484D14CD75D04FAE0875D85B58EE753F94EC4854B6AC"
+    },
+    {
+      "id": "TLM_YARD_ClinicCase",
+      "role": "clinic",
+      "kind": "STAT",
+      "donor": "FirstAidKit_StaticBase",
+      "donorId": "001B2BFF",
+      "model": "SetDressing\\FirstAidKit\\FirstAidKit_StaticBase.nif",
+      "position": [
+        2842,
+        2790,
+        196.8543256801502
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "Actualmattresssurface81samples",
+      "renderBounds": [
+        2841.3876953125,
+        2780.3203125,
+        187.7996381801502,
+        2878.125,
+        2803.8359375,
+        199.1902631801502
+      ],
+      "testedBodyBounds": [
+        2841.3876953125,
+        2780.3203125,
+        187.7996381801502,
+        2878.125,
+        2803.8359375,
+        199.1902631801502
+      ],
+      "nearestOperative": "TLM_WS_ST_NM_MercyTravel",
+      "operativeClearance": 157.65724127073153,
+      "nifSha256": "D23168F8CB3ECC98AB5C99B37ECC10FDC14680A5D0D9E43A733353AFB9413B2F"
+    },
+    {
+      "id": "TLM_YARD_ClinicWaitingChair",
+      "role": "clinic",
+      "kind": "FURN",
+      "donor": "NpcChairHighTechOfficeChairDirtySit01",
+      "donorId": "001A6E52",
+      "model": "SetDressing\\HighTech\\HightechOfficeChair.nif",
+      "position": [
+        2690,
+        2600,
+        127.4453125
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "LAND; ordinarychair,noassignedAI",
+      "renderBounds": [
+        2672.1875,
+        2576.703125,
+        128.0,
+        2708.0,
+        2623.296875,
+        194.7578125
+      ],
+      "testedBodyBounds": [
+        2672.1875,
+        2576.703125,
+        128.0,
+        2708.0,
+        2623.296875,
+        194.7578125
+      ],
+      "nearestOperative": "TLM_WS_ST_Talbot",
+      "operativeClearance": 149.4830488208132,
+      "nifSha256": "D3E5017BBE33A4248AE3731DB1F4542EC063DA94DED8B0D688E509F4CC66DE88",
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "footBandBottom": 128.0,
+      "maxFootEmbed": 0.0
+    },
+    {
+      "id": "TLM_YARD_TradeCover",
+      "role": "trade",
+      "kind": "STAT",
+      "donor": "BusStop01Shelter",
+      "donorId": "00176430",
+      "model": "Furniture\\BusStop\\BusStop01Shelter.nif",
+      "position": [
+        3712,
+        3430,
+        128
+      ],
+      "rotation": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "scale": 1,
+      "support": "LANDfootband; roofabovestandingbody; originaladsdisclosed",
+      "renderBounds": [
+        3575.1249781989436,
+        3240.9999893234926,
+        127.98588364744819,
+        3848.8749838814238,
+        3619.000007486784,
+        387.9999968254611
+      ],
+      "testedBodyBounds": [
+        3601.687484123205,
+        3240.9999893234926,
+        127.98588364744819,
+        3842.125014420021,
+        3619.000007486784,
+        252.00000000000003
+      ],
+      "nearestOperative": "TLM_WS_ST_FF_Entry",
+      "operativeClearance": 140.99998932349263,
+      "nifSha256": "20E943EAF5AB1BBB085A150D9852FA9629F9059E72B0066B5CE039B66439854A",
+      "groundRange": [
+        128.0,
+        129.72657421626724
+      ],
+      "footBandBottom": 127.98588364744819,
+      "maxFootEmbed": 1.7406905688190477,
+      "bodyClipLocalZ": [
+        -4,
+        124
+      ],
+      "bodyClipLimit": "Rendered standing-height screen,notHavok; fullroofboundsstillreported"
+    },
+    {
+      "id": "TLM_YARD_TradeCounterLower",
+      "role": "trade",
+      "kind": "STAT",
+      "donor": "WoodCrate03",
+      "donorId": "000211F7",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate03.nif",
+      "position": [
+        3660,
+        3330,
+        128
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "LAND",
+      "renderBounds": [
+        3634.4375,
+        3277.34375,
+        127.99999237060547,
+        3685.5625,
+        3382.71875,
+        157.984375
+      ],
+      "testedBodyBounds": [
+        3634.4375,
+        3277.34375,
+        127.99999237060547,
+        3685.5625,
+        3382.71875,
+        157.984375
+      ],
+      "nearestOperative": "TLM_WS_ST_CaravanYard",
+      "operativeClearance": 184.4375,
+      "nifSha256": "D7E9F3F8D8344A6B486D8CBB282E5CF2C7447EDF97CE6657C820DDA7015E5935",
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "footBandBottom": 127.99999237060547,
+      "maxFootEmbed": 7.62939453125e-06
+    },
+    {
+      "id": "TLM_YARD_TradeCounterUpper",
+      "role": "trade",
+      "kind": "STAT",
+      "donor": "WoodCrate03",
+      "donorId": "000211F7",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate03.nif",
+      "position": [
+        3660,
+        3330,
+        157.984375
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "Matchedlowercraterim; actualnativecontactverifybeforeemit",
+      "renderBounds": [
+        3634.4375,
+        3277.34375,
+        157.98436737060547,
+        3685.5625,
+        3382.71875,
+        187.96875
+      ],
+      "testedBodyBounds": [
+        3634.4375,
+        3277.34375,
+        157.98436737060547,
+        3685.5625,
+        3382.71875,
+        187.96875
+      ],
+      "nearestOperative": "TLM_WS_ST_CaravanYard",
+      "operativeClearance": 184.4375,
+      "nifSha256": "D7E9F3F8D8344A6B486D8CBB282E5CF2C7447EDF97CE6657C820DDA7015E5935"
+    },
+    {
+      "id": "TLM_YARD_TradeStock",
+      "role": "trade",
+      "kind": "STAT",
+      "donor": "WoodCrate03",
+      "donorId": "000211F7",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate03.nif",
+      "position": [
+        3770,
+        3350,
+        128
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "support": "LAND",
+      "renderBounds": [
+        3744.4375,
+        3297.34375,
+        127.99999237060547,
+        3795.5625,
+        3402.71875,
+        157.984375
+      ],
+      "testedBodyBounds": [
+        3744.4375,
+        3297.34375,
+        127.99999237060547,
+        3795.5625,
+        3402.71875,
+        157.984375
+      ],
+      "nearestOperative": "TLM_WS_ST_FF_Entry",
+      "operativeClearance": 198.85106756141013,
+      "nifSha256": "D7E9F3F8D8344A6B486D8CBB282E5CF2C7447EDF97CE6657C820DDA7015E5935",
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "footBandBottom": 127.99999237060547,
+      "maxFootEmbed": 7.62939453125e-06
+    }
+  ],
+  "fenceAmendment": {
+    "insteadOf": [
+      "TLM_WS_YardRight6",
+      "TLM_WS_YardRight7"
+    ],
+    "use": [
+      "TLM_WS_YardBack6",
+      "TLM_WS_YardBack7"
+    ],
+    "reason": "OpenTradeCover/stockfrontage; same7timber/27disabledcount; originalgatewayunchanged"
+  },
+  "wreckRecommendation": "Defer extras until3paperfootfix inspected; retainclearbody/dispatch/road. RRTrackBroken04 verifiedonlyasfuturecandidate,notplaced.",
+  "benchUse": {
+    "sourceFurn": "0017E787",
+    "actualXMRK": "Markers/WorkBenchWeaponsMarker.nif",
+    "markerNifSha256": "F637715B0D69C7A06020374C36348AD49FAFBF8AE08B1D4530198C9C6EDEA3EE",
+    "BSFurnitureMarkerNodePresent": false,
+    "actualNifTypes": [
+      "NiNode",
+      "BSTriShape",
+      "BSEffectShaderProperty",
+      "NiAlphaProperty"
+    ],
+    "markerRootIdentity": true,
+    "worldAnimationMarkerBounds": [
+      3640.125,
+      2726.46875,
+      127.56494140625,
+      3744.53125,
+      2905.75,
+      261.375
+    ],
+    "minimumOtherNewPropDistance": 335.2499893234926,
+    "otherNewPropDistances": {
+      "TLM_YARD_FreightStockA": 1279.233992061387,
+      "TLM_YARD_FreightStockB": 1225.7340582056584,
+      "TLM_YARD_ClinicFrame": 744.218749968732,
+      "TLM_YARD_ClinicMattress": 743.5,
+      "TLM_YARD_ClinicCase": 762.0,
+      "TLM_YARD_ClinicWaitingChair": 937.8173870301273,
+      "TLM_YARD_TradeCover": 335.2499893234926,
+      "TLM_YARD_TradeCounterLower": 371.59375,
+      "TLM_YARD_TradeCounterUpper": 371.59375,
+      "TLM_YARD_TradeStock": 391.59375
+    },
+    "approach": "Reserve actual full visualusemarker+128clear ofallnewprops; stockcasesmovedtoHaskellfreightcorner. Nativeentryandcraftingstillrequireactualcheck; no inventedmissingnodemarkerheading."
+  }
+}

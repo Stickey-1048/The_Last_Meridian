@@ -113,19 +113,24 @@ public static partial class WorldStory
     {
         var section=addon.Quests.Single(q=>q.EditorID=="TLM_WS_A1");
         var aliases=section.Aliases?.OfType<IQuestReferenceAliasGetter>().ToArray()??throw new InvalidDataException("Story alias table missing");
-        if(aliases.Length!=29||aliases.Any(a=>a.ForcedReference.IsNull||a.ForcedReference.FormKey.ModKey!=addon.ModKey))throw new InvalidDataException("Story aliases must bind exactly29new references");
+        if(aliases.Length!=(section.VirtualMachineAdapter!.Scripts.Single(x=>x.Name=="TLM:Act1Walk").Properties.Any(p=>p.Name=="HelpAnchors")?35:29)||aliases.Any(a=>a.ForcedReference.IsNull||a.ForcedReference.FormKey.ModKey!=addon.ModKey))throw new InvalidDataException("Story aliases must bind exactly29new references");
         var allowedIds=aliases.Select(a=>a.ID).ToHashSet();
         var refs=addon.Worldspaces.Single().TopCell!.Persistent.ToDictionary(p=>p.FormKey);
         if(aliases.Any(a=>!refs.ContainsKey(a.ForcedReference.FormKey)))throw new InvalidDataException("Story alias points outside new persistent world refs");
         var vmad=section.VirtualMachineAdapter??throw new InvalidDataException("Story VMAD missing");
         if(vmad.Aliases.Any(a=>a.Property.Object.FormKey!=section.FormKey||!allowedIds.Contains((uint)a.Property.Alias)))throw new InvalidDataException("Alias script ownership not remapped");
         var walk=vmad.Scripts.Single(s=>s.Name=="TLM:Act1Walk");
+        var pikeIdentity=walk.Properties.SingleOrDefault(p=>p.Name=="OpeningOriginalPike");
+        if(pikeIdentity!=null){
+            var expected=aliases.Single(a=>a.Name=="Pike").ForcedReference.FormKey;
+            if(pikeIdentity is not IScriptObjectPropertyGetter pike||pike.Alias!=-1||pike.Object.FormKey!=expected)throw new InvalidDataException("Opening Ada must use original exterior Pike");
+        }
         foreach(var p in walk.Properties){
             if(p is IScriptObjectPropertyGetter obj&&obj.Alias>=0&&obj.Object.FormKey!=section.FormKey)throw new InvalidDataException("Own alias property points at preview");
             // ACT1-RUNTIME-001: the helper quest stays in the story master; the clone only points at it.
             if(p.Name=="TLM_MercyBriefing"&&(p is not IScriptObjectPropertyGetter brief||brief.Alias!=-1||brief.Object.FormKey.ModKey!=ModKey.FromNameAndExtension("TheLastMeridian.esp")))throw new InvalidDataException("Mercy briefing binding does not point into the story master");
             if(p is IScriptObjectListPropertyGetter list){
-                if(p.Name=="Everything"&&list.Objects.Count!=29)throw new InvalidDataException("Everything mismatch");
+                if(p.Name=="Everything"&&list.Objects.Count!=aliases.Length)throw new InvalidDataException("Everything mismatch");
                 if(p.Name!="CastInto"&&list.Objects.Any(o=>o.Alias>=0&&o.Object.FormKey!=section.FormKey))throw new InvalidDataException("Own alias array points at preview");
                 if(p.Name=="CastInto"&&list.Objects.Any(o=>o.Object.FormKey.ModKey!=ModKey.FromNameAndExtension("TheLastMeridian.esp")))throw new InvalidDataException("Quest rule aliases were not preserved in master");
             }
@@ -144,6 +149,7 @@ public static partial class WorldStory
         ValidateNightMail(addon,section);
         ValidateRedHollow(addon,section);
         ValidateFourFlags(addon,section);
+        ValidateBlackLedger(addon,section);
     }
     public static object Add(Fallout4Mod mod, Worldspace world, Cell clearing, IFallout4ModGetter source)
     {
@@ -172,9 +178,9 @@ public static partial class WorldStory
         // Retain26 actual actors/items/triggers plus3 guides. Only test-room
         // decoration is omitted; guides get an explicit exterior-only copy flag.
         var aliases=section.Aliases??throw new InvalidDataException("Missing original alias table");
-        foreach(var a in aliases.Where(a=>a is not QuestReferenceAlias r||!sites.ContainsKey(r.Name??"")).ToArray())aliases.Remove(a);
-        if(aliases.Count!=29)throw new InvalidDataException("Unexpected first-section alias contract");
-        foreach(var a in aliases.Cast<QuestReferenceAlias>()){
+        foreach(var a in aliases.Where(a=>a is not QuestReferenceAlias r||!sites.ContainsKey(r.Name??"")&&!SheriffHelpSites.ContainsKey(r.Name??"")).ToArray())aliases.Remove(a);
+        if(aliases.Count!=(original.VirtualMachineAdapter!.Scripts.Single(x=>x.Name=="TLM:Act1Walk").Properties.Any(p=>p.Name=="HelpAnchors")?35:29))throw new InvalidDataException("Unexpected first-section alias contract");
+        foreach(var a in aliases.Cast<QuestReferenceAlias>().Where(a=>sites.ContainsKey(a.Name??""))){
             if(a.ForcedReference.IsNull||!sourceRefs.TryGetValue(a.ForcedReference.FormKey,out var old))throw new InvalidDataException("Missing source placement: "+a.Name);
             var at=sites[a.Name!];var key=mod.GetNextFormKey();IPlaced placed;
             if(old is IPlacedNpcGetter npc){var p=npc.Duplicate(key);p.Position=new P3Float(at.X,at.Y,at.Z);p.Rotation=new P3Float(0,0,MathF.PI);p.EditorID="TLM_WS_ST_"+a.Name;placed=p;}
@@ -197,8 +203,16 @@ public static partial class WorldStory
         }}
         foreach(var s in adapter.Scripts)Script(s);
         foreach(var b in adapter.Aliases){Remap(b.Property);foreach(var s in b.Scripts)Script(s);}
+        // Optional Ada audio identity: only the original existing exterior Pike.
+        var pikeIdentity=adapter.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.OfType<ScriptObjectProperty>().SingleOrDefault(p=>p.Name=="OpeningOriginalPike");
+        if(pikeIdentity!=null){
+            var sourcePike=original.Aliases!.OfType<IQuestReferenceAliasGetter>().Single(a=>a.Name=="Pike").ForcedReference.FormKey;
+            var exteriorPike=aliases.OfType<IQuestReferenceAliasGetter>().Single(a=>a.Name=="Pike").ForcedReference.FormKey;
+            if(pikeIdentity.Alias!=-1||pikeIdentity.Object.FormKey!=sourcePike)throw new InvalidDataException("Opening Ada source identity substitution");
+            pikeIdentity.Object.SetTo(exteriorPike);
+        }
         foreach(var guide in adapter.Aliases.SelectMany(a=>a.Scripts).Where(s=>s.Name=="TLM:Act1Guide"))guide.Properties.Add(new ScriptBoolProperty{Name="Exterior",Flags=ScriptProperty.Flag.Edited,Data=true});
-        var begin=mod.Messages.AddNew("TLM_WS_Opening");begin.Description="Exterior first-section prototype: follow the route to the wreck and search the ground for the marshal's dispatch. The caravan road lies beyond; Mercy's fenced cabin is at the far end. The eastern route bypasses the optional hold-up.";begin.DisplayTime=8;
+        var begin=mod.Messages.AddNew("TLM_WS_Opening");begin.Description="Find the marshal's dispatch beside the wreck. Follow the road uphill to Sheriff Pritchard's fenced cabin.";begin.DisplayTime=8;
         foreach(var script in adapter.Scripts)foreach(var p in script.Properties.OfType<ScriptObjectProperty>().Where(p=>p.Name=="SayBegin"))p.Object.SetTo(begin.FormKey);
         // Duplicate the already-correct empty quest header, but use only the
         // narrow guarded entry script and no actor aliases on this wrapper.
@@ -214,7 +228,7 @@ public static partial class WorldStory
         Prop("SideQuest",source.Quests.Single(q=>q.EditorID=="TLM_SQ01").FormKey);Prop("Section",section.FormKey);Prop("Clearing",clearing.FormKey);
         start.Properties.Add(new ScriptObjectProperty{Name="FreshPlayer",Flags=ScriptProperty.Flag.Edited,Object=entry.ToLink<IFallout4MajorRecordGetter>(),Alias=0});
         entry.VirtualMachineAdapter.Scripts.Add(start);mod.Quests.Add(entry);
-        if(adapter.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.OfType<ScriptObjectListProperty>().Single(p=>p.Name=="Everything").Objects.Count!=29)throw new InvalidDataException("Exterior Everything binding mismatch");
+        if(adapter.Scripts.Single(s=>s.Name=="TLM:Act1Walk").Properties.OfType<ScriptObjectListProperty>().Single(p=>p.Name=="Everything").Objects.Count!=aliases.Count)throw new InvalidDataException("Exterior Everything binding mismatch");
         // ACT1-RUNTIME-001: a check only; nothing is remapped or written for it. The cloned walk must keep
         // pointing at the master's own Mercy briefing quest, never at a copy, the section or nothing.
         // A source built before that quest existed has neither the quest nor the property.

@@ -1,0 +1,711 @@
+{
+  "scope": "Measured stock donor metadata; no mesh bytes",
+  "assets": {
+    "WaterPurified": {
+      "id": "000366C0",
+      "type": "ALCH",
+      "model": "SetDressing\\FoodAndFoodWare\\WaterPurified.nif",
+      "bounds": [
+        -3,
+        -3,
+        0,
+        3,
+        3,
+        13
+      ],
+      "passive": false,
+      "nif": {
+        "sha256": "30F45A13208750C426926F7CE066C9226F7193741F59D013095D51A701464E97",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "WaterPurified:0",
+            "localBounds": [
+              -3.416015625,
+              -3.330078125,
+              0.0,
+              3.416015625,
+              3.330078125,
+              13.859375
+            ],
+            "type": "BSTriShape",
+            "vertices": 265,
+            "triangles": 282,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -3.416015625,
+          -3.330078125,
+          0.0,
+          3.416015625,
+          3.330078125,
+          13.859375
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -3.416015625,
+          -3.330078125,
+          0.0,
+          3.416015625,
+          3.330078125,
+          0.5419921875
+        ]
+      }
+    },
+    "WorkshopWallShelfWood02": {
+      "id": "0023AE16",
+      "type": "STAT",
+      "model": "SetDressing\\Workshop\\WallShelves\\WorkshopWallShelfWood02.nif",
+      "bounds": [
+        0,
+        -71,
+        -19,
+        19,
+        73,
+        1
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "CAF5B509DE9AE7760A00AD766CB465977127CD8A9206CF2A7D8A5A83AC09D875",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "BSConnectPoint::Parents": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": false,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              1.7254714965820312,
+              0.0,
+              -65.08310127258301
+            ],
+            "name": "WorkshopWallShelfWood02:0",
+            "localBounds": [
+              -2.5033950805664062e-05,
+              -71.125,
+              -19.859375,
+              19.828125,
+              73.5625,
+              1.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 448,
+            "triangles": 408,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -19.828150871717035,
+          -73.56249947900616,
+          -19.859375,
+          1.2698728824034333e-07,
+          71.1250071068122,
+          1.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -1.9765882500250456,
+          -66.12499995022988,
+          -19.859375,
+          -0.12778281635997502,
+          63.687500769701835,
+          -19.171875
+        ]
+      }
+    },
+    "defaultLightWarm01NS": {
+      "id": "000560DC",
+      "type": "LIGH",
+      "radius": 256,
+      "rgb": [
+        228,
+        203,
+        182
+      ],
+      "model": null
+    },
+    "TreeMaplePreWar05Gr": {
+      "id": "00061649",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar05Green.nif",
+      "bounds": [
+        -115,
+        -117,
+        -8,
+        127,
+        111,
+        388
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "C9C560AE4D8F4F1E8724EB724E8853D14A9A93EF21E8665029E9020D84BBB0E7",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 2,
+          "BSShaderTextureSet": 2,
+          "NiAlphaProperty": 2,
+          "BSTriShape": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              12203.32958984375,
+              12916.318603515625,
+              648.9163208007812
+            ],
+            "name": "L2_TreeMaplePreWar05Green:0",
+            "localBounds": [
+              -37.5,
+              -54.875,
+              124.8125,
+              49.78125,
+              33.125,
+              373.25
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 6,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              6262.039627075195,
+              -65299.391845703125,
+              12684.204517006874
+            ],
+            "name": "TreeMaplePreWar05Green:0",
+            "localBounds": [
+              -115.75,
+              -117.875,
+              -8.3984375,
+              127.9375,
+              111.1875,
+              388.5
+            ],
+            "type": "BSTriShape",
+            "vertices": 239,
+            "triangles": 294,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -115.75,
+          -117.875,
+          -8.3984375,
+          127.9375,
+          111.1875,
+          388.5
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -9.796875,
+          -9.28125,
+          -8.3984375,
+          12.015625,
+          9.609375,
+          -8.359375
+        ]
+      },
+      "type": "STAT"
+    },
+    "CoffeeCup01": {
+      "id": "000211C4",
+      "type": "MISC",
+      "model": "SetDressing\\Kitchen\\CoffeeCup01.nif",
+      "bounds": [
+        -3,
+        -3,
+        0,
+        3,
+        5,
+        7
+      ],
+      "passive": false,
+      "nif": {
+        "sha256": "20C79955B611A4B8260059D2DABD55F5B1C908EDA02434F3230113867F7986FC",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.00010776519775390625,
+              1.4926204746589065,
+              0.0
+            ],
+            "name": "CoffeeCup01:2",
+            "localBounds": [
+              -3.0,
+              -3.0,
+              0.0,
+              3.0,
+              5.8125,
+              7.0
+            ],
+            "type": "BSTriShape",
+            "vertices": 194,
+            "triangles": 178,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -3.0,
+          -3.0,
+          0.0,
+          3.0,
+          5.8125,
+          7.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -3.0,
+          -3.0,
+          0.0,
+          3.0,
+          4.23828125,
+          0.9697265625
+        ]
+      }
+    },
+    "CookingPot01": {
+      "id": "00059ABA",
+      "type": "MISC",
+      "model": "Props\\KitchenPot.nif",
+      "bounds": [
+        -12,
+        -13,
+        0,
+        12,
+        14,
+        20
+      ],
+      "passive": false,
+      "nif": {
+        "sha256": "F0B0E3EC64C5C07CA03E32E9333219D01B456434D642D90193EC755C9DA7CEFA",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "KitchenPot:0",
+            "localBounds": [
+              -12.5078125,
+              -13.9765625,
+              9.40561294555664e-05,
+              12.5078125,
+              14.0859375,
+              20.28125
+            ],
+            "type": "BSTriShape",
+            "vertices": 621,
+            "triangles": 876,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -12.5078125,
+          -13.9765625,
+          9.40561294555664e-05,
+          12.5078125,
+          14.0859375,
+          20.28125
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -10.71875,
+          -10.71875,
+          9.40561294555664e-05,
+          10.71875,
+          10.71875,
+          0.73974609375
+        ]
+      }
+    },
+    "WoodCrate01": {
+      "id": "000211F5",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate01.nif",
+      "bounds": [
+        -25,
+        -28,
+        0,
+        25,
+        27,
+        51
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "4647B41ECD56C95A2FCCDD1A17C23E64A847BAA4BBB6F9FC63736AF0921B3D84",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              1.5859222412109375,
+              -4.12493896484375,
+              -2288.4242553710938
+            ],
+            "name": "WoodCrate01:31 - L2_OuterBoards:31",
+            "localBounds": [
+              -25.609375,
+              -28.671875,
+              0.0174560546875,
+              25.515625,
+              27.546875,
+              51.65625
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 666,
+            "triangles": 291,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -25.609375,
+          -28.671875,
+          0.0174560546875,
+          25.515625,
+          27.546875,
+          51.65625
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -25.453125,
+          -28.640625,
+          0.0174560546875,
+          25.375,
+          27.515625,
+          1.0
+        ]
+      },
+      "type": "STAT"
+    },
+    "PlayerHouse_Ruin_Rug01": {
+      "id": "0007350B",
+      "type": "STAT",
+      "model": "SetDressing\\PlayerHouse_Ruin\\PlayerHouse_Ruin_Rug01.nif",
+      "bounds": [
+        -39,
+        -25,
+        0,
+        39,
+        25,
+        1
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "DC97DE7E8F329D59D141FA001601F4373FAFB7945070340A2766848482CCDA16",
+        "blocks": {
+          "NiNode": 2,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "L2_PlayerHouse_Ruin_Rug01:63",
+            "localBounds": [
+              -39.125,
+              -25.5625,
+              -0.09637451171875,
+              39.125,
+              25.8125,
+              1.1806640625
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 42,
+            "triangles": 52,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -39.125,
+          -25.5625,
+          -0.09637451171875,
+          39.125,
+          25.8125,
+          1.1806640625
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -39.125,
+          -25.5625,
+          -0.09637451171875,
+          39.125,
+          25.8125,
+          -0.09637451171875
+        ]
+      }
+    },
+    "NpcChairHighTechOfficeChairDirtySit01": {
+      "id": "001A6E52",
+      "type": "FURN",
+      "model": "SetDressing\\HighTech\\HightechOfficeChair.nif",
+      "bounds": [
+        -17,
+        -23,
+        0,
+        18,
+        23,
+        67
+      ],
+      "passive": false,
+      "nif": {
+        "sha256": "D3E5017BBE33A4248AE3731DB1F4542EC063DA94DED8B0D688E509F4CC66DE88",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -0.045299530029296875,
+              -98.75984191894531,
+              -149.2287756204605
+            ],
+            "name": "Office_Chair_Clean:0",
+            "localBounds": [
+              -17.8125,
+              -23.296875,
+              0.5546875,
+              18.0,
+              23.296875,
+              67.3125
+            ],
+            "type": "BSTriShape",
+            "vertices": 1544,
+            "triangles": 1682,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -17.8125,
+          -23.296875,
+          0.5546875,
+          18.0,
+          23.296875,
+          67.3125
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -17.296875,
+          -12.0,
+          0.5546875,
+          17.5,
+          22.796875,
+          1.2578125
+        ]
+      }
+    },
+    "TreeMaplePreWar06Gr": {
+      "id": "00061643",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar06Green.nif",
+      "bounds": [
+        -235,
+        -178,
+        -10,
+        362,
+        262,
+        637
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "EA85361CD12B57FEA525822F9C29FA21347970EEA4F9D0D6732C0D366F995BCE",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1,
+          "NiAlphaProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              60502.875440597534,
+              -173417.46633911133,
+              130869.27225852013
+            ],
+            "name": "TreeMaplePreWar06Green:0 - L2_TreeMaplePreWar06Green:0",
+            "localBounds": [
+              -235.0,
+              -178.75,
+              -10.3828125,
+              362.0,
+              262.5,
+              637.5
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 767,
+            "triangles": 868,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -235.0,
+          -178.75,
+          -10.3828125,
+          362.0,
+          262.5,
+          637.5
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -8.9453125,
+          -10.1171875,
+          -10.3828125,
+          10.9765625,
+          7.13671875,
+          -10.15625
+        ]
+      },
+      "type": "STAT"
+    },
+    "FancyLadSnackCakes_PreWar": {
+      "id": "000E3778",
+      "type": "ALCH",
+      "model": "SetDressing\\FoodAndFoodWare\\FancyLadCakes_Clean.nif",
+      "bounds": [
+        -1,
+        -6,
+        0,
+        1,
+        6,
+        13
+      ],
+      "passive": false,
+      "nif": {
+        "sha256": "C3474738B93EB29986928000FEA34EAC2D02AF9FBA2158AEF06F3ED6120CA15B",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": false,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "FancyLadCakes:0",
+            "localBounds": [
+              -1.7890625,
+              -6.8671875,
+              -0.04510498046875,
+              1.7890625,
+              6.8671875,
+              13.328125
+            ],
+            "type": "BSTriShape",
+            "vertices": 156,
+            "triangles": 186,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -1.789061934142282,
+          -6.8671876385510275,
+          -0.04510427391510194,
+          1.789064196548305,
+          6.867188780692372,
+          13.328125702541076
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -1.7851556532158046,
+          -6.8671876385510275,
+          -0.04510427391510194,
+          1.7851556938537392,
+          6.867187679306344,
+          0.40991284222378016
+        ]
+      }
+    }
+  }
+}

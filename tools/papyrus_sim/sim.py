@@ -140,6 +140,7 @@ class Faction(Form):
 class Cell(Form):
     def __init__(self, editor_id):
         super().__init__(editor_id, "Cell")
+        self.world = None
 
 
 class ObjectReference:
@@ -152,6 +153,8 @@ class ObjectReference:
         self.pos = tuple(pos)
         self.disabled = False
         self.deleted = False
+        self.activation_blocked = False
+        self.locked = False
         self.inventory: Dict[Form, int] = {}
         # Nothing in the stand-in opens a conversation. A test that wants one
         # sets this, as a person would by talking to the actor.
@@ -544,6 +547,8 @@ class Session:
         where it was placed (see STRAY_AFTER)."""
         for c in self.plugin.get("Cells", []):
             cell = self._cell(c["EditorId"] or c["FormKey"])
+            if c.get("World"):
+                cell.world = self.forms.setdefault(c["World"],Form(c["World"],"WorldSpace"))
             for p in c["Placed"]:
                 base = self._target(p["Base"])
                 made = Actor(base, p["Position"]) if p["Kind"] == "PlacedNpc" else ObjectReference(base, p["Position"])
@@ -553,6 +558,7 @@ class Session:
                 made.heading = p["Rotation"][2]
                 made.editor_id = p["EditorId"]
                 made.disabled = p["InitiallyDisabled"]
+                made.locked = p.get("LockLevel") is not None
                 if p.get("StartsDead"):
                     # [assumed] The record's flag is the one the editor sets
                     # for "Starts Dead"; whether the game honours it on a
@@ -1753,6 +1759,10 @@ class Session:
             # on the person's alias had set its stage within the second.
             self.ref_event(ref, "OnActivate", [activator], self.activate_event_delay)
             return True
+        if ref.activation_blocked:
+            if not truthy(default_only):
+                self.ref_event(ref, "OnActivate", [activator], self.activate_event_delay)
+            return False
         if ref.base is not None and ref.base.kind == "Book":
             # [documented] OnRead: "received when the player activates a book
             # object in the world ... it is sent when the book UI opens a
@@ -1774,6 +1784,22 @@ class Session:
 
     def n_objectreference_delete(self, ref, context):
         ref.deleted = True
+
+    # [documented] exact SDK signatures; synthetic observations, no native proof.
+    def n_objectreference_blockactivation(self, ref, context, blocked=True, hide_text=False):
+        ref.activation_blocked = bool(blocked)
+
+    def n_objectreference_lock(self, ref, context, locked=True, as_owner=False):
+        ref.locked = bool(locked)
+
+    def n_objectreference_islocked(self, ref, context):
+        return ref.locked
+
+    def n_objectreference_setmotiontype(self, ref, context, motion, allow=True):
+        ref.motion_request = int(motion)  # request only; no Havok simulation
+
+    def n_objectreference_getworldspace(self, ref, context):
+        return getattr(ref.cell, 'world', None)
 
     def n_objectreference_isdisabled(self, ref, context):
         return ref.disabled
@@ -1814,6 +1840,10 @@ class Session:
         # Existing exact-reference _into_container bookkeeping supplies this
         # synthetic observation. No real inventory/save receipt is implied.
         return ref.container
+
+    def n_actor_istalking(self, actor, context):
+        # [assumed] Synthetic occupied-speaker state only, not native speech completion.
+        return bool(getattr(actor, "talking", False))
 
     def n_actor_isinscene(self, ref, context):
         # [SDK] Actor.psc:397 bool IsInScene(), native. No baseline stand-in
@@ -2043,7 +2073,7 @@ class Session:
             return
         kind = ref.base.kind if ref.base is not None else None
         self.ref_event(ref, "OnActivate", [self.player], self.activate_event_delay)
-        if kind in ("MiscItem", "Weapon", "Book"):
+        if kind in ("MiscItem", "Weapon", "Book") and not ref.activation_blocked:
             self._into_container(ref, self.player)
 
     def walk_to(self, editor_id: str):

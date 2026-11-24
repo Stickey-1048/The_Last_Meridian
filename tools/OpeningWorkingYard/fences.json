@@ -1,0 +1,392 @@
+{
+  "status": "READONLY PROPOSED, not emitted/native",
+  "baselineWorld": "FABEB6EB772F768408F696788C8AFADE49629768EE8F281CA0C53DB9783F3900",
+  "stockNewBase": "00118F79",
+  "selected": [
+    {
+      "name": "TLM_WS_YardFront0",
+      "originalId": "02000821",
+      "oldBase": "00125C67",
+      "newBase": "00118F79",
+      "oldPose": [
+        2472.0,
+        2432.0,
+        126.625,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "proposedPose": [
+        2408.0,
+        2432.0,
+        116.04443359375,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1,
+      "worldBounds": [
+        2407.8699951171875,
+        2421.0703125,
+        119.98583984375,
+        2536.125,
+        2437.96875,
+        284.04443359375
+      ],
+      "groundRange": [
+        120.48583984375,
+        128.0
+      ],
+      "maxFootEmbed": 8.01416015625,
+      "nearestOperative": "TLM_WS_ST_Keene",
+      "operativeDistance": 302.03125
+    },
+    {
+      "name": "TLM_WS_YardFront1",
+      "originalId": "02000823",
+      "oldBase": "00125C67",
+      "newBase": "00118F79",
+      "oldPose": [
+        2600.0,
+        2432.0,
+        126.875,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "proposedPose": [
+        2536.0,
+        2432.0,
+        117.41064453125,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1,
+      "worldBounds": [
+        2535.8699951171875,
+        2421.0703125,
+        121.35205078125,
+        2664.125,
+        2437.96875,
+        285.41064453125
+      ],
+      "groundRange": [
+        121.85205078125,
+        128.0
+      ],
+      "maxFootEmbed": 6.64794921875,
+      "nearestOperative": "TLM_WS_ST_Talbot",
+      "operativeDistance": 207.4108642322347
+    },
+    {
+      "name": "TLM_WS_YardLeft0",
+      "originalId": "02000833",
+      "oldBase": "00125C67",
+      "newBase": "00118F79",
+      "oldPose": [
+        2408.0,
+        2496.0,
+        128.0,
+        0.0,
+        0.0,
+        1.5707963705062866
+      ],
+      "proposedPose": [
+        2408.000002797529,
+        2560.0,
+        123.47265607062974,
+        0.0,
+        0.0,
+        1.5707963705062866
+      ],
+      "scale": 1,
+      "worldBounds": [
+        2397.070309697007,
+        2431.874999739098,
+        127.41406232062974,
+        2413.9687528032114,
+        2560.130005360564,
+        291.47265607062974
+      ],
+      "groundRange": [
+        127.91406232062974,
+        128.0
+      ],
+      "maxFootEmbed": 0.5859376793702609,
+      "nearestOperative": "TLM_WS_ST_Keene",
+      "operativeDistance": 208.79616939421368
+    },
+    {
+      "name": "TLM_WS_YardBack0",
+      "originalId": "02000822",
+      "oldBase": "00125C67",
+      "newBase": "00118F79",
+      "oldPose": [
+        2472.0,
+        3456.0,
+        128.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "proposedPose": [
+        2408.0,
+        3456.0,
+        123.55859375,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1,
+      "worldBounds": [
+        2407.8699951171875,
+        3445.0703125,
+        127.5,
+        2536.125,
+        3461.96875,
+        291.55859375
+      ],
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "maxFootEmbed": 0.5,
+      "nearestOperative": "TLM_WS_ST_Haskell",
+      "operativeDistance": 305.0703125
+    },
+    {
+      "name": "TLM_WS_YardBack1",
+      "originalId": "02000824",
+      "oldBase": "00125C67",
+      "newBase": "00118F79",
+      "oldPose": [
+        2600.0,
+        3456.0,
+        128.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "proposedPose": [
+        2536.0,
+        3456.0,
+        123.55859375,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1,
+      "worldBounds": [
+        2535.8699951171875,
+        3445.0703125,
+        127.5,
+        2664.125,
+        3461.96875,
+        291.55859375
+      ],
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "maxFootEmbed": 0.5,
+      "nearestOperative": "TLM_WS_ST_Haskell",
+      "operativeDistance": 305.4828183611432
+    },
+    {
+      "name": "TLM_WS_YardBack6",
+      "originalId": "0200082C",
+      "oldBase": "00125C67",
+      "newBase": "00118F79",
+      "oldPose": [
+        3240.0,
+        3456.0,
+        128.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "proposedPose": [
+        3176.0,
+        3456.0,
+        123.55859375,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1,
+      "worldBounds": [
+        3175.8699951171875,
+        3445.0703125,
+        127.5,
+        3304.125,
+        3461.96875,
+        291.55859375
+      ],
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "maxFootEmbed": 0.5,
+      "nearestOperative": "TLM_WS_ST_GW_ReliefSupply",
+      "operativeDistance": 202.03250146291637
+    },
+    {
+      "name": "TLM_WS_YardBack7",
+      "originalId": "0200082E",
+      "oldBase": "00125C67",
+      "newBase": "00118F79",
+      "oldPose": [
+        3368.0,
+        3456.0,
+        128.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "proposedPose": [
+        3304.0,
+        3456.0,
+        123.55859375,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1,
+      "worldBounds": [
+        3303.8699951171875,
+        3445.0703125,
+        127.5,
+        3432.125,
+        3461.96875,
+        291.55859375
+      ],
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "maxFootEmbed": 0.5,
+      "nearestOperative": "TLM_WS_ST_CaravanYard",
+      "operativeDistance": 146.16740811086328
+    }
+  ],
+  "disableOtherwise": [
+    {
+      "name": "TLM_WS_YardFront2",
+      "originalId": "02000825"
+    },
+    {
+      "name": "TLM_WS_YardBack2",
+      "originalId": "02000826"
+    },
+    {
+      "name": "TLM_WS_YardFront3",
+      "originalId": "02000827"
+    },
+    {
+      "name": "TLM_WS_YardBack3",
+      "originalId": "02000828"
+    },
+    {
+      "name": "TLM_WS_YardBack4",
+      "originalId": "02000829"
+    },
+    {
+      "name": "TLM_WS_YardBack5",
+      "originalId": "0200082A"
+    },
+    {
+      "name": "TLM_WS_YardFront6",
+      "originalId": "0200082B"
+    },
+    {
+      "name": "TLM_WS_YardFront7",
+      "originalId": "0200082D"
+    },
+    {
+      "name": "TLM_WS_YardFront8",
+      "originalId": "0200082F"
+    },
+    {
+      "name": "TLM_WS_YardBack8",
+      "originalId": "02000830"
+    },
+    {
+      "name": "TLM_WS_YardFront9",
+      "originalId": "02000831"
+    },
+    {
+      "name": "TLM_WS_YardBack9",
+      "originalId": "02000832"
+    },
+    {
+      "name": "TLM_WS_YardRight0",
+      "originalId": "02000834"
+    },
+    {
+      "name": "TLM_WS_YardLeft1",
+      "originalId": "02000835"
+    },
+    {
+      "name": "TLM_WS_YardRight1",
+      "originalId": "02000836"
+    },
+    {
+      "name": "TLM_WS_YardLeft2",
+      "originalId": "02000837"
+    },
+    {
+      "name": "TLM_WS_YardRight2",
+      "originalId": "02000838"
+    },
+    {
+      "name": "TLM_WS_YardLeft3",
+      "originalId": "02000839"
+    },
+    {
+      "name": "TLM_WS_YardRight3",
+      "originalId": "0200083A"
+    },
+    {
+      "name": "TLM_WS_YardLeft4",
+      "originalId": "0200083B"
+    },
+    {
+      "name": "TLM_WS_YardRight4",
+      "originalId": "0200083C"
+    },
+    {
+      "name": "TLM_WS_YardLeft5",
+      "originalId": "0200083D"
+    },
+    {
+      "name": "TLM_WS_YardRight5",
+      "originalId": "0200083E"
+    },
+    {
+      "name": "TLM_WS_YardLeft6",
+      "originalId": "0200083F"
+    },
+    {
+      "name": "TLM_WS_YardRight6",
+      "originalId": "02000840"
+    },
+    {
+      "name": "TLM_WS_YardLeft7",
+      "originalId": "02000841"
+    },
+    {
+      "name": "TLM_WS_YardRight7",
+      "originalId": "02000842"
+    }
+  ],
+  "unchangedGateCorridor": {
+    "x": [
+      2920,
+      3176
+    ],
+    "y": 2432,
+    "width": 256
+  },
+  "notes": "Finalread-onlyproposal:7roughplank/27disabled; Back6/7insteadRight6/7toleaveentiretradecoveropen; samegateway/pivotcompensation."
+}

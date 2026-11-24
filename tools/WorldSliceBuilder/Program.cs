@@ -7,6 +7,7 @@ using System.Text.Json;
 
 // Optional separate exterior prototype. Never edits the existing preview ESP,
 // a master record, installed files or a save. Output must be a workspace folder.
+if(args.Length==3&&args[0]=="--prologue-cell-guard-check")return GanttPrologue.CheckCellGuard(args[1],args[2]);
 if((args.Length==3||(args.Length==5&&args[3]=="--damage"))&&args[0]=="--story-clone-check")return StoryCloneCheck.Run(args[1],args[2],args.Length==5?args[4]:null);
 // FOUR_FLAGS_AUDIT_MODE_BEGIN
 if(args.Length==2&&args[0]=="--four-flags-approach-check"){
@@ -272,6 +273,7 @@ if(args.Length==4){
  if(fairSource.Quests.Any(q=>q.EditorID=="TLM_MQ03"))fairFloorAudit=WorldStory.AuditFourFlagsInterior(fairSource,master);
  // AFTER the previously last relief allocations: preserve every earlier ID.
  fourFlags=WorldStory.CompleteFourFlagsEntry(mod,world,fairSource);
+ WorldStory.CompleteBlackLedgerEntry(mod,world,fairSource);
  if(fourFlags!=null){
   var at=WorldStory.FourFlagsSites["Entry"];
   if(at.X<96||at.X>4000||at.Y<96||at.Y>4000||at.Z!=12)throw new InvalidDataException("Fair entry outside supported flat LAND");
@@ -280,17 +282,62 @@ if(args.Length==4){
  }
 }
 // FOUR_FLAGS_APPEND_END
+var opening=OpeningEnvironment.Apply(master,mod,world,cell,land);
+object? greenwaterRiver=null;if(args.Length==4){using var riverSource=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);greenwaterRiver=GreenwaterRiver.Apply(master,mod,world,riverSource);WorldStory.CompleteSheriffHelp(mod,world,cell,riverSource);}
+object? appalachianRidges=null;if(greenwaterRiver!=null)appalachianRidges=AppalachianRidges.Apply(master,mod,world);
+object? openingSceneDepth=null;if(appalachianRidges!=null)openingSceneDepth=OpeningSceneDepth.Apply(master,mod,cell);
+object? openingFinish=null;if(openingSceneDepth!=null)openingFinish=OpeningFinish.Apply(master,mod,world,cell,land);
+object? openingStructure=null;if(openingFinish!=null)openingStructure=OpeningMountainStructure.Apply(master,mod,world);
+object? openingWoodland=null;if(openingStructure!=null)openingWoodland=OpeningAuthoredWoodland.Apply(master,mod,world);
+object? continuousWoodland=null;if(openingWoodland!=null)continuousWoodland=OpeningContinuousWoodland.Apply(master,world);
+object? workingYard=null;if(continuousWoodland!=null)workingYard=OpeningWorkingYard.Apply(master,mod,world);
+object? woodlandDensity=null;if(workingYard!=null)woodlandDensity=OpeningWoodlandDensity.Apply(master,mod,world);
+// PRIVATE A/B: native010 kept this pivot at -180 above the -192 road.
+// The mesh-root interpretation is unresolved; accept only a native comparison.
+if(woodlandDensity!=null){
+ var brake=world.TopCell!.Persistent.OfType<PlacedObject>().Single(r=>r.FormKey.ID==0x903);
+ if(brake.EditorID!="TLM_WS_ST_BrakeShoes" || brake.Base.FormKey!=new FormKey(ModKey.FromNameAndExtension("TheLastMeridian.esp"),0x835)
+    || brake.Position!=new P3Float(850,1000,-180) || brake.Rotation!=new P3Float(0,0,0))throw new InvalidDataException("Brake-shoe A/B baseline differs");
+ brake.Position=new P3Float(850,1000,-191.95f);
+}
+if(woodlandDensity!=null)File.WriteAllText(Path.Combine(output,"woodland-density.json"),JsonSerializer.Serialize(woodlandDensity,new JsonSerializerOptions{WriteIndented=true}));
+if(workingYard!=null)File.WriteAllText(Path.Combine(output,"working-yard.json"),JsonSerializer.Serialize(workingYard,new JsonSerializerOptions{WriteIndented=true}));
+if(continuousWoodland!=null)File.WriteAllText(Path.Combine(output,"continuous-woodland.json"),JsonSerializer.Serialize(continuousWoodland,new JsonSerializerOptions{WriteIndented=true}));
+if(openingWoodland!=null)File.WriteAllText(Path.Combine(output,"authored-woodland.json"),JsonSerializer.Serialize(openingWoodland,new JsonSerializerOptions{WriteIndented=true}));
+object? prologue=null;if(woodlandDensity!=null){using var prologueSource=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);prologue=GanttPrologue.Add(master,mod,world,cell,prologueSource);}
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"gantt-prologue.json"),JsonSerializer.Serialize(prologue,new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null){using var voiceSource=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);File.WriteAllText(Path.Combine(output,"gantt-prologue-voice.json"),JsonSerializer.Serialize(GanttPrologueVoice.Add(mod,voiceSource),new JsonSerializerOptions{WriteIndented=true}));}
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"gantt-roof-backing.json"),JsonSerializer.Serialize(GanttRoofBacking.Add(master,mod),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"first-brake-inquiry.json"),JsonSerializer.Serialize(FirstBrakeInquiry.Add(mod),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"gantt-batch-voice.json"),JsonSerializer.Serialize(GanttBatchVoice.Add(mod),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-wreck-tableau.json"),JsonSerializer.Serialize(OpeningWreckTableau.Add(master,mod,cell),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-editorial.json"),JsonSerializer.Serialize(OpeningEditorial.Apply(mod),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-ridge-spill-finish.json"),JsonSerializer.Serialize(OpeningRidgeSpillFinish.Apply(mod,world),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null){using var roadVoiceSource=Fallout4Mod.CreateFromBinaryOverlay(args[3],Fallout4Release.Fallout4);File.WriteAllText(Path.Combine(output,"private-road-voices.json"),JsonSerializer.Serialize(PrivateRoadVoices.Add(mod,roadVoiceSource),new JsonSerializerOptions{WriteIndented=true}));}
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-wreck-derailment.json"),JsonSerializer.Serialize(OpeningWreckDerailment.Apply(mod,world),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-hill-forest-finish.json"),JsonSerializer.Serialize(OpeningHillForestFinish.Apply(master,mod,world),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-visible-slope-finish.json"),JsonSerializer.Serialize(OpeningVisibleSlopeFinish.Apply(master,world),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"dunmore-safe-choices.json"),JsonSerializer.Serialize(DunmoreSafeChoices.Apply(mod),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-native-shoulder.json"),JsonSerializer.Serialize(OpeningNativeShoulder.Apply(master,world),new JsonSerializerOptions{WriteIndented=true}));
+placements.Clear();foreach(var p in cell.Temporary.OfType<IPlacedObjectGetter>())placements.Add(new{id=p.EditorID,form=p.FormKey.ToString(),@base=p.Base.FormKey.ToString(),x=p.Position!.X,y=p.Position.Y,z=p.Position.Z,yaw=p.Rotation!.Z,initiallyDisabled=(p.MajorRecordFlagsRaw&0x800)!=0});
 mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(included.ToArray()).Write();
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"prologue-header-normalization.json"),JsonSerializer.Serialize(GanttPrologue.NormalizeNewArtifactHeader(plugin),new JsonSerializerOptions{WriteIndented=true}));
 using var read=Fallout4Mod.CreateFromBinaryOverlay(plugin,Fallout4Release.Fallout4);
 if(story!=null)WorldStory.Validate(read);
-var gotWorld=read.Worldspaces.Single();var gotCell=gotWorld.SubCells.Single().Items.Single().Items.Single();
+var gotWorld=read.Worldspaces.Single();var gotCell=gotWorld.SubCells.SelectMany(b=>b.Items).SelectMany(s=>s.Items).Single(c=>c.Grid?.Point==new P2Int(0,0));
 if(gotCell.Grid?.Point!=new P2Int(0,0)||gotCell.Landscape?.VertexHeightMap?.HeightMap.Width!=33||gotCell.Temporary.Count!=placements.Count)throw new InvalidDataException("World/cell/LAND/reference roundtrip failed");
 var heights=gotCell.Landscape!.VertexHeightMap!.HeightMap;
-if(heights.Height!=33||gotCell.Landscape.Layers.Count!=4||gotCell.Landscape.VertexNormals?.Width!=33)throw new InvalidDataException("Incomplete terrain grids/layers");
-for(int y=0;y<33;y++)for(int x=0;x<33;x++)if(heights[x,y]!=0)throw new InvalidDataException("Unexpected terrain height delta");
+if(heights.Height!=33||gotCell.Landscape.Layers.Count(l=>l is not IAlphaLayerGetter)!=4||gotCell.Landscape.Layers.Count(l=>l is IAlphaLayerGetter)!=(openingFinish!=null?12:8)||gotCell.Landscape.VertexNormals?.Width!=33)throw new InvalidDataException("Incomplete terrain grids/layers");
+for(int y=0;y<33;y++)for(int x=0;x<33;x++){if(continuousWoodland!=null){if(heights[x,y]!=((IReadOnlyArray2d<byte>)land.VertexHeightMap!.HeightMap)[x,y])throw new InvalidDataException("Continuous opening signed terrain roundtrip differs");}else{int before=x>0?OpeningEnvironment.Vertex(x-1,y):y>0?OpeningEnvironment.Vertex(0,y-1):0;if(unchecked((sbyte)heights[x,y])!=(OpeningEnvironment.Vertex(x,y)-before)/8)throw new InvalidDataException("Opening signed terrain roundtrip differs");}}
+File.WriteAllText(Path.Combine(output,"appalachian-ridges.json"),JsonSerializer.Serialize(appalachianRidges,new JsonSerializerOptions{WriteIndented=true}));
+File.WriteAllText(Path.Combine(output,"opening-scene-depth.json"),JsonSerializer.Serialize(openingSceneDepth,new JsonSerializerOptions{WriteIndented=true}));
+File.WriteAllText(Path.Combine(output,"opening-finish.json"),JsonSerializer.Serialize(openingFinish,new JsonSerializerOptions{WriteIndented=true}));
+File.WriteAllText(Path.Combine(output,"opening-structure.json"),JsonSerializer.Serialize(openingStructure,new JsonSerializerOptions{WriteIndented=true}));
+File.WriteAllText(Path.Combine(output,"greenwater-river.json"),JsonSerializer.Serialize(greenwaterRiver,new JsonSerializerOptions{WriteIndented=true}));
+File.WriteAllText(Path.Combine(output,"opening-environment.json"),JsonSerializer.Serialize(opening,new JsonSerializerOptions{WriteIndented=true}));
 if(read.Worldspaces.Any(w=>w.FormKey.ModKey!=mod.ModKey)||gotCell.FormKey.ModKey!=mod.ModKey)throw new InvalidDataException("Unexpected vanilla override");
-if(read.EnumerateMajorRecords().Any(r=>r.FormKey.ModKey!=mod.ModKey))throw new InvalidDataException("Unexpected override record");
-File.WriteAllText(Path.Combine(output,"world-slice.json"),JsonSerializer.Serialize(new{world=gotWorld.EditorID,worldForm=gotWorld.FormKey.ToString(),cell=gotCell.EditorID,cellForm=gotCell.FormKey.ToString(),entry="coc TLM_WS_Clearing (native entry pending)",terrain="new generated flat33x33LAND at height0",placementCount=placements.Count,storyReferenceCount=story==null?0:world.TopCell!.Persistent.Count,mainRoute=mainRoute.Select(p=>new{x=p.Item1,y=p.Item2}),bypassRoute=bypassRoute.Select(p=>new{x=p.Item1,y=p.Item2}),placements,nativeProof=story==null?"Shell: native acceptance recorded separately; no quest binding/navmesh":"Story candidate: native actor loading, alias binding, pickups, guides, peaceful choices, bypass and handoff UNVERIFIED; no navmesh/pursuit/combat proof"},new JsonSerializerOptions{WriteIndented=true}));
+if(read.EnumerateMajorRecords().Any(r=>r.FormKey.ModKey!=mod.ModKey&&!PrivateRoadVoices.IsExpectedCaptionOverride(r)))throw new InvalidDataException("Unexpected override record");
+File.WriteAllText(Path.Combine(output,"world-slice.json"),JsonSerializer.Serialize(new{world=gotWorld.EditorID,worldForm=gotWorld.FormKey.ToString(),cell=gotCell.EditorID,cellForm=gotCell.FormKey.ToString(),entry="coc TLM_WS_Clearing (native entry pending)",terrain="new shaped33x33LAND: wreckhollow to Mercybench and woodedridge",placementCount=placements.Count,storyReferenceCount=story==null?0:world.TopCell!.Persistent.Count,mainRoute=mainRoute.Select(p=>new{x=p.Item1,y=p.Item2}),bypassRoute=bypassRoute.Select(p=>new{x=p.Item1,y=p.Item2}),placements,nativeProof=story==null?"Shell: native acceptance recorded separately; no quest binding/navmesh":"Story candidate: native actor loading, alias binding, pickups, guides, peaceful choices, bypass and handoff UNVERIFIED; no navmesh/pursuit/combat proof"},new JsonSerializerOptions{WriteIndented=true}));
 if(story!=null)File.WriteAllText(Path.Combine(output,"world-story.json"),JsonSerializer.Serialize(new{sourcePlugin=Path.GetFileName(args[3]),sourceSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(args[3]))),masters=read.ModHeader.MasterReferences.Select(m=>m.Master.ToString()),wiring=story,runtimeRequirement="Reviewed 7f3 departure runtime plus this candidate's exterior Guide and WorldEntry scripts; ESP hash alone does not establish script version"},new JsonSerializerOptions{WriteIndented=true}));
 if(expansion!=null)File.WriteAllText(Path.Combine(output,"world-expansion.json"),JsonSerializer.Serialize(expansion,new JsonSerializerOptions{WriteIndented=true}));
 if(expansion!=null)File.WriteAllText(Path.Combine(output,"world-clearance.json"),JsonSerializer.Serialize(new{method="Actual transformed ObjectBounds AABBs, player-height0..128; sampled every1/100segment; not Havok/navmesh proof",routeRadius=96,standingRadius=128,protectedPoints,obstacles=routeObstacles.Select(p=>new{id=p.Id,minX=p.MinX,maxX=p.MaxX,minY=p.MinY,maxY=p.MaxY})},new JsonSerializerOptions{WriteIndented=true}));
@@ -312,3 +359,4 @@ if(fourFlags!=null)File.WriteAllText(Path.Combine(output,"four-flags-entry.json"
 // FOUR_FLAGS_REPORT_END
 Console.WriteLine($"Wrote {plugin}: NEW exterior world/cell + generated LAND, {placements.Count} shell references + {(story==null?0:29)} story references; binary readback passed. Native story acceptance pending.");
 return 0;
+

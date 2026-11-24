@@ -1,0 +1,57 @@
+{
+  "base067": "aef0d287637b08b4100775b2310c409995a4ebc3",
+  "source064": "413d9ad17eed439498a976c2bd0f7cec4011e934",
+  "selected064": [
+    {
+      "path": "tools/WorldSliceBuilder/OpeningNativeShoulder.cs",
+      "sha256": "9ABDA2E9DC495B97D03D24BC2898E16A2EA6210780D56B1BBD452B4EB52F6096"
+    },
+    {
+      "path": "tools/OpeningNativeShoulder/plan.json",
+      "sha256": "7395F28FE1B842E772F27564152EED06112893C6ACBCA6195C61B1CE7F484462"
+    },
+    {
+      "path": "tools/OpeningNativeShoulder/models.json",
+      "sha256": "6D2F4B94F159607929C5D082FC41CA8E8F4373784338D159D58D80C18E11E45B"
+    },
+    {
+      "path": "tools/OpeningNativeShoulder/.gitattributes",
+      "sha256": "7A0DCF4CF4EB96278B0F0B6882EEEBC232235FA0581A9CE8450860A395675F36"
+    },
+    {
+      "path": "tools/WorldSliceBuilder/Program.cs",
+      "sha256": "11E10E800D8B63EE956172ED4C0C97BF5AE769B48BF0A251684FDDA890AF6880"
+    },
+    {
+      "path": "tools/PluginBuilder/DunmoreWardrobe.cs",
+      "sha256": "0840F39558D8A6EE3034B4197F567C8C97733B1922FC7102331E0A5CF364F113"
+    },
+    {
+      "path": "tools/PluginBuilder/Builder.cs",
+      "sha256": "FD89E05117940EFB85FDF2CC4606D94401B3F46D4DBB41EC74BAC06D543052DB"
+    },
+    {
+      "path": "tools/PluginBuilder/formkeys.txt",
+      "sha256": "2FAE542ED3D9FB24A2FBA488CD7B19D9405BED339BA74A8BD5F477118E4E0C61"
+    }
+  ],
+  "fixtureDelta": "existing3 male +4 synthetic choices; distinct7th1C2691; directA36BE/A36BD/human13746/4SuitM; no production guards changed",
+  "legacyAccounting": {
+    "offered": {
+      "old": 7,
+      "new": 11
+    },
+    "male": {
+      "old": 3,
+      "new": 7
+    },
+    "defaultNpc": {
+      "old": 16,
+      "new": 20
+    },
+    "repeatCoverage": "old fourthmaleHaskell now4of7, actual8thmaleCutter01 repeatsfirstof7; nestedfemale/male/ambiguous/cycle retained"
+  },
+  "historicalDefault060ByteClaim": "067 receipt remains historical; superseded only by declared wardrobe source+synthetic donor graph here",
+  "noNativeArraysOrAssets": true,
+  "noHistoryMerge": true
+}

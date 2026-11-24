@@ -1,0 +1,1062 @@
+{
+  "scope": "Original explicit passive/furniture placement corrections; old prefab-panel IDs retained disabled",
+  "poses": [
+    {
+      "id": "TLM_RIDGE_p1_p0_G1B",
+      "localId": 2687,
+      "base": 398912,
+      "oldXYZ": [
+        4900.0,
+        2600.0,
+        512.639892578125
+      ],
+      "xyz": [
+        4900.0,
+        2600.0,
+        776.494317668125
+      ],
+      "embed": 21.09611970749347,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G1C",
+      "localId": 2688,
+      "base": 398915,
+      "oldXYZ": [
+        5080.0,
+        2720.0,
+        416.64984130859375
+      ],
+      "xyz": [
+        5080.0,
+        2720.0,
+        796.8253908725455
+      ],
+      "embed": 6.48030870408013,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G1D",
+      "localId": 2689,
+      "base": 398921,
+      "oldXYZ": [
+        4910.0,
+        2860.0,
+        506.0864562988281
+      ],
+      "xyz": [
+        4910.0,
+        2860.0,
+        774.4377142335311
+      ],
+      "embed": 11.370506666336269,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G1E",
+      "localId": 2690,
+      "base": 1742812,
+      "oldXYZ": [
+        5280.0,
+        2500.0,
+        325.99908447265625
+      ],
+      "xyz": [
+        5280.0,
+        2500.0,
+        774.3048749208552
+      ],
+      "embed": 5.978583286947583,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2A",
+      "localId": 2691,
+      "base": 398912,
+      "oldXYZ": [
+        5100.0,
+        2760.0,
+        398.1649169921875
+      ],
+      "xyz": [
+        5100.0,
+        2760.0,
+        798.3781254123896
+      ],
+      "embed": 10.267346001314309,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2B",
+      "localId": 2692,
+      "base": 398912,
+      "oldXYZ": [
+        4780.0,
+        2760.0,
+        542.6622314453125
+      ],
+      "xyz": [
+        4780.0,
+        2760.0,
+        733.0508722388071
+      ],
+      "embed": 26.94390899656753,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2C",
+      "localId": 2693,
+      "base": 398915,
+      "oldXYZ": [
+        4820.0,
+        2260.0,
+        612.222412109375
+      ],
+      "xyz": [
+        4820.0,
+        2260.0,
+        769.6169718342668
+      ],
+      "embed": 11.571215700193534,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2D",
+      "localId": 2694,
+      "base": 398921,
+      "oldXYZ": [
+        5320.0,
+        2680.0,
+        270.1819763183594
+      ],
+      "xyz": [
+        5320.0,
+        2680.0,
+        769.5590705992098
+      ],
+      "embed": 7.327477994218839,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2E",
+      "localId": 2695,
+      "base": 1742812,
+      "oldXYZ": [
+        4960.0,
+        3020.0,
+        531.2899169921875
+      ],
+      "xyz": [
+        4960.0,
+        3020.0,
+        796.7158658762264
+      ],
+      "embed": 5.881189726367893,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_StoneA",
+      "localId": 2696,
+      "base": 194459,
+      "oldXYZ": [
+        6272.0,
+        2048.0,
+        112.6949691772461
+      ],
+      "xyz": [
+        6272.0,
+        2048.0,
+        766.9499985873699
+      ],
+      "embed": 7.161989439475519,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_StoneB",
+      "localId": 2697,
+      "base": 194459,
+      "oldXYZ": [
+        6528.0,
+        1920.0,
+        110.71233367919922
+      ],
+      "xyz": [
+        6528.0,
+        1920.0,
+        822.6499971747398
+      ],
+      "embed": 4.0,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_CrestRock",
+      "localId": 2698,
+      "base": 641068,
+      "oldXYZ": [
+        6656.0,
+        2304.0,
+        180.80453491210938
+      ],
+      "xyz": [
+        6656.0,
+        2304.0,
+        810.6714321469094
+      ],
+      "embed": 4.0,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop0",
+      "localId": 2828,
+      "base": 194459,
+      "oldXYZ": [
+        4800.0,
+        3300.0,
+        753.5546875
+      ],
+      "xyz": [
+        4800.0,
+        3300.0,
+        893.921875
+      ],
+      "embed": 19.80078125,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop1",
+      "localId": 2829,
+      "base": 194459,
+      "oldXYZ": [
+        5200.0,
+        1800.0,
+        841.719482421875
+      ],
+      "xyz": [
+        5200.0,
+        1800.0,
+        912.851234467584
+      ],
+      "embed": 22.3195046375439,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G1A",
+      "localId": 2716,
+      "base": 398912,
+      "oldXYZ": [
+        2900.0,
+        5000.0,
+        901.551025390625
+      ],
+      "xyz": [
+        2900.0,
+        5000.0,
+        707.0515155086755
+      ],
+      "embed": 16.561447423648815,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G1B",
+      "localId": 2717,
+      "base": 398912,
+      "oldXYZ": [
+        3100.0,
+        5160.0,
+        1022.632568359375
+      ],
+      "xyz": [
+        3100.0,
+        5160.0,
+        698.4855721758811
+      ],
+      "embed": 14.196935485865424,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G1C",
+      "localId": 2718,
+      "base": 398915,
+      "oldXYZ": [
+        2910.0,
+        5260.0,
+        1071.0694580078125
+      ],
+      "xyz": [
+        2910.0,
+        5260.0,
+        662.800916731311
+      ],
+      "embed": 9.706890925046878,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G1D",
+      "localId": 2719,
+      "base": 398921,
+      "oldXYZ": [
+        3280.0,
+        4900.0,
+        843.0509033203125
+      ],
+      "xyz": [
+        3280.0,
+        4900.0,
+        748.2090344466224
+      ],
+      "embed": 14.190296905087052,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G1E",
+      "localId": 2720,
+      "base": 1742812,
+      "oldXYZ": [
+        2680.0,
+        5160.0,
+        1009.1166381835938
+      ],
+      "xyz": [
+        2680.0,
+        5160.0,
+        673.4091509965475
+      ],
+      "embed": 4.431328308449906,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G2A",
+      "localId": 2721,
+      "base": 398912,
+      "oldXYZ": [
+        2780.0,
+        5160.0,
+        1016.443603515625
+      ],
+      "xyz": [
+        2780.0,
+        5160.0,
+        674.0983730123617
+      ],
+      "embed": 14.672084322759474,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G2B",
+      "localId": 2722,
+      "base": 398912,
+      "oldXYZ": [
+        3260.0,
+        5080.0,
+        953.1245727539062
+      ],
+      "xyz": [
+        3260.0,
+        5080.0,
+        717.8797555995063
+      ],
+      "embed": 26.693460016361655,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G2C",
+      "localId": 2723,
+      "base": 398915,
+      "oldXYZ": [
+        3320.0,
+        5080.0,
+        952.6615600585938
+      ],
+      "xyz": [
+        3320.0,
+        5080.0,
+        733.3467281366795
+      ],
+      "embed": 10.124418126923956,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G2D",
+      "localId": 2724,
+      "base": 398921,
+      "oldXYZ": [
+        2960.0,
+        5420.0,
+        1031.855224609375
+      ],
+      "xyz": [
+        2960.0,
+        5420.0,
+        638.6376655847038
+      ],
+      "embed": 16.0158701454352,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_G2E",
+      "localId": 2725,
+      "base": 1742812,
+      "oldXYZ": [
+        3390.0,
+        4760.0,
+        725.0269775390625
+      ],
+      "xyz": [
+        3390.0,
+        4760.0,
+        748.3050197563423
+      ],
+      "embed": 5.429266607828822,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_StoneA",
+      "localId": 2726,
+      "base": 194459,
+      "oldXYZ": [
+        1664.0,
+        6400.0,
+        589.4017944335938
+      ],
+      "xyz": [
+        1664.0,
+        6400.0,
+        458.60334068021973
+      ],
+      "embed": 12.110775036154564,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_StoneB",
+      "localId": 2727,
+      "base": 194459,
+      "oldXYZ": [
+        3584.0,
+        5888.0,
+        472.6272277832031
+      ],
+      "xyz": [
+        3584.0,
+        5888.0,
+        820.5044471288406
+      ],
+      "embed": 16.77091880103262,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p0_p1_CrestRock",
+      "localId": 2728,
+      "base": 641068,
+      "oldXYZ": [
+        2048.0,
+        6400.0,
+        1368.765625
+      ],
+      "xyz": [
+        2048.0,
+        6400.0,
+        586.6970308215618
+      ],
+      "embed": 4.0,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop2",
+      "localId": 2830,
+      "base": 194459,
+      "oldXYZ": [
+        2100.0,
+        5100.0,
+        856.4190063476562
+      ],
+      "xyz": [
+        2100.0,
+        5100.0,
+        758.7761328065139
+      ],
+      "embed": 25.65200090996518,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop3",
+      "localId": 2831,
+      "base": 194459,
+      "oldXYZ": [
+        3550.0,
+        5350.0,
+        959.7244262695312
+      ],
+      "xyz": [
+        3550.0,
+        5350.0,
+        838.1605412840177
+      ],
+      "embed": 17.971344291881792,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1A",
+      "localId": 2731,
+      "base": 398912,
+      "oldXYZ": [
+        6656.0,
+        5664.0,
+        1989.8778076171875
+      ],
+      "xyz": [
+        6656.0,
+        5664.0,
+        1009.6850486989472
+      ],
+      "embed": 25.24310016145364,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1B",
+      "localId": 2732,
+      "base": 398912,
+      "oldXYZ": [
+        6664.0,
+        5760.0,
+        1983.7762451171875
+      ],
+      "xyz": [
+        6664.0,
+        5760.0,
+        978.6507857787509
+      ],
+      "embed": 40.886822390912926,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1C",
+      "localId": 2733,
+      "base": 398915,
+      "oldXYZ": [
+        6410.0,
+        5860.0,
+        1696.2215576171875
+      ],
+      "xyz": [
+        6410.0,
+        5860.0,
+        914.867788106079
+      ],
+      "embed": 14.85251378639407,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1D",
+      "localId": 2734,
+      "base": 398921,
+      "oldXYZ": [
+        6780.0,
+        5500.0,
+        2047.1724853515625
+      ],
+      "xyz": [
+        6780.0,
+        5500.0,
+        1041.9262075903935
+      ],
+      "embed": 6.539383402541262,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1E",
+      "localId": 2735,
+      "base": 1742812,
+      "oldXYZ": [
+        6180.0,
+        5760.0,
+        1377.6375732421875
+      ],
+      "xyz": [
+        6180.0,
+        5760.0,
+        942.0446966533211
+      ],
+      "embed": 4.0881772581868745,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2A",
+      "localId": 2736,
+      "base": 398912,
+      "oldXYZ": [
+        6536.0,
+        5760.0,
+        1864.514404296875
+      ],
+      "xyz": [
+        6536.0,
+        5760.0,
+        956.1557609493975
+      ],
+      "embed": 33.49123362931368,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2B",
+      "localId": 2737,
+      "base": 398912,
+      "oldXYZ": [
+        6760.0,
+        5680.0,
+        2050.53759765625
+      ],
+      "xyz": [
+        6760.0,
+        5680.0,
+        1017.6779783807666
+      ],
+      "embed": 25.585739576710807,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2C",
+      "localId": 2738,
+      "base": 398915,
+      "oldXYZ": [
+        6820.0,
+        5680.0,
+        2080.35888671875
+      ],
+      "xyz": [
+        6820.0,
+        5680.0,
+        1027.042999274796
+      ],
+      "embed": 9.572627077810239,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2D",
+      "localId": 2739,
+      "base": 398921,
+      "oldXYZ": [
+        6460.0,
+        6020.0,
+        1672.9915771484375
+      ],
+      "xyz": [
+        6460.0,
+        6020.0,
+        879.3093995421575
+      ],
+      "embed": 16.066230290056865,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2E",
+      "localId": 2740,
+      "base": 1742812,
+      "oldXYZ": [
+        6890.0,
+        5360.0,
+        2006.7762451171875
+      ],
+      "xyz": [
+        6890.0,
+        5360.0,
+        1039.5078313726349
+      ],
+      "embed": 6.162567488821651,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneA",
+      "localId": 2741,
+      "base": 194459,
+      "oldXYZ": [
+        5760.0,
+        6016.0,
+        787.1378784179688
+      ],
+      "xyz": [
+        5760.0,
+        6016.0,
+        904.4567085312275
+      ],
+      "embed": 29.02566783377904,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneB",
+      "localId": 2742,
+      "base": 194459,
+      "oldXYZ": [
+        6976.0,
+        5824.0,
+        2042.6710205078125
+      ],
+      "xyz": [
+        6976.0,
+        5824.0,
+        1102.6440241860028
+      ],
+      "embed": 29.403786821125777,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_CrestRock",
+      "localId": 2743,
+      "base": 641068,
+      "oldXYZ": [
+        6016.0,
+        6528.0,
+        606.788330078125
+      ],
+      "xyz": [
+        6016.0,
+        6528.0,
+        766.9021012519494
+      ],
+      "embed": 4.0,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop4",
+      "localId": 2832,
+      "base": 194459,
+      "oldXYZ": [
+        6762.0,
+        6100.0,
+        1868.65771484375
+      ],
+      "xyz": [
+        6762.0,
+        6100.0,
+        1009.5697386438832
+      ],
+      "embed": 17.94873352148454,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop5",
+      "localId": 2833,
+      "base": 194459,
+      "oldXYZ": [
+        7000.0,
+        5600.0,
+        2171.341796875
+      ],
+      "xyz": [
+        7000.0,
+        5600.0,
+        1153.5176743868083
+      ],
+      "embed": 25.84746622942498,
+      "kind": "passive-grounding"
+    },
+    {
+      "id": "TLM_WS_Bed",
+      "localId": 2079,
+      "base": 2345412,
+      "oldXYZ": [
+        2832.0,
+        2984.0,
+        144.0
+      ],
+      "xyz": [
+        2780,
+        3300,
+        144.9455352981227
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_WS_Couch",
+      "localId": 2080,
+      "base": 1731437,
+      "oldXYZ": [
+        3232.0,
+        2984.0,
+        137.0
+      ],
+      "xyz": [
+        3060,
+        3280,
+        136.6558544299348
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_OPEN_CabinDesk",
+      "localId": 2450,
+      "base": 1732202,
+      "oldXYZ": [
+        2820.0,
+        2780.0,
+        143.98403930664062
+      ],
+      "xyz": [
+        2790,
+        2990,
+        145.87683249125308
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_OPEN_CabinLamp",
+      "localId": 2451,
+      "base": 583578,
+      "oldXYZ": [
+        2820.0,
+        2780.0,
+        199.9942169189453
+      ],
+      "xyz": [
+        2790,
+        2990,
+        201.88701010355777
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_OPEN_CabinLocker",
+      "localId": 2452,
+      "base": 1174357,
+      "oldXYZ": [
+        2720.0,
+        2960.0,
+        144.0
+      ],
+      "xyz": [
+        2720,
+        3180,
+        143.61372323490997
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_FINISH_DeskChair",
+      "localId": 2806,
+      "base": 1732178,
+      "oldXYZ": [
+        2840.0,
+        2850.0,
+        143.4453125
+      ],
+      "xyz": [
+        2790,
+        3060,
+        144.24904844805278
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_FINISH_PantryShelf",
+      "localId": 2808,
+      "base": 2338326,
+      "oldXYZ": [
+        3048.0,
+        3180.0,
+        220.0
+      ],
+      "xyz": [
+        3048.0,
+        3420.0,
+        224.0
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_FINISH_PantryWaterA",
+      "localId": 2809,
+      "base": 222912,
+      "oldXYZ": [
+        3020.0,
+        3168.0,
+        221.0
+      ],
+      "xyz": [
+        3020.0,
+        3408.0,
+        225.0
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_FINISH_PantryWaterB",
+      "localId": 2810,
+      "base": 222912,
+      "oldXYZ": [
+        3040.0,
+        3168.0,
+        221.0
+      ],
+      "xyz": [
+        3040.0,
+        3408.0,
+        225.0
+      ],
+      "kind": "cabin-furniture"
+    },
+    {
+      "id": "TLM_FINISH_PantryFood",
+      "localId": 2811,
+      "base": 931704,
+      "oldXYZ": [
+        3080.0,
+        3168.0,
+        221.04510498046875
+      ],
+      "xyz": [
+        3080.0,
+        3408.0,
+        225.04510498046875
+      ],
+      "kind": "cabin-furniture"
+    }
+  ],
+  "disabled": [
+    {
+      "id": "TLM_WS_CabinFloor00",
+      "localId": 2058,
+      "base": 1855516
+    },
+    {
+      "id": "TLM_WS_CabinRoof00",
+      "localId": 2059,
+      "base": 166831
+    },
+    {
+      "id": "TLM_WS_CabinFloor01",
+      "localId": 2060,
+      "base": 1855516
+    },
+    {
+      "id": "TLM_WS_CabinRoof01",
+      "localId": 2061,
+      "base": 166831
+    },
+    {
+      "id": "TLM_WS_CabinFloor10",
+      "localId": 2062,
+      "base": 1855516
+    },
+    {
+      "id": "TLM_WS_CabinRoof10",
+      "localId": 2063,
+      "base": 166831
+    },
+    {
+      "id": "TLM_WS_CabinFloor11",
+      "localId": 2064,
+      "base": 1855516
+    },
+    {
+      "id": "TLM_WS_CabinRoof11",
+      "localId": 2065,
+      "base": 166831
+    },
+    {
+      "id": "TLM_WS_CabinFloor20",
+      "localId": 2066,
+      "base": 1855516
+    },
+    {
+      "id": "TLM_WS_CabinRoof20",
+      "localId": 2067,
+      "base": 166831
+    },
+    {
+      "id": "TLM_WS_CabinFloor21",
+      "localId": 2068,
+      "base": 1855516
+    },
+    {
+      "id": "TLM_WS_CabinRoof21",
+      "localId": 2069,
+      "base": 166831
+    },
+    {
+      "id": "TLM_WS_CabinBackWall0",
+      "localId": 2070,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinFrontWall0",
+      "localId": 2071,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinBackWall1",
+      "localId": 2072,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinBackWall2",
+      "localId": 2073,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinFrontWall2",
+      "localId": 2074,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinLeftWall0",
+      "localId": 2075,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinRightWall0",
+      "localId": 2076,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinLeftWall1",
+      "localId": 2077,
+      "base": 207641
+    },
+    {
+      "id": "TLM_WS_CabinRightWall1",
+      "localId": 2078,
+      "base": 207641
+    },
+    {
+      "id": "TLM_OPEN_CabinFoundation2792_2800",
+      "localId": 2444,
+      "base": 1048668
+    },
+    {
+      "id": "TLM_OPEN_CabinFoundation2792_3056",
+      "localId": 2445,
+      "base": 1048668
+    },
+    {
+      "id": "TLM_OPEN_CabinFoundation3048_2800",
+      "localId": 2446,
+      "base": 1048668
+    },
+    {
+      "id": "TLM_OPEN_CabinFoundation3048_3056",
+      "localId": 2447,
+      "base": 1048668
+    },
+    {
+      "id": "TLM_OPEN_CabinFoundation3304_2800",
+      "localId": 2448,
+      "base": 1048668
+    },
+    {
+      "id": "TLM_OPEN_CabinFoundation3304_3056",
+      "localId": 2449,
+      "base": 1048668
+    }
+  ],
+  "cabin": {
+    "id": "TLM_WOODLAND_SheriffCabin",
+    "base": 1695208,
+    "model": "Architecture\\Unique\\Cabins\\Cabin01NoFence.nif",
+    "xyz": [
+      2944,
+      3050,
+      148
+    ],
+    "yaw": -1.5707963267948966,
+    "scale": 1
+  }
+}

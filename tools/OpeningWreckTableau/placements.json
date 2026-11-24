@@ -1,0 +1,252 @@
+{
+  "baselineSha256": "B504DC2DF636F282FDC7DB605605A51BA74493C25B19076E7295362C1290792F",
+  "scope": "Seven passive cargo/timber refs only; no smoke, terrain, actor, quest, voice or oldref changes",
+  "placements": [
+    {
+      "id": "TLM_WRECK_LeftTallCrate",
+      "asset": "WoodCrate01",
+      "donorId": "000211F5",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate01.nif",
+      "xyz": [
+        560,
+        1550,
+        -134.19337108565443
+      ],
+      "yaw": 0.15,
+      "scale": 1,
+      "renderBounds": [
+        530.3935192214652,
+        1517.8370719009058,
+        -134.17591503096693,
+        589.3456655909456,
+        1581.0645704613355,
+        -82.53712108565443
+      ],
+      "footing": {
+        "groundMin": -133.67591503096693,
+        "groundMax": -126.86481699380661,
+        "criticalPoints": 8,
+        "baseEmbed": 0.5,
+        "maximumBasePlaneEmbed": 7.3110980371603205,
+        "limit": 10,
+        "surface": "actual decoded coreLAND803; both triangle orientations over full-render enclosingXY"
+      },
+      "clearance": {
+        "minimumOperative": 443.5012249154961,
+        "nearestOperative": "TLM_WS_ST_Journal",
+        "minimumRoad": 575.616706009046
+      }
+    },
+    {
+      "id": "TLM_WRECK_LeftLowCrate",
+      "asset": "WoodCrate02",
+      "donorId": "000211F6",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate02.nif",
+      "xyz": [
+        650,
+        1570,
+        -131.95608260303595
+      ],
+      "yaw": -0.2,
+      "scale": 1,
+      "renderBounds": [
+        617.6273249474527,
+        1529.0878309792308,
+        -131.95608451038458,
+        682.3167993032612,
+        1611.1878127457871,
+        -93.04983260303595
+      ],
+      "footing": {
+        "groundMin": -131.45608451038458,
+        "groundMax": -127.56798943620193,
+        "criticalPoints": 13,
+        "baseEmbed": 0.5,
+        "maximumBasePlaneEmbed": 4.388095074182658,
+        "limit": 10,
+        "surface": "actual decoded coreLAND803; both triangle orientations over full-render enclosingXY"
+      },
+      "clearance": {
+        "minimumOperative": 449.08783097923083,
+        "nearestOperative": "TLM_WS_ST_Journal",
+        "minimumRoad": 533.4619499107997
+      }
+    },
+    {
+      "id": "TLM_WRECK_LeftBarrel",
+      "asset": "WoodBarrel01",
+      "donorId": "000211F4",
+      "model": "SetDressing\\ConcMuseum\\WoodBarrel01.nif",
+      "xyz": [
+        745,
+        1550,
+        -136.12488998642937
+      ],
+      "yaw": 0.1,
+      "scale": 1,
+      "renderBounds": [
+        715.1627642233519,
+        1520.7502200271413,
+        -136.12488998642937,
+        774.8341159823779,
+        1579.2186860926938,
+        -69.93738998642937
+      ],
+      "footing": {
+        "groundMin": -135.62488998642937,
+        "groundMax": -128.0,
+        "criticalPoints": 13,
+        "baseEmbed": 0.5,
+        "maximumBasePlaneEmbed": 8.124889986429366,
+        "limit": 10,
+        "surface": "actual decoded coreLAND803; both triangle orientations over full-render enclosingXY"
+      },
+      "clearance": {
+        "minimumOperative": 432.4182691036657,
+        "nearestOperative": "TLM_WS_ST_DrawBar",
+        "minimumRoad": 475.2530042473356
+      }
+    },
+    {
+      "id": "TLM_WRECK_ForegroundBrokenTimbers",
+      "asset": "DebrisWoodPileSm01",
+      "donorId": "0001D908",
+      "model": "SetDressing\\Rubble\\DebrisWoodPileSm01.nif",
+      "xyz": [
+        390,
+        1050,
+        -192.1416015625
+      ],
+      "yaw": 0.1,
+      "scale": 1,
+      "renderBounds": [
+        290.65430361680524,
+        945.8427608429125,
+        -192.5,
+        489.34569638319476,
+        1154.1572391570876,
+        -187.9189453125
+      ],
+      "footing": {
+        "groundMin": -192.0,
+        "groundMax": -190.65172552682026,
+        "criticalPoints": 24,
+        "baseEmbed": 0.5,
+        "maximumBasePlaneEmbed": 1.8482744731797425,
+        "limit": 3,
+        "surface": "actual decoded coreLAND803; both triangle orientations over full-render enclosingXY"
+      },
+      "clearance": {
+        "minimumOperative": 160.65430361680524,
+        "nearestOperative": "TLM_WS_ST_Revolver",
+        "minimumRoad": 183.16938294703866
+      }
+    },
+    {
+      "id": "TLM_WRECK_RightTallCrate",
+      "asset": "WoodCrate01",
+      "donorId": "000211F5",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate01.nif",
+      "xyz": [
+        1390,
+        1560,
+        -129.28900593455597
+      ],
+      "yaw": 0.4,
+      "scale": 1,
+      "renderBounds": [
+        1355.2468495733265,
+        1523.6552019221042,
+        -129.27154987986847,
+        1424.2287053233883,
+        1595.345112429234,
+        -77.63275593455597
+      ],
+      "footing": {
+        "groundMin": -128.77154987986847,
+        "groundMax": -127.22845012013151,
+        "criticalPoints": 13,
+        "baseEmbed": 0.5,
+        "maximumBasePlaneEmbed": 2.043099759736961,
+        "limit": 10,
+        "surface": "actual decoded coreLAND803; both triangle orientations over full-render enclosingXY"
+      },
+      "clearance": {
+        "minimumOperative": 607.7461502405336,
+        "nearestOperative": "TLM_WS_ST_DrawBar",
+        "minimumRoad": 117.3166926861305
+      }
+    },
+    {
+      "id": "TLM_WRECK_RightLowCrate",
+      "asset": "WoodCrate02",
+      "donorId": "000211F6",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate02.nif",
+      "xyz": [
+        1470,
+        1620,
+        -128.49999809265137
+      ],
+      "yaw": -0.15,
+      "scale": 1,
+      "renderBounds": [
+        1439.2186781269359,
+        1580.028045201607,
+        -128.5,
+        1500.739292398306,
+        1660.2500466640624,
+        -89.59374809265137
+      ],
+      "footing": {
+        "groundMin": -128.0,
+        "groundMax": -128.0,
+        "criticalPoints": 8,
+        "baseEmbed": 0.5,
+        "maximumBasePlaneEmbed": 0.5,
+        "limit": 10,
+        "surface": "actual decoded coreLAND803; both triangle orientations over full-render enclosingXY"
+      },
+      "clearance": {
+        "minimumOperative": 707.8126676984987,
+        "nearestOperative": "TLM_WS_ST_DrawBar",
+        "minimumRoad": 121.75552732986034
+      }
+    },
+    {
+      "id": "TLM_WRECK_EndBrokenTimbers",
+      "asset": "DebrisWoodPileSm01",
+      "donorId": "0001D908",
+      "model": "SetDressing\\Rubble\\DebrisWoodPileSm01.nif",
+      "xyz": [
+        1430,
+        1780,
+        -128.1416015625
+      ],
+      "yaw": 0.04,
+      "scale": 1,
+      "renderBounds": [
+        1335.99821029225,
+        1680.8424523902004,
+        -128.5,
+        1524.00178970775,
+        1879.1575476097996,
+        -123.9189453125
+      ],
+      "footing": {
+        "groundMin": -128.0,
+        "groundMax": -128.0,
+        "criticalPoints": 21,
+        "baseEmbed": 0.5,
+        "maximumBasePlaneEmbed": 0.5,
+        "limit": 3,
+        "surface": "actual decoded coreLAND803; both triangle orientations over full-render enclosingXY"
+      },
+      "clearance": {
+        "minimumOperative": 712.2749333109078,
+        "nearestOperative": "TLM_WS_ST_DrawBar",
+        "minimumRoad": 192.7140364799396
+      }
+    }
+  ],
+  "limits": "Full-render and base-plane contact proxies; native Havok/access/visual judgment pending. Debris may contact existing wreck rubble/hull edge intentionally, not certified collision mesh union."
+}

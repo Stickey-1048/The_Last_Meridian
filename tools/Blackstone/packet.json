@@ -1,0 +1,639 @@
+{
+  "format": "iris-blackstone-act1-3",
+  "task": "BLACKSTONE-ACT1-003",
+  "date": "2026-11-21",
+  "status": "original writing for independent review and engineering; not game runtime data",
+  "quest": "TLM_MQ05",
+  "title": "The Fifth Rider",
+  "source_basis": "f491eeb4e670d306530446b60f82785950dbb747 plus reviewed STORY-DEPTH-002",
+  "common_guards": [
+    "actual original eligible actor/object",
+    "living enabled loaded local speaker and player",
+    "no combat or occupied interaction",
+    "revalidate state and identity after menus",
+    "no effects on cancel or silence"
+  ],
+  "mechanical_contract": "Requires/receipts/actions are semantic writing requirements, not existing APIs. Map to one real quest authority, actual bindings, a compiled script and observed effects. Do not force stages to manufacture evidence.",
+  "entry_points": [
+    "mara_first",
+    "mara_revisit",
+    "junction_route_notice",
+    "read_freight_page",
+    "read_rider_index",
+    "read_mara_note",
+    "inspect_service_route",
+    "boundary_panel"
+  ],
+  "documents": [
+    {
+      "id": "blackstone_junction_route",
+      "title": "Blackstone Night Freight: Route Sheet",
+      "location": "Original sheet at Iron Junction's freight desk; ordinary read interaction",
+      "text": "BLACKSTONE NIGHT FREIGHT\n\nBeyond the Junction, take the upper service line to the Blackstone platform. Goods are received through the station service room. Lower freight is entered separately.\n\nReference account: 4117.\n\nReturn traffic: Iron Junction. Do not enter the lower line on a goods waybill.",
+      "knowledge_receipt": "actual original page read -> MQ05 stage20; route only, not Rider identity or family knowledge"
+    },
+    {
+      "id": "blackstone_freight_page",
+      "title": "Blackstone Receiving Register: 4117",
+      "location": "Original register on the service-room desk",
+      "text": "BLACKSTONE STATION\nUPPER / LOWER FREIGHT\n\n4117 \u00e2\u20ac\u201d OUTWARD\nSealed consignments to S. Vane, by the night freight.\nOrigin: lower service stores.\nContents entered as dry goods.\n\nThe upper receiving clerk certifies receipt and weight, not contents.\nLower authority and sender are not entered on this page.\n\nService access: see the route diagram beside this register.",
+      "knowledge_receipt": "actual original page read -> MQ05 stage40; corroborates route, not silver payload personally inspected or final payer identity"
+    },
+    {
+      "id": "blackstone_rider_index",
+      "title": "Meridian Field Service: Rider Index",
+      "location": "Separate marked section of the same original register; read acknowledged separately",
+      "text": "MERIDIAN FIELD SERVICE\nRIDER INDEX \u00e2\u20ac\u201d 2316\n\nMara Vale\nCassian Voss\nEdda Flint\nLucien Grey\nFifth Rider \u00e2\u20ac\u201d personal entry held separately\n\nUpper freight / lower service access recorded for the field team.\nA bearer pass permits service entry. It is not proof of identity.\n\nThis index records an association. It does not certify the conduct of any Rider.",
+      "knowledge_receipt": "actual original index read -> MQ05 stage45; no player name, portrait, biography, loyalty or family truth attached"
+    },
+    {
+      "id": "blackstone_route_diagram",
+      "title": "Lower Service Entrance",
+      "location": "Original posted diagram immediately beside actual service door",
+      "text": "LOWER FREIGHT APPROACH\n\nUse the service pass at the marked door.\nIf the pass reader is unavailable, use the local mechanical release beside it.\n\nBeyond the door: freight vestibule and return access to the upper platform.\nThe inhabited levels are farther below.\n\nClose the service door after passage. Do not obstruct the upper return route.",
+      "knowledge_receipt": "actual diagram inspected -> stage60; no claim door works or player has arrived"
+    },
+    {
+      "id": "blackstone_mara_note",
+      "title": "Mara's Field Note",
+      "location": "Original folded note left with the register, readable whether Mara is available or not",
+      "text": "The complete register stays together. My name stays in it.\n\nI knew the person entered as Fifth Rider. I have reason to believe that Rider's family came from the place below, called The Deep. That is a lead, not a family tree. The records there may establish what I cannot.\n\nThe Rider's recent field work and a family's earlier history are different questions. Do not let anyone answer both with one page.\n\nMara Vale",
+      "knowledge_receipt": "actual note read -> separate note receipt56; it does NOT identify this player, set spoken receipt50 or turn the family statement into a personal verified fact"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "junction_route_notice",
+      "speaker": null,
+      "requires": [
+        "actual Chapter4 Blackstone source learned",
+        "original Junction route sheet just read",
+        "player at actual Junction travel control"
+      ],
+      "text": "The route sheet names Blackstone's upper freight platform. Go there to trace the consignments sent to Vane. Your unfinished roads and relief work remain open.",
+      "choices": [
+        {
+          "label": "Travel to Blackstone's upper platform.",
+          "action_request": "confirm bounded travel; verify actual upper arrival before stage30",
+          "close": true
+        },
+        {
+          "label": "Stay at Iron Junction.",
+          "close": true
+        }
+      ],
+      "next_objective": "Travel to Blackstone; after verified arrival, find the service room beside the station sign."
+    },
+    {
+      "id": "mara_first",
+      "speaker": "mara",
+      "requires": [
+        "MQ05 actually reached Blackstone",
+        "original Mara eligible at service desk",
+        "first encounter not already acknowledged"
+      ],
+      "text": "Good. Someone with both hands free. Lamp's by the door. Or read in the doorway if you don't fancy helping a stranger. Either way, read before you decide whether to believe me.",
+      "choices": [
+        {
+          "label": "What am I looking for?",
+          "then": "mara_register"
+        },
+        {
+          "label": "Who are you?",
+          "then": "mara_name"
+        },
+        {
+          "label": "I'm not getting involved.",
+          "then": "mara_decline"
+        }
+      ],
+      "receipt_request": "only encounter actually acknowledged; no identity, trust or task completion",
+      "next_objective": "Read the Blackstone freight register on the service-room desk. Optional: switch on the desk lamp."
+    },
+    {
+      "id": "mara_name",
+      "speaker": "mara",
+      "requires": [
+        "direct link from eligible first encounter"
+      ],
+      "text": "Mara Vale. That's the easy question. The book answers a few harder ones, including why you shouldn't take my word for things.",
+      "choices": [
+        {
+          "label": "Show me.",
+          "then": "mara_register"
+        },
+        {
+          "label": "I'll read it myself.",
+          "close": true
+        }
+      ],
+      "receipt_request": "name heard only",
+      "next_objective": "Read the original freight register, then its Rider index."
+    },
+    {
+      "id": "mara_register",
+      "speaker": "mara",
+      "requires": [
+        "direct eligible link",
+        "original register actually present and accessible"
+      ],
+      "text": "Freight page first. Four one one seven, same account as Vane. Then the service index. I'm keeping them together. Tear out the page you dislike and you can make a clean story of almost anything.",
+      "choices": [
+        {
+          "label": "Including your story?",
+          "then": "mara_own_name"
+        },
+        {
+          "label": "I'll read both.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none; spoken directions do not replace reading",
+      "next_objective": "Read page4117 and the marked Rider index."
+    },
+    {
+      "id": "mara_own_name",
+      "speaker": "mara",
+      "requires": [
+        "direct eligible link from register direction",
+        "original index accessible"
+      ],
+      "text": "Mine's in the index. It stays there. If I want you to believe what I found, I don't get to tidy away where I stood when I found it.",
+      "choices": [
+        {
+          "label": "That's a start.",
+          "close": true
+        },
+        {
+          "label": "It doesn't make you innocent.",
+          "then": "mara_not_innocent"
+        }
+      ],
+      "receipt_request": "none; no implied specific crime or acquittal",
+      "next_objective": "Read the documents before deciding what Mara's part means."
+    },
+    {
+      "id": "mara_not_innocent",
+      "speaker": "mara",
+      "requires": [
+        "direct eligible link"
+      ],
+      "text": "No. Keep asking that. Preferably after you've looked at the page, so at least one of us is arguing from something.",
+      "choices": [
+        {
+          "label": "I'll look.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none",
+      "next_objective": "Read the original register and index."
+    },
+    {
+      "id": "mara_decline",
+      "speaker": "mara",
+      "requires": [
+        "player explicitly declines current encounter",
+        "original Mara eligible"
+      ],
+      "text": "All right. Upper platform takes you back. The book stays on the desk. If you change your mind, start with that. You don't owe me a yes because I asked first.",
+      "choices": [
+        {
+          "label": "I'm leaving for now.",
+          "close": true
+        },
+        {
+          "label": "I can at least read it.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none; no hostility, failed quest, destroyed record or timer",
+      "next_objective": "Read the register or use the marked return to Iron Junction."
+    },
+    {
+      "id": "mara_revisit",
+      "speaker": "mara",
+      "requires": [
+        "actual prior encounter acknowledged",
+        "original Mara still eligible",
+        "MQ05 upper scene unresolved"
+      ],
+      "text": "Still here. So's the book. Have you read the service index, or are we still deciding whether to dislike each other?",
+      "choices": [
+        {
+          "label": "Tell me what to read.",
+          "then": "mara_register"
+        },
+        {
+          "label": "I read the index. Who was the Fifth Rider?",
+          "requires": [
+            "actual original index read"
+          ],
+          "then": "mara_fifth"
+        },
+        {
+          "label": "Not now.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none",
+      "next_objective": "Actual current unread document or service-route objective."
+    },
+    {
+      "id": "read_freight_page",
+      "speaker": null,
+      "requires": [
+        "player deliberately opens actual original freight page",
+        "eligible local reading context"
+      ],
+      "text": "Read Blackstone Receiving Register: 4117.",
+      "display_document": "blackstone_freight_page",
+      "choices": [
+        {
+          "label": "I've read the freight page.",
+          "receipt_request": "stage40 only after actual page display and current acknowledgment",
+          "close": true
+        },
+        {
+          "label": "Close without reading further.",
+          "close": true
+        }
+      ],
+      "next_objective": "Read the Rider index in the marked section at the same desk."
+    },
+    {
+      "id": "read_rider_index",
+      "speaker": null,
+      "requires": [
+        "player deliberately opens actual original Rider index",
+        "eligible local reading context"
+      ],
+      "text": "Read Meridian Field Service: Rider Index.",
+      "display_document": "blackstone_rider_index",
+      "choices": [
+        {
+          "label": "I've read the index.",
+          "receipt_request": "stage45 only; no player-identity or family fact",
+          "close": true
+        },
+        {
+          "label": "Close.",
+          "close": true
+        }
+      ],
+      "next_objective": "Ask Mara about the Fifth Rider, or inspect the lower-service route yourself."
+    },
+    {
+      "id": "mara_fifth",
+      "speaker": "mara",
+      "requires": [
+        "actual original Rider index read",
+        "player explicitly asks about Fifth Rider",
+        "Chapter5 upper scene and original Mara eligible"
+      ],
+      "text": "You. That's who I knew as the Fifth Rider. You can tell me I'm wrong. You can walk away. I won't make remembering me the price of seeing the records.",
+      "choices": [
+        {
+          "label": "I remember my life. Don't rewrite it.",
+          "then": "mara_memory_limit"
+        },
+        {
+          "label": "A name in a book isn't proof it's me.",
+          "then": "mara_proof_limit"
+        },
+        {
+          "label": "Why should I care about any of this?",
+          "then": "mara_personal_stake"
+        },
+        {
+          "label": "I need a minute.",
+          "close": true
+        }
+      ],
+      "receipt_request": "stage50 only after actually hearing current personal identification; journal attributes it to Mara",
+      "next_objective": "Compare Mara's account with the original records and inspect the lower-service entrance."
+    },
+    {
+      "id": "mara_memory_limit",
+      "speaker": "mara",
+      "requires": [
+        "direct current link from personal identification"
+      ],
+      "text": "Then hold on to it. Your childhood isn't mine to fill in. I'm talking about field work last year. If there's a gap there, it doesn't give me the rest of your life.",
+      "choices": [
+        {
+          "label": "What happened last year?",
+          "then": "mara_mission_limit"
+        },
+        {
+          "label": "What do you want from me now?",
+          "then": "mara_want"
+        },
+        {
+          "label": "I'm done talking for now.",
+          "close": true
+        }
+      ],
+      "receipt_request": "Mara's bounded claim heard; no retroactive player memory selection",
+      "next_objective": "Existing service-route task remains available without trusting Mara."
+    },
+    {
+      "id": "mara_mission_limit",
+      "speaker": "mara",
+      "requires": [
+        "direct current question about recent Rider work",
+        "original Mara eligible"
+      ],
+      "text": "I can tell you what these pages say. I can't hand you a memory, and I'm not going to turn what I don't know into one. Start with the route. Ask me again when we've got more than my word.",
+      "choices": [
+        {
+          "label": "Show me the route.",
+          "then": "mara_want"
+        },
+        {
+          "label": "You're holding something back.",
+          "then": "mara_withheld"
+        },
+        {
+          "label": "Not now.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none; exact self-erasure involvement remains unassigned",
+      "next_objective": "Inspect the original lower-service route diagram."
+    },
+    {
+      "id": "mara_proof_limit",
+      "speaker": "mara",
+      "requires": [
+        "direct current challenge after identification"
+      ],
+      "text": "It isn't. The pass will open a service door for whoever carries it. I knew you; you have no reason yet to trust that. Check what you can. You don't have to decide the rest today.",
+      "choices": [
+        {
+          "label": "Then I'll check the door.",
+          "close": true
+        },
+        {
+          "label": "What do you want from me?",
+          "then": "mara_want"
+        }
+      ],
+      "receipt_request": "none; working pass is not an identity test",
+      "next_objective": "Inspect the pass and mechanical release at the marked service entrance."
+    },
+    {
+      "id": "mara_personal_stake",
+      "speaker": "mara",
+      "requires": [
+        "direct current question after index and identification",
+        "family claim not yet automatically granted"
+      ],
+      "text": "The freight didn't come out of an empty mountain. People live below. And I have reason to believe your family came from there. Not your whole life. Not a story I get to tell you about who you ought to be. A place you can ask questions.",
+      "choices": [
+        {
+          "label": "Which family? Names.",
+          "then": "mara_family_limit"
+        },
+        {
+          "label": "That doesn't make it my home.",
+          "then": "mara_home_choice"
+        },
+        {
+          "label": "What are you asking me to do?",
+          "then": "mara_want"
+        },
+        {
+          "label": "I don't believe you.",
+          "then": "mara_doubt"
+        }
+      ],
+      "receipt_request": "stage55 only after actual personal family claim heard; claim attributed to Mara, not verified genealogy",
+      "next_objective": "Investigate the records below if you choose; the local service route remains optional until entry."
+    },
+    {
+      "id": "mara_family_limit",
+      "speaker": "mara",
+      "requires": [
+        "direct question after actually heard family claim"
+      ],
+      "text": "I don't have a family tree to give you. That's why I'm offering a way to the records, not a name to put on your door. If the evidence contradicts me, keep the evidence.",
+      "choices": [
+        {
+          "label": "I'll look for myself.",
+          "then": "mara_want"
+        },
+        {
+          "label": "Then don't call it certain.",
+          "then": "mara_doubt"
+        }
+      ],
+      "receipt_request": "none; no names, dates, parents, ethnicity or inheritance assigned",
+      "next_objective": "Inspect the service route; family investigation continues only when actual later records exist."
+    },
+    {
+      "id": "mara_home_choice",
+      "speaker": "mara",
+      "requires": [
+        "direct current link after family claim"
+      ],
+      "text": "No. A place can be part of your history without getting to own you. Go down, stay up here, come back later. That choice is still yours.",
+      "choices": [
+        {
+          "label": "I'll inspect the entrance.",
+          "close": true
+        },
+        {
+          "label": "I'm staying up here for now.",
+          "then": "mara_decline"
+        }
+      ],
+      "receipt_request": "none; no emotional allegiance or political standing",
+      "next_objective": "Inspect lower service entrance or take the upper return route."
+    },
+    {
+      "id": "mara_doubt",
+      "speaker": "mara",
+      "requires": [
+        "direct current skeptical response"
+      ],
+      "text": "Fair. Keep that doubt. Just give the pages the same hearing you give me. They're on the desk; I'm not standing between you and them.",
+      "choices": [
+        {
+          "label": "I'll read them again.",
+          "close": true
+        },
+        {
+          "label": "I'll look at the route instead.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none; no hostility, failed relationship or forced belief",
+      "next_objective": "Inspect actual evidence or leave by the upper platform."
+    },
+    {
+      "id": "mara_want",
+      "speaker": "mara",
+      "requires": [
+        "direct current question about her request",
+        "actual local service route exists"
+      ],
+      "text": "Help me keep the record whole, then look at where the freight came from. No oath. No flag. I'd rather you came because you want an answer than because I made it difficult to say no.",
+      "choices": [
+        {
+          "label": "I'll investigate. I'm not promising to follow.",
+          "then": "mara_terms"
+        },
+        {
+          "label": "Why not destroy the part with your name?",
+          "then": "mara_own_name"
+        },
+        {
+          "label": "Not yet.",
+          "then": "mara_decline"
+        }
+      ],
+      "receipt_request": "investigation intent only; no companion recruitment, faction commitment or route effect",
+      "next_objective": "Inspect the pass or mechanical release, then choose whether to enter."
+    },
+    {
+      "id": "mara_terms",
+      "speaker": "mara",
+      "requires": [
+        "player explicitly agrees only to investigate",
+        "original Mara eligible"
+      ],
+      "text": "Good. If I start treating questions like disloyalty, remind me what I said. Loudly, if you have to. Service door's beside the route board. Upper platform still takes you home.",
+      "choices": [
+        {
+          "label": "I'll check the entrance.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none; any later accompaniment must be separately implemented and invited",
+      "next_objective": "Inspect the marked lower-service entrance."
+    },
+    {
+      "id": "mara_withheld",
+      "speaker": "mara",
+      "requires": [
+        "direct question about her incomplete account"
+      ],
+      "text": "Yes. Some because I don't know enough. Some because I'm not ready to say it. Those aren't the same, and you shouldn't let me pretend they are. Keep asking. You don't have to like me to do that.",
+      "choices": [
+        {
+          "label": "I'll remember that answer.",
+          "close": true
+        },
+        {
+          "label": "Then I'll trust the evidence first.",
+          "close": true
+        }
+      ],
+      "receipt_request": "none; no exact past act or self-erasure role settled",
+      "next_objective": "Original evidence and service route remain independently accessible."
+    },
+    {
+      "id": "read_mara_note",
+      "speaker": null,
+      "requires": [
+        "player deliberately opens actual original field note",
+        "eligible local reading context"
+      ],
+      "text": "Read Mara's Field Note.",
+      "display_document": "blackstone_mara_note",
+      "choices": [
+        {
+          "label": "I've read the note.",
+          "receipt_request": "separate note56; no spoken encounter, personal identification50 or personal-family claim55",
+          "close": true
+        },
+        {
+          "label": "Close.",
+          "close": true
+        }
+      ],
+      "next_objective": "Inspect the route diagram and service entrance. If Mara is unavailable, her note remains an attributed account."
+    },
+    {
+      "id": "inspect_service_route",
+      "speaker": null,
+      "requires": [
+        "player at actual original service route diagram and entrance",
+        "eligible inspection context"
+      ],
+      "text": "The marked service door leads to the lower freight approach. Its posted diagram shows a pass reader and a local mechanical release. Neither asks for a name or allegiance.",
+      "display_document": "blackstone_route_diagram",
+      "choices": [
+        {
+          "label": "Inspect the service pass.",
+          "action_request": "show actual original pass; no taking or granting it by inspection alone",
+          "then": "service_entry_confirm"
+        },
+        {
+          "label": "Inspect the mechanical release.",
+          "action_request": "inspect actual bound local release; no remote effect",
+          "then": "service_entry_confirm"
+        },
+        {
+          "label": "Return to the upper platform.",
+          "close": true
+        }
+      ],
+      "receipt_request": "stage60 only after genuine current inspection",
+      "next_objective": "Choose whether to use the actual service entrance."
+    },
+    {
+      "id": "service_entry_confirm",
+      "speaker": null,
+      "requires": [
+        "actual current service-route inspection60",
+        "player local at actual entry control",
+        "actual route available",
+        "ordinary travel guards valid"
+      ],
+      "text": "Enter the lower freight vestibule. You are investigating a route, not joining a faction, accepting Mara as a companion or agreeing with her account of your past. The return to the upper platform stays available.",
+      "choices": [
+        {
+          "label": "Enter the freight vestibule.",
+          "action_request": "stage70 intent; use actual pass custody/mechanical access and actual door transition; stage100 requires original freight40 and index45 receipts plus observed current correct lower arrival; physical entry alone grants neither reading nor completion",
+          "close": true
+        },
+        {
+          "label": "Not now. Stay above.",
+          "close": true
+        }
+      ],
+      "next_objective": "Reach the lower freight vestibule; on failure keep entry unfinished and return usable."
+    },
+    {
+      "id": "boundary_panel",
+      "speaker": null,
+      "requires": [
+        "actual lower freight vestibule arrival100",
+        "current private build does not include inhabited ActII city"
+      ],
+      "text": "ACT ONE: THE BROKEN ROADS\n\nYou have reached The Deep's freight approach. This private test ends here; the inhabited city is not in this build. You can return to the upper platform and the unfinished roads. Your choices and unanswered questions remain open.",
+      "choices": [
+        {
+          "label": "Stay at the freight approach.",
+          "close": true
+        },
+        {
+          "label": "Return to the upper platform.",
+          "action_request": "ordinary actual return travel with arrival verification; no earlier quest changes",
+          "close": true
+        }
+      ],
+      "next_objective": "Private test boundary. Offer no marker promising a built city beyond the closed approach."
+    }
+  ],
+  "canonical_limits": [
+    "No fifth principal faction, inherited power, predetermined moral character or player ethnicity/appearance/parents/childhood supplied.",
+    "Mara's exact past and involvement in the targeted 2316 memory removal remain unresolved. No flashback or new account of why/how self-erasure occurred.",
+    "The family-origin statement remains a bounded attributed claim pending later evidence. The field note refers to the Fifth Rider, not magically to whichever actor reads it.",
+    "No original current road outcome, relief stock, report, faction allegiance or save is changed by this writing packet.",
+    "No implicit essential/invulnerable actor, compulsory combat, timer, automatic betrayal or offscreen destroyed evidence.",
+    "Documentary progression when Mara unavailable does not claim her alive or say the player met/recruited her."
+  ],
+  "revision": "Maya narrow copy-bound repair after Sam independent editorial review; original preserved"
+}

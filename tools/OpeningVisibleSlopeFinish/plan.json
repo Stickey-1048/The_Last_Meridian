@@ -1,0 +1,184 @@
+{
+  "status": "READONLY proposal, no source/artifact edits",
+  "baselineWorldSha256": "5F20D3C684D93546281AC40EF2F16D66DAFAAE26B435D5142117A5A7CA85C406",
+  "scope": "OnlyAAAq0VTXT existingforest3343C/rockC55F3/currentotherweights andfour existingpassiveDATA; noheight/normal/newATXT/LTEX/GRAS/ref/actor/quest/voice change",
+  "actualFaceSourceBracket": {
+    "land": "02000AAA",
+    "xy": "~4750..5440/4680..5500",
+    "rays": 18,
+    "movedMaskCoverageAtAllBracketedHitPoints": [
+      0.0014471760152002134,
+      0.85
+    ],
+    "cameraLimit": "Actual046bareface pixels approx600..700/180..240; sourcearrival448640/yaw45; FOV70/80 andeyeZ-64/-80 bracket only; no native measured camera/mesh occlusion guarantee"
+  },
+  "mask": {
+    "E": "1-smoothstep(.4,1,sqrt(((x-cx)/rx)^2+((y-cy)/ry)^2))",
+    "C": ".85*max(E(4970,5260,480,608),.8*E(5290,4880,448,448))",
+    "R": "min(C,.55*E(5140,5420,224,240))",
+    "weights": "Each currentexplicitwNew=(1-C)*wOld; add C-R to existingnativeforest3343C, add R to existingnativerockC55F3. SNew=S+(1-S)*C. This INTENTIONALLY reduces implicitbase onlyinsidemask; neverrenormalize/dividebyS or assumeitscolor. Original042S-preservation cannotpaintoldS0vertices.",
+    "packing": "Keepalloldpadding/index/order; insertneededHHfrowscanonical0asnative-observed; noATXT/header/newlayer. Atallquad/cellbordersC=0, existingseamsliteral.",
+    "statistics": {
+      "affectedQ0VertexSlots": 76,
+      "currentlyS0AffectedVertices": 10,
+      "maximumExplicitSumIncrease": 0.85,
+      "maximumNewExplicitSum": 1.0000000092677555
+    }
+  },
+  "moves": [
+    {
+      "id": "TLM_RIDGE_p1_p1_G2D",
+      "form": "0x2000ab3",
+      "asset": "TreeMaplePreWar05Gr",
+      "base": "0x61649",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar05Green.nif",
+      "scale": 0.949999988079071,
+      "oldPose": [
+        6460.0,
+        6020.0,
+        1648.2723388671875,
+        0.0,
+        0.0,
+        4.350886344909668
+      ],
+      "proposedPose": [
+        5000,
+        5260,
+        1096.3817809374495,
+        0.0,
+        0.0,
+        4.350886344909668
+      ],
+      "supportRange": 32.98989647448411,
+      "maxEmbed": 36.02700584901845,
+      "bothDiagonalCriticalPoints": 10,
+      "renderBounds": [
+        4858.2124937576045,
+        5119.786200214671,
+        1088.4032654125667,
+        5143.635053104312,
+        5413.290563222701,
+        1465.4567763061686
+      ],
+      "routeGap": 3240.5345131043655,
+      "actorControlGap": 2409.147214423392,
+      "parentUnchanged": "AAAcell1,1temporarysameparent"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2C",
+      "form": "0x2000ab2",
+      "asset": "TreeMaplePreWar06Gr",
+      "base": "0x61643",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar06Green.nif",
+      "scale": 0.8500000238418579,
+      "oldPose": [
+        6820.0,
+        5680.0,
+        1788.3271484375,
+        0.0,
+        0.0,
+        4.040888786315918
+      ],
+      "proposedPose": [
+        5240,
+        5050,
+        1301.9874873598492,
+        0.0,
+        0.0,
+        4.040888786315918
+      ],
+      "supportRange": 28.772169237644448,
+      "maxEmbed": 31.96474736804612,
+      "bothDiagonalCriticalPoints": 6,
+      "renderBounds": [
+        4873.878847638976,
+        4754.798165478166,
+        1293.1620964873036,
+        5483.226926514798,
+        5385.42462467769,
+        1843.8625025590336
+      ],
+      "routeGap": 2954.526169084337,
+      "actorControlGap": 2127.7951420498675,
+      "parentUnchanged": "AAAcell1,1temporarysameparent"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2E",
+      "form": "0x2000ab4",
+      "asset": "TreeCedarShrub01",
+      "base": "0x1a97dc",
+      "model": "Landscape\\Trees\\Cedar01.nif",
+      "scale": 0.8999999761581421,
+      "oldPose": [
+        6890.0,
+        5360.0,
+        1788.3631591796875,
+        0.0,
+        0.0,
+        4.660887718200684
+      ],
+      "proposedPose": [
+        4900,
+        5000,
+        948.353682442123,
+        0.0,
+        0.0,
+        4.660887718200684
+      ],
+      "supportRange": 0.0,
+      "maxEmbed": 3.0,
+      "bothDiagonalCriticalPoints": 1,
+      "renderBounds": [
+        4836.554184324117,
+        4948.682860678346,
+        940.113057660425,
+        4954.643355471688,
+        5059.819024274229,
+        1058.2099295319263
+      ],
+      "routeGap": 3087.493917645094,
+      "actorControlGap": 2256.9856967556257,
+      "parentUnchanged": "AAAcell1,1temporarysameparent"
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneB",
+      "form": "0x2000ab6",
+      "asset": "RockBoulder03",
+      "base": "0x2f79b",
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "scale": 1.7999999523162842,
+      "oldPose": [
+        6976.0,
+        5824.0,
+        1753.0926513671875,
+        0.0,
+        0.0,
+        5.280886650085449
+      ],
+      "proposedPose": [
+        5140,
+        5420,
+        1311.08476515254,
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "supportRange": 48.963865890400484,
+      "maxEmbed": 52.863865866558626,
+      "bothDiagonalCriticalPoints": 10,
+      "renderBounds": [
+        5057.200002193451,
+        5279.037503734231,
+        1204.4347679778002,
+        5265.324996680021,
+        5528.337497130036,
+        1366.7160136788152
+      ],
+      "routeGap": 3484.610049414913,
+      "actorControlGap": 2653.909199518239,
+      "parentUnchanged": "AAAcell1,1temporarysameparent"
+    }
+  ],
+  "rejectedGeometry": "InitialwideMaple03G2Afootrange67.61/embed70.84 andoriginalyawlargeStoneB74.74/embed78.64refused; chooseexistingnarrow-rootMaple05andquarterturnedStoneBonlocalslope instead, no scaleorlimit relaxation.",
+  "limits": "Proposedposes usecurrentdecodedbothdiagonals/56range64embed/knownrenderAABBclearance only; finalF32/lowertrunkrockgroupguard/nativeappearance/Havok/LOD stillrequired. Existing042fourprops andallheightsretained. No giantplanning/buildframework."
+}

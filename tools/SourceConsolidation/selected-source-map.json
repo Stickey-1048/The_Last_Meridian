@@ -1,0 +1,2340 @@
+{
+  "scope": "SOURCE ONLY selected text union; no cloud-ready/native acceptance claim",
+  "base": "f491eeb4e670d306530446b60f82785950dbb747",
+  "components": {
+    "world": {
+      "path": "work/opening-private-voice-wreck-union-041",
+      "head": "ea2219120fa1896c562fa9e27124ddc5733e156e"
+    },
+    "main": {
+      "path": "work/ada-book-voice-master-001",
+      "head": "1f510971c08a45435f511a90e6fc4c01cc823c7d"
+    },
+    "runtime": {
+      "path": "work/dunmore-talbot-private-voice-runtime-038",
+      "head": "e39a02c2b5a14ea419087f1d994e0a443a787ba8"
+    },
+    "prologue": {
+      "path": "work/gantt-prologue-batch-runtime-025",
+      "head": "edaf293cf5008e8583b92d4618496eebf2e83705"
+    },
+    "qa": {
+      "path": "work/native-road-voice-menu-fix-040",
+      "head": "8641dde26d224db4863891c13ffcf706c27c1c37"
+    }
+  },
+  "copyRule": "Immutable Git blob bytes; working source equivalence checked after CRLF normalization; no component history merged",
+  "files": [
+    {
+      "path": "scripts/Source/User/TLM/Act1Guide.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "E59A125F2EEE061E11BEFFBAE9C578ECE3F12AE02BC80E554047E8DE50D24DAE",
+      "sourceWorkingSha256": "3FADAD3EC6522B9BBE4BD4CEC0E8193F1408AD37B7FA655487696904B41CE113",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 2678
+    },
+    {
+      "path": "scripts/Source/User/TLM/Act1Talk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "CEC5BCC33B63A55E2427FBA4422E2A375E31598E52911DF79B4DEC040207039A",
+      "sourceWorkingSha256": "D00DBEFD29C08A73AB591B5D663C3542C7A4410304287377E1F01D8658875FF5",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 1798
+    },
+    {
+      "path": "scripts/Source/User/TLM/Act1Walk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "1E500CBFB09FA05558718A113F6BB777171386936E14D206F8BEA62D54B4CF18",
+      "sourceWorkingSha256": "B250E3593F70E8A49FDD3FE755B8F87D8E6815E8E8CCD6BE970460806A9F2189",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 77118
+    },
+    {
+      "path": "scripts/Source/User/TLM/BlackLedgerEntry.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "4A2B04186B9382C2BE154771AA330AC6FBE887CDDBAF7EA939213C4F1F012C25",
+      "sourceWorkingSha256": "EFAE51577C81BCF9221FF69F547DFB54B85681E2BD6AF8DA49E98B8B0E9F2B2B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 851
+    },
+    {
+      "path": "scripts/Source/User/TLM/BlackLedgerTalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "BA610D8518E9D8A6152D18F991BB045E879D0360B0D708A5B7A160A0C14A3091",
+      "sourceWorkingSha256": "4F84EF4850B0057E0F904AD101E2887171DA0E5DD5452468F1E1084D91001373",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1137
+    },
+    {
+      "path": "scripts/Source/User/TLM/BlackLedgerWalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "19CC2F812DCFD626B2BA76532DE344DDDF02853A25AFE373C92381729907B9B9",
+      "sourceWorkingSha256": "86AC6652ECD9CDDE2FE651CD909B1C36DC3F884034E9795D9B0A686F090DBE7D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 25686
+    },
+    {
+      "path": "scripts/Source/User/TLM/BlackstoneTalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "60361EFE575409BC154A7F74278E3FF2E3F491A58E6B0AD83902B07853995B53",
+      "sourceWorkingSha256": "C3A1DD6CEEB06866F51D1513946B541CCE93EC1151E90595F6C7FAFEA63829E5",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 844
+    },
+    {
+      "path": "scripts/Source/User/TLM/BlackstoneWalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "D3ED2BE90CA0A1411E89D003BF95556786E6F5879C6FEF1FDD367897B4646340",
+      "sourceWorkingSha256": "CE7EA6130A5371CDBC1FD2A21E7CF74C09E7913EFDB3127296CE3CD7199A568A",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 16491
+    },
+    {
+      "path": "scripts/Source/User/TLM/CaseDriver.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "04012F79061B9F0F73D8FA353176B5D5267A73F2E810857FD2CE22D60922A241",
+      "sourceWorkingSha256": "CBA1AB33B219A58B37F6ECED5345D9A2754EB21215821DB91DBE330634FB4D65",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 23808
+    },
+    {
+      "path": "scripts/Source/User/TLM/Core.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "17E9008372C7BF01AF1676DB6EA093C7BBEE7F8CA01EBACEDA5389164C6B00D4",
+      "sourceWorkingSha256": "1488A0CF2268AFFFEE9668269343D8EB0DB6E315B1BDD2F004AFDCDF2A4F4720",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 2722
+    },
+    {
+      "path": "scripts/Source/User/TLM/FixtureProbe.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "F670FDD250514576FB6D4C09EF0229FC9287F24649BD4FD4C370CBE3B467B87E",
+      "sourceWorkingSha256": "D4E17E97DD5D0E7E8DA8B144AAD43272C257A352BB6D2CBEB8ABAC0412FF5C7A",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 16740
+    },
+    {
+      "path": "scripts/Source/User/TLM/FourFlagsEntry.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "AE82F39F76DEDE99DECA1EE6B47B07BCBE016704DC07EDF698E2E514595ACFD1",
+      "sourceWorkingSha256": "FA9432610C3BBBC1FC5ABAF0E0C51E2DD5F367F594F44BE8E914D96766C6FB34",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 591
+    },
+    {
+      "path": "scripts/Source/User/TLM/FourFlagsTalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "4E57AA3F5B84E732BF6599E6DC9780D49C1E96B2D08131444498F897DC01B332",
+      "sourceWorkingSha256": "4BE6E60CD880A819EFC9AA9BE375BD89EDA5E21F897EBE2B0B527A44BB1C224E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 667
+    },
+    {
+      "path": "scripts/Source/User/TLM/FourFlagsWalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "77DF19F540656E3565229EF29E86BF4C8F4EA4D001CF60762010BA41AF1F6321",
+      "sourceWorkingSha256": "855E7E4485CD367E3C97C2C26502991AA6228226A81D1F11428301766DCB392C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 72436
+    },
+    {
+      "path": "scripts/Source/User/TLM/GreenwaterRelief.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "5A1DDDA356AB48257CDB841FD82A14D1427204D9F416AC6AF4781B0D435BE061",
+      "sourceWorkingSha256": "5797AEA415354DDFA8429393C321C007619B3E9261F0654347BA2C909F7EC700",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 14200
+    },
+    {
+      "path": "scripts/Source/User/TLM/GreenwaterTalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "C4ED0493EC352241C218083303212B4EE193AF007A7803661FAB7545A00EEC12",
+      "sourceWorkingSha256": "AB3FC46204B7206096AE8E3B022F1AB8675975E5F447E9DCF78E0B761D461D70",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 1654
+    },
+    {
+      "path": "scripts/Source/User/TLM/GreenwaterWalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "B77916AA3CAB35F518C24840ED2A26C992370AB1B83903DAF0E23E92912D873B",
+      "sourceWorkingSha256": "8A4D56472A3CB4CA7CB2D44E308B90FBF6EEEE048B1DFF4C876A6490A9180F9D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 51647
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ01CaravanHandAlias.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "84CF637A5434F82E7409DC39D1C346A96DEC03ED7EDE6A88181F01B152900378",
+      "sourceWorkingSha256": "42B3019D6624AD0EBAA2E29C56D08AE7C538D457DEA20B4E1AE0935A9CA62A5B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 653
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ01CutterAlias.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "F11732576830A95D310FEBECF042C2A228F502CE4FC99A6165368F774AD49FBB",
+      "sourceWorkingSha256": "1F33FFF759135D6B1672827650E54AEEF91136D5790B69DDB46B059501BE97DE",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 897
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ01PlayerAlias.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "F7D4F23B8DBB829F2ED09F62F17D330046E1ACBD2F6C0439E573B3F7CA3DAE25",
+      "sourceWorkingSha256": "201C4A48BB61B840E017718D0242D33C051518B45D001A0000A29610FB6B7A0F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 741
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ01Quest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "4614DF3E42A6AE2ACD7D2B3458F68627454E9088F6407EE89B2562F708F687E8",
+      "sourceWorkingSha256": "994BC34CA3D08AA7D7C3D6243DCC3B50C437C9A5328F41F1636B9D6CB26B6C34",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 31257
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ02AQuest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "1CE04AD326EC49DB5A0770C0F2D13F11E4D9B7DAF40BD06ECC6D92394A2E5B63",
+      "sourceWorkingSha256": "0379B8A6A451FB4C9BE13EB6460F21EB76B182317E37ED466C94E03DD88459C7",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 47156
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ02BQuest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "FDB577B6E504A904E5921223038CB7078376BBDFE70C45E90440CB9DD7E1726F",
+      "sourceWorkingSha256": "1B06097B7944D857B0945C37F02FDCD9D937FD8509C6E60C62D5866D7FBA2175",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 38178
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ02CQuest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "C05FC54C9C90A153BF297210A5C5684CDFBF13BEC50FB3B00AD3EB90893E842F",
+      "sourceWorkingSha256": "313B63ED15AFC3881F2ADFFFDCC0F6E1917B915C132312D8E00B6724D62590D6",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 34987
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ03Quest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "B27BC82DD2C9A47491690F335614387B5381B9CA2AAA48CA9923675C3A3812AF",
+      "sourceWorkingSha256": "CECB69BE0318B5E6BB9F96993BF9CF131F470132F1CE62F9202FF5CCFFEB2510",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 19968
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ04Quest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "9FD8957F531695AF9E47C2A599CEC1A1117C1214C133F4E21D6ED243A44C7E44",
+      "sourceWorkingSha256": "0090D1F76E1D404AC047BBE8F128920A15A61FD08B224E2EA4A1162D00C96240",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 18619
+    },
+    {
+      "path": "scripts/Source/User/TLM/MQ05Quest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "EFB75CFE6710BB3EA808B32EB1B95ADD7DF86E34754FBF9CA5CD6A80CE41ADC4",
+      "sourceWorkingSha256": "62A288003BF82CB62FFD2F86EC3379B63E746523FB57912E810E0C3F57981826",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 16285
+    },
+    {
+      "path": "scripts/Source/User/TLM/MatrixCases.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "AF86E71AD74D859255563F972416BA814187A8D1DF4D48914BFE2AA424BF767B",
+      "sourceWorkingSha256": "DD60189BB1E1E0B85D2D38B4D912B422B290C5C7EA4D778A5960C855DEFAB135",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 129861
+    },
+    {
+      "path": "scripts/Source/User/TLM/MercyBriefing.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "041E03DE8E161C7F954AC98D9C669C5FD9D15E34ACA913B284CD597AB826D0D1",
+      "sourceWorkingSha256": "EECE442A2A5C6BF840BED48FD70D7475BE4686209159508A82E8D760536D7D58",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 13275
+    },
+    {
+      "path": "scripts/Source/User/TLM/MessageStageAlias.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "DA1694ADDFE269D16F769E41AA8322F78E288E11DA228A8BE790BB669FD3CC4F",
+      "sourceWorkingSha256": "A003BB3037E31F718676C4C482343FF240180B50100DA336C41E1ED8127DA643",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 1952
+    },
+    {
+      "path": "scripts/Source/User/TLM/NightMailTalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "11BFA7FE551242855B5D1AAF40EB68173B032F5B4C53D2A3E9BB02F9A38DCAAF",
+      "sourceWorkingSha256": "D3C217EA6F91DFD726D60C3522DEC49BC238073F2C405E762E89CBFAB02DD3D7",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 1665
+    },
+    {
+      "path": "scripts/Source/User/TLM/NightMailWalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "184457DDF409A1306AEFF44BB8A750D7329A77AB1C9DA5EFD594FE8EE265E582",
+      "sourceWorkingSha256": "A9D12DEAEDDB11E4C1B792042B5E3A788CB014C2DEBA16D2ECEAE1DE51B3699D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 64115
+    },
+    {
+      "path": "scripts/Source/User/TLM/OpeningPrologue.psc",
+      "component": "prologue",
+      "sourceHead": "edaf293cf5008e8583b92d4618496eebf2e83705",
+      "gitBlobSha256": "6A687BDB2796DB48CFF09ED6253D15CA7B7F7F845358BA14607CEE7057FA78CF",
+      "sourceWorkingSha256": "5CCD047CD6463EF20DC03D21BD59456F0FEAA6CDE096214374BCDE6AE3202821",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 21636
+    },
+    {
+      "path": "scripts/Source/User/TLM/OpeningPrologueInteract.psc",
+      "component": "prologue",
+      "sourceHead": "edaf293cf5008e8583b92d4618496eebf2e83705",
+      "gitBlobSha256": "13AE3A6656C73B59B3550392D669B614EFEE3232C76E4B521E5E4B738C411733",
+      "sourceWorkingSha256": "CD34673FD6B731016AFF96E4ED31AE12A3BC5A22C67B739F00D9B6FC9D1ED6C4",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 590
+    },
+    {
+      "path": "scripts/Source/User/TLM/PlacedPeople.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "41E2CF916C809B9EE169EC98F94DBFC082FA544CD5BF43102BDDF80E5EF7FC5F",
+      "sourceWorkingSha256": "086316965610DCB0FCE9A377841AD047CCEAC861D943FE5DED81EFA5F0BE7385",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 22765
+    },
+    {
+      "path": "scripts/Source/User/TLM/PlacedTrial.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "A55D13539C8460C55B99FEF9DA4835C68AB0BEF6F14BD0A55EE4FB73606A9E7C",
+      "sourceWorkingSha256": "F5001EA5F81FC1E68000CCCE005F3CB27B327A235D210B9BD144B8AC7A85B0B2",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 12046
+    },
+    {
+      "path": "scripts/Source/User/TLM/RedHollowTalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "BA4375B144058C00081908214E796DFD0222B0984981177621E38C7E26413AC4",
+      "sourceWorkingSha256": "4581D23C8EFC3BC035A71AC96D067609E36753905C00209F23204D557C158837",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 1826
+    },
+    {
+      "path": "scripts/Source/User/TLM/RedHollowWalk.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "83881D3C66AEC4FF3FA712B84D5537CACAA5F063C5D9D02ED25A705E8DE2FD6A",
+      "sourceWorkingSha256": "12983BE53A273A27BF0BC2A924910289BE998AF0855295A9610D111851618459",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 90795
+    },
+    {
+      "path": "scripts/Source/User/TLM/SQ01Quest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "E020EA93CB4C3F6DDE23B009829C93B4FC289AF186F98603ACF43954726677D6",
+      "sourceWorkingSha256": "FF719B5E73C4627596434CB7C41CB2CA92D78F41D82696C0A4F351DE76B55FA0",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 7253
+    },
+    {
+      "path": "scripts/Source/User/TLM/SelfTest.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "EF9AB48B3D3300432517F63580A3527E5DF2C50A05A2643073DAB6FC911FF511",
+      "sourceWorkingSha256": "B149ECAFEE038DB62C249CFB148F1E5DDF6118B133720E66ABC9A9B36E535E24",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 18995
+    },
+    {
+      "path": "scripts/Source/User/TLM/WorldCases.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "9317C75366B84C22E07DEE10424465207A68C595D2572A18BB908DD8A9CC6BC2",
+      "sourceWorkingSha256": "E74A80F7EFEC5C35B0B8EDED8FF1EBD5DB82E7A28B17168AA8C9832033FBAFF0",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 25077
+    },
+    {
+      "path": "scripts/Source/User/TLM/WorldEntry.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "B9FAE7EE772FF9681CF9D9DDD3A1D04AAB2AC1C5BBFE283BD098F309A68C3C2E",
+      "sourceWorkingSha256": "3BDC532970A8CF530C1A9FC0FE97F2A63785415A68C941296F4D8BAD0CD6363C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 3680
+    },
+    {
+      "path": "scripts/Source/User/TLM/WorldEntryPlayer.psc",
+      "component": "runtime",
+      "sourceHead": "e39a02c2b5a14ea419087f1d994e0a443a787ba8",
+      "gitBlobSha256": "F7B9D85C3967F6C5A19DB1F6814E3D9954D3AD0503379F61CA3E3B08F184CFDF",
+      "sourceWorkingSha256": "B9F30552F3CAE95805DCA0350342BCC7F0539DB433731E8AD39942A1EC7EDD45",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 340
+    },
+    {
+      "path": "scripts/Source/User/TLMQA/OpeningAudit.psc",
+      "component": "qa",
+      "sourceHead": "8641dde26d224db4863891c13ffcf706c27c1c37",
+      "gitBlobSha256": "B4075868B48335B39597A7EA5AE3E1A58BAEF9BD6B5D7D5E4D6641F3B7BEA448",
+      "sourceWorkingSha256": "1E40CF16E566D3C15E70646E17C325293F7E95486A53BF10C72C697EB530D5EE",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 72779
+    },
+    {
+      "path": "tools/AdaBookVoice/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "575D47CDB4E5E450448C5DC2224E53AD13EDD4963E90F0CED1DFF5442B16CD98",
+      "sourceWorkingSha256": "00EDF779C71D66E51027B6F2A9C364693C4A7CBD7E36AD3EAADE3BF746DF64DC",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 8105
+    },
+    {
+      "path": "tools/AppalachianRidges/models.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "D6EF25AC34794D667E358D33ECDF5A9B05E35D30116E94C2EC146994DBED977C",
+      "sourceWorkingSha256": "FD6D93BA647DE771D516776187FB88E83AC0575359D3CFE25871C0FA75527AB1",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 13261
+    },
+    {
+      "path": "tools/AppalachianRidges/probe_trees.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "854CF261C5708AEAFD7414947A524D9D8A985CA1574C07E4CCE6131EF0E0CCBC",
+      "sourceWorkingSha256": "983D7FE4153E07E39D9B9AE363F02AD055ADFE62D0C98A8ADD89E8C613C62077",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5794
+    },
+    {
+      "path": "tools/AppalachianRidges/raw.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "0CBD5AEAD24D83AC9A1DEF416F90F690DDAA21A6279F9F8091E859259912E2AE",
+      "sourceWorkingSha256": "77C565B1A9DE8B8850C0E662170154CDF0D35A6CCF59F4CA476FED68A577FD1D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2289
+    },
+    {
+      "path": "tools/AppalachianRidges/verify.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "45571422CB52A936BD5715E8A0A8598DB9A360E4B80988533DEF2CD681DE37EB",
+      "sourceWorkingSha256": "31E34B67E9C1725AC2F6464AC4770D0D32B4C94E150B1F3B0308139BC00B9DF7",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7501
+    },
+    {
+      "path": "tools/BlackLedger/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A79691A93B46E49CE460C26EF22AFCC03D6ECA1E63BF2EDBC20E96159510F6C9",
+      "sourceWorkingSha256": "A79691A93B46E49CE460C26EF22AFCC03D6ECA1E63BF2EDBC20E96159510F6C9",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 14
+    },
+    {
+      "path": "tools/BlackLedger/audit.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "47DDE542BEF6B7AF02406EA71319A668E62AAFDA41E8569F4717EA2BE215CDF0",
+      "sourceWorkingSha256": "47DDE542BEF6B7AF02406EA71319A668E62AAFDA41E8569F4717EA2BE215CDF0",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 2780
+    },
+    {
+      "path": "tools/BlackLedger/beckett-lawful.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "ED4C164A489E7C18B53EE8304FA9A04C477E9720BE488540FC5894D816F2EC1D",
+      "sourceWorkingSha256": "ED4C164A489E7C18B53EE8304FA9A04C477E9720BE488540FC5894D816F2EC1D",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 4585
+    },
+    {
+      "path": "tools/BlackLedger/character-nodes.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "861E76868E39A4FFA1A172364176EF3E0FE4FC1079F5181CF40B88904DF1D995",
+      "sourceWorkingSha256": "861E76868E39A4FFA1A172364176EF3E0FE4FC1079F5181CF40B88904DF1D995",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 3783
+    },
+    {
+      "path": "tools/BlackLedger/package.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "300638DA2F2BD0F561606D06E131D4FF3400895E669995481FFF4411426676BC",
+      "sourceWorkingSha256": "300638DA2F2BD0F561606D06E131D4FF3400895E669995481FFF4411426676BC",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 3583
+    },
+    {
+      "path": "tools/BlackLedger/package_final_read.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "9F1518E54D60BF92BDA59A2D9B2EAD0F7193785DCF4289B6775E0BB71561C0EE",
+      "sourceWorkingSha256": "9F1518E54D60BF92BDA59A2D9B2EAD0F7193785DCF4289B6775E0BB71561C0EE",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 3820
+    },
+    {
+      "path": "tools/BlackLedger/test_black_ledger.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "9DF56C7C8623F8A27ABE8FDDF3CAC2349569AFD4B0E4448F2D6237C78CFBA22C",
+      "sourceWorkingSha256": "9DF56C7C8623F8A27ABE8FDDF3CAC2349569AFD4B0E4448F2D6237C78CFBA22C",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 13161
+    },
+    {
+      "path": "tools/BlackLedger/test_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "EA99B29499D5C0F3570E8BF7CBB5DCE610D38EB14AF8647A775FD8C5377ED0BC",
+      "sourceWorkingSha256": "EA99B29499D5C0F3570E8BF7CBB5DCE610D38EB14AF8647A775FD8C5377ED0BC",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 4348
+    },
+    {
+      "path": "tools/BlackLedger/test_final_read.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "24D73EDE3F7304324ADCE35E2548FD6C376D3A6D6C11A9A24EA3B707AE7A85D4",
+      "sourceWorkingSha256": "24D73EDE3F7304324ADCE35E2548FD6C376D3A6D6C11A9A24EA3B707AE7A85D4",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 7475
+    },
+    {
+      "path": "tools/BlackLedger/test_final_read_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "05AAA3B3AD0B386715AB8BAF7934FCC976852AD5A3ECA9277B9894F524FED0CF",
+      "sourceWorkingSha256": "05AAA3B3AD0B386715AB8BAF7934FCC976852AD5A3ECA9277B9894F524FED0CF",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 2960
+    },
+    {
+      "path": "tools/Blackstone/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "F5894147FE62EF51657A3A31B6C380B782FE35D9A92643BBBC022EF665855307",
+      "sourceWorkingSha256": "58D848A7513289A733C3A7DC1DD4A52036FCE09D5FA2E9A7890AA969577317A3",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 18
+    },
+    {
+      "path": "tools/Blackstone/audit.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "5C032B72F4D25E145A67991C9F55671A5AD6F8767CABD69844F5418F4EFE77B8",
+      "sourceWorkingSha256": "76F8DD2DBF01E7928CBC26905FCC297EC1E19F1B2C30FEF6C1AA3EF0329B5953",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4725
+    },
+    {
+      "path": "tools/Blackstone/layout-models.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "DC471FEDB269E5EA8B899F768F4CC194C801E5E84F4242FB8C4727C10F1A079D",
+      "sourceWorkingSha256": "55228B9F681DB9350AB978E9C86413248D87AD26EE6F6A3AABF5D769A1EB31FA",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 42308
+    },
+    {
+      "path": "tools/Blackstone/layout-placements.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "934FEFCA3784D13DEFBCC38838982D90677654E03F89CA8533C16E93DF03C13B",
+      "sourceWorkingSha256": "337EF1C5C34BCD13B57A2ACD11FBB48097D3E8AF904AF88D5A138EF406AFDA49",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 85504
+    },
+    {
+      "path": "tools/Blackstone/package.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "02863FED95E48C48F401D72FE5707907DBFDBC44BB93FCF49A26013B1966A1AC",
+      "sourceWorkingSha256": "8314C3E75FAA7BB9ADD34B2A8B79F8EAA78B94F48DEEC2A6CB678E74CF941A4D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3587
+    },
+    {
+      "path": "tools/Blackstone/package_final_effects.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "D1606D2E7264AE0F7A7A09173E835A3112BA0AE48CF3E4A1B7E1905889636E50",
+      "sourceWorkingSha256": "6401CC8B45913F4C3131129FA8A191D98098B5231A46B9DD30C8B3E02E12ED3B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3641
+    },
+    {
+      "path": "tools/Blackstone/package_pass_custody.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "EEDD5AC50A933BFE17B9AA6753B7802634ECF9EDA7C846463488244436CF1FD4",
+      "sourceWorkingSha256": "D78DA660F61D602FC510239DBFAE539221A6C5FA4614DF9E7DA791424BD4A1D9",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3640
+    },
+    {
+      "path": "tools/Blackstone/packet.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E25DAE5FC8D387322EDA59A58EB7D6B804C1BD240929FD5112319A6B1E6A8B82",
+      "sourceWorkingSha256": "E25DAE5FC8D387322EDA59A58EB7D6B804C1BD240929FD5112319A6B1E6A8B82",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 26946
+    },
+    {
+      "path": "tools/Blackstone/test_blackstone.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "F261BE4B02ECD8512794516BA05BB988F9B36123D826436C40E5C7D463628C95",
+      "sourceWorkingSha256": "57F25A1B1DE19E3A4E9482F24B81F7DA91F148EA97F97FD2D1DC9199DE92AD21",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 15565
+    },
+    {
+      "path": "tools/Blackstone/test_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "152AD07371FC20A6D89F0D1FEAA66227B497DBB5F4A39843BC8705973927694A",
+      "sourceWorkingSha256": "DA63D6079747DA13DD51393D2A49D6745D77EEB2B4923E485FE5743382C0F0EF",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3079
+    },
+    {
+      "path": "tools/Blackstone/test_final_effects.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "04358B41E6DD06C28E2FD046D1192B5BA3E1E417D62B633E086BA1D3B9127EE2",
+      "sourceWorkingSha256": "9329AFEDC909FC3C17496A5C3ADCE440E5D4E7F9F690C63394EC4A551EC7652C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5642
+    },
+    {
+      "path": "tools/Blackstone/test_final_effects_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "CDA3A62FAA0DE74A9F4FC9D78AD703CFF6B9D6AC8C757F9A06A54F6D3099F102",
+      "sourceWorkingSha256": "D5E1CE188992C616C6CD59CAD33A00D295EB4B20BE80DF549DA4E13CD975AD20",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2050
+    },
+    {
+      "path": "tools/Blackstone/test_mq04_current.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "67A1895C3F71A625F784B18CF7851D4DF9069A819E1A346F1CD5C42EA9BC0A74",
+      "sourceWorkingSha256": "CBF618F5627124DF0AE8064C8FCFD4041C8543FC7469986876CA331DA38EC9E7",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 414
+    },
+    {
+      "path": "tools/Blackstone/test_pass_custody.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "AF080017CB7FEE1F6FE2377195404002A49B142415150D2172C7C3CB3DD71ADE",
+      "sourceWorkingSha256": "8AADAD94A3E3EDEA649E7FAD0C4B1F1BD1201D44301300248AD5055B6C82E0A9",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3667
+    },
+    {
+      "path": "tools/Blackstone/test_pass_custody_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "41470D095AFFBB228A5CD3FC0B7C187E79E8A55C41D486EAD2496A204060B7A1",
+      "sourceWorkingSha256": "F128B793EC7A714C4D60114D0A80493AE49DA179D6407BC661F1E0A52BABC235",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2136
+    },
+    {
+      "path": "tools/FirstBrakeInquiry/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "EE9089A31E7A0DA266C6363D5A4E0646004E5B74517ED416023E25645E95195F",
+      "sourceWorkingSha256": "D8C7722572C45F2011FE905F66497B57DC434D34A4CAFD6DC06CD809D116AA14",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 20
+    },
+    {
+      "path": "tools/FirstBrakeInquiry/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E8D2A402045C6BCD747F043A8C7852BC92BD8CFEBBC542C179409FC5C8BB0B29",
+      "sourceWorkingSha256": "30B660D85DAADB5C3DF0EEC9D70900F4C9444E96BCBADECAE353DA3ECD91BA0F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7364
+    },
+    {
+      "path": "tools/FirstBrakeInquiry/contract.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "21DFB0BB760C6DAAB630E3B77FCD170BB07970AB8DA663A181E89B438F3E6EAE",
+      "sourceWorkingSha256": "21DFB0BB760C6DAAB630E3B77FCD170BB07970AB8DA663A181E89B438F3E6EAE",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 6401
+    },
+    {
+      "path": "tools/GanttBatchVoice/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "946249693EB03080B088EC0AC2D5AC5DB79B1B0BACF19396C3E5A333FC986B8C",
+      "sourceWorkingSha256": "FA4CE760BE36E333236E8C38B877468E06E608BFC1851C1A5310C2EC4D3A2225",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 21
+    },
+    {
+      "path": "tools/GanttBatchVoice/audio-map.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "794244B9F19CB8E43CF671B23E628A745FED482E89B3421C07AD3D0F9C395A60",
+      "sourceWorkingSha256": "794244B9F19CB8E43CF671B23E628A745FED482E89B3421C07AD3D0F9C395A60",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 2049
+    },
+    {
+      "path": "tools/GanttBatchVoice/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "8C5A0EC5487D5097924786E0DC38133366FB593FA8957043C55F68DE07EFBE66",
+      "sourceWorkingSha256": "1E3010E5AEF392EDCF5DCFFC8BDD338E69CE5FB2D97F311BC41318807DB4503E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6599
+    },
+    {
+      "path": "tools/GanttFaceLight/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B01DBFDBCB5CC2A33824392BC4AE220A749D7D38A2FECCEB43B4CFED99717E8E",
+      "sourceWorkingSha256": "866277CA4C5B5E7D7B1E4AE2485D13DFB2D8B02E5124170BA1F60F4071B7B23D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4368
+    },
+    {
+      "path": "tools/GanttOptionalAliases/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "F42EC2D2AD732354C6A8AC184E4334AE07F625372B80B95430393085B0B1EEBB",
+      "sourceWorkingSha256": "354BA738C3AF9141BC7DEE0A3806076A27F96E63FBA33E18FB6690086D26BD33",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4550
+    },
+    {
+      "path": "tools/GanttOptionalAliases/roof_probe.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "13BF52E65C81BD6E9791CD607D16CB6B2B5981FEAE2A6D386F1F11D83285FEDE",
+      "sourceWorkingSha256": "D0E5BF4918E36740B90162C88F34A98D6C623D715413BADCA2B1925E73CBCF73",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2584
+    },
+    {
+      "path": "tools/GanttPrologue/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "D1FF35E5955D038ACBBF20CC3F70106DBC985D82135440D1CA640FD420E99753",
+      "sourceWorkingSha256": "795DE50AE3BE6CE18541C88C8DE22B05C4A3F0D7F69F023E406E301D640869EC",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 26
+    },
+    {
+      "path": "tools/GanttPrologue/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "3CD28A847A402CC3932B19105FEA5D42A8F7EF57356321DFEC2314F10A032DF3",
+      "sourceWorkingSha256": "5E71DD1332AF754FB0E645C7B947C534C09F80A939790B0B84127EA881D9D244",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 10602
+    },
+    {
+      "path": "tools/GanttPrologue/dialogue.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B6D14D09CC926040E24CB5E4883AEC37C4BBD5988DE0EDC80CA7F4BCF77DA12B",
+      "sourceWorkingSha256": "B6D14D09CC926040E24CB5E4883AEC37C4BBD5988DE0EDC80CA7F4BCF77DA12B",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 4165
+    },
+    {
+      "path": "tools/GanttPrologue/probe_room.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B1FB3554849BC65A3767CF77B611BBAF14785A44D908D099BA0E1680C16A02F8",
+      "sourceWorkingSha256": "274AC1A3DDD8E5F7969BCDB2289C3F282E19679BC28C7358B462EC14672CC95A",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 10386
+    },
+    {
+      "path": "tools/GanttPrologueVoice/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "1EB029DB48E69513632B690090365D9BEA979DE8613BCDA1F5A08681D5B4CF8F",
+      "sourceWorkingSha256": "8DBC1576A81FDABC98887E963C4BDE99F63884A806D8225459AB70CBF897CC62",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5647
+    },
+    {
+      "path": "tools/GanttRoofBacking/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "3A5B0214A330E16B8164ACD9CB85024196B26054942426A1CC101DBED83C50B4",
+      "sourceWorkingSha256": "832236951E7BCAE6A5F6835D53483395DAECC854BD06E0E9EA5779B7E2857775",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5030
+    },
+    {
+      "path": "tools/GanttRoofBacking/geometry.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A50474A2ECCDED88BE9227563EDC8A754E41AC80819BFA63461CEED9E03EEF22",
+      "sourceWorkingSha256": "DAA35FA40FD0D9B5B3492CCF5A4D7F7057339EA91308A6A5BECA6073FF6B61B1",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 10923
+    },
+    {
+      "path": "tools/GreenwaterRiver/check_river.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "587ABE88DA8430BA3738BE1E1203E44235C368FEF39E5B7D1B39F3A8A6394E30",
+      "sourceWorkingSha256": "6BCF887D2E08FD76D8542547EA7279D8E10783075C76E38786434C53141E225E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 9986
+    },
+    {
+      "path": "tools/GreenwaterRiver/probe_control.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A23516FBD6D444E77839470328E93247B2CE6D72B5B041A433AB00A050DC8D96",
+      "sourceWorkingSha256": "D6F501D334AAA4D33610B7021ABA9E5CE35BCC2253AAACA8DD61FF8E42E73F9A",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5249
+    },
+    {
+      "path": "tools/GreenwaterRiver/probe_deck.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "BE775B133B951158228ADC04D11C2CEB50D92BFD9AA875979E5EEA15B7A51B8D",
+      "sourceWorkingSha256": "ECFFAD5E89FFB487465B37710826E0721960C23F6297C47F3F2338C70E474A4E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5268
+    },
+    {
+      "path": "tools/GreenwaterRiver/probe_donors.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "1F457020C01B77054FF47BBB6AC54D4C8736EC5766DD02514DB5DC1B4BA8D9C4",
+      "sourceWorkingSha256": "B86E040F715140613527D063BA8135C4DE7E605D0EAFC99D2C59A756CF79D446",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5729
+    },
+    {
+      "path": "tools/GreenwaterRiver/raw.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "634F46A6329B6A475FCFAF0AD007284283A089026557FFAF683E78F4D397955A",
+      "sourceWorkingSha256": "186E2B4EEF272F5CF0E1B6913087E942D2710AF4A01C60CE4197E184FBB9D2B0",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2278
+    },
+    {
+      "path": "tools/GreenwaterRiver/render_plan.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E0D33A15F94177E77ECDCFDD649E97BAEA2664B26154A343A7C1D4A092A7ADAF",
+      "sourceWorkingSha256": "6D8C8D3CCDDA28127DA3B4CB58331F1BD87D96811BAF9B95E5D9447219354FB6",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2591
+    },
+    {
+      "path": "tools/GreenwaterRiver/test_river.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B9392FA5199F1685563731AA89E0EF4205303C962FE08CA9BE35A4410AE7EE48",
+      "sourceWorkingSha256": "2B7DC46D83353B8F2DE4558508452D2C29DF10ED8982223CFAD18FBACC1E965E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2827
+    },
+    {
+      "path": "tools/OpeningAuthoredWoodland/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "69D09DC686BABE6896C7250759E78333BB8754137B84FA4F8335BB68F17FC813",
+      "sourceWorkingSha256": "81354ED96CA49B0FDFA4A764A25BEE88B0AF8905FB42F31F67C16E21B4C06E48",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 9280
+    },
+    {
+      "path": "tools/OpeningAuthoredWoodland/make_placements.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "3196FF4EBDE2817CE7C4437A0AE22A4FE96B01E34B82E3AA4C1365F539B3CA87",
+      "sourceWorkingSha256": "8C670D680E2B2FB234844E1DEF13BCEA1F0BBC59571C11FCA4857779A4B630B5",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4624
+    },
+    {
+      "path": "tools/OpeningAuthoredWoodland/placements.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "4376AD620E04492F450360E7DA9A037D7ACEF2DBD79BE4CDA0BF3596E2A14F68",
+      "sourceWorkingSha256": "FC198614717994E99C4CDC252D3306EDF5CDD7647D911484F0596080C8D57623",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 20215
+    },
+    {
+      "path": "tools/OpeningAuthoredWoodland/probe_cabins.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "6823606BA16D7EDDE6447DB83DC0A05545131FD75727BF5C33802DB529AD84E9",
+      "sourceWorkingSha256": "21583A517AF84B0734BE8577059A43FFFC2AAD2C9A8F6175CB08A981D1ADC29C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 10518
+    },
+    {
+      "path": "tools/OpeningClueContact/verify.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "DB395EF46EF592423CCAABF18B4C24129461BD75A907C474E14620FADF662F6A",
+      "sourceWorkingSha256": "BD96DFB1F1747E3BA1B7943C779F0F03AF4F330E87AAB47B0BDEEB5825F94BC3",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2272
+    },
+    {
+      "path": "tools/OpeningContinuousWoodland/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "F4CAF8B1AE281EE3A50C9CCE060D34BA3867E41615BFC7ED0B9DBE0ACDA07CDF",
+      "sourceWorkingSha256": "E9216EE65646793F17715CE578FD3F5B07375C037CE7900FB8E693CD544FF36D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 11093
+    },
+    {
+      "path": "tools/OpeningContinuousWoodland/footings.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "89B0E9EF6FECEE70A1121E655A6D0970F5904CF99DF7D892BA98EB00ED215DDC",
+      "sourceWorkingSha256": "9ABA7F73C911B4497BB6E870AA830D445079080DF65D77EA29976D0539E19E45",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 27257
+    },
+    {
+      "path": "tools/OpeningContinuousWoodland/make_footings.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B056C42EDCC83258A28B7C5D0E2292AC6691D74E2B91C6164B503CBC231A96E1",
+      "sourceWorkingSha256": "A3A95F202873D070EFA156D9D92FB9FA1A607583705610E2D765EF2CA4351608",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4516
+    },
+    {
+      "path": "tools/OpeningEditorial/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "75A50A8923B39DC6EB40697CB0BE9B5E1D89E733EB0A9AD2024623E0ABE0CB70",
+      "sourceWorkingSha256": "712041FCDE65500FDF879F2CD861A7F7957D360FB241F1263F7B565FE272BDC4",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3250
+    },
+    {
+      "path": "tools/OpeningEditorial/copy.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E57296F055A3F6EAA702FF5569A6F11C239F63CC676897AFE16FA89F83AA1272",
+      "sourceWorkingSha256": "2FCAA0390739988C571A15544F4BB58F6912E2F537BA6AA92F470AF86027A990",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1903
+    },
+    {
+      "path": "tools/OpeningEnvironment/donors.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "CD24B0B7959787DDD348175F72F4055790B3397584553149644689CAACCD908B",
+      "sourceWorkingSha256": "3D01448DD892F71535C65CF6C3D38B170730B90AD118184E2514B35D084CEFC6",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 33745
+    },
+    {
+      "path": "tools/OpeningEnvironment/probe_landscape_donors.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "C1311D0E3522497EE4E63ED7D7D2B94DACE304A351DF42FCFB00D736D47B9D6A",
+      "sourceWorkingSha256": "0CAA291C45F94E8664DBB0AA687C338933CDCBE568566F05735DC641BC063ABF",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5815
+    },
+    {
+      "path": "tools/OpeningEnvironment/test_landscape.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "7444E1E59C2AA9FDF5CDF6CACE4EE87262EF43695BDAEFE733F0E59811A78DE2",
+      "sourceWorkingSha256": "D069613112185D8C50DC6296E0F6CC0803C3EC952A8FBA6101BB58C351181324",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3267
+    },
+    {
+      "path": "tools/OpeningEnvironment/test_opening.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E1A9E71995C6A754230EACABE502A9FDA13085A8FB6DF25978B4A614E60C5EC9",
+      "sourceWorkingSha256": "D49F79C4B05D057F7C47EB8C2DF0E0161964EEC6785B2DB1AD5080AD01B08FFE",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1629
+    },
+    {
+      "path": "tools/OpeningEnvironment/test_stake_repair.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "46A3E2076906DB898CC834FC7F18B822FA98F44D86DC33CC8FAD49D4397B1034",
+      "sourceWorkingSha256": "2497E9F91C46D756F203E89B488C7A36F4F4AA91D8945D28446DEAA709C2C764",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1175
+    },
+    {
+      "path": "tools/OpeningEnvironment/verify.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "1BC8FA5DA17B2C8343977A6CEE430955DEA526F6D4F7281C341517AA6E98CC53",
+      "sourceWorkingSha256": "0EBAA05C39DC1365D38B2F49DEB19E8BD9FF60430C1B7BF30FFDF2B714E9D5C4",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 8775
+    },
+    {
+      "path": "tools/OpeningEnvironment/verify_landscape.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "C85360FE70BC4880ACF795152AE2AD2818E4DA72036F98DA534B0CB59AC459BA",
+      "sourceWorkingSha256": "C41EB47C2D4EB29DC3F080BB3891DD91BE31BE7863A59C35B03329F307987898",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 10178
+    },
+    {
+      "path": "tools/OpeningEnvironment/verify_stake_repair.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "723BCBE1C701980D1B50E12A9CBD1C307E0C64EC30F1B3B68C9601D3DF2E3418",
+      "sourceWorkingSha256": "ADBC4D4A1CC4D7F13DC59FB55F55765074664D05070FF83454542B98A23BACCD",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1791
+    },
+    {
+      "path": "tools/OpeningFinalScene/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "6D3EDBD12C7EA9E6C88FA68A4F01E581466D7E0F99DA1E54620B93E1D5CB5D73",
+      "sourceWorkingSha256": "FB818A8C87CF725083E40538DB4681D02DADF120EFC8A3D4FBD2F500446FE062",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7733
+    },
+    {
+      "path": "tools/OpeningFinalScene/vmad_projection.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "F38A381633514A9FABC8B40B62936D78DDEFC9654D72465D88FAD6332EB56245",
+      "sourceWorkingSha256": "EA8BA8DAAA7167AFA03DA3CB0A86709EFA2C080ED22A4638199752AC3C472172",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2013
+    },
+    {
+      "path": "tools/OpeningMountainStructure/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "ABCFB8A51078791561C973C035EF9E973D252391C66DDC4A3531DDCFC68F6E3E",
+      "sourceWorkingSha256": "3E0022259D211B1ACE12AF98F1E75AC762A243C121D5EA115A24134D7CE70476",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 9589
+    },
+    {
+      "path": "tools/OpeningMountainStructure/make_structure.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "D9A1EBA6EB8122371AEF7D9D7516F095FAACD51094CF6EA36385EF1976B05876",
+      "sourceWorkingSha256": "397AB9A33948FF5B4C5C5EAEA83B0D913BC7DA5A207E7B1FE1363D85FD2FE9A8",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7018
+    },
+    {
+      "path": "tools/OpeningMountainStructure/probe_grass.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B9525186A47F416E7FDFF3797A0F4B17711C003CFD3046FADCA3C1398A0E9ED7",
+      "sourceWorkingSha256": "A0EF46E4F3B3DCB9F80A9A725DAD46511D66875A4F2011C8FD1AACEE5F0764B1",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6425
+    },
+    {
+      "path": "tools/OpeningMountainStructure/sculpt.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "6E811FF3CEB9E6C6E2FB2120B67BA742A7C88F4C4D11C3AE07B8106D905F8DE7",
+      "sourceWorkingSha256": "BFCF1B324328BD02BD70DCBC760CBDD4A44308EC76B35F2F69105336DEA3682F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 650209
+    },
+    {
+      "path": "tools/OpeningProductionFinish/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "5253C7529366B5429FBFFDA55123090DCA8DF251E84F0808C986B790A2704840",
+      "sourceWorkingSha256": "BC5A29FF2AF60C7707A714186D3B048CBED4F575C23B9FF5524D162BD8F9936E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 10482
+    },
+    {
+      "path": "tools/OpeningProductionFinish/make_plan.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "DF76A7E378C19730743DD294E29184957ABCD27E4B26AF0826A65255BDE487D1",
+      "sourceWorkingSha256": "6D5DB6ED329C8A8DFE7988113F0D20058E12EF5C50A68D98AE247C1050371C7B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6893
+    },
+    {
+      "path": "tools/OpeningProductionFinish/models.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "3314D102FDD694685A0E02A492A5F18BA6FB9426C1F0E0DFE67AAEDE0FAB3177",
+      "sourceWorkingSha256": "0CC1DB95AC2FC93E9E077298E27973CE980D11FF194C6DB3D7E4C91FDB3DCCC7",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 18072
+    },
+    {
+      "path": "tools/OpeningProductionFinish/placements.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "FFA4D53513BDAB42FF94862C1EB79C96D86100BA43818E131019A2872E2EA699",
+      "sourceWorkingSha256": "1819D7CFE16386691E9999E8F5C3AA8413F0BB43E6AA31565F52DD9F73455E3A",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 13481
+    },
+    {
+      "path": "tools/OpeningProductionFinish/probe_donors.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "66F69A668A1A2C7DB1B3690834A9C7A476977B2E80D21CA770024890B68F35EE",
+      "sourceWorkingSha256": "92A121E861A8807140466841CAFFD6F416C4711078A4920243B0DC30F73D3531",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6336
+    },
+    {
+      "path": "tools/OpeningRidgeSpillFinish/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "8564B90F1B9ADD1A3E11686FDE9B0585519462305EC711D698E2CF5795E377CC",
+      "sourceWorkingSha256": "BA837C44F5A949ED93CAEB2D3F2654061AC49F8D806E6812964CE27DB738A152",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 34
+    },
+    {
+      "path": "tools/OpeningRidgeSpillFinish/cargo_mesh.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "5E84CC23FE1E3A53719E74F42B027D0B27F11BE997EAF20BB83B89B491CFC9D8",
+      "sourceWorkingSha256": "9FB3582DC6D5E9D291C3889CB0DC4EF067B1327B7F834EE3D87CD7EF3D2E609E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 8716
+    },
+    {
+      "path": "tools/OpeningRidgeSpillFinish/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "698A9C9E786AFB9D46D0A144CF13679F4A1D6EDEB828577E39DAACA6CD185E80",
+      "sourceWorkingSha256": "8542995F4842CFCDCB980D41FDA3EFD17B4743FD399CF401E7FB0464C3EFC463",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 9794
+    },
+    {
+      "path": "tools/OpeningRidgeSpillFinish/make_plan.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "59CFF974FB24A9BD9B4538BF2A016D9375A3948117216F8B710176513D861486",
+      "sourceWorkingSha256": "5FD4F6966D6ADC30FA655C812F1342A76DD6AC12463FA06852D8DD0F241E23E4",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4637
+    },
+    {
+      "path": "tools/OpeningRidgeSpillFinish/models.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "27B56989E11AEB52DC1A3A85E33DD9927CDF59C2387638E20AE62262D5AE4670",
+      "sourceWorkingSha256": "27B56989E11AEB52DC1A3A85E33DD9927CDF59C2387638E20AE62262D5AE4670",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 23582
+    },
+    {
+      "path": "tools/OpeningRidgeSpillFinish/plan.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "58E80489F8D28C25CD524581F50BB3533CF01F5E313584EDA983A69E817562FF",
+      "sourceWorkingSha256": "58E80489F8D28C25CD524581F50BB3533CF01F5E313584EDA983A69E817562FF",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 20916
+    },
+    {
+      "path": "tools/OpeningSceneDepth/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "7832F5D2140D07BF78AB5AAB0EB26349DCB17DCDD57561202FFF1E5F298A01FE",
+      "sourceWorkingSha256": "A656F457408C5CE1EFE827AABCFD5A589AD62A86DCF6554D3D67935AE3488A49",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 8214
+    },
+    {
+      "path": "tools/OpeningSceneDepth/make_scene.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E62A6049E5AB111A30F142F5B3A9C780E3B9F4A3480B7D767454199B169FEBC5",
+      "sourceWorkingSha256": "1378D75C3381563165C18C2CB7ADEA54788853EB9224A4CAA99B4A5FA91E2B8E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7815
+    },
+    {
+      "path": "tools/OpeningSceneDepth/models.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "6C1D1F7A42D7B0F175D7BF8ECBCB32D2A736C7667F6635EB9900FF4972FD0753",
+      "sourceWorkingSha256": "E4198A3ADCD5F20960DC453C649776C8915C4B64C078DC155F2073F860D2746F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 30607
+    },
+    {
+      "path": "tools/OpeningSceneDepth/placements.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A0869873352D623BC1FFF0F4F1455ED04BDF45638A2C8B6C3307B3E6D8A58C55",
+      "sourceWorkingSha256": "E69F876AB8ED5CB25E46A9A090ECE3CCE3F4967FCB5FB56E0FF5826006D1F81E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 31590
+    },
+    {
+      "path": "tools/OpeningSceneDepth/probe_donors.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "EC31097931912198608BC2D47C0F714E130C35A36C40006733AC15065A62379F",
+      "sourceWorkingSha256": "DDFFF7489CA5A21E1B4364F33AF5B619FF629930AD12F1C89E2A5465EFFF865B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5890
+    },
+    {
+      "path": "tools/OpeningSceneDepth/repair_clearance.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "9F1D39602F0C19780D1F3F6C4F43DAAD04E1F21EF81168838C6E891B5ACFEF2A",
+      "sourceWorkingSha256": "9B7A0734F132D2CA5101F72F0B1EE09BD042D7BDEEDFB5BC61AE1B32D7C1B2D2",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3184
+    },
+    {
+      "path": "tools/OpeningWoodlandDensity/placements.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "350BB31B1F011CBF67996D1C0ADFD893F5B6184F502450220D19475EF4FB1BDE",
+      "sourceWorkingSha256": "BA03DDFA1C1ECD2FCA8921FB5B1F3910ED3836CFCDC5E6C3DBA56EE63FE31E9A",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 26483
+    },
+    {
+      "path": "tools/OpeningWoodlandDensity/verify_artifact.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "9D51F69DAC8A667789FAC67BADA1795FCFE657694D11D4DF459800167E3F7A7D",
+      "sourceWorkingSha256": "F93D5594F8CE5822F3CE7AE4A22B2236E995605DAD0782D9592E70B9FCE56732",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6332
+    },
+    {
+      "path": "tools/OpeningWorkingYard/fences.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "D73DD9FB69246EFA2D51795E5BED30DCDAB71FC42C46CF78197A533029B91C07",
+      "sourceWorkingSha256": "5004C3C791B8C6B4F99D5633BC788259B1CA833022A5FE3F4590B52EEC0CD7A8",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7883
+    },
+    {
+      "path": "tools/OpeningWorkingYard/papers.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "71C201293AE7DF87D5CED0E1CD214B4ADA2A0035A58DE7E713B475857584A04D",
+      "sourceWorkingSha256": "98FF9F12A02FB6C8747F2E63BC6DE1D0CB9E12244FDC8C18949EBB776CFD1AB0",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 490
+    },
+    {
+      "path": "tools/OpeningWorkingYard/prepare_metadata.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E7FD01954E183173084F1B42298F15C1BFE4639FC2112D528D723C622DD244CB",
+      "sourceWorkingSha256": "EA38AED419DDABA82E675FA4C5CE3AD16CBCB9265C7C6B7A2F0DA335EDEADDFE",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1194
+    },
+    {
+      "path": "tools/OpeningWorkingYard/stations.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "31096579BDC62762CE0A07154299B8E4337D4C45C1B1EB728C8183174245B952",
+      "sourceWorkingSha256": "42D622E24A7DE4CCC0E27A4B318156891F0CE442BF321D65FF472AA6429E3FF9",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 13686
+    },
+    {
+      "path": "tools/OpeningWorkingYard/verify_artifact.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "8B0BCD59BB508FF43206E87D95856896D3BE7A4C4CD7599ABB4D5F3D7A6520BD",
+      "sourceWorkingSha256": "FDA3A11C855BA50739C020D254E1E6090D8ABBE496F718B351F573357612C8CD",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5575
+    },
+    {
+      "path": "tools/OpeningWreckDerailment/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "7A0DCF4CF4EB96278B0F0B6882EEEBC232235FA0581A9CE8450860A395675F36",
+      "sourceWorkingSha256": "F29A13CA6AC6CFF61265F3948A1034DDD3A2B9D0324DF3B5A434B8AEF9A3FE42",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 34
+    },
+    {
+      "path": "tools/OpeningWreckDerailment/plan.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "C23C19DC4AF60DF6963BCEBF271B4EF775AF7187DDC49FED48626BF55B9A9414",
+      "sourceWorkingSha256": "C23C19DC4AF60DF6963BCEBF271B4EF775AF7187DDC49FED48626BF55B9A9414",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 1449
+    },
+    {
+      "path": "tools/OpeningWreckTableau/.gitattributes",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A1FC1301A1BC954F8AE31CE1252BEA7D27D61DA273966095E219302FB0A5B2EF",
+      "sourceWorkingSha256": "C43DFAE8250323AB33045542A7D72B7127D11EDD5F0A4D831C06C77BB2F1A445",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 40
+    },
+    {
+      "path": "tools/OpeningWreckTableau/check.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "70AD2D7164E4DAB74692C0F20C96EBA1A37B5D1A31BB6470EF1DA155F988FB90",
+      "sourceWorkingSha256": "A3BC8606D94ACDC43AAA98E5DD2AE21F88BDFA8EDFEAFC477FED81914B85D15E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5254
+    },
+    {
+      "path": "tools/OpeningWreckTableau/make_plan.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "4879934676CF294911E356E4FD7E9FEB83376ABD0E9D6E4D6BFEBB2D9DFB3959",
+      "sourceWorkingSha256": "056CC66DE715CD1C0E135D7B41C657E5AAE15038A4B759FB9C63FFA020EA5BC2",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4768
+    },
+    {
+      "path": "tools/OpeningWreckTableau/placements.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "FFF45749ECDBFF629B750B57681FC2B9FC8625C58764A4CC5A181004C86479CA",
+      "sourceWorkingSha256": "FFF45749ECDBFF629B750B57681FC2B9FC8625C58764A4CC5A181004C86479CA",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 7533
+    },
+    {
+      "path": "tools/PluginBuilder/AdaBookRecording.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "C4B4345D4C0622AEE293C5F8DD5EE03BEAEF065B0DD342C6C2D3E0E92C7C7D07",
+      "sourceWorkingSha256": "C4B4345D4C0622AEE293C5F8DD5EE03BEAEF065B0DD342C6C2D3E0E92C7C7D07",
+      "lineEndingsOnlyDifference": false,
+      "operation": "add",
+      "bytes": 1277
+    },
+    {
+      "path": "tools/PluginBuilder/BlackstoneEnvironment.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "96AD608019BA73437624DBC06A7E68F76328F4F40FC39A269EF4ADB558B98060",
+      "sourceWorkingSha256": "EE1D957C283B09F5B52DFB3747B9A49123DBB209CF8113C28CD92FA3CD281E2D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 9232
+    },
+    {
+      "path": "tools/PluginBuilder/Builder.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "06EE1D2767DA2A05DADF15989A2BC847A60D27C057026F99C23CD79D12F5BF33",
+      "sourceWorkingSha256": "951E74CB6D2A42313637234CBFD648EA5BD75D838026DD03E8A031862E7A910B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 106415
+    },
+    {
+      "path": "tools/PluginBuilder/MercyAdaPresentation.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "70226D969FE06515BE60F0F8CA6C2C0D94AF048534C9A522F2DF43FC28A3B6EC",
+      "sourceWorkingSha256": "34FE28F64615C36B69500046B0A5FC0F87067A304F763E729E3E519404CFE12C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2130
+    },
+    {
+      "path": "tools/PluginBuilder/OpeningActorPresentation.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "F567ED25DEF0270F5A078AC9CBA341894EBC8938DC7A88480B18D171B962EBE2",
+      "sourceWorkingSha256": "E661DA542901911C2660641568D650A282213C7D6DF7CD4E5147EC93C98E730F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6029
+    },
+    {
+      "path": "tools/PluginBuilder/PluginBuilder.csproj",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "6DBE8200BC05BC728189C62D7796735013D2AA0742DDEF0469548243EE60D943",
+      "sourceWorkingSha256": "82718BF7CE5A1FD2F2B8CBC0192C5CC529904C2EBEE1119538D4F37BABC71F1F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 557
+    },
+    {
+      "path": "tools/PluginBuilder/Program.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "67FE463841BF62A187FBA10D0D5A84BF498A825750A0C2BD5CF3D05B431C26D3",
+      "sourceWorkingSha256": "95F025EFFE164E15BADF758A1562CE58716C862B8EED7402F249FCB643570B9D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 4831
+    },
+    {
+      "path": "tools/PluginBuilder/QuestRecordings.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "30CAE19BE56AA098EFC3201F50729837627B2015671452C6928164CCF24C0642",
+      "sourceWorkingSha256": "513BEFEFD644F48268FF3EF22DC89D31E07AB9889FB6B3F1F93FB3E27010A44B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3656
+    },
+    {
+      "path": "tools/PluginBuilder/RedHollowAccess.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "6D498A5FB488919E62339015C3810FB43DE6BEE3A8B2D6FEE983EEE864A02527",
+      "sourceWorkingSha256": "A7F318903A561D8D3F61DB9CB2A66AA26472B7C52BF18FD0896EA4EDC48CF64A",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1682
+    },
+    {
+      "path": "tools/PluginBuilder/RedHollowEnvironment.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "DAF4BD7C4537FA18D8ADAF119118029CEB288A9388685BB4474AC415B5C64F6B",
+      "sourceWorkingSha256": "58C4421A9E8F097599853350A5EE80236A768B07A173E2BF4A9AF9164BA06ED7",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 17330
+    },
+    {
+      "path": "tools/PluginBuilder/RedHollowGeometryAudit.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "9174BA2C328BB3B98F1C2E83B5006B0F3464F52D1C1612C4C23B7AEC2707BB2A",
+      "sourceWorkingSha256": "2B5924DE857778DC84D1D634D3928B27B17EBBC96FCC0778BD23B3C0BF0178F6",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 8134
+    },
+    {
+      "path": "tools/PluginBuilder/RedHollowTerrain.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "BD62D5D7F9A42762DDD840DC3E0C31197B6865B115800F80952DA692ED5AE206",
+      "sourceWorkingSha256": "D4C6514B5D6F920EAB9421C762A874180FA959167FC72096F0016E4B82587955",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 6240
+    },
+    {
+      "path": "tools/PluginBuilder/Report.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "4083F0A1ADEE7AB121FE478E9E28A1C2509B3984E1FB3DA576B7ACD4D051F57A",
+      "sourceWorkingSha256": "0FE042294D268852067979194F58F9EC784ADD27B5BF838C5A9C1C08D41C56F4",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 23199
+    },
+    {
+      "path": "tools/PluginBuilder/SelfCheck.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "F4774FD6786EB471A76F41DC14700B31EEACDCC4684001BA3B362D4EAE85A888",
+      "sourceWorkingSha256": "83293BD25578CEAE6D3BE5831807256B27DDAB51C234374E1EE570D950BBE8AA",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 30022
+    },
+    {
+      "path": "tools/PluginBuilder/Spec.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "EDA4AC7FA58DC438A1C988A6EEF698006AD7692BF76CE118219AC36161A0A98C",
+      "sourceWorkingSha256": "D2519EF29CB574168D72EEADEA6F4B8879AF8A38F7E3FA818DC036D47076095B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 46038
+    },
+    {
+      "path": "tools/PluginBuilder/SpecAct1.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "84623108D4011C7B5F537A62C4D974B79698B8DECC3D47AC7AD4199B387733A7",
+      "sourceWorkingSha256": "99EF0B8EDE329F2781C16330F4AA9B7A64402B7872C908073AF0B7E3C8CD70E2",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 28611
+    },
+    {
+      "path": "tools/PluginBuilder/SpecBlackLedger.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "FB731120C0D45564ED7B7F3A691A07B9566562636BE8623CD19832949079594A",
+      "sourceWorkingSha256": "60AE8B2ADD1B5A4B1A26D99AB95FA5F9995F6F13F5DF99C5D4A44EC815F6E178",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 14498
+    },
+    {
+      "path": "tools/PluginBuilder/SpecBlackstone.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "B8534F7BF4DF09D9CE2D9B321B03BE661F7BDFD920DE8D59DEED887DCF3F07D0",
+      "sourceWorkingSha256": "8E113EC21A73382C856BB987DAF70A17487358F27097A66759C32B2A5B62D4F6",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 13588
+    },
+    {
+      "path": "tools/PluginBuilder/SpecFourFlags.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "337A1A99320A6FBC34336493027B8DADED91DC758B6C8B920779CAF4A6D59BCE",
+      "sourceWorkingSha256": "BBA66608A2FAE36B6315F90B0FF91A070E155FB8F7490A0BA4E3FEEDC9D7B4DB",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 19130
+    },
+    {
+      "path": "tools/PluginBuilder/SpecGreenwater.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "7BE2725728629BE9EF055CCBC6219B5BB68CF00E84A6D005269A9857E27B0EB1",
+      "sourceWorkingSha256": "DE3F240A2B66A4A526CCCB0A8D62520E74676CB638108AD9FEE9D7C75159876E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 48327
+    },
+    {
+      "path": "tools/PluginBuilder/SpecGreenwaterRelief.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "737E39DD86C9573394157CCC5CEF850BFCBA9924489BFA16C0AC61F522754995",
+      "sourceWorkingSha256": "F21759637373F76CAD2B005DAAF39342DDD915DD67D832D334A1777C4E0DE76B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 6863
+    },
+    {
+      "path": "tools/PluginBuilder/SpecGuide.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "68DB9FBDE8A98F61863D3DA6E1096ACDE1D4016C4266FD89CEA73C3DC2C8D324",
+      "sourceWorkingSha256": "2A6D7A5711F8D82A70A1CC7919FAF21A90AFBB9DB3CF6B20CBB58C04056BE777",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 1414
+    },
+    {
+      "path": "tools/PluginBuilder/SpecMercyBriefing.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "AC9A97C489841A75543C0D78715CEB9B61760FD857A8760E3B3EB602E9A63D3A",
+      "sourceWorkingSha256": "BF60C3927C088DE58247C42F0587AC356D37E5A186B1EA8B9EB654BF7AE41CD1",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 9113
+    },
+    {
+      "path": "tools/PluginBuilder/SpecNightMail.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "2CF98AB13BBF0F9FA5C9945EB664CBFE9BEDB286EA6C4B49F189A563AD660F75",
+      "sourceWorkingSha256": "042B4195F3D21FC157F8C30D8FC31D7B5C21B92F5549627AFE20CD5B6C578E25",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 56347
+    },
+    {
+      "path": "tools/PluginBuilder/SpecOrientation.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "AB0E8D60159C950629A75A2926A7F1AC90CB86DA2D4519A1FDE2C951B297709A",
+      "sourceWorkingSha256": "17B6C2143B3E35BBF23494FA6F9FDA2CD532A016F186111582813D7B37F393C9",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 2065
+    },
+    {
+      "path": "tools/PluginBuilder/SpecRedHollow.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "3BD958F39904835CAF14E10E8C88324DCDD90AED9CB17BE38EAF656472DED5DA",
+      "sourceWorkingSha256": "C986FB1FF6D5F64732C0BCA8D33AABBEE2A6AED63F4C77F6BD259EC701FB93A8",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 33237
+    },
+    {
+      "path": "tools/PluginBuilder/StructureAudit.cs",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "F52E83C8C74944B20F43C8FF09F5C9BF3E2BAA1E3366C46205704CCC08E8CC30",
+      "sourceWorkingSha256": "B06F43BADA46A28E1922EE7F27D042BEF9B304BE4CA3CE0BDAAFB34B652C0663",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 3974
+    },
+    {
+      "path": "tools/PluginBuilder/formkeys.txt",
+      "component": "main",
+      "sourceHead": "1f510971c08a45435f511a90e6fc4c01cc823c7d",
+      "gitBlobSha256": "9A6FDBA88FF800B74B0B0674C6F7FE191359CDECB5E4C564A5C549FF15CF888C",
+      "sourceWorkingSha256": "9A6FDBA88FF800B74B0B0674C6F7FE191359CDECB5E4C564A5C549FF15CF888C",
+      "lineEndingsOnlyDifference": false,
+      "operation": "replace",
+      "bytes": 55374
+    },
+    {
+      "path": "tools/PrivateRoadVoices/audio-map.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "85AD4254CDEC7CDCEFC7AA4326E5F2A8C18DB1B2A6BC06D247082A8E4213C718",
+      "sourceWorkingSha256": "B0E7BD3CE93B4EC6C23A243AAAD1E8457D72619730229F9DED09380A7B03211B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1757
+    },
+    {
+      "path": "tools/PrivateRoadVoices/check_world038.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "6FFC8C389C798020B99277B3A80DDF47B6DD382D79537A6FB9C00C9083076B6D",
+      "sourceWorkingSha256": "51624DC5B67A961F919C0EF19B49CE420CC97057DAD313C603DE099950529D36",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4044
+    },
+    {
+      "path": "tools/PrivateRoadVoices/record_world038.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "99C35507FAE9E26F9A19462B1B3ACA8A4F0E86053264F66C0746138049B2CADF",
+      "sourceWorkingSha256": "5C12BC2FDC184474F6FACF19CDEB2AA5B05834B2AED60F735DBA5245800AB39F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1986
+    },
+    {
+      "path": "tools/PrivateVoiceWreckUnion/check041.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A1C9D63DAF3ED6816FD83BE310CCC2A14C03442D8B69C3807DBD83CAF124E910",
+      "sourceWorkingSha256": "1D7492470E979F4C9DC253F0930300997CC2549756D655F6C3AA1D063FE33360",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3363
+    },
+    {
+      "path": "tools/PrivateVoiceWreckUnion/record041.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "2C794A06AA0DD23F28DD179AA492BAC7F6A27DC41ABE81516E92200116E053B1",
+      "sourceWorkingSha256": "C455A43A1006EC459A1E358523A5DFDC660F95964DF560D89C3440812364B2A3",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2252
+    },
+    {
+      "path": "tools/SheriffWorld/check_world.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "820EC4EA9C0C8727F8583833066E50623D639F31A5914AD1035C5CFA8C386CA2",
+      "sourceWorkingSha256": "373CC8C33637DE4AD4ECD84C66760C396A82AAC6761BC0AECCD5A4A1568E0D74",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6230
+    },
+    {
+      "path": "tools/SheriffWorld/raw.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "0CBD5AEAD24D83AC9A1DEF416F90F690DDAA21A6279F9F8091E859259912E2AE",
+      "sourceWorkingSha256": "77C565B1A9DE8B8850C0E662170154CDF0D35A6CCF59F4CA476FED68A577FD1D",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2289
+    },
+    {
+      "path": "tools/SheriffWorld/test_world.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "2084D39C12C9BF0DB64FB8C587FCA0CE32BAD639E5D0E13CB057B33E37BCEC38",
+      "sourceWorkingSha256": "00431ED088B673E20DB2A2384D2F7204FC5F728E80BCD1E8D536EB7BF710E541",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1697
+    },
+    {
+      "path": "tools/SheriffWorld/vmad.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "AE8544A75443D876FBBB37F4773F50892DBDFB24B1841676D624C5CD12C499EB",
+      "sourceWorkingSha256": "B47B1323625EC3CC6A5E5144B127F77797890159BB0568D088D33D89C9F5F786",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1211
+    },
+    {
+      "path": "tools/WorldSliceBuilder/AppalachianRidges.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "2897B0E1EE7F9193703F03CA23F9C72D2AE0EE38E40D13213C7B127129883683",
+      "sourceWorkingSha256": "4B2198AF0FD9E2BC8288A9C89144FD3EFEFE6EBA87045054D59BFA0C14C00F55",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 10848
+    },
+    {
+      "path": "tools/WorldSliceBuilder/Expansion.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "2C7273AD1EFC6E3C6B33EBBF2E91FDC5451998D9E575FA989E3F3D92EF21774C",
+      "sourceWorkingSha256": "AD8BAA62E1BADDE55C79205D2426B01754CFAAE373F3D5BBC28CBCA6FFA651AF",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 5640
+    },
+    {
+      "path": "tools/WorldSliceBuilder/FirstBrakeInquiry.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "14794406FEEF4443BF4DC72BDCE52013DB5BA2AFF6142063944498BDB61096EF",
+      "sourceWorkingSha256": "0A5606AF46F2217548278ED2D0286CC8DD29DD7D6ED7893781AD7A52D6A4DDAF",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4573
+    },
+    {
+      "path": "tools/WorldSliceBuilder/GanttBatchVoice.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "54768BE659B58C5D4913A0C4BBF4CB30D05209B39D71E347ABFCF6CD71A858A3",
+      "sourceWorkingSha256": "ACF30C61C6D9B1DEE424080F386953C78FC3D530A4D9B1379B62814E3E71BFFE",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2647
+    },
+    {
+      "path": "tools/WorldSliceBuilder/GanttPrologue.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "5B14A21BE69D24F7A92AFCFE4364E610878DA26EF4EE656C82A7792CC110DECF",
+      "sourceWorkingSha256": "0E5FF21935DB4CDF26014C991C0C314FE54B22C426B993F3603B30A07EC7AD45",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 12891
+    },
+    {
+      "path": "tools/WorldSliceBuilder/GanttPrologueVoice.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B98FD692FA2BB00DF645F1E041A2A8592E1896AECFC10EE28FC0E74310A66A89",
+      "sourceWorkingSha256": "9B57428C76D078E15533B5CEA21771B2EFC51285138ACC86CBED3B7214BFD02B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1771
+    },
+    {
+      "path": "tools/WorldSliceBuilder/GanttRoofBacking.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "16337D266C9AB83E808ED242BF3AC148DB6E6E02EE6BA6ADE01F4D283D20CE12",
+      "sourceWorkingSha256": "235ACB3359B6B8DCBD800833E9F83067E7A805AA554C2C247EF386FEF0A53B30",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1651
+    },
+    {
+      "path": "tools/WorldSliceBuilder/GreenwaterRiver.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "3EF263E4EE1A2F72F5AF61E1BBEFE0790C11FF460B2EE5B643574B658A25B762",
+      "sourceWorkingSha256": "F589336F217A7D0121D4E44B9C6351066D5D9BA42966AF9BE351C96BC77C5483",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 12640
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningAuthoredWoodland.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "BFB5CEB8900EE314E2F6F664C14D1F4FD6E144ED32981ED77318B34484EEAA3E",
+      "sourceWorkingSha256": "39802FE131119B6144CF6DF58C2397975156CBF447888246376394E3C7479EBD",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6544
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningContinuousWoodland.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "70A83F08187F72CEF21FDE27ECE81B596BB3E5813C980170C1D21A6EC3010B26",
+      "sourceWorkingSha256": "8D83BFC9DE501954D5D2976B08CF76AFCC22E9A40CBD944DF4841A988A8AE57B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5618
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningEditorial.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B1688F6EA80F4449AC9D2690F3A8AC126A0E9F2919F9331F03BDACC95B3DAF79",
+      "sourceWorkingSha256": "37BC4E9AB8788093CDCB0D8AAD962503751E4AA1F851EB77B15FA9B4F2199368",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 1386
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningEnvironment.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "C5F4AA046195D3DA0BB10A0C62525D2438240A78FACA81189418A557E443780F",
+      "sourceWorkingSha256": "9CE52581D348982EE3E30DB1E18F06AB02ADDF909ACD3A47FECF59053AD66233",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 12993
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningFinish.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "72C45CEE64FF0058D9C489C1A16DF3D9AC8BF404E91A6009FB3C3C8040E23579",
+      "sourceWorkingSha256": "479CB710F11DEDF43A4390A29DEC200B8E208FBAC0B564829739789410F39716",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7412
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningMaterials.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "EE40074CAF0F319563644A979968AFE0AC402DDC1DE3A3DDB603F04E529872F5",
+      "sourceWorkingSha256": "39070BEFAF6BB647D3B275766FF1A95DC426AA94A1C30D6EB0A7729486342131",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3568
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningMountainStructure.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "4DEBB913ABE0DF5B5EB036A9E8A50069FCAE9DA66E8CD955B600B1ECB3EE9B4F",
+      "sourceWorkingSha256": "2430DF871553851665D1CFC3E8C3BCB9A98AD4D369B07A00B40517BA5E45DB65",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 5816
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningRidgeSpillFinish.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "05473F489B82CF013EE56BC58A2CDC815C967B3DBCA975146E84C8AF2ED24589",
+      "sourceWorkingSha256": "EDDBED46E8996106FA4AF9D8F8A606015F8A4BC3C4EC13581554466D2373336E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6910
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningSceneDepth.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "4B6C8758F13A3E37CD9F14D5EFD3EBF0CA19B4F60B12A9784F51FCEB96D9FAE2",
+      "sourceWorkingSha256": "CF9276FCB2D87BEADE6E8ED4D02745B8E93FEF088C8AC4F1445FD0B9E4A81A23",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2198
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningWoodlandDensity.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "0EDB6943F6FC31A339C81B162E20B191483199450D438C92A0870BDA08114024",
+      "sourceWorkingSha256": "3E77F19B5217C3CE0B7AA7F63D4B9CCB5F6F690F3E6A2293FE610F78D1316E53",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4672
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningWorkingYard.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "C75BE2EE264A5834ECAEA8F7073A92DDED32A509F562EEAE30772265C1B579ED",
+      "sourceWorkingSha256": "1F3E32B7086BFC3CCF89D23BF947BE14F24E816294CA1211396F64A8CA43E824",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6075
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningWreckDerailment.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E804BD6F4E6B8EC13B5605CCEA0A6A4F7CA797CA3355BCC73837CFA7F17E5FE9",
+      "sourceWorkingSha256": "153CF6FADC6955C6F5DF08766E56A41E1CE4613161D0B1D9CA44F02B870F6C5E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2080
+    },
+    {
+      "path": "tools/WorldSliceBuilder/OpeningWreckTableau.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "F3F1B5BF8B9524554FE675B455E1649929D194D815D6ABF6B6DC8DD45200C05C",
+      "sourceWorkingSha256": "5C098CAF83937CFFD241A5D054D90E6ACFEB76AE61FF54B9ABA920BEA29B9B7B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2093
+    },
+    {
+      "path": "tools/WorldSliceBuilder/PrivateRoadVoices.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "8750F732032D38B0C95E8FCC368BD8143A11FD749DD74F0CB7D8FD49D8204884",
+      "sourceWorkingSha256": "AB61240AA41DE0284825D7E362B2724FD1636AFF88DF9C100445F527CEA2CD3B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 4943
+    },
+    {
+      "path": "tools/WorldSliceBuilder/Program.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "F2041914A13D2C9F724A84EB3F5D48E1C495D4EDE1A535E5D3CCFC1C25041AF5",
+      "sourceWorkingSha256": "BF66E94E7AFCCF9C111D03D95C54BE358E2816EC2260059D8A09EC984514A853",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 32200
+    },
+    {
+      "path": "tools/WorldSliceBuilder/ShelterDetails.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "015D81D3739B005AA6B493E942E0B92B927B0DCBC2A27056E308012F2951F37B",
+      "sourceWorkingSha256": "213FB818964212AF075F13AFDDA274BA0D0892510591154F84E39FC7404F140C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 2866
+    },
+    {
+      "path": "tools/WorldSliceBuilder/StoryCloneCheck.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "B323650A8068297022E903EA41ACB3C28DE3F580DC6ACEF98743B4BE95C9C086",
+      "sourceWorkingSha256": "F04DE8C1E591130CFB90369164440BF8A60ABA78028E4CC81763654F064C2A5C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 17726
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldBlackLedger.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "3F868C8EA32A1EB84F754398DF60416F93F68DE92B511D1EE36916A2A70C9CE0",
+      "sourceWorkingSha256": "279ECE2C90486E5930D257802BE532DAC0B8418DD9E3924BF35469DA590C4DCB",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 6361
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldFourFlags.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "AB9DFEE3E35A0320511E535699CB107A927A6A1DF917AA945FC96E44B8711B70",
+      "sourceWorkingSha256": "A8E306F671FEB1A8888B576CB7BAFA2217C7A4ED418FCFE256F7151A525436E3",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 13881
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldGreenwaterRelief.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "E1DE33A09983F9855F95C0EC777293FD84D0B00400BE3380F64BA8DBE5295A8C",
+      "sourceWorkingSha256": "660A4F72AFB4DD4381A6CC917E14AAB9BAE0A38EB191F6008A16680830509C27",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 2797
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldNightMail.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "1B34EE27149FFDC1CA06EB43745B4F626F4EC54B54715360BBC723A735867A5E",
+      "sourceWorkingSha256": "0D1CB029D21BECA40885A2F713A8BF1A4A8077B2744171DF97D3DE00D8FB98FB",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 7536
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldRedHollow.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "FDA1FD3344F7E3A530187E85215C7FA71EE5EC34B5A33BF4E10A87CB414B5430",
+      "sourceWorkingSha256": "7039FA7F3BE1A520DC45576650C542BDB2950D476391C6896472B7EEF0F61C3E",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 10906
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldRedHollowEnvironment.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "229C34B2978FB7F7B023E7B688E03C0C6591A60D9EF0B0A0094EF61DD5D51CDE",
+      "sourceWorkingSha256": "6DE8210FAACAC1C386DE9193EA8FF1018B9356CAFA05AC32BA5ED339FE3AAF3F",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 6507
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldSheriffHelp.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "741283E10C42105AC9EC98641F722D05ACA736D5B950BFB95C73A054A3D26B57",
+      "sourceWorkingSha256": "DDC0E88CC7549323ECD6E253052E68CB5B5D982009BE91F3E4DF7237D989BBCE",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2292
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldSliceBuilder.csproj",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "7EDC07FBF7B04F94B920356EB6ADA71BA9628865DCC2368E6A9C34246E840A24",
+      "sourceWorkingSha256": "66D2EF2C9E5C643F2656F0EE4F7DADF6D23A384BB1596803F0CD7E255E917562",
+      "lineEndingsOnlyDifference": true,
+      "operation": "unchanged",
+      "bytes": 313
+    },
+    {
+      "path": "tools/WorldSliceBuilder/WorldStory.cs",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "0417C9B377603CFA0580484EAD05F6BDC76407AB0E3D7F572881EF82A0AC0547",
+      "sourceWorkingSha256": "ED36DCC270C3C5FE9883C5743AC0C259CD919D1B52908C7FEC242565BD2EBC0B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 24195
+    },
+    {
+      "path": "tools/black_ledger_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "54DE51A954F6C1181E5B069DBA0B05A5E292CB00F41DE8A4BC12E9167094C5E1",
+      "sourceWorkingSha256": "79705D1CB22E9476A343BE648E74F414104E6A2E7AC99D907EA4A6893C498F67",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 7103
+    },
+    {
+      "path": "tools/black_ledger_final_read_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "3C80BC31D4E00902D51C269453B49C915B2102BC2F21CC4AD6791A98188DD128",
+      "sourceWorkingSha256": "64BF0BE74FC92901FB542E68C25D8CF54D637E1B90507B8E1EF96DA5E08F08E2",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3903
+    },
+    {
+      "path": "tools/blackstone_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "6307515A1D254C858B112EE71A5BD490900E2BEA3BB31AA2216F89492563F784",
+      "sourceWorkingSha256": "92FD1960151A3C2D28CFDACC43F34DD487E52ABC70B5EC503D048420956F5EFD",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 8456
+    },
+    {
+      "path": "tools/blackstone_final_effects_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "FC5650A423F6ED2FFDDBAC77E36CF0029C348FD604B59414555551DF05E46916",
+      "sourceWorkingSha256": "1DF4003CC67B1983F8F25ADAB37C3C57931A7BE033171A53B4C68FD449B3C99C",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3604
+    },
+    {
+      "path": "tools/blackstone_pass_custody_candidate.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "72A48A9B2D855A1E0DEDD9A7F3B312D54833E5AD97ABD7E9A0572111AEB82F81",
+      "sourceWorkingSha256": "2DBBF3CD687D1BF84053D54A759DD5E1DC0D94592DA2B4116B052B2994D554B4",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 3744
+    },
+    {
+      "path": "tools/check_composed_world.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A8765F1440E2ED614F6CBB907A39E2C0D5935AA3A3410820318AE0132EEA17A7",
+      "sourceWorkingSha256": "3EE54C6581D0B33415F14ADEA48EC7BEAA50A9BBE69FE32A49586A3979611802",
+      "lineEndingsOnlyDifference": true,
+      "operation": "add",
+      "bytes": 2266
+    },
+    {
+      "path": "tools/papyrus_natives.json",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "A34FE193821AFBAEE6A9D7CA9EFBDC8EE2C3DE7B30F25DE38DE25E20864E1116",
+      "sourceWorkingSha256": "36EAD718F7C12A600DE6FCA26F8104BC4B3CE1651ABEDB867B82D5D97218A4AC",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 32233
+    },
+    {
+      "path": "tools/papyrus_sim/sim.py",
+      "component": "world",
+      "sourceHead": "ea2219120fa1896c562fa9e27124ddc5733e156e",
+      "gitBlobSha256": "57D68E97A0C2FF3863A996BC1B73C576DF50112610A23440D1584378AF3F730D",
+      "sourceWorkingSha256": "66AA2CFEE09E5992572A2065B37BBB77188F3F5B150F883B67A7E8A0CC5A130B",
+      "lineEndingsOnlyDifference": true,
+      "operation": "replace",
+      "bytes": 102583
+    }
+  ],
+  "explicitDependencyOmissions": [
+    "all WAV/XWM/LIP/FUZ and generated PEX/plugins",
+    "owned Fallout4.esm/BA2/NIF/DDS and SDK compiler/API payload",
+    "models/cache/credentials/native profiles/saves/logs/private review evidence",
+    "component artifact receipts/proofs/baseline snapshots and absolute local build inputs"
+  ],
+  "preserveBase": [
+    ".github/**",
+    "tools/papyrus_sim/game_runs.json",
+    "existing canon/history and all paths outside listed selection"
+  ]
+}

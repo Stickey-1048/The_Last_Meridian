@@ -1,0 +1,27 @@
+{
+  "base": "58668ab0820cb429ba4d719ea3ee30a67e1a60f7",
+  "scope": "SQ01 model recomputation only; original expectations preserved",
+  "unchangedGitLFPins": {
+    "scripts/Source/User/TLM/SQ01Quest.psc": "E020EA93CB4C3F6DDE23B009829C93B4FC289AF186F98603ACF43954726677D6",
+    "scripts/Source/User/TLM/MatrixCases.psc": "AF86E71AD74D859255563F972416BA814187A8D1DF4D48914BFE2AA424BF767B",
+    "tools/gen_matrix_cases.py": "C399C1C7B64D83C3E0C82402F7B1E54609F2CDEC2E9C81B64B76F5AF2CF99859",
+    "tools/matrix_cases.json": "8B420620D496A3F08278DD374E04C1A6976ECE0636A4FA7E67BDEE927848DB1C"
+  },
+  "parentRecomputeRejectedBy": [
+    "test_both_paper_orders_keep_comparison_objective",
+    "test_all_clue_combinations_match_existing_quest_gate_and_repair"
+  ],
+  "generatedPSCSemanticDiff": [],
+  "generatedJsonSemanticDiff": [],
+  "cases": 53,
+  "steps": 335,
+  "checks": 1340,
+  "functions": 54,
+  "generationWroteFiles": 0,
+  "focusedTests": 6,
+  "existingSQ01Methods": 27,
+  "existingPass": 26,
+  "existingHistoricalSkip": "S16 engine alias refill; unchanged existing decorator",
+  "noNewSkips": true,
+  "native": null
+}
