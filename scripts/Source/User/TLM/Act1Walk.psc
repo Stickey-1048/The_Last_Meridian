@@ -597,7 +597,7 @@ Function TalkDunmore(Actor speakerActor = None)
 		TLM_MQ01.SetStage(30)
 	EndIf
 	int answer = ShowOpeningRecording(SayDunmoreHold,speakerActor,RecordedDunmoreHold,4.88,WHO_DUNMORE)
-	If answer == 0
+	If answer == 3
 		; "[Risk combat] Pritchard hangs road-takers. Leave."
 		If Coin()
 			ShowLine(SayDunmoreBreaks)
@@ -606,7 +606,7 @@ Function TalkDunmore(Actor speakerActor = None)
 			ShowLine(SayDunmoreTurns)
 			TLM_MQ01.SetStage(37)
 		EndIf
-	ElseIf answer == 1
+	ElseIf answer == 4
 		; "[Fight] Let them go."
 		ShowLine(SayDunmoreTurns)
 		TLM_MQ01.SetStage(37)
@@ -622,12 +622,12 @@ Function TalkDunmore(Actor speakerActor = None)
 		EndIf
 		; A27: "[Leave] No deal. I'm leaving." closes this menu without
 		; a stage, a share or hostility. The live hold-up still has its timer.
-	ElseIf answer == 4
+	ElseIf answer == 0
 		CallSheriffHelp()
- ElseIf answer == 3 && HelpRoad().SheriffHelpPending
+ ElseIf answer == 1 && HelpRoad().SheriffHelpPending
   HelpRoad().EndSheriffHelp()
 	EndIf
-	; "[Leave] I'm walking away.": the same non-escalating exit.
+	; "[Leave the caravan] I'm walking away.": the same non-escalating exit.
 EndFunction
 
 ; ------------------------------------------------- the caravan and the gang

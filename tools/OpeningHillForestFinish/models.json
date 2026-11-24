@@ -1,0 +1,138 @@
+{
+  "scope": "Existing accepted numeric fullparent model metadata, no payload/newasset survey",
+  "assets": {
+    "TreeMaplePreWar03Gr": {
+      "id": "00061640",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "bounds": [
+        -274,
+        -412,
+        -14,
+        562,
+        410,
+        1272
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "B65950C7D9897119404E9A72E4286B1B96E1FEB6C1E2CE9B3E68B6C03D607205",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1,
+          "NiAlphaProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -170808.59802150726,
+              -380457.0849876404,
+              286939.06936979294
+            ],
+            "name": "TreeMaplePreWar03Green:0 - L2_TreeMaplePreWar03Green:0",
+            "localBounds": [
+              -274.75,
+              -412.75,
+              -14.4140625,
+              562.0,
+              410.25,
+              1272.0
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 1385,
+            "triangles": 1572,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -274.75,
+          -412.75,
+          -14.4140625,
+          562.0,
+          410.25,
+          1272.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -27.578125,
+          -28.34375,
+          -14.4140625,
+          29.484375,
+          28.71875,
+          -14.09375
+        ]
+      }
+    },
+    "RockBoulder03": {
+      "id": "0002F79B",
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "bounds": [
+        -60,
+        -46,
+        -59,
+        78,
+        69,
+        30
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "1C6D398290C8FA57582397D65B35DBAAA5858A332E89B051108DD83F05C050CB",
+        "blocks": {
+          "NiNode": 2,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "L1_RockBoulder03:0",
+            "localBounds": [
+              -60.1875,
+              -46.0,
+              -59.25,
+              78.3125,
+              69.625,
+              30.90625
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 346,
+            "triangles": 480,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -60.1875,
+          -46.0,
+          -59.25,
+          78.3125,
+          69.625,
+          30.90625
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          15.703125,
+          -35.71875,
+          -59.25,
+          43.5625,
+          -16.671875,
+          -58.75
+        ]
+      }
+    }
+  }
+}

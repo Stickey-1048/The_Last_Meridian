@@ -1,0 +1,164 @@
+{
+  "status": "PROPOSAL ONLY, not authored/emitted",
+  "baselineWorldSha256": "99C7D35388B1F06946211E15FD86E542BA01ED3096B3F8A4DCA6FFBDE6E37211",
+  "scope": "OnlyLAND02000AAA VTXTplusneededexistingnativeC55F3ATXT slots inSW/SEquadrants, four existingpassiveDATA; no heights/normals/GRAS/actors/quests/audio/newrefs/assets",
+  "masks": {
+    "smoothstep": "t=clamp((value-a)/(b-a),0,1);t*t*(3-2*t)",
+    "ellipse": "E=1-smoothstep(.4,1,sqrt(((x-cx)/rx)^2+((y-cy)/ry)^2))",
+    "forest": "F=max(.70*E(5520,4864,640,512),.55*E(6320,5180,560,560))",
+    "rock": "R=max(.65*E(5600,4800,160,224),.60*E(6000,4850,192,256))",
+    "weightTransfer": "S=sum existingexplicitweights atvertex. For eacholdlayer wNew=(1-F)*(1-R)*wOld; add S*F*(1-R) to nativeLForestFloor01 0003343C; add S*R to nativeLRootsEroded01Rocks01 000C55F3. PreserveS/implicitbase; never normalize sparsemaps to1. Missingexplicitindicesmean0only for theseexistingVTXT maps."
+  },
+  "nativeLayers": {
+    "forest": "0003343C LForestFloor01 existingbothAAAquadrants",
+    "rock": "000C55F3 LRootsEroded01Rocks01 alreadyusedadjacentA7E; reuseactualnativeLTEX/model/grassmetadata unchanged, no new texture record"
+  },
+  "packing": "NativeexistingHHf/index0..288/opaqueUInt16padding/order. Keepuntouchedrows/ATXT/BTXT/headerbytes; newpositiveweights requireexplicitHHfrowpadding0 (present910actualnativeAAAentries; preserveexistingnonzeropaddingbyte-for-byte); appendnativeexistingRockATXT atnextfree layerindexonlyinquad0/1 (currently5/4), no newLTEX/GRAS. Sourcecontainsmixedpaddingvalues, notallzero; no MPCD invention. CompareduplicatedquadrantverticesbytextureID; inheritednativeweightmismatchmustnotincrease; no outercellborder changed.",
+  "sharedQuadrantSeam": {
+    "baselineMaxTextureWeightDelta": 0.05490198731422424,
+    "proposedMaxTextureWeightDelta": 0.05490198731422424,
+    "editedOnlyBaselineMax": 0.039215683937072754,
+    "editedOnlyProposedMax": 0.03344289513456994,
+    "note": "Inheritednativedonorquadrantweightmismatchnotclaimedfixed; proposeddoesnotincreasemax. No newheightnormal/seamwork."
+  },
+  "statistics": [
+    {
+      "quadrant": 0,
+      "affectedVertexSlots": 73,
+      "maxExplicitSum": 1.0000000670552254,
+      "maxLayerDelta": 0.6844118306040764,
+      "newPositiveRockSlots": 15,
+      "existingTextureIds": [
+        "0x1d1d3",
+        "0x22b63",
+        "0x3343c",
+        "0x21336",
+        "0x1d9b1"
+      ]
+    },
+    {
+      "quadrant": 1,
+      "affectedVertexSlots": 43,
+      "maxExplicitSum": 1.0,
+      "maxLayerDelta": 0.5290615352297013,
+      "newPositiveRockSlots": 2,
+      "existingTextureIds": [
+        "0x1d1d3",
+        "0x3343c",
+        "0x38c05",
+        "0x3e1a4"
+      ]
+    }
+  ],
+  "moves": [
+    {
+      "id": "TLM_RIDGE_p1_p1_G1A",
+      "form": "0x2000aab",
+      "base": "0x61640",
+      "asset": "TreeMaplePreWar03Gr",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "scale": 0.7200000286102295,
+      "oldPose": [
+        6656.0,
+        5664.0,
+        1778.4544677734375,
+        0.0,
+        0.0,
+        1.8708868026733398
+      ],
+      "proposedPose": [
+        5700,
+        4900,
+        1673.5407227981646,
+        0.0,
+        0.0,
+        1.8708868026733398
+      ],
+      "supportRange": 44.418306445174494,
+      "maxEmbed": 47.64893145433871,
+      "criticalPointsBothDiagonals": 8
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1B",
+      "form": "0x2000aac",
+      "base": "0x61640",
+      "asset": "TreeMaplePreWar03Gr",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "scale": 0.8999999761581421,
+      "oldPose": [
+        6664.0,
+        5760.0,
+        1747.362548828125,
+        0.0,
+        0.0,
+        2.1808881759643555
+      ],
+      "proposedPose": [
+        6100,
+        4700,
+        1757.1495302460096,
+        0.0,
+        0.0,
+        2.1808881759643555
+      ],
+      "supportRange": 4.4697209305697925,
+      "maxEmbed": 7.758002172932947,
+      "criticalPointsBothDiagonals": 8
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneA",
+      "form": "0x2000ab5",
+      "base": "0x2f79b",
+      "asset": "RockBoulder03",
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "scale": 1.399999976158142,
+      "oldPose": [
+        5760.0,
+        6016.0,
+        1662.51416015625,
+        0.0,
+        0.0,
+        4.970885276794434
+      ],
+      "proposedPose": [
+        5600,
+        4800,
+        1705.5001381972397,
+        0.0,
+        0.0,
+        4.970885276794434
+      ],
+      "supportRange": 33.64159497671085,
+      "maxEmbed": 37.34159496478992,
+      "criticalPointsBothDiagonals": 8
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop4",
+      "form": "0x2000b10",
+      "base": "0x2f79b",
+      "asset": "RockBoulder03",
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "scale": 2.0,
+      "oldPose": [
+        6762.0,
+        6100.0,
+        1776.6395263671875,
+        0.0,
+        0.0,
+        2.8399999141693115
+      ],
+      "proposedPose": [
+        6000,
+        4850,
+        1865.997439458076,
+        0.0,
+        0.0,
+        2.8399999141693115
+      ],
+      "supportRange": 3.307821898040629,
+      "maxEmbed": 7.307821898040629,
+      "criticalPointsBothDiagonals": 10
+    }
+  ],
+  "limits": "Masks and numericwholefoot proposal only; finalFloat32/seam/actorroute/renderpair gate required before futureartifact. Nativepaint/grass/collision/LOD/visibility open; no moreheightpeak."
+}
