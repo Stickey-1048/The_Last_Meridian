@@ -1,0 +1,34 @@
+{
+  "base": "2e54d76f8db08333ee6563cb50ddace86a080f8c",
+  "scope": "synthetic stand-in typed donors and narrow legacy fixture assertions only",
+  "files": {
+    "tools/StandInMaster/Program.cs": "A15BCCF7462BEA5AAB837E7B402E4BA19F5E0B4E8FDC3FC45CC44F78C84E6F6B",
+    "tools/StandInMaster/CurrentProducerFixture.cs": "9A83A2ED12FEB50D940F111C709320225FFD7292860ED896231EC097D7CD1F55",
+    "tools/StandInMaster/test_current060.py": "816BB210695C85505A7F6F3AC1157F9CB2B659E108195CD7599F914ED472C9D3",
+    "tools/run_checks.sh": "63CF280480772E196D48AE29E714184D4CE5C31FDE7C68F991DCB5DCB2F82D06",
+    "tools/Blackstone/layout-models.json": "55228B9F681DB9350AB978E9C86413248D87AD26EE6F6A3AABF5D769A1EB31FA",
+    "build/standin060/logs/final-build.log": "C6EFB9519F702198448628256D309D3BD40194248F07AA8B3FDEFEF54118512D",
+    "build/standin060/logs/test-current060.log": "7CCDAA3590CF3FB51536AB13F03F3FD55C6A248D04DE5414576F224338EFF656",
+    "build/standin060/logs/test-current060-repair.log": "FB49D7CBF751A8798B3CCF118FD3BFD8951F80FDB34599AD22F80F34D28C79B5",
+    "build/standin060/logs/layout-current060.log": "6F88EB68EFC21CC4DBC43A10F654EC3F1E469F3B26EFB3060F2466F6F7C99D59",
+    "build/standin060/default-003/Fallout4.esm": "09B36AA9629A1427907A5CFD0A635B4262E538EBFD1863DC6BBF9A4668EA019E",
+    "build/standin060/default-003/out/TheLastMeridian.esp": "A1F26AAEEF2D496AC6813B257C24DA24E0CC79E0170DD54A1CBBAED4BDA4E717",
+    "build/standin060/default-003/out/TheLastMeridian.json": "9CE3B6D44256E093F581C51816FF6FDD1D418A06CC88FCB9F10A06427A84C8F1"
+  },
+  "protectedGitLFPins": {
+    "tools/PluginBuilder/Builder.cs": "08C4D4C09A4F79E3C9C9DE497EC6488032B12455463242E4A515470E096E7E42",
+    "tools/PluginBuilder/BlackstoneEnvironment.cs": "96AD608019BA73437624DBC06A7E68F76328F4F40FC39A269EF4ADB558B98060",
+    "tools/PluginBuilder/OpeningActorPresentation.cs": "F567ED25DEF0270F5A078AC9CBA341894EBC8938DC7A88480B18D171B962EBE2",
+    "tools/PluginBuilder/MercyAdaPresentation.cs": "70226D969FE06515BE60F0F8CA6C2C0D94AF048534C9A522F2DF43FC28A3B6EC",
+    "tools/PluginBuilder/QuestRecordings.cs": "30CAE19BE56AA098EFC3201F50729837627B2015671452C6928164CCF24C0642",
+    "tools/PluginBuilder/RedHollowAccess.cs": "6D498A5FB488919E62339015C3810FB43DE6BEE3A8B2D6FEE983EEE864A02527",
+    "tools/PluginBuilder/formkeys.txt": "9A6FDBA88FF800B74B0B0674C6F7FE191359CDECB5E4C564A5C549FF15CF888C",
+    "tools/check_plugin_layout.py": "3CE8F60C97F116C3A505C4DB79B306BC24E609868F37CD87A5E6AF170BF6BF86",
+    ".github/workflows/portable-checks.yml": "FA81E890B2EE19EA67A0ECB1D2B6AE66C344B7E4C9158578B3E93B2711CE51B5"
+  },
+  "defaultProducer": "PASS exit0 emitted spec readback",
+  "focused": "4methods: initial default+6negative groups PASS; 2 assertion/text-match failures corrected and only those2methods rerun PASS23.329s; final renamed sound-shape negative PASS",
+  "legacyVariants": "unnamed/wrong/quest/weak/bare success with player authority assertions; rhe-no-light/model strict refusal; plain NPC readback no template/current producer rejection; separate plain-trigger-bounds valid producer/no bound",
+  "layoutSeparateHold": "8 existing checker failures: current Blackstone WRLD/CELL/LAND misclassified as RH; preserved log, no checker change",
+  "noOwnedInputsOrNative": true
+}

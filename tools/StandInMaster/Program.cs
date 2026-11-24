@@ -57,7 +57,7 @@ var variant = args.Length > 1 ? args[1] : "default";
 var mod = new Fallout4Mod(ModKey.FromNameAndExtension("Fallout4.esm"), Fallout4Release.Fallout4);
 FormKey Key(uint id) => new(mod.ModKey, id);
 
-var room = RhEnvironmentFixture.Variants.Contains(variant) || variant is "default" or "localized" or "plain-triggers" or "bare-room" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model";
+var room = CurrentProducerFixture.Variants.Contains(variant) || RhEnvironmentFixture.Variants.Contains(variant) || variant is "default" or "localized" or "plain-triggers" or "bare-room" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model";
 if (variant == "localized") mod.UsingLocalization = true;
 var lowIds = !room;
 var caps = new MiscItem(lowIds ? Key(0xF) : mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "Caps001", Name = "Bottlecap" };
@@ -129,7 +129,15 @@ if (room)
         // list is of one sex.
         Npc Settler(string id, bool female, IFormLinkGetter<INpcSpawnGetter>? looksFrom = null)
         {
-            var one = mod.Npcs.AddNew(id);
+            // Fixed typed identities consumed by current opening presentation; reserve
+            // the old allocation as well, so unrelated legacy fixture IDs stay stable.
+            var reserved = mod.GetNextFormKey();
+            uint? fixedId = id switch { "StandInSettlerMale01" => 0x113340u, "StandInSettlerFemale01" => 0x113346u,
+                "StandInSettlerMale02" => 0x113348u, "StandInSettlerFemale02" => 0x113349u,
+                "StandInSettlerMale03" => 0x11334Au, "StandInSettlerAnyFace" => 0x11334Bu,
+                "StandInSettlerWomanAnyFace" => 0x11334Cu, _ => null };
+            var one = new Npc(fixedId.HasValue ? Key(fixedId.Value) : reserved, Fallout4Release.Fallout4) { EditorID=id };
+            mod.Npcs.Add(one);
             if (female) one.Flags |= Npc.Flag.Female;
             if (looksFrom != null)
             {
@@ -285,7 +293,7 @@ if (room)
     qaSmoke.Persistent.Add(Put(clutter.ToLink(), -300, 40, 0));
     cells.Add(qaSmoke);
 
-    if (variant is "default" or "localized" or "plain-triggers" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model")
+    if (variant is "default" or "localized" or "plain-triggers" or "plain-trigger-bounds" or "relief-no-corn" or "relief-wrong-corn-name" or "four-flags-floor" or "four-flags-floor-bounds" or "four-flags-floor-no-model")
     {
         // Two more things in far corners, so that the room is large enough to
         // hold what the builder places in it.
@@ -320,7 +328,7 @@ if (room)
                     Type = PlacedPrimitive.TypeEnum.Box,
                 };
                 // As the editor writes a box: its reach once more, as the reference's bound. One has none.
-                if (i != 4 && variant != "plain-triggers") trigger.BoundHalfExtents = new P3Float((64 + i) / 2f, 48, 64);
+                if (i != 4 && variant is not "plain-triggers" and not "plain-trigger-bounds") trigger.BoundHalfExtents = new P3Float((64 + i) / 2f, 48, 64);
                 // Most on L_TRIGGER, some on L_ACTORZONE, one with none.
                 if (i < 3) trigger.CollisionLayer = 12;
                 else if (i == 3) trigger.CollisionLayer = 22;
@@ -370,7 +378,7 @@ switch (variant)
     case "localized":
     case "plain-triggers":
     case "bare-room":
-    case var environmentVariant when RhEnvironmentFixture.Variants.Contains(environmentVariant):
+    case var environmentVariant when RhEnvironmentFixture.Variants.Contains(environmentVariant) || CurrentProducerFixture.Variants.Contains(environmentVariant):
         placed = new PlacedNpc(mod.GetNextFormKey(), Fallout4Release.Fallout4) { EditorID = "PlayerREF" };
         placed.Base.SetTo(player);
         break;
@@ -417,6 +425,7 @@ if (room && variant != "relief-no-corn")
 }
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
 RhEnvironmentFixture.Add(mod,variant);
+CurrentProducerFixture.Add(mod,variant);
 // Real masters use ids below 0x800; a stand-in may too.
 mod.BeginWrite.ToPath(path).WithNoLoadOrder().NoCheckIfLowerRangeDisallowed().Write();
 Console.WriteLine($"wrote stand-in master ({variant}): Caps001={caps.FormKey} player reference={(placed == null ? "none" : $"{placed.FormKey} EditorID='{placed.EditorID}'")}{fixtures}");
