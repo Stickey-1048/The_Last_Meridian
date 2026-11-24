@@ -1,0 +1,48 @@
+{
+  "scope": "Author048 source-only metadata/checker patch; no offline projection fixture included",
+  "parent": "83af5fc4113bc0378fae5f5d09982720aefb1bd3",
+  "changedAndTestFiles": {
+    "tools/check_consistency.py": "833CD3DEFF3069F11CD1935C82E43BF9F4DCBDF166F973D8F4D5ED9698EC247A",
+    "tools/papyrus_natives.json": "ED12BAC46852F21777D3B68D5415DDDCE727CD7AF6620E6502AE6819E3899506",
+    "tools/SourcePortability/test_portability048.py": "7815923301668FA5087A2AFBB396143DC7FBF0C70FC701EBFA6147CBB0C2C272",
+    "tools/SourcePortability/verify_patch.py": "CC8F9DC68FD0718A6F5D089CFDD4EF9C36A3311AC4DB4A11E1388616038542D1"
+  },
+  "sdkDeclarationFileHashes": {
+    "Actor.psc": "29427636973362B2830584B4BB2399AE555A0F201D0D28777122F190D5F88F4F",
+    "ObjectReference.psc": "6AA90E39DCD3D89D371E7EFA6355278DC41E555CA6485671A87D5BAF92C50A22",
+    "ScriptObject.psc": "9E15036CD66FC2A6B76B786F31456EFA62D916DD908F17A7570AEDAE0254005F",
+    "Game.psc": "CD625D2670249C64B20CEC0914B2EC011063DCFD29341D6885652CCF04B325E1",
+    "Sound.psc": "1CEE510B56341AF5694B2795A4B1C1A3915CE27A6FAE460D260957C477232FB3",
+    "Quest.psc": "6414F8468913BD6897995FE9F0D0FF2B3C9DDA13AD05CAA57A05464AF93BA777",
+    "ReferenceAlias.psc": "E003EE218E29857EF36D9095B06243474A6F957247879DF6D36DAAE6728F8BB5"
+  },
+  "sdkPayloadIncluded": false,
+  "actualLocalProjection": {
+    "component": "Accepted B25C main producer1f510971",
+    "sha256": "7822173D6310F619E33A8650A2834BAC8CF625CC42E16942E9EC4D816BD59A25",
+    "included": false
+  },
+  "tests": {
+    "actualMethods": 8,
+    "result": "PASS",
+    "seconds": 7.116,
+    "command": "python -B tools/SourcePortability/test_portability048.py --actual-plugin-json <actual local accepted B25C projection>"
+  },
+  "checkerResult": {
+    "actualLocalProjection": "PASS documentation-level source/master check only",
+    "missingDefault": "FAIL intentionally retained",
+    "invalidInputs": "FAIL with clear diagnostics",
+    "qaAndExteriorBindings": "Not established by this master-only checker"
+  },
+  "wip": "Initial current-source run exposed22 lexer diagnostics from whitespace before keyword/cast parentheses; fixed token/receiver boundary, original local diagnostic log preserved outside source branch. No production changes or skipped assertions. Initial protected-parent inventory used only normalized Git hashing and rejected an unchanged CRLF-stored parent README; raw-first then existing Git-filter equivalence now checks both parent storage conventions.",
+  "notRun": [
+    "C#build",
+    "Plugin emission",
+    "Papyrus SDK compile",
+    "Native game",
+    "Network",
+    "Offline fixture creation",
+    "Full cloud aggregate"
+  ],
+  "sourceConvention": "Changed/new048 text stored LF; raw working and committed source hashes are expected equal. Parent files retain their original storage conventions."
+}

@@ -1466,6 +1466,184 @@
     "returns": "",
     "source": "Actual owned SDK Base/ReferenceAlias.psc294 and ObjectReference.psc1051, Event OnLoad()"
    }
+  ],
+  "IsActivationBlocked": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "bool",
+    "source": "Local owned FO4 SDK Base/ObjectReference.psc:574; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "SetOverrideVoiceType": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Actor",
+    "params": [
+     "VoiceType akVoiceType"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Actor.psc:723; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "GetVoiceType": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ObjectReference",
+    "params": [],
+    "returns": "VoiceType",
+    "source": "Local owned FO4 SDK Base/ObjectReference.psc:516; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "FadeOutGame": [
+   {
+    "kind": "function",
+    "max_args": 5,
+    "min_args": 4,
+    "owner": "Game",
+    "params": [
+     "bool abFadingOut",
+     "bool abBlackFade",
+     "float afSecsBeforeFade",
+     "float afFadeDuration",
+     "bool abStayFaded = false"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Game.psc:25; declaration inspected 2026-11-24",
+    "global": true
+   }
+  ],
+  "Play": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Sound",
+    "params": [
+     "ObjectReference akSource"
+    ],
+    "returns": "int",
+    "source": "Local owned FO4 SDK Base/Sound.psc:5; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "StopInstance": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Sound",
+    "params": [
+     "int aiPlaybackInstance"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Sound.psc:11; declaration inspected 2026-11-24",
+    "global": true
+   }
+  ],
+  "RegisterForRemoteEvent": [
+   {
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "ScriptObject",
+    "params": [
+     "ScriptObject akEventSource",
+     "ScriptEventName asEventName"
+    ],
+    "returns": "bool",
+    "source": "Local owned FO4 SDK Base/ScriptObject.psc:133; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "UnregisterForRemoteEvent": [
+   {
+    "kind": "function",
+    "max_args": 2,
+    "min_args": 2,
+    "owner": "ScriptObject",
+    "params": [
+     "ScriptObject akEventSource",
+     "ScriptEventName asEventName"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/ScriptObject.psc:238; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "GetAlias": [
+   {
+    "kind": "function",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Quest",
+    "params": [
+     "int aiAliasID"
+    ],
+    "returns": "Alias",
+    "source": "Local owned FO4 SDK Base/Quest.psc:101; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "CompleteQuest": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Quest.psc:95; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "Clear": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "ReferenceAlias",
+    "params": [],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/ReferenceAlias.psc:8; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "Stop": [
+   {
+    "kind": "function",
+    "max_args": 0,
+    "min_args": 0,
+    "owner": "Quest",
+    "params": [],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Quest.psc:182; declaration inspected 2026-11-24",
+    "global": false
+   }
+  ],
+  "Actor.OnPlayerLoadGame": [
+   {
+    "global": false,
+    "kind": "event",
+    "max_args": 1,
+    "min_args": 1,
+    "owner": "Actor",
+    "params": [
+     "Actor akSender"
+    ],
+    "returns": "",
+    "source": "Local owned FO4 SDK Base/Actor.psc:1000 zero-argument event + ScriptObject.psc:126-133 documented remote sender prefix; inspected 2026-11-24"
+   }
   ]
  }
 }
