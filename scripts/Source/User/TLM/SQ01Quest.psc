@@ -17,7 +17,7 @@ Stages are the API (same pattern as TLM:MQ01Quest):
   10  ledger found (E0)
   11  E1 brake shoes examined     12  E2 draw-bar examined
   13  E3 marshal's journal taken  14  E4 Ada Pike's parts book seen
-  20  case presentable (ledger + evidence level 1)
+  20  case presentable (ledger + physical comparison + evidence level 1)
   25  falsification established (evidence level 2)
   41  reported   42 posted, no name   43 posted, Yard Office
   44  posted, Haskell   45 sold   46 destroyed
@@ -73,8 +73,10 @@ Event OnStageSet(int auiStageID, int auiItemID)
 	ElseIf auiStageID >= 11 && auiStageID <= 14
 		RecomputeEvidence()
 	ElseIf auiStageID == 20
-		SetObjectiveCompleted(10)
-		SetObjectiveDisplayed(20)
+		If GetStageDone(10) && PhysicalComparisonDone()
+			SetObjectiveCompleted(10)
+			SetObjectiveDisplayed(20)
+		EndIf
 	ElseIf auiStageID >= 41 && auiStageID <= 46
 		ApplyOutcome(auiStageID - 40)
 	ElseIf auiStageID == 900
@@ -118,14 +120,23 @@ int Function EvidenceLevel()
 	Return 1
 EndFunction
 
+bool Function PhysicalComparisonDone()
+	Return GetStageDone(11) || GetStageDone(12)
+EndFunction
+
 Function RecomputeEvidence()
 	If TLM_G_SQ01_Outcome.GetValueInt() != 0
 		Return
 	EndIf
 	int level = EvidenceLevel()
 	TLM_G_SQ01_EvidenceLevel.SetValueInt(level)
-	If !GetStageDone(10)
+	If !GetStageDone(10) || !PhysicalComparisonDone()
 		Return
+	EndIf
+	If GetStageDone(20)
+		; Repair objective presentation if an earlier stage was set without a comparison.
+		SetObjectiveCompleted(10)
+		SetObjectiveDisplayed(20)
 	EndIf
 	If level >= 1 && !GetStageDone(20)
 		SetStage(20)
@@ -147,7 +158,7 @@ Function ApplyOutcome(int aiOutcome)
 	If !GetStageDone(10)
 		Return
 	EndIf
-	If aiOutcome != SQ_DESTROYED && !GetStageDone(20)
+	If aiOutcome != SQ_DESTROYED && (!GetStageDone(20) || !PhysicalComparisonDone())
 		Return
 	EndIf
 	If aiOutcome == SQ_POSTED_YARD && TLM_G_SQ01_EvidenceLevel.GetValueInt() < 2

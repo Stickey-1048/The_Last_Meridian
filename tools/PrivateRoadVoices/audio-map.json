@@ -1,0 +1,39 @@
+{
+  "privateAudioQAOnly": true,
+  "wordFidelityActingNativeHearing": "PENDING; ASR and/in, Pritchards/preachers advisories retained",
+  "baseWorld": "EC103128F47BB9FB5AE080B0C33CFB8ADD398D95D059422F376E2188657DD8C9",
+  "lines": [
+    {
+      "id": "DunmoreHold",
+      "messageId": 2121,
+      "messageEdid": "TLM_MSG_A1_DunmoreHold",
+      "speaker": "Reese Dunmore",
+      "soundProperty": "RecordedDunmoreHold",
+      "originalProperty": "OpeningOriginalDunmore",
+      "actorId": 2314,
+      "alias": 12,
+      "newSoundId": 2943,
+      "text": "Fenwick's wagon stays. You can keep walking. Reach for a gun and this gets ugly.",
+      "duration": 4.88,
+      "waveSource": "C:\\Users\\cferr\\Documents\\Codex\\2026-11-14\\referenced-chatgpt-conversation-this-is-an-2\\work\\dunmore-talbot-casting-035\\dunmore_hold_anchor.wav",
+      "waveSha256": "DDA8C9487086E766A200E7948E08AB542C777E86FB39D2E4F82981D9054D4831",
+      "target": "Sound/FX/MeridianRecordings/dunmore_hold.wav"
+    },
+    {
+      "id": "TalbotGate",
+      "messageId": 2164,
+      "messageEdid": "TLM_MSG_A1_TalbotGate",
+      "speaker": "Jonah Talbot",
+      "soundProperty": "RecordedTalbotGate",
+      "originalProperty": "OpeningOriginalTalbot",
+      "actorId": 2319,
+      "alias": 17,
+      "newSoundId": 2944,
+      "text": "Keep your iron holstered inside the posts. Pritchard's at the green cabin above the road.",
+      "duration": 5.12,
+      "waveSource": "C:\\Users\\cferr\\Documents\\Codex\\2026-11-14\\referenced-chatgpt-conversation-this-is-an-2\\work\\dunmore-talbot-casting-035\\talbot_gate_anchor.wav",
+      "waveSha256": "5E4B4329DB54FCD224F59F5285587092AE9DC071943EC7224E718A980C24A2C1",
+      "target": "Sound/FX/MeridianRecordings/talbot_gate.wav"
+    }
+  ]
+}

@@ -37,7 +37,7 @@ public static class MercyBriefing
     // GREENWATER-STORY-001 (order, item 1): in this candidate Greenwater is playable, so the three strings below
     // no longer say that no destination is. The a8 source and its package keep the earlier wording.
     public const string UiBriefingOnly = "Mercy briefing. Three roads and the qualified Four Flags entry are available.";
-    public const string UiHandOffFooter = "Opening complete. Ask for briefings or use a story test point.";
+    public const string UiHandOffFooter = "Speak to Pritchard again for directions to the three roads.";
     public const string UiJournalComplete = "Mercy briefing complete. Three roads and qualified Four Flags entry remain available.";
     public const string UiObjective = "Ask Pritchard about the three roads.";
     public const string UiCopyIssued = "One review copy only. No second copy is given.";
@@ -61,7 +61,7 @@ public static class MercyBriefing
     // The first section's design line for the hand-off (TLM_MQ01 section 8.3),
     // as Act1.Messages has it in TLM_MSG_A1_PritchardHandOff. Not from the
     // writing intake; unchanged here.
-    const string HandOffText = "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three.";
+    const string HandOffText = "Greenwater needs food. Red Hollow's mine is shut. Iron Junction's rails are being cut. Pick one road. I can't spare people for all three.";
 
     // documents.json, docket_2298.
     const string DocketTitle = "Mercy Road Case: 2298 Review Copy";

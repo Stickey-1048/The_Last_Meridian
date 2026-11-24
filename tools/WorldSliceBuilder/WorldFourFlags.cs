@@ -121,6 +121,10 @@ public static partial class WorldStory
         return new{method="Typed actual master floor model/bounds and contiguous9x7source placement readback; no Havok/navmesh/native proof",floor=floor.FormKey.ToString(),model=floor.Model!.File.ToString(),tiles=63,surfaceZ=0,minX=-128,minY=-128,maxX=2176,maxY=1664,courierBookText=courierBook.BookText?.ToString()};
     }
 
+    public static void ValidatePrologueInteriorExclusion(IFallout4ModGetter addon)
+    {
+        if(addon.Quests.Any(q=>q.EditorID==FairMaster)||addon.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(b=>b.Cells).Any(c=>!GanttPrologue.IsOwnCarriage(addon,c)))throw new InvalidDataException("Fair master/cell must never be duplicated into exterior; only exact own prologue carriage is permitted");
+    }
     static void ValidateFourFlags(IFallout4ModGetter addon,IQuestGetter section)
     {
         var walk=section.VirtualMachineAdapter!.Scripts.Single(s=>s.Name=="TLM:Act1Walk");
@@ -128,7 +132,7 @@ public static partial class WorldStory
         var ledgers=walk.Properties.Where(p=>p.Name=="TLM_FourFlags").ToArray();
         var clone=addon.Quests.SingleOrDefault(q=>q.EditorID==FairClone);
         if(clone==null){if(doors.Length!=0||ledgers.Length!=0)throw new InvalidDataException("Fair binding without appended entry adapter");return;}
-        if(addon.Quests.Any(q=>q.EditorID==FairMaster)||addon.Cells.Records.Any())throw new InvalidDataException("Fair master/cell must never be duplicated into exterior");
+        ValidatePrologueInteriorExclusion(addon);
         if(doors.Length!=1||doors[0] is not IScriptObjectPropertyGetter door||door.Alias!=-1||door.Object.FormKey!=clone.FormKey||
            ledgers.Length!=1||ledgers[0] is not IScriptObjectPropertyGetter ledger||ledger.Alias!=-1||ledger.Object.FormKey.ModKey!=StoryMaster)
             throw new InvalidDataException("Fair exterior owner/ledger binding mismatch");

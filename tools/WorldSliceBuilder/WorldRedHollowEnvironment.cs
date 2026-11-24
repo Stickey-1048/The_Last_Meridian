@@ -29,7 +29,7 @@ public static partial class WorldStory
         ["ToMouth"]=(1536,256,12),
         ["ToGap"]=(2048,256,12),
         ["CageControl"]=(2560,384,12),
-        ["FiringControl"]=(2816,384,12),
+        ["FiringControl"]=(2816,384,56),
         ["CotLamp"]=(3072,512,12),
         ["Silver"]=(3072,640,12),
         ["Shovel"]=(2304,640,12),

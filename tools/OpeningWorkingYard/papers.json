@@ -1,0 +1,5 @@
+[
+  {"name":"TLM_WS_ST_Dispatch","localId":2303,"baseId":2069,"oldXYZ":[740,1000,-182],"newZ":-191.8263427734375,"localRenderMinZ":-0.1236572265625,"terrainZ":-192},
+  {"name":"TLM_WS_ST_Journal","localId":2305,"baseId":2072,"oldXYZ":[660,1080,-182],"newZ":-192.0892822265625,"localRenderMinZ":0.1392822265625,"terrainZ":-192},
+  {"name":"TLM_WS_ST_Ledger","localId":2306,"baseId":2071,"oldXYZ":[820,1080,-182],"newZ":-192.0892822265625,"localRenderMinZ":0.1392822265625,"terrainZ":-192}
+]

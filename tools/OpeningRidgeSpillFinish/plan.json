@@ -1,0 +1,923 @@
+{
+  "scope": "No newforms/refs/assets/locations.3cargoDATA/4postflags/2backdropLAND+normals/30passiveZ/corepathpaint;4editorialDESCpreserved",
+  "baselineSha256": "810272D866D51B697CB369FA362BF22222EA74AA14F3652285EC454AE0EAE05D",
+  "cargo": [
+    {
+      "id": "TLM_WRECK_LeftLowCrate",
+      "localId": 2937,
+      "base": 135670,
+      "oldPose": [
+        650.0,
+        1570.0,
+        -131.95608520507812,
+        0.0,
+        0.0,
+        -0.20000000298023224
+      ],
+      "pose": [
+        674,
+        1572,
+        -103.21875,
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "asset": "WoodCrate02"
+    },
+    {
+      "id": "TLM_WRECK_LeftBarrel",
+      "localId": 2938,
+      "base": 135668,
+      "oldPose": [
+        745.0,
+        1550.0,
+        -136.12489318847656,
+        0.0,
+        0.0,
+        0.10000000149011612
+      ],
+      "pose": [
+        714,
+        1570,
+        -101.1875,
+        0,
+        -1.5707963267948966,
+        0
+      ],
+      "asset": "WoodBarrel01"
+    },
+    {
+      "id": "TLM_WRECK_RightLowCrate",
+      "localId": 2941,
+      "base": 135670,
+      "oldPose": [
+        1470.0,
+        1620.0,
+        -128.5,
+        0.0,
+        0.0,
+        -0.15000000596046448
+      ],
+      "pose": [
+        1496,
+        1640,
+        -102.9375,
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "asset": "WoodCrate02"
+    }
+  ],
+  "posts": [
+    2056,
+    2057,
+    2454,
+    2455
+  ],
+  "footings": [
+    {
+      "id": "TLM_RIDGE_p1_p0_G1C",
+      "localId": 2688,
+      "base": 398915,
+      "oldPose": [
+        5080.0,
+        2720.0,
+        626.562255859375,
+        0.0,
+        0.0,
+        1.5572586059570312
+      ],
+      "pose": [
+        5080.0,
+        2720.0,
+        633.7354434836175,
+        0.0,
+        0.0,
+        1.5572586059570312
+      ],
+      "asset": "TreeMaplePreWar06Gr",
+      "scale": 0.8500000238418579,
+      "groundMin": 628.1026307414736,
+      "groundMax": 637.8022934707511,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 12.892240859679191,
+      "criticalPoints": 6
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G1D",
+      "localId": 2689,
+      "base": 398921,
+      "oldPose": [
+        4910.0,
+        2860.0,
+        554.955322265625,
+        0.0,
+        0.0,
+        1.867258071899414
+      ],
+      "pose": [
+        4910.0,
+        2860.0,
+        567.9587901702469,
+        0.0,
+        0.0,
+        1.867258071899414
+      ],
+      "asset": "TreeMaplePreWar05Gr",
+      "scale": 0.949999988079071,
+      "groundMin": 563.0173840198984,
+      "groundMax": 576.1921070521546,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 16.211832406790563,
+      "criticalPoints": 6
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2A",
+      "localId": 2691,
+      "base": 398912,
+      "oldPose": [
+        5100.0,
+        2760.0,
+        627.9038696289062,
+        0.0,
+        0.0,
+        2.4872570037841797
+      ],
+      "pose": [
+        5100.0,
+        2760.0,
+        636.2612636625481,
+        0.0,
+        0.0,
+        2.4872570037841797
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.7200000286102295,
+      "groundMin": 629.1137632593227,
+      "groundMax": 657.9160892614759,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 32.03295101131744,
+      "criticalPoints": 10
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2B",
+      "localId": 2692,
+      "base": 398912,
+      "oldPose": [
+        4780.0,
+        2760.0,
+        500.8765869140625,
+        0.0,
+        0.0,
+        2.7972583770751953
+      ],
+      "pose": [
+        4780.0,
+        2760.0,
+        504.007852729951,
+        0.0,
+        0.0,
+        2.7972583770751953
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.8999999761581421,
+      "groundMin": 494.3234780659722,
+      "groundMax": 523.0575991995186,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 32.02240237590951,
+      "criticalPoints": 8
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2D",
+      "localId": 2694,
+      "base": 398921,
+      "oldPose": [
+        5320.0,
+        2680.0,
+        717.5859985351562,
+        0.0,
+        0.0,
+        3.417257308959961
+      ],
+      "pose": [
+        5320.0,
+        2680.0,
+        725.3415348621556,
+        0.0,
+        0.0,
+        3.417257308959961
+      ],
+      "asset": "TreeMaplePreWar05Gr",
+      "scale": 0.949999988079071,
+      "groundMin": 720.4001287118072,
+      "groundMax": 732.9169643725721,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 15.553945035299307,
+      "criticalPoints": 6
+    },
+    {
+      "id": "TLM_RIDGE_p1_p0_G2E",
+      "localId": 2695,
+      "base": 1742812,
+      "oldPose": [
+        4960.0,
+        3020.0,
+        583.0723266601562,
+        0.0,
+        0.0,
+        3.7272586822509766
+      ],
+      "pose": [
+        4960.0,
+        3020.0,
+        618.631594390734,
+        0.0,
+        0.0,
+        3.7272586822509766
+      ],
+      "asset": "TreeCedarShrub01",
+      "scale": 0.8999999761581421,
+      "groundMin": 613.390969609036,
+      "groundMax": 615.2721593354039,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 4.881189726367893,
+      "criticalPoints": 1
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop0",
+      "localId": 2828,
+      "base": 194459,
+      "oldPose": [
+        4800.0,
+        3300.0,
+        638.27734375,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pose": [
+        4800.0,
+        3300.0,
+        683.736328125,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "asset": "RockBoulder03",
+      "scale": 2.0,
+      "groundMin": 569.236328125,
+      "groundMax": 606.78515625,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 41.548828125,
+      "criticalPoints": 8
+    },
+    {
+      "id": "TLM_OPEN_RidgeTree14",
+      "localId": 2436,
+      "base": 303218,
+      "oldPose": [
+        4460.0,
+        3060.0,
+        372.837890625,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pose": [
+        4460.0,
+        3060.0,
+        373.501953125,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "asset": "TreeMapleForest6",
+      "scale": 1.0,
+      "groundMin": 368.958984375,
+      "groundMax": 384.1015625,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 18.478515625,
+      "criticalPoints": 13
+    },
+    {
+      "id": "TLM_DENSITY_East_00",
+      "localId": 2848,
+      "base": 398912,
+      "oldPose": [
+        4850.0,
+        3200.0,
+        526.4826049804688,
+        0.0,
+        0.0,
+        2.0999999046325684
+      ],
+      "pose": [
+        4850.0,
+        3200.0,
+        562.9574846453479,
+        0.0,
+        0.0,
+        2.0999999046325684
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.7799999713897705,
+      "groundMin": 554.9643600485733,
+      "groundMax": 597.8387930321319,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 46.12427672439435,
+      "criticalPoints": 13
+    },
+    {
+      "id": "TLM_DENSITY_East_02",
+      "localId": 2850,
+      "base": 444112,
+      "oldPose": [
+        4490.0,
+        2940.0,
+        381.412353515625,
+        0.0,
+        0.0,
+        1.7999999523162842
+      ],
+      "pose": [
+        4490.0,
+        2940.0,
+        382.4123658732401,
+        0.0,
+        0.0,
+        1.7999999523162842
+      ],
+      "asset": "TreeMapleForestsmall1",
+      "scale": 1.0499999523162842,
+      "groundMin": 380.65455358930694,
+      "groundMax": 407.55097975446444,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 29.896426165157493,
+      "criticalPoints": 13
+    },
+    {
+      "id": "TLM_DENSITY_East_04",
+      "localId": 2852,
+      "base": 444112,
+      "oldPose": [
+        4720.0,
+        3260.0,
+        461.0790710449219,
+        0.0,
+        0.0,
+        5.099999904632568
+      ],
+      "pose": [
+        4720.0,
+        3260.0,
+        482.1249737455464,
+        0.0,
+        0.0,
+        5.099999904632568
+      ],
+      "asset": "TreeMapleForestsmall1",
+      "scale": 1.0499999523162842,
+      "groundMin": 480.36716146161325,
+      "groundMax": 526.5785761875022,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 49.21141472588897,
+      "criticalPoints": 10
+    },
+    {
+      "id": "TLM_DENSITY_East_06",
+      "localId": 2854,
+      "base": 1742812,
+      "oldPose": [
+        4580.0,
+        3110.0,
+        427.70037841796875,
+        0.0,
+        0.0,
+        2.5
+      ],
+      "pose": [
+        4580.0,
+        3110.0,
+        435.76475864582557,
+        0.0,
+        0.0,
+        2.5
+      ],
+      "asset": "TreeCedarShrub01",
+      "scale": 1.100000023841858,
+      "groundMin": 428.69288342752355,
+      "groundMax": 430.4214684246383,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 4.728584997114751,
+      "criticalPoints": 1
+    },
+    {
+      "id": "TLM_DENSITY_East_08",
+      "localId": 2856,
+      "base": 1259631,
+      "oldPose": [
+        4800.0,
+        3010.0,
+        536.9531860351562,
+        0.0,
+        0.0,
+        3.200000047683716
+      ],
+      "pose": [
+        4800.0,
+        3010.0,
+        551.5926623371006,
+        0.0,
+        0.0,
+        3.200000047683716
+      ],
+      "asset": "Marshshrub01",
+      "scale": 1.0,
+      "groundMin": 534.4364123371006,
+      "groundMax": 534.6097129578256,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 3.1733006207250583,
+      "criticalPoints": 1
+    },
+    {
+      "id": "TLM_DENSITY_NE_07",
+      "localId": 2885,
+      "base": 1742812,
+      "oldPose": [
+        4430.0,
+        3990.0,
+        370.95404052734375,
+        0.0,
+        0.0,
+        3.0999999046325684
+      ],
+      "pose": [
+        4430.0,
+        3990.0,
+        376.9203530240515,
+        0.0,
+        0.0,
+        3.0999999046325684
+      ],
+      "asset": "TreeCedarShrub01",
+      "scale": 1.0,
+      "groundMin": 370.7641030240515,
+      "groundMax": 373.7120524505046,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 5.947949426453079,
+      "criticalPoints": 1
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1A",
+      "localId": 2731,
+      "base": 398912,
+      "oldPose": [
+        6656.0,
+        5664.0,
+        1009.68505859375,
+        0.0,
+        0.0,
+        1.8708868026733398
+      ],
+      "pose": [
+        6656.0,
+        5664.0,
+        1778.454423689783,
+        0.0,
+        0.0,
+        1.8708868026733398
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.7200000286102295,
+      "groundMin": 1771.3069232865575,
+      "groundMax": 1792.5500234480112,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 24.473725170617854,
+      "criticalPoints": 10
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1B",
+      "localId": 2732,
+      "base": 398912,
+      "oldPose": [
+        6664.0,
+        5760.0,
+        978.6507568359375,
+        0.0,
+        0.0,
+        2.1808881759643555
+      ],
+      "pose": [
+        6664.0,
+        5760.0,
+        1747.3625045363879,
+        0.0,
+        0.0,
+        2.1808881759643555
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.8999999761581421,
+      "groundMin": 1737.678129872409,
+      "groundMax": 1774.5649522633219,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 40.17510363327597,
+      "criticalPoints": 13
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1C",
+      "localId": 2733,
+      "base": 398915,
+      "oldPose": [
+        6410.0,
+        5860.0,
+        914.8677978515625,
+        0.0,
+        0.0,
+        2.4908857345581055
+      ],
+      "pose": [
+        6410.0,
+        5860.0,
+        1683.6752099756773,
+        0.0,
+        0.0,
+        2.4908857345581055
+      ],
+      "asset": "TreeMaplePreWar06Gr",
+      "scale": 0.8500000238418579,
+      "groundMin": 1678.0423972335334,
+      "groundMax": 1688.8949110199276,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 14.045091916795855,
+      "criticalPoints": 8
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1D",
+      "localId": 2734,
+      "base": 398921,
+      "oldPose": [
+        6780.0,
+        5500.0,
+        1041.9261474609375,
+        0.0,
+        0.0,
+        2.800887107849121
+      ],
+      "pose": [
+        6780.0,
+        5500.0,
+        1809.9112858734593,
+        0.0,
+        0.0,
+        2.800887107849121
+      ],
+      "asset": "TreeMaplePreWar05Gr",
+      "scale": 0.949999988079071,
+      "groundMin": 1804.9698797231108,
+      "groundMax": 1808.0,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 6.067229651423531,
+      "criticalPoints": 13
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G1E",
+      "localId": 2735,
+      "base": 1742812,
+      "oldPose": [
+        6180.0,
+        5760.0,
+        942.044677734375,
+        0.0,
+        0.0,
+        3.1108884811401367
+      ],
+      "pose": [
+        6180.0,
+        5760.0,
+        1711.0446966533211,
+        0.0,
+        0.0,
+        3.1108884811401367
+      ],
+      "asset": "TreeCedarShrub01",
+      "scale": 0.8999999761581421,
+      "groundMin": 1705.8040718716231,
+      "groundMax": 1705.89224912981,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 3.088177258186761,
+      "criticalPoints": 1
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2A",
+      "localId": 2736,
+      "base": 398912,
+      "oldPose": [
+        6536.0,
+        5760.0,
+        956.15576171875,
+        0.0,
+        0.0,
+        3.4208860397338867
+      ],
+      "pose": [
+        6536.0,
+        5760.0,
+        1724.9251359402333,
+        0.0,
+        0.0,
+        3.4208860397338867
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.7200000286102295,
+      "groundMin": 1717.7776355370079,
+      "groundMax": 1747.2688691663216,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 32.7218586384779,
+      "criticalPoints": 13
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2B",
+      "localId": 2737,
+      "base": 398912,
+      "oldPose": [
+        6760.0,
+        5680.0,
+        1017.677978515625,
+        0.0,
+        0.0,
+        3.7308874130249023
+      ],
+      "pose": [
+        6760.0,
+        5680.0,
+        1786.3896971384033,
+        0.0,
+        0.0,
+        3.7308874130249023
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.8999999761581421,
+      "groundMin": 1776.7053224744245,
+      "groundMax": 1797.6153489516873,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 24.198307719625973,
+      "criticalPoints": 10
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2C",
+      "localId": 2738,
+      "base": 398915,
+      "oldPose": [
+        6820.0,
+        5680.0,
+        1027.04296875,
+        0.0,
+        0.0,
+        4.040888786315918
+      ],
+      "pose": [
+        6820.0,
+        5680.0,
+        1788.327150906693,
+        0.0,
+        0.0,
+        4.040888786315918
+      ],
+      "asset": "TreeMaplePreWar06Gr",
+      "scale": 0.8500000238418579,
+      "groundMin": 1782.6943381645492,
+      "groundMax": 1789.6430363214768,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 10.14127628732922,
+      "criticalPoints": 6
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2D",
+      "localId": 2739,
+      "base": 398921,
+      "oldPose": [
+        6460.0,
+        6020.0,
+        879.3093872070312,
+        0.0,
+        0.0,
+        4.350886344909668
+      ],
+      "pose": [
+        6460.0,
+        6020.0,
+        1648.2722901676232,
+        0.0,
+        0.0,
+        4.350886344909668
+      ],
+      "asset": "TreeMaplePreWar05Gr",
+      "scale": 0.949999988079071,
+      "groundMin": 1643.3308840172747,
+      "groundMax": 1655.3971143073315,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 15.103339664591203,
+      "criticalPoints": 6
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_G2E",
+      "localId": 2740,
+      "base": 1742812,
+      "oldPose": [
+        6890.0,
+        5360.0,
+        1039.5078125,
+        0.0,
+        0.0,
+        4.660887718200684
+      ],
+      "pose": [
+        6890.0,
+        5360.0,
+        1788.3631702529972,
+        0.0,
+        0.0,
+        4.660887718200684
+      ],
+      "asset": "TreeCedarShrub01",
+      "scale": 0.8999999761581421,
+      "groundMin": 1783.1225454712992,
+      "groundMax": 1785.2851129601208,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 5.162567488821651,
+      "criticalPoints": 1
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneA",
+      "localId": 2741,
+      "base": 194459,
+      "oldPose": [
+        5760.0,
+        6016.0,
+        904.4567260742188,
+        0.0,
+        0.0,
+        4.970885276794434
+      ],
+      "pose": [
+        5760.0,
+        6016.0,
+        1662.5141970886366,
+        0.0,
+        0.0,
+        4.970885276794434
+      ],
+      "asset": "RockBoulder03",
+      "scale": 1.399999976158142,
+      "groundMin": 1583.2641984893457,
+      "groundMax": 1608.289866323125,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 28.725667821858224,
+      "criticalPoints": 6
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_StoneB",
+      "localId": 2742,
+      "base": 194459,
+      "oldPose": [
+        6976.0,
+        5824.0,
+        1102.64404296875,
+        0.0,
+        0.0,
+        5.280886650085449
+      ],
+      "pose": [
+        6976.0,
+        5824.0,
+        1753.0926555331678,
+        0.0,
+        0.0,
+        5.280886650085449
+      ],
+      "asset": "RockBoulder03",
+      "scale": 1.7999999523162842,
+      "groundMin": 1650.342658334586,
+      "groundMax": 1704.1831484430136,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 57.740490084585645,
+      "criticalPoints": 10
+    },
+    {
+      "id": "TLM_RIDGE_p1_p1_CrestRock",
+      "localId": 2743,
+      "base": 641068,
+      "oldPose": [
+        6016.0,
+        6528.0,
+        766.902099609375,
+        0.0,
+        0.0,
+        5.590888023376465
+      ],
+      "pose": [
+        6016.0,
+        6528.0,
+        1308.7812378810568,
+        0.0,
+        0.0,
+        5.590888023376465
+      ],
+      "asset": "RockPileL01",
+      "scale": 1.0,
+      "groundMin": 1177.7812378810568,
+      "groundMax": 1177.9593616691623,
+      "supportRangeLimit": 110,
+      "maximumEmbed": 3.178123788105495,
+      "criticalPoints": 1
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop4",
+      "localId": 2832,
+      "base": 194459,
+      "oldPose": [
+        6762.0,
+        6100.0,
+        1009.5697631835938,
+        0.0,
+        0.0,
+        2.8399999141693115
+      ],
+      "pose": [
+        6762.0,
+        6100.0,
+        1776.6394772877663,
+        0.0,
+        0.0,
+        2.8399999141693115
+      ],
+      "asset": "RockBoulder03",
+      "scale": 2.0,
+      "groundMin": 1662.1394772877663,
+      "groundMax": 1677.0184721653677,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 18.87899487760137,
+      "criticalPoints": 10
+    },
+    {
+      "id": "TLM_STRUCTURE_Outcrop5",
+      "localId": 2833,
+      "base": 194459,
+      "oldPose": [
+        7000.0,
+        5600.0,
+        1153.5177001953125,
+        0.0,
+        0.0,
+        3.549999952316284
+      ],
+      "pose": [
+        7000.0,
+        5600.0,
+        1859.6639379524813,
+        0.0,
+        0.0,
+        3.549999952316284
+      ],
+      "asset": "RockBoulder03",
+      "scale": 2.200000047683716,
+      "groundMin": 1733.413935151063,
+      "groundMax": 1775.6366678591394,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 46.32273273191822,
+      "criticalPoints": 8
+    },
+    {
+      "id": "TLM_DENSITY_NE_01",
+      "localId": 2879,
+      "base": 398912,
+      "oldPose": [
+        4460.0,
+        4110.0,
+        375.41912841796875,
+        0.0,
+        0.0,
+        2.5
+      ],
+      "pose": [
+        4460.0,
+        4110.0,
+        384.44678417117404,
+        0.0,
+        0.0,
+        2.5
+      ],
+      "asset": "TreeMaplePreWar03Gr",
+      "scale": 0.800000011920929,
+      "groundMin": 376.17178400316345,
+      "groundMax": 417.97631334999375,
+      "supportRangeLimit": 56,
+      "maximumEmbed": 45.060779350648716,
+      "criticalPoints": 13
+    }
+  ],
+  "heightLiftMaximum": 768,
+  "derivativeGuard": "last3heightrowszeroDelta preservelast2height+normalrows; featherends7936vsproposal8064 onlyfornumericalderivativeguard",
+  "limits": "Currentown geometry only; nativevisual/Havok/foliageLOD pending; existingfootinglimits not relaxed"
+}

@@ -1,0 +1,55 @@
+{
+  "task": "BECKETT-LAWFUL-PASSAGE-004",
+  "author": "Maya, coordinating creative gap closure",
+  "status": "New original copy for the already approved lawful MQ04 path; independent editorial review pending",
+  "source": "Accepted mq04 quest/talk at f491 and Luis's concrete no-optional-will blocker",
+  "scope": "No change to the will-dependent stage42. New stage43 is unused in the accepted MQ04 stage list. It records permission for a warranted inspection, not a successful inventory transfer or physical movement.",
+  "common_requires": [
+    "Genuine Chapter4 lead and current original black-book encounter",
+    "Actual lawful arrival21 with living original Pritchard and the genuine warrant presented",
+    "Original Beckett and player alive, enabled, loaded, local and unoccupied",
+    "Current unchanged scene and identities after every page",
+    "No prior conflicting doorway resolution or porch outcome"
+  ],
+  "nodes": [
+    {
+      "id": "pritchard_warrant_beckett",
+      "speaker": "pritchard",
+      "text": "Temperance. The warrant names the books. You'll see what we take, and I'll sign for it. You can stay and watch us read. Let us finish.",
+      "choices": [{"label": "Let Beckett answer.", "then": "beckett_warrant_terms"}, {"label": "Not now.", "close": true}],
+      "effect_request": "None. His promise alone creates no receipt, permission or item transfer."
+    },
+    {
+      "id": "beckett_warrant_terms",
+      "speaker": "vickers",
+      "text": "Then every page stays with the book. Read it here. If you take it, Owen signs for it. I won't have eleven years of work turned into a loose handful of accusations.",
+      "choices": [{"label": "Read it here under the warrant.", "effect_request": "Commit warranted inspection permission43 after the eligible exchange is acknowledged; keep the original book accessible in place.", "close": true}, {"label": "Ask Pritchard to sign for the book.", "then": "pritchard_book_receipt"}, {"label": "Leave the room for now.", "close": true}],
+      "effect_request": "No will knowledge, speech check, hostility, automatic surrender or physical step-aside."
+    },
+    {
+      "id": "pritchard_book_receipt",
+      "speaker": "pritchard",
+      "text": "One bound book, every page accounted for. I'll put my name to that. If we read it to the town, we read what it says. We don't improve it to make our case easier.",
+      "choices": [{"label": "Accept the receipt and take the book.", "effect_request": "Commit inspection permission43; request genuine receipt production and deliberate original-book transfer through the authoritative ledger. Record custody only after actual acknowledgment; do not retry an uncertain issue.", "close": true}, {"label": "Keep the book here. We'll read it first.", "effect_request": "Commit warranted inspection permission43 only; no receipt or inventory action.", "close": true}, {"label": "Not yet.", "close": true}],
+      "effect_request": "No successful signature, paper custody or book transfer is inferred from this spoken offer alone."
+    }
+  ],
+  "documents": [
+    {
+      "id": "mq04_lawful_book_receipt",
+      "title": "Receipt for Vane's bound account book",
+      "text": "MERCY CROSSING\n\nOne bound account book, to remain complete for inspection under the warrant. Owen Pritchard assumes responsibility for its removal and accounting for its pages.\n\nOwen Pritchard, Sheriff",
+      "requires": "Genuine eligible acceptance of the receipt route and actual generated original receipt. No pre-existing signature or transfer claim."
+    }
+  ],
+  "journal43": "Beckett accepted inspection under Pritchard's warrant. The book must stay complete. Taking it away still needs his receipt and the actual book.",
+  "next_objective": "Read Vane's black book. If you remove it for a public reading, obtain the receipt and carry the actual book to the porch.",
+  "limits": [
+    "An accepted permission may persist, but later speech and effects require current original actors and context.",
+    "Keep will knowledge, inspection permission, document production, actual book custody and public reading separate.",
+    "Cancel or leaving grants no permission, receipt, transfer, threat or death.",
+    "Book reading can occur in place without taking it; nonlethal main progression requires neither the optional will nor a speech check.",
+    "If the physical doorway needs movement, verify that actual movement separately; stage43 never claims Beckett moved.",
+    "This is supplied original writing, not executable quest data, a compiled feature or installed content."
+  ]
+}

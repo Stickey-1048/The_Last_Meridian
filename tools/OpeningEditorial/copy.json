@@ -1,0 +1,33 @@
+{
+  "baseline": "158FB07191E65FBA2C73FAF333EA137E3AFF9431C1B3DCF30AB1E2B083ED78DA",
+  "messages": [
+    {
+      "localId": 2911,
+      "editorId": "TLM_PROLOGUE_MSG_WhoPritchard",
+      "old": "Gantt: Owen Pritchard. Mercy's sheriff. Green cabin above the road. He'll want what you actually saw, not what somebody talked you into believing.",
+      "new": "Gantt: Owen Pritchard. Mercy's sheriff. Green cabin above the road. Give him a plain account. He'll have enough guesses without ours.",
+      "characters": 133
+    },
+    {
+      "localId": 2924,
+      "editorId": "TLM_MSG_SayInquiryOffer",
+      "old": "Pritchard: Thank you for bringing the dispatch. I need facts before I tell Mercy what happened. Ask Ada Pike when the railway last bought brake shoes, then bring me her account.",
+      "new": "Pritchard: Thank you for bringing the dispatch. I need a fact I can check. Ask Ada Pike when the railway last bought brake shoes, then bring me her account.",
+      "characters": 156
+    },
+    {
+      "localId": 2925,
+      "editorId": "TLM_MSG_SayInquiryOfferDead",
+      "old": "Pritchard: Tobias is dead. I'm sorry to hear it. I need facts before I tell Mercy what happened. Ask Ada Pike when the railway last bought brake shoes, then bring me her account.",
+      "new": "Pritchard: Tobias. Damn. You brought his dispatch through. Thank you. Ada Pike keeps the railway's repair books. Ask when they last bought brake shoes, then bring me her account.",
+      "characters": 178
+    },
+    {
+      "localId": 2931,
+      "editorId": "TLM_MSG_SayInquiryReported",
+      "old": "Pritchard: I'll check the railway's records against her account. When you're ready, we can talk about the roads out of Mercy.",
+      "new": "Pritchard: I'll check the railway's records against her account. You've done what I asked. Take a minute before you choose another road.",
+      "characters": 136
+    }
+  ]
+}

@@ -45,7 +45,7 @@ public static class Act1
         Person("TLM_NPC_PHYSICIAN_MERCY", "Miriam Keene", "female", Town),
         Person("TLM_NPC_DEPUTY_MERCY", "Jonah Talbot", "male", Town),
         Person("TLM_NPC_FREIGHT_MERCY", "Corwin Haskell", "male", Town),
-        // Dead when the room loads. He keeps the settler's factions: he is
+        // Killed once after his 3D loads during opening setup. He keeps the settler's factions: he is
         // nobody's ally any more.
         Person("TLM_NPC_MARSHAL_DEAD", "Tobias Gantt", "male", null),
         Person("TLM_NPC_CARAVAN_MASTER", "Nell Fenwick", "female", Caravan),
@@ -92,6 +92,10 @@ public static class Act1
     // and up. The wreck to the left, the road ahead, the town to the right.
     // Everything starts disabled, so that the room is as it was for every
     // other scenario until TLM:Act1Walk switches it on.
+    public static readonly string[] HelpMarkers = { "HelpApproach", "HelpWithdrawA", "HelpWithdrawB", "HelpWithdrawC", "HelpWithdrawD", "HelpHome" };
+    static readonly PlacedSpec[] HelpPlaced = HelpMarkers.Select((n,i)=>new PlacedSpec("TLM_REF_A1_"+n, Cell, "XMarker", "Static", 400+i*160, -600, 16, InitiallyDisabled:true)).ToArray();
+    static readonly AliasSpec[] HelpAliases = HelpMarkers.Select(n=>new AliasSpec(n,Fill.Placed,AllowDisabled:true,Placed:"TLM_REF_A1_"+n)).ToArray();
+
     public const float BoxHalf = 100f;
     static readonly float[] Box = { BoxHalf, BoxHalf, BoxHalf };
 
@@ -101,7 +105,7 @@ public static class Act1
     public static readonly PlacedSpec[] Placed = new PlacedSpec[]
     {
         // The wreck.
-        Own("Marshal", "TLM_NPC_MARSHAL_DEAD", 230, -420, dead: true),
+        Own("Marshal", "TLM_NPC_MARSHAL_DEAD", 230, -420),
         Own("Dispatch", "TLM_MISC_Dispatch", 190, -360, 10),
         new("TLM_REF_A1_Revolver", Cell, "the marshal's revolver", "Weapon", 260, -340, 10, InitiallyDisabled: true, BaseNames: RevolverNames),
         Own("Journal", "TLM_BOOK_MarshalLog", 200, -470, 10),
@@ -131,7 +135,7 @@ public static class Act1
         Own("NoticeBoard", "TLM_ACTI_NoticeBoard", 480, 180, 12),
         Own("Stove", "TLM_ACTI_Stove", 600, 400, 12),
         new("TLM_REF_A1_CaravanYard", Cell, "XMarker", "Static", 620, 320, 0, InitiallyDisabled: true),
-    }.Concat(Orientation.Placed).Concat(Guide.Placed).ToArray();
+    }.Concat(Orientation.Placed).Concat(Guide.Placed).Concat(HelpPlaced).ToArray();
 
     // ------------------------------------------------------------- the talk
     // Who is who to TLM:Act1Talk (the number on each speaker's alias) and to
@@ -149,8 +153,8 @@ public static class Act1
         new("TLM_MSG_A1_" + id, who, who + ": \"" + line + "\"", Box: true,
             (buttons.Length == 0 ? new[] { GoOn } : buttons).Select(b => new ButtonSpec(b)).ToArray());
 
-    // Demo UI, outside the character's quoted line. The future route selection
-    // is not implemented; no new quest or button is implied by the fiction.
+    // Directions outside the recorded speech: the existing briefing is
+    // available on the next ordinary Pritchard interaction.
     static MessageSpec DemoEnd(string id, string line, params string[] buttons)
     {
         var message = Says(id, Pritchard, line, buttons);
@@ -158,7 +162,7 @@ public static class Act1
         // garbage after~255characters. Keep the complete boundary well below
         // that observed failure point; this is not a general engine-limit claim.
         // GREENWATER-STORY-001 (order, item 1): in this candidate one later road is playable.
-        return message with { Text = message.Text + "\n\n[Opening complete. Three roads and Four Flags entry are available.]" };
+        return message with { Text = message.Text + "\n\n[Speak to Pritchard again for directions to the three roads.]" };
     }
 
     const string Dunmore = "Reese Dunmore", Nell = "Nell Fenwick", Abel = "Abel Rudd", Cutter = "Tellico Cutter",
@@ -176,7 +180,7 @@ public static class Act1
         // ---- Reese Dunmore, at the wagon (design 8.1). The button order is
         // the contract with TLM:Act1Walk.TalkDunmore.
         Says("DunmoreHold", Dunmore, "Keep walking. Or stay and pick up a share.",
-            "[Risk combat] Pritchard hangs road-takers. Leave.", "[Fight] Let them go.", "What kind of share?", "[Leave] I'm walking away."),
+            "[Risk combat] Pritchard hangs road-takers. Leave.", "[Fight] Let them go.", "What kind of share?", "[Leave] I'm walking away.", "[Call for help] Sheriff! Over here!"),
         Says("DunmoreShare", Dunmore, "Half the cargo. The drover won't be a problem.", "Take the share.", "[Leave] No deal. I'm leaving."),
         Says("DunmoreBreaks", Dunmore, "Not for one wagon. We're gone."),                           // NEW
         Says("DunmoreTurns", Dunmore, "Then you're in the way."),                                   // NEW
@@ -184,31 +188,33 @@ public static class Act1
         Says("DunmoreAfter", Dunmore, "We're done here. Walk on."),                                 // NEW
 
         // ---- Nell Fenwick (design 8.2).
-        Says("NellLive", Nell, "They want the wagon. Don't make it worse."),                        // NEW
-        Says("NellSaved", Nell, "They'd have had the wagon and Abel both. Take this. It's what I can spare.",   // NEW
+        Says("NellLive", Nell, "They want the wagon. It's my living and Abel's wages. I can reckon a bad axle; I can't reckon what Dunmore will do if somebody starts shooting."),                        // NEW
+        Says("NellSaved", Nell, "I can spare thirty caps. I'd rather pay a debt than wonder when it'll be called in. You kept the Cutters off my wagon; let that be square between us.",   // NEW
             "Take it.", "Keep it.", "Who hit you?"),
         Says("NellWho", Nell, "Tellico Cutters. Reese Dunmore's lot."),                             // NEW
-        Says("NellOffer", Nell, "Take this. It's what I can spare.", "Take it.", "Keep it."),       // NEW
-        Says("NellSavedAfter", Nell, "We'll be at the yard in Mercy Crossing. I won't forget it."), // NEW
+        Says("NellOffer", Nell, "Thirty caps. That's what I can spare and still put a load over the next ridge. Take them, or tell me to keep them.", "Take it.", "Keep it."),       // NEW
+        Says("NellSavedAfter", Nell, "I'd like one trip where the climb takes more out of me than the men beside the road. I'll do my reckoning at Mercy's yard. I won't forget your part."), // NEW
         Says("NellEvaded", Nell, "You watched. You kept walking.", "I couldn't.", "Not my fight.", Silent),   // design
         // She refuses to talk (design). Not a box: there is nothing to answer.
         new("TLM_MSG_A1_NellSilent", Nell, "Nell Fenwick looks through you and says nothing.", Box: false),
         Says("NellMissed", Nell, "They took the wagon and they killed Abel. Nobody came."),         // NEW
 
         // ---- Abel Rudd and the three Cutters.
-        Says("AbelLive", Abel, "Don't look at me. Look at them."),                                  // NEW
-        Says("AbelSaved", Abel, "Thought that was the end of me. Obliged."),                        // NEW
+        Says("AbelLive", Abel, "I'm the drover, not a gunfighter. Dunmore's the one speaking for them. Talk to him if you've a way out of this; I still want to drive this wagon home."),                                  // NEW
+        Says("AbelSaved", Abel, "A steep climb I can work with. Waiting for a man to decide whether I'm worth a bullet is different. Thank you for giving me the road again."),                        // NEW
         Says("CutterLive", Cutter, "Talk to Dunmore."),                                             // NEW
 
+        Says("SheriffWarning", Pritchard, "That's enough, Dunmore. Take your people and leave the wagon."),
+
         // ---- Sheriff Owen Pritchard (design 8.3).
-        Says("PritchardNoCase", Pritchard, "Gantt's train never reached us. Where's his case?",
+        Says("PritchardNoCase", Pritchard, "Gantt's train never reached us. I need his dispatch, not another guess about the wreck. Did you find his case?",
             "I haven't looked.", "Lost it.", "I'll go back for it."),
-        Says("PritchardNoCaseAndMore", Pritchard, "Gantt's train never reached us. Where's his case?",
+        Says("PritchardNoCaseAndMore", Pritchard, "Gantt's train never reached us. I need his dispatch, not another guess about the wreck. Did you find his case?",
             "I haven't looked.", "Lost it.", "I'll go back for it.", More),
-        Says("PritchardMark", Pritchard, "Six hours east at the wreck. I'll mark it."),
-        Says("PritchardCase", Pritchard, "Off the Tellico wreck. That's Tobias Gantt's case you're carrying.",
+        Says("PritchardMark", Pritchard, "Search beside Gantt at the wreck for the sealed dispatch. The road brings you back to Mercy and this cabin."),
+        Says("PritchardCase", Pritchard, "That's Gantt's case. I need the dispatch inside it before I can send word up the line. Hand it over, or tell me you're keeping it for now.",
             "Hand over the dispatch", "Not yet."),
-        Says("PritchardCaseAndMore", Pritchard, "Off the Tellico wreck. That's Tobias Gantt's case you're carrying.",
+        Says("PritchardCaseAndMore", Pritchard, "That's Gantt's case. I need the dispatch inside it before I can send word up the line. Hand it over, or tell me you're keeping it for now.",
             "Hand over the dispatch", "Not yet.", More),
         Says("PritchardReported", Pritchard, "Show me. I'll take copies and send word up the line."),   // NEW
         Says("DebriefSaved", Pritchard, Marshals + "Word is Nell Fenwick's wagon got through. Obliged."),
@@ -222,22 +228,22 @@ public static class Act1
         Says("DebriefNoWitness", Pritchard, Marshals + "Two dead on the Tellico road and no one to say how."),
         Says("DebriefMissed", Pritchard, Marshals + "Fenwick's wagon was hit on the Tellico road, and you came in by it."),   // NEW
         Says("DebriefLost", Pritchard, Marshals + "Nell Fenwick's wagon never came in."),                                  // NEW
-        DemoEnd("PritchardHandOff", "Greenwater's food has gone short. Red Hollow's sealed the mine. Iron Junction's rails are being cut. Pick one. I don't have the people for all three."),
-        DemoEnd("PritchardAfter", "Greenwater, Red Hollow or Iron Junction. Pick one."),    // NEW
-        DemoEnd("PritchardAfterAndMore", "Greenwater, Red Hollow or Iron Junction. Pick one.", GoOn, More),   // NEW
+        DemoEnd("PritchardHandOff", "Greenwater needs food. Red Hollow's mine is shut. Iron Junction's rails are being cut. Pick one road. I can't spare people for all three."),
+        DemoEnd("PritchardAfter", "Greenwater by river, Iron Junction by rail, Red Hollow up the pike. Ask what you need to know before you go."),    // NEW
+        DemoEnd("PritchardAfterAndMore", "Greenwater by river, Iron Junction by rail, Red Hollow up the pike. Ask what you need to know before you go.", GoOn, More),   // NEW
 
         // ---- The town.
-        Says("PikeHello", Pike, "Pike. I fix what shoots. Forty-fours are scarce, so make yours count."),   // NEW
+        Says("PikeHello", Pike, "Ada Pike. I fix guns; I don't make powder appear. Forty-fours are scarce. Past the next ridge, a wasted shot's a long walk back."),   // NEW
         Says("PikeBook", Pike, "They used to buy shoes off me every season. Haven't taken a pair since spring. I kept the count. Here, look.",   // design
             "Look at her parts book", "Leave it"),
-        Says("PikeAfter", Pike, "The count's the count. I don't know who wrote yours."),            // NEW
+        Says("PikeAfter", Pike, "The count's the count. Good iron doesn't get cheaper because a man signs a tidy page. Take what I showed you to Pritchard; let him ask whose account it clears."),            // NEW
         Says("PikeHaskell", Pike, "Corwin signed for freight. That's all he did."),                 // design
         Says("VaneHello", Vane, "Vane. If it came down the line, I can price it."),                 // NEW
         Says("VaneOffer", Vane, "Paper like this makes trouble for everyone. I'll take it off your hands.",   // design
             "Sell him the ledger and the journal", "Keep them"),
         Says("VanePaid", Vane, "Paid in full. Good day to you."),                                   // NEW
-        Says("KeeneHello", Keene, "Clinic's open. If you're bleeding, sit. If you're not, don't touch anything."),   // NEW
-        Says("KeeneNell", Keene, "Nell Fenwick's on the cot. She'll mend. Leave her be."),          // NEW
+        Says("KeeneHello", Keene, "Miriam Keene. Tell me where you're hurt; don't make me guess. Clean cloth comes over the same roads as everything else. I've none to waste."),   // NEW
+        Says("KeeneNell", Keene, "Nell's alive. That's what I can tell you. Give her quiet, and don't make her spend her strength telling you the road again."),          // NEW
         Says("KeeneHaskell", Keene, "Corwin signed for freight. That's all he did."),               // design
         Says("TalbotGate", Talbot, "Deputy Talbot. Keep your iron holstered inside the posts."),    // NEW
         Says("TalbotAfter", Talbot, "Sheriff's got your paper. He'll want a word more, I'd reckon."),   // NEW
@@ -302,10 +308,16 @@ public static class Act1
         Objectives: Array.Empty<ObjectiveSpec>(),
         Aliases: Parts.Select(p => new AliasSpec(p.Alias, Fill.Placed, AllowDisabled: true, AllowDead: p.AllowDead, Protected: p.Protected,
             Placed: "TLM_REF_A1_" + p.Alias,
-            Scripts: p.Who == 0 ? Array.Empty<ScriptBind>() : new[] { Talk(p.Who) })).Concat(Orientation.Aliases).Concat(Guide.Aliases).ToArray(),
+            Scripts: p.Who == 0 ? Array.Empty<ScriptBind>() : new[] { Talk(p.Who) })).Concat(Orientation.Aliases).Concat(Guide.Aliases).Concat(HelpAliases).ToArray(),
         Script: new ScriptBind("TLM:Act1Walk", new Prop[]
         {
             new FormProp("TLM_MQ01", "TLM_MQ01"),
+            new VanillaProp("PritchardOriginalVoice", "MaleBoston", "VoiceType"),
+            Mine("Pritchard"),
+            Mine("Pike"),
+            new PlacedProp("OpeningOriginalPike", "TLM_REF_A1_Pike"),
+            new AliasListProp("HelpCast",new[]{"Pritchard","Dunmore","Cutter1","Cutter2","Cutter3","Nell","Abel"}.Select(n=>(QuestId,n)).ToArray()),
+            new AliasListProp("HelpAnchors",HelpMarkers.Select(n=>(QuestId,n)).ToArray()),
             new FormProp("TLM_SQ01", "TLM_SQ01"),
             // ACT1-RUNTIME-001: the optional Mercy briefing after the chapter (SpecMercyBriefing.cs).
             new FormProp("TLM_MercyBriefing", MercyBriefing.QuestId),
@@ -317,6 +329,11 @@ public static class Act1
             new FormProp("TLM_RedHollow", RedHollow.StageId),
             new FormProp("TLM_FourFlags", FourFlags.QuestId),
             new FormProp("TLM_FourFlagsEntry", FourFlags.EntryId),
+            new FormProp("TLM_BlackLedger", BlackLedger.QuestId),
+            new FormProp("TLM_BlackLedgerEntry", BlackLedger.EntryId),
+            new PlacedProp("BlackLedgerOriginalSheriff","TLM_REF_A1_Pritchard"),
+            new PlacedProp("BlackLedgerOriginalVane","TLM_REF_A1_Vane"),
+            new PlacedProp("BlackLedgerOriginalHaskell","TLM_REF_A1_Haskell"),
             new FormProp("TLM_G_CaravanOutcome", "TLM_G_CaravanOutcome"),
             new FormProp("TLM_G_CaravanMethod", "TLM_G_CaravanMethod"),
             new FormProp("TLM_G_CaravanAliveAtMercy", "TLM_G_CaravanAliveAtMercy"),
@@ -329,8 +346,8 @@ public static class Act1
             new FormProp("TLM_G_SQ01_VaneHasLedger", "TLM_G_SQ01_VaneHasLedger"),
             new FormProp("TLM_G_SQ01_HaskellScapegoated", "TLM_G_SQ01_HaskellScapegoated"),
             // Everything placed, to switch on; the people among it; and what is put where.
-            new AliasListProp("Everything", Parts.Select(p => (QuestId, p.Alias)).Concat(Orientation.Pieces.Select(p => (QuestId, p.Alias))).Concat(Guide.Points.Select(p => (QuestId, p.Alias))).ToArray()),
-            new StringListProp("EverythingNames", Parts.Select(p => p.Name).Concat(Orientation.Pieces.Select(p => p.Name)).Concat(Guide.Points.Select(p => p.Name)).ToArray()),
+            new AliasListProp("Everything", Parts.Select(p => (QuestId, p.Alias)).Concat(Orientation.Pieces.Select(p => (QuestId, p.Alias))).Concat(Guide.Points.Select(p => (QuestId, p.Alias))).Concat(HelpMarkers.Select(n=>(QuestId,n))).ToArray()),
+            new StringListProp("EverythingNames", Parts.Select(p => p.Name).Concat(Orientation.Pieces.Select(p => p.Name)).Concat(Guide.Points.Select(p => p.Name)).Concat(HelpMarkers).ToArray()),
             new AliasListProp("People", Parts.Where(p => p.IsPerson).Select(p => (QuestId, p.Alias)).ToArray()),
             new StringListProp("PeopleNames", Parts.Where(p => p.IsPerson).Select(p => p.Name).ToArray()),
             new AliasListProp("CastFrom", Casts.Select(c => (QuestId, c.Part.Alias)).ToArray()),

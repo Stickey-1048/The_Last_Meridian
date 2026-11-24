@@ -1,0 +1,687 @@
+{
+  "scope": "Deliberate working/living/pantry/yard zones; existing furniture retained",
+  "placements": [
+    {
+      "id": "TLM_FINISH_DeskChair",
+      "asset": "NpcChairHighTechOfficeChairDirtySit01",
+      "x": 2840,
+      "y": 2850,
+      "z": 143.4453125,
+      "yaw": 3.141592653589793,
+      "scale": 1,
+      "kind": "FURN",
+      "support": 144,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        2822.0,
+        2826.703125,
+        144.0,
+        2857.8125,
+        2873.296875,
+        210.7578125
+      ]
+    },
+    {
+      "id": "TLM_FINISH_LivingRug",
+      "asset": "PlayerHouse_Ruin_Rug01",
+      "x": 3070,
+      "y": 3120,
+      "z": 144.15419921875,
+      "yaw": 0,
+      "scale": 1.6,
+      "kind": "STAT",
+      "support": 144,
+      "parent": null,
+      "lowFloorCover": true,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        3007.4,
+        3079.1,
+        144.0,
+        3132.6,
+        3161.3,
+        146.04326171875
+      ]
+    },
+    {
+      "id": "TLM_FINISH_PantryShelf",
+      "asset": "WorkshopWallShelfWood02",
+      "x": 3048,
+      "y": 3180,
+      "z": 220,
+      "yaw": -1.5707963267948966,
+      "scale": 1,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        2976.874992893188,
+        3160.171849128283,
+        200.140625,
+        3121.562499479006,
+        3180.0000001269873,
+        221.0
+      ],
+      "mount": "north inner wall Y3180",
+      "wallMount": true
+    },
+    {
+      "id": "TLM_FINISH_PantryWaterA",
+      "asset": "WaterPurified",
+      "x": 3020,
+      "y": 3168,
+      "z": 221.0,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "ALCH",
+      "support": 221,
+      "parent": "TLM_FINISH_PantryShelf",
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        3016.583984375,
+        3164.669921875,
+        221.0,
+        3023.416015625,
+        3171.330078125,
+        234.859375
+      ]
+    },
+    {
+      "id": "TLM_FINISH_PantryWaterB",
+      "asset": "WaterPurified",
+      "x": 3040,
+      "y": 3168,
+      "z": 221.0,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "ALCH",
+      "support": 221,
+      "parent": "TLM_FINISH_PantryShelf",
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        3036.583984375,
+        3164.669921875,
+        221.0,
+        3043.416015625,
+        3171.330078125,
+        234.859375
+      ]
+    },
+    {
+      "id": "TLM_FINISH_PantryFood",
+      "asset": "FancyLadSnackCakes_PreWar",
+      "x": 3080,
+      "y": 3168,
+      "z": 221.04510427391511,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "ALCH",
+      "support": 221,
+      "parent": "TLM_FINISH_PantryShelf",
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        3078.2109380658576,
+        3161.132812361449,
+        221.0,
+        3081.789064196548,
+        3174.8671887806922,
+        234.3732299764562
+      ]
+    },
+    {
+      "id": "TLM_FINISH_DeskCup",
+      "asset": "CoffeeCup01",
+      "x": 2880,
+      "y": 2794,
+      "z": 200.0,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "MISC",
+      "support": 200,
+      "parent": "TLM_OPEN_CabinDesk",
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        2877.0,
+        2791.0,
+        200.0,
+        2883.0,
+        2799.8125,
+        207.0
+      ]
+    },
+    {
+      "id": "TLM_FINISH_DeskRation",
+      "asset": "FancyLadSnackCakes_PreWar",
+      "x": 2788,
+      "y": 2790,
+      "z": 200.04510427391511,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "ALCH",
+      "support": 200,
+      "parent": "TLM_OPEN_CabinDesk",
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        2786.2109380658576,
+        2783.132812361449,
+        200.0,
+        2789.789064196548,
+        2796.8671887806922,
+        213.3732299764562
+      ]
+    },
+    {
+      "id": "TLM_FINISH_RestWater",
+      "asset": "WaterPurified",
+      "x": 3295,
+      "y": 2872,
+      "z": 195.638794,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "ALCH",
+      "support": 195.638794,
+      "parent": "TLM_DEPTH_CabinDetail1",
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        3291.583984375,
+        2868.669921875,
+        195.638794,
+        3298.416015625,
+        2875.330078125,
+        209.498169
+      ]
+    },
+    {
+      "id": "TLM_FINISH_WashPot",
+      "asset": "CookingPot01",
+      "x": 2740,
+      "y": 3140,
+      "z": 210.18740594387054,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "MISC",
+      "support": 210.1875,
+      "parent": "TLM_DEPTH_CabinDetail2",
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        2727.4921875,
+        3126.0234375,
+        210.1875,
+        2752.5078125,
+        3154.0859375,
+        230.46865594387054
+      ]
+    },
+    {
+      "id": "TLM_FINISH_DeskWarmLight",
+      "asset": "defaultLightWarm01NS",
+      "x": 2820,
+      "y": 2780,
+      "z": 246,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "LIGH",
+      "support": null,
+      "parent": null
+    },
+    {
+      "id": "TLM_FINISH_YardWorkCrate",
+      "asset": "WoodCrate01",
+      "x": 2480,
+      "y": 3320,
+      "z": 124.0,
+      "yaw": 0,
+      "scale": 1,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": false,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        2454.390625,
+        3291.328125,
+        124.0174560546875,
+        2505.515625,
+        3347.546875,
+        175.65625
+      ]
+    },
+    {
+      "id": "TLM_FINISH_GreenSapling0",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1420,
+      "y": 800,
+      "z": -118.90078125000001,
+      "yaw": 0.0,
+      "scale": 0.65,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        -121.33437500000001,
+        -117.90854492187498
+      ],
+      "bounds": [
+        1344.7625,
+        723.38125,
+        -124.35976562500001,
+        1503.159375,
+        872.271875,
+        133.62421875
+      ]
+    },
+    {
+      "id": "TLM_FINISH_GreenSapling1",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1510,
+      "y": 880,
+      "z": -107.5575440314831,
+      "yaw": 0.57,
+      "scale": 0.55,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        -109.1552002814831,
+        -106.35224409770429
+      ],
+      "bounds": [
+        1421.417458909248,
+        787.446961024815,
+        -112.1766846564831,
+        1602.241074435637,
+        965.8392008742464,
+        106.11745596851691
+      ]
+    },
+    {
+      "id": "TLM_FINISH_GreenSapling2",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1580,
+      "y": 740,
+      "z": -83.86140598253635,
+      "yaw": 1.14,
+      "scale": 0.75,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        -87.13093723253635,
+        -80.91634250369236
+      ],
+      "bounds": [
+        1463.41869710912,
+        615.8958124524371,
+        -90.16023410753635,
+        1695.841012774668,
+        853.7042120632126,
+        207.51359401746365
+      ]
+    },
+    {
+      "id": "TLM_FINISH_GreenSapling3",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 580,
+      "y": 2110,
+      "z": -19.59689313150767,
+      "yaw": 1.71,
+      "scale": 0.7,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        -22.44845563150767,
+        1.2592925185699357
+      ],
+      "bounds": [
+        485.85932375123616,
+        2010.510606246778,
+        -25.47579938150767,
+        668.3209592704955,
+        2201.6902128720108,
+        252.35310686849232
+      ]
+    },
+    {
+      "id": "TLM_FINISH_GreenSapling4",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 300,
+      "y": 2200,
+      "z": 83.16944767312587,
+      "yaw": 2.28,
+      "scale": 0.8,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        79.48194767312587,
+        96.06388469975371
+      ],
+      "bounds": [
+        161.78419346354474,
+        2064.4016812137575,
+        76.45069767312587,
+        427.80630555754374,
+        2331.683310565301,
+        393.9694476731259
+      ]
+    },
+    {
+      "id": "TLM_FINISH_GreenSapling8",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1700,
+      "y": 2600,
+      "z": 128.76171875,
+      "yaw": 4.56,
+      "scale": 0.45,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        1641.8060582877729,
+        2540.920917869567,
+        124.982421875,
+        1760.3359144745793,
+        2664.9567227894554,
+        303.58671875000005
+      ]
+    },
+    {
+      "id": "TLM_FINISH_GreenSapling10",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1570,
+      "y": 2700,
+      "z": 129.1796875,
+      "yaw": 5.699999999999999,
+      "scale": 0.5,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        128.0,
+        128.0
+      ],
+      "bounds": [
+        1491.0763231936462,
+        2618.933189465704,
+        124.98046875,
+        1655.8515626220283,
+        2781.631479685195,
+        323.4296875
+      ]
+    },
+    {
+      "id": "TLM_FINISH_HollowCanopy",
+      "asset": "TreeMaplePreWar06Gr",
+      "x": 420,
+      "y": 2050,
+      "z": -58.978478458222696,
+      "yaw": 0.6,
+      "scale": 0.65,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        -62.580040958222696,
+        -47.86310345362919
+      ],
+      "bounds": [
+        228.325587444961,
+        1821.2459442528298,
+        -65.7273065832227,
+        710.5435922112752,
+        2277.0720271050554,
+        355.3965215417773
+      ]
+    },
+    {
+      "id": "TLM_FINISH_CutShoulderGreenA",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 3160,
+      "y": 1420,
+      "z": 208.47510183090378,
+      "yaw": 0.4,
+      "scale": 0.7,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        205.62353933090378,
+        236.2865344096944
+      ],
+      "bounds": [
+        3053.2391519911735,
+        1309.126108313958,
+        202.59619558090378,
+        3272.795684998981,
+        1523.2399496750454,
+        480.42510183090377
+      ]
+    },
+    {
+      "id": "TLM_FINISH_CutShoulderGreenB",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 3070,
+      "y": 1600,
+      "z": 20.82337532244395,
+      "yaw": 1.4,
+      "scale": 0.55,
+      "kind": "STAT",
+      "support": null,
+      "parent": null,
+      "lowFloorCover": false,
+      "vegetation": true,
+      "groundRange": [
+        19.22571907244395,
+        25.223820423692644
+      ],
+      "bounds": [
+        2995.291528957799,
+        1519.6390315101294,
+        16.20423469744395,
+        3142.2231747588403,
+        1673.1302153710617,
+        234.49837532244396
+      ]
+    }
+  ],
+  "omitted": [
+    [
+      "YardWaterBarrel",
+      "existing prop"
+    ],
+    [
+      "GreenSapling5",
+      "existing prop"
+    ],
+    [
+      "GreenSapling6",
+      "existing prop"
+    ],
+    [
+      "GreenSapling7",
+      "existing prop"
+    ],
+    [
+      "GreenSapling9",
+      "existing prop"
+    ]
+  ],
+  "routes": [
+    [
+      [
+        448,
+        640
+      ],
+      [
+        700,
+        900
+      ],
+      [
+        1050,
+        1133
+      ],
+      [
+        1900,
+        1700
+      ],
+      [
+        2600,
+        2200
+      ],
+      [
+        3048,
+        2200
+      ],
+      [
+        3048,
+        2432
+      ],
+      [
+        3048,
+        2900
+      ]
+    ],
+    [
+      [
+        1200,
+        1200
+      ],
+      [
+        2200,
+        1000
+      ],
+      [
+        2700,
+        1700
+      ],
+      [
+        2600,
+        2200
+      ]
+    ],
+    [
+      [
+        2600,
+        2200
+      ],
+      [
+        2260,
+        2200
+      ],
+      [
+        1880,
+        2480
+      ],
+      [
+        1880,
+        2560
+      ]
+    ],
+    [
+      [
+        2260,
+        2200
+      ],
+      [
+        2260,
+        3558
+      ],
+      [
+        3050,
+        3558
+      ],
+      [
+        3050,
+        3572
+      ]
+    ]
+  ],
+  "qaPads": [
+    [
+      740,
+      920
+    ],
+    [
+      3212,
+      2474
+    ]
+  ]
+}

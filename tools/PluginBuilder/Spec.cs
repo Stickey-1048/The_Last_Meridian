@@ -34,6 +34,8 @@ public sealed record BoolProp(string Name, bool Value) : Prop(Name);
 // A record in this plugin, by EditorID.
 public sealed record FormProp(string Name, string EditorId) : Prop(Name);
 public sealed record ReferenceListProp(string Name, params string[] EditorIds) : Prop(Name);
+// Strict local form arrays (e.g. Message[]); placed-reference arrays keep their old contract.
+public sealed record FormListProp(string Name, params string[] EditorIds) : Prop(Name);
 public sealed record PlacedProp(string Name,string EditorId) : Prop(Name);
 // An alias, by alias name: on the owning quest, or on the quest named.
 public sealed record AliasProp(string Name, string Alias, string? Quest = null) : Prop(Name);
@@ -216,7 +218,7 @@ public static class Spec
         "TLM_Fac_Cutters",
         "TLM_Fac_Caravan",
         "TLM_Fac_MercyCrossing",
-    }.Concat(Greenwater.Factions).Concat(NightMail.Factions).Concat(RedHollow.Factions).Concat(FourFlags.Factions).ToArray();
+    }.Concat(Greenwater.Factions).Concat(NightMail.Factions).Concat(RedHollow.Factions).Concat(FourFlags.Factions).Concat(BlackLedger.Factions).Concat(Blackstone.Factions).ToArray();
 
     public static readonly MiscSpec[] MiscItems = new MiscSpec[]
     {
@@ -233,7 +235,7 @@ public static class Spec
     {
         // Development only (the placed-content trial).
         new("TLM_ACTI_TrialTrigger"),
-    }.Concat(Act1.Activators).Concat(Greenwater.Activators).Concat(NightMail.Activators).Concat(RedHollow.Activators).Concat(FourFlags.Activators).ToArray();
+    }.Concat(Act1.Activators).Concat(Greenwater.Activators).Concat(NightMail.Activators).Concat(RedHollow.Activators).Concat(FourFlags.Activators).Concat(BlackLedger.Activators).Concat(Blackstone.Activators).ToArray();
 
     public static readonly ContainerSpec[] Containers = Act1.Containers.Concat(RedHollow.Containers).ToArray();
 
@@ -258,7 +260,7 @@ public static class Spec
         // placeholders, not characters.
         new("TLM_NPC_TrialPerson", "Second Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: true),
         new("TLM_NPC_TrialPersonBare", "Third Trial Settler", CopyFrom: "WorkshopNPC", KeepDefaultPackageList: false),
-    }.Concat(Act1.Npcs).Concat(Greenwater.Npcs).Concat(NightMail.Npcs).Concat(RedHollow.Npcs).Concat(FourFlags.Npcs).ToArray();
+    }.Concat(Act1.Npcs).Concat(Greenwater.Npcs).Concat(NightMail.Npcs).Concat(RedHollow.Npcs).Concat(FourFlags.Npcs).Concat(BlackLedger.Npcs).Concat(Blackstone.Npcs).ToArray();
 
     // ------------------------------------------------- placed references
     // Development only: the placed-content trial (docs/design/TLM_GRAYBOX_trial.md).
@@ -315,11 +317,11 @@ public static class Spec
         new("TLM_REF_TrialPersonOwn", TrialCell, "TLM_NPC_TrialPerson", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialSettlerOnFloor", TrialCell, "WorkshopNPC", "Npc", Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
         new("TLM_REF_TrialPersonBare", TrialCell, "TLM_NPC_TrialPersonBare", null, Ahead: 600, Right: -200, Up: 0, InitiallyDisabled: true),
-    }.Concat(Act1.Placed).Concat(Greenwater.Placed).Concat(NightMail.Placed).Concat(RedHollow.Placed).Concat(FourFlags.Placed).ToArray();
+    }.Concat(Act1.Placed).Concat(Greenwater.Placed).Concat(NightMail.Placed).Concat(RedHollow.Placed).Concat(FourFlags.Placed).Concat(BlackLedger.Placed).Concat(Blackstone.Placed).ToArray();
 
     // NIGHT-MAIL-STORY-001: cells of this plugin's own. A reference placed in one is placed by the cell's own
     // coordinates: PlacedSpec.Ahead is its y (north), Right its x (east), Up its z, from the cell's origin.
-    public static readonly OwnCellSpec[] OwnCells = NightMail.Cells.Concat(RedHollow.Cells).Concat(FourFlags.Cells).ToArray();
+    public static readonly OwnCellSpec[] OwnCells = NightMail.Cells.Concat(RedHollow.Cells).Concat(FourFlags.Cells).Concat(BlackLedger.Cells).Concat(Blackstone.Cells).ToArray();
 
     // Both take after one of the game's notes, so that they can lie in the
     // world and be read there (the first section's rough cut places them).
@@ -337,14 +339,14 @@ public static class Spec
             "the line's word to the yard the same week. Last I saw, no one had been sent in his place.\n\n" +
             "Odd, then, that every car I rode on this trip came up on the list as \"signed clean\".\n\n" +
             "Pritchard will want to see this in person.", LooksLikeANote: true),
-    }.Concat(MercyBriefing.Books).Concat(Greenwater.Books).Concat(NightMail.Books).Concat(FourFlags.Books).ToArray();
+    }.Concat(MercyBriefing.Books).Concat(Greenwater.Books).Concat(NightMail.Books).Concat(FourFlags.Books).Concat(BlackLedger.Books).Concat(Blackstone.Books).ToArray();
 
     // ----------------------------------------------------------- messages
     public static readonly MessageSpec[] Messages = new MessageSpec[]
     {
         new("TLM_MSG_Tut_Wake", null, "Search the wreck. Take what you can carry.", Box: false),
         new("TLM_MSG_Tut_SixRounds", null, "Six rounds in the cylinder. Count them.", Box: false),
-        new("TLM_MSG_E1", "Brake shoes", "The shoes are ground to the rivets.", Box: true,
+        new("TLM_MSG_E1", "Brake shoes", "The brake lining is worn down to exposed rivets. That much wear took time. A ledger calling these brakes sound does not match what is here.", Box: true,
             new ButtonSpec("Step back")),
         new("TLM_MSG_E2", "Draw-bar", "The draw-bar is cracked through. The break is dark with old rust.", Box: true,
             new ButtonSpec("Step back")),
@@ -364,7 +366,7 @@ public static class Spec
         // Development only (scenario 11): what is shown when the person of the
         // plugin's own is activated. Not a box: nobody is there to answer one.
         new("TLM_MSG_TrialTalk", null, "The second trial settler has nothing to say yet.", Box: false),
-    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).Concat(Greenwater.Messages).Concat(NightMail.Messages).Concat(RedHollow.Messages).Concat(GreenwaterRelief.Messages).Concat(FourFlags.Messages).ToArray();
+    }.Concat(Act1.Messages).Concat(MercyBriefing.Messages).Concat(Greenwater.Messages).Concat(NightMail.Messages).Concat(RedHollow.Messages).Concat(GreenwaterRelief.Messages).Concat(FourFlags.Messages).Concat(BlackLedger.Messages).Concat(Blackstone.Messages).ToArray();
 
     // --------------------------------------------------------------- core
     public static readonly QuestSpec Core = new(
@@ -586,12 +588,12 @@ public static class Spec
         Stages: new StageSpec[]
         {
             new(5, Note: "Running, hidden. Set by MQ01 stage 10."),
-            new(10, "The train's maintenance ledger says the brakes and couplers were inspected and sound."),
+            new(10, "The maintenance ledger says the brakes and couplers were sound. Inspect the brake shoes or draw-bar at the wreck and compare them with that entry."),
             new(11, Note: "E1 brake shoes examined"),
             new(12, Note: "E2 draw-bar examined"),
             new(13, Note: "E3 marshal's journal taken"),
             new(14, Note: "E4 Ada Pike's parts book seen"),
-            new(20, "The ledger and the wreck don't agree."),
+            new(20, "The damaged part I examined contradicts the maintenance ledger. I can now decide what to do with the evidence."),
             new(25, "Whoever kept this ledger wrote down work that was never done."),
             new(41, Note: "Reported to Pritchard"),
             new(42, Note: "Posted, no name"),
@@ -605,7 +607,7 @@ public static class Spec
         },
         Objectives: new ObjectiveSpec[]
         {
-            new(10, "Compare the ledger to the wreck"),
+            new(10, "Inspect the brake shoes or draw-bar at the wreck", TargetAlias: "BrakeShoes"),
             new(20, "Decide what to do with the evidence"),
         },
         Aliases: new AliasSpec[]
@@ -708,5 +710,5 @@ public static class Spec
                 new VanillaProp("MarkerBase", "XMarker", "Static")),
         });
 
-    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest, Greenwater.Road, Greenwater.Stage, NightMail.Road, NightMail.Stage, RedHollow.Road, RedHollow.Stage, GreenwaterRelief.Quest, FourFlags.Quest, FourFlags.Entry };
+    public static readonly QuestSpec[] Quests = { Core, MQ01, SQ01, Trial, Act1.Quest, MercyBriefing.Quest, Greenwater.Road, Greenwater.Stage, NightMail.Road, NightMail.Stage, RedHollow.Road, RedHollow.Stage, GreenwaterRelief.Quest, FourFlags.Quest, FourFlags.Entry, BlackLedger.Quest, BlackLedger.Entry, Blackstone.Quest };
 }

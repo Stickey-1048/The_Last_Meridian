@@ -1,0 +1,1411 @@
+{
+  "scope": "Original passive opening detail; explicit omitted unsafe sites",
+  "baseline": "C:\\Users\\cferr\\Documents\\Codex\\2026-11-14\\referenced-chatgpt-conversation-this-is-an-2\\work\\mountain-final-world-composition-001\\tools\\MountainFinalWorld\\build\\composed-001\\TLMWorldSlice.esp",
+  "routeRadius": 96,
+  "actorAndOperativeRadius": 128,
+  "routes": [
+    [
+      [
+        448,
+        640
+      ],
+      [
+        700,
+        900
+      ],
+      [
+        1050,
+        1133
+      ],
+      [
+        1900,
+        1700
+      ],
+      [
+        2600,
+        2200
+      ],
+      [
+        3048,
+        2200
+      ],
+      [
+        3048,
+        2432
+      ],
+      [
+        3048,
+        2900
+      ]
+    ],
+    [
+      [
+        1200,
+        1200
+      ],
+      [
+        2200,
+        1000
+      ],
+      [
+        2700,
+        1700
+      ],
+      [
+        2600,
+        2200
+      ]
+    ],
+    [
+      [
+        2600,
+        2200
+      ],
+      [
+        2260,
+        2200
+      ],
+      [
+        1880,
+        2480
+      ],
+      [
+        1880,
+        2560
+      ]
+    ],
+    [
+      [
+        2260,
+        2200
+      ],
+      [
+        2260,
+        3558
+      ],
+      [
+        3050,
+        3558
+      ],
+      [
+        3050,
+        3572
+      ]
+    ]
+  ],
+  "placements": [
+    {
+      "id": "TLM_DEPTH_Woodland0Canopy",
+      "asset": "TreeMaplePreWar06Gr",
+      "x": 480,
+      "y": 2460,
+      "z": 167.415283203125,
+      "yaw": 0.0,
+      "scale": 0.9,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 161.274658203125,
+      "groundMax": 170.97019042968753,
+      "bounds": [
+        268.5,
+        2299.125,
+        158.070751953125,
+        805.8,
+        2696.25,
+        741.165283203125
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Sapling0",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 340,
+      "y": 2340,
+      "z": 166.9150390625,
+      "yaw": 0.0,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 165.7353515625,
+      "groundMax": 171.6025390625,
+      "bounds": [
+        282.125,
+        2281.0625,
+        162.7158203125,
+        403.96875,
+        2395.59375,
+        361.1650390625
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Sapling1",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 610,
+      "y": 2560,
+      "z": 136.5515785156538,
+      "yaw": 0.8,
+      "scale": 0.65,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 134.1179847656538,
+      "groundMax": 140.18227546245632,
+      "bounds": [
+        502.61860196588486,
+        2446.964318641559,
+        131.0925941406538,
+        719.7823642395958,
+        2664.3243790986526,
+        389.0765785156538
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Sapling2",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 400,
+      "y": 2700,
+      "z": 235.18206280216143,
+      "yaw": 1.6,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 231.49456280216143,
+      "groundMax": 240.45692438625346,
+      "bounds": [
+        302.75163812564915,
+        2595.0963442200023,
+        228.46331280216143,
+        491.6159477556412,
+        2795.314030594655,
+        545.9820628021614
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Sapling3",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 700,
+      "y": 2400,
+      "z": 94.4506813556711,
+      "yaw": 2.4000000000000004,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 93.2709938556711,
+      "groundMax": 96.85141809921001,
+      "bounds": [
+        613.0197345552375,
+        2315.7969827957477,
+        90.2514626056711,
+        780.2281924807152,
+        2482.55257368411,
+        288.7006813556711
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Scrub0",
+      "asset": "Marshshrub01",
+      "x": 260,
+      "y": 2520,
+      "z": 176.77265625,
+      "yaw": 0.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 163.64765625,
+      "groundMax": 164.23515625000002,
+      "bounds": [
+        183.8,
+        2434.7,
+        160.64765625,
+        336.2,
+        2624.8,
+        241.92265625000002
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Scrub1",
+      "asset": "TreeCedarShrub01",
+      "x": 560,
+      "y": 2280,
+      "z": 120.89633557864242,
+      "yaw": 0.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 114.28227307864242,
+      "groundMax": 117.36153717619268,
+      "bounds": [
+        481.3738704230788,
+        2194.5292662156585,
+        111.28227307864242,
+        652.4553068153248,
+        2369.020544240141,
+        249.0619605786424
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Scrub2",
+      "asset": "Marshshrub01",
+      "x": 710,
+      "y": 2640,
+      "z": 119.29846933999042,
+      "yaw": 1.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 106.17346933999042,
+      "groundMax": 106.3646983466837,
+      "bounds": [
+        597.0514892887342,
+        2529.792124267086,
+        103.17346933999042,
+        839.3571949150198,
+        2760.7437706973424,
+        184.44846933999042
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Scrub3",
+      "asset": "TreeCedarShrub01",
+      "x": 300,
+      "y": 2740,
+      "z": 221.15957252687977,
+      "yaw": 1.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 214.54551002687978,
+      "groundMax": 217.18883167403305,
+      "bounds": [
+        235.23687845016303,
+        2669.116344513686,
+        211.54551002687978,
+        375.22212040012823,
+        2801.1647748710943,
+        349.3251975268798
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Scrub4",
+      "asset": "Marshshrub01",
+      "x": 700,
+      "y": 2500,
+      "z": 100.8365515379771,
+      "yaw": 2.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 87.7115515379771,
+      "groundMax": 88.5900217003018,
+      "bounds": [
+        590.7265405468771,
+        2387.0993476057424,
+        84.7115515379771,
+        827.0047592762237,
+        2604.785789081588,
+        165.9865515379771
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland0Stone",
+      "asset": "RockBoulder03",
+      "x": 820,
+      "y": 2820,
+      "z": 169.97500000000002,
+      "yaw": 0.0,
+      "scale": 1.1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 108.35000000000002,
+      "groundMax": 139.549609375,
+      "bounds": [
+        753.79375,
+        2769.4,
+        104.80000000000001,
+        906.14375,
+        2896.5875,
+        203.971875
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Canopy",
+      "asset": "TreeMaplePreWar06Gr",
+      "x": 1200,
+      "y": 3050,
+      "z": 178.20290304174114,
+      "yaw": 0.7,
+      "scale": 0.9,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 172.06227804174114,
+      "groundMax": 178.89480971452997,
+      "bounds": [
+        934.5973569549672,
+        2717.0698906185685,
+        168.85837179174115,
+        1601.3820132271908,
+        3366.946007596732,
+        751.9529030417411
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Sapling0",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 980,
+      "y": 2930,
+      "z": 141.6845703125,
+      "yaw": 0.0,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 140.5048828125,
+      "groundMax": 142.27587890625,
+      "bounds": [
+        922.125,
+        2871.0625,
+        137.4853515625,
+        1043.96875,
+        2985.59375,
+        335.9345703125
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Sapling1",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1250,
+      "y": 3150,
+      "z": 193.0254058891445,
+      "yaw": 0.8,
+      "scale": 0.65,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 190.5918121391445,
+      "groundMax": 196.04195350570077,
+      "bounds": [
+        1142.6186019658846,
+        3036.964318641559,
+        187.5664215141445,
+        1359.7823642395958,
+        3254.3243790986526,
+        445.5504058891445
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Sapling2",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1040,
+      "y": 3290,
+      "z": 234.71883638995112,
+      "yaw": 1.6,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 231.03133638995112,
+      "groundMax": 235.79638335549117,
+      "bounds": [
+        942.7516381256492,
+        3185.0963442200023,
+        228.00008638995112,
+        1131.6159477556412,
+        3385.314030594655,
+        545.5188363899512
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Sapling3",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1380,
+      "y": 2990,
+      "z": 142.6828646717681,
+      "yaw": 2.4000000000000004,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 141.5031771717681,
+      "groundMax": 147.72641809920998,
+      "bounds": [
+        1293.0197345552376,
+        2905.7969827957477,
+        138.4836459217681,
+        1460.2281924807153,
+        3072.55257368411,
+        336.93286467176813
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Scrub0",
+      "asset": "Marshshrub01",
+      "x": 900,
+      "y": 3110,
+      "z": 209.86953125000002,
+      "yaw": 0.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 196.74453125000002,
+      "groundMax": 197.85000000000002,
+      "bounds": [
+        823.8,
+        3024.7,
+        193.74453125000002,
+        976.2,
+        3214.8,
+        275.01953125
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Scrub1",
+      "asset": "TreeCedarShrub01",
+      "x": 1200,
+      "y": 2870,
+      "z": 144.6201663536746,
+      "yaw": 0.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 138.0061038536746,
+      "groundMax": 138.0061038536746,
+      "bounds": [
+        1121.3738704230786,
+        2784.5292662156585,
+        135.0061038536746,
+        1292.4553068153248,
+        2959.020544240141,
+        272.7857913536746
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Scrub2",
+      "asset": "Marshshrub01",
+      "x": 1350,
+      "y": 3230,
+      "z": 222.11381039757944,
+      "yaw": 1.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 208.98881039757944,
+      "groundMax": 212.5074528487051,
+      "bounds": [
+        1237.0514892887343,
+        3119.792124267086,
+        205.98881039757944,
+        1479.3571949150198,
+        3350.7437706973424,
+        287.26381039757945
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Scrub3",
+      "asset": "TreeCedarShrub01",
+      "x": 940,
+      "y": 3330,
+      "z": 247.48522278792024,
+      "yaw": 1.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 240.87116028792025,
+      "groundMax": 240.87116028792025,
+      "bounds": [
+        875.2368784501631,
+        3259.116344513686,
+        237.87116028792025,
+        1015.2221204001282,
+        3391.1647748710943,
+        375.65084778792027
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland1Scrub4",
+      "asset": "Marshshrub01",
+      "x": 1420,
+      "y": 3090,
+      "z": 152.09995299068433,
+      "yaw": 2.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 138.97495299068433,
+      "groundMax": 138.97495299068433,
+      "bounds": [
+        1310.7265405468772,
+        2977.0993476057424,
+        135.97495299068433,
+        1547.0047592762237,
+        3194.785789081588,
+        217.24995299068433
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Canopy",
+      "asset": "TreeMaplePreWar06Gr",
+      "x": 3470,
+      "y": 1340,
+      "z": 397.9318682356455,
+      "yaw": 1.4,
+      "scale": 0.9,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 391.7912432356455,
+      "groundMax": 400.8679243287753,
+      "bounds": [
+        3275.5177239647055,
+        991.5970138556834,
+        388.5873369856455,
+        3758.187793866672,
+        1588.5773554027414,
+        971.6818682356454
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Sapling0",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 3290,
+      "y": 1260,
+      "z": 401.515625,
+      "yaw": 0.0,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 400.3359375,
+      "groundMax": 405.2412109375,
+      "bounds": [
+        3232.125,
+        1201.0625,
+        397.31640625,
+        3353.96875,
+        1315.59375,
+        595.765625
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Sapling1",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 3560,
+      "y": 1480,
+      "z": 363.1571740256177,
+      "yaw": 0.8,
+      "scale": 0.65,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 360.7235802756177,
+      "groundMax": 368.2731225571171,
+      "bounds": [
+        3452.618601965885,
+        1366.9643186415592,
+        357.6981896506177,
+        3669.782364239596,
+        1584.3243790986526,
+        615.6821740256177
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Sapling2",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 3350,
+      "y": 1660,
+      "z": 245.78284003737616,
+      "yaw": 1.6,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 242.09534003737616,
+      "groundMax": 255.2404885271747,
+      "bounds": [
+        3252.751638125649,
+        1555.0963442200023,
+        239.06409003737616,
+        3441.615947755641,
+        1755.314030594655,
+        556.5828400373762
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Sapling3",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 3690,
+      "y": 1320,
+      "z": 450.2750582198072,
+      "yaw": 2.4000000000000004,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 449.0953707198072,
+      "groundMax": 454.05419251980527,
+      "bounds": [
+        3603.0197345552374,
+        1235.7969827957475,
+        446.0758394698072,
+        3770.2281924807153,
+        1402.55257368411,
+        644.5250582198072
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Scrub0",
+      "asset": "Marshshrub01",
+      "x": 3170,
+      "y": 1360,
+      "z": 225.51171874999991,
+      "yaw": 0.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 212.38671874999991,
+      "groundMax": 212.82421874999994,
+      "bounds": [
+        3093.8,
+        1274.7,
+        209.38671874999991,
+        3246.2,
+        1464.8,
+        290.6617187499999
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Scrub1",
+      "asset": "TreeCedarShrub01",
+      "x": 3510,
+      "y": 1200,
+      "z": 462.5696986528145,
+      "yaw": 0.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 455.9556361528145,
+      "groundMax": 455.9556361528145,
+      "bounds": [
+        3431.3738704230786,
+        1114.529266215658,
+        452.9556361528145,
+        3602.455306815325,
+        1289.020544240141,
+        590.7353236528145
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Scrub2",
+      "asset": "Marshshrub01",
+      "x": 3660,
+      "y": 1560,
+      "z": 372.9683098989591,
+      "yaw": 1.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 359.8433098989591,
+      "groundMax": 361.2276311245219,
+      "bounds": [
+        3547.051489288734,
+        1449.792124267086,
+        356.8433098989591,
+        3789.35719491502,
+        1680.7437706973428,
+        438.11830989895907
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Scrub3",
+      "asset": "TreeCedarShrub01",
+      "x": 3290,
+      "y": 1660,
+      "z": 208.00767835059202,
+      "yaw": 1.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 201.39361585059203,
+      "groundMax": 201.39361585059203,
+      "bounds": [
+        3225.236878450163,
+        1589.116344513686,
+        198.39361585059203,
+        3365.222120400128,
+        1721.1647748710948,
+        336.17330335059205
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland2Scrub4",
+      "asset": "Marshshrub01",
+      "x": 3730,
+      "y": 1420,
+      "z": 456.11929474498487,
+      "yaw": 2.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 442.99429474498487,
+      "groundMax": 442.99429474498487,
+      "bounds": [
+        3620.726540546877,
+        1307.0993476057424,
+        439.99429474498487,
+        3857.0047592762235,
+        1524.7857890815883,
+        521.2692947449849
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland3Sapling3",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 3930,
+      "y": 2860,
+      "z": 175.54954684155868,
+      "yaw": 2.4000000000000004,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 174.36985934155868,
+      "groundMax": 185.2176854103016,
+      "bounds": [
+        3843.0197345552374,
+        2775.7969827957477,
+        171.35032809155868,
+        4010.2281924807153,
+        2942.55257368411,
+        369.7995468415587
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland3Stone",
+      "asset": "RockBoulder03",
+      "x": 3770,
+      "y": 3360,
+      "z": 189.625,
+      "yaw": 1.7999999999999998,
+      "scale": 1.1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 128.0,
+      "groundMax": 145.17340984770084,
+      "bounds": [
+        3701.1512694328458,
+        3258.7082727202296,
+        124.44999999999999,
+        3859.626754111658,
+        3435.9712257032998,
+        223.621875
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Sapling0",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1220,
+      "y": 2020,
+      "z": -102.98046875,
+      "yaw": 0.0,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -104.16015625,
+      "groundMax": -101.798828125,
+      "bounds": [
+        1162.125,
+        1961.0625,
+        -107.1796875,
+        1283.96875,
+        2075.59375,
+        91.26953125
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Sapling1",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1490,
+      "y": 2240,
+      "z": -10.469288300898825,
+      "yaw": 0.8,
+      "scale": 0.65,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -12.902882050898825,
+      "groundMax": -3.5401017038466307,
+      "bounds": [
+        1382.6186019658846,
+        2126.964318641559,
+        -15.928272675898825,
+        1599.7823642395958,
+        2344.3243790986526,
+        242.05571169910118
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Sapling2",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1280,
+      "y": 2380,
+      "z": 31.53981232174027,
+      "yaw": 1.6,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 27.85231232174027,
+      "groundMax": 36.10629545302538,
+      "bounds": [
+        1182.7516381256492,
+        2275.0963442200023,
+        24.82106232174027,
+        1371.6159477556412,
+        2475.314030594655,
+        342.3398123217403
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Sapling3",
+      "asset": "TreeMaplePreWar05Gr",
+      "x": 1560,
+      "y": 2100,
+      "z": -68.74473429522581,
+      "yaw": 2.4000000000000004,
+      "scale": 0.5,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -69.92442179522581,
+      "groundMax": -59.856617866694194,
+      "bounds": [
+        1473.0197345552376,
+        2015.7969827957475,
+        -72.94395304522581,
+        1640.2281924807153,
+        2182.55257368411,
+        125.50526570477419
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Scrub0",
+      "asset": "Marshshrub01",
+      "x": 1140,
+      "y": 2200,
+      "z": 4.062500000000028,
+      "yaw": 0.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -9.062499999999972,
+      "groundMax": -9.062499999999972,
+      "bounds": [
+        1063.8,
+        2114.7,
+        -12.062499999999972,
+        1216.2,
+        2304.8,
+        69.21250000000003
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Scrub1",
+      "asset": "TreeCedarShrub01",
+      "x": 1440,
+      "y": 1960,
+      "z": -111.54446569510053,
+      "yaw": 0.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -118.15852819510053,
+      "groundMax": -116.29424690837928,
+      "bounds": [
+        1361.3738704230786,
+        1874.529266215658,
+        -121.15852819510053,
+        1532.4553068153248,
+        2049.020544240141,
+        16.62115930489948
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Scrub2",
+      "asset": "Marshshrub01",
+      "x": 1590,
+      "y": 2320,
+      "z": 50.44779390629412,
+      "yaw": 1.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 37.32279390629412,
+      "groundMax": 51.11940003410827,
+      "bounds": [
+        1477.0514892887343,
+        2209.792124267086,
+        34.32279390629412,
+        1719.3571949150198,
+        2440.7437706973424,
+        115.59779390629413
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Scrub3",
+      "asset": "TreeCedarShrub01",
+      "x": 1260,
+      "y": 2420,
+      "z": 48.614656154206855,
+      "yaw": 1.5,
+      "scale": 1.05,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 42.00059365420685,
+      "groundMax": 43.31501351024673,
+      "bounds": [
+        1195.236878450163,
+        2349.116344513686,
+        39.00059365420685,
+        1335.2221204001282,
+        2481.1647748710943,
+        176.78028115420688
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Scrub4",
+      "asset": "Marshshrub01",
+      "x": 1600,
+      "y": 2200,
+      "z": -16.608128384968055,
+      "yaw": 2.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -29.733128384968055,
+      "groundMax": -25.96230741101992,
+      "bounds": [
+        1490.7265405468772,
+        2087.0993476057424,
+        -32.733128384968055,
+        1727.0047592762237,
+        2304.785789081588,
+        48.54187161503195
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Woodland4Stone",
+      "asset": "RockBoulder03",
+      "x": 1540,
+      "y": 2580,
+      "z": 164.9857539200086,
+      "yaw": 2.4,
+      "scale": 1.1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 103.36075392000859,
+      "groundMax": 128.0,
+      "bounds": [
+        1442.2997031809557,
+        2465.337927451382,
+        99.81075392000858,
+        1640.5521090200139,
+        2662.0320062037517,
+        198.9826289200086
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_ShoulderStone0",
+      "asset": "RockBoulder03",
+      "x": 300,
+      "y": 780,
+      "z": -148.0,
+      "yaw": 0.0,
+      "scale": 0.8,
+      "vegetation": false,
+      "support": null,
+      "groundMin": -192.0,
+      "groundMax": -192.0,
+      "bounds": [
+        251.85,
+        743.2,
+        -195.4,
+        362.65,
+        835.7,
+        -123.275
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_ShoulderStone6",
+      "asset": "RockBoulder03",
+      "x": 2970,
+      "y": 1610,
+      "z": 60.0,
+      "yaw": 3.7800000000000002,
+      "scale": 0.8,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 16.0,
+      "groundMax": 20.48198513208189,
+      "bounds": [
+        2886.4965871496993,
+        1536.5769309558523,
+        12.599999999999994,
+        3030.596412268123,
+        1676.8863019282026,
+        84.725
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_ShoulderStone9",
+      "asset": "RockBoulder03",
+      "x": 3520,
+      "y": 2300,
+      "z": 172.0,
+      "yaw": 5.67,
+      "scale": 0.8,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 128.0,
+      "groundMax": 162.93209020715332,
+      "bounds": [
+        3448.5680314678284,
+        2242.1951174181595,
+        124.6,
+        3592.4138608537887,
+        2381.6060566593674,
+        196.725
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_ShoulderStone10",
+      "asset": "RockBoulder03",
+      "x": 1220,
+      "y": 3460,
+      "z": 322.4671481488192,
+      "yaw": 6.3,
+      "scale": 1.05,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 263.7796481488192,
+      "groundMax": 295.6616076201981,
+      "bounds": [
+        1155.9999473454127,
+        3410.3242523519166,
+        260.25464814881923,
+        1303.445702147149,
+        3534.1585014032767,
+        354.91871064881923
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Stump0",
+      "asset": "TreeStumpGS01",
+      "x": 320,
+      "y": 520,
+      "z": -191.978125,
+      "yaw": 0.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -192.0,
+      "groundMax": -191.32812499140104,
+      "bounds": [
+        245.2499998624167,
+        472.7750006457323,
+        -195.03125,
+        361.9750004075328,
+        565.074998602404,
+        -115.378125
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Stump2",
+      "asset": "TreeStumpGS01",
+      "x": 1280,
+      "y": 1880,
+      "z": -127.978125,
+      "yaw": 1.6,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": -128.0,
+      "groundMax": -118.97573140332486,
+      "bounds": [
+        1231.5694872813256,
+        1836.7267291780524,
+        -131.03125,
+        1327.2384430561344,
+        1956.0970743867006,
+        -51.378125
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Stump4",
+      "asset": "TreeStumpGS01",
+      "x": 1120,
+      "y": 2840,
+      "z": 117.44224733111838,
+      "yaw": 3.2,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 117.42037233111839,
+      "groundMax": 141.00052786893315,
+      "bounds": [
+        1075.4653619457627,
+        2790.6383971470214,
+        114.38912233111839,
+        1197.3792535136797,
+        2889.594724836438,
+        194.0422473311184
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Stump5",
+      "asset": "TreeStumpSMarsh02",
+      "x": 3780,
+      "y": 1980,
+      "z": 345.9742065206121,
+      "yaw": 4.0,
+      "scale": 0.8,
+      "vegetation": true,
+      "support": null,
+      "groundMin": 320.7992065206121,
+      "groundMax": 355.6132408258928,
+      "bounds": [
+        3685.631340677161,
+        1882.5292271045525,
+        317.7742065206121,
+        3866.4741318461797,
+        2061.138628641851,
+        551.1742065206121
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Salvage0",
+      "asset": "WoodCrate01",
+      "x": 350,
+      "y": 1880,
+      "z": -129.3,
+      "yaw": 0.2,
+      "scale": 1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": -128.0,
+      "groundMax": -128.0,
+      "bounds": [
+        319.2048852642073,
+        1846.8304814448904,
+        -129.2825439453125,
+        380.4797304969756,
+        1912.0855689048003,
+        -77.64375000000001
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Salvage1",
+      "asset": "WoodCrate02",
+      "x": 240,
+      "y": 1850,
+      "z": -129.282421875,
+      "yaw": 0.6,
+      "scale": 1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": -128.0,
+      "groundMax": -128.0,
+      "bounds": [
+        198.25761791036538,
+        1805.3899933537043,
+        -129.28242378234864,
+        281.901187785277,
+        1894.842132287989,
+        -90.37617187500001
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Salvage4",
+      "asset": "WoodCrate01",
+      "x": 1160,
+      "y": 1860,
+      "z": -129.3,
+      "yaw": 1,
+      "scale": 1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": -128.0,
+      "groundMax": -128.0,
+      "bounds": [
+        1122.0366447431193,
+        1823.0378617271979,
+        -129.2825439453125,
+        1196.9660470577967,
+        1896.4331860835262,
+        -77.64375000000001
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Salvage9",
+      "asset": "WoodCrate01",
+      "x": 3590,
+      "y": 3410,
+      "z": 126.7,
+      "yaw": 0.3,
+      "scale": 1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 128.0,
+      "groundMax": 128.0,
+      "bounds": [
+        3557.0613111734306,
+        3375.0683288277583,
+        126.7174560546875,
+        3622.5166657982195,
+        3443.88462264135,
+        178.35625
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_Salvage10",
+      "asset": "WoodBarrel01",
+      "x": 3610,
+      "y": 3320,
+      "z": 127.7,
+      "yaw": 0,
+      "scale": 1,
+      "vegetation": false,
+      "support": null,
+      "groundMin": 128.0,
+      "groundMax": 128.0,
+      "bounds": [
+        3582.6875,
+        3293.34375,
+        127.7,
+        3637.3125,
+        3346.625,
+        193.8875
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_CabinDetail1",
+      "asset": "WoodCrate01",
+      "x": 3310,
+      "y": 2860,
+      "z": 143.9825439453125,
+      "yaw": 0,
+      "scale": 1,
+      "vegetation": false,
+      "support": 144,
+      "groundMin": 128.0,
+      "groundMax": 128.0,
+      "bounds": [
+        3284.390625,
+        2831.328125,
+        144.0,
+        3335.515625,
+        2887.546875,
+        195.6387939453125
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_CabinDetail2",
+      "asset": "WoodBarrel01",
+      "x": 2740,
+      "y": 3140,
+      "z": 144.0,
+      "yaw": 0,
+      "scale": 1,
+      "vegetation": false,
+      "support": 144,
+      "groundMin": 128.0,
+      "groundMax": 128.0,
+      "bounds": [
+        2712.6875,
+        3113.34375,
+        144.0,
+        2767.3125,
+        3166.625,
+        210.1875
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_CabinLantern",
+      "asset": "Lantern01",
+      "x": 3310,
+      "y": 2860,
+      "z": 195.65625,
+      "yaw": 0,
+      "scale": 1,
+      "vegetation": false,
+      "support": 195.65625,
+      "groundMin": 128.0,
+      "groundMax": 128.0,
+      "bounds": [
+        3303.8125,
+        2853.8125,
+        195.65625,
+        3316.1875,
+        2866.1875,
+        222.25
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_WreckSplinters1",
+      "asset": "DebrisWoodPileSm01",
+      "x": 260,
+      "y": 650,
+      "z": -192.30537300109864,
+      "yaw": 0.7,
+      "scale": 0.45,
+      "vegetation": false,
+      "support": null,
+      "groundMin": -192.0,
+      "groundMax": -192.0,
+      "bounds": [
+        201.21635431496182,
+        590.9245938054736,
+        -192.46665229797364,
+        318.78364568503815,
+        709.0754061945264,
+        -190.40517768859866
+      ]
+    },
+    {
+      "id": "TLM_DEPTH_WreckSplinters2",
+      "asset": "DebrisWoodPileSm01",
+      "x": 1070,
+      "y": 1870,
+      "z": -128.30537300109864,
+      "yaw": 1.4,
+      "scale": 0.45,
+      "vegetation": false,
+      "support": null,
+      "groundMin": -128.0,
+      "groundMax": -128.0,
+      "bounds": [
+        1020.6920757153979,
+        1822.6645242229176,
+        -128.46665229797364,
+        1119.307924284602,
+        1917.3354757770824,
+        -126.40517768859864
+      ]
+    }
+  ],
+  "omitted": [
+    "Woodland1Stone",
+    "Woodland2Stone",
+    "Woodland3Canopy",
+    "Woodland3Sapling0",
+    "Woodland3Sapling1",
+    "Woodland3Sapling2",
+    "Woodland3Scrub0",
+    "Woodland3Scrub1",
+    "Woodland3Scrub2",
+    "Woodland3Scrub3",
+    "Woodland3Scrub4",
+    "Woodland4Canopy",
+    "ShoulderStone1",
+    "ShoulderStone2",
+    "ShoulderStone3",
+    "ShoulderStone4",
+    "ShoulderStone5",
+    "ShoulderStone7",
+    "ShoulderStone8",
+    "ShoulderStone11",
+    "Stump1",
+    "Stump3",
+    "Salvage2",
+    "Salvage3",
+    "Salvage5",
+    "Salvage6",
+    "Salvage7",
+    "Salvage8",
+    "CabinDetail0",
+    "WreckSplinters0"
+  ]
+}

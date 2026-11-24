@@ -1,0 +1,882 @@
+{
+  "assets": {
+    "TreeMaplePreWar06Gr": {
+      "id": "00061643",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar06Green.nif",
+      "bounds": [
+        -235,
+        -178,
+        -10,
+        362,
+        262,
+        637
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "EA85361CD12B57FEA525822F9C29FA21347970EEA4F9D0D6732C0D366F995BCE",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1,
+          "NiAlphaProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              60502.875440597534,
+              -173417.46633911133,
+              130869.27225852013
+            ],
+            "name": "TreeMaplePreWar06Green:0 - L2_TreeMaplePreWar06Green:0",
+            "localBounds": [
+              -235.0,
+              -178.75,
+              -10.3828125,
+              362.0,
+              262.5,
+              637.5
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 767,
+            "triangles": 868,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -235.0,
+          -178.75,
+          -10.3828125,
+          362.0,
+          262.5,
+          637.5
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -8.9453125,
+          -10.1171875,
+          -10.3828125,
+          10.9765625,
+          7.13671875,
+          -10.15625
+        ]
+      }
+    },
+    "TreeMaplePreWar05Gr": {
+      "id": "00061649",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar05Green.nif",
+      "bounds": [
+        -115,
+        -117,
+        -8,
+        127,
+        111,
+        388
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "C9C560AE4D8F4F1E8724EB724E8853D14A9A93EF21E8665029E9020D84BBB0E7",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 2,
+          "BSShaderTextureSet": 2,
+          "NiAlphaProperty": 2,
+          "BSTriShape": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              12203.32958984375,
+              12916.318603515625,
+              648.9163208007812
+            ],
+            "name": "L2_TreeMaplePreWar05Green:0",
+            "localBounds": [
+              -37.5,
+              -54.875,
+              124.8125,
+              49.78125,
+              33.125,
+              373.25
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 6,
+            "triangles": 4,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              6262.039627075195,
+              -65299.391845703125,
+              12684.204517006874
+            ],
+            "name": "TreeMaplePreWar05Green:0",
+            "localBounds": [
+              -115.75,
+              -117.875,
+              -8.3984375,
+              127.9375,
+              111.1875,
+              388.5
+            ],
+            "type": "BSTriShape",
+            "vertices": 239,
+            "triangles": 294,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -115.75,
+          -117.875,
+          -8.3984375,
+          127.9375,
+          111.1875,
+          388.5
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -9.796875,
+          -9.28125,
+          -8.3984375,
+          12.015625,
+          9.609375,
+          -8.359375
+        ]
+      }
+    },
+    "TreeMaplePreWar03Gr": {
+      "id": "00061640",
+      "model": "Landscape\\Trees\\Chargen\\TreeMaplePreWar03Green.nif",
+      "bounds": [
+        -274,
+        -412,
+        -14,
+        562,
+        410,
+        1272
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "B65950C7D9897119404E9A72E4286B1B96E1FEB6C1E2CE9B3E68B6C03D607205",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1,
+          "NiAlphaProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -170808.59802150726,
+              -380457.0849876404,
+              286939.06936979294
+            ],
+            "name": "TreeMaplePreWar03Green:0 - L2_TreeMaplePreWar03Green:0",
+            "localBounds": [
+              -274.75,
+              -412.75,
+              -14.4140625,
+              562.0,
+              410.25,
+              1272.0
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 1385,
+            "triangles": 1572,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -274.75,
+          -412.75,
+          -14.4140625,
+          562.0,
+          410.25,
+          1272.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -27.578125,
+          -28.34375,
+          -14.4140625,
+          29.484375,
+          28.71875,
+          -14.09375
+        ]
+      }
+    },
+    "TreeCedarShrub01": {
+      "id": "001A97DC",
+      "model": "Landscape\\Trees\\Cedar01.nif",
+      "bounds": [
+        -53,
+        -58,
+        -9,
+        63,
+        67,
+        121
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "B4AABA786B414E88DAFA7C3E2752F4C87642A4E00811265D81E7D4A98965D024",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1,
+          "NiAlphaProperty": 2,
+          "BSTriShape": 1,
+          "BSEffectShaderProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -5635.874760627747,
+              -392.2532043457031,
+              4657.950898170471
+            ],
+            "name": "Cedar01:0 - L2_Cedar01:0",
+            "localBounds": [
+              -53.625,
+              -58.03125,
+              -9.15625,
+              63.5625,
+              67.3125,
+              121.8125
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 48,
+            "triangles": 50,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              0.0,
+              3.7569947153315297e-13,
+              -1.9895196601282805e-13
+            ],
+            "name": "VisibilityEditorMarker:0",
+            "localBounds": [
+              -41.71875885702005,
+              -50.65625671516202,
+              0.0,
+              38.40625591196527,
+              33.81250729433792,
+              122.0625
+            ],
+            "type": "BSTriShape",
+            "vertices": 118,
+            "triangles": 48,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -53.625,
+          -58.03125,
+          -9.15625,
+          63.5625,
+          67.3125,
+          122.0625
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -1.525390625,
+          -1.521484375,
+          -9.15625,
+          -1.525390625,
+          -1.521484375,
+          -9.15625
+        ]
+      }
+    },
+    "RockBoulder03": {
+      "id": "0002F79B",
+      "model": "Landscape\\Rocks\\RockBoulder03.nif",
+      "bounds": [
+        -60,
+        -46,
+        -59,
+        78,
+        69,
+        30
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "1C6D398290C8FA57582397D65B35DBAAA5858A332E89B051108DD83F05C050CB",
+        "blocks": {
+          "NiNode": 2,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "L1_RockBoulder03:0",
+            "localBounds": [
+              -60.1875,
+              -46.0,
+              -59.25,
+              78.3125,
+              69.625,
+              30.90625
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 346,
+            "triangles": 480,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -60.1875,
+          -46.0,
+          -59.25,
+          78.3125,
+          69.625,
+          30.90625
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          15.703125,
+          -35.71875,
+          -59.25,
+          43.5625,
+          -16.671875,
+          -58.75
+        ]
+      }
+    },
+    "TreeMapleForest6": {
+      "id": "0004A072",
+      "model": "Landscape\\Trees\\TreeMapleForest6.nif",
+      "bounds": [
+        -69,
+        -99,
+        -7,
+        91,
+        104,
+        1223
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "DE65221722B1BAEF7E15FD757F5A5BF9EFB656AF4398AE3F4F4C2C5F351E5F27",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 2,
+          "BSShaderTextureSet": 2,
+          "NiAlphaProperty": 2,
+          "BSTriShape": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "type": "BSMeshLODTriShape",
+            "vertices": 71,
+            "triangles": 34,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "type": "BSTriShape",
+            "vertices": 63,
+            "triangles": 90,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -69.5625,
+          -99.875,
+          -7.87890625,
+          91.375,
+          104.375,
+          1223.0
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -20.109375,
+          -21.5625,
+          -7.87890625,
+          20.203125,
+          22.046875,
+          -7.54296875
+        ]
+      }
+    },
+    "TreeMapleForestsmall1": {
+      "id": "0006C6D0",
+      "model": "Landscape\\Trees\\TreeMapleForestsmall1.nif",
+      "bounds": [
+        -147,
+        -175,
+        -4,
+        140,
+        240,
+        636
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "705086923DBA6B8BB65B59CC22165834FE0EF44BABB1A00434AD08803EE91218",
+        "blocks": {
+          "BSLeafAnimNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 2,
+          "BSShaderTextureSet": 2,
+          "NiAlphaProperty": 2,
+          "BSTriShape": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -10021.886474609375,
+              -20073.193603515625,
+              1452.8228149414062
+            ],
+            "name": "TreeMapleForestsmall1:1 - L2_TreeMapleForestsmall1:1 - L1_TreeMapleForestsmall1:1",
+            "localBounds": [
+              -147.25,
+              -175.625,
+              194.875,
+              140.125,
+              240.375,
+              636.5
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 73,
+            "triangles": 35,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              244.96506023406982,
+              53.227073669433594,
+              1892.9602926969528
+            ],
+            "name": "TreeMapleForestsmall1:0",
+            "localBounds": [
+              -66.25,
+              -62.25,
+              -4.53125,
+              61.1875,
+              86.5625,
+              560.5
+            ],
+            "type": "BSTriShape",
+            "vertices": 81,
+            "triangles": 117,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -147.25,
+          -175.625,
+          -4.53125,
+          140.125,
+          240.375,
+          636.5
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -32.90625,
+          -13.9765625,
+          -4.53125,
+          19.40625,
+          35.1875,
+          -4.53125
+        ]
+      }
+    },
+    "Marshshrub01": {
+      "id": "0013386F",
+      "model": "Landscape\\Plants\\MarshShrub01.nif",
+      "bounds": [
+        -95,
+        -106,
+        -20,
+        95,
+        131,
+        81
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "B2BD2D25394F2D2BBA956A549820E97CA972F6F694F6D424BB19637FAE59EC08",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1,
+          "NiAlphaProperty": 2,
+          "BSTriShape": 1,
+          "BSEffectShaderProperty": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -6034.278307914734,
+              -821.9197228848934,
+              35293.703053712845
+            ],
+            "name": "MarshShrub01:0 - L1_MarshShrub:0",
+            "localBounds": [
+              -95.25,
+              -106.625,
+              -20.15625,
+              95.25,
+              131.0,
+              81.4375
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 455,
+            "triangles": 462,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              -1.1368683772161603e-13,
+              -7.016609515630989e-13,
+              -3.979039320256561e-13
+            ],
+            "name": "VisibilityEditorMarker:0",
+            "localBounds": [
+              -72.34613679666782,
+              -51.59571174707134,
+              -4.26434326171875,
+              64.09138437057194,
+              69.46681210841882,
+              50.20440673828125
+            ],
+            "type": "BSTriShape",
+            "vertices": 115,
+            "triangles": 48,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -95.25,
+          -106.625,
+          -20.15625,
+          95.25,
+          131.0,
+          81.4375
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -27.109375,
+          61.75,
+          -20.15625,
+          -27.109375,
+          61.75,
+          -20.15625
+        ]
+      }
+    },
+    "RockPileL01": {
+      "id": "0009C82C",
+      "model": "Landscape\\Rocks\\RockPileL01.nif",
+      "bounds": [
+        -317,
+        -333,
+        -134,
+        260,
+        324,
+        70
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "F41C832A7C4486D00F8EFAE10EA4EEC5780E114284E2136E510F4871B623F513",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 2,
+          "BSLightingShaderProperty": 4,
+          "BSShaderTextureSet": 4,
+          "NiAlphaProperty": 2,
+          "BSTriShape": 2
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -6659.01863861084,
+              2745.3254947662354,
+              759.3764038085938
+            ],
+            "name": "L2_Branches:9",
+            "localBounds": [
+              -289.25,
+              -204.25,
+              -72.8125,
+              210.625,
+              233.875,
+              70.1875
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 116,
+            "triangles": 56,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              -5271.011948347092,
+              17180.86478614807,
+              72774.31530380249
+            ],
+            "name": "L1_Boulders:0 - L2_Rocks:0",
+            "localBounds": [
+              -304.25,
+              -245.75,
+              -118.25,
+              260.0,
+              261.25,
+              69.1875
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 3387,
+            "triangles": 3254,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              -22769.638780593872,
+              58096.3767465353,
+              280573.2724609375
+            ],
+            "name": "RockPileL01:3",
+            "localBounds": [
+              -317.25,
+              -333.0,
+              -134.0,
+              254.875,
+              324.0,
+              48.1875
+            ],
+            "type": "BSTriShape",
+            "vertices": 204,
+            "triangles": 371,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          },
+          {
+            "orientedAreaSum": [
+              -22769.638780593872,
+              58096.3767465353,
+              280573.2724609375
+            ],
+            "name": "RockPileL01:6",
+            "localBounds": [
+              -317.25,
+              -333.0,
+              -134.0,
+              254.875,
+              324.0,
+              48.1875
+            ],
+            "type": "BSTriShape",
+            "vertices": 206,
+            "triangles": 371,
+            "stride": 24,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -317.25,
+          -333.0,
+          -134.0,
+          260.0,
+          324.0,
+          70.1875
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          7.06640625,
+          323.0,
+          -134.0,
+          7.06640625,
+          323.0,
+          -134.0
+        ]
+      }
+    },
+    "WoodCrate02": {
+      "id": "000211F6",
+      "model": "SetDressing\\ConcMuseum\\WoodCrate02.nif",
+      "bounds": [
+        -25,
+        -36,
+        0,
+        25,
+        36,
+        38
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "4988D0A139CB8C60D6722E5277465914E146825EB5AA18E4C728B132ED32D148",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSMeshLODTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              1.57550048828125,
+              -4.722858428955078,
+              -3073.532958984375
+            ],
+            "name": "WoodCrate02:31 - L2_OuterBoards:31",
+            "localBounds": [
+              -25.5625,
+              -36.5625,
+              -1.9073486328125e-06,
+              25.5625,
+              36.84375,
+              38.90625
+            ],
+            "type": "BSMeshLODTriShape",
+            "vertices": 664,
+            "triangles": 291,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -25.5625,
+          -36.5625,
+          -1.9073486328125e-06,
+          25.5625,
+          36.84375,
+          38.90625
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -25.421875,
+          -36.5,
+          -1.9073486328125e-06,
+          25.421875,
+          36.8125,
+          0.982421875
+        ]
+      }
+    },
+    "WoodBarrel01": {
+      "id": "000211F4",
+      "model": "SetDressing\\ConcMuseum\\WoodBarrel01.nif",
+      "bounds": [
+        -27,
+        -26,
+        0,
+        27,
+        26,
+        66
+      ],
+      "passive": true,
+      "nif": {
+        "sha256": "9C2FECAFCAC61EF8C2B16AD7C9877F73527504ADE2678B9352101537CB6E6F67",
+        "blocks": {
+          "NiNode": 1,
+          "BSXFlags": 1,
+          "bhkNPCollisionObject": 1,
+          "bhkPhysicsSystem": 1,
+          "BSTriShape": 1,
+          "BSLightingShaderProperty": 1,
+          "BSShaderTextureSet": 1
+        },
+        "identityParentNodes": true,
+        "shapes": [
+          {
+            "orientedAreaSum": [
+              -52.35088634490967,
+              10.7646484375,
+              -8.744411945343018
+            ],
+            "name": "WoodBarrel01:32",
+            "localBounds": [
+              -27.3125,
+              -26.65625,
+              0.0,
+              27.3125,
+              26.625,
+              66.1875
+            ],
+            "type": "BSTriShape",
+            "vertices": 821,
+            "triangles": 642,
+            "stride": 20,
+            "fullPrecisionPosition": false
+          }
+        ],
+        "renderBounds": [
+          -27.3125,
+          -26.65625,
+          0.0,
+          27.3125,
+          26.625,
+          66.1875
+        ],
+        "limits": "Render metadata and collision block presence only; Havok/world collision not certified",
+        "bottomBandBounds": [
+          -23.28125,
+          -23.21875,
+          0.0,
+          23.359375,
+          23.140625,
+          0.0
+        ]
+      }
+    }
+  }
+}

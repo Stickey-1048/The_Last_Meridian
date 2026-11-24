@@ -68,6 +68,7 @@ public static class RedHollowEnvironment
         int index=0;foreach(int origin in new[]{5888,8960})for(int x=origin+128;x<origin+2048;x+=256)for(int y=-128;y<1280;y+=256)yield return new("TLM_REF_RHE_Light"+(index++),RedHollow.CellId,"defaultLightWarm01NS","Light",y,x,160,false);
         yield return new("TLM_REF_RH_SurfaceFall",Persistent,"TLM_ACTI_RHE_SurfaceFall",null,896,2048,-700,true,new[]{2048f,896f,120f});
         yield return new("TLM_REF_RH_GalleryFall",RedHollow.CellId,"TLM_ACTI_RHE_GalleryFall",null,512,9984,-700,true,new[]{1024f,768f,120f});
+        foreach(var support in RedHollowAccess.Supports)yield return support;
     }
     public static readonly AliasSpec[] FallAliases={new("SurfaceFall",Fill.Placed,AllowDisabled:true,Placed:"TLM_REF_RH_SurfaceFall",Scripts:new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",46))}),new("GalleryFall",Fill.Placed,AllowDisabled:true,Placed:"TLM_REF_RH_GalleryFall",Scripts:new[]{new ScriptBind("TLM:RedHollowTalk",new IntProp("Who",47))})};
 }
@@ -141,6 +142,7 @@ public sealed partial class Builder
             if(f.Cell==RedHollowEnvironment.Persistent)world.TopCell.Persistent.Add(placed);else below.Persistent.Add(placed);_placed[f.EditorId]=placed.FormKey;
         }
         RedHollowEnvironmentReceipt=new{policy="RH-TERRAIN-002: shaped original LAND, preserved story pad, northern camp/apron, evidence-based inward perimeter faces; no imported donor LAND/behavior",world=world.EditorID,surface=surface.EditorID,underground=below.EditorID,rehomed=moved,geometryAudit,selectedStatics=assets.Values.Select(a=>new{id=a.EditorID,key=a.FormKey.ToString(),model=a.Model?.File?.ToString(),min=new[]{a.ObjectBounds.First.X,a.ObjectBounds.First.Y,a.ObjectBounds.First.Z},max=new[]{a.ObjectBounds.Second.X,a.ObjectBounds.Second.Y,a.ObjectBounds.Second.Z}}).ToArray(),emitter=new{id=light.EditorID,key=light.FormKey.ToString(),radius=light.Radius,time=light.Time,flags=(uint)light.Flags,rgb=new[]{light.Color.R,light.Color.G,light.Color.B},fade=light.FadeValue,falloff=light.FalloffExponent,count=index},template=template.FormKey.ToString(),lightingSource=new{room=lightRoom.FormKey.ToString(),inherits=(uint)below.Lighting.Inherits,ambient=new[]{below.Lighting.AmbientColor.R,below.Lighting.AmbientColor.G,below.Lighting.AmbientColor.B},scope="Lighting struct only; native brightness/occlusion unverified"},native="Sky/brightness/support/Havok/navmesh/culling/controller/reload unverified"};
+        BuildRedHollowAccess();
     }
     static IEnumerable<PlacedSpec> AddedFallSpecs()=>RedHollowEnvironment.AddedPlaced().Where(p=>p.BoxHalfExtents!=null);
 }

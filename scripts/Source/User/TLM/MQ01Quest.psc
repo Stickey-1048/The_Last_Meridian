@@ -94,6 +94,23 @@ Group Tuning
 	{False when the player is already placed (dev start by coc).}
 EndGroup
 
+; Explicit staged-help activation owns no outcome until its physical receipts pass.
+int Property SheriffHelpEpoch = 0 Auto
+bool Property SheriffHelpPending = false Auto
+
+Function PauseForSheriffHelp()
+ SheriffHelpPending = true
+ CancelTimer(TIMER_EVADE)
+ ; Keep the ordinary distance watch: leaving the encounter abandons help.
+EndFunction
+
+Function EndSheriffHelp()
+ SheriffHelpPending = false
+ If IsLive()
+  ArmEvadeWatch()
+ EndIf
+EndFunction
+
 ; ----------------------------------------------------------------- constants
 
 int TIMER_EVADE = 1 Const
@@ -431,6 +448,9 @@ EndFunction
 Function ArmEvadeWatch()
 	{Also called after a load: timer and distance registrations are re-armed
 	rather than trusted to survive the save.}
+	If SheriffHelpPending
+		Return
+	EndIf
 	StartTimer(EvadeSeconds, TIMER_EVADE)
 	ObjectReference center = Alias_AmbushCenter.GetReference()
 	If center
@@ -459,6 +479,9 @@ EndFunction
 Function EvadeTimerElapsed()
 	{The evade timer has run out (the logic model's evade_timer). A function of
 	its own so that the development self-test can call it without waiting.}
+	If SheriffHelpPending
+		Return
+	EndIf
 	If IsLive()
 		; Never resolve "evaded" over the top of a fight (A2), or of the
 		; conversation with the Cutter lead (A25). Check again later: the timer
@@ -477,7 +500,11 @@ Function EvadeTimerElapsed()
 EndFunction
 
 Event OnDistanceGreaterThan(ObjectReference akObj1, ObjectReference akObj2, float afDistance)
-	; The player has left, fight or no fight.
+	; Leaving still abandons the encounter; never resume a staged scene later.
+ If SheriffHelpPending
+  SheriffHelpEpoch += 1
+  SheriffHelpPending = false
+ EndIf
 	If IsLive()
 		ResolveUnattended()
 	EndIf
@@ -609,6 +636,7 @@ Function StartCombatIfAlive(ReferenceAlias akAlias, Actor akTarget)
 EndFunction
 
 Function EndEncounter()
+ SheriffHelpPending = false
 	CancelTimer(TIMER_EVADE)
 	ObjectReference center = Alias_AmbushCenter.GetReference()
 	If center
@@ -939,7 +967,11 @@ Function OnGameLoaded()
 	If !IsRunning()
 		Return
 	EndIf
-	If IsLive()
+	SheriffHelpEpoch += 1
+	If SheriffHelpPending
+		; Release only a possible interrupted fade, never move actors or resolve the scene after loading.
+		Game.FadeOutGame(false,true,0.0,0.2)
+	ElseIf IsLive()
 		ArmEvadeWatch()
 	EndIf
 	Recover()

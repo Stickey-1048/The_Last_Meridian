@@ -1,6 +1,12 @@
 Scriptname TLM:RedHollowWalk extends Quest
 {RED-HOLLOW-STORY-001. Explicit staged physical scenes; not native acceptance.}
 
+Sound Property RecordedRoarkAll Auto Const
+Sound Property RecordedRoarkOpen Auto Const
+Sound Property MineMouthKnocks Auto Const
+Sound Property RecordedMineReport Auto Const
+ObjectReference Property VoiceOriginalSheriff Auto Const
+
 Quest Property TLM_MQ02C Auto Const Mandatory
 Quest Property TLM_MQ01 Auto Const Mandatory
 Quest Property TLM_MercyBriefing Auto Const Mandatory
@@ -257,6 +263,11 @@ Message Property RhaTerms Auto Const Mandatory
 Message Property RhaBreak Auto Const Mandatory
 Message Property RhaOpen Auto Const Mandatory
 Message Property RhaReport Auto Const Mandatory
+Message Property RdcQuiet Auto Const Mandatory
+Message Property RdcTired Auto Const Mandatory
+Message Property RdcThanks Auto Const Mandatory
+Message Property RdcTerms Auto Const Mandatory
+Message Property RdcTermsAnswer Auto Const Mandatory
 ObjectReference Property RhaOriginalRoark Auto Const
 ObjectReference Property RhaOriginalBlevins Auto Const
 int aftermathEpoch = 0
@@ -643,7 +654,7 @@ int Function Say(string node, Actor speakerActor)
 			Return -1
 		EndIf
 	ElseIf node == "pritchard_hears_pike_after_fair_unknown"
-		answer = S_pritchard_hears_pike_after_fair_unknown_1.Show()
+		answer = ShowMineReportRecording(speakerActor)
 		If !SpeechContext(node,speakerActor) || Road().CourtMark() != courtBefore || Road().MineMark() != mineBefore
 			Return -1
 		EndIf
@@ -736,6 +747,7 @@ bool Function OpenDoor()
 EndFunction
 
 Function Loaded()
+	CancelMineReportRecording()
 	aftermathEpoch += 1
 	lastSample = -1.0
 	lastArea = 0
@@ -887,13 +899,23 @@ Function UpdateGuidance()
 			nextGoal = 10
 		ElseIf UndergroundArea()
 			If Game.GetPlayer().GetPositionX() >= 8960.0
-				nextGoal = 80
+				If Road().MineOutcome() == 0 && Road().DornAvailable() && !Road().PactMade() && !Road().BreakPlanned()
+					nextGoal = 36
+				Else
+					nextGoal = 80
+				EndIf
 			ElseIf Road().MineOutcome() != 0
 				nextGoal = 85
 			ElseIf Road().MinePending() == 3
 				nextGoal = 55
 			ElseIf Road().MinePending() == 4 || Road().MinePending() == 5
 				nextGoal = 86
+			ElseIf Road().SafeCount(SurfaceSlots) == 11 && Road().MinePending() == 0
+				If !Road().AtGallery() && Road().GalleryOpen()
+					nextGoal = 35
+				Else
+					nextGoal = 45
+				EndIf
 			ElseIf Road().ShiftFound()
 				nextGoal = 40
 			Else
@@ -905,6 +927,10 @@ Function UpdateGuidance()
 			nextGoal = 20
 		ElseIf Road().SafeCount(SurfaceSlots) > 0
 			nextGoal = 50
+		ElseIf !Road().HeardKnocking()
+			nextGoal = 15
+		ElseIf !Road().RescueAccepted() && MineGuideAvailable(true)
+			nextGoal = 18
 		Else
 			nextGoal = 20
 		EndIf
@@ -920,15 +946,33 @@ Function UpdateGuidance()
 	EndIf
 	int index = 5
 	While index <= 90
-		If index == 5 || index == 10 || index == 20 || index == 30 || index == 40 || index == 50 || index == 55 || index == 60 || index == 80 || index == 85 || index == 90
+		If index == 5 || index == 10 || index == 15 || index == 20 || index == 30 || index == 40 || index == 50 || index == 55 || index == 60 || index == 80 || index == 85 || index == 90
 			SetObjectiveDisplayed(index,index == nextGoal)
 		EndIf
 		index += 5
 	EndWhile
 	SetObjectiveDisplayed(86,nextGoal == 86)
+	SetObjectiveDisplayed(18,nextGoal == 18)
+	SetObjectiveDisplayed(19,(nextGoal == 15 || nextGoal == 18) && MineGuideAvailable(false))
+	SetObjectiveDisplayed(35,nextGoal == 35)
+	SetObjectiveDisplayed(36,nextGoal == 36)
+	SetObjectiveDisplayed(45,nextGoal == 45)
 	If !Local() || !SurfaceArea() || Game.GetPlayer().GetPositionX() >= 1792.0
 		SetObjectiveDisplayed(70,false)
 	EndIf
+EndFunction
+
+bool Function MineGuideAvailable(bool isRoark)
+	Actor speakerActor = Alias_Roark.GetActorReference()
+	ObjectReference originalActor = RhaOriginalRoark
+	Actor roadActor = Road().Person(Road().Alias_Roark)
+	If !isRoark
+		speakerActor = Alias_Blevins.GetActorReference()
+		originalActor = RhaOriginalBlevins
+		roadActor = Road().Person(Road().Alias_Blevins)
+	EndIf
+	; Directions must work before the player reaches talking distance.
+	Return speakerActor && speakerActor == originalActor && speakerActor == roadActor && !speakerActor.IsDead() && !speakerActor.IsDisabled() && !speakerActor.IsInCombat() && speakerActor.Is3DLoaded() && speakerActor.GetParentCell() == Game.GetPlayer().GetParentCell()
 EndFunction
 
 bool Function ShiftSafeToSpeak()
@@ -1219,6 +1263,8 @@ Function UseHoist()
 	If !Road().RescueAccepted()
 		; Player-operated fallback if Roark/Blevins is dead, absent or ineligible.
 		If !Road().HeardKnocking()
+			Debug.MessageBox("First use Listen at the Mouth and choose Listen. Then speak to Dinah Roark about starting the rescue. Captain Blevins is optional; talking to him does not start the hoist.")
+			UpdateGuidance()
 			Return
 		EndIf
 		If !Road().OperatorReady(Ref(Alias_FiringControl))
@@ -1245,7 +1291,7 @@ Function UseHoist()
 	EndIf
 EndFunction
 
-Function RescueShift()
+Function RescueShift(bool rideWith = true)
 	If !Ready() || !Road().ShiftFound() || (Road().MinePending() != 0 && Road().MinePending() != 2)
 		Return
 	EndIf
@@ -1254,8 +1300,17 @@ Function RescueShift()
 	If answer != 0 || !Ready() || Road().MineMark() != mineBefore || !Road().BeginRescue()
 		Return
 	EndIf
-	int minerIndex = 0
-	While minerIndex < 11
+	If !rideWith && !Near(Ref(Alias_BelowControl))
+		Return
+	EndIf
+	int batchStart = 0
+	While batchStart < 11
+		int batchEnd = batchStart + 3
+		If batchEnd > 11
+			batchEnd = 11
+		EndIf
+		int minerIndex = batchStart
+		While minerIndex < batchEnd
 		Actor minerActor = Road().Miner(minerIndex)
 		If !Ready() || !minerActor || minerActor.IsDisabled()
 			Return
@@ -1274,12 +1329,12 @@ Function RescueShift()
 			EndIf
 		EndIf
 		minerIndex += 1
-	EndWhile
-	If !MovePlayer(Ref(Alias_CageSurface))
-		Return
-	EndIf
-	minerIndex = 0
-	While minerIndex < 11
+		EndWhile
+		If !rideWith && !Near(Ref(Alias_BelowControl))
+			Return
+		EndIf
+		minerIndex = batchStart
+		While minerIndex < batchEnd
 		Actor minerActor = Road().Miner(minerIndex)
 		If !Ready() || !minerActor || minerActor.IsDisabled()
 			Return
@@ -1291,8 +1346,18 @@ Function RescueShift()
 			EndIf
 		EndIf
 		minerIndex += 1
+		EndWhile
+		Debug.Notification("Hoist group delivered: miners " + (batchStart + 1) + " to " + batchEnd + ".")
+		batchStart = batchEnd
 	EndWhile
-	Road().FinishRescue(SurfaceSlots)
+	If rideWith && !MovePlayer(Ref(Alias_CageSurface))
+		Return
+	EndIf
+	If Road().FinishRescue(SurfaceSlots)
+		If !rideWith
+			Debug.MessageBox("The hoist has carried the surviving miners to the surface in small groups. You stayed below. Follow the passage beyond the inner break to investigate the sealed gallery, or use the hoist to return above.")
+		EndIf
+	EndIf
 	Facts()
 EndFunction
 
@@ -1503,9 +1568,11 @@ Function UseControl(int who)
 		int answer = HoistBelow.Show()
 		If Near(Ref(Alias_BelowControl)) && Road().MineMark() == mineBefore
 			If answer == 0
-				RescueShift()
+				RescueShift(false)
 			ElseIf answer == 1 && Road().MinePending() == 0
 				MovePlayer(Ref(Alias_CageSurface))
+			ElseIf answer == 3
+				RescueShift(true)
 			EndIf
 		EndIf
 	ElseIf who == 18 && Near(Ref(Alias_FiringControl))
@@ -1538,18 +1605,18 @@ Function UseControl(int who)
 	ElseIf who == 26
 		Paper("chalk_message",Ref(Alias_Shovel))
 	ElseIf who == 27 && Near(Ref(Alias_Knocking))
-		int answer = Knocking.Show()
-		If answer == 0 && Near(Ref(Alias_Knocking))
-			Road().HearKnocking()
-		EndIf
+		ListenAtMouth()
 	ElseIf who == 29 && Near(Ref(Alias_Exit))
 		int mineBefore = Road().MineMark()
 		int answer = Exit.Show()
 		If answer == 0 && Near(Ref(Alias_Exit)) && Road().MineMark() == mineBefore && Road().MinePending() == 0 && MovePlayer(Ref(Alias_MercyReturn))
 			If Road().CompleteAtMercy(Ref(Alias_MercyReturn))
 				Debug.Notification("Back in Mercy Crossing. Tell Sheriff Pritchard what happened at Red Hollow.")
-				End.Show()
 			EndIf
+			ShowReturnSummary()
+		ElseIf answer == 0 && Near(Ref(Alias_Exit)) && Road().MinePending() != 0
+			Debug.MessageBox("The hoist or charge operation is unfinished. Use the marked hoist control to finish or recover it before travelling. Already rescued miners remain safe.")
+			UpdateGuidance()
 		EndIf
 	ElseIf who == 30 && Near(Ref(Alias_Resolve))
 		int mineBefore = Road().MineMark()
@@ -1577,6 +1644,61 @@ Function UseControl(int who)
 		EndIf
 		Facts()
 	EndIf
+EndFunction
+
+Function ListenAtMouth()
+	If !Ready() || !Near(Ref(Alias_Knocking))
+		Return
+	EndIf
+	Actor listenerActor = Game.GetPlayer()
+	int generation = aftermathEpoch
+	int before = Road().MineMark()
+	int answer = Knocking.Show()
+	If answer != 0 || !Ready() || !Near(Ref(Alias_Knocking)) || Road().MineMark() != before || !Road().HearKnocking()
+		Return
+	EndIf
+	int heardMark = Road().MineMark()
+	ObjectReference soundSource = Ref(Alias_Knocking)
+	int handle = -1
+	If MineMouthKnocks && MineListeningContext(soundSource,listenerActor,generation)
+		handle = MineMouthKnocks.Play(soundSource)
+		Debug.Trace("TLM_MineAudio: knocking instance " + handle)
+	EndIf
+	If Ready() && Near(Ref(Alias_Knocking)) && Road().MineMark() == heardMark
+		Debug.MessageBox("Three sharp metal knocks rise from the shaft. After a pause, the same rhythm returns slower and deeper. It sounds like an answer; you cannot tell who is making it.\n\nNext: speak to Dinah Roark about the rescue.")
+	EndIf
+	If handle >= 0
+		Sound.StopInstance(handle)
+	EndIf
+	UpdateGuidance()
+EndFunction
+
+bool Function MineListeningContext(ObjectReference soundSource, Actor listenerActor, int generation)
+	; Alias/source lookup can yield. Refresh local/living participants after it,
+	; then play the captured source without another alias lookup.
+	If !soundSource || soundSource != Ref(Alias_Knocking) || !listenerActor || generation != aftermathEpoch
+		Return false
+	EndIf
+	If !Ready() || !Near(soundSource) || listenerActor != Game.GetPlayer()
+		Return false
+	EndIf
+	Return !listenerActor.IsDead() && !listenerActor.IsDisabled() && !listenerActor.IsInCombat() && listenerActor.Is3DLoaded() && generation == aftermathEpoch
+EndFunction
+
+Function ShowReturnSummary()
+	string summary = "Back in Mercy Crossing.\n\n"
+	If Road().MineOutcome() != 0
+		summary += "A mine outcome is recorded. Report what happened to Sheriff Pritchard.\n"
+	Else
+		summary += "The mine rescue remains unresolved. You can return to Red Hollow.\n"
+	EndIf
+	If !Road().AtGallery()
+		summary += "The sealed-gallery investigation has not been visited.\n"
+	EndIf
+	If Road().CourtOutcome() == 0
+		summary += "The court matter is still unresolved.\n"
+	EndIf
+	Debug.MessageBox(summary)
 EndFunction
 
 bool Function TravelLocal(ObjectReference controlRef, ObjectReference intoRef)
@@ -1760,7 +1882,19 @@ Function Attacked(int who)
 EndFunction
 
 Event OnTimer(int aiTimerID)
+	If aiTimerID == 9009
+		MineReportVoiceTick()
+		Return
+	EndIf
 	If aiTimerID != 1
+		Return
+	EndIf
+	If busy
+		; Modal/action work owns this activation. Never accrue catch-up time or
+		; contend with it by scanning the whole roster again from the timer.
+		lastSample = -1.0
+		lastArea = 0
+		StartTimer(1.0,1)
 		Return
 	EndIf
 	If !busy && !Road().HasArrived() && !IsObjectiveDisplayed(5)
@@ -1879,7 +2013,7 @@ int Function OfferReport(Actor sheriffActor)
 		Return 3
 	EndIf
 	string reportBefore = ReportMark()
-	int detailAnswer = ReportFacts.Show(Road().CourtOutcome(),Road().MineOutcome(),Road().SafeCount(SurfaceSlots),Road().DeathCount(),Road().DeathCauseCount(1),Road().DeathCauseCount(2),Road().DeathCauseCount(3))
+	int detailAnswer = ReportFacts.Show(Road().SafeCount(SurfaceSlots),Road().DeathCount(),Road().DeathCauseCount(1),Road().DeathCauseCount(2),Road().DeathCauseCount(3))
 	If detailAnswer != 0 || (!ReportContext(sheriffActor) || reportPlayer != Game.GetPlayer() || reportEpoch != aftermathEpoch) || ReportMark() != reportBefore
 		busy = false
 		Return 3
@@ -2232,8 +2366,20 @@ bool Function Aftermath(Actor speakerActor, bool isRoark)
 	If !leadMessage || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
 		Return false
 	EndIf
+	int recordedInstance = PlayRoarkRecording(leadMessage,speakerActor,isRoark,playerActor,generation,row,before)
+	If !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+		StopRoarkRecording(recordedInstance,generation)
+		Return false
+	EndIf
 	int answer = leadMessage.Show()
-	If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+	StopRoarkRecording(recordedInstance,generation)
+	If !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+		Return true
+	EndIf
+	If answer == 1 && isRoark && row == 11
+		RoarkDepth(speakerActor,false,playerActor,generation,before)
+		Return true
+	ElseIf answer != 0
 		Return true
 	EndIf
 	Message decisionMessage = None
@@ -2247,12 +2393,77 @@ bool Function Aftermath(Actor speakerActor, bool isRoark)
 		EndIf
 	EndIf
 	If decisionMessage && AftermathContext(speakerActor,isRoark,playerActor,generation) && AftermathRow() == row && AftermathMark() == before
+		recordedInstance = PlayRoarkRecording(decisionMessage,speakerActor,isRoark,playerActor,generation,row,before)
+		If !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+			StopRoarkRecording(recordedInstance,generation)
+			Return true
+		EndIf
 		answer = decisionMessage.Show()
-		If answer != 0 || !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+		StopRoarkRecording(recordedInstance,generation)
+		If !AftermathContext(speakerActor,isRoark,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+			Return true
+		EndIf
+		If answer == 1 && decisionMessage == RhaTerms
+			RoarkDepth(speakerActor,true,playerActor,generation,before)
+			Return true
+		ElseIf answer != 0
 			Return true
 		EndIf
 	EndIf
 	Return true
+EndFunction
+
+; Five optional character pages; all authority stays in MQ02C and its live cohort.
+bool Function RoarkDepthContext(Actor speakerActor, bool terms, Actor playerActor, int generation, string before)
+	If !AftermathContext(speakerActor,true,playerActor,generation)
+		Return false
+	EndIf
+	If Road().MineOutcome() != 51 && Road().MineOutcome() != 57
+		Return false
+	EndIf
+	If Road().MinePending() != 0 || Road().TLM_G_MQ02C_BreakBlown.GetValueInt() != 0 || Road().TLM_G_MQ02C_MouthShut.GetValueInt() != 0
+		Return false
+	EndIf
+	If terms && (Road().MineOutcome() != 51 || !Road().PactMade() || !Road().TermsDelivered())
+		Return false
+	EndIf
+	; Receipt globals can yield after the initial context check. Refresh the same
+	; original participants before the final cohort/mark, with no validation loop.
+	If !AftermathContext(speakerActor,true,playerActor,generation)
+		Return false
+	EndIf
+	; Cohort and mark follow all yielding context/receipt reads, as in accepted aftermath.
+	Return AftermathRow() == 11 && AftermathMark() == before
+EndFunction
+
+Function RoarkDepth(Actor speakerActor, bool terms, Actor playerActor, int generation, string before)
+	If !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
+	Message firstPage = RdcQuiet
+	If terms
+		firstPage = RdcTerms
+	EndIf
+	int answer = firstPage.Show()
+	If !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
+	Message nextPage = None
+	If terms && answer == 1
+		nextPage = RdcTermsAnswer
+	ElseIf !terms && answer == 0
+		nextPage = RdcTired
+	ElseIf !terms && answer == 1
+		nextPage = RdcThanks
+	EndIf
+	If !nextPage || !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
+	answer = nextPage.Show()
+	; Acknowledgment, cancellation and stale state all close with no effect.
+	If answer != 0 || !RoarkDepthContext(speakerActor,terms,playerActor,generation,before)
+		Return
+	EndIf
 EndFunction
 
 bool Function ReportReceiptContext(Actor sheriffActor, string before, int generation, Actor playerActor)
@@ -2269,4 +2480,128 @@ bool Function ReportReceiptContext(Actor sheriffActor, string before, int genera
 		Return false
 	EndIf
 	Return sheriffActor == currentSheriff && playerActor == Game.GetPlayer() && generation == aftermathEpoch
+EndFunction
+
+int Function PlayRoarkRecording(Message lineMessage, Actor speakerActor, bool isRoark, Actor playerActor, int generation, int row, string before)
+    Sound recording = None
+    If isRoark && row == 11 && lineMessage == RhaRoarkAll && AftermathLead(row,true) == RhaRoarkAll
+        recording = RecordedRoarkAll
+    ElseIf isRoark && row == 11 && lineMessage == RhaOpen && Road().MineOutcome() == 57 && !Road().PactMade() && !Road().BreakPlanned() && Road().TLM_G_MQ02C_BreakBlown.GetValueInt() == 0
+        recording = RecordedRoarkOpen
+    EndIf
+    If !recording || !AftermathContext(speakerActor,true,playerActor,generation) || AftermathRow() != row || AftermathMark() != before
+        Return -1
+    EndIf
+    ; Match the existing surface conversation eligibility before audio dispatch.
+    If playerActor.GetParentCell() != speakerActor.GetParentCell() || !Road().At(playerActor,speakerActor,320.0)
+        Return -1
+    EndIf
+    If playerActor.IsInScene() || speakerActor.IsInScene() || speakerActor.IsTalking() || speakerActor.IsInDialogueWithPlayer()
+        Return -1
+    EndIf
+    If speakerActor.IsDead() || speakerActor.IsDisabled() || speakerActor.IsInCombat() || !speakerActor.Is3DLoaded() || playerActor.IsDead() || playerActor.IsDisabled() || playerActor.IsInCombat() || !playerActor.Is3DLoaded()
+        Return -1
+    EndIf
+    If generation != aftermathEpoch || speakerActor != RhaOriginalRoark
+        Return -1
+    EndIf
+    Return recording.Play(speakerActor)
+EndFunction
+
+Function StopRoarkRecording(int instance, int generation)
+    If instance >= 0 && generation == aftermathEpoch
+        Sound.StopInstance(instance)
+    EndIf
+EndFunction
+
+; This owner is separate from the existing Dinah and knocking recordings.
+int mineReportVoiceEpoch = 0
+int mineReportVoiceInstance = -1
+Actor mineReportVoicePlayer
+Actor mineReportVoiceSpeaker
+float mineReportVoiceLeft = 0.0
+
+bool Function MineReportVoiceContext(Actor speakerActor, Actor playerActor, int generation)
+ If !speakerActor || !playerActor || !VoiceOriginalSheriff || !ReportContext(speakerActor)
+  Return false
+ EndIf
+ Actor currentPlayer = Game.GetPlayer()
+ Actor currentSheriff = Road().Person(Road().Alias_Sheriff)
+ If speakerActor != VoiceOriginalSheriff || speakerActor != currentSheriff || playerActor != currentPlayer
+  Return false
+ EndIf
+ If playerActor.GetParentCell() != speakerActor.GetParentCell() || playerActor.GetDistance(speakerActor) > 320.0
+  Return false
+ EndIf
+ If playerActor.IsInScene() || speakerActor.IsInScene() || speakerActor.IsTalking() || speakerActor.IsInDialogueWithPlayer()
+  Return false
+ EndIf
+ If playerActor.IsDead() || playerActor.IsDisabled() || !playerActor.Is3DLoaded() || playerActor.IsInCombat() || speakerActor.IsDead() || speakerActor.IsDisabled() || !speakerActor.Is3DLoaded() || speakerActor.IsInCombat()
+  Return false
+ EndIf
+ Return generation == mineReportVoiceEpoch && playerActor == currentPlayer && speakerActor == currentSheriff && speakerActor == VoiceOriginalSheriff
+EndFunction
+
+int Function ShowMineReportRecording(Actor speakerActor)
+ Actor playerActor = Game.GetPlayer()
+ int generation = mineReportVoiceEpoch
+ int instance = -1
+ If RecordedMineReport && mineReportVoiceInstance < 0 && MineReportVoiceContext(speakerActor,playerActor,generation)
+  mineReportVoicePlayer = playerActor
+  mineReportVoiceSpeaker = speakerActor
+  instance = RecordedMineReport.Play(speakerActor)
+  If instance >= 0 && generation != mineReportVoiceEpoch
+   Sound.StopInstance(instance)
+   Return -1
+  EndIf
+  If generation == mineReportVoiceEpoch && instance >= 0
+   mineReportVoiceInstance = instance
+   mineReportVoiceLeft = 11.75
+   StartTimer(0.25,9009)
+  EndIf
+ EndIf
+ If instance >= 0 && !MineReportVoiceContext(speakerActor,playerActor,generation)
+  StopMineReportRecording(instance,generation)
+  Return -1
+ EndIf
+ int answer = S_pritchard_hears_pike_after_fair_unknown_1.Show()
+ StopMineReportRecording(instance,generation)
+ If instance >= 0 && !MineReportVoiceContext(speakerActor,playerActor,generation)
+  Return -1
+ EndIf
+ Return answer
+EndFunction
+
+Function StopMineReportRecording(int instance, int generation)
+ If instance >= 0 && instance == mineReportVoiceInstance && generation == mineReportVoiceEpoch
+  mineReportVoiceInstance = -1
+  mineReportVoiceLeft = 0.0
+  CancelTimer(9009)
+  Sound.StopInstance(instance)
+ EndIf
+EndFunction
+
+Function CancelMineReportRecording()
+ int instance = mineReportVoiceInstance
+ mineReportVoiceInstance = -1
+ mineReportVoiceEpoch += 1
+ mineReportVoiceLeft = 0.0
+ If instance >= 0
+  CancelTimer(9009)
+  Sound.StopInstance(instance)
+ EndIf
+EndFunction
+
+Function MineReportVoiceTick()
+ If mineReportVoiceInstance < 0
+  Return
+ EndIf
+ int instance = mineReportVoiceInstance
+ int generation = mineReportVoiceEpoch
+ mineReportVoiceLeft -= 0.25
+ If mineReportVoiceLeft <= 0.0 || !MineReportVoiceContext(mineReportVoiceSpeaker,mineReportVoicePlayer,generation)
+  StopMineReportRecording(instance,generation)
+ Else
+  StartTimer(0.25,9009)
+ EndIf
 EndFunction

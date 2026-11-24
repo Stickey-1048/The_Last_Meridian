@@ -1,0 +1,45 @@
+{
+  "scope": "Private batch002 integration eligibility only; no acting/casting/native approval",
+  "lines": [
+    {
+      "property": "RecordedGanttWork",
+      "message": "ReplyWork",
+      "source": "work/gantt-opening-voice-batch-002/gantt_replywork.wav",
+      "descriptorPath": "data\\Sound\\FX\\MeridianRecordings\\gantt_replywork.wav",
+      "sha256": "3135D5854F5006C9A6DD07F19E9E30778D3C2D9250C9F6E9D053364E626C2DF2",
+      "frames": 161280,
+      "sampleRate": 24000,
+      "durationSeconds": 6.72,
+      "futureConservativeSeconds": 6.72
+    },
+    {
+      "property": "RecordedGanttRequest",
+      "message": "RequestChoice",
+      "source": "work/gantt-opening-voice-batch-002/gantt_requestchoice.wav",
+      "descriptorPath": "data\\Sound\\FX\\MeridianRecordings\\gantt_requestchoice.wav",
+      "sha256": "2A0F62F51A0705683898B9DD06CACDA7254CE802A9523031A2AEF3C2E310DDA9",
+      "frames": 366721,
+      "sampleRate": 24000,
+      "durationSeconds": 15.280041666666667,
+      "futureConservativeSeconds": 15.281
+    },
+    {
+      "property": "RecordedGanttAccept",
+      "message": "AcceptReply",
+      "source": "work/gantt-opening-voice-batch-002/gantt_acceptreply.wav",
+      "descriptorPath": "data\\Sound\\FX\\MeridianRecordings\\gantt_acceptreply.wav",
+      "sha256": "70881967E24D48E129979DD7E42F67A443CE1FEAE6C0D4F7245159D220277E1D",
+      "frames": 207360,
+      "sampleRate": 24000,
+      "durationSeconds": 8.64,
+      "futureConservativeSeconds": 8.64
+    }
+  ],
+  "eligibilityReview": {
+    "path": "work/reviews/sam-gantt-opening-voice-batch-002-review.md",
+    "sha256": "390E290F104780027E1AAC4D57486E0480AE130282A996491990D2539A87275C"
+  },
+  "receiptSha256": "E099A7DF64F2101B7F80F2182ED74D7246429BD93E1BF7745A689121CA8D1617",
+  "asrSha256": "770D11603AC5CAF67A2871A9ABBAA31FC8BD683ACB33241C1C070CB6818C4A7D",
+  "advisory": "Request proper names/title ASR advisory, not proved audible errors. Acting/accent/identity consistency and native playback remain unapproved."
+}

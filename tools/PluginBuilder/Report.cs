@@ -48,11 +48,11 @@ public static class Report
     /// <param name="StartsDead">For an actor: it is dead when the cell loads.</param>
     public sealed record PlacedInfo(string? EditorId, string FormKey, string Kind, string Base, float[] Position, float[] Rotation,
         bool Persistent, bool InitiallyDisabled, string Group, string? Primitive, float[]? Box, uint? CollisionLayer, float[]? Bound = null,
-        bool StartsDead = false);
+        bool StartsDead = false, [property:System.Text.Json.Serialization.JsonIgnore(Condition=System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] int? LockLevel = null);
     /// <summary>A cell record in the plugin. For a cell of the game's it is this plugin's copy of the record.</summary>
     /// <param name="OfThisPlugin">False: the cell belongs to a master, and the plugin only adds to it.</param>
     /// <param name="Name">The cell's name as this plugin carries it (it replaces the master's while the plugin is loaded).</param>
-    public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed, string? Name = null);
+    public sealed record CellInfo(string? EditorId, string FormKey, bool OfThisPlugin, int Block, int SubBlock, List<PlacedInfo> Placed, string? Name = null, [property:System.Text.Json.Serialization.JsonIgnore(Condition=System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? World = null);
     /// <summary>An actor of this plugin's own: what it would go about its business with.</summary>
     /// <param name="TemplateFlags">What the actor takes from the actor it is modelled on.</param>
     /// <param name="TemplateLinks">For which of those things it names an actor to take it from.</param>
@@ -89,6 +89,8 @@ public static class Report
         }).ToList());
 
         var simple = new List<SimpleInfo>();
+        foreach(var d in mod.Doors)simple.Add(new("Door",d.EditorID!,d.FormKey.ToString(),d.Name?.String,NullIfEmpty(d.Model?.File)));
+        foreach(var l in mod.Lights)simple.Add(new("Light",l.EditorID!,l.FormKey.ToString(),l.Name?.String,NullIfEmpty(l.Model?.File)));
         foreach (var g in mod.Globals) simple.Add(new("Global", g.EditorID!, g.FormKey.ToString(), null));
         foreach (var f in mod.Factions) simple.Add(new("Faction", f.EditorID!, f.FormKey.ToString(), f.Name?.String));
         foreach (var m in mod.MiscItems) simple.Add(new("MiscItem", m.EditorID!, m.FormKey.ToString(), m.Name?.String, NullIfEmpty(m.Model?.File)));
@@ -110,7 +112,7 @@ public static class Report
         }
 
         var cells = new List<CellInfo>();
-        foreach (var (cell,blockNumber,subNumber) in RedHollowEnvironment.ReportCells(mod))
+        foreach (var (cell,blockNumber,subNumber) in BlackstoneEnvironment.ReportCells(mod))
                 {
                     var placed = new List<PlacedInfo>();
                     foreach (var (list, name) in new[] { (cell.Persistent, "Persistent"), (cell.Temporary, "Temporary") })
@@ -129,7 +131,7 @@ public static class Report
                                         (flags & 0x400) != 0, (flags & 0x800) != 0, name,
                                         // The library gives the whole sizes; the file holds half of each, and so does this.
                                         o.Primitive?.Type.ToString(), o.Primitive == null ? null : V(o.Primitive.Bounds / 2), o.CollisionLayer,
-                                        o.BoundHalfExtents is { } bound ? V(bound) : null));
+                                        o.BoundHalfExtents is { } bound ? V(bound) : null, LockLevel:o.Lock==null?null:(int)o.Lock.Level));
                                     break;
                                 default:
                                     placed.Add(new(p.EditorID, p.FormKey.ToString(), p.GetType().Name, "?", Array.Empty<float>(), Array.Empty<float>(),
@@ -138,7 +140,7 @@ public static class Report
                             }
                         }
                     cells.Add(new(cell.EditorID, cell.FormKey.ToString(), cell.FormKey.ModKey == mod.ModKey, blockNumber, subNumber, placed,
-                        NullIfEmpty(cell.Name?.String)));
+                        NullIfEmpty(cell.Name?.String), BlackstoneEnvironment.OwnCell(cell.EditorID??"")?Blackstone.World:null));
                 }
 
         var messages = mod.Messages.Select(m => new MessageInfo(
