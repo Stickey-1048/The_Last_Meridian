@@ -942,7 +942,7 @@ public sealed partial class Builder
                 foreach (var p in group)
                     Pending.Add(own != null
                         ? $"{p.EditorId}: not placed (its cell '{p.Cell}' is this plugin's own and is made only with Fallout4.esm: its floor is the game's)"
-                        : $"{p.EditorId}: not placed (the cell '{p.Cell}' is in Fallout4.esm)");
+                        : $"{p.EditorId}: not placed (the cell '{p.Cell}' is not available in this build)");
                 continue;
             }
             ICell cell;
