@@ -1,0 +1,23 @@
+{
+  "base067": "aef0d287637b08b4100775b2310c409995a4ebc3",
+  "commonGuidanceSource": "5a2b373b3759e9e7cea8ad33d6835cf6a27cc588",
+  "terrainAuthority": "f601820b7bc4bb1b9d658bd9c29c2053dfd7d11f",
+  "selection": {
+    "tools/PluginBuilder/RedHollowTerrain.cs": "BD62D5D7F9A42762DDD840DC3E0C31197B6865B115800F80952DA692ED5AE206",
+    "tools/PluginBuilder/RedHollowGeometryAudit.cs": "9174BA2C328BB3B98F1C2E83B5006B0F3464F52D1C1612C4C23B7AEC2707BB2A",
+    "tools/PluginBuilder/RedHollowEnvironment.cs": "3FEA8E9E45C7E6F9A28C1EDD0E177B1D73B632BD0F2C94AAEC5CC401BAF417EB",
+    "tools/PluginBuilder/formkeys.txt": "A5EAAFD17FB307AE80010D7DFA809FEDA5763272F9E2643266352004318C8D92"
+  },
+  "excludedCurrentEnvironmentLines": [
+    "foreach(var support in RedHollowAccess.Supports)yield return support;",
+    "BuildRedHollowAccess();"
+  ],
+  "currentInputRawSha256": {
+    "tools/PluginBuilder/RedHollowTerrain.cs": "D4C6514B5D6F920EAB9421C762A874180FA959167FC72096F0016E4B82587955",
+    "tools/PluginBuilder/RedHollowGeometryAudit.cs": "2B5924DE857778DC84D1D634D3928B27B17EBBC96FCC0778BD23B3C0BF0178F6",
+    "tools/PluginBuilder/RedHollowEnvironment.cs": "58C4421A9E8F097599853350A5EE80236A768B07A173E2BF4A9AF9164BA06ED7",
+    "tools/PluginBuilder/formkeys.txt": "9A6FDBA88FF800B74B0B0674C6F7FE191359CDECB5E4C564A5C549FF15CF888C"
+  },
+  "unchangedStrictVerifierSha256": "18CA8CE2CC5D7120905D4159D45CF6E27E639DFAE0274D733DCE3A2E102915E0",
+  "scope": "Both comparison sides share all accepted GUIDANCE source; only current selected RH terrain changes. Full current producer remains separately emitted/checked. No production or historical manifest edits."
+}

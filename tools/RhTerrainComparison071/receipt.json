@@ -1,0 +1,55 @@
+{
+  "scope": "071 author evidence, not independent acceptance/cloud/native pass",
+  "syntheticMasterSource": "existing067 default actual synthetic output",
+  "syntheticMasterSha256": "09B36AA9629A1427907A5CFD0A635B4262E538EBFD1863DC6BBF9A4668EA019E",
+  "result": {
+    "commonSource": "5a2b373b3759e9e7cea8ad33d6835cf6a27cc588",
+    "acceptedTerrainSource": "f601820b7bc4bb1b9d658bd9c29c2053dfd7d11f",
+    "currentTerrainSelection": {
+      "tools/PluginBuilder/RedHollowTerrain.cs": "BD62D5D7F9A42762DDD840DC3E0C31197B6865B115800F80952DA692ED5AE206",
+      "tools/PluginBuilder/RedHollowGeometryAudit.cs": "9174BA2C328BB3B98F1C2E83B5006B0F3464F52D1C1612C4C23B7AEC2707BB2A",
+      "tools/PluginBuilder/RedHollowEnvironment.cs": "3FEA8E9E45C7E6F9A28C1EDD0E177B1D73B632BD0F2C94AAEC5CC401BAF417EB",
+      "tools/PluginBuilder/formkeys.txt": "A5EAAFD17FB307AE80010D7DFA809FEDA5763272F9E2643266352004318C8D92"
+    },
+    "strictProjection": {
+      "newDecorativeReferences": 72,
+      "changedDecorativeTransforms": 58,
+      "inwardMinePanels": 31,
+      "heightRange": [
+        0,
+        416
+      ],
+      "storyPad": [
+        0,
+        4096,
+        0,
+        2048,
+        0
+      ],
+      "oldUnrelatedPayloadsAndParentsExact": true,
+      "scope": "Synthetic raw projection only; no native collision/visibility proof"
+    },
+    "scope": "Symmetric synthetic RH-only comparison, not current full-producer or native proof"
+  },
+  "tests": "9 focused PASS8.645s; actual local-cache two-side compile/emission PASS; initial stale17CS0103 preserved",
+  "files": {
+    "tools/composed_test_contexts.py": "E4665C800A38DAC65AD519CAA200FBFAC846B047B9D21BDF1C5E4931648031AC",
+    "tools/rh_terrain_comparison.py": "4EE5536595093A0D8E231A61C8C04BB0BEC43F2A66BB39CA9666E934FBA9E99F",
+    "tools/test_rh_terrain_comparison071.py": "396E1D5BF1D0912CB7EA0D63996621EFDCD71D27947799AA786EC0362B80DC51",
+    "tools/RhTerrainComparison071/provenance.json": "DCD66C3A710D111DCA2941D9A55E7524338CF251967894F2805EB1BA6DFFF28C",
+    "tools/RhTerrainComparison071/HANDOFF.md": "CBB2448415FB65FBE3FCECB1E276D588CE380122DD2DFD9A8699B70BDC822D91",
+    "tools/rh_terrain_projection.py": "18CA8CE2CC5D7120905D4159D45CF6E27E639DFAE0274D733DCE3A2E102915E0",
+    "build/guidance071/stale-build.log": "520E23161DAA599AEB7F2E0042A4FB7155820943554972136CE2B02A4326A9A4",
+    "build/guidance071/comparison-result.json": "15A9D3D397EEE462F2848CA762370AEDB364DDE858F503434D7C3BC68068E7BA",
+    "build/terrain-002/projection/TheLastMeridian.esp": "4DB941F140E636B610463261BB4E6AE5DCE1046CEFBCB2B4B863315E5A4991E7",
+    "build/terrain-002/baseline-projection/TheLastMeridian.esp": "78D71421F0A9A024264F5CAA5904E4911BEB704DF8C4FEDF22F7FA405E59428E",
+    "build/guidance071/rh-common-baseline-0.log": "4A5E39A1A3ED9774411004F3B5047A1C74F011F46C7B512EFE4750D87A74A082",
+    "build/guidance071/rh-common-baseline-1.log": "769DEB5050D8341243506FB5EB4D4E8F60D24BDA2F3FE27E6351DCD04D32E567",
+    "build/guidance071/rh-common-baseline-2.log": "DD35FDB2EC966D23841DA81890451322AEC035AD1592B17AA12F97D2734D3547",
+    "build/guidance071/rh-common-current-0.log": "F626202CB41B5E0E6856F11BCBEF4E7EC39AA39AAE5418328F3F8DD4154DBFA8",
+    "build/guidance071/rh-common-current-1.log": "EAEA94ED1366DCF2C37ED39C3A5DFFC17B0B717C37E8268C5B1C55B60A0727F1",
+    "build/guidance071/rh-common-current-2.log": "ED1EE48EDC3FFE6385C5FFF954B48CB7C233C41B28F557380A7DC6CABE6C00FB"
+  },
+  "protectedParentPaths": 655,
+  "additionalExistingTest": "current terrain layout+mutations PASS5.164s after supplying declared synthetic master path; initial setup absence disclosed"
+}

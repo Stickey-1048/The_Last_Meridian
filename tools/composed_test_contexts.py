@@ -54,16 +54,10 @@ def prepare():
     for revision in CONTEXT_DIGESTS:context(revision)
     master=ROOT/'build/composed/Fallout4.esm'
     execute(['dotnet','run','--project','tools/StandInMaster','--',master,'default'],ROOT,ROOT/'build/composed/fixture-master.txt')
-    build(ROOT,master,ROOT/'build/terrain-002/projection','current')
-    # This is an explicit synthetic comparison fixture, NOT a historical
-    # candidate: fd7 environment plus exact current guidance inputs only.
-    source=archive(FD7);target=ROOT/'build/composed/guidance-only-fixture'
-    target.mkdir(parents=True,exist_ok=True)
-    for name,data in source.items():
-        p=target/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data)
-    overlays=('scripts/Source/User/TLM/MessageStageAlias.psc','scripts/Source/User/TLM/RedHollowWalk.psc','tools/PluginBuilder/Spec.cs','tools/PluginBuilder/SpecRedHollow.cs','tools/PluginBuilder/formkeys.txt')
-    for name in overlays:shutil.copyfile(ROOT/name,target/name)
-    baseline=ROOT/'build/terrain-002/baseline-projection';build(target,master,baseline,'current-guidance-only')
+    build(ROOT,master,ROOT/'build/composed/full-current-projection','current')
+    # Full current producer remains separate from the symmetric RH-only pair.
+    from rh_terrain_comparison import prepare as prepare_rh_comparison
+    comparison=prepare_rh_comparison(ROOT,master,archive,build)
     # Standalone provenance/preservation tests run their actual accepted source,
     # never an environment override of current behavioral tests.
     ordinary={};masters={}
@@ -77,7 +71,7 @@ def prepare():
     # above never consume this different source's synthetic identities.
     build(context(TERRAIN),masters[TERRAIN],context(TERRAIN)/'build/terrain-002/projection','terrain-accepted')
     build(context(FD7),masters[TERRAIN],context(TERRAIN)/'build/terrain-002/baseline-projection','terrain-baseline-pair')
-    stamp={'scope':'Fresh synthetic same-master current comparison and separate own-source historical ordinary fixtures; no owned master/native claim','masterSha256':digest(master.read_bytes()),'historicalContextDigests':CONTEXT_DIGESTS,'historicalOrdinary':ordinary,'terrainHistoricalComparisonMasterSource':TERRAIN,'currentGuidanceOverlayPins':{n:text_digest((ROOT/n).read_bytes()) for n in overlays}}
+    stamp={'scope':'Fresh synthetic same-master current comparison and separate own-source historical ordinary fixtures; no owned master/native claim','masterSha256':digest(master.read_bytes()),'historicalContextDigests':CONTEXT_DIGESTS,'historicalOrdinary':ordinary,'terrainHistoricalComparisonMasterSource':TERRAIN,'symmetricRhComparison':comparison}
     (ROOT/'build/composed/fixture-provenance.json').write_text(json.dumps(stamp,indent=2)+'\n',encoding='utf-8')
 
 if __name__=='__main__':prepare()

@@ -1,0 +1,31 @@
+{
+  "base068": "01833b9de56b0ca91bef8468575bbec06f13f014",
+  "source071": "06e20098964c2f47aaed35014ad5c37b37daffbc",
+  "copies": [
+    {
+      "path": "tools/composed_test_contexts.py",
+      "sha256": "E4665C800A38DAC65AD519CAA200FBFAC846B047B9D21BDF1C5E4931648031AC"
+    },
+    {
+      "path": "tools/rh_terrain_comparison.py",
+      "sha256": "4EE5536595093A0D8E231A61C8C04BB0BEC43F2A66BB39CA9666E934FBA9E99F"
+    },
+    {
+      "path": "tools/test_rh_terrain_comparison071.py",
+      "sha256": "396E1D5BF1D0912CB7EA0D63996621EFDCD71D27947799AA786EC0362B80DC51"
+    },
+    {
+      "path": "tools/RhTerrainComparison071/HANDOFF.md",
+      "sha256": "CBB2448415FB65FBE3FCECB1E276D588CE380122DD2DFD9A8699B70BDC822D91"
+    },
+    {
+      "path": "tools/RhTerrainComparison071/provenance.json",
+      "sha256": "DCD66C3A710D111DCA2941D9A55E7524338CF251967894F2805EB1BA6DFFF28C"
+    },
+    {
+      "path": "tools/RhTerrainComparison071/receipt.json",
+      "sha256": "C9A4924D0BF67B4DD148D73350E5BF64D189A8B586C9A80AAB5217E652EE1003"
+    }
+  ],
+  "scope": "Exact six text copies, no history merge; 071 receipts remain historical author evidence, not combined-build evidence"
+}
