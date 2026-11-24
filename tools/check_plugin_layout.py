@@ -384,6 +384,15 @@ def own_record_ids(buf, masters):
 def check_cells(buf, described=None):
     """Returns (problems, number of cell records, number of references under them)."""
     problems = []
+    # Reject duplicate structural identities explicitly before the inherited
+    # terrain decoder (which otherwise asserts while constructing its map).
+    structural_ids = set()
+    for kind, _off, _size, fid, _flags in records(buf, 0, len(buf)):
+        if kind in ('WRLD', 'CELL', 'LAND'):
+            if (kind, fid) in structural_ids:
+                label = 'world' if kind == 'WRLD' else kind
+                return ['Duplicate/colliding exterior ' + label], 0, 0
+            structural_ids.add((kind, fid))
     from player_guidance_terrain_layout import context,land_problems
     terrain,terrain_issues=context(buf)
     problems.extend(terrain_issues)
@@ -533,55 +542,139 @@ def check_cells(buf, described=None):
                                 problems.append(f"{name}: a group inside its list of references")
                                 continue
                             inspect_reference(ref,in_persistent,cell)
-    # Explicit new master-owned RH exterior; interior filing/flags checks above
-    # remain intact. Every exterior reference uses the SAME exact byte checks.
-    for top in items(buf,0,len(buf)):
-        if top[0]!='group' or top[1]!=GROUP_TOP or top[2]!=b'WRLD':continue
-        world_id=None;world_seen=0;world_cells=set();land_count=0
-        def world_items(start,end,level):
-            nonlocal cells,land_count
-            current_cell=None;current_name=None
-            for entry in items(buf,start,end):
-                if entry[0]=='record' and entry[1]=='CELL':
-                    current_cell=entry[2];cells+=1
-                    ss=dict(subrecords(entry[4]));current_name=ss.get('EDID',b'').rstrip(b'\0').decode('ascii')
-                    if current_name not in ('TLM_CELL_RH_SurfacePersistent','TLM_CELL_RH_Surface') or current_name in world_cells:problems.append('RH exterior unknown/duplicate CELL')
+    # Exact master-owned exterior profiles from RedHollowEnvironment and
+    # BlackstoneEnvironment; form IDs are the accepted formkeys.txt allocation.
+    # Interior/reference checks above remain unchanged for BOTH worlds.
+    profiles = {
+        'TLM_WRLD_RH_Surface': ('RH', 3319, 'TLM_CELL_RH_SurfacePersistent', 3320, 'TLM_CELL_RH_Surface', 3321, 3322),
+        'TLM_WRLD_BS_Upper': ('BS', 3820, 'TLM_CELL_BS_UpperPersistent', 3821, 'TLM_CELL_BS_Upper', 3822, 3823),
+    }
+    seen_worlds = set()
+    seen_world_ids = set()
+    world_climates = {}
+    seen_exterior_cells = set()
+    for top in items(buf, 0, len(buf)):
+        if top[0] != 'group' or top[1] != GROUP_TOP or top[2] != b'WRLD':
+            continue
+        world_id = None
+        profile = None
+        world_cells = set()
+        land_count = 0
+
+        def finish_world():
+            if profile is not None:
+                if world_cells != {profile[2], profile[4]} or land_count != 1:
+                    problems.append(profile[0] + ' exterior exact world/two-cell/LAND inventory mismatch')
+
+        def world_items(start, end, level):
+            nonlocal cells, land_count
+            prefix, _, persistent_name, persistent_id, surface_name, surface_id, land_id = profile
+            current_cell = None
+            current_name = None
+            for entry in items(buf, start, end):
+                if entry[0] == 'record' and entry[1] == 'CELL':
+                    current_cell = entry[2]
+                    cells += 1
+                    ss = dict(subrecords(entry[4]))
+                    current_name = ss.get('EDID', b'').rstrip(b'\0').decode('ascii')
+                    expected_id = {persistent_name: persistent_id, surface_name: surface_id}.get(current_name)
+                    if current_name in world_cells or expected_id is None or current_cell in seen_exterior_cells:
+                        problems.append(prefix + ' exterior unknown/duplicate CELL')
                     world_cells.add(current_name)
-                    if current_cell>>24!=masters or (current_cell&0xffffff) not in (described or {}).get(OWN_CELLS,set()):problems.append('RH exterior CELL is not declared master-owned source')
-                    if len(ss.get('DATA',b''))!=2 or struct.unpack('<H',ss['DATA'])[0]&INTERIOR or 'XCLL' in ss:problems.append('RH exterior must be genuine non-interior CELL')
-                    if current_name=='TLM_CELL_RH_Surface':
-                        if level!=5 or len(ss.get('XCLC',b''))!=12 or struct.unpack_from('<ii',ss['XCLC'])!=(0,0):problems.append('RH exterior grid filing/coordinate mismatch')
-                    elif level!=1 or 'XCLC' in ss or not(entry[3]&PERSISTENT):problems.append('RH exterior persistent CELL filing/flag mismatch')
-                elif entry[0]=='group' and entry[1] in (4,5):
-                    if (entry[1]==4 and level!=1) or (entry[1]==5 and level!=4) or entry[2]!=b'\0'*4:problems.append('RH exterior block/subblock mismatch')
-                    world_items(entry[3],entry[4],entry[1])
-                elif entry[0]=='group' and entry[1]==GROUP_CELL_CHILDREN:
-                    if current_cell is None or struct.unpack('<I',entry[2])[0]!=current_cell:problems.append('RH exterior children label mismatch');continue
-                    for part in items(buf,entry[3],entry[4]):
-                        if part[0]!='group' or part[1] not in (GROUP_CELL_PERSISTENT,GROUP_CELL_TEMPORARY) or struct.unpack('<I',part[2])[0]!=current_cell:problems.append('RH exterior reference group mismatch');continue
-                        for ref in items(buf,part[3],part[4]):
-                            if ref[0]=='record' and ref[1]=='LAND':
-                                land_count+=1;ss=list(subrecords(ref[4]));land=dict(ss)
-                                if current_name!='TLM_CELL_RH_Surface' or part[1]!=GROUP_CELL_TEMPORARY or ref[2]>>24!=masters:problems.append('RH LAND parent/ownership mismatch')
-                                height=land.get('VHGT',b'')
-                                if terrain:
-                                    problems.extend(land_problems(height,land.get('VNML',b'')))
+                    seen_exterior_cells.add(current_cell)
+                    if current_cell != (masters << 24 | (expected_id or 0)) or (current_cell & 0xffffff) not in (described or {}).get(OWN_CELLS, set()):
+                        problems.append(prefix + ' exterior CELL is not declared exact master-owned source')
+                    if len(ss.get('DATA', b'')) != 2 or struct.unpack('<H', ss['DATA'])[0] & INTERIOR or 'XCLL' in ss:
+                        problems.append(prefix + ' exterior must be genuine non-interior CELL')
+                    if current_name == surface_name:
+                        if level != 5 or len(ss.get('XCLC', b'')) != 12 or struct.unpack_from('<ii', ss['XCLC']) != (0, 0):
+                            problems.append(prefix + ' exterior grid filing/coordinate mismatch')
+                    elif level != 1 or 'XCLC' in ss or not (entry[3] & PERSISTENT):
+                        problems.append(prefix + ' exterior persistent CELL filing/flag mismatch')
+                    if prefix == 'BS' and (ss.get('DATA') != b'\0\0' or entry[3] != (PERSISTENT if current_name == persistent_name else 0)
+                                           or (current_name == surface_name and (ss.get('XCLC') != bytes(12) or ss.get('XCLW') != struct.pack('<f', -2048)))):
+                        problems.append('BS exact CELL header/water mismatch')
+                elif entry[0] == 'group' and entry[1] in (4, 5):
+                    if (entry[1] == 4 and level != 1) or (entry[1] == 5 and level != 4) or entry[2] != b'\0' * 4:
+                        problems.append(prefix + ' exterior block/subblock mismatch')
+                    world_items(entry[3], entry[4], entry[1])
+                elif entry[0] == 'group' and entry[1] == GROUP_CELL_CHILDREN:
+                    if current_cell is None or struct.unpack('<I', entry[2])[0] != current_cell:
+                        problems.append(prefix + ' exterior children label mismatch')
+                        continue
+                    for part in items(buf, entry[3], entry[4]):
+                        if part[0] != 'group' or part[1] not in (GROUP_CELL_PERSISTENT, GROUP_CELL_TEMPORARY) or struct.unpack('<I', part[2])[0] != current_cell:
+                            problems.append(prefix + ' exterior reference group mismatch')
+                            continue
+                        for ref in items(buf, part[3], part[4]):
+                            if ref[0] == 'record' and ref[1] == 'LAND':
+                                land_count += 1
+                                ss = list(subrecords(ref[4]))
+                                land = dict(ss)
+                                if current_name != surface_name or part[1] != GROUP_CELL_TEMPORARY or ref[2] != (masters << 24 | land_id):
+                                    problems.append(prefix + ' LAND parent/ownership mismatch')
+                                height = land.get('VHGT', b'')
+                                if prefix == 'RH' and terrain:
+                                    problems.extend(land_problems(height, land.get('VNML', b'')))
                                 else:
-                                    if len(height)!=1096 or struct.unpack_from('<f',height)[0]!=0 or any(height[4:1093]):problems.append('RH declared flat LAND heights mismatch')
-                                    if land.get('VNML')!=bytes((0,0,127))*1089:problems.append('RH flat LAND normals mismatch')
-                                if len([1 for tag,_ in ss if tag=='BTXT'])!=4 or len(land.get('VTEX',b''))!=4:problems.append('RH LAND normals/layers incomplete')
-                            elif ref[0]=='record':inspect_reference(ref,part[1]==GROUP_CELL_PERSISTENT,current_cell)
-                            else:problems.append('RH exterior nested reference group')
-                else:problems.append('RH exterior unexpected record/group')
-        for entry in items(buf,top[3],top[4]):
-            if entry[0]=='record' and entry[1]=='WRLD':
-                world_seen+=1;world_id=entry[2];ss=dict(subrecords(entry[4]))
-                if ss.get('EDID')!=b'TLM_WRLD_RH_Surface\0' or world_id>>24!=masters:problems.append('Only declared RH source world is allowed')
-                climate=ss.get('CNAM',b'')
-                if len(climate)!=4 or struct.unpack('<I',climate)[0]==0 or struct.unpack('<I',climate)[0]>>24>=masters:problems.append('RH real exterior climate missing/foreign')
-            elif entry[0]=='group' and entry[1]==1 and world_id is not None and struct.unpack('<I',entry[2])[0]==world_id:world_items(entry[3],entry[4],1)
-            else:problems.append('RH world children missing/mismatched')
-        if world_seen!=1 or world_cells!={'TLM_CELL_RH_SurfacePersistent','TLM_CELL_RH_Surface'} or land_count!=1:problems.append('RH exterior exact world/two-cell/LAND inventory mismatch')
+                                    if len(height) != 1096 or struct.unpack_from('<f', height)[0] != 0 or any(height[4:1093]):
+                                        problems.append(prefix + ' declared flat LAND heights mismatch')
+                                    if land.get('VNML') != bytes((0, 0, 127)) * 1089:
+                                        problems.append(prefix + ' flat LAND normals mismatch')
+                                if len([1 for tag, _ in ss if tag == 'BTXT']) != 4 or len(land.get('VTEX', b'')) != 4:
+                                    problems.append(prefix + ' LAND normals/layers incomplete')
+                                if prefix == 'BS':
+                                    texture = struct.unpack('<I', land['VTEX'])[0] if len(land.get('VTEX', b'')) == 4 else 0
+                                    layers = [v for tag, v in ss if tag == 'BTXT']
+                                    expected_layers = [struct.pack('<IBBh', texture, q, 0, 0) for q in range(4)]
+                                    if ref[3] != 0 or land.get('DATA') != b'\x1d\0\0\0' or height != bytes(1096):
+                                        problems.append('BS exact LAND header/height bytes mismatch')
+                                    if not texture or texture >> 24 >= masters or layers != expected_layers or [tag for tag, _ in ss] != ['DATA', 'VNML', 'VHGT', 'BTXT', 'BTXT', 'BTXT', 'BTXT', 'VTEX']:
+                                        problems.append('BS exact LAND native texture/quadrant schema mismatch')
+                            elif ref[0] == 'record':
+                                inspect_reference(ref, part[1] == GROUP_CELL_PERSISTENT, current_cell)
+                            else:
+                                problems.append(prefix + ' exterior nested reference group')
+                else:
+                    problems.append(prefix + ' exterior unexpected record/group')
+
+        for entry in items(buf, top[3], top[4]):
+            if entry[0] == 'record' and entry[1] == 'WRLD':
+                finish_world()
+                world_id = entry[2]
+                ss = dict(subrecords(entry[4]))
+                name = ss.get('EDID', b'').rstrip(b'\0').decode('ascii')
+                profile = profiles.get(name)
+                world_cells = set()
+                land_count = 0
+                if profile is None or world_id != (masters << 24 | profile[1]):
+                    problems.append('Only declared exact RH/BS source worlds are allowed')
+                if name in seen_worlds or world_id in seen_world_ids:
+                    problems.append('Duplicate/colliding exterior world')
+                seen_worlds.add(name)
+                seen_world_ids.add(world_id)
+                climate = ss.get('CNAM', b'')
+                world_climates[name] = climate
+                if len(climate) != 4 or struct.unpack('<I', climate)[0] == 0 or struct.unpack('<I', climate)[0] >> 24 >= masters:
+                    problems.append('RH/BS real exterior climate missing/foreign')
+                if profile is not None and profile[0] == 'BS':
+                    # NAM9 is the byte representation emitted by the accepted
+                    # source's ObjectBoundsMax(4096,4096), not native reach proof.
+                    expected = {'DATA': b'\x8b', 'DNAM': struct.pack('<2f', 0, -2048), 'NAM0': bytes(8), 'NAM9': bytes.fromhex('0000804b0000804b')}
+                    if entry[3] != 0 or any(ss.get(k) != v for k, v in expected.items()):
+                        problems.append('BS exact WRLD header/defaults/bounds mismatch')
+            elif entry[0] == 'group' and entry[1] == 1 and world_id is not None and profile is not None and struct.unpack('<I', entry[2])[0] == world_id:
+                world_items(entry[3], entry[4], 1)
+            else:
+                problems.append('RH/BS world children missing/mismatched')
+        finish_world()
+    if len(world_climates.keys() & profiles.keys()) == 2 and len({world_climates[name] for name in profiles}) != 1:
+        problems.append('BS climate differs from the shared Commonwealth donor used by RH')
+    if described is not None:
+        declared_cells = described.get(OWN_CELLS, set())
+        for name, profile in profiles.items():
+            if declared_cells.intersection({profile[3], profile[5]}) and name not in seen_worlds:
+                problems.append(profile[0] + ' declared exterior world missing')
     if described is not None:
         for formid, want in described.items():
             if formid == OWN_CELLS:
@@ -785,6 +878,89 @@ def npc_damage(buf):
     return out
 
 
+def exterior_damage(buf):
+    """Damage declared source exteriors in memory; never emits a fixture."""
+    masters = master_count(buf)
+    own = lambda n: masters << 24 | n
+    indexed = {fid: (kind, off, size) for kind, off, size, fid, _ in records(buf, 0, len(buf))}
+    if own(3820) not in indexed:
+        return []                 # skeleton/no-owned-input build has no BS world
+
+    def field(fid, tag):
+        _, off, size = indexed[fid]
+        pos = off
+        while pos < off + size:
+            name = buf[pos:pos + 4].decode('ascii')
+            length = struct.unpack_from('<H', buf, pos + 4)[0]
+            if name == tag:
+                return pos + 6
+            pos += 6 + length
+        raise ValueError(f'exterior mutation: {fid:08X} lacks {tag}')
+
+    def remove_record(fid):
+        def walk(start, end):
+            out = bytearray()
+            pos = start
+            while pos < end:
+                size = struct.unpack_from('<I', buf, pos + 4)[0]
+                if buf[pos:pos + 4] == b'GRUP':
+                    body = walk(pos + 24, pos + size)
+                    header = bytearray(buf[pos:pos + 24])
+                    struct.pack_into('<I', header, 4, 24 + len(body))
+                    out.extend(header + body)
+                    pos += size
+                else:
+                    if struct.unpack_from('<I', buf, pos + 12)[0] != fid:
+                        out.extend(buf[pos:pos + 24 + size])
+                    pos += 24 + size
+            return bytes(out)
+        return walk(0, len(buf))
+
+    def group_label(gtype, label):
+        def walk(start, end):
+            pos = start
+            while pos < end:
+                size = struct.unpack_from('<I', buf, pos + 4)[0]
+                if buf[pos:pos + 4] == b'GRUP':
+                    if struct.unpack_from('<I', buf, pos + 12)[0] == gtype and struct.unpack_from('<I', buf, pos + 8)[0] == label:
+                        return pos + 8
+                    found = walk(pos + 24, pos + size)
+                    if found is not None:
+                        return found
+                    pos += size
+                else:
+                    pos += 24 + size
+            return None
+        at = walk(0, len(buf))
+        if at is None:
+            raise ValueError('exterior mutation: missing group')
+        return at
+
+    out = [
+        ('BS missing LAND', remove_record(own(3823))),
+        ('BS missing exterior CELL', remove_record(own(3822))),
+        ('BS unknown world', patch(buf, field(own(3820), 'EDID'), b'X')),
+        ('BS colliding world ID', patch(buf, indexed[own(3820)][1] - 12, struct.pack('<I', own(3319)))),
+        ('BS unknown CELL', patch(buf, field(own(3822), 'EDID'), b'X')),
+        ('BS colliding CELL ID', patch(buf, indexed[own(3822)][1] - 12, struct.pack('<I', own(3321)))),
+        ('BS wrong LAND parent', patch(buf, group_label(GROUP_CELL_TEMPORARY, own(3822)), struct.pack('<I', own(3321)))),
+        ('BS corrupt LAND height', patch(buf, field(own(3823), 'VHGT') + 4, b'\x01')),
+        ('BS corrupt LAND normal', patch(buf, field(own(3823), 'VNML'), b'\x01')),
+        ('BS wrong world header', patch(buf, field(own(3820), 'DATA'), b'\x00')),
+        ('BS foreign climate', patch(buf, field(own(3820), 'CNAM'), struct.pack('<I', own(1)))),
+        ('BS wrong world bounds', patch(buf, field(own(3820), 'NAM9'), b'\x01')),
+        ('BS inconsistent native climate', patch(buf, field(own(3820), 'CNAM'), struct.pack('<I', 1))),
+        ('BS incorrect layer quadrant', patch(buf, field(own(3823), 'BTXT') + 4, b'\x03')),
+        ('BS own rather than native texture', patch(buf, field(own(3823), 'VTEX'), struct.pack('<I', own(1)))),
+    ]
+    # RH's accepted nonflat byte/normals profile remains strict after dispatch.
+    if own(3322) in indexed:
+        for tag, offset in [('VHGT', 4), ('VNML', 0)]:
+            at = field(own(3322), tag) + offset
+            out.append(('RH corrupt ' + tag, patch(buf, at, bytes([buf[at] ^ 1]))))
+    return out
+
+
 def self_test(buf, described=None, cells=0, npcs=0, described_npcs=None, own_ids=None):
     """Each kind of damage must produce a problem. Returns the list of damages that went unnoticed, and how many kinds were tried."""
     unnoticed = []
@@ -802,7 +978,7 @@ def self_test(buf, described=None, cells=0, npcs=0, described_npcs=None, own_ids
             if not problems:
                 unnoticed.append(name)
     if cells:
-        for name, damaged in cell_damage(buf):
+        for name, damaged in cell_damage(buf) + exterior_damage(buf):
             tried += 1
             if damaged is None:
                 unnoticed.append(f"{name}: could not construct the damaged file")
@@ -866,7 +1042,7 @@ def main(argv):
     if cells:
         beside = "and agrees with the builder's description" if described is not None else "(no description beside the plugin to compare with)"
         own_cells = len((described or {}).get(OWN_CELLS, set()))
-        whose = "of the game" if not own_cells else f"({cells - own_cells} of the game, {own_cells} declared own cells; interior lighting and explicit RH exterior hierarchy checked separately)"
+        whose = "of the game" if not own_cells else f"({cells - own_cells} of the game, {own_cells} declared own cells; interior lighting and explicit RH/BS exterior hierarchy checked separately)"
         print(f"plugin layout: {refs} placed references under {cells} cell record(s) {whose}; each is this plugin's own, filed and flagged as it should be, {beside}")
     else:
         print("plugin layout: no cell records (nothing is placed in the world by this build)")
