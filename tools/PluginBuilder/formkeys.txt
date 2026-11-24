@@ -3858,3 +3858,5 @@ TLM_OUTFIT_AdaMechanic
 3976
 TLM_SOUND_PikeBook
 3977
+TLM_OUTFIT_DunmorePatchedSuit
+3978

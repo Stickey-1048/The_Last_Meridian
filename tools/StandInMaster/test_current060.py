@@ -29,7 +29,7 @@ class CurrentFixture(unittest.TestCase):
   p,rows=run('default');self.assertEqual(p.returncode,0,p.stderr);self.assertIn('self-check: the file read back matches the spec',p.stdout)
   for key,kind in {0x517B0:b'LIGH',0x52576:b'DOOR',0x1A6E6A:b'STAT',0x23323:b'VTYP',0x3F23D:b'NPC_',0xB2D8D:b'ARMO',0xB2D89:b'ARMA',0x113340:b'NPC_',0x113346:b'NPC_',0x1643CA:b'SNDR',0x876BB:b'SNCT',0x64451:b'SNCT'}.items():self.assertEqual(rows[key][0],kind)
   edids=[tags.get(b'EDID') for kind,tags,_ in rows.values() if tags.get(b'EDID')];self.assertEqual(len(edids),len(set(edids)))
-  self.assertIn('3 male, 3 female, 1 of no one sex',p.stdout);self.assertIn('StandInSettlerMale01',p.stdout);self.assertIn('StandInSettlerWomanAnyFace',p.stdout)
+  self.assertIn('7 male, 3 female, 1 of no one sex',p.stdout);self.assertIn('StandInSettlerMale01',p.stdout);self.assertIn('StandInSettlerWomanAnyFace',p.stdout)
  def test_strict_missing_wrong_type_model_collision_and_audio(self):
   cases={'current-no-static':'Blackstone exact static missing: PipeAStraightHalf01','current-wrong-static-type':'Blackstone exact static missing: PipeAStraightHalf01','current-static-model':'Blackstone model/bounds changed: PipeAStraightHalf01','current-static-collision':'Sequence contains more than one matching element','current-no-sound':'Sequence contains no matching element','current-sound-shape':'Known single nonlooping dialogue sound shape changed'}
   for variant,why in cases.items():

@@ -9,7 +9,7 @@ using Tlm.PluginBuilder;
 // contracts, not asset bytes, mesh geometry, usable game data or native evidence.
 public static class CurrentProducerFixture
 {
-    public static readonly string[] Variants = {"plain-trigger-bounds", "current-no-static", "current-wrong-static-type", "current-static-model", "current-static-collision", "current-no-sound", "current-sound-shape"};
+    public static readonly string[] Variants = {"plain-trigger-bounds", "current-no-static", "current-wrong-static-type", "current-static-model", "current-static-collision", "current-no-sound", "current-sound-shape", "wardrobe-missing", "wardrobe-wrong-type", "wardrobe-wrong-model", "wardrobe-wrong-race", "wardrobe-extra-armature", "wardrobe-wrong-template"};
     public static readonly string[] AbsenceVariants = {"unnamed-player", "wrong-player", "quest-evidence", "weak-evidence"};
     public static string PlayerVariant(string variant) => AbsenceVariants.SingleOrDefault(v=>variant==v+"-with-lighting") ?? variant;
     public static void Add(Fallout4Mod mod, string variant)
@@ -58,6 +58,21 @@ public static class CurrentProducerFixture
         }
         foreach(var npc in mod.Npcs.Where(n=>n.EditorID is "WorkshopNPC" or "StandInSettlerMale01" or "StandInSettlerFemale01"))
         {npc.DefaultOutfit.SetTo(nativeOutfit);npc.Race.SetTo(race);if(npc.EditorID=="StandInSettlerMale01")npc.Voice.SetTo(voice);}
+        var offered=mod.LeveledNpcs.SingleOrDefault(l=>l.EditorID is "StandInLCharSettler" or "SyntheticOpeningDonors");
+        if(offered!=null)
+        {
+            // Keep the original first three men, all women and nested/cyclic
+            // sex-resolution graph. The seventh male selection is Dunmore.
+            var males=new[]{(0x113348u,"StandInSettlerMale02"),(0x11334Au,"StandInSettlerMale03"),
+                (0x11334Du,"SyntheticCurrentMale04"),(0x11334Eu,"SyntheticCurrentMale05"),(0x11334Fu,"SyntheticCurrentMale06"),
+                (variant=="wardrobe-wrong-template"?0x1C2692u:0x1C2691u,"SyntheticCurrentDunmoreInventory")};
+            foreach(var (id,name) in males)
+            {
+                if(mod.Npcs.Any(n=>n.FormKey==Key(id)))continue;
+                var actor=new Npc(Key(id),Fallout4Release.Fallout4){EditorID=name};actor.Race.SetTo(race);actor.DefaultOutfit.SetTo(nativeOutfit);mod.Npcs.Add(actor);
+                offered.Entries??=new();offered.Entries.Add(new(){Data=new(){Reference=new FormLink<INpcSpawnGetter>(actor.FormKey),Level=1,Count=1}});
+            }
+        }
         void Clothing(uint id,string name,uint addonId,string male,string? female=null)
         {
             var addon=new ArmorAddon(Key(addonId),Fallout4Release.Fallout4){EditorID="SyntheticAddon_"+name};addon.Race.SetTo(race);
@@ -68,6 +83,7 @@ public static class CurrentProducerFixture
         Clothing(0xB3F4C,"ClothesResident5",0xB3F49,@"Clothes\Residents\5SuitM.nif");
         Clothing(0xB3F4D,"ClothesResident5Hat",0xB3F4A,@"Clothes\Residents\5HatM.nif");
         Clothing(0x1C26B9,"ClothesGenericJumpsuit",0x5E76B,@"Synthetic\MechanicM.nif",@"Clothes\RedRocketJumpsuit\RedRocketJumpsuitF.nif");
+        Clothing(0xA36BE,"ClothesResident4",0xA36BD,@"Clothes\Residents\4SuitM.nif");
         var parent=new SoundCategory(Key(0x64451),Fallout4Release.Fallout4){EditorID="AudioCategoryUI"};mod.SoundCategories.Add(parent);
         var category=new SoundCategory(Key(0x876BB),Fallout4Release.Fallout4){EditorID="AudioCategoryVOC"};category.Parent.SetTo(parent);mod.SoundCategories.Add(category);
         var sound=new SoundDescriptor(Key(0x1643CA),Fallout4Release.Fallout4){EditorID="XXXTestDialogueETravis",LoopAndRumble=new(),Data=new SoundDescriptorStandardData()};sound.Category.SetTo(category);sound.SoundFiles.Add(@"Synthetic\NeverPlayback.wav");mod.SoundDescriptors.Add(sound);
@@ -80,6 +96,11 @@ public static class CurrentProducerFixture
             case "current-static-collision":mod.Statics.AddNew("PipeAStraightHalf01");break;
             case "current-no-sound":mod.SoundDescriptors.Remove(sound.FormKey);break;
             case "current-sound-shape":sound.SoundFiles.Add(@"Synthetic\Extra.wav");break;
+            case "wardrobe-missing":mod.Armors.Remove(Key(0xA36BE));break;
+            case "wardrobe-wrong-type":mod.Armors.Remove(Key(0xA36BE));mod.MiscItems.Add(new MiscItem(Key(0xA36BE),Fallout4Release.Fallout4){EditorID="ClothesResident4"});break;
+            case "wardrobe-wrong-model":mod.ArmorAddons[Key(0xA36BD)].WorldModel!.Male!.File=@"Synthetic\WrongSuit.nif";break;
+            case "wardrobe-wrong-race":mod.ArmorAddons[Key(0xA36BD)].Race.SetTo(Key(0x13747));break;
+            case "wardrobe-extra-armature":mod.Armors[Key(0xA36BE)].Armatures.Add(new(){ArmorAddon=new FormLinkNullable<IArmorAddonGetter>(Key(0xA36BD))});break;
         }
     }
 }

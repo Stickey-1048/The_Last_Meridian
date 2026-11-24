@@ -318,6 +318,7 @@ if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-wreck-derailmen
 if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-hill-forest-finish.json"),JsonSerializer.Serialize(OpeningHillForestFinish.Apply(master,mod,world),new JsonSerializerOptions{WriteIndented=true}));
 if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-visible-slope-finish.json"),JsonSerializer.Serialize(OpeningVisibleSlopeFinish.Apply(master,world),new JsonSerializerOptions{WriteIndented=true}));
 if(prologue!=null)File.WriteAllText(Path.Combine(output,"dunmore-safe-choices.json"),JsonSerializer.Serialize(DunmoreSafeChoices.Apply(mod),new JsonSerializerOptions{WriteIndented=true}));
+if(prologue!=null)File.WriteAllText(Path.Combine(output,"opening-native-shoulder.json"),JsonSerializer.Serialize(OpeningNativeShoulder.Apply(master,world),new JsonSerializerOptions{WriteIndented=true}));
 placements.Clear();foreach(var p in cell.Temporary.OfType<IPlacedObjectGetter>())placements.Add(new{id=p.EditorID,form=p.FormKey.ToString(),@base=p.Base.FormKey.ToString(),x=p.Position!.X,y=p.Position.Y,z=p.Position.Z,yaw=p.Rotation!.Z,initiallyDisabled=(p.MajorRecordFlagsRaw&0x800)!=0});
 mod.BeginWrite.ToPath(plugin).WithNoLoadOrder().WithExtraIncludedMasters(included.ToArray()).Write();
 if(prologue!=null)File.WriteAllText(Path.Combine(output,"prologue-header-normalization.json"),JsonSerializer.Serialize(GanttPrologue.NormalizeNewArtifactHeader(plugin),new JsonSerializerOptions{WriteIndented=true}));

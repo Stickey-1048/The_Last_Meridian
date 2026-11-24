@@ -1,0 +1,39 @@
+{
+  "scope": "source-only coherent064copy + minimal strict synthetic wardrobegraph; all067contracts preserved",
+  "syntheticBuild": "local cache .NET0errors; unchanged strict producer full synthetic exit0/selfreadback",
+  "tests": {
+    "wardrobe": "2methods PASS20.871s, exactdefault +6strict negatives",
+    "absence067": "3methods PASS27.070s,11fixture cases",
+    "layout": "56damagecases caught on current syntheticdefault",
+    "bashSyntax": "PASS"
+  },
+  "notOwnedOrNative": true,
+  "files": {
+    "tools/StandInMaster/CurrentProducerFixture.cs": "A8701C7FDE4D063DF2F19842481DA34EDC19E3E357DBE8DEFD1A413317F79EBE",
+    "tools/StandInMaster/test_current060.py": "D863DDFFE8DBD289B43F0B79B3A760B0EDD92CD889D3B4CE1E314674B45DC371",
+    "tools/StandInMaster/test_wardrobe068.py": "F438F638A8E6357ACDD7CA99A6CB71ED256926A3D7FC35F859DC9FCDBF9C3B07",
+    "tools/StandInMaster/test_absence067.py": "D9E26E7137179368B3031E65C00D040E564E0B247E5A64F6BD430B5A13F17518",
+    "tools/run_checks.sh": "18F43B8A1E660F3B6A803A5CFEE12D7FD98CAAEC72100C25DFBC0FE644080DDD",
+    "tools/CurrentSourceFixture/verify.py": "4482324A31FE1746DF9D2AB510F53EDC6860DDA10FF540459284C8D5EC92C08A",
+    "tools/CurrentSourceFixture/provenance.json": "2F453E10AC1E9876696AF0E4566A66F1B4B625213842DB8C1CACA95EC03E3E32",
+    "build/current-source068/logs/build068.log": "68A816E0B88691421AE14430D955ECAFDD76A4833F19AB93C6FA886067680FD9",
+    "build/current-source068/logs/wardrobe068-tests.log": "C36009CF73E99073E80EEE9A3C75AB76C2EB3A0D47ECA742E8C1F26AE0C869DE",
+    "build/current-source068/logs/absence-carry068-tests.log": "FC7B5C62CFEFFE33C05CC3A92B1A229FFACF83462CD2199102FC10AE3DE7CAB6",
+    "build/current-source068/logs/layout068.log": "103270F2625E02459C631A59BD58CAFA3FA0AB108C16247B1BCDDB904092AAE3",
+    "build/standin-current060-tests/default/Fallout4.esm": "57F76D950E5309D953C30FCCAC32537B8A34611B5AACAE8707D32F16A3437A2A",
+    "build/standin-current060-tests/default/out/TheLastMeridian.esp": "1EA0F5BE5E15E4A5589DF9ED9A4EB4C27658B3FAD126BB7A086E90B21D58369A",
+    "build/standin-current060-tests/default/out/TheLastMeridian.json": "AC204E935842919F0E46C42F37A7E6E73FD2C08F30C18535F41C908C3F233378",
+    "build/standin-current060-tests/wardrobe-missing/Fallout4.esm": "EE8209F90C2600D66DEA58CA60B2BC6BBD5939EA8D3574801E225DB2E6CD31B0",
+    "build/standin-current060-tests/wardrobe-missing/producer.log": "6861F239301E0886BA2386E3F5797BA11B5B8DE87719EA67B619E861B689DC4D",
+    "build/standin-current060-tests/wardrobe-wrong-type/Fallout4.esm": "847746A21A0E19074B5B0F9676AB65428CE4545E63AEFC1089D743FB318162E6",
+    "build/standin-current060-tests/wardrobe-wrong-type/producer.log": "6861F239301E0886BA2386E3F5797BA11B5B8DE87719EA67B619E861B689DC4D",
+    "build/standin-current060-tests/wardrobe-wrong-model/Fallout4.esm": "002741DA2DAFD5B11629B0208FADFC06785EA821B154A632A17CD220216DF45A",
+    "build/standin-current060-tests/wardrobe-wrong-model/producer.log": "6861F239301E0886BA2386E3F5797BA11B5B8DE87719EA67B619E861B689DC4D",
+    "build/standin-current060-tests/wardrobe-wrong-race/Fallout4.esm": "5D0D1899764E7BB817379C84D80DE15B79F3E3C7045A1E1EF589373AACB6C0A5",
+    "build/standin-current060-tests/wardrobe-wrong-race/producer.log": "6861F239301E0886BA2386E3F5797BA11B5B8DE87719EA67B619E861B689DC4D",
+    "build/standin-current060-tests/wardrobe-extra-armature/Fallout4.esm": "FA46DE188C7C5012984644D7A6BDF72FA04AEBFC848AA1F38F8BE99A343A50DB",
+    "build/standin-current060-tests/wardrobe-extra-armature/producer.log": "6861F239301E0886BA2386E3F5797BA11B5B8DE87719EA67B619E861B689DC4D",
+    "build/standin-current060-tests/wardrobe-wrong-template/Fallout4.esm": "772F66A4CFA3A06CE157AF04F1416078EA7089DE6485EE55413CAB5A053DC396",
+    "build/standin-current060-tests/wardrobe-wrong-template/producer.log": "19E7E4AD74B2C0976B1BE567CB2006A76607149D69282C2A387DE31B7B16E641"
+  }
+}

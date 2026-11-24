@@ -252,6 +252,7 @@ public sealed partial class Builder
         BuildPritchardWardrobe();
         BuildAdaWorkwear();
         BuildAdaBookRecording();
+        BuildDunmoreWardrobe();
     }
 
     // ------------------------------------------------------------- actors
