@@ -152,11 +152,11 @@ def check_sq01_state(s: State) -> List[str]:
         bad("SQ01 outcome and stages 50/100 disagree")
     if s.sq_done(20) and not (s.sq_done(10) and s.evidence_level >= 1):
         bad("SQ01 stage 20 without the ledger and one piece of evidence")
-    if s.sq_done(10) and s.evidence_level >= 1 and not decided and not s.sq_done(20):
+    if s.sq_done(10) and (s.e1 or s.e2) and s.evidence_level >= 1 and not decided and not s.sq_done(20):
         bad("evidence level >= 1 with the ledger found, but stage 20 was never set")
     if s.sq_done(25) and s.evidence_level < 2:
         bad("SQ01 stage 25 below evidence level 2")
-    if s.sq_done(10) and s.evidence_level >= 2 and not decided and not s.sq_done(25):
+    if s.sq_done(10) and (s.e1 or s.e2) and s.evidence_level >= 2 and not decided and not s.sq_done(25):
         bad("evidence level 2 with the ledger found, but stage 25 was never set")
     if (s.haskell == "gone") != (s.sq_outcome == m.SQ_POSTED_HASKELL):
         bad("Haskell removed without the scapegoat outcome (or the reverse)")
