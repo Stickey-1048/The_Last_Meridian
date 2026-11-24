@@ -54,6 +54,8 @@ using Noggog;
 
 var path = args[0];
 var variant = args.Length > 1 ? args[1] : "default";
+// Only the four explicitly named lighting-positive variants share player bytes.
+var playerVariant = CurrentProducerFixture.PlayerVariant(variant);
 var mod = new Fallout4Mod(ModKey.FromNameAndExtension("Fallout4.esm"), Fallout4Release.Fallout4);
 FormKey Key(uint id) => new(mod.ModKey, id);
 
@@ -355,11 +357,11 @@ other.Base.SetTo(someoneElse);
 cell.Persistent.Add(other);
 
 PlacedNpc? placed = null;
-switch (variant)
+switch (playerVariant)
 {
     case "quest-evidence":
     case "weak-evidence":
-        for (var i = 0; i < (variant == "quest-evidence" ? 12 : 2); i++)
+        for (var i = 0; i < (playerVariant == "quest-evidence" ? 12 : 2); i++)
         {
             var quest = mod.Quests.AddNew($"StandInQuest{i:00}");
             quest.Aliases = new ExtendedList<AQuestAlias>

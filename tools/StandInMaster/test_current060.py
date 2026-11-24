@@ -46,13 +46,13 @@ class CurrentFixture(unittest.TestCase):
   trial=next(line for line in report.splitlines() if 'TLM_REF_TrialTrigger  PlacedObject' in line)
   self.assertIn('Box (150, 150, 150)',trial);self.assertNotIn(' bound ',trial)
  def test_existing_player_and_environment_variant_authorities(self):
-  for variant in ['unnamed-player','wrong-player','quest-evidence','weak-evidence','bare-room','rhe-no-light','rhe-static-model']:
+  for variant in ['unnamed-player-with-lighting','wrong-player-with-lighting','quest-evidence-with-lighting','weak-evidence-with-lighting','bare-room','rhe-no-light','rhe-static-model']:
    with self.subTest(variant=variant):
     p,rows=run(variant)
     if variant=='rhe-no-light':self.assertNotEqual(p.returncode,0);self.assertIn('RH real LIGH missing',p.stderr)
     elif variant=='rhe-static-model':self.assertNotEqual(p.returncode,0);self.assertIn('RH environment exact model/bounds changed',p.stderr)
     else:
      self.assertEqual(p.returncode,0,p.stderr)
-     if variant=='wrong-player':self.assertIn("does not place the actor 'Player'",p.stdout)
-     if variant=='weak-evidence':self.assertIn('only 2',p.stdout)
+     if variant=='wrong-player-with-lighting':self.assertIn("does not place the actor 'Player'",p.stdout)
+     if variant=='weak-evidence-with-lighting':self.assertIn('only 2',p.stdout)
 if __name__=='__main__':unittest.main()

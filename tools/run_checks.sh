@@ -150,28 +150,52 @@ grep -q "Caps = " "$(report default)" || { echo "FAILED: Caps property was not f
 grep -q "PlayerRef -> .*which the master spells 'PlayerREF'" "$(report default)" || { echo "FAILED: the player reference was not found regardless of letter case"; exit 1; }
 grep -q "places actor 'Player'" "$(report default)" || { echo "FAILED: the player reference was not checked against its base actor"; exit 1; }
 
-standin unnamed-player
-grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$(report unnamed-player)" || { echo "FAILED: fallback to the conventional player id did not fill the alias"; exit 1; }
-grep -q "Caps = 00000F:Fallout4.esm" "$(report unnamed-player)" || { echo "FAILED: Caps001 was not resolved at a low id"; exit 1; }
+# Preserve the original low-ID absence inputs. Current full production requires
+# a QASmoke lighting donor, so these must refuse before any output is accepted.
+for variant in unnamed-player wrong-player quest-evidence weak-evidence; do
+  dotnet run --project tools/StandInMaster -- "$tmp/$variant/Fallout4.esm" "$variant" | grep -v warning
+  python3 - "$tmp/$variant/Fallout4.esm" "$variant" <<'PY'
+import sys, struct
+from pathlib import Path
+sys.path.insert(0, 'tools/StandInMaster')
+from test_absence067 import absence
+from test_current060 import records
+rows=records(Path(sys.argv[1]));absence(rows)
+assert rows[0xF][1][b'EDID']==b'Caps001\0' and rows[7][1][b'EDID']==b'Player\0'
+if sys.argv[2] in ('unnamed-player','wrong-player'):
+    assert rows[0x14][1][b'NAME']==struct.pack('<I',7 if sys.argv[2]=='unnamed-player' else 0x800)
+else:
+    assert 0x14 not in rows
+    qs=[r for r in rows.values() if r[1].get(b'EDID',b'').startswith(b'StandInQuest')]
+    assert len(qs)==(12 if sys.argv[2]=='quest-evidence' else 2)
+    assert all(any(k==b'ALFR' and v==struct.pack('<I',0x14) for k,v in row[2]) for row in qs)
+PY
+  if dotnet run --project tools/PluginBuilder -- --out "$tmp/$variant/out" --fallout4-esm "$tmp/$variant/Fallout4.esm" > "$tmp/$variant/refusal.txt" 2>&1; then
+    echo "FAILED: full producer accepted a required lighting-donor absence"; exit 1
+  fi
+  grep -q 'CompleteBlackstoneEnvironment()' "$tmp/$variant/refusal.txt" && grep -q 'Sequence contains no matching element' "$tmp/$variant/refusal.txt" || { echo "FAILED: absence refused for an unexpected reason"; exit 1; }
+done
 
-standin wrong-player
-grep -q "alias  0 Player  (reference) \[Optional\]" "$(report wrong-player)" || { echo "FAILED: a reference that does not place 'Player' was accepted"; exit 1; }
-grep -q "does not place the actor 'Player'" "$(report wrong-player)" || { echo "FAILED: the rejected player reference was not reported"; exit 1; }
-
-standin quest-evidence
-grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$(report quest-evidence)" || { echo "FAILED: the game's own quests forcing 0x14 into 'Player' aliases were not accepted as evidence"; exit 1; }
-
-standin weak-evidence
-grep -q "alias  0 Player  (reference) \[Optional\]" "$(report weak-evidence)" || { echo "FAILED: two quests were accepted as enough evidence for the player reference"; exit 1; }
-# RED-HOLLOW-STORY-001 composes exactly two own interior cells independently of QASmoke.
-# Refuse a fabricated game-cell override AND require exactly that own cell.
-grep -q "^Cell QASmoke " "$(report weak-evidence)" && { echo "FAILED: a QASmoke override was written although the master has no test room"; exit 1; }
-[ "$(grep -c '^Cell ' "$(report weak-evidence)")" = 5 ] && grep -q '^Cell TLM_CELL_RH_SurfacePersistent ' "$(report weak-evidence)" && grep -q '^Cell TLM_CELL_RH_Surface ' "$(report weak-evidence)" && grep -q '^Cell TLM_CELL_NightMail ' "$(report weak-evidence)" && grep -q '^Cell TLM_CELL_RedHollow ' "$(report weak-evidence)" && grep -q '^Cell TLM_CELL_FourFlags ' "$(report weak-evidence)" || { echo "FAILED: a source without QASmoke must write exactly Night Mail, Red Hollow underground, Four Flags and the two RH exterior cells"; exit 1; }
-grep -q "TLM_REF_TrialPerson: not placed (no cell 'QASmoke' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: a master without the test room was not reported"; exit 1; }
-# That master has no settler either: the actors made from it are left out, and so is whoever stands on them.
-grep -q "TLM_NPC_TrialPerson: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: an actor that could not be made was not reported"; exit 1; }
-grep -q "^Npc " "$(report weak-evidence)" && { echo "FAILED: an actor record was written although the master has no settler to copy"; exit 1; }
-grep -q "TLM_NPC_SHERIFF_MERCY: not made (no Npc 'WorkshopNPC' in Fallout4.esm)" "$(report weak-evidence)" || { echo "FAILED: a person of the first section who could not be made was not reported"; exit 1; }
+# Named lighting-positive counterparts preserve exactly the player/evidence
+# records, but truthfully supply the independent room/current opening donors.
+standin unnamed-player-with-lighting
+grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$(report unnamed-player-with-lighting)" || { echo "FAILED: fallback to conventional player id did not fill alias"; exit 1; }
+grep -q "Caps = 00000F:Fallout4.esm" "$(report unnamed-player-with-lighting)" || { echo "FAILED: Caps001 was not resolved at low id"; exit 1; }
+standin wrong-player-with-lighting
+grep -q "alias  0 Player  (reference) \[Optional\]" "$(report wrong-player-with-lighting)" || { echo "FAILED: wrong player was accepted"; exit 1; }
+grep -q "does not place the actor 'Player'" "$(report wrong-player-with-lighting)" || { echo "FAILED: rejected player was not reported"; exit 1; }
+standin quest-evidence-with-lighting
+grep -q "alias  0 Player  (reference) \[\]  fill: forced 000014:Fallout4.esm" "$(report quest-evidence-with-lighting)" || { echo "FAILED: twelve forced aliases were not accepted as evidence"; exit 1; }
+standin weak-evidence-with-lighting
+grep -q "alias  0 Player  (reference) \[Optional\]" "$(report weak-evidence-with-lighting)" || { echo "FAILED: two forced aliases were accepted as enough evidence"; exit 1; }
+python3 - "$(report weak-evidence-with-lighting)" <<'PY'
+import sys
+from pathlib import Path
+sys.path.insert(0,'tools/StandInMaster')
+from test_absence067 import inventory
+expected={'QASmoke','TLM_CELL_NightMail','TLM_CELL_RedHollow','TLM_CELL_FourFlags','TLM_CELL_BlackLedger','TLM_CELL_BS_Service','TLM_CELL_BS_Lower','TLM_CELL_RH_SurfacePersistent','TLM_CELL_RH_Surface','TLM_CELL_BS_UpperPersistent','TLM_CELL_BS_Upper'}
+assert inventory(Path(sys.argv[1]).read_text())==expected
+PY
 
 # A master that keeps its text apart, in strings files, as the game's own
 # master does: the room's name has to come out of those. And the same master

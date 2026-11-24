@@ -10,9 +10,12 @@ using Tlm.PluginBuilder;
 public static class CurrentProducerFixture
 {
     public static readonly string[] Variants = {"plain-trigger-bounds", "current-no-static", "current-wrong-static-type", "current-static-model", "current-static-collision", "current-no-sound", "current-sound-shape"};
+    public static readonly string[] AbsenceVariants = {"unnamed-player", "wrong-player", "quest-evidence", "weak-evidence"};
+    public static string PlayerVariant(string variant) => AbsenceVariants.SingleOrDefault(v=>variant==v+"-with-lighting") ?? variant;
     public static void Add(Fallout4Mod mod, string variant)
     {
         FormKey Key(uint id) => new(mod.ModKey,id);
+        bool preserveAbsence=AbsenceVariants.Contains(variant);
         foreach (var entry in Blackstone.Load("layout-models.json").GetProperty("assets").EnumerateObject())
         {
             var data=entry.Value;var bounds=data.GetProperty("bounds").EnumerateArray().Select(x=>x.GetInt16()).ToArray();
@@ -27,10 +30,10 @@ public static class CurrentProducerFixture
         var desk=new Static(Key(0x1A6E6A),Fallout4Release.Fallout4){EditorID=RedHollowAccess.Desk,Model=new Model{File=@"SetDressing\HighTech\HighTechTable01_Main.nif"}};
         desk.ObjectBounds.First=new P3Int16(-54,-26,0);desk.ObjectBounds.Second=new P3Int16(55,26,56);mod.Statics.Add(desk);
         mod.Doors.Add(new Door(Key(0x52576),Fallout4Release.Fallout4){EditorID="ShackDoor01",Model=new Model{File=@"Synthetic\Door.nif"}});
-        if(!mod.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(s=>s.Cells).Any(c=>c.EditorID=="QASmoke"))
+        if(!preserveAbsence && !mod.Cells.Records.SelectMany(b=>b.SubBlocks).SelectMany(s=>s.Cells).Any(c=>c.EditorID=="QASmoke"))
         {
-            // Low-ID player variants predate the producer's lighting consumer.
-            // Add only a synthetic room/light block, no arrival/player evidence.
+            // Explicit *-with-lighting variants supply this independent donor.
+            // Original low-ID absence variants never acquire a test room.
             var room=new Cell(mod.GetNextFormKey(),Fallout4Release.Fallout4){EditorID="QASmoke"};
             var block=new CellBlock{BlockNumber=(int)(room.FormKey.ID%10),GroupType=GroupTypeEnum.InteriorCellBlock};
             var sub=new CellSubBlock{BlockNumber=(int)(room.FormKey.ID/10%10),GroupType=GroupTypeEnum.InteriorCellSubBlock};
@@ -42,10 +45,10 @@ public static class CurrentProducerFixture
         var voice=new VoiceType(Key(0x23323),Fallout4Release.Fallout4){EditorID="MaleBoston"};mod.VoiceTypes.Add(voice);
         var finch=new Npc(Key(0x3F23D),Fallout4Release.Fallout4){EditorID="AbrahamFinch"};finch.Race.SetTo(race);mod.Npcs.Add(finch);
         var nativeOutfit=new Outfit(Key(0x1C269A),Fallout4Release.Fallout4){EditorID="SyntheticWastelanderOutfit"};mod.Outfits.Add(nativeOutfit);
-        if(!mod.Npcs.Any(n=>n.EditorID=="WorkshopNPC"))
+        if(!preserveAbsence && !mod.Npcs.Any(n=>n.EditorID=="WorkshopNPC"))
         {
-            // Keep low-ID player/refusal fixtures intact while supplying the
-            // independent opening donor graph now required by the producer.
+            // Explicit lighting-positive variants also declare their independent
+            // current opening donors; original absence inputs keep no settler.
             var male=new Npc(Key(0x113340),Fallout4Release.Fallout4){EditorID="StandInSettlerMale01"};mod.Npcs.Add(male);
             var female=new Npc(Key(0x113346),Fallout4Release.Fallout4){EditorID="StandInSettlerFemale01",Flags=Npc.Flag.Female};mod.Npcs.Add(female);
             var list=mod.LeveledNpcs.AddNew("SyntheticOpeningDonors");list.Entries=new();
