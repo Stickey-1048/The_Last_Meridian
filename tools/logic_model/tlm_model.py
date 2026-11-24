@@ -724,8 +724,11 @@ def ev_walk_away_from_pritchard(s: State, r: Rules) -> Optional[State]:
 
 def _sq_recompute(s: State) -> State:
     """TLM_SQ01_QuestScript.RecomputeEvidence()."""
-    if not s.sq_done(10) or s.sq_outcome != SQ_NONE:
+    if not s.sq_done(10) or s.sq_outcome != SQ_NONE or not (s.e1 or s.e2):
         return s
+    if s.sq_done(20):
+        # Match the quest's repair after a physical comparison is present.
+        s = replace(s, sq_o10=COMPLETE, sq_o20=SHOWN)
     if s.evidence_level >= 1 and not s.sq_done(20):
         s = replace(sq_set_stage(s, 20), sq_o10=COMPLETE, sq_o20=SHOWN)
     if s.evidence_level >= 2 and not s.sq_done(25):

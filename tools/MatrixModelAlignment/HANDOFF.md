@@ -1,0 +1,13 @@
+# Cloud matrix056: model aligned with accepted physical comparison
+
+Base: 58668ab0820cb429ba4d719ea3ee30a67e1a60f7. This successor changes ONLY `_sq_recompute` in tools/logic_model/tlm_model.py, plus this focused test/provenance directory. No production PSC, generator, generated expectations/data, rules, historical test, workflow or history changed. Parent's explicit revised authorization followed the preserved initial STOP diagnosis.
+
+The unchanged generator originally proposed overwriting two intentional c104623 assertions, C204/C216 step3: ledger+journal in either order must leave comparison objective10 shown and20 hidden, without stage20. Current SQ01Quest PhysicalComparisonDone/RecomputeEvidence already requires actual E1 or E2 before20/25. The old model omitted that gate. The model now requires e1/e2 and mirrors the existing stage20 objective presentation repair once physical comparison exists. The no-ledger/outcome guards and decision/reward authority functions remain unchanged.
+
+Consequently the corrected generator output is EXACTLY the existing PSC and JSON, not new test expectations. Actual generator write mode wrote ZERO files; --check now passes. Two generate() calls are identical. All53 cases,335 steps,1340 checks,54 functions, every scenario/step/assertion site, C204/C216 protected lines and complete case JSON/PSC retain their existing content. The exact semantic row diff after correction is empty. provenance.json pins unchanged production, generator and generated Git-LF bytes.
+
+Focused command: Python -B tools/MatrixModelAlignment/test_physical_comparison.py. Six methods PASS0.052s: both paper orders, E1/E2, paper/Book combinations, repeated clues/idempotence, all16 clue combinations with/without existing20 repair, no-ledger and six decided outcomes, legitimate report once, exact generation/structure. Separately executing the actual parent recomputation body against the new paper-order and repair regression methods makes BOTH fail, demonstrating the tests reject the previous model. Existing test_sq01_matrix.py:26 PASS, one unchanged historical S16 engine-alias-refill skip; no new skip or expectation edits. Its other27-method file is byte-unchanged.
+
+Initial diagnosis and prospective old-model diff remain in work/reviews/sam-opening-cloud-matrix-056-intentional-guard-hold.md, source056-prospective.diff and source056-intentional-guard-diagnosis.json outside this source commit. No build/compiler/SDK/native/network/publication or wider stage replay occurred. This fixes the reproduced stale-model/generator stop locally; it is not a complete cloud aggregate or game claim. Luis independent review and root review precede any publication.
+
+Sam, author handoff, 2026-11-24.
